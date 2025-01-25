@@ -20,22 +20,17 @@
 #include <Message_Messenger.hxx>
 #include <Quantity_Color.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMDataXtd_PresentationDriver,BinMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataXtd_PresentationDriver, BinMDF_ADriver)
 
-  //=======================================================================
-//function : BinMDataStd_AISPresentationDriver
-//purpose  : Constructor
-//=======================================================================
-BinMDataXtd_PresentationDriver::BinMDataXtd_PresentationDriver
-                          (const Handle(Message_Messenger)& theMsgDriver)
-: BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDataXtd_Presentation)->Name())
+//=================================================================================================
+
+BinMDataXtd_PresentationDriver::BinMDataXtd_PresentationDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDataXtd_Presentation)->Name())
 {
 }
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(TDF_Attribute) BinMDataXtd_PresentationDriver::NewEmpty() const
 {
@@ -43,39 +38,41 @@ Handle(TDF_Attribute) BinMDataXtd_PresentationDriver::NewEmpty() const
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMDataXtd_PresentationDriver::Paste
-                                  (const BinObjMgt_Persistent&  theSource,
-                                   const Handle(TDF_Attribute)& theTarget,
-                                   BinObjMgt_RRelocationTable&  /*theRT*/) const
+Standard_Boolean BinMDataXtd_PresentationDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                       const Handle(TDF_Attribute)& theTarget,
+                                                       BinObjMgt_RRelocationTable& /*theRT*/) const
 {
-  Standard_Boolean ok = Standard_False;
+  Standard_Boolean              ok          = Standard_False;
   Handle(TDataXtd_Presentation) anAttribute = Handle(TDataXtd_Presentation)::DownCast(theTarget);
 
   // Display status
   Standard_Integer aValue;
   ok = theSource >> aValue;
-  if (!ok) return ok;
-  anAttribute->SetDisplayed (aValue != 0);
+  if (!ok)
+    return ok;
+  anAttribute->SetDisplayed(aValue != 0);
 
   // GUID
   Standard_GUID aGUID;
   ok = theSource >> aGUID;
-  if (!ok) return ok;
+  if (!ok)
+    return ok;
   anAttribute->SetDriverGUID(aGUID);
 
   // Color
   ok = theSource >> aValue;
-  if (!ok) return ok;
-  if ( aValue != -1 )
+  if (!ok)
+    return ok;
+  if (aValue != -1)
   {
-    Quantity_NameOfColor aNameOfColor = TDataXtd_Presentation::getColorNameFromOldEnum (aValue);
+    Quantity_NameOfColor aNameOfColor = TDataXtd_Presentation::getColorNameFromOldEnum(aValue);
     if (aNameOfColor <= Quantity_NOC_WHITE)
     {
-      anAttribute->SetColor (aNameOfColor);
+      anAttribute->SetColor(aNameOfColor);
     }
   }
   else
@@ -85,7 +82,8 @@ Standard_Boolean BinMDataXtd_PresentationDriver::Paste
 
   // Material
   ok = theSource >> aValue;
-  if ( !ok ) return ok;
+  if (!ok)
+    return ok;
   if (aValue != -1)
     anAttribute->SetMaterialIndex(aValue);
   else
@@ -94,24 +92,27 @@ Standard_Boolean BinMDataXtd_PresentationDriver::Paste
   // Transparency
   Standard_Real aRValue;
   ok = theSource >> aRValue;
-  if ( !ok ) return ok;
-  if ( aRValue != -1. )
+  if (!ok)
+    return ok;
+  if (aRValue != -1.)
     anAttribute->SetTransparency(aRValue);
   else
     anAttribute->UnsetTransparency();
 
   // Width
   ok = theSource >> aRValue;
-  if ( !ok ) return ok;
-  if ( aRValue != -1. )
+  if (!ok)
+    return ok;
+  if (aRValue != -1.)
     anAttribute->SetWidth(aRValue);
   else
     anAttribute->UnsetWidth();
 
   // Mode
   ok = theSource >> aValue;
-  if ( !ok ) return ok;
-  if ( aValue != -1 )
+  if (!ok)
+    return ok;
+  if (aValue != -1)
     anAttribute->SetMode(aValue);
   else
     anAttribute->UnsetMode();
@@ -120,13 +121,13 @@ Standard_Boolean BinMDataXtd_PresentationDriver::Paste
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //=======================================================================
 
 void BinMDataXtd_PresentationDriver::Paste(const Handle(TDF_Attribute)& theSource,
                                            BinObjMgt_Persistent&        theTarget,
-                                           BinObjMgt_SRelocationTable&  /*theSRT*/) const
+                                           BinObjMgt_SRelocationTable& /*theSRT*/) const
 {
   Handle(TDataXtd_Presentation) anAttribute = Handle(TDataXtd_Presentation)::DownCast(theSource);
 
@@ -139,8 +140,9 @@ void BinMDataXtd_PresentationDriver::Paste(const Handle(TDF_Attribute)& theSourc
   // Color
   if (anAttribute->HasOwnColor())
   {
-    const Standard_Integer anOldEnum = TDataXtd_Presentation::getOldColorNameFromNewEnum (anAttribute->Color());
-    theTarget.PutInteger (anOldEnum);
+    const Standard_Integer anOldEnum =
+      TDataXtd_Presentation::getOldColorNameFromNewEnum(anAttribute->Color());
+    theTarget.PutInteger(anOldEnum);
   }
   else
   {

@@ -17,24 +17,22 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
-inline Handle(PLib_JacobiPolynomial) PLib_DoubleJacobiPolynomial::U() const 
+inline Handle(PLib_JacobiPolynomial) PLib_DoubleJacobiPolynomial::U() const
 {
   return myJacPolU;
 }
 
- inline Handle(PLib_JacobiPolynomial) PLib_DoubleJacobiPolynomial::V() const 
+inline Handle(PLib_JacobiPolynomial) PLib_DoubleJacobiPolynomial::V() const
 {
   return myJacPolV;
 }
 
- inline Handle(TColStd_HArray1OfReal) PLib_DoubleJacobiPolynomial::TabMaxU() const 
+inline Handle(TColStd_HArray1OfReal) PLib_DoubleJacobiPolynomial::TabMaxU() const
 {
   return myTabMaxU;
 }
 
- inline Handle(TColStd_HArray1OfReal) PLib_DoubleJacobiPolynomial::TabMaxV() const 
+inline Handle(TColStd_HArray1OfReal) PLib_DoubleJacobiPolynomial::TabMaxV() const
 {
   return myTabMaxV;
 }
-
-

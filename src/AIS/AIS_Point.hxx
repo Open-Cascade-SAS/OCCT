@@ -28,41 +28,44 @@ class AIS_Point : public AIS_InteractiveObject
 {
   DEFINE_STANDARD_RTTIEXT(AIS_Point, AIS_InteractiveObject)
 public:
-
   //! Initializes the point aComponent from which the point
   //! datum will be built.
   Standard_EXPORT AIS_Point(const Handle(Geom_Point)& aComponent);
-  
+
   //! Returns index 1, the default index for a point.
   virtual Standard_Integer Signature() const Standard_OVERRIDE { return 1; }
 
   //! Indicates that a point is a datum.
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KindOfInteractive_Datum; }
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
+  {
+    return AIS_KindOfInteractive_Datum;
+  }
 
   //! Returns the component specified in SetComponent.
   Standard_EXPORT Handle(Geom_Point) Component();
-  
+
   //! Constructs an instance of the point aComponent.
-  Standard_EXPORT void SetComponent (const Handle(Geom_Point)& aComponent);
-  
+  Standard_EXPORT void SetComponent(const Handle(Geom_Point)& aComponent);
+
   //! Returns true if the display mode selected is valid for point datums.
-  Standard_EXPORT Standard_Boolean AcceptDisplayMode (const Standard_Integer aMode) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean
+    AcceptDisplayMode(const Standard_Integer aMode) const Standard_OVERRIDE;
 
   //! Allows you to provide settings for the Color.
-  Standard_EXPORT virtual void SetColor (const Quantity_Color& theColor) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
 
   //! Allows you to remove color settings.
   Standard_EXPORT virtual void UnsetColor() Standard_OVERRIDE;
-  
+
   //! Allows you to provide settings for a marker. These include
   //! -   type of marker,
   //! -   marker color,
   //! -   scale factor.
-  Standard_EXPORT void SetMarker (const Aspect_TypeOfMarker aType);
-  
+  Standard_EXPORT void SetMarker(const Aspect_TypeOfMarker aType);
+
   //! Removes the marker settings.
   Standard_EXPORT void UnsetMarker();
-  
+
   //! Returns true if the point datum has a marker.
   Standard_Boolean HasMarker() const { return myHasTOM; }
 
@@ -70,26 +73,23 @@ public:
   Standard_EXPORT TopoDS_Vertex Vertex() const;
 
 protected:
-
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                        const Handle(Prs3d_Presentation)& thePrs,
-                                        const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                       const Handle(Prs3d_Presentation)&         thePrs,
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
 private:
-
-  Standard_EXPORT void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection, const Standard_Integer aMode) Standard_OVERRIDE;
+  Standard_EXPORT void ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
+                                        const Standard_Integer             aMode) Standard_OVERRIDE;
 
   Standard_EXPORT void UpdatePointValues();
 
   //! Replace aspects of already computed groups with the new value.
-  void replaceWithNewPointAspect (const Handle(Prs3d_PointAspect)& theAspect);
+  void replaceWithNewPointAspect(const Handle(Prs3d_PointAspect)& theAspect);
 
 private:
-
-  Handle(Geom_Point) myComponent;
-  Standard_Boolean myHasTOM;
+  Handle(Geom_Point)  myComponent;
+  Standard_Boolean    myHasTOM;
   Aspect_TypeOfMarker myTOM;
-
 };
 
 DEFINE_STANDARD_HANDLE(AIS_Point, AIS_InteractiveObject)

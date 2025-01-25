@@ -13,28 +13,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TDataXtd_Pattern.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDataXtd_Pattern,TDF_Attribute)
+IMPLEMENT_STANDARD_RTTIEXT(TDataXtd_Pattern, TDF_Attribute)
 
-//=======================================================================
-//function : GetID
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 const Standard_GUID& TDataXtd_Pattern::GetID()
 {
   static Standard_GUID myID("2a96b618-ec8b-11d0-bee7-080009dc3333");
   return myID;
 }
 
-
-//=======================================================================
-//function : ID
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 const Standard_GUID& TDataXtd_Pattern::ID() const
-{ return GetID(); }
+{
+  return GetID();
+}

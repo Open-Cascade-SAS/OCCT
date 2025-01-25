@@ -18,9 +18,9 @@ class TopoDS_Shape;
 class BRepMesh_DiscretRoot;
 
 //! Type definition for plugin exported function
-typedef Standard_Integer (*BRepMesh_PluginEntryType) (const TopoDS_Shape&    theShape,
-                                                      const Standard_Real    theLinDeflection,
-                                                      const Standard_Real    theAngDeflection,
-                                                      BRepMesh_DiscretRoot*& theMeshAlgoInstance);
+typedef Standard_Integer (*BRepMesh_PluginEntryType)(const TopoDS_Shape&    theShape,
+                                                     const Standard_Real    theLinDeflection,
+                                                     const Standard_Real    theAngDeflection,
+                                                     BRepMesh_DiscretRoot*& theMeshAlgoInstance);
 
 #endif

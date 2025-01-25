@@ -11,29 +11,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepBasic_Document.hxx>
 #include <StepBasic_DocumentReference.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentReference,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentReference, Standard_Transient)
 
-void  StepBasic_DocumentReference::Init0
-  (const Handle(StepBasic_Document)& aAssignedDocument,
-   const Handle(TCollection_HAsciiString)& aSource)
+void StepBasic_DocumentReference::Init0(const Handle(StepBasic_Document)&       aAssignedDocument,
+                                        const Handle(TCollection_HAsciiString)& aSource)
 {
   theAssignedDocument = aAssignedDocument;
-  theSource = aSource;
+  theSource           = aSource;
 }
 
-Handle(StepBasic_Document)  StepBasic_DocumentReference::AssignedDocument () const
-{  return theAssignedDocument;  }
+Handle(StepBasic_Document) StepBasic_DocumentReference::AssignedDocument() const
+{
+  return theAssignedDocument;
+}
 
-void  StepBasic_DocumentReference::SetAssignedDocument (const Handle(StepBasic_Document)& aAssignedDocument)
-{  theAssignedDocument = aAssignedDocument;  }
+void StepBasic_DocumentReference::SetAssignedDocument(
+  const Handle(StepBasic_Document)& aAssignedDocument)
+{
+  theAssignedDocument = aAssignedDocument;
+}
 
-Handle(TCollection_HAsciiString)  StepBasic_DocumentReference::Source () const
-{  return theSource;  }
+Handle(TCollection_HAsciiString) StepBasic_DocumentReference::Source() const
+{
+  return theSource;
+}
 
-void  StepBasic_DocumentReference::SetSource (const Handle(TCollection_HAsciiString)& aSource)
-{  theSource = aSource;  }
+void StepBasic_DocumentReference::SetSource(const Handle(TCollection_HAsciiString)& aSource)
+{
+  theSource = aSource;
+}

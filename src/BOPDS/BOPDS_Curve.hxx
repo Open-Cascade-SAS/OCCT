@@ -28,125 +28,96 @@ class IntTools_Curve;
 class Bnd_Box;
 class BOPDS_PaveBlock;
 
-
-
 //! The class BOPDS_Curve is to store
 //! the information about intersection curve
-class BOPDS_Curve 
+class BOPDS_Curve
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! Empty constructor
   BOPDS_Curve();
 
   virtual ~BOPDS_Curve();
-  
 
   //! Constructor
   //! @param theAllocator the allocator to manage the memory
   BOPDS_Curve(const Handle(NCollection_BaseAllocator)& theAllocator);
-  
 
   //! Modifier
   //! Sets the curve <theC>
-    void SetCurve (const IntTools_Curve& theC);
-  
+  void SetCurve(const IntTools_Curve& theC);
 
   //! Selector
   //! Returns the curve
-    const IntTools_Curve& Curve() const;
-  
+  const IntTools_Curve& Curve() const;
 
   //! Modifier
   //! Sets the bounding box <theBox> of the curve
-    void SetBox (const Bnd_Box& theBox);
-  
+  void SetBox(const Bnd_Box& theBox);
 
   //! Selector
   //! Returns the bounding box of the curve
-    const Bnd_Box& Box() const;
-  
+  const Bnd_Box& Box() const;
 
   //! Selector/Modifier
   //! Returns the bounding box of the curve
-    Bnd_Box& ChangeBox();
-  
-  void SetPaveBlocks (const BOPDS_ListOfPaveBlock& theLPB);
-  
+  Bnd_Box& ChangeBox();
+
+  void SetPaveBlocks(const BOPDS_ListOfPaveBlock& theLPB);
 
   //! Selector
   //! Returns the list of pave blocks
   //! of the curve
-    const BOPDS_ListOfPaveBlock& PaveBlocks() const;
-  
+  const BOPDS_ListOfPaveBlock& PaveBlocks() const;
 
   //! Selector/Modifier
   //! Returns the list of pave blocks
   //! of the curve
-    BOPDS_ListOfPaveBlock& ChangePaveBlocks();
-  
+  BOPDS_ListOfPaveBlock& ChangePaveBlocks();
 
   //! Creates  initial pave block
   //! of the curve
-    void InitPaveBlock1();
-  
+  void InitPaveBlock1();
 
   //! Selector/Modifier
   //! Returns  initial pave block
   //! of the curve
-    Handle(BOPDS_PaveBlock)& ChangePaveBlock1();
-  
+  Handle(BOPDS_PaveBlock)& ChangePaveBlock1();
 
   //! Selector
   //! Returns list of indices of technologic vertices
   //! of the curve
-    const TColStd_ListOfInteger& TechnoVertices() const;
-  
+  const TColStd_ListOfInteger& TechnoVertices() const;
 
   //! Selector/Modifier
   //! Returns list of indices of technologic vertices
   //! of the curve
-    TColStd_ListOfInteger& ChangeTechnoVertices();
-  
+  TColStd_ListOfInteger& ChangeTechnoVertices();
 
   //! Query
   //! Returns true if at least one pave block of the curve
   //! has edge
-    Standard_Boolean HasEdge() const;
+  Standard_Boolean HasEdge() const;
 
   //! Sets the tolerance for the curve.
-  void SetTolerance(const Standard_Real theTol)
-  {
-    myTolerance = theTol;
-  }
+  void SetTolerance(const Standard_Real theTol) { myTolerance = theTol; }
 
   //! Returns the tolerance of the curve
-  Standard_Real Tolerance() const
-  {
-    return myTolerance;
-  }
+  Standard_Real Tolerance() const { return myTolerance; }
 
   //! Returns the tangential tolerance of the curve
-  Standard_Real TangentialTolerance() const
-  {
-    return myCurve.TangentialTolerance();
-  }
+  Standard_Real TangentialTolerance() const { return myCurve.TangentialTolerance(); }
 
 protected:
-
   Handle(NCollection_BaseAllocator) myAllocator;
-  IntTools_Curve myCurve;
-  BOPDS_ListOfPaveBlock myPaveBlocks;
-  TColStd_ListOfInteger myTechnoVertices;
-  Bnd_Box myBox;
-  Standard_Real myTolerance;
+  IntTools_Curve                    myCurve;
+  BOPDS_ListOfPaveBlock             myPaveBlocks;
+  TColStd_ListOfInteger             myTechnoVertices;
+  Bnd_Box                           myBox;
+  Standard_Real                     myTolerance;
 
 private:
-
 };
 
 #include <BOPDS_Curve.lxx>

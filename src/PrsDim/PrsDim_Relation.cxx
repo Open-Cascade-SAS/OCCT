@@ -45,209 +45,218 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(PrsDim_Relation, AIS_InteractiveObject)
 
-//=======================================================================
-//function : PrsDim_Relation
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 PrsDim_Relation::PrsDim_Relation(const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d)
-:AIS_InteractiveObject(aTypeOfPresentation3d),
- myVal(1.),
- myPosition(0.,0.,0.),
- myArrowSize( myVal / 10. ),
- myAutomaticPosition(Standard_True),
- myExtShape(0),
- myFirstOffset(0.),mySecondOffset(0.),
- myIsSetBndBox( Standard_False ),
- myArrowSizeIsDefined( Standard_False)
+    : AIS_InteractiveObject(aTypeOfPresentation3d),
+      myVal(1.),
+      myPosition(0., 0., 0.),
+      myArrowSize(myVal / 10.),
+      myAutomaticPosition(Standard_True),
+      myExtShape(0),
+      myFirstOffset(0.),
+      mySecondOffset(0.),
+      myIsSetBndBox(Standard_False),
+      myArrowSizeIsDefined(Standard_False)
 {
 }
 
-//=======================================================================
-//function : ComputeProjEdgePresentation
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void PrsDim_Relation::ComputeProjEdgePresentation(const Handle(Prs3d_Presentation)& aPrs, 
-					       const TopoDS_Edge& anEdge,
-					       const Handle(Geom_Curve)& ProjCurv, 
-					       const gp_Pnt& FirstP, 
-					       const gp_Pnt& LastP, 
-					       const Quantity_NameOfColor aColor,
-					       const Standard_Real width,
-					       const Aspect_TypeOfLine aProjTOL,
-					       const Aspect_TypeOfLine aCallTOL) const 
+void PrsDim_Relation::ComputeProjEdgePresentation(const Handle(Prs3d_Presentation)& aPrs,
+                                                  const TopoDS_Edge&                anEdge,
+                                                  const Handle(Geom_Curve)&         ProjCurv,
+                                                  const gp_Pnt&                     FirstP,
+                                                  const gp_Pnt&                     LastP,
+                                                  const Quantity_NameOfColor        aColor,
+                                                  const Standard_Real               width,
+                                                  const Aspect_TypeOfLine           aProjTOL,
+                                                  const Aspect_TypeOfLine           aCallTOL) const
 {
-  if (!myDrawer->HasOwnWireAspect()){
-    myDrawer->SetWireAspect(new Prs3d_LineAspect(aColor,aProjTOL,2.));}
-  else {
+  if (!myDrawer->HasOwnWireAspect())
+  {
+    myDrawer->SetWireAspect(new Prs3d_LineAspect(aColor, aProjTOL, 2.));
+  }
+  else
+  {
     const Handle(Prs3d_LineAspect)& li = myDrawer->WireAspect();
     li->SetColor(aColor);
     li->SetTypeOfLine(aProjTOL);
     li->SetWidth(width);
   }
 
-  Standard_Real pf, pl;
-  TopLoc_Location loc;
+  Standard_Real      pf, pl;
+  TopLoc_Location    loc;
   Handle(Geom_Curve) curve;
-  Standard_Boolean isInfinite;
-  curve = BRep_Tool::Curve(anEdge,loc,pf,pl);
+  Standard_Boolean   isInfinite;
+  curve      = BRep_Tool::Curve(anEdge, loc, pf, pl);
   isInfinite = (Precision::IsInfinite(pf) || Precision::IsInfinite(pl));
 
   TopoDS_Edge E;
 
   // Calcul de la presentation de l'edge
-  if (ProjCurv->IsInstance(STANDARD_TYPE(Geom_Line)) ) {
-    Handle(Geom_Line) gl (Handle(Geom_Line)::DownCast (ProjCurv));
-    if ( !isInfinite) {
-      pf = ElCLib::Parameter(gl->Lin(),FirstP);
-      pl = ElCLib::Parameter(gl->Lin(),LastP);
+  if (ProjCurv->IsInstance(STANDARD_TYPE(Geom_Line)))
+  {
+    Handle(Geom_Line) gl(Handle(Geom_Line)::DownCast(ProjCurv));
+    if (!isInfinite)
+    {
+      pf = ElCLib::Parameter(gl->Lin(), FirstP);
+      pl = ElCLib::Parameter(gl->Lin(), LastP);
       BRepBuilderAPI_MakeEdge MakEd(gl->Lin(), pf, pl);
       E = MakEd.Edge();
     }
-    else {
+    else
+    {
       BRepBuilderAPI_MakeEdge MakEd(gl->Lin());
       E = MakEd.Edge();
     }
   }
-  else if (ProjCurv->IsInstance(STANDARD_TYPE(Geom_Circle)) ) {
-    Handle(Geom_Circle) gc (Handle(Geom_Circle)::DownCast (ProjCurv));
-    pf = ElCLib::Parameter(gc->Circ(),FirstP);
-    pl = ElCLib::Parameter(gc->Circ(),LastP);
-    BRepBuilderAPI_MakeEdge MakEd(gc->Circ(),pf, pl);
+  else if (ProjCurv->IsInstance(STANDARD_TYPE(Geom_Circle)))
+  {
+    Handle(Geom_Circle) gc(Handle(Geom_Circle)::DownCast(ProjCurv));
+    pf = ElCLib::Parameter(gc->Circ(), FirstP);
+    pl = ElCLib::Parameter(gc->Circ(), LastP);
+    BRepBuilderAPI_MakeEdge MakEd(gc->Circ(), pf, pl);
     E = MakEd.Edge();
   }
-  StdPrs_WFShape::Add (aPrs, E, myDrawer);
+  StdPrs_WFShape::Add(aPrs, E, myDrawer);
 
-  //Calcul de la presentation des lignes de raccord
+  // Calcul de la presentation des lignes de raccord
   myDrawer->WireAspect()->SetTypeOfLine(aCallTOL);
-  if (!isInfinite) {
+  if (!isInfinite)
+  {
     gp_Pnt ppf, ppl;
-    ppf = BRep_Tool::Pnt( TopExp::FirstVertex(TopoDS::Edge(anEdge)));
-    ppl = BRep_Tool::Pnt( TopExp::LastVertex(TopoDS::Edge(anEdge)));
-    if (FirstP.Distance (ppf) > gp::Resolution())
+    ppf = BRep_Tool::Pnt(TopExp::FirstVertex(TopoDS::Edge(anEdge)));
+    ppl = BRep_Tool::Pnt(TopExp::LastVertex(TopoDS::Edge(anEdge)));
+    if (FirstP.Distance(ppf) > gp::Resolution())
     {
-      BRepBuilderAPI_MakeEdge MakEd1 (FirstP, ppf);
-      StdPrs_WFShape::Add (aPrs, MakEd1.Edge(), myDrawer);
+      BRepBuilderAPI_MakeEdge MakEd1(FirstP, ppf);
+      StdPrs_WFShape::Add(aPrs, MakEd1.Edge(), myDrawer);
     }
     else
     {
-      BRepBuilderAPI_MakeVertex MakVert1 (FirstP);
-      StdPrs_WFShape::Add (aPrs, MakVert1.Vertex(), myDrawer);
+      BRepBuilderAPI_MakeVertex MakVert1(FirstP);
+      StdPrs_WFShape::Add(aPrs, MakVert1.Vertex(), myDrawer);
     }
-    if (LastP.Distance (ppl) > gp::Resolution())
+    if (LastP.Distance(ppl) > gp::Resolution())
     {
-      BRepBuilderAPI_MakeEdge MakEd2 (LastP, ppl);
-      StdPrs_WFShape::Add (aPrs, MakEd2.Edge(), myDrawer);
+      BRepBuilderAPI_MakeEdge MakEd2(LastP, ppl);
+      StdPrs_WFShape::Add(aPrs, MakEd2.Edge(), myDrawer);
     }
     else
     {
-      BRepBuilderAPI_MakeVertex MakVert2 (LastP);
-      StdPrs_WFShape::Add (aPrs, MakVert2.Vertex(), myDrawer);
+      BRepBuilderAPI_MakeVertex MakVert2(LastP);
+      StdPrs_WFShape::Add(aPrs, MakVert2.Vertex(), myDrawer);
     }
-/*
-    BRepBuilderAPI_MakeEdge MakEd1 (FirstP, ppf);
-    StdPrs_WFShape::Add (aPrs, MakEd1.Edge(), myDrawer);
-    BRepBuilderAPI_MakeEdge MakEd2 (LastP, ppl);
-    StdPrs_WFShape::Add (aPrs, MakEd2.Edge(), myDrawer);
-*/
+    /*
+        BRepBuilderAPI_MakeEdge MakEd1 (FirstP, ppf);
+        StdPrs_WFShape::Add (aPrs, MakEd1.Edge(), myDrawer);
+        BRepBuilderAPI_MakeEdge MakEd2 (LastP, ppl);
+        StdPrs_WFShape::Add (aPrs, MakEd2.Edge(), myDrawer);
+    */
   }
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : ComputeProjVertexPresentation
-//purpose  : 
-//=======================================================================
-
-void PrsDim_Relation::ComputeProjVertexPresentation(const Handle(Prs3d_Presentation)& aPrs, 
-						 const TopoDS_Vertex& aVertex,
-						 const gp_Pnt& ProjPoint, 
-						 const Quantity_NameOfColor aColor,
-						 const Standard_Real width,
-						 const Aspect_TypeOfMarker aProjTOM,
-						 const Aspect_TypeOfLine aCallTOL) const 
+void PrsDim_Relation::ComputeProjVertexPresentation(const Handle(Prs3d_Presentation)& aPrs,
+                                                    const TopoDS_Vertex&              aVertex,
+                                                    const gp_Pnt&                     ProjPoint,
+                                                    const Quantity_NameOfColor        aColor,
+                                                    const Standard_Real               width,
+                                                    const Aspect_TypeOfMarker         aProjTOM,
+                                                    const Aspect_TypeOfLine aCallTOL) const
 {
-  if (!myDrawer->HasOwnPointAspect()){
-    myDrawer->SetPointAspect(new Prs3d_PointAspect(aProjTOM, aColor,1));}
-  else {
+  if (!myDrawer->HasOwnPointAspect())
+  {
+    myDrawer->SetPointAspect(new Prs3d_PointAspect(aProjTOM, aColor, 1));
+  }
+  else
+  {
     const Handle(Prs3d_PointAspect)& pa = myDrawer->PointAspect();
     pa->SetColor(aColor);
     pa->SetTypeOfMarker(aProjTOM);
   }
-  
+
   {
-    Handle(Graphic3d_Group) aGroup = aPrs->NewGroup();
-    Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
-    anArrayOfPoints->AddVertex (ProjPoint);
-    aGroup->SetGroupPrimitivesAspect (myDrawer->PointAspect()->Aspect());
-    aGroup->AddPrimitiveArray (anArrayOfPoints);
+    Handle(Graphic3d_Group)         aGroup          = aPrs->NewGroup();
+    Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints(1);
+    anArrayOfPoints->AddVertex(ProjPoint);
+    aGroup->SetGroupPrimitivesAspect(myDrawer->PointAspect()->Aspect());
+    aGroup->AddPrimitiveArray(anArrayOfPoints);
   }
 
-  if (!myDrawer->HasOwnWireAspect()){
-    myDrawer->SetWireAspect(new Prs3d_LineAspect(aColor,aCallTOL,2.));}
-  else {
+  if (!myDrawer->HasOwnWireAspect())
+  {
+    myDrawer->SetWireAspect(new Prs3d_LineAspect(aColor, aCallTOL, 2.));
+  }
+  else
+  {
     const Handle(Prs3d_LineAspect)& li = myDrawer->WireAspect();
     li->SetColor(aColor);
     li->SetTypeOfLine(aCallTOL);
     li->SetWidth(width);
   }
-  
+
   // Si les points ne sont pas confondus...
-  if (!ProjPoint.IsEqual (BRep_Tool::Pnt(aVertex),Precision::Confusion()))
+  if (!ProjPoint.IsEqual(BRep_Tool::Pnt(aVertex), Precision::Confusion()))
   {
-    Handle(Graphic3d_Group) aGroup = aPrs->NewGroup();
-    Handle(Graphic3d_ArrayOfSegments) anArrayOfLines = new Graphic3d_ArrayOfSegments (2);
-    anArrayOfLines->AddVertex (ProjPoint);
-    anArrayOfLines->AddVertex (BRep_Tool::Pnt(aVertex));
-    aGroup->SetGroupPrimitivesAspect (myDrawer->WireAspect()->Aspect());
-    aGroup->AddPrimitiveArray (anArrayOfLines);
+    Handle(Graphic3d_Group)           aGroup         = aPrs->NewGroup();
+    Handle(Graphic3d_ArrayOfSegments) anArrayOfLines = new Graphic3d_ArrayOfSegments(2);
+    anArrayOfLines->AddVertex(ProjPoint);
+    anArrayOfLines->AddVertex(BRep_Tool::Pnt(aVertex));
+    aGroup->SetGroupPrimitivesAspect(myDrawer->WireAspect()->Aspect());
+    aGroup->AddPrimitiveArray(anArrayOfLines);
   }
 }
 
-//=======================================================================
-//function : SetColor
-//purpose  : 
-//=======================================================================
-void PrsDim_Relation::SetColor(const Quantity_Color &aCol)
-{
-  if(hasOwnColor && myDrawer->Color() == aCol) return;
+//=================================================================================================
 
-  if (!myDrawer->HasOwnTextAspect()) myDrawer->SetTextAspect(new Prs3d_TextAspect());
-  hasOwnColor=Standard_True;
-  myDrawer->SetColor (aCol);
+void PrsDim_Relation::SetColor(const Quantity_Color& aCol)
+{
+  if (hasOwnColor && myDrawer->Color() == aCol)
+    return;
+
+  if (!myDrawer->HasOwnTextAspect())
+    myDrawer->SetTextAspect(new Prs3d_TextAspect());
+  hasOwnColor = Standard_True;
+  myDrawer->SetColor(aCol);
   myDrawer->TextAspect()->SetColor(aCol);
 
-  Standard_Real WW = HasWidth()? Width(): myDrawer->HasLink() ?
-    AIS_GraphicTool::GetLineWidth(myDrawer->Link(),AIS_TOA_Line) : 1.;
-  if (!myDrawer->HasOwnLineAspect()) {
-    myDrawer->SetLineAspect(new Prs3d_LineAspect(aCol,Aspect_TOL_SOLID,WW));
+  Standard_Real WW = HasWidth() ? Width()
+                     : myDrawer->HasLink()
+                       ? AIS_GraphicTool::GetLineWidth(myDrawer->Link(), AIS_TOA_Line)
+                       : 1.;
+  if (!myDrawer->HasOwnLineAspect())
+  {
+    myDrawer->SetLineAspect(new Prs3d_LineAspect(aCol, Aspect_TOL_SOLID, WW));
   }
-  if (!myDrawer->HasOwnDimensionAspect()) {
-     myDrawer->SetDimensionAspect(new Prs3d_DimensionAspect);
+  if (!myDrawer->HasOwnDimensionAspect())
+  {
+    myDrawer->SetDimensionAspect(new Prs3d_DimensionAspect);
   }
 
-  myDrawer->LineAspect()->SetColor(aCol);  
+  myDrawer->LineAspect()->SetColor(aCol);
   const Handle(Prs3d_DimensionAspect)& DIMENSION = myDrawer->DimensionAspect();
-  const Handle(Prs3d_LineAspect)&   LINE   = myDrawer->LineAspect();
-  const Handle(Prs3d_TextAspect)&   TEXT   = myDrawer->TextAspect();
+  const Handle(Prs3d_LineAspect)&      LINE      = myDrawer->LineAspect();
+  const Handle(Prs3d_TextAspect)&      TEXT      = myDrawer->TextAspect();
 
   DIMENSION->SetLineAspect(LINE);
-  DIMENSION->SetTextAspect(TEXT); 
+  DIMENSION->SetTextAspect(TEXT);
 }
 
-//=======================================================================
-//function : UnsetColor
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void PrsDim_Relation::UnsetColor()
 {
-  if (!hasOwnColor) return;
-  hasOwnColor = Standard_False;
+  if (!hasOwnColor)
+    return;
+  hasOwnColor                        = Standard_False;
   const Handle(Prs3d_LineAspect)& LA = myDrawer->LineAspect();
-  Quantity_Color CC = Quantity_NOC_YELLOW;
+  Quantity_Color                  CC = Quantity_NOC_YELLOW;
   if (myDrawer->HasLink())
   {
-    AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line,CC);
+    AIS_GraphicTool::GetLineColor(myDrawer->Link(), AIS_TOA_Line, CC);
     myDrawer->SetTextAspect(myDrawer->Link()->TextAspect());
   }
   LA->SetColor(CC);

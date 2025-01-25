@@ -15,34 +15,35 @@
 
 #ifdef _WIN32
 
-/******************************************************************************/
-/* File:      OSD_WNT.cxx                                                     */
-/* Purpose:   Security management routines ( more convenient than WIN32       */
-/*            ones ) and other convrnient functions.                          */
-/******************************************************************************/
+  /******************************************************************************/
+  /* File:      OSD_WNT.cxx                                                     */
+  /* Purpose:   Security management routines ( more convenient than WIN32       */
+  /*            ones ) and other convrnient functions.                          */
+  /******************************************************************************/
+  /***/
+  #include <OSD_WNT.hxx>
+
+  #include <strsafe.h>
+  #include <wchar.h>
+  #include <stdlib.h>
+
+  #include <Standard_Macro.hxx>
+
+  /***/
+  #ifndef OCCT_UWP
+static void Init(void);
+
 /***/
-#include <OSD_WNT.hxx>
+class Init_OSD_WNT
+{ // provides initialization
 
-#include <strsafe.h>
-#include <wchar.h>
-#include <stdlib.h>
-
-#include <Standard_Macro.hxx>
-
-/***/
-#ifndef OCCT_UWP
-static void Init ( void );
-/***/
-class Init_OSD_WNT {  // provides initialization
-
- public:
-
-  Init_OSD_WNT () { Init (); }
+public:
+  Init_OSD_WNT() { Init(); }
 
 }; // end Init_OSD_WNT
 
 static Init_OSD_WNT initOsdWnt;
-#endif
+  #endif
 /***/
 static BOOL   fInit = FALSE;
 static PSID*  predefinedSIDs;
@@ -51,21 +52,21 @@ static HANDLE hHeap;
 static MOVE_DIR_PROC     _move_dir_proc;
 static COPY_DIR_PROC     _copy_dir_proc;
 static RESPONSE_DIR_PROC _response_dir_proc;
-/***/
-#define PREDEFINED_SIDs_COUNT           9
-#define UNIVERSAL_PREDEFINED_SIDs_COUNT 5
-/***/
-#define SID_INTERACTIVE   0
-#define SID_NETWORK       1
-#define SID_LOCAL         2
-#define SID_DIALUP        3
-#define SID_BATCH         4
-#define SID_CREATOR_OWNER 5
-#define SID_ADMIN         6
-#define SID_WORLD         7
-#define SID_NULL          8
-/***/
-#ifndef OCCT_UWP
+  /***/
+  #define PREDEFINED_SIDs_COUNT 9
+  #define UNIVERSAL_PREDEFINED_SIDs_COUNT 5
+  /***/
+  #define SID_INTERACTIVE 0
+  #define SID_NETWORK 1
+  #define SID_LOCAL 2
+  #define SID_DIALUP 3
+  #define SID_BATCH 4
+  #define SID_CREATOR_OWNER 5
+  #define SID_ADMIN 6
+  #define SID_WORLD 7
+  #define SID_NULL 8
+  /***/
+  #ifndef OCCT_UWP
 // None of the existing security APIs are supported in a UWP applications
 /******************************************************************************/
 /* Function : AllocSD                                                       */
@@ -74,25 +75,24 @@ static RESPONSE_DIR_PROC _response_dir_proc;
 /* Warning  : Allocated SID must be deallocated by 'FreeSD' function        */
 /******************************************************************************/
 /***/
-PSECURITY_DESCRIPTOR AllocSD ( void ) {
+PSECURITY_DESCRIPTOR AllocSD(void)
+{
 
- PSECURITY_DESCRIPTOR retVal =
-  ( PSECURITY_DESCRIPTOR )HeapAlloc (
-                           hHeap, 0, sizeof ( SECURITY_DESCRIPTOR )
-                          );
+  PSECURITY_DESCRIPTOR retVal =
+    (PSECURITY_DESCRIPTOR)HeapAlloc(hHeap, 0, sizeof(SECURITY_DESCRIPTOR));
 
- if ( retVal != NULL &&
-      !InitializeSecurityDescriptor ( retVal, SECURITY_DESCRIPTOR_REVISION )
- ) {
- 
-  HeapFree (  hHeap, 0, ( PVOID )retVal  );
-  retVal = NULL;
- 
- }  /* end if */
+  if (retVal != NULL && !InitializeSecurityDescriptor(retVal, SECURITY_DESCRIPTOR_REVISION))
+  {
 
- return retVal; 
+    HeapFree(hHeap, 0, (PVOID)retVal);
+    retVal = NULL;
 
-}  /* end AllocSD */
+  } /* end if */
+
+  return retVal;
+
+} /* end AllocSD */
+
 /***/
 /******************************************************************************/
 /* Function : FreeSD                                                        */
@@ -100,94 +100,100 @@ PSECURITY_DESCRIPTOR AllocSD ( void ) {
 /*            'AllocSD' function                                            */
 /******************************************************************************/
 /***/
-void FreeSD ( PSECURITY_DESCRIPTOR pSD ) {
+void FreeSD(PSECURITY_DESCRIPTOR pSD)
+{
 
- BOOL   fPresent;
- BOOL   fDaclDefaulted;
- PACL   pACL;
- 
- if (  GetSecurityDescriptorDacl ( pSD, &fPresent, &pACL, &fDaclDefaulted ) &&
-       fPresent
- )
+  BOOL fPresent;
+  BOOL fDaclDefaulted;
+  PACL pACL;
 
-  HeapFree (  hHeap, 0, ( PVOID )pACL  );
+  if (GetSecurityDescriptorDacl(pSD, &fPresent, &pACL, &fDaclDefaulted) && fPresent)
 
- HeapFree (  hHeap, 0, ( PVOID )pSD  );
+    HeapFree(hHeap, 0, (PVOID)pACL);
 
-}  /* end FreeSD */
-/***/
-/******************************************************************************/
-/* Function : GetTokenInformationEx                                         */
-/* Purpose  : Allocates and fills out access token                          */
-/* Returns  : Pointer to the access token on success, NULL otherwise        */
-/* Warning  : Allocated access token  must be deallocated by                */
-/*            'FreeTokenInformation' function                               */
-/******************************************************************************/
-/***/
+  HeapFree(hHeap, 0, (PVOID)pSD);
 
-#if defined(__CYGWIN32__) || defined(__MINGW32__)
-#define __try
-#define __finally
-#define __leave return buffer
-#endif
+} /* end FreeSD */
 
-LPVOID GetTokenInformationEx ( HANDLE hToken, TOKEN_INFORMATION_CLASS tic ) {
+  /***/
+  /******************************************************************************/
+  /* Function : GetTokenInformationEx                                         */
+  /* Purpose  : Allocates and fills out access token                          */
+  /* Returns  : Pointer to the access token on success, NULL otherwise        */
+  /* Warning  : Allocated access token  must be deallocated by                */
+  /*            'FreeTokenInformation' function                               */
+  /******************************************************************************/
+  /***/
 
- DWORD  errVal;
- DWORD  dwSize;
- DWORD  dwSizeNeeded = 0;
- LPVOID buffer       = NULL;
- BOOL   fOK          = FALSE;
+    #if defined(__CYGWIN32__) || defined(__MINGW32__)
+      #define __try
+      #define __finally
+      #define __leave return buffer
+    #endif
 
- __try {
+LPVOID GetTokenInformationEx(HANDLE hToken, TOKEN_INFORMATION_CLASS tic)
+{
 
-  do {
+  DWORD  errVal;
+  DWORD  dwSize;
+  DWORD  dwSizeNeeded = 0;
+  LPVOID buffer       = NULL;
+  BOOL   fOK          = FALSE;
 
-   dwSize = dwSizeNeeded;
-   errVal = ERROR_SUCCESS;
- 
-   if (  !GetTokenInformation ( hToken, tic, buffer, dwSize, &dwSizeNeeded )  ) {
+  __try
+  {
 
-    if (   (  errVal = GetLastError ()  ) != ERROR_INSUFFICIENT_BUFFER   )
-        
-     __leave;
+    do
+    {
 
-    if (  ( buffer = HeapAlloc (  hHeap, 0, dwSizeNeeded  ) ) == NULL  )
+      dwSize = dwSizeNeeded;
+      errVal = ERROR_SUCCESS;
 
-     __leave;
+      if (!GetTokenInformation(hToken, tic, buffer, dwSize, &dwSizeNeeded))
+      {
 
-   }  /* end if */
- 
-  } while ( errVal != ERROR_SUCCESS );
+        if ((errVal = GetLastError()) != ERROR_INSUFFICIENT_BUFFER)
 
-  fOK = TRUE;
+          __leave;
 
- }  /* end __try */
+        if ((buffer = HeapAlloc(hHeap, 0, dwSizeNeeded)) == NULL)
 
- __finally {
- 
-  if ( !fOK && buffer != NULL ) {
-  
-   HeapFree ( hHeap, 0, buffer );
-   buffer = NULL;
-  
-  }  /* end if */
- 
- }  /* end __finally */
+          __leave;
 
-#ifdef VAC
-leave: ;     // added for VisualAge
-#endif
+      } /* end if */
 
- return buffer;
+    } while (errVal != ERROR_SUCCESS);
 
-}  /* end GetTokenInformationEx */
+    fOK = TRUE;
 
-#if defined(__CYGWIN32__) || defined(__MINGW32__)
-#undef __try
-#undef __finally
-#undef __leave
-#endif
+  } /* end __try */
+
+  __finally
+  {
+
+    if (!fOK && buffer != NULL)
+    {
+
+      HeapFree(hHeap, 0, buffer);
+      buffer = NULL;
+
+    } /* end if */
+
+  } /* end __finally */
+
+    #ifdef VAC
+leave:; // added for VisualAge
+    #endif
+
+  return buffer;
+
+} /* end GetTokenInformationEx */
+
+    #if defined(__CYGWIN32__) || defined(__MINGW32__)
+      #undef __try
+      #undef __finally
+      #undef __leave
+    #endif
 
 /***/
 /******************************************************************************/
@@ -196,11 +202,13 @@ leave: ;     // added for VisualAge
 /*            'GetTokenInformationEx' function                              */
 /******************************************************************************/
 /***/
-void FreeTokenInformation ( LPVOID lpvTkInfo ) {
+void FreeTokenInformation(LPVOID lpvTkInfo)
+{
 
- HeapFree (  hHeap, 0, lpvTkInfo  );
+  HeapFree(hHeap, 0, lpvTkInfo);
 
-}  /* end FreeTokenInformation */
+} /* end FreeTokenInformation */
+
 /***/
 /******************************************************************************/
 /* Function : Init                                                          */
@@ -211,72 +219,136 @@ void FreeTokenInformation ( LPVOID lpvTkInfo ) {
 /*            ( __try / __except )                                          */
 /******************************************************************************/
 /***/
-static void Init ( void ) {
+static void Init(void)
+{
 
- SID_IDENTIFIER_AUTHORITY sidIDAnull    = SECURITY_NULL_SID_AUTHORITY;
- SID_IDENTIFIER_AUTHORITY sidIDAworld   = SECURITY_WORLD_SID_AUTHORITY;
- SID_IDENTIFIER_AUTHORITY sidIDANT      = SECURITY_NT_AUTHORITY;
- SID_IDENTIFIER_AUTHORITY sidIDAlocal   = SECURITY_LOCAL_SID_AUTHORITY;
- SID_IDENTIFIER_AUTHORITY sidIDAcreator = SECURITY_CREATOR_SID_AUTHORITY;
+  SID_IDENTIFIER_AUTHORITY sidIDAnull    = SECURITY_NULL_SID_AUTHORITY;
+  SID_IDENTIFIER_AUTHORITY sidIDAworld   = SECURITY_WORLD_SID_AUTHORITY;
+  SID_IDENTIFIER_AUTHORITY sidIDANT      = SECURITY_NT_AUTHORITY;
+  SID_IDENTIFIER_AUTHORITY sidIDAlocal   = SECURITY_LOCAL_SID_AUTHORITY;
+  SID_IDENTIFIER_AUTHORITY sidIDAcreator = SECURITY_CREATOR_SID_AUTHORITY;
 
- if ( !fInit ) {
+  if (!fInit)
+  {
 
-  predefinedSIDs = ( PSID* )HeapAlloc (
-                             hHeap = GetProcessHeap (),
-                             HEAP_GENERATE_EXCEPTIONS | HEAP_ZERO_MEMORY,
-                             PREDEFINED_SIDs_COUNT * sizeof ( PSID* )
-                            );
+    predefinedSIDs = (PSID*)HeapAlloc(hHeap = GetProcessHeap(),
+                                      HEAP_GENERATE_EXCEPTIONS | HEAP_ZERO_MEMORY,
+                                      PREDEFINED_SIDs_COUNT * sizeof(PSID*));
 
-  AllocateAndInitializeSid (
-   &sidIDANT, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS,
-   0, 0, 0, 0, 0, 0, &predefinedSIDs[ SID_ADMIN ]
-  );
+    AllocateAndInitializeSid(&sidIDANT,
+                             2,
+                             SECURITY_BUILTIN_DOMAIN_RID,
+                             DOMAIN_ALIAS_RID_ADMINS,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             &predefinedSIDs[SID_ADMIN]);
 
-  AllocateAndInitializeSid (
-   &sidIDAworld, 1, SECURITY_WORLD_RID,
-   0, 0, 0, 0, 0, 0, 0, &predefinedSIDs[ SID_WORLD ]
-  );
+    AllocateAndInitializeSid(&sidIDAworld,
+                             1,
+                             SECURITY_WORLD_RID,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             &predefinedSIDs[SID_WORLD]);
 
-  AllocateAndInitializeSid (
-   &sidIDANT, 1, SECURITY_INTERACTIVE_RID,
-   0, 0, 0, 0, 0, 0, 0, &predefinedSIDs[ SID_INTERACTIVE ]
-  );
+    AllocateAndInitializeSid(&sidIDANT,
+                             1,
+                             SECURITY_INTERACTIVE_RID,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             &predefinedSIDs[SID_INTERACTIVE]);
 
-  AllocateAndInitializeSid (
-   &sidIDANT, 1, SECURITY_NETWORK_RID,
-   0, 0, 0, 0, 0, 0, 0, &predefinedSIDs[ SID_NETWORK ]
-  );
+    AllocateAndInitializeSid(&sidIDANT,
+                             1,
+                             SECURITY_NETWORK_RID,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             &predefinedSIDs[SID_NETWORK]);
 
-  AllocateAndInitializeSid (
-   &sidIDAlocal, 1, SECURITY_LOCAL_RID,
-   0, 0, 0, 0, 0, 0, 0, &predefinedSIDs[ SID_LOCAL ]
-  );
+    AllocateAndInitializeSid(&sidIDAlocal,
+                             1,
+                             SECURITY_LOCAL_RID,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             &predefinedSIDs[SID_LOCAL]);
 
-  AllocateAndInitializeSid (
-   &sidIDANT, 1, SECURITY_DIALUP_RID,
-   0, 0, 0, 0, 0, 0, 0, &predefinedSIDs[ SID_DIALUP ]
-  );
+    AllocateAndInitializeSid(&sidIDANT,
+                             1,
+                             SECURITY_DIALUP_RID,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             &predefinedSIDs[SID_DIALUP]);
 
-  AllocateAndInitializeSid (
-   &sidIDANT, 1, SECURITY_BATCH_RID,
-   0, 0, 0, 0, 0, 0, 0, &predefinedSIDs[ SID_BATCH ]
-  );
+    AllocateAndInitializeSid(&sidIDANT,
+                             1,
+                             SECURITY_BATCH_RID,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             &predefinedSIDs[SID_BATCH]);
 
-  AllocateAndInitializeSid (
-   &sidIDAcreator, 1, SECURITY_CREATOR_OWNER_RID,
-   0, 0, 0, 0, 0, 0, 0, &predefinedSIDs[ SID_CREATOR_OWNER ]
-  );
+    AllocateAndInitializeSid(&sidIDAcreator,
+                             1,
+                             SECURITY_CREATOR_OWNER_RID,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             &predefinedSIDs[SID_CREATOR_OWNER]);
 
-  AllocateAndInitializeSid (
-   &sidIDAnull, 1, SECURITY_NULL_RID,
-   0, 0, 0, 0, 0, 0, 0, &predefinedSIDs[ SID_NULL ]
-  );
+    AllocateAndInitializeSid(&sidIDAnull,
+                             1,
+                             SECURITY_NULL_RID,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             0,
+                             &predefinedSIDs[SID_NULL]);
 
-  fInit = TRUE;
+    fInit = TRUE;
 
- }  /* end if */
+  } /* end if */
 
-}  /* end init */
+} /* end init */
+
 /***/
 /******************************************************************************/
 /* Function : PredefinedSid                                                 */
@@ -284,19 +356,21 @@ static void Init ( void ) {
 /* Returns  : TRUE if specified SID is predefined, FALSE otherwise          */
 /******************************************************************************/
 /***/
-BOOL PredefinedSid ( PSID pSID ) {
+BOOL PredefinedSid(PSID pSID)
+{
 
- int i;
+  int i;
 
- for ( i = 0; i < PREDEFINED_SIDs_COUNT; ++i )
- 
-  if (  EqualSid ( pSID, predefinedSIDs[ i ] )  )
+  for (i = 0; i < PREDEFINED_SIDs_COUNT; ++i)
 
-   return TRUE;
- 
- return FALSE;
+    if (EqualSid(pSID, predefinedSIDs[i]))
 
-}  /* end PredefinedSid */
+      return TRUE;
+
+  return FALSE;
+
+} /* end PredefinedSid */
+
 /***/
 /******************************************************************************/
 /* Function : NtPredefinedSid                                               */
@@ -304,56 +378,63 @@ BOOL PredefinedSid ( PSID pSID ) {
 /* Returns  : TRUE if specified SID is NOT universal, FALSE otherwise       */
 /******************************************************************************/
 /***/
-BOOL NtPredefinedSid ( PSID pSID ) {
+BOOL NtPredefinedSid(PSID pSID)
+{
 
- int                       i;
- PSID_IDENTIFIER_AUTHORITY pTestIDA;
- SID_IDENTIFIER_AUTHORITY  ntIDA = SECURITY_NT_AUTHORITY;
- PDWORD                    pdwTestSA;
+  int                       i;
+  PSID_IDENTIFIER_AUTHORITY pTestIDA;
+  SID_IDENTIFIER_AUTHORITY  ntIDA = SECURITY_NT_AUTHORITY;
+  PDWORD                    pdwTestSA;
 
- for ( i = 0; i < UNIVERSAL_PREDEFINED_SIDs_COUNT; ++i )
+  for (i = 0; i < UNIVERSAL_PREDEFINED_SIDs_COUNT; ++i)
 
-  if (  EqualSid ( pSID, predefinedSIDs[ i ] )  )
+    if (EqualSid(pSID, predefinedSIDs[i]))
 
-   return TRUE;
+      return TRUE;
 
- pTestIDA = GetSidIdentifierAuthority ( pSID );
+  pTestIDA = GetSidIdentifierAuthority(pSID);
 
- if (   memcmp (  pTestIDA, &ntIDA, sizeof ( SID_IDENTIFIER_AUTHORITY )  ) == 0   ) {
- 
-  pdwTestSA = GetSidSubAuthority ( pSID, 0 );
+  if (memcmp(pTestIDA, &ntIDA, sizeof(SID_IDENTIFIER_AUTHORITY)) == 0)
+  {
 
-  if ( *pdwTestSA == SECURITY_LOGON_IDS_RID )
+    pdwTestSA = GetSidSubAuthority(pSID, 0);
 
-   return TRUE;
-     
- }  /* end if */
+    if (*pdwTestSA == SECURITY_LOGON_IDS_RID)
 
- return FALSE;
+      return TRUE;
 
-}  /* end NtPredefinedSid */
+  } /* end if */
+
+  return FALSE;
+
+} /* end NtPredefinedSid */
+
 /***/
 /******************************************************************************/
 /* Function : AdminSid                                                      */
 /* Purpose  : Returns SID of the administrative user account                */
 /******************************************************************************/
 /***/
-PSID AdminSid ( void ) {
+PSID AdminSid(void)
+{
 
- return predefinedSIDs[ SID_ADMIN ];
+  return predefinedSIDs[SID_ADMIN];
 
-}  /* end AdminSid */
+} /* end AdminSid */
+
 /***/
 /******************************************************************************/
 /* Function : WorldSid                                                      */
 /* Purpose  : Returns SID of group that includes all users                  */
 /******************************************************************************/
 /***/
-PSID WorldSid ( void ) {
+PSID WorldSid(void)
+{
 
- return predefinedSIDs[ SID_WORLD ];
+  return predefinedSIDs[SID_WORLD];
 
-}  /* end WorldSid */
+} /* end WorldSid */
+
 /***/
 /******************************************************************************/
 /* Function : InteractiveSid                                                */
@@ -361,11 +442,13 @@ PSID WorldSid ( void ) {
 /*            interactive operation                                         */
 /******************************************************************************/
 /***/
-PSID InteractiveSid ( void ) {
+PSID InteractiveSid(void)
+{
 
- return predefinedSIDs[ SID_INTERACTIVE ];
+  return predefinedSIDs[SID_INTERACTIVE];
 
-}  /* end InteractiveSID */
+} /* end InteractiveSID */
+
 /***/
 /******************************************************************************/
 /* Function : NetworkSid                                                    */
@@ -373,22 +456,26 @@ PSID InteractiveSid ( void ) {
 /*            a network                                                     */
 /******************************************************************************/
 /***/
-PSID NetworkSid ( void ) {
+PSID NetworkSid(void)
+{
 
- return predefinedSIDs[ SID_NETWORK ];
+  return predefinedSIDs[SID_NETWORK];
 
-}  /* end NetworkSid */
+} /* end NetworkSid */
+
 /***/
 /******************************************************************************/
 /* Function : LocalSid                                                      */
 /* Purpose  : Returns SID of group that includes all users logged on locally*/
 /******************************************************************************/
 /***/
-PSID LocalSid ( void ) {
+PSID LocalSid(void)
+{
 
- return predefinedSIDs[ SID_LOCAL ];
+  return predefinedSIDs[SID_LOCAL];
 
-}  /* end LocalSid */
+} /* end LocalSid */
+
 /***/
 /******************************************************************************/
 /* Function : DialupSid                                                     */
@@ -396,11 +483,13 @@ PSID LocalSid ( void ) {
 /*            terminals using a dialup modem                                */
 /******************************************************************************/
 /***/
-PSID DialupSid ( void ) {
+PSID DialupSid(void)
+{
 
- return predefinedSIDs[ SID_DIALUP ];
-          
-}  /* end DialupSid */
+  return predefinedSIDs[SID_DIALUP];
+
+} /* end DialupSid */
+
 /***/
 /******************************************************************************/
 /* Function : BatchSid                                                      */
@@ -408,111 +497,118 @@ PSID DialupSid ( void ) {
 /*            a batch queue facility                                        */
 /******************************************************************************/
 /***/
-PSID BatchSid ( void ) {
+PSID BatchSid(void)
+{
 
- return predefinedSIDs[ SID_BATCH ];
+  return predefinedSIDs[SID_BATCH];
 
-}  /* end BatchSid */
+} /* end BatchSid */
+
 /***/
 /******************************************************************************/
 /* Function : CreatorOwnerSid                                               */
 /* Purpose  : Returns SID of 'CREATOR OWNER' special group                  */
 /******************************************************************************/
 /***/
-PSID CreatorOwnerSid ( void ) {
+PSID CreatorOwnerSid(void)
+{
 
- return predefinedSIDs[ SID_CREATOR_OWNER ];
+  return predefinedSIDs[SID_CREATOR_OWNER];
 
-}  /* end CreatorOwnerSid */
+} /* end CreatorOwnerSid */
+
 /***/
 /******************************************************************************/
 /* Function : NullSid                                                       */
 /* Purpose  : Returns null SID                                              */
 /******************************************************************************/
 /***/
-PSID NullSid ( void ) {
+PSID NullSid(void)
+{
 
- return predefinedSIDs[ SID_NULL ];
+  return predefinedSIDs[SID_NULL];
 
-}  /* end NullSid */
-/***/
-/******************************************************************************/
-/* Function : GetFileSecurityEx                                             */
-/* Purpose  : Allocates a security descriptor and fills it out by security  */
-/*            information which belongs to the specified file               */
-/* Returns  : Pointer to the allocated security descriptor on success       */
-/*            NULL otherwise                                                */
-/* Warning  : Allocated security descriptor must be deallocated by          */
-/*            'FreeFileSecurity' function                                   */
-/******************************************************************************/
-/***/
+} /* end NullSid */
 
+  /***/
+  /******************************************************************************/
+  /* Function : GetFileSecurityEx                                             */
+  /* Purpose  : Allocates a security descriptor and fills it out by security  */
+  /*            information which belongs to the specified file               */
+  /* Returns  : Pointer to the allocated security descriptor on success       */
+  /*            NULL otherwise                                                */
+  /* Warning  : Allocated security descriptor must be deallocated by          */
+  /*            'FreeFileSecurity' function                                   */
+  /******************************************************************************/
+  /***/
 
-#if defined(__CYGWIN32__) || defined(__MINGW32__)
-#define __try
-#define __finally
-#define __leave return retVal
-#endif
+    #if defined(__CYGWIN32__) || defined(__MINGW32__)
+      #define __try
+      #define __finally
+      #define __leave return retVal
+    #endif
 
-PSECURITY_DESCRIPTOR GetFileSecurityEx ( LPCWSTR fileName, SECURITY_INFORMATION si ) {
+PSECURITY_DESCRIPTOR GetFileSecurityEx(LPCWSTR fileName, SECURITY_INFORMATION si)
+{
 
- DWORD                errVal;
- DWORD                dwSize;
- DWORD                dwSizeNeeded = 0;
- PSECURITY_DESCRIPTOR retVal = NULL;
- BOOL                 fOK    = FALSE;
+  DWORD                errVal;
+  DWORD                dwSize;
+  DWORD                dwSizeNeeded = 0;
+  PSECURITY_DESCRIPTOR retVal       = NULL;
+  BOOL                 fOK          = FALSE;
 
- __try {
+  __try
+  {
 
-  do {
+    do
+    {
 
-   dwSize = dwSizeNeeded;
-   errVal = ERROR_SUCCESS;
+      dwSize = dwSizeNeeded;
+      errVal = ERROR_SUCCESS;
 
-   if (  !GetFileSecurityW (
-           fileName, si,
-           retVal, dwSize, &dwSizeNeeded
-          )
-   ) {
- 
-    if (   (  errVal = GetLastError ()  ) != ERROR_INSUFFICIENT_BUFFER   ) __leave;
+      if (!GetFileSecurityW(fileName, si, retVal, dwSize, &dwSizeNeeded))
+      {
 
-    if (   (  retVal = ( PSECURITY_DESCRIPTOR )HeapAlloc ( hHeap, 0, dwSizeNeeded )
-           ) == NULL
-    ) __leave;
+        if ((errVal = GetLastError()) != ERROR_INSUFFICIENT_BUFFER)
+          __leave;
 
-   }  /* end if */
- 
-  } while ( errVal != ERROR_SUCCESS );
+        if ((retVal = (PSECURITY_DESCRIPTOR)HeapAlloc(hHeap, 0, dwSizeNeeded)) == NULL)
+          __leave;
 
-  fOK = TRUE;
+      } /* end if */
 
- }  /* end __try */
+    } while (errVal != ERROR_SUCCESS);
 
- __finally {
- 
-  if ( !fOK && retVal != NULL ) {
-  
-   HeapFree ( hHeap, 0, retVal );
-   retVal = NULL;
-  
-  }  /* end if */
- 
- }  /* end __finally */
+    fOK = TRUE;
 
-#ifdef VAC
-leave: ;        // added for VisualAge
-#endif
+  } /* end __try */
 
- return retVal;
+  __finally
+  {
 
-}  /* end GetFileSecurityEx */
+    if (!fOK && retVal != NULL)
+    {
 
-#if defined(__CYGWIN32__) || defined(__MINGW32__)
-#undef __try
-#undef __finally
-#undef __leave
-#endif
+      HeapFree(hHeap, 0, retVal);
+      retVal = NULL;
+
+    } /* end if */
+
+  } /* end __finally */
+
+    #ifdef VAC
+leave:; // added for VisualAge
+    #endif
+
+  return retVal;
+
+} /* end GetFileSecurityEx */
+
+    #if defined(__CYGWIN32__) || defined(__MINGW32__)
+      #undef __try
+      #undef __finally
+      #undef __leave
+    #endif
 
 /***/
 /******************************************************************************/
@@ -521,12 +617,12 @@ leave: ;        // added for VisualAge
 /*            'GetFileSecurityEx' function                                  */
 /******************************************************************************/
 /***/
-void FreeFileSecurity ( PSECURITY_DESCRIPTOR pSD ) {
+void FreeFileSecurity(PSECURITY_DESCRIPTOR pSD)
+{
 
- HeapFree (  hHeap, 0, ( LPVOID )pSD  );
+  HeapFree(hHeap, 0, (LPVOID)pSD);
 
-}  /* end FreeFileSecurity */
-
+} /* end FreeFileSecurity */
 
 /******************************************************************************/
 /* Function : CreateAcl                                                     */
@@ -536,19 +632,21 @@ void FreeFileSecurity ( PSECURITY_DESCRIPTOR pSD ) {
 /* Warning  : Allocated ACL must be deallocated by 'FreeAcl' function       */
 /******************************************************************************/
 /***/
-PACL CreateAcl ( DWORD dwAclSize ) {
+PACL CreateAcl(DWORD dwAclSize)
+{
 
- PACL retVal;
+  PACL retVal;
 
- retVal = ( PACL )HeapAlloc ( hHeap, 0, dwAclSize );
+  retVal = (PACL)HeapAlloc(hHeap, 0, dwAclSize);
 
- if ( retVal != NULL )
+  if (retVal != NULL)
 
-  InitializeAcl ( retVal, dwAclSize, ACL_REVISION );
+    InitializeAcl(retVal, dwAclSize, ACL_REVISION);
 
- return retVal;
+  return retVal;
 
-}  /* end CreateAcl */
+} /* end CreateAcl */
+
 /***/
 /******************************************************************************/
 /* Function : FreeAcl                                                       */
@@ -556,11 +654,12 @@ PACL CreateAcl ( DWORD dwAclSize ) {
 /*            'CreateAcl' function                                          */
 /******************************************************************************/
 /***/
-void FreeAcl ( PACL pACL ) {
+void FreeAcl(PACL pACL)
+{
 
- HeapFree (  hHeap, 0, ( PVOID )pACL  );
+  HeapFree(hHeap, 0, (PVOID)pACL);
 
-}  /* end FreeAcl */
+} /* end FreeAcl */
 
 /******************************************************************************/
 /* Function : AllocAccessAllowedAce                                         */
@@ -569,30 +668,33 @@ void FreeAcl ( PACL pACL ) {
 /* Warning  : Allocated ACE must be deallocated by the 'FreeAce' function   */
 /******************************************************************************/
 /***/
-PVOID AllocAccessAllowedAce ( DWORD dwMask, BYTE flags, PSID pSID ) {
+PVOID AllocAccessAllowedAce(DWORD dwMask, BYTE flags, PSID pSID)
+{
 
- PFILE_ACE retVal;
- WORD      wSize;
+  PFILE_ACE retVal;
+  WORD      wSize;
 
- wSize = (WORD)( sizeof ( ACE_HEADER ) + sizeof ( DWORD ) + GetLengthSid ( pSID ) );
+  wSize = (WORD)(sizeof(ACE_HEADER) + sizeof(DWORD) + GetLengthSid(pSID));
 
- retVal = ( PFILE_ACE )HeapAlloc ( hHeap, 0, wSize );
+  retVal = (PFILE_ACE)HeapAlloc(hHeap, 0, wSize);
 
- if ( retVal != NULL ) {
- 
-  retVal -> header.AceType  = ACCESS_ALLOWED_ACE_TYPE;
-  retVal -> header.AceFlags = flags;
-  retVal -> header.AceSize  = wSize;
+  if (retVal != NULL)
+  {
 
-  retVal -> dwMask = dwMask;
+    retVal->header.AceType  = ACCESS_ALLOWED_ACE_TYPE;
+    retVal->header.AceFlags = flags;
+    retVal->header.AceSize  = wSize;
 
-  CopySid (  GetLengthSid ( pSID ), &retVal -> pSID, pSID  );
- 
- }  /* end if */
+    retVal->dwMask = dwMask;
 
- return retVal;
+    CopySid(GetLengthSid(pSID), &retVal->pSID, pSID);
 
-}  /* end AllocAccessAllowedAce */
+  } /* end if */
+
+  return retVal;
+
+} /* end AllocAccessAllowedAce */
+
 /***/
 /******************************************************************************/
 /* Function : FreeAce                                                       */
@@ -600,14 +702,15 @@ PVOID AllocAccessAllowedAce ( DWORD dwMask, BYTE flags, PSID pSID ) {
 /*            'AllocAccessAllowedAce ' function                             */
 /******************************************************************************/
 /***/
-void FreeAce ( PVOID pACE ) {
+void FreeAce(PVOID pACE)
+{
 
- HeapFree ( hHeap, 0, pACE );
+  HeapFree(hHeap, 0, pACE);
 
-}  /* end FreeAce */
-#endif
-#define WILD_CARD     L"/*.*"
-#define WILD_CARD_LEN (  sizeof ( WILD_CARD )  )
+} /* end FreeAce */
+  #endif
+  #define WILD_CARD L"/*.*"
+  #define WILD_CARD_LEN (sizeof(WILD_CARD))
 
 /***/
 /******************************************************************************/
@@ -616,35 +719,34 @@ void FreeAce ( PVOID pACE ) {
 /* Returns  : TRUE on success, FALSE otherwise                              */
 /******************************************************************************/
 /***/
-static BOOL MoveDirectory (const wchar_t* oldDir, const wchar_t* newDir, DWORD& theRecurseLevel)
+static BOOL MoveDirectory(const wchar_t* oldDir, const wchar_t* newDir, DWORD& theRecurseLevel)
 {
   wchar_t* driveSrc = NULL;
   wchar_t* driveDst = NULL;
-  wchar_t* pathSrc = NULL;
-  wchar_t* pathDst = NULL;
-  BOOL     retVal = FALSE;
+  wchar_t* pathSrc  = NULL;
+  wchar_t* pathDst  = NULL;
+  BOOL     retVal   = FALSE;
   if (theRecurseLevel == 0)
   {
     ++theRecurseLevel;
     BOOL fFind = FALSE;
-    if ((driveSrc = (wchar_t* )HeapAlloc (hHeap, 0, _MAX_DRIVE * sizeof(wchar_t))) != NULL
-     && (driveDst = (wchar_t* )HeapAlloc (hHeap, 0, _MAX_DRIVE * sizeof(wchar_t))) != NULL
-     && (pathSrc  = (wchar_t* )HeapAlloc (hHeap, 0, _MAX_DIR   * sizeof(wchar_t))) != NULL
-     && (pathDst  = (wchar_t* )HeapAlloc (hHeap, 0, _MAX_DIR   * sizeof(wchar_t))) != NULL)
+    if ((driveSrc = (wchar_t*)HeapAlloc(hHeap, 0, _MAX_DRIVE * sizeof(wchar_t))) != NULL
+        && (driveDst = (wchar_t*)HeapAlloc(hHeap, 0, _MAX_DRIVE * sizeof(wchar_t))) != NULL
+        && (pathSrc = (wchar_t*)HeapAlloc(hHeap, 0, _MAX_DIR * sizeof(wchar_t))) != NULL
+        && (pathDst = (wchar_t*)HeapAlloc(hHeap, 0, _MAX_DIR * sizeof(wchar_t))) != NULL)
     {
-      _wsplitpath (oldDir, driveSrc, pathSrc, NULL, NULL);
-      _wsplitpath (newDir, driveDst, pathDst, NULL, NULL);
-      if (wcscmp (driveSrc, driveDst) == 0
-       && wcscmp (pathSrc,  pathDst ) == 0)
+      _wsplitpath(oldDir, driveSrc, pathSrc, NULL, NULL);
+      _wsplitpath(newDir, driveDst, pathDst, NULL, NULL);
+      if (wcscmp(driveSrc, driveDst) == 0 && wcscmp(pathSrc, pathDst) == 0)
       {
-retry:
-        retVal = MoveFileExW (oldDir, newDir, MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED);
+      retry:
+        retVal = MoveFileExW(oldDir, newDir, MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED);
         fFind  = TRUE;
         if (!retVal)
         {
           if (_response_dir_proc != NULL)
           {
-            const DIR_RESPONSE response = _response_dir_proc (oldDir);
+            const DIR_RESPONSE response = _response_dir_proc(oldDir);
             if (response == DIR_RETRY)
             {
               goto retry;
@@ -657,26 +759,26 @@ retry:
         }
         else if (_move_dir_proc != NULL)
         {
-          _move_dir_proc (oldDir, newDir);
+          _move_dir_proc(oldDir, newDir);
         }
       }
     }
 
-    if (pathDst  != NULL)
+    if (pathDst != NULL)
     {
-      HeapFree (hHeap, 0, pathDst);
+      HeapFree(hHeap, 0, pathDst);
     }
-    if (pathSrc  != NULL)
+    if (pathSrc != NULL)
     {
-      HeapFree (hHeap, 0, pathSrc);
+      HeapFree(hHeap, 0, pathSrc);
     }
     if (driveDst != NULL)
     {
-      HeapFree (hHeap, 0, driveDst);
+      HeapFree(hHeap, 0, driveDst);
     }
     if (driveSrc != NULL)
     {
-      HeapFree (hHeap, 0, driveSrc);
+      HeapFree(hHeap, 0, driveSrc);
     }
 
     if (fFind)
@@ -690,54 +792,60 @@ retry:
     ++theRecurseLevel;
   }
 
-  WIN32_FIND_DATAW* pFD = NULL;
-  wchar_t* pName = NULL;
-  wchar_t* pFullNameSrc = NULL;
-  wchar_t* pFullNameDst = NULL;
-  HANDLE hFindFile = INVALID_HANDLE_VALUE;
-  retVal = CreateDirectoryW (newDir, NULL);
+  WIN32_FIND_DATAW* pFD          = NULL;
+  wchar_t*          pName        = NULL;
+  wchar_t*          pFullNameSrc = NULL;
+  wchar_t*          pFullNameDst = NULL;
+  HANDLE            hFindFile    = INVALID_HANDLE_VALUE;
+  retVal                         = CreateDirectoryW(newDir, NULL);
   if (retVal || (!retVal && GetLastError() == ERROR_ALREADY_EXISTS))
   {
     size_t anOldDirLength;
-    StringCchLengthW (oldDir, MAX_PATH, &anOldDirLength);
-    const size_t aNameLength = anOldDirLength + WILD_CARD_LEN + sizeof (L'\x00');
-    if ((pFD = (WIN32_FIND_DATAW* )HeapAlloc (hHeap, 0, sizeof(WIN32_FIND_DATAW))) != NULL
-     && (pName =        (wchar_t* )HeapAlloc (hHeap, 0, aNameLength)) != NULL)
+    StringCchLengthW(oldDir, MAX_PATH, &anOldDirLength);
+    const size_t aNameLength = anOldDirLength + WILD_CARD_LEN + sizeof(L'\x00');
+    if ((pFD = (WIN32_FIND_DATAW*)HeapAlloc(hHeap, 0, sizeof(WIN32_FIND_DATAW))) != NULL
+        && (pName = (wchar_t*)HeapAlloc(hHeap, 0, aNameLength)) != NULL)
     {
-      StringCchCopyW (pName, aNameLength, oldDir);
-      StringCchCatW  (pName, aNameLength, WILD_CARD);
-      retVal = TRUE;
-      hFindFile = FindFirstFileExW (pName, FindExInfoStandard, pFD, FindExSearchNameMatch, NULL, 0);
-      for (BOOL fFind = hFindFile != INVALID_HANDLE_VALUE; fFind; fFind = FindNextFileW (hFindFile, pFD))
+      StringCchCopyW(pName, aNameLength, oldDir);
+      StringCchCatW(pName, aNameLength, WILD_CARD);
+      retVal    = TRUE;
+      hFindFile = FindFirstFileExW(pName, FindExInfoStandard, pFD, FindExSearchNameMatch, NULL, 0);
+      for (BOOL fFind = hFindFile != INVALID_HANDLE_VALUE; fFind;
+           fFind      = FindNextFileW(hFindFile, pFD))
       {
         if ((pFD->cFileName[0] == L'.' && pFD->cFileName[1] == L'\0')
-         || (pFD->cFileName[0] == L'.' && pFD->cFileName[1] == L'.' && pFD->cFileName[2] == L'\0'))
+            || (pFD->cFileName[0] == L'.' && pFD->cFileName[1] == L'.'
+                && pFD->cFileName[2] == L'\0'))
         {
           continue;
         }
 
         size_t aNewDirLength = 0, aFileNameLength = 0;
-        StringCchLengthW (newDir, MAX_PATH, &aNewDirLength);
-        StringCchLengthW (pFD->cFileName, sizeof(pFD->cFileName) / sizeof(pFD->cFileName[0]), &aFileNameLength);
-        const size_t aFullNameSrcLength = anOldDirLength + aFileNameLength + sizeof (L'/') + sizeof (L'\x00');
-        const size_t aFullNameDstLength = aNewDirLength + aFileNameLength + sizeof (L'/') + sizeof (L'\x00');
-        if ((pFullNameSrc = (wchar_t* )HeapAlloc (hHeap, 0, aFullNameSrcLength)) == NULL
-          || (pFullNameDst = (wchar_t* )HeapAlloc (hHeap, 0, aFullNameDstLength)) == NULL)
+        StringCchLengthW(newDir, MAX_PATH, &aNewDirLength);
+        StringCchLengthW(pFD->cFileName,
+                         sizeof(pFD->cFileName) / sizeof(pFD->cFileName[0]),
+                         &aFileNameLength);
+        const size_t aFullNameSrcLength =
+          anOldDirLength + aFileNameLength + sizeof(L'/') + sizeof(L'\x00');
+        const size_t aFullNameDstLength =
+          aNewDirLength + aFileNameLength + sizeof(L'/') + sizeof(L'\x00');
+        if ((pFullNameSrc = (wchar_t*)HeapAlloc(hHeap, 0, aFullNameSrcLength)) == NULL
+            || (pFullNameDst = (wchar_t*)HeapAlloc(hHeap, 0, aFullNameDstLength)) == NULL)
         {
           break;
         }
 
-        StringCchCopyW (pFullNameSrc, aFullNameSrcLength, oldDir);
-        StringCchCatW  (pFullNameSrc, aFullNameSrcLength, L"/");
-        StringCchCatW  (pFullNameSrc, aFullNameSrcLength, pFD->cFileName);
+        StringCchCopyW(pFullNameSrc, aFullNameSrcLength, oldDir);
+        StringCchCatW(pFullNameSrc, aFullNameSrcLength, L"/");
+        StringCchCatW(pFullNameSrc, aFullNameSrcLength, pFD->cFileName);
 
-        StringCchCopyW (pFullNameDst, aFullNameDstLength, newDir);
-        StringCchCatW  (pFullNameDst, aFullNameDstLength, L"/");
-        StringCchCatW  (pFullNameDst, aFullNameDstLength, pFD->cFileName);
+        StringCchCopyW(pFullNameDst, aFullNameDstLength, newDir);
+        StringCchCatW(pFullNameDst, aFullNameDstLength, L"/");
+        StringCchCatW(pFullNameDst, aFullNameDstLength, pFD->cFileName);
 
         if ((pFD->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
         {
-          retVal = MoveDirectory (pFullNameSrc, pFullNameDst, theRecurseLevel);
+          retVal = MoveDirectory(pFullNameSrc, pFullNameDst, theRecurseLevel);
           if (!retVal)
           {
             break;
@@ -745,13 +853,15 @@ retry:
         }
         else
         {
-retry_1:
-          retVal = MoveFileExW (pFullNameSrc, pFullNameDst, MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED);
+        retry_1:
+          retVal = MoveFileExW(pFullNameSrc,
+                               pFullNameDst,
+                               MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED);
           if (!retVal)
           {
             if (_response_dir_proc != NULL)
             {
-              const DIR_RESPONSE response = _response_dir_proc (pFullNameSrc);
+              const DIR_RESPONSE response = _response_dir_proc(pFullNameSrc);
               if (response == DIR_ABORT)
               {
                 break;
@@ -772,12 +882,12 @@ retry_1:
           }
           else if (_move_dir_proc != NULL)
           {
-            _move_dir_proc (pFullNameSrc, pFullNameDst);
+            _move_dir_proc(pFullNameSrc, pFullNameDst);
           }
         }
 
-        HeapFree (hHeap, 0, pFullNameDst);
-        HeapFree (hHeap, 0, pFullNameSrc);
+        HeapFree(hHeap, 0, pFullNameDst);
+        HeapFree(hHeap, 0, pFullNameSrc);
         pFullNameSrc = pFullNameDst = NULL;
       }
     }
@@ -785,35 +895,35 @@ retry_1:
 
   if (hFindFile != INVALID_HANDLE_VALUE)
   {
-    FindClose (hFindFile);
+    FindClose(hFindFile);
   }
 
   if (pFullNameSrc != NULL)
   {
-    HeapFree (hHeap, 0, pFullNameSrc);
+    HeapFree(hHeap, 0, pFullNameSrc);
   }
   if (pFullNameDst != NULL)
   {
-    HeapFree (hHeap, 0, pFullNameDst);
+    HeapFree(hHeap, 0, pFullNameDst);
   }
   if (pName != NULL)
   {
-    HeapFree (hHeap, 0, pName);
+    HeapFree(hHeap, 0, pName);
   }
   if (pFD != NULL)
   {
-    HeapFree (hHeap, 0, pFD);
+    HeapFree(hHeap, 0, pFD);
   }
 
   if (retVal)
   {
-retry_2:
-    retVal = RemoveDirectoryW (oldDir);
+  retry_2:
+    retVal = RemoveDirectoryW(oldDir);
     if (!retVal)
     {
       if (_response_dir_proc != NULL)
       {
-        const DIR_RESPONSE response = _response_dir_proc (oldDir);
+        const DIR_RESPONSE response = _response_dir_proc(oldDir);
         if (response == DIR_RETRY)
         {
           goto retry_2;
@@ -830,10 +940,10 @@ retry_2:
   return retVal;
 }
 
-BOOL MoveDirectory (const wchar_t* oldDir, const wchar_t* newDir)
+BOOL MoveDirectory(const wchar_t* oldDir, const wchar_t* newDir)
 {
   DWORD aRecurseLevel = 0;
-  return MoveDirectory (oldDir, newDir, aRecurseLevel);
+  return MoveDirectory(oldDir, newDir, aRecurseLevel);
 }
 
 /***/
@@ -843,57 +953,63 @@ BOOL MoveDirectory (const wchar_t* oldDir, const wchar_t* newDir)
 /* Returns  : TRUE on success, FALSE otherwise                              */
 /******************************************************************************/
 /***/
-BOOL CopyDirectory (const wchar_t* dirSrc, const wchar_t* dirDst)
+BOOL CopyDirectory(const wchar_t* dirSrc, const wchar_t* dirDst)
 {
-  WIN32_FIND_DATAW* pFD = NULL;
-  wchar_t* pName = NULL;
-  wchar_t* pFullNameSrc = NULL;
-  wchar_t* pFullNameDst = NULL;
-  HANDLE   hFindFile = INVALID_HANDLE_VALUE;
+  WIN32_FIND_DATAW* pFD          = NULL;
+  wchar_t*          pName        = NULL;
+  wchar_t*          pFullNameSrc = NULL;
+  wchar_t*          pFullNameDst = NULL;
+  HANDLE            hFindFile    = INVALID_HANDLE_VALUE;
 
-  BOOL retVal = CreateDirectoryW (dirDst, NULL);
+  BOOL retVal = CreateDirectoryW(dirDst, NULL);
   if (retVal || (!retVal && GetLastError() == ERROR_ALREADY_EXISTS))
   {
     size_t aDirSrcLength = 0;
-    StringCchLengthW (dirSrc, MAX_PATH, &aDirSrcLength);
-    const size_t aNameLength = aDirSrcLength + WILD_CARD_LEN + sizeof (L'\x00');
-    if ((pFD = (WIN32_FIND_DATAW* )HeapAlloc (hHeap, 0, sizeof(WIN32_FIND_DATAW))) != NULL
-     && (pName = (wchar_t* )HeapAlloc (hHeap, 0, aNameLength)) != NULL)
+    StringCchLengthW(dirSrc, MAX_PATH, &aDirSrcLength);
+    const size_t aNameLength = aDirSrcLength + WILD_CARD_LEN + sizeof(L'\x00');
+    if ((pFD = (WIN32_FIND_DATAW*)HeapAlloc(hHeap, 0, sizeof(WIN32_FIND_DATAW))) != NULL
+        && (pName = (wchar_t*)HeapAlloc(hHeap, 0, aNameLength)) != NULL)
     {
       StringCchCopyW(pName, aNameLength, dirSrc);
-      StringCchCatW (pName, aNameLength, WILD_CARD);
+      StringCchCatW(pName, aNameLength, WILD_CARD);
 
-      retVal = TRUE;
-      hFindFile = FindFirstFileExW (pName, FindExInfoStandard, pFD, FindExSearchNameMatch, NULL, 0);
-      for (BOOL fFind = hFindFile != INVALID_HANDLE_VALUE; fFind; fFind = FindNextFileW (hFindFile, pFD))
+      retVal    = TRUE;
+      hFindFile = FindFirstFileExW(pName, FindExInfoStandard, pFD, FindExSearchNameMatch, NULL, 0);
+      for (BOOL fFind = hFindFile != INVALID_HANDLE_VALUE; fFind;
+           fFind      = FindNextFileW(hFindFile, pFD))
       {
         if ((pFD->cFileName[0] == L'.' && pFD->cFileName[1] == L'\0')
-         || (pFD->cFileName[0] == L'.' && pFD->cFileName[1] == L'.' && pFD->cFileName[2] == L'\0'))
+            || (pFD->cFileName[0] == L'.' && pFD->cFileName[1] == L'.'
+                && pFD->cFileName[2] == L'\0'))
         {
           continue;
         }
 
         size_t aDirDstLength = 0, aFileNameLength = 0;
-        StringCchLengthW (dirDst, MAX_PATH, &aDirDstLength);
-        StringCchLengthW (pFD->cFileName, sizeof(pFD->cFileName) / sizeof(pFD->cFileName[0]), &aFileNameLength);
-        const size_t aFullNameSrcLength = aDirSrcLength + aFileNameLength + sizeof (L'/') + sizeof (L'\x00');
-        const size_t aFullNameDstLength = aDirDstLength + aFileNameLength + sizeof (L'/') + sizeof (L'\x00');
-        if ((pFullNameSrc = (wchar_t* )HeapAlloc (hHeap, 0, aFullNameSrcLength)) == NULL
-         || (pFullNameDst = (wchar_t* )HeapAlloc (hHeap, 0, aFullNameDstLength)) == NULL)
+        StringCchLengthW(dirDst, MAX_PATH, &aDirDstLength);
+        StringCchLengthW(pFD->cFileName,
+                         sizeof(pFD->cFileName) / sizeof(pFD->cFileName[0]),
+                         &aFileNameLength);
+        const size_t aFullNameSrcLength =
+          aDirSrcLength + aFileNameLength + sizeof(L'/') + sizeof(L'\x00');
+        const size_t aFullNameDstLength =
+          aDirDstLength + aFileNameLength + sizeof(L'/') + sizeof(L'\x00');
+        if ((pFullNameSrc = (wchar_t*)HeapAlloc(hHeap, 0, aFullNameSrcLength)) == NULL
+            || (pFullNameDst = (wchar_t*)HeapAlloc(hHeap, 0, aFullNameDstLength)) == NULL)
         {
           break;
         }
 
-        StringCchCopyW (pFullNameSrc, aFullNameSrcLength, dirSrc);
-        StringCchCatW  (pFullNameSrc, aFullNameSrcLength, L"/");
-        StringCchCatW  (pFullNameSrc, aFullNameSrcLength, pFD->cFileName);
+        StringCchCopyW(pFullNameSrc, aFullNameSrcLength, dirSrc);
+        StringCchCatW(pFullNameSrc, aFullNameSrcLength, L"/");
+        StringCchCatW(pFullNameSrc, aFullNameSrcLength, pFD->cFileName);
 
-        StringCchCopyW (pFullNameDst, aFullNameDstLength, dirDst);
-        StringCchCatW  (pFullNameDst, aFullNameDstLength, L"/");
-        StringCchCatW  (pFullNameDst, aFullNameDstLength, pFD->cFileName);
+        StringCchCopyW(pFullNameDst, aFullNameDstLength, dirDst);
+        StringCchCatW(pFullNameDst, aFullNameDstLength, L"/");
+        StringCchCatW(pFullNameDst, aFullNameDstLength, pFD->cFileName);
         if ((pFD->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
         {
-          retVal = CopyDirectory (pFullNameSrc, pFullNameDst);
+          retVal = CopyDirectory(pFullNameSrc, pFullNameDst);
           if (!retVal)
           {
             break;
@@ -901,17 +1017,17 @@ BOOL CopyDirectory (const wchar_t* dirSrc, const wchar_t* dirDst)
         }
         else
         {
-retry:
-        #ifndef OCCT_UWP
-          retVal = CopyFileW (pFullNameSrc, pFullNameDst, FALSE);
-        #else
-          retVal = (CopyFile2 (pFullNameSrc, pFullNameDst, FALSE) == S_OK) ? TRUE : FALSE;
-        #endif
+        retry:
+  #ifndef OCCT_UWP
+          retVal = CopyFileW(pFullNameSrc, pFullNameDst, FALSE);
+  #else
+          retVal = (CopyFile2(pFullNameSrc, pFullNameDst, FALSE) == S_OK) ? TRUE : FALSE;
+  #endif
           if (!retVal)
           {
             if (_response_dir_proc != NULL)
             {
-              const DIR_RESPONSE response = _response_dir_proc (pFullNameSrc);
+              const DIR_RESPONSE response = _response_dir_proc(pFullNameSrc);
               if (response == DIR_ABORT)
               {
                 break;
@@ -932,12 +1048,12 @@ retry:
           }
           else if (_copy_dir_proc != NULL)
           {
-            _copy_dir_proc (pFullNameSrc, pFullNameDst);
+            _copy_dir_proc(pFullNameSrc, pFullNameDst);
           }
         }
 
-        HeapFree (hHeap, 0, pFullNameDst);
-        HeapFree (hHeap, 0, pFullNameSrc);
+        HeapFree(hHeap, 0, pFullNameDst);
+        HeapFree(hHeap, 0, pFullNameSrc);
         pFullNameSrc = pFullNameDst = NULL;
       }
     }
@@ -945,28 +1061,29 @@ retry:
 
   if (hFindFile != INVALID_HANDLE_VALUE)
   {
-    FindClose (hFindFile);
+    FindClose(hFindFile);
   }
 
   if (pFullNameSrc != NULL)
   {
-    HeapFree (hHeap, 0, pFullNameSrc);
+    HeapFree(hHeap, 0, pFullNameSrc);
   }
   if (pFullNameDst != NULL)
   {
-    HeapFree (hHeap, 0, pFullNameDst);
+    HeapFree(hHeap, 0, pFullNameDst);
   }
   if (pName != NULL)
   {
-    HeapFree (hHeap, 0, pName);
+    HeapFree(hHeap, 0, pName);
   }
   if (pFD != NULL)
   {
-    HeapFree (hHeap, 0, pFD);
+    HeapFree(hHeap, 0, pFD);
   }
 
   return retVal;
-}  /* end CopyDirectory */
+} /* end CopyDirectory */
+
 /***/
 /******************************************************************************/
 /* Function : SetMoveDirectoryProc                                          */
@@ -976,11 +1093,13 @@ retry:
 /*            pointer                                                       */
 /******************************************************************************/
 /***/
-void SetMoveDirectoryProc ( MOVE_DIR_PROC proc ) {
+void SetMoveDirectoryProc(MOVE_DIR_PROC proc)
+{
 
- _move_dir_proc = proc;
+  _move_dir_proc = proc;
 
-}  /* end SetMoveDirectoryProc */
+} /* end SetMoveDirectoryProc */
+
 /***/
 /******************************************************************************/
 /* Function : SetCopyDirectoryProc                                          */
@@ -990,11 +1109,13 @@ void SetMoveDirectoryProc ( MOVE_DIR_PROC proc ) {
 /*            pointer                                                       */
 /******************************************************************************/
 /***/
-void SetCopyDirectoryProc ( COPY_DIR_PROC proc ) {
+void SetCopyDirectoryProc(COPY_DIR_PROC proc)
+{
 
- _copy_dir_proc = proc;
+  _copy_dir_proc = proc;
 
-}  /* end SetCopyDirectoryProc */
+} /* end SetCopyDirectoryProc */
+
 /***/
 /******************************************************************************/
 /* Function : SetResponseDirectoryProc                                      */
@@ -1005,11 +1126,13 @@ void SetCopyDirectoryProc ( COPY_DIR_PROC proc ) {
 /*            To unregister this callback function supply NULL pointer      */
 /******************************************************************************/
 /***/
-void SetResponseDirectoryProc ( RESPONSE_DIR_PROC proc ) {
+void SetResponseDirectoryProc(RESPONSE_DIR_PROC proc)
+{
 
- _response_dir_proc = proc;
+  _response_dir_proc = proc;
 
-}  /* end SetResponseDirectoryProc */
+} /* end SetResponseDirectoryProc */
+
 /***/
 /******************************************************************************/
 /******************************************************************************/

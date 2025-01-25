@@ -17,23 +17,17 @@
 
 #include <StepFEA_CurveElementEndOffset.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_CurveElementEndOffset,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_CurveElementEndOffset, Standard_Transient)
 
-//=======================================================================
-//function : StepFEA_CurveElementEndOffset
-//purpose  : 
-//=======================================================================
-StepFEA_CurveElementEndOffset::StepFEA_CurveElementEndOffset ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepFEA_CurveElementEndOffset::StepFEA_CurveElementEndOffset() {}
 
-void StepFEA_CurveElementEndOffset::Init (const StepFEA_CurveElementEndCoordinateSystem &aCoordinateSystem,
-                                          const Handle(TColStd_HArray1OfReal) &aOffsetVector)
+//=================================================================================================
+
+void StepFEA_CurveElementEndOffset::Init(
+  const StepFEA_CurveElementEndCoordinateSystem& aCoordinateSystem,
+  const Handle(TColStd_HArray1OfReal)&           aOffsetVector)
 {
 
   theCoordinateSystem = aCoordinateSystem;
@@ -41,42 +35,32 @@ void StepFEA_CurveElementEndOffset::Init (const StepFEA_CurveElementEndCoordinat
   theOffsetVector = aOffsetVector;
 }
 
-//=======================================================================
-//function : CoordinateSystem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepFEA_CurveElementEndCoordinateSystem StepFEA_CurveElementEndOffset::CoordinateSystem () const
+StepFEA_CurveElementEndCoordinateSystem StepFEA_CurveElementEndOffset::CoordinateSystem() const
 {
   return theCoordinateSystem;
 }
 
-//=======================================================================
-//function : SetCoordinateSystem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_CurveElementEndOffset::SetCoordinateSystem (const StepFEA_CurveElementEndCoordinateSystem &aCoordinateSystem)
+void StepFEA_CurveElementEndOffset::SetCoordinateSystem(
+  const StepFEA_CurveElementEndCoordinateSystem& aCoordinateSystem)
 {
   theCoordinateSystem = aCoordinateSystem;
 }
 
-//=======================================================================
-//function : OffsetVector
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TColStd_HArray1OfReal) StepFEA_CurveElementEndOffset::OffsetVector () const
+Handle(TColStd_HArray1OfReal) StepFEA_CurveElementEndOffset::OffsetVector() const
 {
   return theOffsetVector;
 }
 
-//=======================================================================
-//function : SetOffsetVector
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_CurveElementEndOffset::SetOffsetVector (const Handle(TColStd_HArray1OfReal) &aOffsetVector)
+void StepFEA_CurveElementEndOffset::SetOffsetVector(
+  const Handle(TColStd_HArray1OfReal)& aOffsetVector)
 {
   theOffsetVector = aOffsetVector;
 }

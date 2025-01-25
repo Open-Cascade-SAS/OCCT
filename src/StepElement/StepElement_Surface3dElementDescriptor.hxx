@@ -24,7 +24,6 @@
 #include <StepElement_ElementOrder.hxx>
 class TCollection_HAsciiString;
 
-
 class StepElement_Surface3dElementDescriptor;
 DEFINE_STANDARD_HANDLE(StepElement_Surface3dElementDescriptor, StepElement_ElementDescriptor)
 
@@ -33,49 +32,36 @@ class StepElement_Surface3dElementDescriptor : public StepElement_ElementDescrip
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepElement_Surface3dElementDescriptor();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const StepElement_ElementOrder aElementDescriptor_TopologyOrder, const Handle(TCollection_HAsciiString)& aElementDescriptor_Description, const Handle(StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember)& aPurpose, const StepElement_Element2dShape aShape);
-  
+  Standard_EXPORT void Init(
+    const StepElement_ElementOrder          aElementDescriptor_TopologyOrder,
+    const Handle(TCollection_HAsciiString)& aElementDescriptor_Description,
+    const Handle(StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember)& aPurpose,
+    const StepElement_Element2dShape                                           aShape);
+
   //! Returns field Purpose
-  Standard_EXPORT Handle(StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember) Purpose() const;
-  
+  Standard_EXPORT Handle(StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember) Purpose()
+    const;
+
   //! Set field Purpose
-  Standard_EXPORT void SetPurpose (const Handle(StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember)& Purpose);
-  
+  Standard_EXPORT void SetPurpose(
+    const Handle(StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember)& Purpose);
+
   //! Returns field Shape
   Standard_EXPORT StepElement_Element2dShape Shape() const;
-  
+
   //! Set field Shape
-  Standard_EXPORT void SetShape (const StepElement_Element2dShape Shape);
+  Standard_EXPORT void SetShape(const StepElement_Element2dShape Shape);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepElement_Surface3dElementDescriptor,StepElement_ElementDescriptor)
+  DEFINE_STANDARD_RTTIEXT(StepElement_Surface3dElementDescriptor, StepElement_ElementDescriptor)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember) thePurpose;
-  StepElement_Element2dShape theShape;
-
-
+  StepElement_Element2dShape                                          theShape;
 };
-
-
-
-
-
-
 
 #endif // _StepElement_Surface3dElementDescriptor_HeaderFile

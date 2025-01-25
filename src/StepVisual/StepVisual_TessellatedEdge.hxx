@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -31,29 +31,28 @@ DEFINE_STANDARD_HANDLE(StepVisual_TessellatedEdge, StepVisual_TessellatedStructu
 class StepVisual_TessellatedEdge : public StepVisual_TessellatedStructuredItem
 {
 
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepVisual_TessellatedEdge();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
                             const Handle(StepVisual_CoordinatesList)& theCoordinates,
-                            const Standard_Boolean theHasGeometricLink,
-                            const StepVisual_EdgeOrCurve& theGeometricLink,
-                            const Handle(TColStd_HArray1OfInteger)& theLineStrip);
+                            const Standard_Boolean                    theHasGeometricLink,
+                            const StepVisual_EdgeOrCurve&             theGeometricLink,
+                            const Handle(TColStd_HArray1OfInteger)&   theLineStrip);
 
   //! Returns field Coordinates
   Standard_EXPORT Handle(StepVisual_CoordinatesList) Coordinates() const;
 
   //! Sets field Coordinates
-  Standard_EXPORT void SetCoordinates (const Handle(StepVisual_CoordinatesList)& theCoordinates);
+  Standard_EXPORT void SetCoordinates(const Handle(StepVisual_CoordinatesList)& theCoordinates);
 
   //! Returns field GeometricLink
   Standard_EXPORT StepVisual_EdgeOrCurve GeometricLink() const;
 
   //! Sets field GeometricLink
-  Standard_EXPORT void SetGeometricLink (const StepVisual_EdgeOrCurve& theGeometricLink);
+  Standard_EXPORT void SetGeometricLink(const StepVisual_EdgeOrCurve& theGeometricLink);
 
   //! Returns True if optional field GeometricLink is defined
   Standard_EXPORT Standard_Boolean HasGeometricLink() const;
@@ -62,7 +61,7 @@ public :
   Standard_EXPORT Handle(TColStd_HArray1OfInteger) LineStrip() const;
 
   //! Sets field LineStrip
-  Standard_EXPORT void SetLineStrip (const Handle(TColStd_HArray1OfInteger)& theLineStrip);
+  Standard_EXPORT void SetLineStrip(const Handle(TColStd_HArray1OfInteger)& theLineStrip);
 
   //! Returns number of LineStrip
   Standard_EXPORT Standard_Integer NbLineStrip() const;
@@ -73,12 +72,10 @@ public :
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedEdge, StepVisual_TessellatedStructuredItem)
 
 private:
-
   Handle(StepVisual_CoordinatesList) myCoordinates;
-  StepVisual_EdgeOrCurve myGeometricLink; //!< optional
-  Handle(TColStd_HArray1OfInteger) myLineStrip;
-  Standard_Boolean myHasGeometricLink; //!< flag "is GeometricLink defined"
-
+  StepVisual_EdgeOrCurve             myGeometricLink; //!< optional
+  Handle(TColStd_HArray1OfInteger)   myLineStrip;
+  Standard_Boolean                   myHasGeometricLink; //!< flag "is GeometricLink defined"
 };
 
 #endif // _StepVisual_TessellatedEdge_HeaderFile_

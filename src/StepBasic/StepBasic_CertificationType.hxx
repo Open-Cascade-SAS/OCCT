@@ -23,7 +23,6 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-
 class StepBasic_CertificationType;
 DEFINE_STANDARD_HANDLE(StepBasic_CertificationType, Standard_Transient)
 
@@ -32,42 +31,23 @@ class StepBasic_CertificationType : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepBasic_CertificationType();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aDescription);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aDescription);
+
   //! Returns field Description
   Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
-  
+
   //! Set field Description
-  Standard_EXPORT void SetDescription (const Handle(TCollection_HAsciiString)& Description);
+  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& Description);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_CertificationType,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_CertificationType, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TCollection_HAsciiString) theDescription;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_CertificationType_HeaderFile

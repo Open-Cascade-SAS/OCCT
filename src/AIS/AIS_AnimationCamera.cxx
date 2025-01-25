@@ -18,38 +18,32 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_AnimationCamera, AIS_Animation)
 
-//=============================================================================
-//function : AIS_AnimationCamera
-//purpose  :
-//=============================================================================
-AIS_AnimationCamera::AIS_AnimationCamera (const TCollection_AsciiString& theAnimationName,
-                                          const Handle(V3d_View)& theView)
-: AIS_Animation (theAnimationName),
-  myView (theView)
+//=================================================================================================
+
+AIS_AnimationCamera::AIS_AnimationCamera(const TCollection_AsciiString& theAnimationName,
+                                         const Handle(V3d_View)&        theView)
+    : AIS_Animation(theAnimationName),
+      myView(theView)
 {
   //
 }
 
-//=============================================================================
-//function : update
-//purpose  :
-//=============================================================================
-void AIS_AnimationCamera::update (const AIS_AnimationProgress& theProgress)
+//=================================================================================================
+
+void AIS_AnimationCamera::update(const AIS_AnimationProgress& theProgress)
 {
-  if (myView.IsNull()
-   || myCamStart.IsNull()
-   || myCamEnd.IsNull())
+  if (myView.IsNull() || myCamStart.IsNull() || myCamEnd.IsNull())
   {
     return;
   }
 
   Handle(Graphic3d_Camera) aCamera = myView->Camera();
 
-  Graphic3d_CameraLerp aCamLerp (myCamStart, myCamEnd);
-  aCamLerp.Interpolate (HasOwnDuration() ? theProgress.LocalNormalized : 1.0, aCamera);
+  Graphic3d_CameraLerp aCamLerp(myCamStart, myCamEnd);
+  aCamLerp.Interpolate(HasOwnDuration() ? theProgress.LocalNormalized : 1.0, aCamera);
 
-  const Standard_Boolean aPrevImmUpdate = myView->SetImmediateUpdate (Standard_False);
-  myView->SetCamera (aCamera);
-  myView->SetImmediateUpdate (aPrevImmUpdate);
+  const Standard_Boolean aPrevImmUpdate = myView->SetImmediateUpdate(Standard_False);
+  myView->SetCamera(aCamera);
+  myView->SetImmediateUpdate(aPrevImmUpdate);
   myView->Invalidate();
 }

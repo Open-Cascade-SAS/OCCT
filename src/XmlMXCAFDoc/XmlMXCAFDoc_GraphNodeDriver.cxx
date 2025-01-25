@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Message_Messenger.hxx>
 #include <Standard_PCharacter.hxx>
 #include <Standard_Type.hxx>
@@ -24,56 +23,53 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_GraphNodeDriver,XmlMDF_ADriver)
-IMPLEMENT_DOMSTRING (TreeIdString,   "treeid")
-IMPLEMENT_DOMSTRING (ChildrenString, "children")
-IMPLEMENT_DOMSTRING (FathersString,  "fathers")
+IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_GraphNodeDriver, XmlMDF_ADriver)
+IMPLEMENT_DOMSTRING(TreeIdString, "treeid")
+IMPLEMENT_DOMSTRING(ChildrenString, "children")
+IMPLEMENT_DOMSTRING(FathersString, "fathers")
 
-//=======================================================================
-//function : XmlMXCAFDoc_GraphNodeDriver
-//purpose  : Constructor
-//=======================================================================
-XmlMXCAFDoc_GraphNodeDriver::XmlMXCAFDoc_GraphNodeDriver
-                        (const Handle(Message_Messenger)& theMsgDriver)
-      : XmlMDF_ADriver (theMsgDriver, "xcaf", "GraphNode")
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+XmlMXCAFDoc_GraphNodeDriver::XmlMXCAFDoc_GraphNodeDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : XmlMDF_ADriver(theMsgDriver, "xcaf", "GraphNode")
+{
+}
+
+//=================================================================================================
+
 Handle(TDF_Attribute) XmlMXCAFDoc_GraphNodeDriver::NewEmpty() const
 {
   return (new XCAFDoc_GraphNode());
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMXCAFDoc_GraphNodeDriver::Paste
-                (const XmlObjMgt_Persistent&  theSource,
-                 const Handle(TDF_Attribute)& theTarget,
-                 XmlObjMgt_RRelocationTable&  theRelocTable) const
+Standard_Boolean XmlMXCAFDoc_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                    const Handle(TDF_Attribute)& theTarget,
+                                                    XmlObjMgt_RRelocationTable& theRelocTable) const
 {
-  Handle(XCAFDoc_GraphNode) aT = Handle(XCAFDoc_GraphNode)::DownCast(theTarget);
-  const XmlObjMgt_Element& anElement = theSource;
+  Handle(XCAFDoc_GraphNode) aT        = Handle(XCAFDoc_GraphNode)::DownCast(theTarget);
+  const XmlObjMgt_Element&  anElement = theSource;
 
   // tree id
   XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::TreeIdString());
-  Standard_GUID aGUID (Standard_CString(aGUIDStr.GetString()));
+  Standard_GUID       aGUID(Standard_CString(aGUIDStr.GetString()));
   aT->SetGraphID(aGUID);
 
-  XmlObjMgt_DOMString aDOMStr;
+  XmlObjMgt_DOMString       aDOMStr;
   Handle(XCAFDoc_GraphNode) aTChild;
 
   // fathers
   aDOMStr = anElement.getAttribute(::FathersString());
-  if (aDOMStr != NULL)                  // void list is allowed
+  if (aDOMStr != NULL) // void list is allowed
   {
     Standard_CString aChildren = Standard_CString(aDOMStr.GetString());
-    Standard_Integer aNb = 0;
-    if (!XmlObjMgt::GetInteger(aChildren, aNb)) return Standard_False;
+    Standard_Integer aNb       = 0;
+    if (!XmlObjMgt::GetInteger(aChildren, aNb))
+      return Standard_False;
 
     while (aNb > 0)
     {
@@ -95,17 +91,19 @@ Standard_Boolean XmlMXCAFDoc_GraphNodeDriver::Paste
       aT->SetFather(aTChild);
 
       // Get next child ID
-      if (!XmlObjMgt::GetInteger(aChildren, aNb)) aNb = 0;
+      if (!XmlObjMgt::GetInteger(aChildren, aNb))
+        aNb = 0;
     }
   }
 
   // children
   aDOMStr = anElement.getAttribute(::ChildrenString());
-  if (aDOMStr != NULL)                  // void list is allowed
+  if (aDOMStr != NULL) // void list is allowed
   {
     Standard_CString aChildren = Standard_CString(aDOMStr.GetString());
-    Standard_Integer aNb = 0;
-    if (!XmlObjMgt::GetInteger(aChildren, aNb)) return Standard_False;
+    Standard_Integer aNb       = 0;
+    if (!XmlObjMgt::GetInteger(aChildren, aNb))
+      return Standard_False;
 
     while (aNb > 0)
     {
@@ -127,7 +125,8 @@ Standard_Boolean XmlMXCAFDoc_GraphNodeDriver::Paste
       aT->SetChild(aTChild);
 
       // Get next child ID
-      if (!XmlObjMgt::GetInteger(aChildren, aNb)) aNb = 0;
+      if (!XmlObjMgt::GetInteger(aChildren, aNb))
+        aNb = 0;
     }
   }
 
@@ -135,28 +134,29 @@ Standard_Boolean XmlMXCAFDoc_GraphNodeDriver::Paste
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMXCAFDoc_GraphNodeDriver::Paste (const Handle(TDF_Attribute)& theSource,
-                                         XmlObjMgt_Persistent&        theTarget,
-                                         XmlObjMgt_SRelocationTable&  theRelocTable) const
+void XmlMXCAFDoc_GraphNodeDriver::Paste(const Handle(TDF_Attribute)& theSource,
+                                        XmlObjMgt_Persistent&        theTarget,
+                                        XmlObjMgt_SRelocationTable&  theRelocTable) const
 {
   Handle(XCAFDoc_GraphNode) aS = Handle(XCAFDoc_GraphNode)::DownCast(theSource);
-  if (aS.IsNull()) return;
-  
+  if (aS.IsNull())
+    return;
+
   // graph id
-  Standard_Character aGuidStr [40];
+  Standard_Character  aGuidStr[40];
   Standard_PCharacter pGuidStr;
   //
-  pGuidStr=(Standard_PCharacter)aGuidStr;
-  aS->ID().ToCString (pGuidStr);
+  pGuidStr = (Standard_PCharacter)aGuidStr;
+  aS->ID().ToCString(pGuidStr);
   theTarget.Element().setAttribute(::TreeIdString(), aGuidStr);
 
-  Standard_Integer aNb;
-  TCollection_AsciiString aStr;
+  Standard_Integer          aNb;
+  TCollection_AsciiString   aStr;
   Handle(XCAFDoc_GraphNode) aF;
-  Standard_Integer i;
+  Standard_Integer          i;
 
   // fathers
   for (i = 1; i <= aS->NbFathers(); i++)
@@ -169,13 +169,13 @@ void XmlMXCAFDoc_GraphNodeDriver::Paste (const Handle(TDF_Attribute)& theSource,
       {
         aNb = theRelocTable.Add(aF);
       }
-      TCollection_AsciiString aNbStr (aNb);
+      TCollection_AsciiString aNbStr(aNb);
       aStr += aNbStr + " ";
     }
   }
   if (aStr.Length() > 0)
     theTarget.Element().setAttribute(::FathersString(), aStr.ToCString());
-  
+
   // children
   aStr.Clear();
   for (i = 1; i <= aS->NbChildren(); i++)
@@ -188,7 +188,7 @@ void XmlMXCAFDoc_GraphNodeDriver::Paste (const Handle(TDF_Attribute)& theSource,
       {
         aNb = theRelocTable.Add(aF);
       }
-      TCollection_AsciiString aNbStr (aNb);
+      TCollection_AsciiString aNbStr(aNb);
       aStr += aNbStr + " ";
     }
   }

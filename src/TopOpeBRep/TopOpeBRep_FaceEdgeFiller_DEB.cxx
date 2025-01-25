@@ -16,68 +16,78 @@
 
 #ifdef OCCT_DEBUG
 
-#include <TCollection_AsciiString.hxx>
-#include <TopOpeBRep_FaceEdgeIntersector.hxx>
-#include <TopOpeBRepDS_DataStructure.hxx>
-#include <TopOpeBRepDS.hxx>
-#include <TopOpeBRepDS_Transition.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopAbs.hxx>
-#include <TopAbs_State.hxx>
-#include <TopAbs_Orientation.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
+  #include <TCollection_AsciiString.hxx>
+  #include <TopOpeBRep_FaceEdgeIntersector.hxx>
+  #include <TopOpeBRepDS_DataStructure.hxx>
+  #include <TopOpeBRepDS.hxx>
+  #include <TopOpeBRepDS_Transition.hxx>
+  #include <TopoDS_Shape.hxx>
+  #include <TopAbs.hxx>
+  #include <TopAbs_State.hxx>
+  #include <TopAbs_Orientation.hxx>
+  #include <gp_Pnt.hxx>
+  #include <gp_Pnt2d.hxx>
 
 //------------------------------------------------------------------
-void FEINT_DUMPPOINTS(TopOpeBRep_FaceEdgeIntersector& FEINT,
-		      const TopOpeBRepDS_DataStructure& BDS)
+void FEINT_DUMPPOINTS(TopOpeBRep_FaceEdgeIntersector& FEINT, const TopOpeBRepDS_DataStructure& BDS)
 {
-  FEINT.InitPoint(); 
-  if ( ! FEINT.MorePoint() ) return;
-  
-  std::cout<<std::endl;
-  std::cout<<"---------- F/E : "<<FEINT.NbPoints()<<" p ";
-  std::cout<<std::endl;
-  
+  FEINT.InitPoint();
+  if (!FEINT.MorePoint())
+    return;
+
+  std::cout << std::endl;
+  std::cout << "---------- F/E : " << FEINT.NbPoints() << " p ";
+  std::cout << std::endl;
+
   const TopoDS_Shape& FF = FEINT.Shape(1);
   const TopoDS_Shape& EE = FEINT.Shape(2);
-  
+
   Standard_Integer FFindex = BDS.Shape(FF);
   Standard_Integer EEindex = BDS.Shape(EE);
-  
+
   TopAbs_Orientation FFori = FF.Orientation();
   TopAbs_Orientation EEori = EE.Orientation();
-  std::cout<<"FF = "<<FFindex<<" ";TopAbs::Print(FFori,std::cout);
-  std::cout<<", ";
-  std::cout<<"EE = "<<EEindex<<" ";TopAbs::Print(EEori,std::cout);
-  std::cout<<std::endl;
-  
+  std::cout << "FF = " << FFindex << " ";
+  TopAbs::Print(FFori, std::cout);
+  std::cout << ", ";
+  std::cout << "EE = " << EEindex << " ";
+  TopAbs::Print(EEori, std::cout);
+  std::cout << std::endl;
+
   Standard_Integer ip = 1;
-  for (; FEINT.MorePoint(); FEINT.NextPoint(), ip++ ) {
-    gp_Pnt2d      pUV; FEINT.UVPoint(pUV);
-    TopAbs_State  sta = FEINT.State();
+  for (; FEINT.MorePoint(); FEINT.NextPoint(), ip++)
+  {
+    gp_Pnt2d pUV;
+    FEINT.UVPoint(pUV);
+    TopAbs_State  sta  = FEINT.State();
     Standard_Real parE = FEINT.Parameter();
-    
-    TopOpeBRepDS_Transition T1,T2;
-    T1 = FEINT.Transition(1,EEori); // EEori bidon
-    T2 = FEINT.Transition(2,FFori);
-    
-    TopoDS_Vertex V1;
-    Standard_Boolean isvertexF = FEINT.IsVertex(1,V1);
-    TopoDS_Vertex V2;
-    Standard_Boolean isvertexE = FEINT.IsVertex(2,V2);
-    
-    std::cout<<std::endl;
-    std::cout<<"P"<<ip<<" : "; 
-    gp_Pnt P3D = FEINT.Value(); 
-    std::cout<<"\t"<<P3D.X()<<" "<<P3D.Y()<<" "<<P3D.Z()<<std::endl;
-    
-    std::cout<<"\t"; if (isvertexF) std::cout<<"IS VERTEX, ";
-    std::cout<<" pUV = "<<pUV.X()<<" "<<pUV.Y()<<std::endl;
-    std::cout<<" sta = "; TopAbs::Print(sta,std::cout);std::cout<<std::endl;
-    
-    std::cout<<"\t"; if (isvertexE) std::cout<<"IS VERTEX, ";
-    std::cout<<" parE = "<<parE<<std::endl;
+
+    TopOpeBRepDS_Transition T1, T2;
+    T1 = FEINT.Transition(1, EEori); // EEori bidon
+    T2 = FEINT.Transition(2, FFori);
+
+    TopoDS_Vertex    V1;
+    Standard_Boolean isvertexF = FEINT.IsVertex(1, V1);
+    TopoDS_Vertex    V2;
+    Standard_Boolean isvertexE = FEINT.IsVertex(2, V2);
+
+    std::cout << std::endl;
+    std::cout << "P" << ip << " : ";
+    gp_Pnt P3D = FEINT.Value();
+    std::cout << "\t" << P3D.X() << " " << P3D.Y() << " " << P3D.Z() << std::endl;
+
+    std::cout << "\t";
+    if (isvertexF)
+      std::cout << "IS VERTEX, ";
+    std::cout << " pUV = " << pUV.X() << " " << pUV.Y() << std::endl;
+    std::cout << " sta = ";
+    TopAbs::Print(sta, std::cout);
+    std::cout << std::endl;
+
+    std::cout << "\t";
+    if (isvertexE)
+      std::cout << "IS VERTEX, ";
+    std::cout << " parE = " << parE << std::endl;
   }
 }
 

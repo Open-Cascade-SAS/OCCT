@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/ShapeView_TreeModel.hxx>
 #include <inspector/ShapeView_ItemRoot.hxx>
@@ -23,8 +23,8 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-ShapeView_TreeModel::ShapeView_TreeModel (QObject* theParent)
-: TreeModel_ModelBase (theParent)
+ShapeView_TreeModel::ShapeView_TreeModel(QObject* theParent)
+    : TreeModel_ModelBase(theParent)
 {
 }
 
@@ -32,9 +32,9 @@ ShapeView_TreeModel::ShapeView_TreeModel (QObject* theParent)
 // function : createRootItem
 // purpose :
 // =======================================================================
-TreeModel_ItemBasePtr ShapeView_TreeModel::createRootItem (const int theColumnId)
+TreeModel_ItemBasePtr ShapeView_TreeModel::createRootItem(const int theColumnId)
 {
-  return ShapeView_ItemRoot::CreateItem (TreeModel_ItemBasePtr(), 0, theColumnId);
+  return ShapeView_ItemRoot::CreateItem(TreeModel_ItemBasePtr(), 0, theColumnId);
 }
 
 // =======================================================================
@@ -45,7 +45,7 @@ void ShapeView_TreeModel::AddShape(const TopoDS_Shape& theShape)
 {
   for (int aColId = 0, aNbColumns = columnCount(); aColId < aNbColumns; aColId++)
   {
-    ShapeView_ItemRootPtr aRootItem = itemDynamicCast<ShapeView_ItemRoot>(RootItem (aColId));
+    ShapeView_ItemRootPtr aRootItem = itemDynamicCast<ShapeView_ItemRoot>(RootItem(aColId));
     aRootItem->AddShape(theShape);
   }
 
@@ -61,7 +61,7 @@ void ShapeView_TreeModel::RemoveAllShapes()
 {
   for (int aColId = 0, aNbColumns = columnCount(); aColId < aNbColumns; aColId++)
   {
-    ShapeView_ItemRootPtr aRootItem = itemDynamicCast<ShapeView_ItemRoot>(RootItem (aColId));
+    ShapeView_ItemRootPtr aRootItem = itemDynamicCast<ShapeView_ItemRoot>(RootItem(aColId));
     aRootItem->RemoveAllShapes();
   }
   Reset();
@@ -72,14 +72,16 @@ void ShapeView_TreeModel::RemoveAllShapes()
 // function : FindIndex
 // purpose :
 // =======================================================================
-QModelIndex ShapeView_TreeModel::FindIndex (const TopoDS_Shape& theShape) const
+QModelIndex ShapeView_TreeModel::FindIndex(const TopoDS_Shape& theShape) const
 {
-  QModelIndex aParentIndex = index (0, 0);
-  TreeModel_ItemBasePtr aParentItem = TreeModel_ModelBase::GetItemByIndex (aParentIndex); // application item
+  QModelIndex           aParentIndex = index(0, 0);
+  TreeModel_ItemBasePtr aParentItem =
+    TreeModel_ModelBase::GetItemByIndex(aParentIndex); // application item
   for (int aChildId = 0, aCount = aParentItem->rowCount(); aChildId < aCount; aChildId++)
   {
-    QModelIndex anIndex = index (aChildId, 0, aParentIndex);
-    ShapeView_ItemShapePtr anItem = itemDynamicCast<ShapeView_ItemShape> (TreeModel_ModelBase::GetItemByIndex (anIndex));
+    QModelIndex            anIndex = index(aChildId, 0, aParentIndex);
+    ShapeView_ItemShapePtr anItem =
+      itemDynamicCast<ShapeView_ItemShape>(TreeModel_ModelBase::GetItemByIndex(anIndex));
     if (anItem && anItem->GetItemShape() == theShape)
       return anIndex;
   }

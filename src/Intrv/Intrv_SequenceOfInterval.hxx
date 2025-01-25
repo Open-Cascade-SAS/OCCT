@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Intrv_Interval> Intrv_SequenceOfInterval;
 
-
 #endif

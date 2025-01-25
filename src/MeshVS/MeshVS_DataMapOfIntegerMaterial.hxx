@@ -20,8 +20,9 @@
 #include <Graphic3d_MaterialAspect.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,Graphic3d_MaterialAspect> MeshVS_DataMapOfIntegerMaterial;
-typedef NCollection_DataMap<Standard_Integer,Graphic3d_MaterialAspect>::Iterator MeshVS_DataMapIteratorOfDataMapOfIntegerMaterial;
-
+typedef NCollection_DataMap<Standard_Integer, Graphic3d_MaterialAspect>
+  MeshVS_DataMapOfIntegerMaterial;
+typedef NCollection_DataMap<Standard_Integer, Graphic3d_MaterialAspect>::Iterator
+  MeshVS_DataMapIteratorOfDataMapOfIntegerMaterial;
 
 #endif

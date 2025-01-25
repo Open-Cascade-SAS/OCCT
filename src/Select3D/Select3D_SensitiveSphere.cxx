@@ -21,13 +21,13 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveSphere, Select3D_SensitiveEntity)
 // Function: Select3D_SensitiveSphere
 // Purpose :
 // ==================================================
-Select3D_SensitiveSphere::Select3D_SensitiveSphere (const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                                    const gp_Pnt& theCenter,
-                                                    const Standard_Real theRadius)
-: Select3D_SensitiveEntity (theOwnerId),
-  myCenter (theCenter),
-  myLastDetectedPoint (RealLast(), RealLast(), RealLast()),
-  myRadius (theRadius)
+Select3D_SensitiveSphere::Select3D_SensitiveSphere(const Handle(SelectMgr_EntityOwner)& theOwnerId,
+                                                   const gp_Pnt&                        theCenter,
+                                                   const Standard_Real                  theRadius)
+    : Select3D_SensitiveEntity(theOwnerId),
+      myCenter(theCenter),
+      myLastDetectedPoint(RealLast(), RealLast(), RealLast()),
+      myRadius(theRadius)
 {
 }
 
@@ -35,28 +35,28 @@ Select3D_SensitiveSphere::Select3D_SensitiveSphere (const Handle(SelectMgr_Entit
 // Function: Mathes
 // Purpose :
 // ==================================================
-Standard_Boolean Select3D_SensitiveSphere::Matches (SelectBasics_SelectingVolumeManager& theMgr,
-                                                    SelectBasics_PickResult& thePickResult)
+Standard_Boolean Select3D_SensitiveSphere::Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                                   SelectBasics_PickResult& thePickResult)
 {
-  myLastDetectedPoint = gp_Pnt (RealLast(), RealLast(), RealLast());
+  myLastDetectedPoint = gp_Pnt(RealLast(), RealLast(), RealLast());
   if (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point)
   {
     if (!theMgr.IsOverlapAllowed())
     {
       Standard_Boolean isInside = Standard_True;
-      return theMgr.OverlapsSphere (myCenter, myRadius, &isInside) && isInside;
+      return theMgr.OverlapsSphere(myCenter, myRadius, &isInside) && isInside;
     }
     else
     {
-      return theMgr.OverlapsSphere (myCenter, myRadius, NULL);
+      return theMgr.OverlapsSphere(myCenter, myRadius, NULL);
     }
   }
-  if (!theMgr.OverlapsSphere (myCenter, myRadius, thePickResult))
+  if (!theMgr.OverlapsSphere(myCenter, myRadius, thePickResult))
   {
     return Standard_False;
   }
   myLastDetectedPoint = thePickResult.PickedPoint();
-  thePickResult.SetDistToGeomCenter (theMgr.DistToGeometryCenter (myCenter));
+  thePickResult.SetDistToGeomCenter(theMgr.DistToGeometryCenter(myCenter));
   return Standard_True;
 }
 
@@ -66,7 +66,8 @@ Standard_Boolean Select3D_SensitiveSphere::Matches (SelectBasics_SelectingVolume
 // ==================================================
 Handle(Select3D_SensitiveEntity) Select3D_SensitiveSphere::GetConnected()
 {
-  Handle(Select3D_SensitiveEntity) aNewEntity = new Select3D_SensitiveSphere (myOwnerId, myCenter, myRadius);
+  Handle(Select3D_SensitiveEntity) aNewEntity =
+    new Select3D_SensitiveSphere(myOwnerId, myCenter, myRadius);
   return aNewEntity;
 }
 
@@ -76,7 +77,9 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveSphere::GetConnected()
 // ==================================================
 Select3D_BndBox3d Select3D_SensitiveSphere::BoundingBox()
 {
-  const SelectMgr_Vec3 aMinPnt = SelectMgr_Vec3 (myCenter.X() - myRadius, myCenter.Y() - myRadius, myCenter.Z() - myRadius);
-  const SelectMgr_Vec3 aMaxPnt = SelectMgr_Vec3 (myCenter.X() + myRadius, myCenter.Y() + myRadius, myCenter.Z() + myRadius);
-  return Select3D_BndBox3d (aMinPnt, aMaxPnt);
+  const SelectMgr_Vec3 aMinPnt =
+    SelectMgr_Vec3(myCenter.X() - myRadius, myCenter.Y() - myRadius, myCenter.Z() - myRadius);
+  const SelectMgr_Vec3 aMaxPnt =
+    SelectMgr_Vec3(myCenter.X() + myRadius, myCenter.Y() + myRadius, myCenter.Z() + myRadius);
+  return Select3D_BndBox3d(aMinPnt, aMaxPnt);
 }

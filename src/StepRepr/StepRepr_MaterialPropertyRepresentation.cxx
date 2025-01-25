@@ -20,47 +20,39 @@
 #include <StepRepr_Representation.hxx>
 #include <StepRepr_RepresentedDefinition.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_MaterialPropertyRepresentation,StepRepr_PropertyDefinitionRepresentation)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_MaterialPropertyRepresentation,
+                           StepRepr_PropertyDefinitionRepresentation)
 
-//=======================================================================
-//function : StepRepr_MaterialPropertyRepresentation
-//purpose  : 
-//=======================================================================
-StepRepr_MaterialPropertyRepresentation::StepRepr_MaterialPropertyRepresentation ()
+//=================================================================================================
+
+StepRepr_MaterialPropertyRepresentation::StepRepr_MaterialPropertyRepresentation() {}
+
+//=================================================================================================
+
+void StepRepr_MaterialPropertyRepresentation::Init(
+  const StepRepr_RepresentedDefinition&   aPropertyDefinitionRepresentation_Definition,
+  const Handle(StepRepr_Representation)&  aPropertyDefinitionRepresentation_UsedRepresentation,
+  const Handle(StepRepr_DataEnvironment)& aDependentEnvironment)
 {
-}
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void StepRepr_MaterialPropertyRepresentation::Init (const StepRepr_RepresentedDefinition &aPropertyDefinitionRepresentation_Definition,
-                                                    const Handle(StepRepr_Representation) &aPropertyDefinitionRepresentation_UsedRepresentation,
-                                                    const Handle(StepRepr_DataEnvironment) &aDependentEnvironment)
-{
-  StepRepr_PropertyDefinitionRepresentation::Init(aPropertyDefinitionRepresentation_Definition,
-                                                  aPropertyDefinitionRepresentation_UsedRepresentation);
+  StepRepr_PropertyDefinitionRepresentation::Init(
+    aPropertyDefinitionRepresentation_Definition,
+    aPropertyDefinitionRepresentation_UsedRepresentation);
 
   theDependentEnvironment = aDependentEnvironment;
 }
 
-//=======================================================================
-//function : DependentEnvironment
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepRepr_DataEnvironment) StepRepr_MaterialPropertyRepresentation::DependentEnvironment () const
+Handle(StepRepr_DataEnvironment) StepRepr_MaterialPropertyRepresentation::DependentEnvironment()
+  const
 {
   return theDependentEnvironment;
 }
 
-//=======================================================================
-//function : SetDependentEnvironment
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepRepr_MaterialPropertyRepresentation::SetDependentEnvironment (const Handle(StepRepr_DataEnvironment) &aDependentEnvironment)
+void StepRepr_MaterialPropertyRepresentation::SetDependentEnvironment(
+  const Handle(StepRepr_DataEnvironment)& aDependentEnvironment)
 {
   theDependentEnvironment = aDependentEnvironment;
 }

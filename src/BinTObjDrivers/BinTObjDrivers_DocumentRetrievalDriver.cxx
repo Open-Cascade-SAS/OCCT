@@ -19,29 +19,23 @@
 #include <BinLDrivers.hxx>
 #include <BinTObjDrivers.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_DocumentRetrievalDriver,BinLDrivers_DocumentRetrievalDriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_DocumentRetrievalDriver,
+                           BinLDrivers_DocumentRetrievalDriver)
 
-//=======================================================================
-//function : BinTObjDrivers_DocumentRetrievalDriver
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 BinTObjDrivers_DocumentRetrievalDriver::BinTObjDrivers_DocumentRetrievalDriver()
-     : BinLDrivers_DocumentRetrievalDriver ()
+    : BinLDrivers_DocumentRetrievalDriver()
 {
 }
 
-//=======================================================================
-//function : AttributeDrivers
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(BinMDF_ADriverTable)
-        BinTObjDrivers_DocumentRetrievalDriver::AttributeDrivers
-                        (const Handle(Message_Messenger)& theMsgDrv) 
+Handle(BinMDF_ADriverTable) BinTObjDrivers_DocumentRetrievalDriver::AttributeDrivers(
+  const Handle(Message_Messenger)& theMsgDrv)
 {
   // Standard drivers
-  Handle(BinMDF_ADriverTable) aTable = BinLDrivers::AttributeDrivers (theMsgDrv);
+  Handle(BinMDF_ADriverTable) aTable = BinLDrivers::AttributeDrivers(theMsgDrv);
 
   // Native drivers
   BinTObjDrivers::AddDrivers(aTable, theMsgDrv);

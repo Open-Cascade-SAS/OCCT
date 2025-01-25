@@ -12,7 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPTest.hxx>
 #include <BOPTest_Objects.hxx>
@@ -31,53 +30,62 @@
 #include <stdio.h>
 
 static Standard_Integer bapibuild(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bapibop  (Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer bapibop(Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer bapisplit(Draw_Interpretor&, Standard_Integer, const char**);
 
-//=======================================================================
-//function : APICommands
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BOPTest::APICommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
-  if (done) return;
+  if (done)
+    return;
   done = Standard_True;
   // Chapter's name
   const char* g = "BOPTest commands";
-  // Commands  
-  theCommands.Add("bapibuild", "Builds the result of General Fuse operation using top level API.\n"
-                  "\t\tObjects for the operation are added using commands baddobjects and baddtools.\n"
-                  "\t\tUsage: bapibuild result",
-                  __FILE__, bapibuild, g);
+  // Commands
+  theCommands.Add(
+    "bapibuild",
+    "Builds the result of General Fuse operation using top level API.\n"
+    "\t\tObjects for the operation are added using commands baddobjects and baddtools.\n"
+    "\t\tUsage: bapibuild result",
+    __FILE__,
+    bapibuild,
+    g);
 
-  theCommands.Add("bapibop", "Builds the result of Boolean operation using top level API.\n"
-                  "\t\tObjects for the operation are added using commands baddobjects and baddtools.\n"
-                  "\t\tUsage: bapibop r operation\n"
-                  "\t\tWhere:\n"
-                  "\t\tresult - name of the result shape\n"
-                  "\t\top - type of Boolean operation. Possible values:\n"
-                  "\t\t     - 0/common - for Common operation\n"
-                  "\t\t     - 1/fuse - for Fuse operation\n"
-                  "\t\t     - 2/cut - for Cut operation\n"
-                  "\t\t     - 3/tuc/cut21 - for Cut21 operation\n"
-                  "\t\t     - 4/section - for Section operation",
-                  __FILE__, bapibop, g);
+  theCommands.Add(
+    "bapibop",
+    "Builds the result of Boolean operation using top level API.\n"
+    "\t\tObjects for the operation are added using commands baddobjects and baddtools.\n"
+    "\t\tUsage: bapibop r operation\n"
+    "\t\tWhere:\n"
+    "\t\tresult - name of the result shape\n"
+    "\t\top - type of Boolean operation. Possible values:\n"
+    "\t\t     - 0/common - for Common operation\n"
+    "\t\t     - 1/fuse - for Fuse operation\n"
+    "\t\t     - 2/cut - for Cut operation\n"
+    "\t\t     - 3/tuc/cut21 - for Cut21 operation\n"
+    "\t\t     - 4/section - for Section operation",
+    __FILE__,
+    bapibop,
+    g);
 
-  theCommands.Add("bapisplit", "Builds the result of Split operation using top level API.\n"
-                  "\t\tObjects for the operation are added using commands baddobjects and baddtools.\n"
-                  "\t\tUsage: bapisplit result",
-                  __FILE__, bapisplit, g);
+  theCommands.Add(
+    "bapisplit",
+    "Builds the result of Split operation using top level API.\n"
+    "\t\tObjects for the operation are added using commands baddobjects and baddtools.\n"
+    "\t\tUsage: bapisplit result",
+    __FILE__,
+    bapisplit,
+    g);
 }
-//=======================================================================
-//function : bapibop
-//purpose  : 
-//=======================================================================
-Standard_Integer bapibop(Draw_Interpretor& di,
-                         Standard_Integer n, 
-                         const char** a) 
-{ 
-  if (n != 3) {
+
+//=================================================================================================
+
+Standard_Integer bapibop(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n != 3)
+  {
     di.PrintHelp(a[0]);
     return 1;
   }
@@ -89,51 +97,54 @@ Standard_Integer bapibop(Draw_Interpretor& di,
     return 0;
   }
   //
-  Standard_Boolean bRunParallel, bNonDestructive;
-  Standard_Real aFuzzyValue;
-  BRepAlgoAPI_Common aCommon;
-  BRepAlgoAPI_Fuse aFuse;
-  BRepAlgoAPI_Cut aCut;
-  BRepAlgoAPI_Section aSection;
-  BRepAlgoAPI_BooleanOperation *pBuilder;
+  Standard_Boolean              bRunParallel, bNonDestructive;
+  Standard_Real                 aFuzzyValue;
+  BRepAlgoAPI_Common            aCommon;
+  BRepAlgoAPI_Fuse              aFuse;
+  BRepAlgoAPI_Cut               aCut;
+  BRepAlgoAPI_Section           aSection;
+  BRepAlgoAPI_BooleanOperation* pBuilder;
   //
-  pBuilder=NULL;
+  pBuilder = NULL;
   //
-  switch (anOp) {
-   case BOPAlgo_COMMON:
-     pBuilder=&aCommon;
-     break;
-     //
-   case BOPAlgo_FUSE:
-     pBuilder=&aFuse;
-     break;
-     //
-   case BOPAlgo_CUT:
-   case BOPAlgo_CUT21:
-     pBuilder=&aCut;
-     break;
-     //
-   case BOPAlgo_SECTION:
-     pBuilder=&aSection;
-     break;
-     //
-   default:
-     break;
+  switch (anOp)
+  {
+    case BOPAlgo_COMMON:
+      pBuilder = &aCommon;
+      break;
+      //
+    case BOPAlgo_FUSE:
+      pBuilder = &aFuse;
+      break;
+      //
+    case BOPAlgo_CUT:
+    case BOPAlgo_CUT21:
+      pBuilder = &aCut;
+      break;
+      //
+    case BOPAlgo_SECTION:
+      pBuilder = &aSection;
+      break;
+      //
+    default:
+      break;
   }
   //
-  TopTools_ListOfShape& aLS=BOPTest_Objects::Shapes();
-  TopTools_ListOfShape& aLT=BOPTest_Objects::Tools();
+  TopTools_ListOfShape& aLS = BOPTest_Objects::Shapes();
+  TopTools_ListOfShape& aLT = BOPTest_Objects::Tools();
   //
-  bRunParallel=BOPTest_Objects::RunParallel();
-  aFuzzyValue=BOPTest_Objects::FuzzyValue();
-  bNonDestructive = BOPTest_Objects::NonDestructive();
+  bRunParallel           = BOPTest_Objects::RunParallel();
+  aFuzzyValue            = BOPTest_Objects::FuzzyValue();
+  bNonDestructive        = BOPTest_Objects::NonDestructive();
   BOPAlgo_GlueEnum aGlue = BOPTest_Objects::Glue();
   //
-  if (anOp!=BOPAlgo_CUT21) {
+  if (anOp != BOPAlgo_CUT21)
+  {
     pBuilder->SetArguments(aLS);
     pBuilder->SetTools(aLT);
   }
-  else {
+  else
+  {
     pBuilder->SetArguments(aLT);
     pBuilder->SetTools(aLS);
   }
@@ -156,21 +167,24 @@ Standard_Integer bapibop(Draw_Interpretor& di,
   if (BRepTest_Objects::IsHistoryNeeded())
     BRepTest_Objects::SetHistory(pBuilder->History());
 
-  if (pBuilder->HasWarnings()) {
+  if (pBuilder->HasWarnings())
+  {
     Standard_SStream aSStream;
     pBuilder->DumpWarnings(aSStream);
     di << aSStream;
   }
   //
-  if (pBuilder->HasErrors()) {
+  if (pBuilder->HasErrors())
+  {
     Standard_SStream aSStream;
     pBuilder->DumpErrors(aSStream);
     di << aSStream;
     return 0;
   }
   //
-  const TopoDS_Shape& aR=pBuilder->Shape();
-  if (aR.IsNull()) {
+  const TopoDS_Shape& aR = pBuilder->Shape();
+  if (aR.IsNull())
+  {
     di << "Result is a null shape\n";
     return 0;
   }
@@ -178,31 +192,29 @@ Standard_Integer bapibop(Draw_Interpretor& di,
   DBRep::Set(a[1], aR);
   return 0;
 }
-//=======================================================================
-//function : bapibuild
-//purpose  : 
-//=======================================================================
-Standard_Integer bapibuild(Draw_Interpretor& di,
-                        Standard_Integer n, 
-                        const char** a) 
-{ 
-  if (n != 2) {
+
+//=================================================================================================
+
+Standard_Integer bapibuild(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n != 2)
+  {
     di.PrintHelp(a[0]);
     return 1;
   }
   //
-  Standard_Boolean bRunParallel, bNonDestructive;
-  Standard_Integer iErr;
-  Standard_Real aFuzzyValue;
+  Standard_Boolean        bRunParallel, bNonDestructive;
+  Standard_Integer        iErr;
+  Standard_Real           aFuzzyValue;
   BRepAlgoAPI_BuilderAlgo aBuilder;
   //
   TopTools_ListOfShape aLS = BOPTest_Objects::Shapes();
   TopTools_ListOfShape aLT = BOPTest_Objects::Tools();
   //
   aLS.Append(aLT);
-  bRunParallel=BOPTest_Objects::RunParallel();
-  aFuzzyValue=BOPTest_Objects::FuzzyValue();
-  bNonDestructive = BOPTest_Objects::NonDestructive();
+  bRunParallel           = BOPTest_Objects::RunParallel();
+  aFuzzyValue            = BOPTest_Objects::FuzzyValue();
+  bNonDestructive        = BOPTest_Objects::NonDestructive();
   BOPAlgo_GlueEnum aGlue = BOPTest_Objects::Glue();
   //
   aBuilder.SetArguments(aLS);
@@ -224,22 +236,25 @@ Standard_Integer bapibuild(Draw_Interpretor& di,
   if (BRepTest_Objects::IsHistoryNeeded())
     BRepTest_Objects::SetHistory(aBuilder.History());
 
-  if (aBuilder.HasWarnings()) {
+  if (aBuilder.HasWarnings())
+  {
     Standard_SStream aSStream;
     aBuilder.DumpWarnings(aSStream);
     di << aSStream;
   }
   //
-  iErr=aBuilder.HasErrors();
-  if (iErr) {
+  iErr = aBuilder.HasErrors();
+  if (iErr)
+  {
     Standard_SStream aSStream;
     aBuilder.DumpErrors(aSStream);
     di << aSStream;
     return 0;
   }
   //
-  const TopoDS_Shape& aR=aBuilder.Shape();
-  if (aR.IsNull()) {
+  const TopoDS_Shape& aR = aBuilder.Shape();
+  if (aR.IsNull())
+  {
     di << "Result is a null shape\n";
     return 0;
   }
@@ -248,15 +263,12 @@ Standard_Integer bapibuild(Draw_Interpretor& di,
   return 0;
 }
 
-//=======================================================================
-//function : bapisplit
-//purpose  : 
-//=======================================================================
-Standard_Integer bapisplit(Draw_Interpretor& di,
-  Standard_Integer n,
-  const char** a)
+//=================================================================================================
+
+Standard_Integer bapisplit(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n != 2) {
+  if (n != 2)
+  {
     di.PrintHelp(a[0]);
     return 1;
   }
@@ -286,14 +298,16 @@ Standard_Integer bapisplit(Draw_Interpretor& di,
     BRepTest_Objects::SetHistory(aSplitter.History());
 
   // check warning status
-  if (aSplitter.HasWarnings()) {
+  if (aSplitter.HasWarnings())
+  {
     Standard_SStream aSStream;
     aSplitter.DumpWarnings(aSStream);
     di << aSStream;
   }
   // checking error status
   Standard_Integer iErr = aSplitter.HasErrors();
-  if (iErr) {
+  if (iErr)
+  {
     Standard_SStream aSStream;
     aSplitter.DumpErrors(aSStream);
     di << aSStream;
@@ -302,7 +316,8 @@ Standard_Integer bapisplit(Draw_Interpretor& di,
   //
   // getting the result of the operation
   const TopoDS_Shape& aR = aSplitter.Shape();
-  if (aR.IsNull()) {
+  if (aR.IsNull())
+  {
     di << "Result is a null shape\n";
     return 0;
   }

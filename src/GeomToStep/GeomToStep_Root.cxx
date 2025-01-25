@@ -14,22 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GeomToStep_Root.hxx>
 
-Standard_Boolean GeomToStep_Root::IsDone () const
+Standard_Boolean GeomToStep_Root::IsDone() const
 {
-  return done; 
+  return done;
 }
-
-
-
-
-
-
-
-
-
-
-
-

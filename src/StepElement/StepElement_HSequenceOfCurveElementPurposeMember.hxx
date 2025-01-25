@@ -18,7 +18,7 @@
 #include <StepElement_SequenceOfCurveElementPurposeMember.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(StepElement_HSequenceOfCurveElementPurposeMember, StepElement_SequenceOfCurveElementPurposeMember)
-
+DEFINE_HSEQUENCE(StepElement_HSequenceOfCurveElementPurposeMember,
+                 StepElement_SequenceOfCurveElementPurposeMember)
 
 #endif

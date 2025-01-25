@@ -36,277 +36,288 @@
 
 namespace
 {
-  //! Compute polyline of shrunk triangle.
-  static Handle(TColgp_HSequenceOfPnt) shrunkTriangle (const gp_Pnt* thePnts,
-                                                       const gp_XYZ& theCenter)
+//! Compute polyline of shrunk triangle.
+static Handle(TColgp_HSequenceOfPnt) shrunkTriangle(const gp_Pnt* thePnts, const gp_XYZ& theCenter)
+{
+  const gp_XYZ                  aV1     = theCenter + (thePnts[0].XYZ() - theCenter) * 0.9;
+  const gp_XYZ                  aV2     = theCenter + (thePnts[1].XYZ() - theCenter) * 0.9;
+  const gp_XYZ                  aV3     = theCenter + (thePnts[2].XYZ() - theCenter) * 0.9;
+  Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
+  aPoints->Append(aV1);
+  aPoints->Append(aV2);
+  aPoints->Append(aV3);
+  aPoints->Append(aV1);
+  return aPoints;
+}
+
+//! Fill in triangulation polylines.
+static void addTriangulation(Prs3d_NListOfSequenceOfPnt&                    theSeqLines,
+                             Prs3d_NListOfSequenceOfPnt&                    theSeqFree,
+                             const Handle(Select3D_SensitiveTriangulation)& theTri,
+                             const gp_Trsf&                                 theLoc)
+{
+  gp_Trsf aTrsf = theLoc;
+  if (theTri->HasInitLocation())
   {
-    const gp_XYZ aV1 = theCenter + (thePnts[0].XYZ() - theCenter) * 0.9;
-    const gp_XYZ aV2 = theCenter + (thePnts[1].XYZ() - theCenter) * 0.9;
-    const gp_XYZ aV3 = theCenter + (thePnts[2].XYZ() - theCenter) * 0.9;
-    Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
-    aPoints->Append (aV1);
-    aPoints->Append (aV2);
-    aPoints->Append (aV3);
-    aPoints->Append (aV1);
-    return aPoints;
+    aTrsf = theLoc * theTri->GetInitLocation();
+  }
+  const Handle(Poly_Triangulation)& aPolyTri = theTri->Triangulation();
+  for (Standard_Integer aTriIter = 1; aTriIter <= aPolyTri->NbTriangles(); ++aTriIter)
+  {
+    const Poly_Triangle& aTri     = aPolyTri->Triangle(aTriIter);
+    const gp_Pnt         aPnts[3] = {aPolyTri->Node(aTri(1)).Transformed(aTrsf),
+                                     aPolyTri->Node(aTri(2)).Transformed(aTrsf),
+                                     aPolyTri->Node(aTri(3)).Transformed(aTrsf)};
+    const gp_XYZ         aCenter  = (aPnts[0].XYZ() + aPnts[1].XYZ() + aPnts[2].XYZ()) / 3.0;
+    theSeqLines.Append(shrunkTriangle(aPnts, aCenter));
   }
 
-  //! Fill in triangulation polylines.
-  static void addTriangulation (Prs3d_NListOfSequenceOfPnt& theSeqLines,
-                                Prs3d_NListOfSequenceOfPnt& theSeqFree,
-                                const Handle(Select3D_SensitiveTriangulation)& theTri,
-                                const gp_Trsf& theLoc)
+  Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
+  Prs3d::AddFreeEdges(*aPoints, aPolyTri, aTrsf);
+  if (!aPoints->IsEmpty())
   {
-    gp_Trsf aTrsf = theLoc;
-    if (theTri->HasInitLocation())
-    {
-      aTrsf = theLoc * theTri->GetInitLocation();
-    }
-    const Handle(Poly_Triangulation)& aPolyTri = theTri->Triangulation();
-    for (Standard_Integer aTriIter = 1; aTriIter <= aPolyTri->NbTriangles(); ++aTriIter)
-    {
-      const Poly_Triangle& aTri = aPolyTri->Triangle (aTriIter);
-      const gp_Pnt aPnts[3] =
-      {
-        aPolyTri->Node (aTri (1)).Transformed (aTrsf),
-        aPolyTri->Node (aTri (2)).Transformed (aTrsf),
-        aPolyTri->Node (aTri (3)).Transformed (aTrsf)
-      };
-      const gp_XYZ aCenter = (aPnts[0].XYZ() + aPnts[1].XYZ() + aPnts[2].XYZ()) / 3.0;
-      theSeqLines.Append (shrunkTriangle (aPnts, aCenter));
-    }
-
-    Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
-    Prs3d::AddFreeEdges (*aPoints, aPolyTri, aTrsf);
-    if (!aPoints->IsEmpty())
-    {
-      theSeqFree.Append (aPoints);
-    }
-  }
-
-  //! Fill in bounding box polylines.
-  static void addBoundingBox (Prs3d_NListOfSequenceOfPnt& theSeqLines,
-                              const Handle(Select3D_SensitiveBox)& theSensBox,
-                              const gp_Trsf& theLoc)
-  {
-    Graphic3d_Vec3d aMin, aMax;
-    theSensBox->Box().Get (aMin.x(), aMin.y(), aMin.z(), aMax.x(), aMax.y(), aMax.z());
-    gp_Pnt aPnts[8] =
-    {
-      gp_Pnt(aMin.x(), aMin.y(), aMin.z()),
-      gp_Pnt(aMax.x(), aMin.y(), aMin.z()),
-      gp_Pnt(aMax.x(), aMax.y(), aMin.z()),
-      gp_Pnt(aMin.x(), aMax.y(), aMin.z()),
-      gp_Pnt(aMin.x(), aMin.y(), aMax.z()),
-      gp_Pnt(aMax.x(), aMin.y(), aMax.z()),
-      gp_Pnt(aMax.x(), aMax.y(), aMax.z()),
-      gp_Pnt(aMin.x(), aMax.y(), aMax.z())
-    };
-    for (Standard_Integer aPntIter = 0; aPntIter <= 7; ++aPntIter)
-    {
-      aPnts[aPntIter].Transform (theLoc);
-    }
-
-    {
-      Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
-      for (Standard_Integer i = 0; i < 4; ++i)
-      {
-        aPoints->Append (aPnts[i]);
-      }
-      aPoints->Append (aPnts[0]);
-      theSeqLines.Append (aPoints);
-    }
-    {
-      Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
-      for (Standard_Integer i = 4; i < 8; i++)
-      {
-        aPoints->Append (aPnts[i]);
-      }
-      aPoints->Append (aPnts[4]);
-      theSeqLines.Append (aPoints);
-    }
-    for (Standard_Integer i = 0; i < 4; i++)
-    {
-      Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
-      aPoints->Append (aPnts[i]);
-      aPoints->Append (aPnts[i+4]);
-      theSeqLines.Append (aPoints);
-    }
-  }
-
-  //! Fill in circle polylines.
-  static void addCircle (Prs3d_NListOfSequenceOfPnt& theSeqLines,
-                         const Standard_Real theRadius,
-                         const gp_Trsf& theTrsf,
-                         const Standard_Real theHeight = 0)
-  {
-    const Standard_Real anUStep = 0.1;
-    gp_XYZ aVec (0, 0, theHeight);
-
-    Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
-    Geom_Circle aGeom (gp_Ax2(), theRadius);
-    for (Standard_Real anU = 0.0f; anU < (2.0 * M_PI + anUStep); anU += anUStep)
-    {
-      gp_Pnt aCircPnt = aGeom.Value (anU).Coord() + aVec;
-      aCircPnt.Transform (theTrsf);
-      aPoints->Append (aCircPnt);
-    }
-    theSeqLines.Append (aPoints);
-  }
-
-  //! Fill in cylinder polylines.
-  static void addCylinder (Prs3d_NListOfSequenceOfPnt& theSeqLines,
-                           const Handle(Select3D_SensitiveCylinder)& theSensCyl,
-                           const gp_Trsf& theLoc)
-  {
-    Handle(TColgp_HSequenceOfPnt) aVertLine1 = new TColgp_HSequenceOfPnt();
-    Handle(TColgp_HSequenceOfPnt) aVertLine2 = new TColgp_HSequenceOfPnt();
-
-    const gp_Trsf& aTrsf = theLoc.Multiplied (theSensCyl->Transformation());
-    const Standard_Real aHeight = theSensCyl->Height();
-
-    for (int aCircNum = 0; aCircNum < 3; aCircNum++)
-    {
-      Standard_Real aRadius = 0.5 * (2 - aCircNum) * theSensCyl->BottomRadius()
-                            + 0.5 * aCircNum * theSensCyl->TopRadius();
-      const gp_XYZ aVec (0, 0, aHeight * 0.5 * aCircNum);
-
-      if (aCircNum != 1)
-      {
-        aVertLine1->Append (gp_Pnt (gp_XYZ (aRadius, 0, 0) + aVec).Transformed (aTrsf));
-        aVertLine2->Append (gp_Pnt (gp_XYZ (-aRadius, 0, 0) + aVec).Transformed (aTrsf));
-      }
-
-      if (aRadius > Precision::Confusion())
-      {
-        addCircle (theSeqLines, aRadius, aTrsf, aVec.Z());
-      }
-    }
-    theSeqLines.Append (aVertLine1);
-    theSeqLines.Append (aVertLine2);
+    theSeqFree.Append(aPoints);
   }
 }
 
-//=======================================================================
-//function : ComputeSensitivePrs
-//purpose  :
-//=======================================================================
-void SelectMgr::ComputeSensitivePrs (const Handle(Graphic3d_Structure)& thePrs,
-                                     const Handle(SelectMgr_Selection)& theSel,
-                                     const gp_Trsf& theLoc,
-                                     const Handle(Graphic3d_TransformPers)& theTrsfPers)
+//! Fill in bounding box polylines.
+static void addBoundingBox(Prs3d_NListOfSequenceOfPnt&          theSeqLines,
+                           const Handle(Select3D_SensitiveBox)& theSensBox,
+                           const gp_Trsf&                       theLoc)
 {
-  thePrs->SetTransformPersistence (theTrsfPers);
+  Graphic3d_Vec3d aMin, aMax;
+  theSensBox->Box().Get(aMin.x(), aMin.y(), aMin.z(), aMax.x(), aMax.y(), aMax.z());
+  gp_Pnt aPnts[8] = {gp_Pnt(aMin.x(), aMin.y(), aMin.z()),
+                     gp_Pnt(aMax.x(), aMin.y(), aMin.z()),
+                     gp_Pnt(aMax.x(), aMax.y(), aMin.z()),
+                     gp_Pnt(aMin.x(), aMax.y(), aMin.z()),
+                     gp_Pnt(aMin.x(), aMin.y(), aMax.z()),
+                     gp_Pnt(aMax.x(), aMin.y(), aMax.z()),
+                     gp_Pnt(aMax.x(), aMax.y(), aMax.z()),
+                     gp_Pnt(aMin.x(), aMax.y(), aMax.z())};
+  for (Standard_Integer aPntIter = 0; aPntIter <= 7; ++aPntIter)
+  {
+    aPnts[aPntIter].Transform(theLoc);
+  }
+
+  {
+    Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
+    for (Standard_Integer i = 0; i < 4; ++i)
+    {
+      aPoints->Append(aPnts[i]);
+    }
+    aPoints->Append(aPnts[0]);
+    theSeqLines.Append(aPoints);
+  }
+  {
+    Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
+    for (Standard_Integer i = 4; i < 8; i++)
+    {
+      aPoints->Append(aPnts[i]);
+    }
+    aPoints->Append(aPnts[4]);
+    theSeqLines.Append(aPoints);
+  }
+  for (Standard_Integer i = 0; i < 4; i++)
+  {
+    Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
+    aPoints->Append(aPnts[i]);
+    aPoints->Append(aPnts[i + 4]);
+    theSeqLines.Append(aPoints);
+  }
+}
+
+//! Fill in circle polylines.
+static void addCircle(Prs3d_NListOfSequenceOfPnt& theSeqLines,
+                      const Standard_Real         theRadius,
+                      const gp_Trsf&              theTrsf,
+                      const Standard_Real         theHeight = 0)
+{
+  const Standard_Real anUStep = 0.1;
+  gp_XYZ              aVec(0, 0, theHeight);
+
+  Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
+  Geom_Circle                   aGeom(gp_Ax2(), theRadius);
+  for (Standard_Real anU = 0.0f; anU < (2.0 * M_PI + anUStep); anU += anUStep)
+  {
+    gp_Pnt aCircPnt = aGeom.Value(anU).Coord() + aVec;
+    aCircPnt.Transform(theTrsf);
+    aPoints->Append(aCircPnt);
+  }
+  theSeqLines.Append(aPoints);
+}
+
+//! Fill in cylinder polylines.
+static void addCylinder(Prs3d_NListOfSequenceOfPnt&               theSeqLines,
+                        const Handle(Select3D_SensitiveCylinder)& theSensCyl,
+                        const gp_Trsf&                            theLoc)
+{
+  Handle(TColgp_HSequenceOfPnt) aVertLine1 = new TColgp_HSequenceOfPnt();
+  Handle(TColgp_HSequenceOfPnt) aVertLine2 = new TColgp_HSequenceOfPnt();
+
+  const gp_Trsf&      aTrsf   = theLoc.Multiplied(theSensCyl->Transformation());
+  const Standard_Real aHeight = theSensCyl->Height();
+
+  for (int aCircNum = 0; aCircNum < 3; aCircNum++)
+  {
+    Standard_Real aRadius =
+      0.5 * (2 - aCircNum) * theSensCyl->BottomRadius() + 0.5 * aCircNum * theSensCyl->TopRadius();
+    const gp_XYZ aVec(0, 0, aHeight * 0.5 * aCircNum);
+
+    if (aCircNum != 1)
+    {
+      aVertLine1->Append(gp_Pnt(gp_XYZ(aRadius, 0, 0) + aVec).Transformed(aTrsf));
+      aVertLine2->Append(gp_Pnt(gp_XYZ(-aRadius, 0, 0) + aVec).Transformed(aTrsf));
+    }
+
+    if (aRadius > Precision::Confusion())
+    {
+      addCircle(theSeqLines, aRadius, aTrsf, aVec.Z());
+    }
+  }
+  theSeqLines.Append(aVertLine1);
+  theSeqLines.Append(aVertLine2);
+}
+} // namespace
+
+//=================================================================================================
+
+void SelectMgr::ComputeSensitivePrs(const Handle(Graphic3d_Structure)&     thePrs,
+                                    const Handle(SelectMgr_Selection)&     theSel,
+                                    const gp_Trsf&                         theLoc,
+                                    const Handle(Graphic3d_TransformPers)& theTrsfPers)
+{
+  thePrs->SetTransformPersistence(theTrsfPers);
 
   Prs3d_NListOfSequenceOfPnt aSeqLines, aSeqFree;
-  TColgp_SequenceOfPnt aSeqPoints;
-  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (theSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
+  TColgp_SequenceOfPnt       aSeqPoints;
+  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter(
+         theSel->Entities());
+       aSelEntIter.More();
+       aSelEntIter.Next())
   {
     const Handle(Select3D_SensitiveEntity)& anEnt = aSelEntIter.Value()->BaseSensitive();
-    if (Handle(Select3D_SensitiveBox) aSensBox = Handle(Select3D_SensitiveBox)::DownCast (anEnt))
+    if (Handle(Select3D_SensitiveBox) aSensBox = Handle(Select3D_SensitiveBox)::DownCast(anEnt))
     {
-      addBoundingBox (aSeqLines, aSensBox, theLoc);
+      addBoundingBox(aSeqLines, aSensBox, theLoc);
     }
-    else if (Handle(Select3D_SensitiveCylinder) aSensCyl = Handle(Select3D_SensitiveCylinder)::DownCast (anEnt))
+    else if (Handle(Select3D_SensitiveCylinder) aSensCyl =
+               Handle(Select3D_SensitiveCylinder)::DownCast(anEnt))
     {
-      addCylinder (aSeqLines, aSensCyl, theLoc);
+      addCylinder(aSeqLines, aSensCyl, theLoc);
     }
-    else if (Handle(Select3D_SensitiveCircle) aSensCircle = Handle(Select3D_SensitiveCircle)::DownCast (anEnt))
+    else if (Handle(Select3D_SensitiveCircle) aSensCircle =
+               Handle(Select3D_SensitiveCircle)::DownCast(anEnt))
     {
-      addCircle (aSeqLines, aSensCircle->Radius(), theLoc.Multiplied (aSensCircle->Transformation()));
+      addCircle(aSeqLines, aSensCircle->Radius(), theLoc.Multiplied(aSensCircle->Transformation()));
     }
     else if (Handle(Select3D_SensitiveFace) aFace = Handle(Select3D_SensitiveFace)::DownCast(anEnt))
     {
       Handle(TColgp_HArray1OfPnt) aSensPnts;
-      aFace->GetPoints (aSensPnts);
+      aFace->GetPoints(aSensPnts);
       Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
-      for (TColgp_HArray1OfPnt::Iterator aPntIter (*aSensPnts); aPntIter.More(); aPntIter.Next())
+      for (TColgp_HArray1OfPnt::Iterator aPntIter(*aSensPnts); aPntIter.More(); aPntIter.Next())
       {
-        aPoints->Append (aPntIter.Value().Transformed (theLoc));
+        aPoints->Append(aPntIter.Value().Transformed(theLoc));
       }
-      aSeqLines.Append (aPoints);
+      aSeqLines.Append(aPoints);
     }
-    else if (Handle(Select3D_SensitivePoly) aSensPoly = Handle(Select3D_SensitivePoly)::DownCast (anEnt))
+    else if (Handle(Select3D_SensitivePoly) aSensPoly =
+               Handle(Select3D_SensitivePoly)::DownCast(anEnt))
     {
       Standard_Integer aFrom = 0, aTo = 0;
-      aSensPoly->ArrayBounds (aFrom, aTo);
+      aSensPoly->ArrayBounds(aFrom, aTo);
       Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
       for (Standard_Integer aPntIter = aFrom; aPntIter <= aTo; ++aPntIter)
       {
-        aPoints->Append (aSensPoly->GetPoint3d (aPntIter).Transformed (theLoc));
+        aPoints->Append(aSensPoly->GetPoint3d(aPntIter).Transformed(theLoc));
       }
-      aSeqLines.Append (aPoints);
+      aSeqLines.Append(aPoints);
     }
     else if (Handle(Select3D_SensitiveWire) aWire = Handle(Select3D_SensitiveWire)::DownCast(anEnt))
     {
       const NCollection_Vector<Handle(Select3D_SensitiveEntity)>& anEntities = aWire->GetEdges();
-      for (NCollection_Vector<Handle(Select3D_SensitiveEntity)>::Iterator aSubIter (anEntities); aSubIter.More(); aSubIter.Next())
+      for (NCollection_Vector<Handle(Select3D_SensitiveEntity)>::Iterator aSubIter(anEntities);
+           aSubIter.More();
+           aSubIter.Next())
       {
         const Handle(Select3D_SensitiveEntity)& aSubEnt = aSubIter.Value();
-        if (Handle(Select3D_SensitiveSegment) aSensSeg = Handle(Select3D_SensitiveSegment)::DownCast (aSubEnt))
+        if (Handle(Select3D_SensitiveSegment) aSensSeg =
+              Handle(Select3D_SensitiveSegment)::DownCast(aSubEnt))
         {
           Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
-          aPoints->Append (aSensSeg->StartPoint().Transformed (theLoc));
-          aPoints->Append (aSensSeg->EndPoint()  .Transformed (theLoc));
-          aSeqLines.Append (aPoints);
+          aPoints->Append(aSensSeg->StartPoint().Transformed(theLoc));
+          aPoints->Append(aSensSeg->EndPoint().Transformed(theLoc));
+          aSeqLines.Append(aPoints);
         }
-        else if (Handle(Select3D_SensitivePoly) aSubSensPoly = Handle(Select3D_SensitivePoly)::DownCast (aSubEnt))
+        else if (Handle(Select3D_SensitivePoly) aSubSensPoly =
+                   Handle(Select3D_SensitivePoly)::DownCast(aSubEnt))
         {
           Standard_Integer aFrom = 0, aTo = 0;
-          aSubSensPoly->ArrayBounds (aFrom, aTo);
+          aSubSensPoly->ArrayBounds(aFrom, aTo);
           Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
           for (Standard_Integer aPntIter = aFrom; aPntIter <= aTo; ++aPntIter)
           {
-            aPoints->Append (aSubSensPoly->GetPoint3d (aPntIter).Transformed (theLoc));
+            aPoints->Append(aSubSensPoly->GetPoint3d(aPntIter).Transformed(theLoc));
           }
-          aSeqLines.Append (aPoints);
+          aSeqLines.Append(aPoints);
         }
       }
     }
-    else if (Handle(Select3D_SensitiveSegment) aSensSeg = Handle(Select3D_SensitiveSegment)::DownCast(anEnt))
+    else if (Handle(Select3D_SensitiveSegment) aSensSeg =
+               Handle(Select3D_SensitiveSegment)::DownCast(anEnt))
     {
       Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
-      aPoints->Append (aSensSeg->StartPoint().Transformed (theLoc));
-      aPoints->Append (aSensSeg->EndPoint()  .Transformed (theLoc));
-      aSeqLines.Append (aPoints);
+      aPoints->Append(aSensSeg->StartPoint().Transformed(theLoc));
+      aPoints->Append(aSensSeg->EndPoint().Transformed(theLoc));
+      aSeqLines.Append(aPoints);
     }
-    else if (Handle(Select3D_SensitivePoint) aSensPnt = Handle(Select3D_SensitivePoint)::DownCast(anEnt))
+    else if (Handle(Select3D_SensitivePoint) aSensPnt =
+               Handle(Select3D_SensitivePoint)::DownCast(anEnt))
     {
-      aSeqPoints.Append (aSensPnt->Point().Transformed (theLoc));
+      aSeqPoints.Append(aSensPnt->Point().Transformed(theLoc));
     }
-    else if (Handle(Select3D_SensitiveTriangulation) aSensTri = Handle(Select3D_SensitiveTriangulation)::DownCast (anEnt))
+    else if (Handle(Select3D_SensitiveTriangulation) aSensTri =
+               Handle(Select3D_SensitiveTriangulation)::DownCast(anEnt))
     {
-      addTriangulation (aSeqLines, aSeqFree, aSensTri, theLoc);
+      addTriangulation(aSeqLines, aSeqFree, aSensTri, theLoc);
     }
-    else if (Handle(Select3D_SensitiveTriangle) aSensTri1 = Handle(Select3D_SensitiveTriangle)::DownCast(anEnt))
+    else if (Handle(Select3D_SensitiveTriangle) aSensTri1 =
+               Handle(Select3D_SensitiveTriangle)::DownCast(anEnt))
     {
       gp_Pnt aPnts[3];
-      aSensTri1->Points3D (aPnts[0], aPnts[1], aPnts[2]);
-      aPnts[0].Transform (theLoc);
-      aPnts[1].Transform (theLoc);
-      aPnts[2].Transform (theLoc);
-      aSeqLines.Append (shrunkTriangle (aPnts, aSensTri1->Center3D().XYZ()));
+      aSensTri1->Points3D(aPnts[0], aPnts[1], aPnts[2]);
+      aPnts[0].Transform(theLoc);
+      aPnts[1].Transform(theLoc);
+      aPnts[2].Transform(theLoc);
+      aSeqLines.Append(shrunkTriangle(aPnts, aSensTri1->Center3D().XYZ()));
     }
   }
 
   if (!aSeqPoints.IsEmpty())
   {
-    Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (aSeqPoints.Size());
-    for (TColgp_SequenceOfPnt::Iterator aPntIter (aSeqPoints); aPntIter.More(); aPntIter.Next())
+    Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints =
+      new Graphic3d_ArrayOfPoints(aSeqPoints.Size());
+    for (TColgp_SequenceOfPnt::Iterator aPntIter(aSeqPoints); aPntIter.More(); aPntIter.Next())
     {
-      anArrayOfPoints->AddVertex (aPntIter.Value());
+      anArrayOfPoints->AddVertex(aPntIter.Value());
     }
 
     Handle(Graphic3d_Group) aSensPntGroup = thePrs->NewGroup();
-    aSensPntGroup->SetPrimitivesAspect (new Graphic3d_AspectMarker3d (Aspect_TOM_O_PLUS, Quantity_NOC_INDIANRED3, 2.0));
-    aSensPntGroup->AddPrimitiveArray (anArrayOfPoints);
+    aSensPntGroup->SetPrimitivesAspect(
+      new Graphic3d_AspectMarker3d(Aspect_TOM_O_PLUS, Quantity_NOC_INDIANRED3, 2.0));
+    aSensPntGroup->AddPrimitiveArray(anArrayOfPoints);
   }
   if (!aSeqLines.IsEmpty())
   {
-    Prs3d::AddPrimitivesGroup (thePrs, new Prs3d_LineAspect (Quantity_NOC_AQUAMARINE1, Aspect_TOL_DASH, 1.0), aSeqLines);
+    Prs3d::AddPrimitivesGroup(thePrs,
+                              new Prs3d_LineAspect(Quantity_NOC_AQUAMARINE1, Aspect_TOL_DASH, 1.0),
+                              aSeqLines);
   }
   if (!aSeqFree.IsEmpty())
   {
-    Prs3d::AddPrimitivesGroup (thePrs, new Prs3d_LineAspect (Quantity_NOC_GREEN, Aspect_TOL_SOLID, 2.0), aSeqFree);
+    Prs3d::AddPrimitivesGroup(thePrs,
+                              new Prs3d_LineAspect(Quantity_NOC_GREEN, Aspect_TOL_SOLID, 2.0),
+                              aSeqFree);
   }
 }

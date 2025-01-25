@@ -16,13 +16,14 @@
 
 #include <NCollection_DataMap.hxx>
 
-//! An internal class for calculation of current largest tolerance value which will be applied for creation of selecting frustum by default.
-//! Each time the selection set is deactivated, maximum tolerance value will be recalculated.
-//! If a user enables custom precision using StdSelect_ViewerSelector3d::SetPixelTolerance, it will be applied to all sensitive entities without any checks.
+//! An internal class for calculation of current largest tolerance value which will be applied for
+//! creation of selecting frustum by default. Each time the selection set is deactivated, maximum
+//! tolerance value will be recalculated. If a user enables custom precision using
+//! StdSelect_ViewerSelector3d::SetPixelTolerance, it will be applied to all sensitive entities
+//! without any checks.
 class SelectMgr_ToleranceMap
 {
 public:
-
   //! Sets tolerance values to -1.0
   Standard_EXPORT SelectMgr_ToleranceMap();
 
@@ -30,11 +31,11 @@ public:
 
   //! Adds the value given to map, checks if the current tolerance value
   //! should be replaced by theTolerance
-  Standard_EXPORT void Add (const Standard_Integer& theTolerance);
+  Standard_EXPORT void Add(const Standard_Integer& theTolerance);
 
   //! Decrements a counter of the tolerance given, checks if the current tolerance value
   //! should be recalculated
-  Standard_EXPORT void Decrement (const Standard_Integer& theTolerance);
+  Standard_EXPORT void Decrement(const Standard_Integer& theTolerance);
 
   //! Returns a current tolerance that must be applied
   Standard_Integer Tolerance() const
@@ -43,13 +44,11 @@ public:
     {
       return 2; // default tolerance value
     }
-    return myCustomTolerance < 0
-         ? myLargestKey
-         : myLargestKey + myCustomTolerance;
+    return myCustomTolerance < 0 ? myLargestKey : myLargestKey + myCustomTolerance;
   }
 
   //! Sets tolerance to the given one and disables adaptive checks
-  void SetCustomTolerance (const Standard_Integer theTolerance) { myCustomTolerance = theTolerance; }
+  void SetCustomTolerance(const Standard_Integer theTolerance) { myCustomTolerance = theTolerance; }
 
   //! Unsets a custom tolerance and enables adaptive checks
   void ResetDefaults() { myCustomTolerance = -1; }

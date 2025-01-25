@@ -1,5 +1,5 @@
 // Created on: 2004-06-29
-// Created by: Eugeny NAPALKOV 
+// Created by: Eugeny NAPALKOV
 // Copyright (c) 2004-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
@@ -32,9 +32,9 @@ public:
   Standard_EXPORT Standard_CString ResourcesName() Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
-  DEFINE_STANDARD_RTTIEXT(AppStdL_Application,TDocStd_Application)
+  DEFINE_STANDARD_RTTIEXT(AppStdL_Application, TDocStd_Application)
 };
 
 #endif // _AppStdL_Application_HeaderFile

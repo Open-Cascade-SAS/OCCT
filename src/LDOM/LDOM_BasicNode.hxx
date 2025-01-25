@@ -23,48 +23,63 @@ class LDOM_NullPtr;
 //  Block of comments describing class LDOM_BasicNode
 //
 
-class LDOM_BasicNode 
+class LDOM_BasicNode
 {
- public:
+public:
   DEFINE_STANDARD_ALLOC
 
- public:
+public:
+  Standard_Boolean isNull() const { return myNodeType == LDOM_Node::UNKNOWN; }
 
-  Standard_Boolean  isNull    () const {return myNodeType ==LDOM_Node::UNKNOWN;}
+  LDOM_Node::NodeType getNodeType() const { return myNodeType; }
 
-  LDOM_Node::NodeType getNodeType () const { return myNodeType; }
+  Standard_EXPORT const LDOM_BasicNode* GetSibling() const;
 
-  Standard_EXPORT const LDOM_BasicNode * GetSibling () const;
-
- protected:
+protected:
   // ---------- PROTECTED METHODS ----------
 
-  LDOM_BasicNode () : myNodeType (LDOM_Node::UNKNOWN), mySibling (NULL) {}
+  LDOM_BasicNode()
+      : myNodeType(LDOM_Node::UNKNOWN),
+        mySibling(NULL)
+  {
+  }
+
   //    Empty constructor
 
-  LDOM_BasicNode (LDOM_Node::NodeType aType)
-    : myNodeType (aType), mySibling (NULL) {}
+  LDOM_BasicNode(LDOM_Node::NodeType aType)
+      : myNodeType(aType),
+        mySibling(NULL)
+  {
+  }
+
   //    Constructor
 
-  LDOM_BasicNode (const LDOM_BasicNode& anOther)
-    : myNodeType (anOther.getNodeType()), mySibling (anOther.GetSibling()) {}
+  LDOM_BasicNode(const LDOM_BasicNode& anOther)
+      : myNodeType(anOther.getNodeType()),
+        mySibling(anOther.GetSibling())
+  {
+  }
+
   //    Copy constructor
 
-  LDOM_BasicNode& operator =    (const LDOM_NullPtr * )
-                              { myNodeType = LDOM_Node::UNKNOWN; return *this; }
+  LDOM_BasicNode& operator=(const LDOM_NullPtr*)
+  {
+    myNodeType = LDOM_Node::UNKNOWN;
+    return *this;
+  }
 
-  Standard_EXPORT LDOM_BasicNode& operator = (const LDOM_BasicNode& anOther);
+  Standard_EXPORT LDOM_BasicNode& operator=(const LDOM_BasicNode& anOther);
 
-  void SetSibling (const LDOM_BasicNode * anOther)      { mySibling = anOther; }
+  void SetSibling(const LDOM_BasicNode* anOther) { mySibling = anOther; }
 
- protected:
+protected:
   friend class LDOM_BasicElement;
   friend class LDOM_Node;
   friend class LDOMParser;
   // ---------- PROTECTED FIELDSS ----------
 
   LDOM_Node::NodeType   myNodeType;
-  const LDOM_BasicNode  * mySibling;
+  const LDOM_BasicNode* mySibling;
 };
 
 #endif

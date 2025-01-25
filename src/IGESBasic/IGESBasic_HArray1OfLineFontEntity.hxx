@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY1(IGESBasic_HArray1OfLineFontEntity, IGESBasic_Array1OfLineFontEntity)
 
-
 #endif

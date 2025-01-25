@@ -19,23 +19,17 @@
 #include <StepRepr_Representation.hxx>
 #include <StepRepr_RepresentedDefinition.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_PropertyDefinitionRepresentation,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_PropertyDefinitionRepresentation, Standard_Transient)
 
-//=======================================================================
-//function : StepRepr_PropertyDefinitionRepresentation
-//purpose  : 
-//=======================================================================
-StepRepr_PropertyDefinitionRepresentation::StepRepr_PropertyDefinitionRepresentation ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepRepr_PropertyDefinitionRepresentation::StepRepr_PropertyDefinitionRepresentation() {}
 
-void StepRepr_PropertyDefinitionRepresentation::Init (const StepRepr_RepresentedDefinition &aDefinition,
-                                                      const Handle(StepRepr_Representation) &aUsedRepresentation)
+//=================================================================================================
+
+void StepRepr_PropertyDefinitionRepresentation::Init(
+  const StepRepr_RepresentedDefinition&  aDefinition,
+  const Handle(StepRepr_Representation)& aUsedRepresentation)
 {
 
   theDefinition = aDefinition;
@@ -43,42 +37,33 @@ void StepRepr_PropertyDefinitionRepresentation::Init (const StepRepr_Represented
   theUsedRepresentation = aUsedRepresentation;
 }
 
-//=======================================================================
-//function : Definition
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepRepr_RepresentedDefinition StepRepr_PropertyDefinitionRepresentation::Definition () const
+StepRepr_RepresentedDefinition StepRepr_PropertyDefinitionRepresentation::Definition() const
 {
   return theDefinition;
 }
 
-//=======================================================================
-//function : SetDefinition
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepRepr_PropertyDefinitionRepresentation::SetDefinition (const StepRepr_RepresentedDefinition &aDefinition)
+void StepRepr_PropertyDefinitionRepresentation::SetDefinition(
+  const StepRepr_RepresentedDefinition& aDefinition)
 {
   theDefinition = aDefinition;
 }
 
-//=======================================================================
-//function : UsedRepresentation
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepRepr_Representation) StepRepr_PropertyDefinitionRepresentation::UsedRepresentation () const
+Handle(StepRepr_Representation) StepRepr_PropertyDefinitionRepresentation::UsedRepresentation()
+  const
 {
   return theUsedRepresentation;
 }
 
-//=======================================================================
-//function : SetUsedRepresentation
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepRepr_PropertyDefinitionRepresentation::SetUsedRepresentation (const Handle(StepRepr_Representation) &aUsedRepresentation)
+void StepRepr_PropertyDefinitionRepresentation::SetUsedRepresentation(
+  const Handle(StepRepr_Representation)& aUsedRepresentation)
 {
   theUsedRepresentation = aUsedRepresentation;
 }

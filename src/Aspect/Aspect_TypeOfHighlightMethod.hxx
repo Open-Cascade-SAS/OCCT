@@ -24,8 +24,8 @@
 //! (default white)
 enum Aspect_TypeOfHighlightMethod
 {
-Aspect_TOHM_COLOR,
-Aspect_TOHM_BOUNDBOX
+  Aspect_TOHM_COLOR,
+  Aspect_TOHM_BOUNDBOX
 };
 
 #endif // _Aspect_TypeOfHighlightMethod_HeaderFile

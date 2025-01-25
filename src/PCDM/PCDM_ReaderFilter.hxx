@@ -21,8 +21,7 @@
 #include <NCollection_List.hxx>
 
 class PCDM_ReaderFilter;
-DEFINE_STANDARD_HANDLE (PCDM_ReaderFilter, Standard_Transient)
-
+DEFINE_STANDARD_HANDLE(PCDM_ReaderFilter, Standard_Transient)
 
 //! Class represents a document reading filter.
 //!
@@ -33,7 +32,6 @@ DEFINE_STANDARD_HANDLE (PCDM_ReaderFilter, Standard_Transient)
 class PCDM_ReaderFilter : public Standard_Transient
 {
 public:
-
   //! Supported modes of appending the file content into existing document
   enum AppendMode
   {
@@ -42,74 +40,98 @@ public:
     AppendMode_Overwrite = 2, //!< overwrites the existing attributes by the loaded ones
   };
 
-
   //! Creates an empty filter, so, all will be retrieved if nothing else is defined.
-  inline PCDM_ReaderFilter() : myAppend(AppendMode_Forbid) {}
+  inline PCDM_ReaderFilter()
+      : myAppend(AppendMode_Forbid)
+  {
+  }
 
   //! Creates a filter to skip only one type of attributes.
-  Standard_EXPORT PCDM_ReaderFilter (const Handle(Standard_Type)& theSkipped);
+  Standard_EXPORT PCDM_ReaderFilter(const Handle(Standard_Type)& theSkipped);
 
   //! Creates a filter to read only sub-labels of a label-path.
   //! Like, for "0:2" it will read all attributes for labels "0:2", "0:2:1", etc.
-  Standard_EXPORT PCDM_ReaderFilter (const TCollection_AsciiString& theEntryToRead);
+  Standard_EXPORT PCDM_ReaderFilter(const TCollection_AsciiString& theEntryToRead);
 
   //! Creates a filter to append the content of file to open to existing document.
-  Standard_EXPORT PCDM_ReaderFilter (const AppendMode theAppend);
+  Standard_EXPORT PCDM_ReaderFilter(const AppendMode theAppend);
 
   //! Destructor for the filter content
   Standard_EXPORT ~PCDM_ReaderFilter();
 
   //! Adds skipped attribute by type.
-  Standard_EXPORT void AddSkipped (const Handle(Standard_Type)& theSkipped) { mySkip.Add(theSkipped->Name()); }
+  Standard_EXPORT void AddSkipped(const Handle(Standard_Type)& theSkipped)
+  {
+    mySkip.Add(theSkipped->Name());
+  }
+
   //! Adds skipped attribute by type name.
-  Standard_EXPORT void AddSkipped (const TCollection_AsciiString& theSkipped) { mySkip.Add (theSkipped); }
+  Standard_EXPORT void AddSkipped(const TCollection_AsciiString& theSkipped)
+  {
+    mySkip.Add(theSkipped);
+  }
 
   //! Adds attribute to read by type. Disables the skipped attributes added.
-  Standard_EXPORT void AddRead (const Handle(Standard_Type)& theRead) { myRead.Add(theRead->Name()); }
+  Standard_EXPORT void AddRead(const Handle(Standard_Type)& theRead)
+  {
+    myRead.Add(theRead->Name());
+  }
+
   //! Adds attribute to read by type name. Disables the skipped attributes added.
-  Standard_EXPORT void AddRead (const TCollection_AsciiString& theRead) { myRead.Add (theRead); }
+  Standard_EXPORT void AddRead(const TCollection_AsciiString& theRead) { myRead.Add(theRead); }
 
   //! Adds sub-tree path (like "0:2").
-  Standard_EXPORT void AddPath (const TCollection_AsciiString& theEntryToRead) { mySubTrees.Append (theEntryToRead); }
+  Standard_EXPORT void AddPath(const TCollection_AsciiString& theEntryToRead)
+  {
+    mySubTrees.Append(theEntryToRead);
+  }
 
   //! Makes filter pass all data.
   Standard_EXPORT void Clear();
 
   //! Returns true if attribute must be read.
-  Standard_EXPORT virtual Standard_Boolean IsPassed (const Handle(Standard_Type)& theAttributeID) const;
+  Standard_EXPORT virtual Standard_Boolean IsPassed(
+    const Handle(Standard_Type)& theAttributeID) const;
   //! Returns true if attribute must be read.
-  Standard_EXPORT virtual Standard_Boolean IsPassedAttr (const TCollection_AsciiString& theAttributeType) const;
+  Standard_EXPORT virtual Standard_Boolean IsPassedAttr(
+    const TCollection_AsciiString& theAttributeType) const;
   //! Returns true if content of the label must be read.
-  Standard_EXPORT virtual Standard_Boolean IsPassed (const TCollection_AsciiString& theEntry) const;
+  Standard_EXPORT virtual Standard_Boolean IsPassed(const TCollection_AsciiString& theEntry) const;
   //! Returns true if some sub-label of the given label is passed.
-  Standard_EXPORT virtual Standard_Boolean IsSubPassed (const TCollection_AsciiString& theEntry) const;
+  Standard_EXPORT virtual Standard_Boolean IsSubPassed(
+    const TCollection_AsciiString& theEntry) const;
   //! Returns true if only part of the document tree will be retrieved.
   Standard_EXPORT virtual Standard_Boolean IsPartTree();
 
   //! Returns the append mode.
   Standard_EXPORT AppendMode& Mode() { return myAppend; }
-  //! Returns true if appending to the document is performed.
-  Standard_EXPORT Standard_Boolean IsAppendMode() { return myAppend != PCDM_ReaderFilter::AppendMode_Forbid; }
 
-  //! Starts the tree iterator. It is used for fast searching of passed labels if the whole tree of labels
-  //! is parsed. So, on each iteration step the methods Up and Down must be called after the iteration start.
+  //! Returns true if appending to the document is performed.
+  Standard_EXPORT Standard_Boolean IsAppendMode()
+  {
+    return myAppend != PCDM_ReaderFilter::AppendMode_Forbid;
+  }
+
+  //! Starts the tree iterator. It is used for fast searching of passed labels if the whole tree of
+  //! labels is parsed. So, on each iteration step the methods Up and Down must be called after the
+  //! iteration start.
   Standard_EXPORT virtual void StartIteration();
   //! Iteration to the child label.
   Standard_EXPORT virtual void Up();
   //! Iteration to the child with defined tag.
-  Standard_EXPORT virtual void Down (const int& theTag);
+  Standard_EXPORT virtual void Down(const int& theTag);
   //! Returns true if content of the currently iterated label must be read.
   Standard_EXPORT virtual Standard_Boolean IsPassed() const;
   //! Returns true if some sub-label of the currently iterated label is passed.
   Standard_EXPORT virtual Standard_Boolean IsSubPassed() const;
 
-  DEFINE_STANDARD_RTTIEXT (PCDM_ReaderFilter, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(PCDM_ReaderFilter, Standard_Transient)
 
 private:
   //! Clears the iteration tree
   Standard_EXPORT void ClearTree();
   //! Clears the iteration sub-tree
-  Standard_EXPORT static void ClearSubTree (const Standard_Address theMap);
+  Standard_EXPORT static void ClearSubTree(const Standard_Address theMap);
 
 protected:
   //! Append mode for reading files into existing document
@@ -128,8 +150,8 @@ protected:
   TagTree myTree;
   //! Pointer to the current node of the iterator.
   TagTree* myCurrent;
-  //! If a node does not described in the read-entries, the iterator goes inside of this subtree just by
-  //! keeping the depth of iteration.
+  //! If a node does not described in the read-entries, the iterator goes inside of this subtree
+  //! just by keeping the depth of iteration.
   Standard_Integer myCurrentDepth;
 };
 

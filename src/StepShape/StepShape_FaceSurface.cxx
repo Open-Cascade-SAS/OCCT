@@ -11,45 +11,42 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepGeom_Surface.hxx>
 #include <StepShape_FaceSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_FaceSurface,StepShape_Face)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_FaceSurface, StepShape_Face)
 
-StepShape_FaceSurface::StepShape_FaceSurface ()  {}
+StepShape_FaceSurface::StepShape_FaceSurface() {}
 
-void StepShape_FaceSurface::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepShape_HArray1OfFaceBound)& aBounds,
-	const Handle(StepGeom_Surface)& aFaceGeometry,
-	const Standard_Boolean aSameSense)
+void StepShape_FaceSurface::Init(const Handle(TCollection_HAsciiString)&     aName,
+                                 const Handle(StepShape_HArray1OfFaceBound)& aBounds,
+                                 const Handle(StepGeom_Surface)&             aFaceGeometry,
+                                 const Standard_Boolean                      aSameSense)
 {
-	// --- classe own fields ---
-	faceGeometry = aFaceGeometry;
-	sameSense = aSameSense;
-	// --- classe inherited fields ---
-	StepShape_Face::Init(aName, aBounds);
+  // --- classe own fields ---
+  faceGeometry = aFaceGeometry;
+  sameSense    = aSameSense;
+  // --- classe inherited fields ---
+  StepShape_Face::Init(aName, aBounds);
 }
-
 
 void StepShape_FaceSurface::SetFaceGeometry(const Handle(StepGeom_Surface)& aFaceGeometry)
 {
-	faceGeometry = aFaceGeometry;
+  faceGeometry = aFaceGeometry;
 }
 
 Handle(StepGeom_Surface) StepShape_FaceSurface::FaceGeometry() const
 {
-	return faceGeometry;
+  return faceGeometry;
 }
 
 void StepShape_FaceSurface::SetSameSense(const Standard_Boolean aSameSense)
 {
-	sameSense = aSameSense;
+  sameSense = aSameSense;
 }
 
 Standard_Boolean StepShape_FaceSurface::SameSense() const
 {
-	return sameSense;
+  return sameSense;
 }

@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(IGESSolid_Loop)> IGESSolid_Array1OfLoop;
 
-
 #endif

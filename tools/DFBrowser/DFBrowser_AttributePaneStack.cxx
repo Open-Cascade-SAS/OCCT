@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowser_AttributePaneStack.hxx>
 
@@ -39,40 +39,46 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-DFBrowser_AttributePaneStack::DFBrowser_AttributePaneStack (QObject* theParent)
-: QObject (theParent), myCurrentPane (0), myAttributesStack (0), myModule (0), myTreeLevelView (0),
-  mySearchView (0), myEmptyWidget (0), myPaneMode (DFBrowser_AttributePaneType_ItemView)
+DFBrowser_AttributePaneStack::DFBrowser_AttributePaneStack(QObject* theParent)
+    : QObject(theParent),
+      myCurrentPane(0),
+      myAttributesStack(0),
+      myModule(0),
+      myTreeLevelView(0),
+      mySearchView(0),
+      myEmptyWidget(0),
+      myPaneMode(DFBrowser_AttributePaneType_ItemView)
 {
-  myPaneSelector = new DFBrowserPane_AttributePaneSelector (theParent);
+  myPaneSelector = new DFBrowserPane_AttributePaneSelector(theParent);
 }
 
 // =======================================================================
 // function : CreateWidget
 // purpose :
 // =======================================================================
-void DFBrowser_AttributePaneStack::CreateWidget (QWidget* theParent)
+void DFBrowser_AttributePaneStack::CreateWidget(QWidget* theParent)
 {
-  myAttributesStack = new QStackedWidget (theParent);
-  ViewControl_Tools::SetWhiteBackground (myAttributesStack);
-  myEmptyWidget = new QWidget (theParent);
-  ViewControl_Tools::SetWhiteBackground (myEmptyWidget);
+  myAttributesStack = new QStackedWidget(theParent);
+  ViewControl_Tools::SetWhiteBackground(myAttributesStack);
+  myEmptyWidget = new QWidget(theParent);
+  ViewControl_Tools::SetWhiteBackground(myEmptyWidget);
 
-  myAttributesStack->addWidget (myEmptyWidget);
+  myAttributesStack->addWidget(myEmptyWidget);
 
-  myTreeLevelView = new DFBrowser_TreeLevelView (theParent);
-  myAttributesStack->addWidget (myTreeLevelView->GetControl());
+  myTreeLevelView = new DFBrowser_TreeLevelView(theParent);
+  myAttributesStack->addWidget(myTreeLevelView->GetControl());
 
-  mySearchView = new DFBrowser_SearchView (theParent);
-  myAttributesStack->addWidget (mySearchView->GetControl());
+  mySearchView = new DFBrowser_SearchView(theParent);
+  myAttributesStack->addWidget(mySearchView->GetControl());
 
-  myAttributesStack->setCurrentWidget (myEmptyWidget);
+  myAttributesStack->setCurrentWidget(myEmptyWidget);
 }
 
 // =======================================================================
 // function : SetPaneMode
 // purpose :
 // =======================================================================
-void DFBrowser_AttributePaneStack::SetPaneMode (const DFBrowser_AttributePaneType& theMode)
+void DFBrowser_AttributePaneStack::SetPaneMode(const DFBrowser_AttributePaneType& theMode)
 {
   if (myPaneMode == theMode)
     return;
@@ -81,16 +87,17 @@ void DFBrowser_AttributePaneStack::SetPaneMode (const DFBrowser_AttributePaneTyp
   if (myPaneMode == DFBrowser_AttributePaneType_SearchView)
   {
     // clear highlight in tree model
-    DFBrowser_TreeModel* aModel = dynamic_cast<DFBrowser_TreeModel*> (myModule->GetOCAFViewModel());
+    DFBrowser_TreeModel* aModel = dynamic_cast<DFBrowser_TreeModel*>(myModule->GetOCAFViewModel());
     if (aModel && aModel->HasHighlighted())
-      aModel->SetHighlighted (QModelIndexList());
-    myAttributesStack->setCurrentWidget (mySearchView->GetControl());
+      aModel->SetHighlighted(QModelIndexList());
+    myAttributesStack->setCurrentWidget(mySearchView->GetControl());
   }
   else
   {
     QItemSelectionModel* aSelectionModel = myModule->GetOCAFViewSelectionModel();
-    QModelIndex anIndex = TreeModel_ModelBase::SingleSelected (aSelectionModel->selectedIndexes(), 0);
-    SetCurrentItem (anIndex);
+    QModelIndex          anIndex =
+      TreeModel_ModelBase::SingleSelected(aSelectionModel->selectedIndexes(), 0);
+    SetCurrentItem(anIndex);
   }
 }
 
@@ -98,49 +105,49 @@ void DFBrowser_AttributePaneStack::SetPaneMode (const DFBrowser_AttributePaneTyp
 // function : SetCurrentItem
 // purpose :
 // =======================================================================
-void DFBrowser_AttributePaneStack::SetCurrentItem (const QModelIndex& theIndex)
+void DFBrowser_AttributePaneStack::SetCurrentItem(const QModelIndex& theIndex)
 {
   if (myPaneMode != DFBrowser_AttributePaneType_ItemView)
     return;
 
   // clear highlight in tree model
-  DFBrowser_TreeModel* aModel = dynamic_cast<DFBrowser_TreeModel*> (myModule->GetOCAFViewModel());
+  DFBrowser_TreeModel* aModel = dynamic_cast<DFBrowser_TreeModel*>(myModule->GetOCAFViewModel());
   if (aModel && aModel->HasHighlighted())
-    aModel->SetHighlighted (QModelIndexList());
+    aModel->SetHighlighted(QModelIndexList());
 
-  myCurrentPane = 0;
-  QWidget* aWidget = 0;
-  TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (theIndex);
+  myCurrentPane                    = 0;
+  QWidget*              aWidget    = 0;
+  TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex(theIndex);
   if (!anItemBase)
     return;
 
-  if (DFBrowser_TreeLevelView::ProcessItem (theIndex))
+  if (DFBrowser_TreeLevelView::ProcessItem(theIndex))
     aWidget = myTreeLevelView->GetControl();
   else
   {
-    DFBrowser_ItemPtr anItem = itemDynamicCast<DFBrowser_Item> (anItemBase);
+    DFBrowser_ItemPtr anItem = itemDynamicCast<DFBrowser_Item>(anItemBase);
     if (!anItem)
       return;
 
     if (myAttributesStack->currentWidget() == myTreeLevelView->GetControl())
       myTreeLevelView->ClearSelection();
     Handle(TDF_Attribute) anAttribute = anItem->GetAttribute();
-    myCurrentPane = myModule->GetAttributePane (anAttribute);
-    
+    myCurrentPane                     = myModule->GetAttributePane(anAttribute);
+
     if (myCurrentPane)
     {
-      aWidget = myCurrentPane->GetWidget (myAttributesStack, true);
+      aWidget = myCurrentPane->GetWidget(myAttributesStack, true);
       if (aWidget)
       {
-        int aWidgetIndex = myAttributesStack->indexOf (aWidget);
+        int aWidgetIndex = myAttributesStack->indexOf(aWidget);
         if (aWidgetIndex < 0)
-          myAttributesStack->addWidget (aWidget);
+          myAttributesStack->addWidget(aWidget);
       }
-      myCurrentPane->Init (anAttribute);
+      myCurrentPane->Init(anAttribute);
 
       std::list<QItemSelectionModel*> aSelectionModels = myCurrentPane->GetSelectionModels();
-      myPaneSelector->SetCurrentSelectionModels (aSelectionModels);
+      myPaneSelector->SetCurrentSelectionModels(aSelectionModels);
     }
   }
-  myAttributesStack->setCurrentWidget (aWidget != NULL ? aWidget : myEmptyWidget);
+  myAttributesStack->setCurrentWidget(aWidget != NULL ? aWidget : myEmptyWidget);
 }

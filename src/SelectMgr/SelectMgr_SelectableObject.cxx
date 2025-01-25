@@ -26,23 +26,21 @@
 #include <Standard_NotImplemented.hxx>
 #include <TopLoc_Location.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SelectableObject,PrsMgr_PresentableObject)
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SelectableObject, PrsMgr_PresentableObject)
 
 namespace
 {
-  static const Handle(SelectMgr_Selection)   THE_NULL_SELECTION;
-  static const Handle(SelectMgr_EntityOwner) THE_NULL_ENTITYOWNER;
-}
+static const Handle(SelectMgr_Selection)   THE_NULL_SELECTION;
+static const Handle(SelectMgr_EntityOwner) THE_NULL_ENTITYOWNER;
+} // namespace
 
-//==================================================
-// Function: SelectMgr_SelectableObject
-// Purpose :
-//==================================================
+//=================================================================================================
 
-SelectMgr_SelectableObject::SelectMgr_SelectableObject (const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d)
-: PrsMgr_PresentableObject (aTypeOfPresentation3d),
-  myGlobalSelMode          (0),
-  myAutoHilight            (Standard_True)
+SelectMgr_SelectableObject::SelectMgr_SelectableObject(
+  const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d)
+    : PrsMgr_PresentableObject(aTypeOfPresentation3d),
+      myGlobalSelMode(0),
+      myAutoHilight(Standard_True)
 {
   //
 }
@@ -53,7 +51,8 @@ SelectMgr_SelectableObject::SelectMgr_SelectableObject (const PrsMgr_TypeOfPrese
 //==================================================
 SelectMgr_SelectableObject::~SelectMgr_SelectableObject()
 {
-  for (SelectMgr_SequenceOfSelection::Iterator aSelIter (myselections); aSelIter.More(); aSelIter.Next())
+  for (SelectMgr_SequenceOfSelection::Iterator aSelIter(myselections); aSelIter.More();
+       aSelIter.Next())
   {
     aSelIter.Value()->Clear();
   }
@@ -71,9 +70,10 @@ SelectMgr_SelectableObject::~SelectMgr_SelectableObject()
 //==================================================
 void SelectMgr_SelectableObject::RecomputePrimitives()
 {
-  for (SelectMgr_SequenceOfSelection::Iterator aSelIter (myselections); aSelIter.More(); aSelIter.Next())
+  for (SelectMgr_SequenceOfSelection::Iterator aSelIter(myselections); aSelIter.More();
+       aSelIter.Next())
   {
-    RecomputePrimitives (aSelIter.Value()->Mode());
+    RecomputePrimitives(aSelIter.Value()->Mode());
   }
 }
 
@@ -87,78 +87,76 @@ void SelectMgr_SelectableObject::RecomputePrimitives()
 //           TO UPDATE SELECTION properly from outside classes,
 //           use method UpdateSelection.
 //==================================================
-void SelectMgr_SelectableObject::RecomputePrimitives (const Standard_Integer theMode)
+void SelectMgr_SelectableObject::RecomputePrimitives(const Standard_Integer theMode)
 {
-  SelectMgr_SelectableObject* aSelParent = dynamic_cast<SelectMgr_SelectableObject* > (Parent());
-  for (SelectMgr_SequenceOfSelection::Iterator aSelIter (myselections); aSelIter.More(); aSelIter.Next())
+  SelectMgr_SelectableObject* aSelParent = dynamic_cast<SelectMgr_SelectableObject*>(Parent());
+  for (SelectMgr_SequenceOfSelection::Iterator aSelIter(myselections); aSelIter.More();
+       aSelIter.Next())
   {
     const Handle(SelectMgr_Selection)& aSel = aSelIter.Value();
     if (aSel->Mode() == theMode)
     {
       aSel->Clear();
-      ComputeSelection (aSel, theMode);
-      aSel->UpdateStatus (SelectMgr_TOU_Partial);
-      aSel->UpdateBVHStatus (SelectMgr_TBU_Renew);
+      ComputeSelection(aSel, theMode);
+      aSel->UpdateStatus(SelectMgr_TOU_Partial);
+      aSel->UpdateBVHStatus(SelectMgr_TBU_Renew);
       if (theMode == 0 && aSelParent != NULL)
       {
         if (const Handle(SelectMgr_EntityOwner)& anAsmOwner = aSelParent->GetAssemblyOwner())
         {
-          SetAssemblyOwner (anAsmOwner, theMode);
+          SetAssemblyOwner(anAsmOwner, theMode);
         }
       }
       return;
     }
   }
 
-  Handle(SelectMgr_Selection) aNewSel = new SelectMgr_Selection (theMode);
-  ComputeSelection (aNewSel, theMode);
+  Handle(SelectMgr_Selection) aNewSel = new SelectMgr_Selection(theMode);
+  ComputeSelection(aNewSel, theMode);
 
   if (theMode == 0 && aSelParent != NULL)
   {
     if (const Handle(SelectMgr_EntityOwner)& anAsmOwner = aSelParent->GetAssemblyOwner())
     {
-      SetAssemblyOwner (anAsmOwner, theMode);
+      SetAssemblyOwner(anAsmOwner, theMode);
     }
   }
 
-  aNewSel->UpdateStatus (SelectMgr_TOU_Partial);
-  aNewSel->UpdateBVHStatus (SelectMgr_TBU_Add);
+  aNewSel->UpdateStatus(SelectMgr_TOU_Partial);
+  aNewSel->UpdateBVHStatus(SelectMgr_TBU_Add);
 
-  myselections.Append (aNewSel);
+  myselections.Append(aNewSel);
 }
 
-//==================================================
-// Function: ClearSelections
-// Purpose :
-//==================================================
-void SelectMgr_SelectableObject::ClearSelections (const Standard_Boolean theToUpdate)
+//=================================================================================================
+
+void SelectMgr_SelectableObject::ClearSelections(const Standard_Boolean theToUpdate)
 {
-  for (SelectMgr_SequenceOfSelection::Iterator aSelIter (myselections); aSelIter.More(); aSelIter.Next())
+  for (SelectMgr_SequenceOfSelection::Iterator aSelIter(myselections); aSelIter.More();
+       aSelIter.Next())
   {
     const Handle(SelectMgr_Selection)& aSel = aSelIter.Value();
     aSel->Clear();
-    aSel->UpdateBVHStatus (SelectMgr_TBU_Remove);
+    aSel->UpdateBVHStatus(SelectMgr_TBU_Remove);
     if (theToUpdate)
     {
-      aSel->UpdateStatus (SelectMgr_TOU_Full);
+      aSel->UpdateStatus(SelectMgr_TOU_Full);
     }
   }
 }
 
+//=================================================================================================
 
-//==================================================
-// Function: Selection
-// Purpose :
-//==================================================
-
-const Handle(SelectMgr_Selection)& SelectMgr_SelectableObject::Selection (const Standard_Integer theMode) const
+const Handle(SelectMgr_Selection)& SelectMgr_SelectableObject::Selection(
+  const Standard_Integer theMode) const
 {
   if (theMode == -1)
   {
     return THE_NULL_SELECTION;
   }
 
-  for (SelectMgr_SequenceOfSelection::Iterator aSelIter (myselections); aSelIter.More(); aSelIter.Next())
+  for (SelectMgr_SequenceOfSelection::Iterator aSelIter(myselections); aSelIter.More();
+       aSelIter.Next())
   {
     const Handle(SelectMgr_Selection)& aSel = aSelIter.Value();
     if (aSel->Mode() == theMode)
@@ -169,189 +167,175 @@ const Handle(SelectMgr_Selection)& SelectMgr_SelectableObject::Selection (const 
   return THE_NULL_SELECTION;
 }
 
-//==================================================
-// Function: AddSelection
-// Purpose :
-//==================================================
+//=================================================================================================
 
-void SelectMgr_SelectableObject::AddSelection (const Handle(SelectMgr_Selection)& theSel,
-                                               const Standard_Integer theMode)
+void SelectMgr_SelectableObject::AddSelection(const Handle(SelectMgr_Selection)& theSel,
+                                              const Standard_Integer             theMode)
 {
-  if(theSel->IsEmpty())
+  if (theSel->IsEmpty())
   {
     ComputeSelection(theSel, theMode);
     theSel->UpdateStatus(SelectMgr_TOU_Partial);
-    theSel->UpdateBVHStatus (SelectMgr_TBU_Add);
+    theSel->UpdateBVHStatus(SelectMgr_TBU_Add);
   }
 
   Standard_Boolean isReplaced = Standard_False;
-  for (SelectMgr_SequenceOfSelection::Iterator aSelIter (myselections); aSelIter.More(); aSelIter.Next())
+  for (SelectMgr_SequenceOfSelection::Iterator aSelIter(myselections); aSelIter.More();
+       aSelIter.Next())
   {
     if (aSelIter.Value()->Mode() == theMode)
     {
       isReplaced = Standard_True;
-      myselections.Remove (aSelIter);
+      myselections.Remove(aSelIter);
       break;
     }
   }
 
-  myselections.Append (theSel);
+  myselections.Append(theSel);
   if (isReplaced)
   {
-    myselections.Last()->UpdateBVHStatus (SelectMgr_TBU_Renew);
+    myselections.Last()->UpdateBVHStatus(SelectMgr_TBU_Renew);
   }
 
   if (theMode == 0)
   {
-    SelectMgr_SelectableObject* aSelParent = dynamic_cast<SelectMgr_SelectableObject* > (Parent());
+    SelectMgr_SelectableObject* aSelParent = dynamic_cast<SelectMgr_SelectableObject*>(Parent());
     if (aSelParent != NULL)
     {
       if (const Handle(SelectMgr_EntityOwner)& anAsmOwner = aSelParent->GetAssemblyOwner())
       {
-        SetAssemblyOwner (anAsmOwner, theMode);
+        SetAssemblyOwner(anAsmOwner, theMode);
       }
     }
   }
 }
 
-//=======================================================================
-//function : ReSetTransformation
-//purpose  :
-//=======================================================================
-void SelectMgr_SelectableObject::ResetTransformation() 
+//=================================================================================================
+
+void SelectMgr_SelectableObject::ResetTransformation()
 {
-  for (SelectMgr_SequenceOfSelection::Iterator aSelIter (myselections); aSelIter.More(); aSelIter.Next())
+  for (SelectMgr_SequenceOfSelection::Iterator aSelIter(myselections); aSelIter.More();
+       aSelIter.Next())
   {
     const Handle(SelectMgr_Selection)& aSel = aSelIter.Value();
-    aSel->UpdateStatus (SelectMgr_TOU_Partial);
-    aSel->UpdateBVHStatus (SelectMgr_TBU_None);
+    aSel->UpdateStatus(SelectMgr_TOU_Partial);
+    aSel->UpdateBVHStatus(SelectMgr_TBU_None);
   }
 
   PrsMgr_PresentableObject::ResetTransformation();
 }
 
-//=======================================================================
-//function : UpdateTransformation
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void SelectMgr_SelectableObject::UpdateTransformation()
 {
-  for (SelectMgr_SequenceOfSelection::Iterator aSelIter (myselections); aSelIter.More(); aSelIter.Next())
+  for (SelectMgr_SequenceOfSelection::Iterator aSelIter(myselections); aSelIter.More();
+       aSelIter.Next())
   {
-    aSelIter.Value()->UpdateStatus (SelectMgr_TOU_Partial);
+    aSelIter.Value()->UpdateStatus(SelectMgr_TOU_Partial);
   }
 
   PrsMgr_PresentableObject::UpdateTransformation();
   if (!mySelectionPrs.IsNull())
   {
-    mySelectionPrs->SetTransformation (TransformationGeom());
+    mySelectionPrs->SetTransformation(TransformationGeom());
   }
   if (!myHilightPrs.IsNull())
   {
-    myHilightPrs->SetTransformation (TransformationGeom());
+    myHilightPrs->SetTransformation(TransformationGeom());
   }
 }
 
-//=======================================================================
-//function : UpdateTransformation
-//purpose  :
-//=======================================================================
-void SelectMgr_SelectableObject::UpdateTransformations (const Handle(SelectMgr_Selection)& theSel)
+//=================================================================================================
+
+void SelectMgr_SelectableObject::UpdateTransformations(const Handle(SelectMgr_Selection)& theSel)
 {
-  const TopLoc_Location aSelfLocation (Transformation());
-  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (theSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
+  const TopLoc_Location aSelfLocation(Transformation());
+  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter(
+         theSel->Entities());
+       aSelEntIter.More();
+       aSelEntIter.Next())
   {
     if (const Handle(Select3D_SensitiveEntity)& aSensEntity = aSelEntIter.Value()->BaseSensitive())
     {
       if (const Handle(SelectMgr_EntityOwner)& aEOwner = aSensEntity->OwnerId())
       {
-        aEOwner->SetLocation (aSelfLocation);
+        aEOwner->SetLocation(aSelfLocation);
       }
     }
   }
 }
 
-//=======================================================================
-//function : HilightSelected
-//purpose  :
-//=======================================================================
-void SelectMgr_SelectableObject::HilightSelected (const Handle(PrsMgr_PresentationManager)&,
-                                                  const SelectMgr_SequenceOfOwner&)
+//=================================================================================================
+
+void SelectMgr_SelectableObject::HilightSelected(const Handle(PrsMgr_PresentationManager)&,
+                                                 const SelectMgr_SequenceOfOwner&)
 {
   throw Standard_NotImplemented("SelectMgr_SelectableObject::HilightSelected");
 }
 
-//=======================================================================
-//function : ClearSelected
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void SelectMgr_SelectableObject::ClearSelected()
 {
-  if(!mySelectionPrs.IsNull())
+  if (!mySelectionPrs.IsNull())
   {
     mySelectionPrs->Clear();
   }
 }
 
-//=======================================================================
-//function : ClearDynamicHighlight
-//purpose  :
-//=======================================================================
-void SelectMgr_SelectableObject::ClearDynamicHighlight (const Handle(PrsMgr_PresentationManager)& theMgr)
+//=================================================================================================
+
+void SelectMgr_SelectableObject::ClearDynamicHighlight(
+  const Handle(PrsMgr_PresentationManager)& theMgr)
 {
   theMgr->ClearImmediateDraw();
 }
 
-//=======================================================================
-//function : HilightOwnerWithColor
-//purpose  :
-//=======================================================================
-void SelectMgr_SelectableObject::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager)&,
-                                                        const Handle(Prs3d_Drawer)&,
-                                                        const Handle(SelectMgr_EntityOwner)&)
+//=================================================================================================
+
+void SelectMgr_SelectableObject::HilightOwnerWithColor(const Handle(PrsMgr_PresentationManager)&,
+                                                       const Handle(Prs3d_Drawer)&,
+                                                       const Handle(SelectMgr_EntityOwner)&)
 {
   throw Standard_NotImplemented("SelectMgr_SelectableObject::HilightOwnerWithColor");
 }
 
-//=======================================================================
-//function : GetHilightPresentation
-//purpose  :
-//=======================================================================
-Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetHilightPresentation (const Handle(PrsMgr_PresentationManager)& theMgr)
+//=================================================================================================
+
+Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetHilightPresentation(
+  const Handle(PrsMgr_PresentationManager)& theMgr)
 {
   if (myHilightPrs.IsNull() && !theMgr.IsNull())
   {
-    myHilightPrs = new Prs3d_Presentation (theMgr->StructureManager());
-    myHilightPrs->SetTransformPersistence (TransformPersistence());
-    myHilightPrs->SetClipPlanes (myClipPlanes);
-    myHilightPrs->SetTransformation (TransformationGeom());
+    myHilightPrs = new Prs3d_Presentation(theMgr->StructureManager());
+    myHilightPrs->SetTransformPersistence(TransformPersistence());
+    myHilightPrs->SetClipPlanes(myClipPlanes);
+    myHilightPrs->SetTransformation(TransformationGeom());
   }
 
   return myHilightPrs;
 }
 
-//=======================================================================
-//function : GetSelectPresentation
-//purpose  :
-//=======================================================================
-Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetSelectPresentation (const Handle(PrsMgr_PresentationManager)& theMgr)
+//=================================================================================================
+
+Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetSelectPresentation(
+  const Handle(PrsMgr_PresentationManager)& theMgr)
 {
   if (mySelectionPrs.IsNull() && !theMgr.IsNull())
   {
-    mySelectionPrs = new Prs3d_Presentation (theMgr->StructureManager());
-    mySelectionPrs->SetTransformPersistence (TransformPersistence());
-    mySelectionPrs->SetClipPlanes (myClipPlanes);
-    mySelectionPrs->SetTransformation (TransformationGeom());
+    mySelectionPrs = new Prs3d_Presentation(theMgr->StructureManager());
+    mySelectionPrs->SetTransformPersistence(TransformPersistence());
+    mySelectionPrs->SetClipPlanes(myClipPlanes);
+    mySelectionPrs->SetTransformation(TransformationGeom());
   }
 
   return mySelectionPrs;
 }
 
-//=======================================================================
-//function : ErasePresentations
-//purpose  :
-//=======================================================================
-void SelectMgr_SelectableObject::ErasePresentations (Standard_Boolean theToRemove)
+//=================================================================================================
+
+void SelectMgr_SelectableObject::ErasePresentations(Standard_Boolean theToRemove)
 {
   if (!mySelectionPrs.IsNull())
   {
@@ -373,143 +357,161 @@ void SelectMgr_SelectableObject::ErasePresentations (Standard_Boolean theToRemov
   }
 }
 
-//=======================================================================
-//function : SetZLayer
-//purpose  :
-//=======================================================================
-void SelectMgr_SelectableObject::SetZLayer (const Graphic3d_ZLayerId theLayerId)
+//=================================================================================================
+
+void SelectMgr_SelectableObject::SetZLayer(const Graphic3d_ZLayerId theLayerId)
 {
   // update own presentations
-  PrsMgr_PresentableObject::SetZLayer (theLayerId);
+  PrsMgr_PresentableObject::SetZLayer(theLayerId);
 
   // update selection presentations
   if (!mySelectionPrs.IsNull())
-    mySelectionPrs->SetZLayer (theLayerId);
+    mySelectionPrs->SetZLayer(theLayerId);
 
   if (!myHilightPrs.IsNull())
-    myHilightPrs->SetZLayer (theLayerId);
+    myHilightPrs->SetZLayer(theLayerId);
 
   // update all entity owner presentations
-  for (SelectMgr_SequenceOfSelection::Iterator aSelIter (myselections); aSelIter.More(); aSelIter.Next())
+  for (SelectMgr_SequenceOfSelection::Iterator aSelIter(myselections); aSelIter.More();
+       aSelIter.Next())
   {
     const Handle(SelectMgr_Selection)& aSel = aSelIter.Value();
-    for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
+    for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter(
+           aSel->Entities());
+         aSelEntIter.More();
+         aSelEntIter.Next())
     {
       if (const Handle(Select3D_SensitiveEntity)& aEntity = aSelEntIter.Value()->BaseSensitive())
       {
         if (const Handle(SelectMgr_EntityOwner)& aOwner = aEntity->OwnerId())
         {
-          aOwner->SetZLayer (theLayerId);
+          aOwner->SetZLayer(theLayerId);
         }
       }
     }
   }
 }
 
-//=======================================================================
-//function : UpdateClipping
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void SelectMgr_SelectableObject::UpdateClipping()
 {
   PrsMgr_PresentableObject::UpdateClipping();
   if (!mySelectionPrs.IsNull())
   {
-    mySelectionPrs->SetClipPlanes (myClipPlanes);
+    mySelectionPrs->SetClipPlanes(myClipPlanes);
   }
   if (!myHilightPrs.IsNull())
   {
-    myHilightPrs->SetClipPlanes (myClipPlanes);
+    myHilightPrs->SetClipPlanes(myClipPlanes);
   }
 }
 
 //=======================================================================
-//function : updateSelection
-//purpose  : Sets update status FULL to selections of the object. Must be
+// function : updateSelection
+// purpose  : Sets update status FULL to selections of the object. Must be
 //           used as the only method of UpdateSelection from outer classes
 //           to prevent BVH structures from being outdated.
 //=======================================================================
-void SelectMgr_SelectableObject::updateSelection (const Standard_Integer theMode)
+void SelectMgr_SelectableObject::updateSelection(const Standard_Integer theMode)
 {
   if (theMode == -1)
   {
-    for (SelectMgr_SequenceOfSelection::Iterator aSelIter (myselections); aSelIter.More(); aSelIter.Next())
+    for (SelectMgr_SequenceOfSelection::Iterator aSelIter(myselections); aSelIter.More();
+         aSelIter.Next())
     {
       const Handle(SelectMgr_Selection)& aSel = aSelIter.Value();
-      aSel->UpdateStatus (SelectMgr_TOU_Full);
+      aSel->UpdateStatus(SelectMgr_TOU_Full);
     }
     return;
   }
 
-  for (SelectMgr_SequenceOfSelection::Iterator aSelIter (myselections); aSelIter.More(); aSelIter.Next())
+  for (SelectMgr_SequenceOfSelection::Iterator aSelIter(myselections); aSelIter.More();
+       aSelIter.Next())
   {
     const Handle(SelectMgr_Selection)& aSel = aSelIter.Value();
     if (aSel->Mode() == theMode)
     {
-      aSel->UpdateStatus (SelectMgr_TOU_Full);
+      aSel->UpdateStatus(SelectMgr_TOU_Full);
       return;
     }
   }
 }
 
 //=======================================================================
-//function : SetAssemblyOwner
-//purpose  : Sets common entity owner for assembly sensitive object entities
+// function : SetAssemblyOwner
+// purpose  : Sets common entity owner for assembly sensitive object entities
 //=======================================================================
-void SelectMgr_SelectableObject::SetAssemblyOwner (const Handle(SelectMgr_EntityOwner)& theOwner,
-                                                   const Standard_Integer theMode)
+void SelectMgr_SelectableObject::SetAssemblyOwner(const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                  const Standard_Integer               theMode)
 {
   if (theMode == -1)
   {
-    for (SelectMgr_SequenceOfSelection::Iterator aSelIter (myselections); aSelIter.More(); aSelIter.Next())
+    for (SelectMgr_SequenceOfSelection::Iterator aSelIter(myselections); aSelIter.More();
+         aSelIter.Next())
     {
       const Handle(SelectMgr_Selection)& aSel = aSelIter.Value();
-      for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
+      for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter(
+             aSel->Entities());
+           aSelEntIter.More();
+           aSelEntIter.Next())
       {
-        aSelEntIter.Value()->BaseSensitive()->Set (theOwner);
+        aSelEntIter.Value()->BaseSensitive()->Set(theOwner);
       }
     }
     return;
   }
 
-  for (SelectMgr_SequenceOfSelection::Iterator aSelIter (myselections); aSelIter.More(); aSelIter.Next())
+  for (SelectMgr_SequenceOfSelection::Iterator aSelIter(myselections); aSelIter.More();
+       aSelIter.Next())
   {
     const Handle(SelectMgr_Selection)& aSel = aSelIter.Value();
     if (aSel->Mode() == theMode)
     {
-      for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
+      for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter(
+             aSel->Entities());
+           aSelEntIter.More();
+           aSelEntIter.Next())
       {
-        aSelEntIter.Value()->BaseSensitive()->Set (theOwner);
+        aSelEntIter.Value()->BaseSensitive()->Set(theOwner);
       }
       return;
     }
   }
 }
 
-//=======================================================================
-//function : BndBoxOfSelected
-//purpose  :
-//=======================================================================
-Bnd_Box SelectMgr_SelectableObject::BndBoxOfSelected (const Handle(SelectMgr_IndexedMapOfOwner)& theOwners)
+//=================================================================================================
+
+Bnd_Box SelectMgr_SelectableObject::BndBoxOfSelected(
+  const Handle(SelectMgr_IndexedMapOfOwner)& theOwners)
 {
   if (theOwners->IsEmpty())
     return Bnd_Box();
 
   Bnd_Box aBnd;
-  for (SelectMgr_SequenceOfSelection::Iterator aSelIter (myselections); aSelIter.More(); aSelIter.Next())
+  for (SelectMgr_SequenceOfSelection::Iterator aSelIter(myselections); aSelIter.More();
+       aSelIter.Next())
   {
     const Handle(SelectMgr_Selection)& aSel = aSelIter.Value();
     if (aSel->GetSelectionState() != SelectMgr_SOS_Activated)
       continue;
 
-    for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
+    for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter(
+           aSel->Entities());
+         aSelEntIter.More();
+         aSelEntIter.Next())
     {
-      const Handle(SelectMgr_EntityOwner)& anOwner = aSelEntIter.Value()->BaseSensitive()->OwnerId();
-      if (theOwners->Contains (anOwner))
+      const Handle(SelectMgr_EntityOwner)& anOwner =
+        aSelEntIter.Value()->BaseSensitive()->OwnerId();
+      if (theOwners->Contains(anOwner))
       {
         Select3D_BndBox3d aBox = aSelEntIter.Value()->BaseSensitive()->BoundingBox();
-        aBnd.Update (aBox.CornerMin().x(), aBox.CornerMin().y(), aBox.CornerMin().z(),
-                     aBox.CornerMax().x(), aBox.CornerMax().y(), aBox.CornerMax().z());
+        aBnd.Update(aBox.CornerMin().x(),
+                    aBox.CornerMin().y(),
+                    aBox.CornerMin().z(),
+                    aBox.CornerMax().x(),
+                    aBox.CornerMax().y(),
+                    aBox.CornerMax().z());
       }
     }
   }
@@ -518,24 +520,21 @@ Bnd_Box SelectMgr_SelectableObject::BndBoxOfSelected (const Handle(SelectMgr_Ind
 }
 
 //=======================================================================
-//function : GlobalSelOwner
-//purpose  : Returns entity owner corresponding to selection of the object as a whole
+// function : GlobalSelOwner
+// purpose  : Returns entity owner corresponding to selection of the object as a whole
 //=======================================================================
 Handle(SelectMgr_EntityOwner) SelectMgr_SelectableObject::GlobalSelOwner() const
 {
-  const Handle(SelectMgr_Selection)& aGlobalSel = Selection (myGlobalSelMode);
-  if (!aGlobalSel.IsNull()
-   && !aGlobalSel->IsEmpty())
+  const Handle(SelectMgr_Selection)& aGlobalSel = Selection(myGlobalSelMode);
+  if (!aGlobalSel.IsNull() && !aGlobalSel->IsEmpty())
   {
     return aGlobalSel->Entities().First()->BaseSensitive()->OwnerId();
   }
   return THE_NULL_ENTITYOWNER;
 }
 
-//=======================================================================
-//function : GetAssemblyOwner
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 const Handle(SelectMgr_EntityOwner)& SelectMgr_SelectableObject::GetAssemblyOwner() const
 {
   return THE_NULL_ENTITYOWNER;
@@ -545,21 +544,23 @@ const Handle(SelectMgr_EntityOwner)& SelectMgr_SelectableObject::GetAssemblyOwne
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void SelectMgr_SelectableObject::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void SelectMgr_SelectableObject::DumpJson(Standard_OStream& theOStream,
+                                          Standard_Integer  theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, PrsMgr_PresentableObject)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, PrsMgr_PresentableObject)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, mySelectionPrs.get())
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myHilightPrs.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, mySelectionPrs.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myHilightPrs.get())
 
-  for (SelectMgr_SequenceOfSelection::Iterator anIterator (myselections); anIterator.More(); anIterator.Next())
+  for (SelectMgr_SequenceOfSelection::Iterator anIterator(myselections); anIterator.More();
+       anIterator.Next())
   {
     const Handle(SelectMgr_Selection)& aSelection = anIterator.Value();
-    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aSelection.get())
+    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aSelection.get())
   }
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myGlobalSelMode)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAutoHilight)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myGlobalSelMode)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myAutoHilight)
 }

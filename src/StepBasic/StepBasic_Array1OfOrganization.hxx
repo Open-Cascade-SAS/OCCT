@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(StepBasic_Organization)> StepBasic_Array1OfOrganization;
 
-
 #endif

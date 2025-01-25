@@ -14,30 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopOpeBRepBuild_BlockIterator.hxx>
 
-//=======================================================================
-//function : TopOpeBRepBuild_BlockIterator
-//purpose  : 
-//=======================================================================
-TopOpeBRepBuild_BlockIterator::TopOpeBRepBuild_BlockIterator() :
-myLower(0),
-myUpper(0),
-myValue(1)
+//=================================================================================================
+
+TopOpeBRepBuild_BlockIterator::TopOpeBRepBuild_BlockIterator()
+    : myLower(0),
+      myUpper(0),
+      myValue(1)
 {
 }
 
-//=======================================================================
-//function : TopOpeBRepBuild_BlockIterator
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TopOpeBRepBuild_BlockIterator::TopOpeBRepBuild_BlockIterator
-(const Standard_Integer Lower, const Standard_Integer Upper) :
-myLower(Lower),
-myUpper(Upper),
-myValue(Lower)
+TopOpeBRepBuild_BlockIterator::TopOpeBRepBuild_BlockIterator(const Standard_Integer Lower,
+                                                             const Standard_Integer Upper)
+    : myLower(Lower),
+      myUpper(Upper),
+      myValue(Lower)
 {
 }
-

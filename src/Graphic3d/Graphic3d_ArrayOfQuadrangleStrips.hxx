@@ -24,16 +24,16 @@ class Graphic3d_ArrayOfQuadrangleStrips : public Graphic3d_ArrayOfPrimitives
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfQuadrangleStrips, Graphic3d_ArrayOfPrimitives)
 public:
-
-  //! Creates an array of quadrangle strips (Graphic3d_TOPA_QUADRANGLESTRIPS), a polygon can be filled as:
-  //! 1) Creating a single strip defined with his vertexes, i.e:
+  //! Creates an array of quadrangle strips (Graphic3d_TOPA_QUADRANGLESTRIPS), a polygon can be
+  //! filled as: 1) Creating a single strip defined with his vertexes, i.e:
   //! @code
   //!   myArray = Graphic3d_ArrayOfQuadrangleStrips (7);
   //!   myArray->AddVertex (x1, y1, z1);
   //!   ....
   //!   myArray->AddVertex (x7, y7, z7);
   //! @endcode
-  //! 2) Creating separate strips defined with a predefined number of strips and the number of vertex per strip, i.e:
+  //! 2) Creating separate strips defined with a predefined number of strips and the number of
+  //! vertex per strip, i.e:
   //! @code
   //!   myArray = Graphic3d_ArrayOfQuadrangleStrips (8, 2);
   //!   myArray->AddBound (4);
@@ -49,28 +49,37 @@ public:
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
   //! @param theMaxStrips  defines the maximum allowed strip  number in the array
   //! @param theArrayFlags array flags
-  Graphic3d_ArrayOfQuadrangleStrips (Standard_Integer theMaxVertexs,
-                                     Standard_Integer theMaxStrips,
-                                     Graphic3d_ArrayFlags theArrayFlags)
-  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_QUADRANGLESTRIPS, theMaxVertexs, theMaxStrips, 0, theArrayFlags) {}
+  Graphic3d_ArrayOfQuadrangleStrips(Standard_Integer     theMaxVertexs,
+                                    Standard_Integer     theMaxStrips,
+                                    Graphic3d_ArrayFlags theArrayFlags)
+      : Graphic3d_ArrayOfPrimitives(Graphic3d_TOPA_QUADRANGLESTRIPS,
+                                    theMaxVertexs,
+                                    theMaxStrips,
+                                    0,
+                                    theArrayFlags)
+  {
+  }
 
   //! Creates an array of quadrangle strips (Graphic3d_TOPA_QUADRANGLESTRIPS).
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
   //! @param theMaxStrips  defines the maximum allowed strip  number in the array
-  Graphic3d_ArrayOfQuadrangleStrips (Standard_Integer theMaxVertexs,
-                                     Standard_Integer theMaxStrips   = 0,
-                                     Standard_Boolean theHasVNormals = Standard_False,
-                                     Standard_Boolean theHasVColors  = Standard_False,
-                                     Standard_Boolean theHasSColors  = Standard_False,
-                                     Standard_Boolean theHasVTexels  = Standard_False)
-  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_QUADRANGLESTRIPS, theMaxVertexs, theMaxStrips, 0,
-                                 (theHasVNormals ? Graphic3d_ArrayFlags_VertexNormal : Graphic3d_ArrayFlags_None)
-                               | (theHasVColors  ? Graphic3d_ArrayFlags_VertexColor  : Graphic3d_ArrayFlags_None)
-                               | (theHasVTexels  ? Graphic3d_ArrayFlags_VertexTexel  : Graphic3d_ArrayFlags_None)
-                               | (theHasSColors  ? Graphic3d_ArrayFlags_BoundColor   : Graphic3d_ArrayFlags_None)) {}
-
-
-
+  Graphic3d_ArrayOfQuadrangleStrips(Standard_Integer theMaxVertexs,
+                                    Standard_Integer theMaxStrips   = 0,
+                                    Standard_Boolean theHasVNormals = Standard_False,
+                                    Standard_Boolean theHasVColors  = Standard_False,
+                                    Standard_Boolean theHasSColors  = Standard_False,
+                                    Standard_Boolean theHasVTexels  = Standard_False)
+      : Graphic3d_ArrayOfPrimitives(
+          Graphic3d_TOPA_QUADRANGLESTRIPS,
+          theMaxVertexs,
+          theMaxStrips,
+          0,
+          (theHasVNormals ? Graphic3d_ArrayFlags_VertexNormal : Graphic3d_ArrayFlags_None)
+            | (theHasVColors ? Graphic3d_ArrayFlags_VertexColor : Graphic3d_ArrayFlags_None)
+            | (theHasVTexels ? Graphic3d_ArrayFlags_VertexTexel : Graphic3d_ArrayFlags_None)
+            | (theHasSColors ? Graphic3d_ArrayFlags_BoundColor : Graphic3d_ArrayFlags_None))
+  {
+  }
 };
 
 DEFINE_STANDARD_HANDLE(Graphic3d_ArrayOfQuadrangleStrips, Graphic3d_ArrayOfPrimitives)

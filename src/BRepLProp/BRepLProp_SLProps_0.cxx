@@ -25,7 +25,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Dir.hxx>
- 
 
 #define Surface BRepAdaptor_Surface
 #define Surface_hxx <BRepAdaptor_Surface.hxx>
@@ -34,4 +33,3 @@
 #define LProp_SLProps BRepLProp_SLProps
 #define LProp_SLProps_hxx <BRepLProp_SLProps.hxx>
 #include "../LProp/LProp_SLProps.gxx"
-

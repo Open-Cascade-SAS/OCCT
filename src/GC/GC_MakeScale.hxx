@@ -25,7 +25,6 @@
 class Geom_Transformation;
 class gp_Pnt;
 
-
 //! This class implements an elementary construction algorithm for
 //! a scaling transformation in 3D space. The result is a
 //! Geom_Transformation transformation (a scaling transformation with
@@ -34,44 +33,24 @@ class gp_Pnt;
 //! -   defining the construction of the transformation,
 //! -   implementing the construction algorithm, and
 //! -   consulting the result.
-class GC_MakeScale 
+class GC_MakeScale
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs a scaling transformation with
   //! -   Point as the center of the transformation, and
   //! -   Scale as the scale factor.
   Standard_EXPORT GC_MakeScale(const gp_Pnt& Point, const Standard_Real Scale);
-  
+
   //! Returns the constructed transformation.
   Standard_EXPORT const Handle(Geom_Transformation)& Value() const;
-operator const Handle(Geom_Transformation)& () const { return Value(); }
 
-
-
+  operator const Handle(Geom_Transformation) & () const { return Value(); }
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(Geom_Transformation) TheScale;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GC_MakeScale_HeaderFile

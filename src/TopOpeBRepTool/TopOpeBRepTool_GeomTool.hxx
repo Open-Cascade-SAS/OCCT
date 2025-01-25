@@ -24,15 +24,11 @@
 #include <TopOpeBRepTool_OutCurveType.hxx>
 #include <Standard_Integer.hxx>
 
-
-
-class TopOpeBRepTool_GeomTool 
+class TopOpeBRepTool_GeomTool
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Boolean flags <CompC3D>, <CompPC1>, <CompPC2>
   //! indicate whether  the  corresponding result curves
   //! <C3D>, <PC1>, <PC2> of MakeCurves method  must or not
@@ -43,64 +39,53 @@ public:
   //! walking   points  of  <L>,
   //! - APPROX  to build  an  approximation curve on the
   //! walking points of <L>.
-  Standard_EXPORT TopOpeBRepTool_GeomTool(const TopOpeBRepTool_OutCurveType TypeC3D = TopOpeBRepTool_BSPLINE1, const Standard_Boolean CompC3D = Standard_True, const Standard_Boolean CompPC1 = Standard_True, const Standard_Boolean CompPC2 = Standard_True);
-  
-  Standard_EXPORT void Define (const TopOpeBRepTool_OutCurveType TypeC3D, const Standard_Boolean CompC3D, const Standard_Boolean CompPC1, const Standard_Boolean CompPC2);
-  
-  Standard_EXPORT void Define (const TopOpeBRepTool_OutCurveType TypeC3D);
-  
-  Standard_EXPORT void DefineCurves (const Standard_Boolean CompC3D);
-  
-  Standard_EXPORT void DefinePCurves1 (const Standard_Boolean CompPC1);
-  
-  Standard_EXPORT void DefinePCurves2 (const Standard_Boolean CompPC2);
-  
-  Standard_EXPORT void Define (const TopOpeBRepTool_GeomTool& GT);
-  
-  Standard_EXPORT void GetTolerances (Standard_Real& tol3d, Standard_Real& tol2d) const;
-  
-  Standard_EXPORT void SetTolerances (const Standard_Real tol3d, const Standard_Real tol2d);
-  
+  Standard_EXPORT TopOpeBRepTool_GeomTool(
+    const TopOpeBRepTool_OutCurveType TypeC3D = TopOpeBRepTool_BSPLINE1,
+    const Standard_Boolean            CompC3D = Standard_True,
+    const Standard_Boolean            CompPC1 = Standard_True,
+    const Standard_Boolean            CompPC2 = Standard_True);
+
+  Standard_EXPORT void Define(const TopOpeBRepTool_OutCurveType TypeC3D,
+                              const Standard_Boolean            CompC3D,
+                              const Standard_Boolean            CompPC1,
+                              const Standard_Boolean            CompPC2);
+
+  Standard_EXPORT void Define(const TopOpeBRepTool_OutCurveType TypeC3D);
+
+  Standard_EXPORT void DefineCurves(const Standard_Boolean CompC3D);
+
+  Standard_EXPORT void DefinePCurves1(const Standard_Boolean CompPC1);
+
+  Standard_EXPORT void DefinePCurves2(const Standard_Boolean CompPC2);
+
+  Standard_EXPORT void Define(const TopOpeBRepTool_GeomTool& GT);
+
+  Standard_EXPORT void GetTolerances(Standard_Real& tol3d, Standard_Real& tol2d) const;
+
+  Standard_EXPORT void SetTolerances(const Standard_Real tol3d, const Standard_Real tol2d);
+
   Standard_EXPORT Standard_Integer NbPntMax() const;
-  
-  Standard_EXPORT void SetNbPntMax (const Standard_Integer NbPntMax);
-  
+
+  Standard_EXPORT void SetNbPntMax(const Standard_Integer NbPntMax);
+
   Standard_EXPORT TopOpeBRepTool_OutCurveType TypeC3D() const;
-  
+
   Standard_EXPORT Standard_Boolean CompC3D() const;
-  
+
   Standard_EXPORT Standard_Boolean CompPC1() const;
-  
+
   Standard_EXPORT Standard_Boolean CompPC2() const;
 
-
-
-
 protected:
-
-
-
   TopOpeBRepTool_OutCurveType myTypeC3D;
-  Standard_Boolean myCompC3D;
-  Standard_Boolean myCompPC1;
-  Standard_Boolean myCompPC2;
-
+  Standard_Boolean            myCompC3D;
+  Standard_Boolean            myCompPC1;
+  Standard_Boolean            myCompPC2;
 
 private:
-
-
-
-  Standard_Real myTol3d;
-  Standard_Real myTol2d;
+  Standard_Real    myTol3d;
+  Standard_Real    myTol2d;
   Standard_Integer myNbPntMax;
-
-
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepTool_GeomTool_HeaderFile

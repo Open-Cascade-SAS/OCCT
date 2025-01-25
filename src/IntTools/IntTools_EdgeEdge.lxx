@@ -16,57 +16,57 @@
 #include <BRep_Tool.hxx>
 
 //=======================================================================
-//function : IntTools_EdgeEdge
-//purpose  : 
+// function : IntTools_EdgeEdge
+// purpose  :
 //=======================================================================
 inline IntTools_EdgeEdge::IntTools_EdgeEdge()
-: 
-  myTol1(0.),
-  myTol2(0.),
-  myTol(0.),
-  myFuzzyValue(Precision::Confusion()),
-  myRes1(0.),
-  myRes2(0.),
-  myResCoeff1(0.),
-  myResCoeff2(0.),
-  myPTol1(0.),
-  myPTol2(0.),
-  myRange1(0., 0.),
-  myRange2(0., 0.),
-  mySwap(Standard_False),
-  myErrorStatus(0),
-  myQuickCoincidenceCheck(Standard_False)
+    : myTol1(0.),
+      myTol2(0.),
+      myTol(0.),
+      myFuzzyValue(Precision::Confusion()),
+      myRes1(0.),
+      myRes2(0.),
+      myResCoeff1(0.),
+      myResCoeff2(0.),
+      myPTol1(0.),
+      myPTol2(0.),
+      myRange1(0., 0.),
+      myRange2(0., 0.),
+      mySwap(Standard_False),
+      myErrorStatus(0),
+      myQuickCoincidenceCheck(Standard_False)
 {
 }
+
 //=======================================================================
-//function : IntTools_EdgeEdge
-//purpose  : 
+// function : IntTools_EdgeEdge
+// purpose  :
 //=======================================================================
-inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge&  theEdge1,
-                                            const TopoDS_Edge&  theEdge2)
-: 
-  myEdge1(theEdge1), 
-  myEdge2(theEdge2),
-  myTol1(0.),
-  myTol2(0.),
-  myTol(0.),
-  myFuzzyValue(Precision::Confusion()),
-  myRes1(0.),
-  myRes2(0.),
-  myResCoeff1(0.),
-  myResCoeff2(0.),
-  myPTol1(0.),
-  myPTol2(0.),
-  myRange1(0., 0.),
-  myRange2(0., 0.),
-  mySwap(Standard_False),
-  myErrorStatus(0),
-  myQuickCoincidenceCheck(Standard_False)
+inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge& theEdge1,
+                                            const TopoDS_Edge& theEdge2)
+    : myEdge1(theEdge1),
+      myEdge2(theEdge2),
+      myTol1(0.),
+      myTol2(0.),
+      myTol(0.),
+      myFuzzyValue(Precision::Confusion()),
+      myRes1(0.),
+      myRes2(0.),
+      myResCoeff1(0.),
+      myResCoeff2(0.),
+      myPTol1(0.),
+      myPTol2(0.),
+      myRange1(0., 0.),
+      myRange2(0., 0.),
+      mySwap(Standard_False),
+      myErrorStatus(0),
+      myQuickCoincidenceCheck(Standard_False)
 {
 }
+
 //=======================================================================
-//function : IntTools_EdgeEdge
-//purpose  : 
+// function : IntTools_EdgeEdge
+// purpose  :
 //=======================================================================
 inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge&  theEdge1,
                                             const Standard_Real aT11,
@@ -74,62 +74,63 @@ inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge&  theEdge1,
                                             const TopoDS_Edge&  theEdge2,
                                             const Standard_Real aT21,
                                             const Standard_Real aT22)
-: 
-  myEdge1(theEdge1), 
-  myEdge2(theEdge2),
-  myTol1(0.),
-  myTol2(0.),
-  myTol(0.),
-  myFuzzyValue(Precision::Confusion()),
-  myRes1(0.),
-  myRes2(0.),
-  myResCoeff1(0.),
-  myResCoeff2(0.),
-  myPTol1(0.),
-  myPTol2(0.),
-  myRange1(aT11, aT12),
-  myRange2(aT21, aT22),
-  mySwap(Standard_False),
-  myErrorStatus(0),
-  myQuickCoincidenceCheck(Standard_False)
+    : myEdge1(theEdge1),
+      myEdge2(theEdge2),
+      myTol1(0.),
+      myTol2(0.),
+      myTol(0.),
+      myFuzzyValue(Precision::Confusion()),
+      myRes1(0.),
+      myRes2(0.),
+      myResCoeff1(0.),
+      myResCoeff2(0.),
+      myPTol1(0.),
+      myPTol2(0.),
+      myRange1(aT11, aT12),
+      myRange2(aT21, aT22),
+      mySwap(Standard_False),
+      myErrorStatus(0),
+      myQuickCoincidenceCheck(Standard_False)
 {
 }
+
 //=======================================================================
-//function : IntTools_EdgeEdge
-//purpose  : 
+// function : IntTools_EdgeEdge
+// purpose  :
 //=======================================================================
-inline IntTools_EdgeEdge::~IntTools_EdgeEdge()
-{
-}
+inline IntTools_EdgeEdge::~IntTools_EdgeEdge() {}
+
 //=======================================================================
-//function : SetEdge1
-//purpose  : 
+// function : SetEdge1
+// purpose  :
 //=======================================================================
 inline void IntTools_EdgeEdge::SetEdge1(const TopoDS_Edge& theEdge)
 {
   myEdge1 = theEdge;
 }
+
 //=======================================================================
-//function : SetRange1
-//purpose  : 
+// function : SetRange1
+// purpose  :
 //=======================================================================
 inline void IntTools_EdgeEdge::SetRange1(const IntTools_Range& theRange)
 {
   myRange1 = theRange;
 }
+
 //=======================================================================
-//function : SetRange1
-//purpose  : 
+// function : SetRange1
+// purpose  :
 //=======================================================================
-inline void IntTools_EdgeEdge::SetRange1(const Standard_Real aT1,
-                                         const Standard_Real aT2)
+inline void IntTools_EdgeEdge::SetRange1(const Standard_Real aT1, const Standard_Real aT2)
 {
   myRange1.SetFirst(aT1);
   myRange1.SetLast(aT2);
 }
+
 //=======================================================================
-//function : SetEdge1
-//purpose  : 
+// function : SetEdge1
+// purpose  :
 //=======================================================================
 inline void IntTools_EdgeEdge::SetEdge1(const TopoDS_Edge&  theEdge,
                                         const Standard_Real aT1,
@@ -138,35 +139,38 @@ inline void IntTools_EdgeEdge::SetEdge1(const TopoDS_Edge&  theEdge,
   SetEdge1(theEdge);
   SetRange1(aT1, aT2);
 }
+
 //=======================================================================
-//function : SetEdge2
-//purpose  : 
+// function : SetEdge2
+// purpose  :
 //=======================================================================
 inline void IntTools_EdgeEdge::SetEdge2(const TopoDS_Edge& theEdge)
 {
   myEdge2 = theEdge;
 }
+
 //=======================================================================
-//function : SetRange1
-//purpose  : 
+// function : SetRange1
+// purpose  :
 //=======================================================================
 inline void IntTools_EdgeEdge::SetRange2(const IntTools_Range& theRange)
 {
   myRange2 = theRange;
 }
+
 //=======================================================================
-//function : SetRange1
-//purpose  : 
+// function : SetRange1
+// purpose  :
 //=======================================================================
-inline void IntTools_EdgeEdge::SetRange2(const Standard_Real aT1,
-                                         const Standard_Real aT2)
+inline void IntTools_EdgeEdge::SetRange2(const Standard_Real aT1, const Standard_Real aT2)
 {
   myRange2.SetFirst(aT1);
   myRange2.SetLast(aT2);
 }
+
 //=======================================================================
-//function : SetEdge1
-//purpose  : 
+// function : SetEdge1
+// purpose  :
 //=======================================================================
 inline void IntTools_EdgeEdge::SetEdge2(const TopoDS_Edge&  theEdge,
                                         const Standard_Real aT1,
@@ -175,17 +179,19 @@ inline void IntTools_EdgeEdge::SetEdge2(const TopoDS_Edge&  theEdge,
   SetEdge2(theEdge);
   SetRange2(aT1, aT2);
 }
+
 //=======================================================================
-//function : SetFuzzyValue
-//purpose  : 
+// function : SetFuzzyValue
+// purpose  :
 //=======================================================================
 inline void IntTools_EdgeEdge::SetFuzzyValue(const Standard_Real theFuzz)
 {
   myFuzzyValue = Max(theFuzz, Precision::Confusion());
 }
+
 //=======================================================================
-//function : FuzzyValue
-//purpose  : 
+// function : FuzzyValue
+// purpose  :
 //=======================================================================
 inline Standard_Real IntTools_EdgeEdge::FuzzyValue() const
 {
@@ -193,40 +199,44 @@ inline Standard_Real IntTools_EdgeEdge::FuzzyValue() const
 }
 
 //=======================================================================
-//function : CommonParts
-//purpose  : 
+// function : CommonParts
+// purpose  :
 //=======================================================================
 inline const IntTools_SequenceOfCommonPrts& IntTools_EdgeEdge::CommonParts() const
 {
   return myCommonParts;
 }
+
 //=======================================================================
-//function : IsDone
-//purpose  : 
+// function : IsDone
+// purpose  :
 //=======================================================================
 inline Standard_Boolean IntTools_EdgeEdge::IsDone() const
 {
   return (myErrorStatus == 0);
 }
+
 //=======================================================================
-//function : CheckData
-//purpose  : 
+// function : CheckData
+// purpose  :
 //=======================================================================
 inline void IntTools_EdgeEdge::CheckData()
 {
-  if (myEdge1.IsNull() || myEdge2.IsNull()) {
+  if (myEdge1.IsNull() || myEdge2.IsNull())
+  {
     myErrorStatus = 1;
     return;
   }
   //
-  if (BRep_Tool::Degenerated(myEdge1) || BRep_Tool::Degenerated(myEdge2)) {
+  if (BRep_Tool::Degenerated(myEdge1) || BRep_Tool::Degenerated(myEdge2))
+  {
     myErrorStatus = 2;
     return;
   }
   //
-  if (!BRep_Tool::IsGeometric(myEdge1) || !BRep_Tool::IsGeometric(myEdge2)) { 
+  if (!BRep_Tool::IsGeometric(myEdge1) || !BRep_Tool::IsGeometric(myEdge2))
+  {
     myErrorStatus = 3;
     return;
   }
 }
-

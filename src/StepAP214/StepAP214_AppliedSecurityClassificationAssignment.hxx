@@ -25,52 +25,38 @@
 class StepBasic_SecurityClassification;
 class StepAP214_SecurityClassificationItem;
 
-
 class StepAP214_AppliedSecurityClassificationAssignment;
-DEFINE_STANDARD_HANDLE(StepAP214_AppliedSecurityClassificationAssignment, StepBasic_SecurityClassificationAssignment)
+DEFINE_STANDARD_HANDLE(StepAP214_AppliedSecurityClassificationAssignment,
+                       StepBasic_SecurityClassificationAssignment)
 
-
-class StepAP214_AppliedSecurityClassificationAssignment : public StepBasic_SecurityClassificationAssignment
+class StepAP214_AppliedSecurityClassificationAssignment
+    : public StepBasic_SecurityClassificationAssignment
 {
 
 public:
-
-  
   //! Returns a AppliedSecurityClassificationAssignment
   Standard_EXPORT StepAP214_AppliedSecurityClassificationAssignment();
-  
-  Standard_EXPORT void Init (const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification, const Handle(StepAP214_HArray1OfSecurityClassificationItem)& aItems);
-  
-  Standard_EXPORT void SetItems (const Handle(StepAP214_HArray1OfSecurityClassificationItem)& aItems);
-  
+
+  Standard_EXPORT void Init(
+    const Handle(StepBasic_SecurityClassification)&              aAssignedSecurityClassification,
+    const Handle(StepAP214_HArray1OfSecurityClassificationItem)& aItems);
+
+  Standard_EXPORT void SetItems(
+    const Handle(StepAP214_HArray1OfSecurityClassificationItem)& aItems);
+
   Standard_EXPORT Handle(StepAP214_HArray1OfSecurityClassificationItem) Items() const;
-  
-  Standard_EXPORT const StepAP214_SecurityClassificationItem& ItemsValue (const Standard_Integer num) const;
-  
+
+  Standard_EXPORT const StepAP214_SecurityClassificationItem& ItemsValue(
+    const Standard_Integer num) const;
+
   Standard_EXPORT Standard_Integer NbItems() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepAP214_AppliedSecurityClassificationAssignment,StepBasic_SecurityClassificationAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_AppliedSecurityClassificationAssignment,
+                          StepBasic_SecurityClassificationAssignment)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepAP214_HArray1OfSecurityClassificationItem) items;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepAP214_AppliedSecurityClassificationAssignment_HeaderFile

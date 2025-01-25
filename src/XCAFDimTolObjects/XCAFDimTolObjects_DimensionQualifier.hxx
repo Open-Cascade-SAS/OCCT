@@ -13,17 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _XCAFDimTolObjects_DimensionQualifier_HeaderFile
 #define _XCAFDimTolObjects_DimensionQualifier_HeaderFile
 
 //! Defines types of qualifier
 enum XCAFDimTolObjects_DimensionQualifier
 {
-XCAFDimTolObjects_DimensionQualifier_None,
-XCAFDimTolObjects_DimensionQualifier_Min,
-XCAFDimTolObjects_DimensionQualifier_Max,
-XCAFDimTolObjects_DimensionQualifier_Avg
+  XCAFDimTolObjects_DimensionQualifier_None,
+  XCAFDimTolObjects_DimensionQualifier_Min,
+  XCAFDimTolObjects_DimensionQualifier_Max,
+  XCAFDimTolObjects_DimensionQualifier_Avg
 };
 
 #endif // _XCAFDimTolObjects_DimensionQualifier_HeaderFile

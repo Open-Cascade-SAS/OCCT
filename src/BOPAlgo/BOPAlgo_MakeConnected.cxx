@@ -26,8 +26,8 @@
 #include <TopExp_Explorer.hxx>
 
 //=======================================================================
-//function : Perform
-//purpose  : Makes the shapes connected
+// function : Perform
+// purpose  : Makes the shapes connected
 //=======================================================================
 void BOPAlgo_MakeConnected::Perform()
 {
@@ -51,8 +51,8 @@ void BOPAlgo_MakeConnected::Perform()
 }
 
 //=======================================================================
-//function : CheckData
-//purpose  : Check the validity of input data
+// function : CheckData
+// purpose  : Check the validity of input data
 //=======================================================================
 void BOPAlgo_MakeConnected::CheckData()
 {
@@ -97,8 +97,8 @@ void BOPAlgo_MakeConnected::CheckData()
 }
 
 //=======================================================================
-//function : MakeConnected
-//purpose  : Glues the argument shapes
+// function : MakeConnected
+// purpose  : Glues the argument shapes
 //=======================================================================
 void BOPAlgo_MakeConnected::MakeConnected()
 {
@@ -144,8 +144,8 @@ void BOPAlgo_MakeConnected::MakeConnected()
 }
 
 //=======================================================================
-//function : FillOrigins
-//purpose  : Fills the map of origins
+// function : FillOrigins
+// purpose  : Fills the map of origins
 //=======================================================================
 void BOPAlgo_MakeConnected::FillOrigins()
 {
@@ -173,7 +173,7 @@ void BOPAlgo_MakeConnected::FillOrigins()
       TopTools_ListIteratorOfListOfShape itLH(aLH);
       for (; itLH.More(); itLH.Next())
       {
-        const TopoDS_Shape& aHS = itLH.Value();
+        const TopoDS_Shape&   aHS  = itLH.Value();
         TopTools_ListOfShape* pLOr = myOrigins.ChangeSeek(aHS);
         if (!pLOr)
           pLOr = myOrigins.Bound(aHS, TopTools_ListOfShape());
@@ -185,8 +185,8 @@ void BOPAlgo_MakeConnected::FillOrigins()
 }
 
 //=======================================================================
-//function : AssociateMaterials
-//purpose  : Associates the materials for the border elements
+// function : AssociateMaterials
+// purpose  : Associates the materials for the border elements
 //=======================================================================
 void BOPAlgo_MakeConnected::AssociateMaterials()
 {
@@ -194,14 +194,14 @@ void BOPAlgo_MakeConnected::AssociateMaterials()
 
   // Extract all non-compound shapes from the result
   TopTools_ListOfShape aLShapes;
-  TopTools_MapOfShape aMFence;
+  TopTools_MapOfShape  aMFence;
   BOPTools_AlgoTools::TreatCompound(myShape, aLShapes, &aMFence);
 
   if (aLShapes.IsEmpty())
     return;
 
   // Define the element type and the material type
-  TopAbs_ShapeEnum anElemType;
+  TopAbs_ShapeEnum       anElemType;
   const TopAbs_ShapeEnum aMaterialType = aLShapes.First().ShapeType();
   if (aMaterialType == TopAbs_SOLID || aMaterialType == TopAbs_COMPSOLID)
     anElemType = TopAbs_FACE;
@@ -215,15 +215,15 @@ void BOPAlgo_MakeConnected::AssociateMaterials()
   TopTools_ListIteratorOfListOfShape itLS(aLShapes);
   for (; itLS.More(); itLS.Next())
   {
-    const TopoDS_Shape& aS = itLS.Value();
+    const TopoDS_Shape&         aS   = itLS.Value();
     const TopTools_ListOfShape& aLOr = GetOrigins(aS);
-    const TopoDS_Shape& aSOr = aLOr.IsEmpty() ? aS : aLOr.First();
+    const TopoDS_Shape&         aSOr = aLOr.IsEmpty() ? aS : aLOr.First();
 
     TopExp_Explorer anExp(aS, anElemType);
     for (; anExp.More(); anExp.Next())
     {
-      const TopoDS_Shape& anElement = anExp.Current();
-      TopTools_ListOfShape* pLM = myMaterials.ChangeSeek(anElement);
+      const TopoDS_Shape&   anElement = anExp.Current();
+      TopTools_ListOfShape* pLM       = myMaterials.ChangeSeek(anElement);
       if (!pLM)
         pLM = myMaterials.Bound(anElement, TopTools_ListOfShape());
       pLM->Append(aSOr);
@@ -232,8 +232,8 @@ void BOPAlgo_MakeConnected::AssociateMaterials()
 }
 
 //=======================================================================
-//function : Update
-//purpose  : Updates the history, material associations and origins map
+// function : Update
+// purpose  : Updates the history, material associations and origins map
 //           after periodicity operations
 //=======================================================================
 void BOPAlgo_MakeConnected::Update()
@@ -253,8 +253,8 @@ void BOPAlgo_MakeConnected::Update()
 }
 
 //=======================================================================
-//function : MakePeriodic
-//purpose  : Makes the shape periodic according to the given parameters
+// function : MakePeriodic
+// purpose  : Makes the shape periodic according to the given parameters
 //=======================================================================
 void BOPAlgo_MakeConnected::MakePeriodic(const BOPAlgo_MakePeriodic::PeriodicityParams& theParams)
 {
@@ -282,8 +282,8 @@ void BOPAlgo_MakeConnected::MakePeriodic(const BOPAlgo_MakePeriodic::Periodicity
 }
 
 //=======================================================================
-//function : RepeatShape
-//purpose  : Repeats the shape in the given direction given number of times
+// function : RepeatShape
+// purpose  : Repeats the shape in the given direction given number of times
 //=======================================================================
 void BOPAlgo_MakeConnected::RepeatShape(const Standard_Integer theDirectionID,
                                         const Standard_Integer theTimes)
@@ -306,8 +306,8 @@ void BOPAlgo_MakeConnected::RepeatShape(const Standard_Integer theDirectionID,
 }
 
 //=======================================================================
-//function : ClearRepetitions
-//purpose  : Clears the repetitions performed on the periodic shape
+// function : ClearRepetitions
+// purpose  : Clears the repetitions performed on the periodic shape
 //           keeping the shape periodic
 //=======================================================================
 void BOPAlgo_MakeConnected::ClearRepetitions()

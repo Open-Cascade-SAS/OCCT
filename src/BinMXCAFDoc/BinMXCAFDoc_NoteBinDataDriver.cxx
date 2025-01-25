@@ -23,31 +23,27 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_NoteBinDataDriver, BinMXCAFDoc_NoteDriver)
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-BinMXCAFDoc_NoteBinDataDriver::BinMXCAFDoc_NoteBinDataDriver(const Handle(Message_Messenger)& theMsgDriver)
-  : BinMXCAFDoc_NoteDriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_NoteBinData)->Name())
+//=================================================================================================
+
+BinMXCAFDoc_NoteBinDataDriver::BinMXCAFDoc_NoteBinDataDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : BinMXCAFDoc_NoteDriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_NoteBinData)->Name())
 {
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Handle(TDF_Attribute) BinMXCAFDoc_NoteBinDataDriver::NewEmpty() const
 {
   return new XCAFDoc_NoteBinData();
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-Standard_Boolean BinMXCAFDoc_NoteBinDataDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                      const Handle(TDF_Attribute)& theTarget,
-                                                      BinObjMgt_RRelocationTable&  theRelocTable) const
+//=================================================================================================
+
+Standard_Boolean BinMXCAFDoc_NoteBinDataDriver::Paste(
+  const BinObjMgt_Persistent&  theSource,
+  const Handle(TDF_Attribute)& theTarget,
+  BinObjMgt_RRelocationTable&  theRelocTable) const
 {
   if (!BinMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable))
     return Standard_False;
@@ -57,8 +53,8 @@ Standard_Boolean BinMXCAFDoc_NoteBinDataDriver::Paste(const BinObjMgt_Persistent
     return Standard_False;
 
   TCollection_ExtendedString aTitle;
-  TCollection_AsciiString aMIMEtype;
-  Standard_Integer nbSize;
+  TCollection_AsciiString    aMIMEtype;
+  Standard_Integer           nbSize;
   if (!(theSource >> aTitle >> aMIMEtype >> nbSize))
     return Standard_False;
 
@@ -74,13 +70,11 @@ Standard_Boolean BinMXCAFDoc_NoteBinDataDriver::Paste(const BinObjMgt_Persistent
   return Standard_True;
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BinMXCAFDoc_NoteBinDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                                       BinObjMgt_Persistent&        theTarget,
-                                                       BinObjMgt_SRelocationTable&  theRelocTable) const
+                                          BinObjMgt_Persistent&        theTarget,
+                                          BinObjMgt_SRelocationTable&  theRelocTable) const
 {
   BinMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable);
 

@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Adaptor3d_Surface.hxx>
 #include <Extrema_FuncExtSS.hxx>
 #include <Extrema_GenLocateExtSS.hxx>
@@ -24,46 +23,38 @@
 #include <math_Vector.hxx>
 #include <StdFail_NotDone.hxx>
 
-//=======================================================================
-//function : Extrema_GenLocateExtSS
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Extrema_GenLocateExtSS::Extrema_GenLocateExtSS()
-: myDone(Standard_False),
-  mySqDist(RealLast())
+    : myDone(Standard_False),
+      mySqDist(RealLast())
 {
 }
 
-//=======================================================================
-//function : Extrema_GenLocateExtSS
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- Extrema_GenLocateExtSS::Extrema_GenLocateExtSS(const Adaptor3d_Surface& S1, 
-						const Adaptor3d_Surface& S2, 
-						const Standard_Real U1, 
-						const Standard_Real V1, 
-						const Standard_Real U2, 
-						const Standard_Real V2, 
-						const Standard_Real Tol1, 
-						const Standard_Real Tol2)
+Extrema_GenLocateExtSS::Extrema_GenLocateExtSS(const Adaptor3d_Surface& S1,
+                                               const Adaptor3d_Surface& S2,
+                                               const Standard_Real      U1,
+                                               const Standard_Real      V1,
+                                               const Standard_Real      U2,
+                                               const Standard_Real      V2,
+                                               const Standard_Real      Tol1,
+                                               const Standard_Real      Tol2)
 {
-  Perform(S1,S2,U1,V1,U2,V2,Tol1,Tol2);
+  Perform(S1, S2, U1, V1, U2, V2, Tol1, Tol2);
 }
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void Extrema_GenLocateExtSS::Perform(const Adaptor3d_Surface& S1, 
-				     const Adaptor3d_Surface& S2, 
-				     const Standard_Real U1, 
-				     const Standard_Real V1, 
-				     const Standard_Real U2, 
-				     const Standard_Real V2, 
-				     const Standard_Real Tol1, 
-				     const Standard_Real Tol2)
+void Extrema_GenLocateExtSS::Perform(const Adaptor3d_Surface& S1,
+                                     const Adaptor3d_Surface& S2,
+                                     const Standard_Real      U1,
+                                     const Standard_Real      V1,
+                                     const Standard_Real      U2,
+                                     const Standard_Real      V2,
+                                     const Standard_Real      Tol1,
+                                     const Standard_Real      Tol2)
 {
   myDone = Standard_False;
 
@@ -79,8 +70,8 @@ void Extrema_GenLocateExtSS::Perform(const Adaptor3d_Surface& S1,
   Vinf2 = S2.FirstVParameter();
   Vsup2 = S2.LastVParameter();
 
-  Extrema_FuncExtSS F (S1,S2);
-  math_Vector Tol(1, 4), Start(1, 4), BInf(1, 4), BSup(1, 4);
+  Extrema_FuncExtSS F(S1, S2);
+  math_Vector       Tol(1, 4), Start(1, 4), BInf(1, 4), BSup(1, 4);
 
   Tol(1) = Tol1;
   Tol(2) = Tol1;
@@ -101,58 +92,53 @@ void Extrema_GenLocateExtSS::Perform(const Adaptor3d_Surface& S1,
   BSup(3) = Usup2;
   BSup(4) = Vsup2;
 
-  math_FunctionSetRoot SR (F, Tol);
+  math_FunctionSetRoot SR(F, Tol);
   SR.Perform(F, Start, BInf, BSup);
-  if (!SR.IsDone()) 
+  if (!SR.IsDone())
     return;
 
   mySqDist = F.SquareDistance(1);
   myPoint1 = F.PointOnS1(1);
   myPoint2 = F.PointOnS2(1);
-  myDone = Standard_True;
-
+  myDone   = Standard_True;
 }
 
-//=======================================================================
-//function : IsDone
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean Extrema_GenLocateExtSS::IsDone() const 
+Standard_Boolean Extrema_GenLocateExtSS::IsDone() const
 {
   return myDone;
 }
 
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Real Extrema_GenLocateExtSS::SquareDistance() const 
+Standard_Real Extrema_GenLocateExtSS::SquareDistance() const
 {
-  if (!IsDone()) { throw StdFail_NotDone(); }
+  if (!IsDone())
+  {
+    throw StdFail_NotDone();
+  }
   return mySqDist;
 }
 
-//=======================================================================
-//function : PointOnS1
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-const Extrema_POnSurf& Extrema_GenLocateExtSS::PointOnS1() const 
+const Extrema_POnSurf& Extrema_GenLocateExtSS::PointOnS1() const
 {
-  if (!IsDone()) { throw StdFail_NotDone(); }
+  if (!IsDone())
+  {
+    throw StdFail_NotDone();
+  }
   return myPoint1;
 }
 
-//=======================================================================
-//function : PointOnS2
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-const Extrema_POnSurf& Extrema_GenLocateExtSS::PointOnS2() const 
+const Extrema_POnSurf& Extrema_GenLocateExtSS::PointOnS2() const
 {
-  if (!IsDone()) { throw StdFail_NotDone(); }
+  if (!IsDone())
+  {
+    throw StdFail_NotDone();
+  }
   return myPoint2;
 }
-

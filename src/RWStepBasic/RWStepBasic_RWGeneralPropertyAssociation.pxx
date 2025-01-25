@@ -31,30 +31,27 @@ class StepBasic_GeneralPropertyAssociation;
 class RWStepBasic_RWGeneralPropertyAssociation
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
   Standard_HIDDEN RWStepBasic_RWGeneralPropertyAssociation();
-  
+
   //! Reads GeneralPropertyAssociation
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& theData,
-                                 const Standard_Integer theNum,
-                                 Handle(Interface_Check)& theAch,
-                                 const Handle(StepBasic_GeneralPropertyAssociation)& theEnt) const;
-  
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&              theData,
+                                const Standard_Integer                              theNum,
+                                Handle(Interface_Check)&                            theAch,
+                                const Handle(StepBasic_GeneralPropertyAssociation)& theEnt) const;
+
   //! Writes GeneralPropertyAssociation
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& theSW,
-                                  const Handle(StepBasic_GeneralPropertyAssociation)& theEnt) const;
-  
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                theSW,
+                                 const Handle(StepBasic_GeneralPropertyAssociation)& theEnt) const;
+
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepBasic_GeneralPropertyAssociation)& theEnt,
-                              Interface_EntityIterator& theIter) const;
+  Standard_HIDDEN void Share(const Handle(StepBasic_GeneralPropertyAssociation)& theEnt,
+                             Interface_EntityIterator&                           theIter) const;
 
 protected:
-
 private:
-
 };
 
 #endif // _RWStepBasic_RWGeneralPropertyAssociation_HeaderFile

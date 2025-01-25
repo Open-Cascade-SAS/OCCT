@@ -14,14 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <ChFi3d_ChBuilder.hxx>
 
-//=======================================================================
-//function : PerformTwoCorner
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void ChFi3d_ChBuilder::PerformTwoCorner(const Standard_Integer Index)
 {
-   PerformTwoCornerbyInter(Index);
+  PerformTwoCornerbyInter(Index);
 }

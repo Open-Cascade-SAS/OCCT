@@ -11,39 +11,39 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include "RWStepRepr_RWRealRepresentationItem.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_RealRepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepRepr_RWRealRepresentationItem::RWStepRepr_RWRealRepresentationItem()
-{
-}
+RWStepRepr_RWRealRepresentationItem::RWStepRepr_RWRealRepresentationItem() {}
 
-void RWStepRepr_RWRealRepresentationItem::ReadStep(const Handle(StepData_StepReaderData)& theData,
-                                                   const Standard_Integer theNum,
-                                                   Handle(Interface_Check)& theAch,
-                                                   const Handle(StepRepr_RealRepresentationItem)& theEnt) const
+void RWStepRepr_RWRealRepresentationItem::ReadStep(
+  const Handle(StepData_StepReaderData)&         theData,
+  const Standard_Integer                         theNum,
+  Handle(Interface_Check)&                       theAch,
+  const Handle(StepRepr_RealRepresentationItem)& theEnt) const
 {
   // Check number of parameters
-  if (!theData->CheckNbParams (theNum, 2, theAch, "real_representation_item")) return;
+  if (!theData->CheckNbParams(theNum, 2, theAch, "real_representation_item"))
+    return;
 
   // --- inherited field : name ---
   Handle(TCollection_HAsciiString) aName;
-  theData->ReadString (theNum, 1, "name", theAch, aName);
+  theData->ReadString(theNum, 1, "name", theAch, aName);
 
   // --- own field : value ---
   Standard_Real aValue;
-  theData->ReadReal (theNum, 2, "value", theAch, aValue);
+  theData->ReadReal(theNum, 2, "value", theAch, aValue);
 
   //--- Initialisation of the read entity ---
   theEnt->Init(aName, aValue);
 }
 
-void RWStepRepr_RWRealRepresentationItem::WriteStep(StepData_StepWriter& theSW,
-                                                    const Handle(StepRepr_RealRepresentationItem)& theEnt) const
+void RWStepRepr_RWRealRepresentationItem::WriteStep(
+  StepData_StepWriter&                           theSW,
+  const Handle(StepRepr_RealRepresentationItem)& theEnt) const
 {
   theSW.Send(theEnt->Name());
   theSW.Send(theEnt->Value());

@@ -14,32 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Draw_Interpretor.hxx>
 #include <DrawDim_PlanarDimension.hxx>
 #include <Standard_Type.hxx>
 #include <TopoDS_Face.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(DrawDim_PlanarDimension,DrawDim_Dimension)
+IMPLEMENT_STANDARD_RTTIEXT(DrawDim_PlanarDimension, DrawDim_Dimension)
 
-//=======================================================================
-//function : SetPlane
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void DrawDim_PlanarDimension::SetPlane(const TopoDS_Face& plane)
 {
   myPlane = plane;
 }
 
-//=======================================================================
-//function : GetPlane
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TopoDS_Face DrawDim_PlanarDimension::GetPlane() const 
+TopoDS_Face DrawDim_PlanarDimension::GetPlane() const
 {
   return myPlane;
 }
-
-
-

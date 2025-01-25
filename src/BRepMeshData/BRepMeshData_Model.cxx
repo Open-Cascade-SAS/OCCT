@@ -21,80 +21,62 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepMeshData_Model, IMeshData_Model)
 
-//=======================================================================
-// Function: Constructor
-// Purpose : 
-//=======================================================================
-BRepMeshData_Model::BRepMeshData_Model (const TopoDS_Shape& theShape)
-  : IMeshData_Model (theShape),
-    myMaxSize (0.),
-    myAllocator (new NCollection_IncAllocator (IMeshData::MEMORY_BLOCK_SIZE_HUGE)),
-    myDFaces (256, myAllocator),
-    myDEdges (256, myAllocator)
+//=================================================================================================
+
+BRepMeshData_Model::BRepMeshData_Model(const TopoDS_Shape& theShape)
+    : IMeshData_Model(theShape),
+      myMaxSize(0.),
+      myAllocator(new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE)),
+      myDFaces(256, myAllocator),
+      myDEdges(256, myAllocator)
 {
   myAllocator->SetThreadSafe(true);
 }
 
-//=======================================================================
-// Function: Destructor
-// Purpose : 
-//=======================================================================
-BRepMeshData_Model::~BRepMeshData_Model ()
+//=================================================================================================
+
+BRepMeshData_Model::~BRepMeshData_Model() {}
+
+//=================================================================================================
+
+Standard_Integer BRepMeshData_Model::FacesNb() const
 {
+  return myDFaces.Size();
 }
 
-//=======================================================================
-// Function: FacesNb
-// Purpose : 
-//=======================================================================
-Standard_Integer BRepMeshData_Model::FacesNb () const
+//=================================================================================================
+
+const IMeshData::IFaceHandle& BRepMeshData_Model::AddFace(const TopoDS_Face& theFace)
 {
-  return myDFaces.Size ();
+  IMeshData::IFaceHandle aFace(new (myAllocator) BRepMeshData_Face(theFace, myAllocator));
+  return myDFaces.Append(aFace);
 }
 
-//=======================================================================
-// Function: AddFace
-// Purpose : 
-//=======================================================================
-const IMeshData::IFaceHandle& BRepMeshData_Model::AddFace (const TopoDS_Face& theFace)
+//=================================================================================================
+
+const IMeshData::IFaceHandle& BRepMeshData_Model::GetFace(const Standard_Integer theIndex) const
 {
-  IMeshData::IFaceHandle aFace (new (myAllocator) BRepMeshData_Face (theFace, myAllocator));
-  return myDFaces.Append (aFace);
+  return myDFaces(theIndex);
 }
 
-//=======================================================================
-// Function: GetFace
-// Purpose : 
-//=======================================================================
-const IMeshData::IFaceHandle& BRepMeshData_Model::GetFace (const Standard_Integer theIndex) const
+//=================================================================================================
+
+Standard_Integer BRepMeshData_Model::EdgesNb() const
 {
-  return myDFaces (theIndex);
+  return myDEdges.Size();
 }
 
-//=======================================================================
-// Function: EdgesNb
-// Purpose : 
-//=======================================================================
-Standard_Integer BRepMeshData_Model::EdgesNb () const
+//=================================================================================================
+
+const IMeshData::IEdgeHandle& BRepMeshData_Model::AddEdge(const TopoDS_Edge& theEdge)
 {
-  return myDEdges.Size ();
+  IMeshData::IEdgeHandle aEdge(new (myAllocator) BRepMeshData_Edge(theEdge, myAllocator));
+  return myDEdges.Append(aEdge);
 }
 
-//=======================================================================
-// Function: AddEdge
-// Purpose : 
-//=======================================================================
-const IMeshData::IEdgeHandle& BRepMeshData_Model::AddEdge (const TopoDS_Edge& theEdge)
-{
-  IMeshData::IEdgeHandle aEdge (new (myAllocator) BRepMeshData_Edge (theEdge, myAllocator));
-  return myDEdges.Append (aEdge);
-}
+//=================================================================================================
 
-//=======================================================================
-// Function: GetEdge
-// Purpose : 
-//=======================================================================
-const IMeshData::IEdgeHandle& BRepMeshData_Model::GetEdge (const Standard_Integer theIndex) const
+const IMeshData::IEdgeHandle& BRepMeshData_Model::GetEdge(const Standard_Integer theIndex) const
 {
-  return myDEdges (theIndex);
+  return myDEdges(theIndex);
 }

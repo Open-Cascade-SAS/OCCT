@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -24,44 +23,40 @@
 #include <XmlMNaming_NamedShapeDriver.hxx>
 #include <XmlObjMgt_Element.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XmlDrivers_DocumentStorageDriver,XmlLDrivers_DocumentStorageDriver)
+IMPLEMENT_STANDARD_RTTIEXT(XmlDrivers_DocumentStorageDriver, XmlLDrivers_DocumentStorageDriver)
 
-//=======================================================================
-//function : XmlDrivers_DocumentStorageDriver
-//purpose  : Constructor
-//=======================================================================
-XmlDrivers_DocumentStorageDriver::XmlDrivers_DocumentStorageDriver
-                                (const TCollection_ExtendedString& theCopyright) :
-  XmlLDrivers_DocumentStorageDriver(theCopyright)
-{ 
+//=================================================================================================
+
+XmlDrivers_DocumentStorageDriver::XmlDrivers_DocumentStorageDriver(
+  const TCollection_ExtendedString& theCopyright)
+    : XmlLDrivers_DocumentStorageDriver(theCopyright)
+{
+}
+
+//=================================================================================================
+
+Handle(XmlMDF_ADriverTable) XmlDrivers_DocumentStorageDriver::AttributeDrivers(
+  const Handle(Message_Messenger)& theMessageDriver)
+{
+  return XmlDrivers::AttributeDrivers(theMessageDriver);
 }
 
 //=======================================================================
-//function : AttributeDrivers
-//purpose  : 
+// function : WriteShapeSection
+// purpose  : Implements WriteShapeSection
 //=======================================================================
-Handle(XmlMDF_ADriverTable) XmlDrivers_DocumentStorageDriver::AttributeDrivers
-       (const Handle(Message_Messenger)& theMessageDriver) 
+Standard_Boolean XmlDrivers_DocumentStorageDriver::WriteShapeSection(
+  XmlObjMgt_Element&           theElement,
+  const TDocStd_FormatVersion  theStorageFormatVersion,
+  const Message_ProgressRange& theRange)
 {
-  return XmlDrivers::AttributeDrivers (theMessageDriver);
-}
-
-//=======================================================================
-//function : WriteShapeSection
-//purpose  : Implements WriteShapeSection
-//=======================================================================
-Standard_Boolean XmlDrivers_DocumentStorageDriver::WriteShapeSection
-                                         (XmlObjMgt_Element&  theElement,
-                                          const TDocStd_FormatVersion theStorageFormatVersion,
-                                          const Message_ProgressRange& theRange)
-{
-  Standard_Boolean isShape(Standard_False);
+  Standard_Boolean       isShape(Standard_False);
   Handle(XmlMDF_ADriver) aDriver;
-  if (myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver))
+  if (myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver))
   {
-    Handle(XmlMNaming_NamedShapeDriver) aNamedShapeDriver = 
-      Handle(XmlMNaming_NamedShapeDriver)::DownCast (aDriver);
-    aNamedShapeDriver->WriteShapeSection (theElement, theStorageFormatVersion, theRange);
+    Handle(XmlMNaming_NamedShapeDriver) aNamedShapeDriver =
+      Handle(XmlMNaming_NamedShapeDriver)::DownCast(aDriver);
+    aNamedShapeDriver->WriteShapeSection(theElement, theStorageFormatVersion, theRange);
     isShape = Standard_True;
   }
   return isShape;

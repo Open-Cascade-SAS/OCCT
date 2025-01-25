@@ -17,7 +17,7 @@
 #include <StepFEA_NodeRepresentation.hxx>
 #include <NCollection_Sequence.hxx>
 
-typedef NCollection_Sequence<Handle(StepFEA_NodeRepresentation)> StepFEA_SequenceOfNodeRepresentation;
-
+typedef NCollection_Sequence<Handle(StepFEA_NodeRepresentation)>
+  StepFEA_SequenceOfNodeRepresentation;
 
 #endif

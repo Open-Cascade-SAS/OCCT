@@ -14,24 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopOpeBRepDS_FaceEdgeInterference.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_FaceEdgeInterference,TopOpeBRepDS_ShapeShapeInterference)
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_FaceEdgeInterference, TopOpeBRepDS_ShapeShapeInterference)
 
-//=======================================================================
-//function : TopOpeBRepDS_FaceEdgeInterference
-//purpose  : 
-//=======================================================================
-TopOpeBRepDS_FaceEdgeInterference::TopOpeBRepDS_FaceEdgeInterference
-  (const TopOpeBRepDS_Transition& T, 
-   const Standard_Integer         S, 
-   const Standard_Integer         G,
-   const Standard_Boolean         GIsBound, 
-   const TopOpeBRepDS_Config      C) :
-  TopOpeBRepDS_ShapeShapeInterference
-  (T,TopOpeBRepDS_FACE,S,TopOpeBRepDS_EDGE,G,GIsBound,C)
+//=================================================================================================
+
+TopOpeBRepDS_FaceEdgeInterference::TopOpeBRepDS_FaceEdgeInterference(
+  const TopOpeBRepDS_Transition& T,
+  const Standard_Integer         S,
+  const Standard_Integer         G,
+  const Standard_Boolean         GIsBound,
+  const TopOpeBRepDS_Config      C)
+    : TopOpeBRepDS_ShapeShapeInterference(T,
+                                          TopOpeBRepDS_FACE,
+                                          S,
+                                          TopOpeBRepDS_EDGE,
+                                          G,
+                                          GIsBound,
+                                          C)
 {
 }

@@ -14,29 +14,28 @@
 #include <ShapeExtend.hxx>
 
 //=======================================================================
-//function : MinArea
-//purpose  : 
+// function : MinArea
+// purpose  :
 //=======================================================================
 
-inline Standard_Real& ShapeUpgrade_RemoveInternalWires::MinArea() 
+inline Standard_Real& ShapeUpgrade_RemoveInternalWires::MinArea()
 {
   return myMinArea;
 }
 
- 
 //=======================================================================
-//function : RemoveFaceMode
-//purpose  : 
+// function : RemoveFaceMode
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean& ShapeUpgrade_RemoveInternalWires::RemoveFaceMode() 
+inline Standard_Boolean& ShapeUpgrade_RemoveInternalWires::RemoveFaceMode()
 {
   return myRemoveFacesMode;
 }
 
 //=======================================================================
-//function : RemovedFaces
-//purpose  : 
+// function : RemovedFaces
+// purpose  :
 //=======================================================================
 
 inline const TopTools_SequenceOfShape& ShapeUpgrade_RemoveInternalWires::RemovedFaces() const
@@ -45,8 +44,8 @@ inline const TopTools_SequenceOfShape& ShapeUpgrade_RemoveInternalWires::Removed
 }
 
 //=======================================================================
-//function : RemovedWires
-//purpose  : 
+// function : RemovedWires
+// purpose  :
 //=======================================================================
 
 inline const TopTools_SequenceOfShape& ShapeUpgrade_RemoveInternalWires::RemovedWires() const
@@ -55,8 +54,8 @@ inline const TopTools_SequenceOfShape& ShapeUpgrade_RemoveInternalWires::Removed
 }
 
 //=======================================================================
-//function : GetResult
-//purpose  : 
+// function : GetResult
+// purpose  :
 //=======================================================================
 
 inline TopoDS_Shape ShapeUpgrade_RemoveInternalWires::GetResult() const
@@ -65,11 +64,12 @@ inline TopoDS_Shape ShapeUpgrade_RemoveInternalWires::GetResult() const
 }
 
 //=======================================================================
-//function : Status
-//purpose  : 
+// function : Status
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean ShapeUpgrade_RemoveInternalWires::Status(const ShapeExtend_Status theStatus) const
+inline Standard_Boolean ShapeUpgrade_RemoveInternalWires::Status(
+  const ShapeExtend_Status theStatus) const
 {
-  return ShapeExtend::DecodeStatus ( myStatus, theStatus );
+  return ShapeExtend::DecodeStatus(myStatus, theStatus);
 }

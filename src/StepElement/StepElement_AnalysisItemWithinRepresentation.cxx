@@ -20,25 +20,19 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepElement_AnalysisItemWithinRepresentation,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_AnalysisItemWithinRepresentation, Standard_Transient)
 
-//=======================================================================
-//function : StepElement_AnalysisItemWithinRepresentation
-//purpose  : 
-//=======================================================================
-StepElement_AnalysisItemWithinRepresentation::StepElement_AnalysisItemWithinRepresentation ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepElement_AnalysisItemWithinRepresentation::StepElement_AnalysisItemWithinRepresentation() {}
 
-void StepElement_AnalysisItemWithinRepresentation::Init (const Handle(TCollection_HAsciiString) &aName,
-                                                         const Handle(TCollection_HAsciiString) &aDescription,
-                                                         const Handle(StepRepr_RepresentationItem) &aItem,
-                                                         const Handle(StepRepr_Representation) &aRep)
+//=================================================================================================
+
+void StepElement_AnalysisItemWithinRepresentation::Init(
+  const Handle(TCollection_HAsciiString)&    aName,
+  const Handle(TCollection_HAsciiString)&    aDescription,
+  const Handle(StepRepr_RepresentationItem)& aItem,
+  const Handle(StepRepr_Representation)&     aRep)
 {
 
   theName = aName;
@@ -50,82 +44,62 @@ void StepElement_AnalysisItemWithinRepresentation::Init (const Handle(TCollectio
   theRep = aRep;
 }
 
-//=======================================================================
-//function : Name
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepElement_AnalysisItemWithinRepresentation::Name () const
+Handle(TCollection_HAsciiString) StepElement_AnalysisItemWithinRepresentation::Name() const
 {
   return theName;
 }
 
-//=======================================================================
-//function : SetName
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepElement_AnalysisItemWithinRepresentation::SetName (const Handle(TCollection_HAsciiString) &aName)
+void StepElement_AnalysisItemWithinRepresentation::SetName(
+  const Handle(TCollection_HAsciiString)& aName)
 {
   theName = aName;
 }
 
-//=======================================================================
-//function : Description
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepElement_AnalysisItemWithinRepresentation::Description () const
+Handle(TCollection_HAsciiString) StepElement_AnalysisItemWithinRepresentation::Description() const
 {
   return theDescription;
 }
 
-//=======================================================================
-//function : SetDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepElement_AnalysisItemWithinRepresentation::SetDescription (const Handle(TCollection_HAsciiString) &aDescription)
+void StepElement_AnalysisItemWithinRepresentation::SetDescription(
+  const Handle(TCollection_HAsciiString)& aDescription)
 {
   theDescription = aDescription;
 }
 
-//=======================================================================
-//function : Item
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepRepr_RepresentationItem) StepElement_AnalysisItemWithinRepresentation::Item () const
+Handle(StepRepr_RepresentationItem) StepElement_AnalysisItemWithinRepresentation::Item() const
 {
   return theItem;
 }
 
-//=======================================================================
-//function : SetItem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepElement_AnalysisItemWithinRepresentation::SetItem (const Handle(StepRepr_RepresentationItem) &aItem)
+void StepElement_AnalysisItemWithinRepresentation::SetItem(
+  const Handle(StepRepr_RepresentationItem)& aItem)
 {
   theItem = aItem;
 }
 
-//=======================================================================
-//function : Rep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepRepr_Representation) StepElement_AnalysisItemWithinRepresentation::Rep () const
+Handle(StepRepr_Representation) StepElement_AnalysisItemWithinRepresentation::Rep() const
 {
   return theRep;
 }
 
-//=======================================================================
-//function : SetRep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepElement_AnalysisItemWithinRepresentation::SetRep (const Handle(StepRepr_Representation) &aRep)
+void StepElement_AnalysisItemWithinRepresentation::SetRep(
+  const Handle(StepRepr_Representation)& aRep)
 {
   theRep = aRep;
 }

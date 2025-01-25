@@ -20,8 +20,7 @@
 #include <Law_Function.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<Handle(Law_Function)> Law_Laws;
+typedef NCollection_List<Handle(Law_Function)>           Law_Laws;
 typedef NCollection_List<Handle(Law_Function)>::Iterator Law_ListIteratorOfLaws;
-
 
 #endif

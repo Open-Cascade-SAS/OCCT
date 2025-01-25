@@ -39,10 +39,10 @@
 //! orientation to the shape as a whole.
 enum TopAbs_Orientation
 {
-TopAbs_FORWARD,
-TopAbs_REVERSED,
-TopAbs_INTERNAL,
-TopAbs_EXTERNAL
+  TopAbs_FORWARD,
+  TopAbs_REVERSED,
+  TopAbs_INTERNAL,
+  TopAbs_EXTERNAL
 };
 
 #endif // _TopAbs_Orientation_HeaderFile

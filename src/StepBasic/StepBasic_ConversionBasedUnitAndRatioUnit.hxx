@@ -26,48 +26,29 @@ class StepBasic_DimensionalExponents;
 class TCollection_HAsciiString;
 class StepBasic_MeasureWithUnit;
 
-
 class StepBasic_ConversionBasedUnitAndRatioUnit;
 DEFINE_STANDARD_HANDLE(StepBasic_ConversionBasedUnitAndRatioUnit, StepBasic_ConversionBasedUnit)
-
 
 class StepBasic_ConversionBasedUnitAndRatioUnit : public StepBasic_ConversionBasedUnit
 {
 
 public:
-
-  
   //! Returns a ConversionBasedUnitAndRatioUnit
   Standard_EXPORT StepBasic_ConversionBasedUnitAndRatioUnit();
-  
-  Standard_EXPORT void Init (const Handle(StepBasic_DimensionalExponents)& aDimensions, const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_MeasureWithUnit)& aConversionFactor);
-  
-  Standard_EXPORT void SetRatioUnit (const Handle(StepBasic_RatioUnit)& aRatioUnit);
-  
+
+  Standard_EXPORT void Init(const Handle(StepBasic_DimensionalExponents)& aDimensions,
+                            const Handle(TCollection_HAsciiString)&       aName,
+                            const Handle(StepBasic_MeasureWithUnit)&      aConversionFactor);
+
+  Standard_EXPORT void SetRatioUnit(const Handle(StepBasic_RatioUnit)& aRatioUnit);
+
   Standard_EXPORT Handle(StepBasic_RatioUnit) RatioUnit() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndRatioUnit,StepBasic_ConversionBasedUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndRatioUnit, StepBasic_ConversionBasedUnit)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_RatioUnit) ratioUnit;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_ConversionBasedUnitAndRatioUnit_HeaderFile

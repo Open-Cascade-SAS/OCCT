@@ -20,10 +20,10 @@
 //! Declares the type of axis.
 enum AIS_TypeOfAxis
 {
-AIS_TOAX_Unknown,
-AIS_TOAX_XAxis,
-AIS_TOAX_YAxis,
-AIS_TOAX_ZAxis
+  AIS_TOAX_Unknown,
+  AIS_TOAX_XAxis,
+  AIS_TOAX_YAxis,
+  AIS_TOAX_ZAxis
 };
 
 #endif // _AIS_TypeOfAxis_HeaderFile

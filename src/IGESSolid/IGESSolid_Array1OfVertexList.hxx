@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(IGESSolid_VertexList)> IGESSolid_Array1OfVertexList;
 
-
 #endif

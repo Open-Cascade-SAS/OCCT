@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _StdPersistent_DataXtd_HeaderFile
 #define _StdPersistent_DataXtd_HeaderFile
 
@@ -26,14 +25,15 @@
 #include <TDataXtd_Geometry.hxx>
 #include <TDataXtd_Position.hxx>
 
-
 class StdPersistent_DataXtd
 {
   class _void : private StdLPersistent_Void
   {
   public:
     template <class AttribClass>
-    struct Instance : instance<AttribClass> {};
+    struct Instance : instance<AttribClass>
+    {
+    };
   };
 
 public:
@@ -58,34 +58,49 @@ public:
   };
 };
 
-template<>
+template <>
 inline Standard_CString StdLPersistent_Void::instance<TDataXtd_Shape>::PName() const
-  { return "PDataXtd_Shape"; }
+{
+  return "PDataXtd_Shape";
+}
 
-template<>
+template <>
 inline Standard_CString StdLPersistent_Void::instance<TDataXtd_Point>::PName() const
-  { return "PDataXtd_Point"; }
+{
+  return "PDataXtd_Point";
+}
 
-template<>
+template <>
 inline Standard_CString StdLPersistent_Void::instance<TDataXtd_Axis>::PName() const
-  { return "PDataXtd_Axis"; }
+{
+  return "PDataXtd_Axis";
+}
 
-template<>
+template <>
 inline Standard_CString StdLPersistent_Void::instance<TDataXtd_Plane>::PName() const
-  { return "PDataXtd_Plane"; }
+{
+  return "PDataXtd_Plane";
+}
 
-template<>
+template <>
 inline Standard_CString StdLPersistent_Void::instance<TDataXtd_Placement>::PName() const
-  { return "PDataXtd_Placement"; }
+{
+  return "PDataXtd_Placement";
+}
 
-template<>
-template<>
-inline Standard_CString StdObjMgt_Attribute<TDataXtd_Geometry>::Simple<Standard_Integer>::PName() const
-  { return "PDataXtd_Geometry"; }
+template <>
+template <>
+inline Standard_CString StdObjMgt_Attribute<TDataXtd_Geometry>::Simple<Standard_Integer>::PName()
+  const
+{
+  return "PDataXtd_Geometry";
+}
 
-template<>
-template<>
+template <>
+template <>
 inline Standard_CString StdObjMgt_Attribute<TDataXtd_Position>::Simple<gp_Pnt>::PName() const
-  { return "PDataXtd_Position"; }
+{
+  return "PDataXtd_Position";
+}
 
 #endif

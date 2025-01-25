@@ -28,10 +28,8 @@ class MAT_BasicElt;
 class MAT_Arc;
 class MAT_Node;
 
-
 class MAT_Zone;
 DEFINE_STANDARD_HANDLE(MAT_Zone, Standard_Transient)
-
 
 //! Definition of Zone of Proximity of a BasicElt :
 //! ----------------------------------------------
@@ -41,54 +39,37 @@ class MAT_Zone : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT MAT_Zone();
-  
+
   //! Compute the frontier of the Zone of proximity.
   Standard_EXPORT MAT_Zone(const Handle(MAT_BasicElt)& aBasicElt);
-  
+
   //! Compute the frontier of the Zone of proximity.
-  Standard_EXPORT void Perform (const Handle(MAT_BasicElt)& aBasicElt);
-  
+  Standard_EXPORT void Perform(const Handle(MAT_BasicElt)& aBasicElt);
+
   //! Return the number Of Arcs On the frontier of <me>.
   Standard_EXPORT Standard_Integer NumberOfArcs() const;
-  
+
   //! Return the  Arc number <Index>  on the frontier.
   //! of  <me>.
-  Standard_EXPORT Handle(MAT_Arc) ArcOnFrontier (const Standard_Integer Index) const;
-  
+  Standard_EXPORT Handle(MAT_Arc) ArcOnFrontier(const Standard_Integer Index) const;
+
   //! Return TRUE if <me> is not empty .
   Standard_EXPORT Standard_Boolean NoEmptyZone() const;
-  
+
   //! Return TRUE if <me> is Limited.
   Standard_EXPORT Standard_Boolean Limited() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(MAT_Zone,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(MAT_Zone, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-  
-  Standard_EXPORT Handle(MAT_Node) NodeForTurn (const Handle(MAT_Arc)& anArc, const Handle(MAT_BasicElt)& aBasicElt, const MAT_Side aSide) const;
+  Standard_EXPORT Handle(MAT_Node) NodeForTurn(const Handle(MAT_Arc)&      anArc,
+                                               const Handle(MAT_BasicElt)& aBasicElt,
+                                               const MAT_Side              aSide) const;
 
   MAT_SequenceOfArc frontier;
-  Standard_Boolean limited;
-
-
+  Standard_Boolean  limited;
 };
-
-
-
-
-
-
 
 #endif // _MAT_Zone_HeaderFile

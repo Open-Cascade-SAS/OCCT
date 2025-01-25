@@ -14,17 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_SiUnitAndVolumeUnit.hxx>
 #include <StepBasic_VolumeUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndVolumeUnit,StepBasic_SiUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndVolumeUnit, StepBasic_SiUnit)
 
-StepBasic_SiUnitAndVolumeUnit::StepBasic_SiUnitAndVolumeUnit()
-{
-}
+StepBasic_SiUnitAndVolumeUnit::StepBasic_SiUnitAndVolumeUnit() {}
 
 void StepBasic_SiUnitAndVolumeUnit::SetVolumeUnit(const Handle(StepBasic_VolumeUnit)& aVolumeUnit)
 {

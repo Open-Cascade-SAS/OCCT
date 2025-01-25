@@ -19,9 +19,7 @@ inline Standard_Boolean Expr_NamedUnknown::IsAssigned() const
   return !(myExpression.IsNull());
 }
 
-inline void Expr_NamedUnknown::Deassign ()
+inline void Expr_NamedUnknown::Deassign()
 {
   myExpression.Nullify();
 }
-    
-

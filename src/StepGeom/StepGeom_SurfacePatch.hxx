@@ -24,68 +24,51 @@
 #include <Standard_Transient.hxx>
 class StepGeom_BoundedSurface;
 
-
 class StepGeom_SurfacePatch;
 DEFINE_STANDARD_HANDLE(StepGeom_SurfacePatch, Standard_Transient)
-
 
 class StepGeom_SurfacePatch : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a SurfacePatch
   Standard_EXPORT StepGeom_SurfacePatch();
-  
-  Standard_EXPORT void Init (const Handle(StepGeom_BoundedSurface)& aParentSurface, const StepGeom_TransitionCode aUTransition, const StepGeom_TransitionCode aVTransition, const Standard_Boolean aUSense, const Standard_Boolean aVSense);
-  
-  Standard_EXPORT void SetParentSurface (const Handle(StepGeom_BoundedSurface)& aParentSurface);
-  
+
+  Standard_EXPORT void Init(const Handle(StepGeom_BoundedSurface)& aParentSurface,
+                            const StepGeom_TransitionCode          aUTransition,
+                            const StepGeom_TransitionCode          aVTransition,
+                            const Standard_Boolean                 aUSense,
+                            const Standard_Boolean                 aVSense);
+
+  Standard_EXPORT void SetParentSurface(const Handle(StepGeom_BoundedSurface)& aParentSurface);
+
   Standard_EXPORT Handle(StepGeom_BoundedSurface) ParentSurface() const;
-  
-  Standard_EXPORT void SetUTransition (const StepGeom_TransitionCode aUTransition);
-  
+
+  Standard_EXPORT void SetUTransition(const StepGeom_TransitionCode aUTransition);
+
   Standard_EXPORT StepGeom_TransitionCode UTransition() const;
-  
-  Standard_EXPORT void SetVTransition (const StepGeom_TransitionCode aVTransition);
-  
+
+  Standard_EXPORT void SetVTransition(const StepGeom_TransitionCode aVTransition);
+
   Standard_EXPORT StepGeom_TransitionCode VTransition() const;
-  
-  Standard_EXPORT void SetUSense (const Standard_Boolean aUSense);
-  
+
+  Standard_EXPORT void SetUSense(const Standard_Boolean aUSense);
+
   Standard_EXPORT Standard_Boolean USense() const;
-  
-  Standard_EXPORT void SetVSense (const Standard_Boolean aVSense);
-  
+
+  Standard_EXPORT void SetVSense(const Standard_Boolean aVSense);
+
   Standard_EXPORT Standard_Boolean VSense() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_SurfacePatch,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_SurfacePatch, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepGeom_BoundedSurface) parentSurface;
-  StepGeom_TransitionCode uTransition;
-  StepGeom_TransitionCode vTransition;
-  Standard_Boolean uSense;
-  Standard_Boolean vSense;
-
-
+  StepGeom_TransitionCode         uTransition;
+  StepGeom_TransitionCode         vTransition;
+  Standard_Boolean                uSense;
+  Standard_Boolean                vSense;
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_SurfacePatch_HeaderFile

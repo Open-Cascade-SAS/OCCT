@@ -23,48 +23,31 @@
 #include <MeshVS_HArray1OfSequenceOfInteger.hxx>
 #include <Standard_Integer.hxx>
 
-
 class MeshVS_DataSource3D;
 DEFINE_STANDARD_HANDLE(MeshVS_DataSource3D, MeshVS_DataSource)
-
 
 class MeshVS_DataSource3D : public MeshVS_DataSource
 {
 
 public:
+  Standard_EXPORT Handle(MeshVS_HArray1OfSequenceOfInteger) GetPrismTopology(
+    const Standard_Integer BasePoints) const;
 
-  
-  Standard_EXPORT Handle(MeshVS_HArray1OfSequenceOfInteger) GetPrismTopology (const Standard_Integer BasePoints) const;
-  
-  Standard_EXPORT Handle(MeshVS_HArray1OfSequenceOfInteger) GetPyramidTopology (const Standard_Integer BasePoints) const;
-  
-  Standard_EXPORT static Handle(MeshVS_HArray1OfSequenceOfInteger) CreatePrismTopology (const Standard_Integer BasePoints);
-  
-  Standard_EXPORT static Handle(MeshVS_HArray1OfSequenceOfInteger) CreatePyramidTopology (const Standard_Integer BasePoints);
+  Standard_EXPORT Handle(MeshVS_HArray1OfSequenceOfInteger) GetPyramidTopology(
+    const Standard_Integer BasePoints) const;
 
+  Standard_EXPORT static Handle(MeshVS_HArray1OfSequenceOfInteger) CreatePrismTopology(
+    const Standard_Integer BasePoints);
 
+  Standard_EXPORT static Handle(MeshVS_HArray1OfSequenceOfInteger) CreatePyramidTopology(
+    const Standard_Integer BasePoints);
 
-
-  DEFINE_STANDARD_RTTIEXT(MeshVS_DataSource3D,MeshVS_DataSource)
+  DEFINE_STANDARD_RTTIEXT(MeshVS_DataSource3D, MeshVS_DataSource)
 
 protected:
-
-
-
-
 private:
-
-
   MeshVS_DataMapOfHArray1OfSequenceOfInteger myPrismTopos;
   MeshVS_DataMapOfHArray1OfSequenceOfInteger myPyramidTopos;
-
-
 };
-
-
-
-
-
-
 
 #endif // _MeshVS_DataSource3D_HeaderFile

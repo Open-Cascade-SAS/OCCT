@@ -31,18 +31,15 @@ class StepRepr_ShapeAspect;
 class StepRepr_ShapeAspectRelationship;
 class StepBasic_DocumentFile;
 
-
 //! Representation of STEP SELECT type CharacterizedDefinition
-class StepRepr_CharacterizedDefinition  : public StepData_SelectType
+class StepRepr_CharacterizedDefinition : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_EXPORT StepRepr_CharacterizedDefinition();
-  
+
   //! Recognizes a kind of CharacterizedDefinition select type
   //! 1 -> CharacterizedObject from StepBasic
   //! 2 -> ProductDefinition from StepBasic
@@ -52,50 +49,32 @@ public:
   //! 6 -> ShapeAspectRelationship from StepRepr
   //! 7 -> DocumentFile from StepBasic
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! Returns Value as CharacterizedObject (or Null if another type)
   Standard_EXPORT Handle(StepBasic_CharacterizedObject) CharacterizedObject() const;
-  
+
   //! Returns Value as ProductDefinition (or Null if another type)
   Standard_EXPORT Handle(StepBasic_ProductDefinition) ProductDefinition() const;
-  
+
   //! Returns Value as ProductDefinitionRelationship (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_ProductDefinitionRelationship) ProductDefinitionRelationship() const;
-  
+  Standard_EXPORT Handle(StepBasic_ProductDefinitionRelationship) ProductDefinitionRelationship()
+    const;
+
   //! Returns Value as ProductDefinitionShape (or Null if another type)
   Standard_EXPORT Handle(StepRepr_ProductDefinitionShape) ProductDefinitionShape() const;
-  
+
   //! Returns Value as ShapeAspect (or Null if another type)
   Standard_EXPORT Handle(StepRepr_ShapeAspect) ShapeAspect() const;
-  
+
   //! Returns Value as ShapeAspectRelationship (or Null if another type)
   Standard_EXPORT Handle(StepRepr_ShapeAspectRelationship) ShapeAspectRelationship() const;
-  
+
   //! Returns Value as DocumentFile (or Null if another type)
   Standard_EXPORT Handle(StepBasic_DocumentFile) DocumentFile() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepRepr_CharacterizedDefinition_HeaderFile

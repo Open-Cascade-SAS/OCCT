@@ -17,38 +17,36 @@
 
 #include <Prs3d_LineAspect.hxx>
 
-//=======================================================================
-//function : Add
-//purpose  :
-//=======================================================================
-void Prs3d_BndBox::Add (const Handle(Prs3d_Presentation)& thePresentation,
-                        const Bnd_Box&                    theBndBox,
-                        const Handle(Prs3d_Drawer)&       theDrawer)
+//=================================================================================================
+
+void Prs3d_BndBox::Add(const Handle(Prs3d_Presentation)& thePresentation,
+                       const Bnd_Box&                    theBndBox,
+                       const Handle(Prs3d_Drawer)&       theDrawer)
 {
   if (!theBndBox.IsVoid())
   {
     Handle(Graphic3d_Group) aGroup = thePresentation->CurrentGroup();
-    aGroup->SetGroupPrimitivesAspect (new Graphic3d_AspectLine3d (theDrawer->LineAspect()->Aspect()->Color(),
-                                                                  Aspect_TOL_DOTDASH,
-                                                                  theDrawer->LineAspect()->Aspect()->Width()));
-    aGroup->AddPrimitiveArray (FillSegments (theBndBox));
+    aGroup->SetGroupPrimitivesAspect(
+      new Graphic3d_AspectLine3d(theDrawer->LineAspect()->Aspect()->Color(),
+                                 Aspect_TOL_DOTDASH,
+                                 theDrawer->LineAspect()->Aspect()->Width()));
+    aGroup->AddPrimitiveArray(FillSegments(theBndBox));
   }
 }
 
-//=======================================================================
-//function : Add
-//purpose  :
-//=======================================================================
-void Prs3d_BndBox::Add (const Handle(Prs3d_Presentation)& thePresentation,
-                        const Bnd_OBB&                    theBndBox,
-                        const Handle(Prs3d_Drawer)&       theDrawer)
+//=================================================================================================
+
+void Prs3d_BndBox::Add(const Handle(Prs3d_Presentation)& thePresentation,
+                       const Bnd_OBB&                    theBndBox,
+                       const Handle(Prs3d_Drawer)&       theDrawer)
 {
   if (!theBndBox.IsVoid())
   {
     Handle(Graphic3d_Group) aGroup = thePresentation->CurrentGroup();
-    aGroup->SetGroupPrimitivesAspect (new Graphic3d_AspectLine3d (theDrawer->LineAspect()->Aspect()->Color(),
-                                                                  Aspect_TOL_DOTDASH,
-                                                                  theDrawer->LineAspect()->Aspect()->Width()));
-    aGroup->AddPrimitiveArray (FillSegments (theBndBox));
+    aGroup->SetGroupPrimitivesAspect(
+      new Graphic3d_AspectLine3d(theDrawer->LineAspect()->Aspect()->Color(),
+                                 Aspect_TOL_DOTDASH,
+                                 theDrawer->LineAspect()->Aspect()->Width()));
+    aGroup->AddPrimitiveArray(FillSegments(theBndBox));
   }
 }

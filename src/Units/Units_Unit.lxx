@@ -21,8 +21,8 @@
 #include <TCollection_AsciiString.hxx>
 
 //=======================================================================
-//function : Name
-//purpose  : 
+// function : Name
+// purpose  :
 //=======================================================================
 
 inline TCollection_AsciiString Units_Unit::Name() const
@@ -31,8 +31,8 @@ inline TCollection_AsciiString Units_Unit::Name() const
 }
 
 //=======================================================================
-//function : Value
-//purpose  : 
+// function : Value
+// purpose  :
 //=======================================================================
 
 inline Standard_Real Units_Unit::Value() const
@@ -41,8 +41,8 @@ inline Standard_Real Units_Unit::Value() const
 }
 
 //=======================================================================
-//function : Quantity
-//purpose  : 
+// function : Quantity
+// purpose  :
 //=======================================================================
 
 inline Handle(Units_Quantity) Units_Unit::Quantity() const
@@ -51,8 +51,8 @@ inline Handle(Units_Quantity) Units_Unit::Quantity() const
 }
 
 //=======================================================================
-//function : SymbolsSequence
-//purpose  : 
+// function : SymbolsSequence
+// purpose  :
 //=======================================================================
 
 inline Handle(TColStd_HSequenceOfHAsciiString) Units_Unit::SymbolsSequence() const
@@ -61,8 +61,8 @@ inline Handle(TColStd_HSequenceOfHAsciiString) Units_Unit::SymbolsSequence() con
 }
 
 //=======================================================================
-//function : Value
-//purpose  : 
+// function : Value
+// purpose  :
 //=======================================================================
 
 inline void Units_Unit::Value(const Standard_Real avalue)
@@ -71,8 +71,8 @@ inline void Units_Unit::Value(const Standard_Real avalue)
 }
 
 //=======================================================================
-//function : Quantity
-//purpose  : 
+// function : Quantity
+// purpose  :
 //=======================================================================
 
 inline void Units_Unit::Quantity(const Handle(Units_Quantity)& aquantity)

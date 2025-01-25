@@ -24,13 +24,13 @@
 //! Command-queue for parallel building of BVH nodes.
 class BVH_BuildQueue
 {
-  template <class T, int N> friend class BVH_QueueBuilder;
+  template <class T, int N>
+  friend class BVH_QueueBuilder;
 
 public:
-
   //! Creates new BVH build queue.
   BVH_BuildQueue()
-  : myNbThreads (0)
+      : myNbThreads(0)
   {
     //
   }
@@ -42,29 +42,23 @@ public:
   }
 
 public:
-
   //! Returns current size of BVH build queue.
   Standard_EXPORT Standard_Integer Size();
 
   //! Enqueues new work-item onto BVH build queue.
-  Standard_EXPORT void Enqueue (const Standard_Integer& theNode);
+  Standard_EXPORT void Enqueue(const Standard_Integer& theNode);
 
   //! Fetches first work-item from BVH build queue.
-  Standard_EXPORT Standard_Integer Fetch (Standard_Boolean& wasBusy);
+  Standard_EXPORT Standard_Integer Fetch(Standard_Boolean& wasBusy);
 
   //! Checks if there are active build threads.
-  Standard_Boolean HasBusyThreads()
-  {
-    return myNbThreads != 0;
-  }
+  Standard_Boolean HasBusyThreads() { return myNbThreads != 0; }
 
 protected:
-
   //! Queue of BVH nodes to build.
   NCollection_Sequence<Standard_Integer> myQueue;
 
 protected:
-
   //! Manages access serialization of working threads.
   Standard_Mutex myMutex;
 

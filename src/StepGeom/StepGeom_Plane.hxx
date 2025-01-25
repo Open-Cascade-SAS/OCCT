@@ -22,41 +22,20 @@
 
 #include <StepGeom_ElementarySurface.hxx>
 
-
 class StepGeom_Plane;
 DEFINE_STANDARD_HANDLE(StepGeom_Plane, StepGeom_ElementarySurface)
-
 
 class StepGeom_Plane : public StepGeom_ElementarySurface
 {
 
 public:
-
-  
   //! Returns a Plane
   Standard_EXPORT StepGeom_Plane();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_Plane,StepGeom_ElementarySurface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_Plane, StepGeom_ElementarySurface)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_Plane_HeaderFile

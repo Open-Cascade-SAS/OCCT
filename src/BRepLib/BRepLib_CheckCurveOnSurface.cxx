@@ -24,22 +24,17 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 
-//=======================================================================
-//function : BRepLib_CheckCurveOnSurface
-//purpose  : 
-//=======================================================================
-BRepLib_CheckCurveOnSurface::BRepLib_CheckCurveOnSurface
-                                            ( const TopoDS_Edge& theEdge,
-                                              const TopoDS_Face& theFace)
-  : myIsParallel(Standard_False)
+//=================================================================================================
+
+BRepLib_CheckCurveOnSurface::BRepLib_CheckCurveOnSurface(const TopoDS_Edge& theEdge,
+                                                         const TopoDS_Face& theFace)
+    : myIsParallel(Standard_False)
 {
   Init(theEdge, theFace);
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BRepLib_CheckCurveOnSurface::Init(const TopoDS_Edge& theEdge, const TopoDS_Face& theFace)
 {
   myCOnSurfGeom.Init();
@@ -49,45 +44,46 @@ void BRepLib_CheckCurveOnSurface::Init(const TopoDS_Edge& theEdge, const TopoDS_
     return;
   }
   //
-  if (BRep_Tool::Degenerated(theEdge) ||
-      !BRep_Tool::IsGeometric(theEdge))
+  if (BRep_Tool::Degenerated(theEdge) || !BRep_Tool::IsGeometric(theEdge))
   {
     return;
   }
-  
+
   // 3D curve initialization
   const Handle(Adaptor3d_Curve) anAdaptor3dCurve = new BRepAdaptor_Curve(theEdge);
 
   // Surface initialization
 
   TopLoc_Location aLocation;
-  Standard_Real aFirstParam, aLastParam;
+  Standard_Real   aFirstParam, aLastParam;
 
-  Handle(Geom2d_Curve) aGeom2dCurve = BRep_Tool::CurveOnSurface(theEdge, theFace, aFirstParam, aLastParam);
+  Handle(Geom2d_Curve) aGeom2dCurve =
+    BRep_Tool::CurveOnSurface(theEdge, theFace, aFirstParam, aLastParam);
   Handle(Geom_Surface) aGeomSurface = BRep_Tool::Surface(theFace);
 
-  // 2D curves initialization 
-  Handle(Adaptor2d_Curve2d) anAdaptorCurve = 
+  // 2D curves initialization
+  Handle(Adaptor2d_Curve2d) anAdaptorCurve =
     new Geom2dAdaptor_Curve(aGeom2dCurve, aFirstParam, aLastParam);
   Handle(GeomAdaptor_Surface) aGeomAdaptorSurface = new GeomAdaptor_Surface(aGeomSurface);
 
   myAdaptorCurveOnSurface = new Adaptor3d_CurveOnSurface(anAdaptorCurve, aGeomAdaptorSurface);
 
-  if(BRep_Tool::IsClosed(theEdge, theFace))
+  if (BRep_Tool::IsClosed(theEdge, theFace))
   {
-    Handle(Geom2d_Curve) aGeom2dReversedCurve = 
+    Handle(Geom2d_Curve) aGeom2dReversedCurve =
       BRep_Tool::CurveOnSurface(TopoDS::Edge(theEdge.Reversed()), theFace, aFirstParam, aLastParam);
     Handle(Adaptor2d_Curve2d) anAdaptorReversedCurve =
       new Geom2dAdaptor_Curve(aGeom2dReversedCurve, aFirstParam, aLastParam);
-     myAdaptorCurveOnSurface2 = new Adaptor3d_CurveOnSurface(anAdaptorReversedCurve, aGeomAdaptorSurface);
+    myAdaptorCurveOnSurface2 =
+      new Adaptor3d_CurveOnSurface(anAdaptorReversedCurve, aGeomAdaptorSurface);
   }
 
   myCOnSurfGeom.Init(anAdaptor3dCurve);
 }
 
 //=======================================================================
-//function : Perform
-//purpose  : if isTheMTDisabled == TRUE parallelization is not used
+// function : Perform
+// purpose  : if isTheMTDisabled == TRUE parallelization is not used
 //=======================================================================
 void BRepLib_CheckCurveOnSurface::Perform()
 {
@@ -107,8 +103,8 @@ void BRepLib_CheckCurveOnSurface::Perform()
 }
 
 //=======================================================================
-//function : Compute
-//purpose  : if isTheMTDisabled == TRUE parallelization is not used
+// function : Compute
+// purpose  : if isTheMTDisabled == TRUE parallelization is not used
 //=======================================================================
 void BRepLib_CheckCurveOnSurface::Compute(const Handle(Adaptor3d_CurveOnSurface)& theCurveOnSurface)
 {

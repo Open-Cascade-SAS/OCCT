@@ -25,7 +25,6 @@ class IFSelect_SessionFile;
 class Standard_Transient;
 class TCollection_AsciiString;
 
-
 class IGESSelect_Dumper;
 DEFINE_STANDARD_HANDLE(IGESSelect_Dumper, IFSelect_SessionDumper)
 
@@ -36,40 +35,26 @@ class IGESSelect_Dumper : public IFSelect_SessionDumper
 {
 
 public:
-
-  
   //! Creates a Dumper and puts it into the Library of Dumper
   Standard_EXPORT IGESSelect_Dumper();
-  
+
   //! Write the Own Parameters of Types defined in package IGESSelect
   //! Returns True if <item> has been processed, False else
-  Standard_EXPORT Standard_Boolean WriteOwn (IFSelect_SessionFile& file, const Handle(Standard_Transient)& item) const Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Boolean
+    WriteOwn(IFSelect_SessionFile&             file,
+             const Handle(Standard_Transient)& item) const Standard_OVERRIDE;
+
   //! Recognizes and Read Own Parameters for Types of package
   //! IGESSelect. Returns True if done and <item> created, False else
-  Standard_EXPORT Standard_Boolean ReadOwn (IFSelect_SessionFile& file, const TCollection_AsciiString& type, Handle(Standard_Transient)& item) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean
+    ReadOwn(IFSelect_SessionFile&          file,
+            const TCollection_AsciiString& type,
+            Handle(Standard_Transient)&    item) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSelect_Dumper,IFSelect_SessionDumper)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_Dumper, IFSelect_SessionDumper)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESSelect_Dumper_HeaderFile

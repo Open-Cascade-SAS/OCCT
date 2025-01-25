@@ -25,48 +25,29 @@ class StepGeom_Axis1Placement;
 class TCollection_HAsciiString;
 class StepGeom_Curve;
 
-
 class StepGeom_SurfaceOfRevolution;
 DEFINE_STANDARD_HANDLE(StepGeom_SurfaceOfRevolution, StepGeom_SweptSurface)
-
 
 class StepGeom_SurfaceOfRevolution : public StepGeom_SweptSurface
 {
 
 public:
-
-  
   //! Returns a SurfaceOfRevolution
   Standard_EXPORT StepGeom_SurfaceOfRevolution();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Curve)& aSweptCurve, const Handle(StepGeom_Axis1Placement)& aAxisPosition);
-  
-  Standard_EXPORT void SetAxisPosition (const Handle(StepGeom_Axis1Placement)& aAxisPosition);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Handle(StepGeom_Curve)&           aSweptCurve,
+                            const Handle(StepGeom_Axis1Placement)&  aAxisPosition);
+
+  Standard_EXPORT void SetAxisPosition(const Handle(StepGeom_Axis1Placement)& aAxisPosition);
+
   Standard_EXPORT Handle(StepGeom_Axis1Placement) AxisPosition() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_SurfaceOfRevolution,StepGeom_SweptSurface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_SurfaceOfRevolution, StepGeom_SweptSurface)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepGeom_Axis1Placement) axisPosition;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_SurfaceOfRevolution_HeaderFile

@@ -18,7 +18,8 @@
 
 #include <Standard_PrimitiveTypes.hxx>
 
-struct FSD_FileHeader {
+struct FSD_FileHeader
+{
   Standard_Integer testindian;
   Standard_Integer binfo;
   Standard_Integer einfo;
@@ -31,7 +32,7 @@ struct FSD_FileHeader {
   Standard_Integer bref;
   Standard_Integer eref;
   Standard_Integer bdata;
-  Standard_Integer edata;  
+  Standard_Integer edata;
 };
 
 #endif

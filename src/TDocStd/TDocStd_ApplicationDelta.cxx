@@ -19,27 +19,24 @@
 #include <TCollection_ExtendedString.hxx>
 #include <TDocStd_Document.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDocStd_ApplicationDelta,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(TDocStd_ApplicationDelta, Standard_Transient)
 
-//=======================================================================
-//function : TDocStd_ApplicationDelta
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 TDocStd_ApplicationDelta::TDocStd_ApplicationDelta() {}
 
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TDocStd_ApplicationDelta::Dump(Standard_OStream& anOS) const {
-  anOS<<"\t";
+void TDocStd_ApplicationDelta::Dump(Standard_OStream& anOS) const
+{
+  anOS << "\t";
   myName.Print(anOS);
-  anOS<<" - " << myDocuments.Length() << " documents ";
-  anOS<<" ( ";
+  anOS << " - " << myDocuments.Length() << " documents ";
+  anOS << " ( ";
   Standard_Integer i;
-  for (i = 1; i <= myDocuments.Length(); i++) {
-    Handle(TDocStd_Document) aDocAddr= myDocuments.Value(i);
+  for (i = 1; i <= myDocuments.Length(); i++)
+  {
+    Handle(TDocStd_Document) aDocAddr = myDocuments.Value(i);
     anOS << "\"" << aDocAddr.get();
     anOS << "\" ";
   }

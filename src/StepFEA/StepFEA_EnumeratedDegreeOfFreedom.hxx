@@ -14,16 +14,15 @@
 #ifndef _StepFEA_EnumeratedDegreeOfFreedom_HeaderFile
 #define _StepFEA_EnumeratedDegreeOfFreedom_HeaderFile
 
-
 enum StepFEA_EnumeratedDegreeOfFreedom
 {
-StepFEA_XTranslation,
-StepFEA_YTranslation,
-StepFEA_ZTranslation,
-StepFEA_XRotation,
-StepFEA_YRotation,
-StepFEA_ZRotation,
-StepFEA_Warp
+  StepFEA_XTranslation,
+  StepFEA_YTranslation,
+  StepFEA_ZTranslation,
+  StepFEA_XRotation,
+  StepFEA_YRotation,
+  StepFEA_ZRotation,
+  StepFEA_Warp
 };
 
 #endif // _StepFEA_EnumeratedDegreeOfFreedom_HeaderFile

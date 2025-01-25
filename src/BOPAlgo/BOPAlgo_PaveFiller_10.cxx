@@ -34,36 +34,34 @@
 #include <BOPDS_CommonBlock.hxx>
 #include <BOPDS_DS.hxx>
 
-//=======================================================================
-//function : SetNonDestructive
-//purpose  : 
-//=======================================================================
-void BOPAlgo_PaveFiller::SetNonDestructive() 
+//=================================================================================================
+
+void BOPAlgo_PaveFiller::SetNonDestructive()
 {
-  if (!myIsPrimary || myNonDestructive) {
+  if (!myIsPrimary || myNonDestructive)
+  {
     return;
   }
   //
-  Standard_Boolean bFlag;
+  Standard_Boolean                   bFlag;
   TopTools_ListIteratorOfListOfShape aItLS;
   //
-  bFlag=Standard_False;
+  bFlag = Standard_False;
   aItLS.Initialize(myArguments);
-  for(; aItLS.More() && (!bFlag); aItLS.Next()) {
-    const TopoDS_Shape& aS=aItLS.Value();
-    bFlag=aS.Locked();
+  for (; aItLS.More() && (!bFlag); aItLS.Next())
+  {
+    const TopoDS_Shape& aS = aItLS.Value();
+    bFlag                  = aS.Locked();
   }
-  myNonDestructive=bFlag;
+  myNonDestructive = bFlag;
 }
-//=======================================================================
-//function : UpdateEdgeTolerance
-//purpose  : 
-//=======================================================================
-void BOPAlgo_PaveFiller::UpdateEdgeTolerance (const Standard_Integer nE,
-                                              const Standard_Real theTol)
+
+//=================================================================================================
+
+void BOPAlgo_PaveFiller::UpdateEdgeTolerance(const Standard_Integer nE, const Standard_Real theTol)
 {
-  BOPDS_ShapeInfo& aSIE = myDS->ChangeShapeInfo(nE);
-  const TColStd_ListOfInteger& aLI = aSIE.SubShapes();
+  BOPDS_ShapeInfo&             aSIE = myDS->ChangeShapeInfo(nE);
+  const TColStd_ListOfInteger& aLI  = aSIE.SubShapes();
 
   // For the safe input mode avoid modifying the input shapes
   if (myNonDestructive)
@@ -75,8 +73,7 @@ void BOPAlgo_PaveFiller::UpdateEdgeTolerance (const Standard_Integer nE,
     for (; itLI.More(); itLI.Next())
     {
       Standard_Integer nV = itLI.Value(), nVSD;
-      if (!myDS->IsNewShape(nV) &&
-          !myDS->HasShapeSD(nV, nVSD))
+      if (!myDS->IsNewShape(nV) && !myDS->HasShapeSD(nV, nVSD))
         return;
     }
   }
@@ -96,29 +93,27 @@ void BOPAlgo_PaveFiller::UpdateEdgeTolerance (const Standard_Integer nE,
     UpdateVertex(nV, theTol);
   }
 }
-//=======================================================================
-//function : UpdateVertex
-//purpose  : 
-//=======================================================================
-Standard_Integer BOPAlgo_PaveFiller::UpdateVertex
-  (const Standard_Integer nV,
-   const Standard_Real aTolNew)
+
+//=================================================================================================
+
+Standard_Integer BOPAlgo_PaveFiller::UpdateVertex(const Standard_Integer nV,
+                                                  const Standard_Real    aTolNew)
 {
   Standard_Integer nVNew;
-  Standard_Real aTolV;
-  BRep_Builder aBB;
-  
+  Standard_Real    aTolV;
+  BRep_Builder     aBB;
+
   nVNew = nV;
-  if (myDS->IsNewShape(nVNew) || 
-      myDS->HasShapeSD(nV, nVNew) ||
-      !myNonDestructive) {
+  if (myDS->IsNewShape(nVNew) || myDS->HasShapeSD(nV, nVNew) || !myNonDestructive)
+  {
     // nV is a new vertex, it has SD or non-destructive mode is not in force
     const TopoDS_Vertex& aVSD = *(TopoDS_Vertex*)&myDS->Shape(nVNew);
-    aTolV = BRep_Tool::Tolerance(aVSD);
-    if (aTolV < aTolNew) {
+    aTolV                     = BRep_Tool::Tolerance(aVSD);
+    if (aTolV < aTolNew)
+    {
       aBB.UpdateVertex(aVSD, aTolNew);
-      BOPDS_ShapeInfo& aSIV = myDS->ChangeShapeInfo(nVNew);
-      Bnd_Box& aBoxV = aSIV.ChangeBox();
+      BOPDS_ShapeInfo& aSIV  = myDS->ChangeShapeInfo(nVNew);
+      Bnd_Box&         aBoxV = aSIV.ChangeBox();
       BRepBndLib::Add(aVSD, aBoxV);
       aBoxV.SetGap(aBoxV.GetGap() + Precision::Confusion());
       myIncreasedSS.Add(nV);
@@ -128,11 +123,11 @@ Standard_Integer BOPAlgo_PaveFiller::UpdateVertex
   //
   // nV is old vertex
   const TopoDS_Vertex& aV = *(TopoDS_Vertex*)&myDS->Shape(nV);
-  aTolV = BRep_Tool::Tolerance(aV);
+  aTolV                   = BRep_Tool::Tolerance(aV);
   //
   // create new vertex
   TopoDS_Vertex aVNew;
-  gp_Pnt aPV = BRep_Tool::Pnt(aV);
+  gp_Pnt        aPV = BRep_Tool::Pnt(aV);
   aBB.MakeVertex(aVNew, aPV, Max(aTolV, aTolNew));
   //
   // append new vertex to DS
@@ -142,8 +137,8 @@ Standard_Integer BOPAlgo_PaveFiller::UpdateVertex
   nVNew = myDS->Append(aSIV);
   //
   // bounding box for the new vertex
-  BOPDS_ShapeInfo& aSIDS = myDS->ChangeShapeInfo(nVNew);
-  Bnd_Box& aBoxDS = aSIDS.ChangeBox();
+  BOPDS_ShapeInfo& aSIDS  = myDS->ChangeShapeInfo(nVNew);
+  Bnd_Box&         aBoxDS = aSIDS.ChangeBox();
   BRepBndLib::Add(aVNew, aBoxDS);
   aBoxDS.SetGap(aBoxDS.GetGap() + Precision::Confusion());
   //
@@ -158,51 +153,55 @@ Standard_Integer BOPAlgo_PaveFiller::UpdateVertex
 
   return nVNew;
 }
-//=======================================================================
-//function : UpdatePaveBlocksWithSDVertices
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
 void BOPAlgo_PaveFiller::UpdatePaveBlocksWithSDVertices()
 {
   myDS->UpdatePaveBlocksWithSDVertices();
 }
-//=======================================================================
-//function : UpdateCommonBlocksWithSDVertices
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
 void BOPAlgo_PaveFiller::UpdateCommonBlocksWithSDVertices()
 {
-  if (!myNonDestructive) {
+  if (!myNonDestructive)
+  {
     UpdatePaveBlocksWithSDVertices();
     return;
   }
   Standard_Integer aNbPBP;
   //
-  BOPDS_VectorOfListOfPaveBlock& aPBP=myDS->ChangePaveBlocksPool();
-  aNbPBP=aPBP.Length();
-  if(!aNbPBP) {
+  BOPDS_VectorOfListOfPaveBlock& aPBP = myDS->ChangePaveBlocksPool();
+  aNbPBP                              = aPBP.Length();
+  if (!aNbPBP)
+  {
     return;
   }
   //
-  Standard_Integer i, nV1, nV2;
-  Standard_Real aTolV;
-  BOPDS_MapOfCommonBlock aMCB;
+  Standard_Integer                    i, nV1, nV2;
+  Standard_Real                       aTolV;
+  BOPDS_MapOfCommonBlock              aMCB;
   BOPDS_ListIteratorOfListOfPaveBlock aItPB;
-  Handle(BOPDS_PaveBlock) aPB;
-  // 
+  Handle(BOPDS_PaveBlock)             aPB;
+  //
   aTolV = Precision::Confusion();
   //
-  for (i=0; i<aNbPBP; ++i) {
-    BOPDS_ListOfPaveBlock& aLPB=aPBP(i);
+  for (i = 0; i < aNbPBP; ++i)
+  {
+    BOPDS_ListOfPaveBlock& aLPB = aPBP(i);
     aItPB.Initialize(aLPB);
-    for (; aItPB.More(); aItPB.Next()) {
-      aPB=aItPB.Value();
-      const Handle(BOPDS_CommonBlock)& aCB=myDS->CommonBlock(aPB);
-      if (aCB.IsNull()) {
+    for (; aItPB.More(); aItPB.Next())
+    {
+      aPB                                  = aItPB.Value();
+      const Handle(BOPDS_CommonBlock)& aCB = myDS->CommonBlock(aPB);
+      if (aCB.IsNull())
+      {
         continue;
       }
       //
-      if (aMCB.Add(aCB)) {
+      if (aMCB.Add(aCB))
+      {
         aPB->Indices(nV1, nV2);
         UpdateVertex(nV1, aTolV);
         UpdateVertex(nV2, aTolV);
@@ -215,33 +214,29 @@ void BOPAlgo_PaveFiller::UpdateCommonBlocksWithSDVertices()
 
 namespace
 {
-  //=======================================================================
-  //function : UpdateInterfsWithSDVertices
-  //purpose  : 
-  //=======================================================================
-  template <class InterfType>
-  void UpdateIntfsWithSDVertices(BOPDS_PDS theDS, NCollection_Vector<InterfType>& theInterfs)
+//=================================================================================================
+
+template <class InterfType>
+void UpdateIntfsWithSDVertices(BOPDS_PDS theDS, NCollection_Vector<InterfType>& theInterfs)
+{
+  for (Standard_Integer i = 0; i < theInterfs.Length(); i++)
   {
-    for (Standard_Integer i = 0; i < theInterfs.Length(); i++)
+    InterfType&      anIntf = theInterfs(i);
+    Standard_Integer anInd;
+    if (anIntf.HasIndexNew(anInd))
     {
-      InterfType& anIntf = theInterfs(i);
-      Standard_Integer anInd;
-      if (anIntf.HasIndexNew(anInd))
+      Standard_Integer anIndSD;
+      if (theDS->HasShapeSD(anInd, anIndSD))
       {
-        Standard_Integer anIndSD;
-        if (theDS->HasShapeSD(anInd, anIndSD))
-        {
-          anIntf.SetIndexNew(anIndSD);
-        }
+        anIntf.SetIndexNew(anIndSD);
       }
     }
   }
 }
+} // namespace
 
-//=======================================================================
-//function : UpdateInterfsWithSDVertices
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BOPAlgo_PaveFiller::UpdateInterfsWithSDVertices()
 {
   UpdateIntfsWithSDVertices(myDS, myDS->InterfVV());

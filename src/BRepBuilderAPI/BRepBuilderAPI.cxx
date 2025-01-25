@@ -23,41 +23,30 @@
 #include <Geom_Plane.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-//=======================================================================
-//function : Plane
-//purpose  : 
-//=======================================================================
-void  BRepBuilderAPI::Plane(const Handle(Geom_Plane)& P)
+//=================================================================================================
+
+void BRepBuilderAPI::Plane(const Handle(Geom_Plane)& P)
 {
   BRepLib::Plane(P);
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Plane
-//purpose  : 
-//=======================================================================
-const Handle(Geom_Plane)&  BRepBuilderAPI::Plane()
+const Handle(Geom_Plane)& BRepBuilderAPI::Plane()
 {
   return BRepLib::Plane();
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Precision
-//purpose  : 
-//=======================================================================
-void  BRepBuilderAPI::Precision(const Standard_Real P)
+void BRepBuilderAPI::Precision(const Standard_Real P)
 {
   BRepLib::Precision(P);
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Precision
-//purpose  : 
-//=======================================================================
-Standard_Real  BRepBuilderAPI::Precision()
+Standard_Real BRepBuilderAPI::Precision()
 {
   return BRepLib::Precision();
 }

@@ -33,55 +33,66 @@
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESDimen_ToolCurveDimension::IGESDimen_ToolCurveDimension ()    {  }
+IGESDimen_ToolCurveDimension::IGESDimen_ToolCurveDimension() {}
 
+void IGESDimen_ToolCurveDimension::ReadOwnParams(const Handle(IGESDimen_CurveDimension)& ent,
+                                                 const Handle(IGESData_IGESReaderData)&  IR,
+                                                 IGESData_ParamReader&                   PR) const
+{
+  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
 
-void  IGESDimen_ToolCurveDimension::ReadOwnParams
-  (const Handle(IGESDimen_CurveDimension)& ent,
-   const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const
-{ 
-  //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  Handle(IGESDimen_GeneralNote) note;
+  Handle(IGESData_IGESEntity)   firstCurve;
+  Handle(IGESData_IGESEntity)   secondCurve;
+  Handle(IGESDimen_LeaderArrow) firstLeader;
+  Handle(IGESDimen_LeaderArrow) secondLeader;
+  Handle(IGESDimen_WitnessLine) firstWitness;
+  Handle(IGESDimen_WitnessLine) secondWitness;
 
-  Handle(IGESDimen_GeneralNote) note; 
-  Handle(IGESData_IGESEntity) firstCurve;
-  Handle(IGESData_IGESEntity) secondCurve;
-  Handle(IGESDimen_LeaderArrow) firstLeader; 
-  Handle(IGESDimen_LeaderArrow) secondLeader; 
-  Handle(IGESDimen_WitnessLine) firstWitness; 
-  Handle(IGESDimen_WitnessLine) secondWitness; 
+  PR.ReadEntity(IR,
+                PR.Current(),
+                "General Note Entity",
+                STANDARD_TYPE(IGESDimen_GeneralNote),
+                note); // szv#4:S4163:12Mar99 `st=` not needed
 
-  PR.ReadEntity(IR, PR.Current(), "General Note Entity",
-		STANDARD_TYPE(IGESDimen_GeneralNote), note); //szv#4:S4163:12Mar99 `st=` not needed
-
-// clang-format off
+  // clang-format off
   PR.ReadEntity(IR, PR.Current(), "First Curve Entity", firstCurve); //szv#4:S4163:12Mar99 `st=` not needed
-// clang-format on
+  // clang-format on
 
-  PR.ReadEntity(IR,PR.Current(),"Second Curve Entity",
-		secondCurve,Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
+  PR.ReadEntity(IR,
+                PR.Current(),
+                "Second Curve Entity",
+                secondCurve,
+                Standard_True); // szv#4:S4163:12Mar99 `st=` not needed
 
-  PR.ReadEntity(IR, PR.Current(), "First Leader Entity",
-		STANDARD_TYPE(IGESDimen_LeaderArrow), firstLeader); //szv#4:S4163:12Mar99 `st=` not needed
+  PR.ReadEntity(IR,
+                PR.Current(),
+                "First Leader Entity",
+                STANDARD_TYPE(IGESDimen_LeaderArrow),
+                firstLeader); // szv#4:S4163:12Mar99 `st=` not needed
 
-  PR.ReadEntity(IR, PR.Current(),"Second Leader Entity",
-		STANDARD_TYPE(IGESDimen_LeaderArrow), secondLeader); //szv#4:S4163:12Mar99 `st=` not needed
+  PR.ReadEntity(IR,
+                PR.Current(),
+                "Second Leader Entity",
+                STANDARD_TYPE(IGESDimen_LeaderArrow),
+                secondLeader); // szv#4:S4163:12Mar99 `st=` not needed
 
-  PR.ReadEntity (IR, PR.Current(), "First Witness Entity",
-// clang-format off
+  PR.ReadEntity(IR,
+                PR.Current(),
+                "First Witness Entity",
+                // clang-format off
 		 STANDARD_TYPE(IGESDimen_WitnessLine), firstWitness, Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity (IR,PR.Current(),"Second Witness Entity",
 		 STANDARD_TYPE(IGESDimen_WitnessLine), secondWitness, Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
-// clang-format on
+  // clang-format on
 
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
-  ent->Init
-    (note, firstCurve, secondCurve, firstLeader, secondLeader, 
-     firstWitness, secondWitness);
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
+  ent->Init(note, firstCurve, secondCurve, firstLeader, secondLeader, firstWitness, secondWitness);
 }
 
-void  IGESDimen_ToolCurveDimension::WriteOwnParams
-  (const Handle(IGESDimen_CurveDimension)& ent, IGESData_IGESWriter& IW) const
+void IGESDimen_ToolCurveDimension::WriteOwnParams(const Handle(IGESDimen_CurveDimension)& ent,
+                                                  IGESData_IGESWriter&                    IW) const
 {
   IW.Send(ent->Note());
   IW.Send(ent->FirstCurve());
@@ -92,8 +103,8 @@ void  IGESDimen_ToolCurveDimension::WriteOwnParams
   IW.Send(ent->SecondWitnessLine());
 }
 
-void  IGESDimen_ToolCurveDimension::OwnShared
-  (const Handle(IGESDimen_CurveDimension)& ent, Interface_EntityIterator& iter) const
+void IGESDimen_ToolCurveDimension::OwnShared(const Handle(IGESDimen_CurveDimension)& ent,
+                                             Interface_EntityIterator&               iter) const
 {
   iter.GetOneItem(ent->Note());
   iter.GetOneItem(ent->FirstCurve());
@@ -104,33 +115,27 @@ void  IGESDimen_ToolCurveDimension::OwnShared
   iter.GetOneItem(ent->SecondWitnessLine());
 }
 
-void  IGESDimen_ToolCurveDimension::OwnCopy
-  (const Handle(IGESDimen_CurveDimension)& another,
-   const Handle(IGESDimen_CurveDimension)& ent, Interface_CopyTool& TC) const
+void IGESDimen_ToolCurveDimension::OwnCopy(const Handle(IGESDimen_CurveDimension)& another,
+                                           const Handle(IGESDimen_CurveDimension)& ent,
+                                           Interface_CopyTool&                     TC) const
 {
-  DeclareAndCast(IGESDimen_GeneralNote, note, 
-		 TC.Transferred(another->Note()));
-  DeclareAndCast(IGESData_IGESEntity, firstCurve, 
-		 TC.Transferred(another->FirstCurve()));
-  DeclareAndCast(IGESData_IGESEntity, secondCurve, 
-		 TC.Transferred(another->SecondCurve()));
-  DeclareAndCast(IGESDimen_LeaderArrow, firstLeader, 
-		 TC.Transferred(another->FirstLeader()));
-  DeclareAndCast(IGESDimen_LeaderArrow, secondLeader, 
-		 TC.Transferred(another->SecondLeader()));
-  DeclareAndCast(IGESDimen_WitnessLine, firstWitness, 
-		 TC.Transferred(another->FirstWitnessLine()));
-  DeclareAndCast(IGESDimen_WitnessLine, secondWitness, 
-		 TC.Transferred(another->SecondWitnessLine()));
+  DeclareAndCast(IGESDimen_GeneralNote, note, TC.Transferred(another->Note()));
+  DeclareAndCast(IGESData_IGESEntity, firstCurve, TC.Transferred(another->FirstCurve()));
+  DeclareAndCast(IGESData_IGESEntity, secondCurve, TC.Transferred(another->SecondCurve()));
+  DeclareAndCast(IGESDimen_LeaderArrow, firstLeader, TC.Transferred(another->FirstLeader()));
+  DeclareAndCast(IGESDimen_LeaderArrow, secondLeader, TC.Transferred(another->SecondLeader()));
+  DeclareAndCast(IGESDimen_WitnessLine, firstWitness, TC.Transferred(another->FirstWitnessLine()));
+  DeclareAndCast(IGESDimen_WitnessLine,
+                 secondWitness,
+                 TC.Transferred(another->SecondWitnessLine()));
 
-  ent->Init(note, firstCurve, secondCurve, firstLeader, secondLeader, 
-	    firstWitness, secondWitness);
+  ent->Init(note, firstCurve, secondCurve, firstLeader, secondLeader, firstWitness, secondWitness);
 }
 
-IGESData_DirChecker  IGESDimen_ToolCurveDimension::DirChecker
-  (const Handle(IGESDimen_CurveDimension)& /*ent*/) const 
-{ 
-  IGESData_DirChecker DC (204, 0);
+IGESData_DirChecker IGESDimen_ToolCurveDimension::DirChecker(
+  const Handle(IGESDimen_CurveDimension)& /*ent*/) const
+{
+  IGESData_DirChecker DC(204, 0);
   DC.Structure(IGESData_DefVoid);
   DC.LineFont(IGESData_DefAny);
   DC.LineWeight(IGESData_DefValue);
@@ -139,44 +144,45 @@ IGESData_DirChecker  IGESDimen_ToolCurveDimension::DirChecker
   return DC;
 }
 
-void  IGESDimen_ToolCurveDimension::OwnCheck
-  (const Handle(IGESDimen_CurveDimension)& ent,
-   const Interface_ShareTool& , Handle(Interface_Check)& ach) const 
+void IGESDimen_ToolCurveDimension::OwnCheck(const Handle(IGESDimen_CurveDimension)& ent,
+                                            const Interface_ShareTool&,
+                                            Handle(Interface_Check)& ach) const
 {
   if (ent->HasSecondCurve())
-    {
-      if ( ent->FirstCurve()->IsKind(STANDARD_TYPE(IGESGeom_Line)) )
-	if ( ent->SecondCurve()->IsKind(STANDARD_TYPE(IGESGeom_Line)) )
-	  ach->AddWarning("Both curves are IGESGeom_Line Entities");
-    }
+  {
+    if (ent->FirstCurve()->IsKind(STANDARD_TYPE(IGESGeom_Line)))
+      if (ent->SecondCurve()->IsKind(STANDARD_TYPE(IGESGeom_Line)))
+        ach->AddWarning("Both curves are IGESGeom_Line Entities");
+  }
 }
 
-void  IGESDimen_ToolCurveDimension::OwnDump
-  (const Handle(IGESDimen_CurveDimension)& ent, const IGESData_IGESDumper& dumper,
-   Standard_OStream& S, const Standard_Integer level) const 
-{ 
+void IGESDimen_ToolCurveDimension::OwnDump(const Handle(IGESDimen_CurveDimension)& ent,
+                                           const IGESData_IGESDumper&              dumper,
+                                           Standard_OStream&                       S,
+                                           const Standard_Integer                  level) const
+{
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
 
   S << "IGESDimen_CurveDimension\n"
     << "General Note Entity   : ";
-  dumper.Dump(ent->Note(),S, sublevel);
+  dumper.Dump(ent->Note(), S, sublevel);
   S << "\n"
     << "First  Curve   Entity : ";
-  dumper.Dump(ent->FirstCurve(),S, sublevel);
+  dumper.Dump(ent->FirstCurve(), S, sublevel);
   S << "\n"
     << "Second Curve   Entity : ";
-  dumper.Dump(ent->SecondCurve(),S, sublevel);
+  dumper.Dump(ent->SecondCurve(), S, sublevel);
   S << "\n"
     << "First  Leader  Entity : ";
-  dumper.Dump(ent->FirstLeader(),S, sublevel);
+  dumper.Dump(ent->FirstLeader(), S, sublevel);
   S << "\n"
     << "Second Leader  Entity : ";
-  dumper.Dump(ent->SecondLeader(),S, sublevel);
+  dumper.Dump(ent->SecondLeader(), S, sublevel);
   S << "\n"
     << "First  Witness Entity : ";
-  dumper.Dump(ent->FirstWitnessLine(),S, sublevel);
+  dumper.Dump(ent->FirstWitnessLine(), S, sublevel);
   S << "\n"
     << "Second Witness Entity : ";
-  dumper.Dump(ent->SecondWitnessLine(),S, sublevel);
+  dumper.Dump(ent->SecondWitnessLine(), S, sublevel);
   S << std::endl;
 }

@@ -27,7 +27,11 @@ struct Aspect_TrackedDevicePose
   bool    IsConnectedDevice; //!< indicates connected state
 
   //! Empty constructor.
-  Aspect_TrackedDevicePose() : IsValidPose (false), IsConnectedDevice (false) {}
+  Aspect_TrackedDevicePose()
+      : IsValidPose(false),
+        IsConnectedDevice(false)
+  {
+  }
 };
 
 //! Array of tracked poses.

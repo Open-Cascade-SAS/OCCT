@@ -13,74 +13,76 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function :
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
-  inline BOPDS_IndexRange::BOPDS_IndexRange()
-:
-  myFirst(0),
-  myLast(0)
+inline BOPDS_IndexRange::BOPDS_IndexRange()
+    : myFirst(0),
+      myLast(0)
 {
-}
-//=======================================================================
-//function : SetFirst
-//purpose  : 
-//=======================================================================
-  inline void BOPDS_IndexRange::SetFirst(const Standard_Integer aFirst)
-{
-  myFirst=aFirst;
-}
-//=======================================================================
-//function : First
-//purpose  : 
-//=======================================================================
-  inline Standard_Integer BOPDS_IndexRange::First()const
-{
-  return myFirst;
-}
-//=======================================================================
-//function : SetLast
-//purpose  : 
-//=======================================================================
-  inline void BOPDS_IndexRange::SetLast(const Standard_Integer aLast)
-{
-  myLast=aLast;
-}
-//=======================================================================
-//function :Last
-//purpose  : 
-//=======================================================================
-  inline Standard_Integer BOPDS_IndexRange::Last()const
-{
-  return myLast;
-}
-//=======================================================================
-//function : SetIndices
-//purpose  : 
-//=======================================================================
-  inline void BOPDS_IndexRange::SetIndices(const Standard_Integer theI1,
-					   const Standard_Integer theI2)
-{
-  myFirst=theI1;
-  myLast=theI2;
-}
-//=======================================================================
-//function : Indices
-//purpose  : 
-//=======================================================================
-  inline void BOPDS_IndexRange::Indices(Standard_Integer& theI1,
-					Standard_Integer& theI2)const
-{
-  theI1=myFirst;
-  theI2=myLast;
 }
 
 //=======================================================================
-//function : Contains
-//purpose  : 
+// function : SetFirst
+// purpose  :
 //=======================================================================
-inline Standard_Boolean BOPDS_IndexRange::Contains(const Standard_Integer aIndex)const
+inline void BOPDS_IndexRange::SetFirst(const Standard_Integer aFirst)
 {
-  return aIndex >= myFirst
-      && aIndex <= myLast;
+  myFirst = aFirst;
+}
+
+//=======================================================================
+// function : First
+// purpose  :
+//=======================================================================
+inline Standard_Integer BOPDS_IndexRange::First() const
+{
+  return myFirst;
+}
+
+//=======================================================================
+// function : SetLast
+// purpose  :
+//=======================================================================
+inline void BOPDS_IndexRange::SetLast(const Standard_Integer aLast)
+{
+  myLast = aLast;
+}
+
+//=======================================================================
+// function :Last
+// purpose  :
+//=======================================================================
+inline Standard_Integer BOPDS_IndexRange::Last() const
+{
+  return myLast;
+}
+
+//=======================================================================
+// function : SetIndices
+// purpose  :
+//=======================================================================
+inline void BOPDS_IndexRange::SetIndices(const Standard_Integer theI1, const Standard_Integer theI2)
+{
+  myFirst = theI1;
+  myLast  = theI2;
+}
+
+//=======================================================================
+// function : Indices
+// purpose  :
+//=======================================================================
+inline void BOPDS_IndexRange::Indices(Standard_Integer& theI1, Standard_Integer& theI2) const
+{
+  theI1 = myFirst;
+  theI2 = myLast;
+}
+
+//=======================================================================
+// function : Contains
+// purpose  :
+//=======================================================================
+inline Standard_Boolean BOPDS_IndexRange::Contains(const Standard_Integer aIndex) const
+{
+  return aIndex >= myFirst && aIndex <= myLast;
 }

@@ -19,29 +19,30 @@
 #include <StepDimTol_Datum.hxx>
 #include <StepDimTol_HArray1OfDatumReferenceElement.hxx>
 
-//=======================================================================
-//function : StepDimTol_DatumOrCommonDatum
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepDimTol_DatumOrCommonDatum::StepDimTol_DatumOrCommonDatum () {  }
+StepDimTol_DatumOrCommonDatum::StepDimTol_DatumOrCommonDatum() {}
 
-//=======================================================================
-//function : CaseNum
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer StepDimTol_DatumOrCommonDatum::CaseNum(const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepDimTol_Datum))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepDimTol_HArray1OfDatumReferenceElement))) return 2;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepDimTol_Datum)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepDimTol_HArray1OfDatumReferenceElement)))
+    return 2;
   return 0;
 }
 
 Handle(StepDimTol_Datum) StepDimTol_DatumOrCommonDatum::Datum() const
-{  return GetCasted(StepDimTol_Datum,Value());  }
+{
+  return GetCasted(StepDimTol_Datum, Value());
+}
 
-Handle(StepDimTol_HArray1OfDatumReferenceElement) StepDimTol_DatumOrCommonDatum::CommonDatumList() const
-{  return GetCasted(StepDimTol_HArray1OfDatumReferenceElement,Value());  }
-
+Handle(StepDimTol_HArray1OfDatumReferenceElement) StepDimTol_DatumOrCommonDatum::CommonDatumList()
+  const
+{
+  return GetCasted(StepDimTol_HArray1OfDatumReferenceElement, Value());
+}

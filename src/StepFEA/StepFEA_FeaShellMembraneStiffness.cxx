@@ -19,45 +19,35 @@
 #include <StepFEA_SymmetricTensor42d.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaShellMembraneStiffness,StepFEA_FeaMaterialPropertyRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaShellMembraneStiffness,
+                           StepFEA_FeaMaterialPropertyRepresentationItem)
 
-//=======================================================================
-//function : StepFEA_FeaShellMembraneStiffness
-//purpose  : 
-//=======================================================================
-StepFEA_FeaShellMembraneStiffness::StepFEA_FeaShellMembraneStiffness ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepFEA_FeaShellMembraneStiffness::StepFEA_FeaShellMembraneStiffness() {}
 
-void StepFEA_FeaShellMembraneStiffness::Init (const Handle(TCollection_HAsciiString) &aRepresentationItem_Name,
-                                              const StepFEA_SymmetricTensor42d &aFeaConstants)
+//=================================================================================================
+
+void StepFEA_FeaShellMembraneStiffness::Init(
+  const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
+  const StepFEA_SymmetricTensor42d&       aFeaConstants)
 {
   StepFEA_FeaMaterialPropertyRepresentationItem::Init(aRepresentationItem_Name);
 
   theFeaConstants = aFeaConstants;
 }
 
-//=======================================================================
-//function : FeaConstants
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepFEA_SymmetricTensor42d StepFEA_FeaShellMembraneStiffness::FeaConstants () const
+StepFEA_SymmetricTensor42d StepFEA_FeaShellMembraneStiffness::FeaConstants() const
 {
   return theFeaConstants;
 }
 
-//=======================================================================
-//function : SetFeaConstants
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_FeaShellMembraneStiffness::SetFeaConstants (const StepFEA_SymmetricTensor42d &aFeaConstants)
+void StepFEA_FeaShellMembraneStiffness::SetFeaConstants(
+  const StepFEA_SymmetricTensor42d& aFeaConstants)
 {
   theFeaConstants = aFeaConstants;
 }

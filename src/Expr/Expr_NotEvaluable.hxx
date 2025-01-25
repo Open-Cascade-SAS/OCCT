@@ -26,8 +26,9 @@ class Expr_NotEvaluable;
 DEFINE_STANDARD_HANDLE(Expr_NotEvaluable, Expr_ExprFailure)
 
 #if !defined No_Exception && !defined No_Expr_NotEvaluable
-  #define Expr_NotEvaluable_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Expr_NotEvaluable(MESSAGE);
+  #define Expr_NotEvaluable_Raise_if(CONDITION, MESSAGE)                                           \
+    if (CONDITION)                                                                                 \
+      throw Expr_NotEvaluable(MESSAGE);
 #else
   #define Expr_NotEvaluable_Raise_if(CONDITION, MESSAGE)
 #endif

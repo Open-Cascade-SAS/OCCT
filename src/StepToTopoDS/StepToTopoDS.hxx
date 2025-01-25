@@ -32,33 +32,37 @@
 #include <StepToTopoDS_GeometricToolError.hxx>
 class TCollection_HAsciiString;
 
-
 //! This package implements the mapping between AP214
 //! Shape representation and  CAS.CAD Shape Representation.
 //! The source schema is Part42 (which is included in AP214)
-class StepToTopoDS 
+class StepToTopoDS
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeBuilderError (const StepToTopoDS_BuilderError Error);
-  
-  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeShellError (const StepToTopoDS_TranslateShellError Error);
-  
-  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeFaceError (const StepToTopoDS_TranslateFaceError Error);
-  
-  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeEdgeError (const StepToTopoDS_TranslateEdgeError Error);
-  
-  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeVertexError (const StepToTopoDS_TranslateVertexError Error);
-  
-  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeVertexLoopError (const StepToTopoDS_TranslateVertexLoopError Error);
-  
-  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodePolyLoopError (const StepToTopoDS_TranslatePolyLoopError Error);
-  
-  Standard_EXPORT static Standard_CString DecodeGeometricToolError (const StepToTopoDS_GeometricToolError Error);
+  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeBuilderError(
+    const StepToTopoDS_BuilderError Error);
 
+  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeShellError(
+    const StepToTopoDS_TranslateShellError Error);
+
+  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeFaceError(
+    const StepToTopoDS_TranslateFaceError Error);
+
+  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeEdgeError(
+    const StepToTopoDS_TranslateEdgeError Error);
+
+  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeVertexError(
+    const StepToTopoDS_TranslateVertexError Error);
+
+  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeVertexLoopError(
+    const StepToTopoDS_TranslateVertexLoopError Error);
+
+  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodePolyLoopError(
+    const StepToTopoDS_TranslatePolyLoopError Error);
+
+  Standard_EXPORT static Standard_CString DecodeGeometricToolError(
+    const StepToTopoDS_GeometricToolError Error);
 };
 
 #endif // _StepToTopoDS_HeaderFile

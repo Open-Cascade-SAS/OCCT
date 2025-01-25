@@ -17,11 +17,10 @@
 #ifndef _StepToTopoDS_TranslateFaceError_HeaderFile
 #define _StepToTopoDS_TranslateFaceError_HeaderFile
 
-
 enum StepToTopoDS_TranslateFaceError
 {
-StepToTopoDS_TranslateFaceDone,
-StepToTopoDS_TranslateFaceOther
+  StepToTopoDS_TranslateFaceDone,
+  StepToTopoDS_TranslateFaceOther
 };
 
 #endif // _StepToTopoDS_TranslateFaceError_HeaderFile

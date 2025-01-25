@@ -19,30 +19,23 @@
 #include <XmlLDrivers.hxx>
 #include <XmlTObjDrivers.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_DocumentStorageDriver,XmlLDrivers_DocumentStorageDriver)
+IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_DocumentStorageDriver, XmlLDrivers_DocumentStorageDriver)
 
-//=======================================================================
-//function : XmlTObjDrivers_DocumentStorageDriver
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-XmlTObjDrivers_DocumentStorageDriver::XmlTObjDrivers_DocumentStorageDriver
-                                (const TCollection_ExtendedString& theCopyright)
-     : XmlLDrivers_DocumentStorageDriver (theCopyright)
+XmlTObjDrivers_DocumentStorageDriver::XmlTObjDrivers_DocumentStorageDriver(
+  const TCollection_ExtendedString& theCopyright)
+    : XmlLDrivers_DocumentStorageDriver(theCopyright)
 {
 }
 
-//=======================================================================
-//function : AttributeDrivers
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(XmlMDF_ADriverTable)
-        XmlTObjDrivers_DocumentStorageDriver::AttributeDrivers
-                        (const Handle(Message_Messenger)& theMsgDrv)
+Handle(XmlMDF_ADriverTable) XmlTObjDrivers_DocumentStorageDriver::AttributeDrivers(
+  const Handle(Message_Messenger)& theMsgDrv)
 {
   // Standard drivers
-  Handle(XmlMDF_ADriverTable) aTable = XmlLDrivers::AttributeDrivers (theMsgDrv);
+  Handle(XmlMDF_ADriverTable) aTable = XmlLDrivers::AttributeDrivers(theMsgDrv);
 
   // Native drivers
   XmlTObjDrivers::AddDrivers(aTable, theMsgDrv);

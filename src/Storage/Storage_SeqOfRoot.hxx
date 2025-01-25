@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(Storage_Root)> Storage_SeqOfRoot;
 
-
 #endif

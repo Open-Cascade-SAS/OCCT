@@ -23,7 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <ShapeFix_Root.hxx>
 
-
 class ShapeFix_SplitCommonVertex;
 DEFINE_STANDARD_HANDLE(ShapeFix_SplitCommonVertex, ShapeFix_Root)
 
@@ -34,40 +33,21 @@ class ShapeFix_SplitCommonVertex : public ShapeFix_Root
 {
 
 public:
-
-  
   Standard_EXPORT ShapeFix_SplitCommonVertex();
-  
-  Standard_EXPORT void Init (const TopoDS_Shape& S);
-  
+
+  Standard_EXPORT void Init(const TopoDS_Shape& S);
+
   Standard_EXPORT void Perform();
-  
+
   Standard_EXPORT TopoDS_Shape Shape();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(ShapeFix_SplitCommonVertex,ShapeFix_Root)
+  DEFINE_STANDARD_RTTIEXT(ShapeFix_SplitCommonVertex, ShapeFix_Root)
 
 protected:
-
-
-
-
 private:
-
-
-  TopoDS_Shape myShape;
-  TopoDS_Shape myResult;
+  TopoDS_Shape     myShape;
+  TopoDS_Shape     myResult;
   Standard_Integer myStatus;
-
-
 };
-
-
-
-
-
-
 
 #endif // _ShapeFix_SplitCommonVertex_HeaderFile

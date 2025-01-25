@@ -29,11 +29,11 @@
 //! local operation will be performed.
 enum BRepFeat_PerfSelection
 {
-BRepFeat_NoSelection,
-BRepFeat_SelectionFU,
-BRepFeat_SelectionU,
-BRepFeat_SelectionSh,
-BRepFeat_SelectionShU
+  BRepFeat_NoSelection,
+  BRepFeat_SelectionFU,
+  BRepFeat_SelectionU,
+  BRepFeat_SelectionSh,
+  BRepFeat_SelectionShU
 };
 
 #endif // _BRepFeat_PerfSelection_HeaderFile

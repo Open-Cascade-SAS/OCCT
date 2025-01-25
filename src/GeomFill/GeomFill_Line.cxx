@@ -14,28 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GeomFill_Line.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(GeomFill_Line,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_Line, Standard_Transient)
 
-//=======================================================================
-//function : GeomFill_Line
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 GeomFill_Line::GeomFill_Line()
 {
   myNbPoints = 0;
 }
 
-
-//=======================================================================
-//function : GeomFill_Line
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 GeomFill_Line::GeomFill_Line(const Standard_Integer NbPoints)
-     : myNbPoints(NbPoints)
+    : myNbPoints(NbPoints)
 {
 }

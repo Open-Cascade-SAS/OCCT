@@ -24,42 +24,25 @@ class Standard_Transient;
 class Interface_InterfaceModel;
 class TCollection_AsciiString;
 
-
 class IFSelect_SignAncestor;
 DEFINE_STANDARD_HANDLE(IFSelect_SignAncestor, IFSelect_SignType)
-
 
 class IFSelect_SignAncestor : public IFSelect_SignType
 {
 
 public:
-
-  
   Standard_EXPORT IFSelect_SignAncestor(const Standard_Boolean nopk = Standard_False);
-  
-  Standard_EXPORT virtual Standard_Boolean Matches (const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model, const TCollection_AsciiString& text, const Standard_Boolean exact) const Standard_OVERRIDE;
 
+  Standard_EXPORT virtual Standard_Boolean Matches(const Handle(Standard_Transient)&       ent,
+                                                   const Handle(Interface_InterfaceModel)& model,
+                                                   const TCollection_AsciiString&          text,
+                                                   const Standard_Boolean exact) const
+    Standard_OVERRIDE;
 
-
-
-  DEFINE_STANDARD_RTTIEXT(IFSelect_SignAncestor,IFSelect_SignType)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SignAncestor, IFSelect_SignType)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_SignAncestor_HeaderFile

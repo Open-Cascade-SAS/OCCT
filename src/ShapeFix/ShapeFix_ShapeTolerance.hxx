@@ -23,17 +23,14 @@
 #include <TopAbs_ShapeEnum.hxx>
 class TopoDS_Shape;
 
-
 //! Modifies tolerances of sub-shapes (vertices, edges, faces)
-class ShapeFix_ShapeTolerance 
+class ShapeFix_ShapeTolerance
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT ShapeFix_ShapeTolerance();
-  
+
   //! Limits tolerances in a shape as follows :
   //! tmin = tmax -> as SetTolerance (forces)
   //! tmin = 0   -> maximum tolerance will be <tmax>
@@ -47,37 +44,23 @@ public:
   //! styp = other value : all (vertices,edges,faces) are set
   //! Returns True if at least one tolerance of the sub-shape has
   //! been modified
-  Standard_EXPORT Standard_Boolean LimitTolerance (const TopoDS_Shape& shape, const Standard_Real tmin, const Standard_Real tmax = 0.0, const TopAbs_ShapeEnum styp = TopAbs_SHAPE) const;
-  
+  Standard_EXPORT Standard_Boolean LimitTolerance(const TopoDS_Shape&    shape,
+                                                  const Standard_Real    tmin,
+                                                  const Standard_Real    tmax = 0.0,
+                                                  const TopAbs_ShapeEnum styp = TopAbs_SHAPE) const;
+
   //! Sets (enforces) tolerances in a shape to the given value
   //! styp = VERTEX : only vertices are set
   //! styp = EDGE   : only edges are set
   //! styp = FACE   : only faces are set
   //! styp = WIRE   : to have edges and their vertices set
   //! styp = other value : all (vertices,edges,faces) are set
-  Standard_EXPORT void SetTolerance (const TopoDS_Shape& shape, const Standard_Real preci, const TopAbs_ShapeEnum styp = TopAbs_SHAPE) const;
-
-
-
+  Standard_EXPORT void SetTolerance(const TopoDS_Shape&    shape,
+                                    const Standard_Real    preci,
+                                    const TopAbs_ShapeEnum styp = TopAbs_SHAPE) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _ShapeFix_ShapeTolerance_HeaderFile

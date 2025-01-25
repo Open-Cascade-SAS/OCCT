@@ -14,16 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Blend_SurfPointFuncInv.hxx>
 
-//=======================================================================
-//function : NbVariables
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer Blend_SurfPointFuncInv::NbVariables() const
 {
   return 3;
 }
-
-

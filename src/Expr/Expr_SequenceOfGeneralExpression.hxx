@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(Expr_GeneralExpression)> Expr_SequenceOfGeneralExpression;
 
-
 #endif

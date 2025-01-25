@@ -17,13 +17,11 @@
 #include <TColgp_HArray2OfXYZ.hxx>
 #include <Plate_HArray1OfPinpointConstraint.hxx>
 
-
 inline const Plate_Array1OfPinpointConstraint& Plate_LinearScalarConstraint::GetPPC() const
 {
   return myPPC->Array1();
 }
 
- 
 inline const TColgp_Array2OfXYZ& Plate_LinearScalarConstraint::Coeff() const
 {
   return myCoef->Array2();

@@ -18,13 +18,8 @@
 #include <Standard_Type.hxx>
 #include <StepElement_SurfaceSectionField.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepElement_SurfaceSectionField,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_SurfaceSectionField, Standard_Transient)
 
-//=======================================================================
-//function : StepElement_SurfaceSectionField
-//purpose  : 
-//=======================================================================
-StepElement_SurfaceSectionField::StepElement_SurfaceSectionField ()
-{
-}
+//=================================================================================================
 
+StepElement_SurfaceSectionField::StepElement_SurfaceSectionField() {}

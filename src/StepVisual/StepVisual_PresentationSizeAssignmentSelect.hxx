@@ -28,55 +28,32 @@ class StepVisual_PresentationView;
 class StepVisual_PresentationArea;
 class StepVisual_AreaInSet;
 
-
-
-class StepVisual_PresentationSizeAssignmentSelect  : public StepData_SelectType
+class StepVisual_PresentationSizeAssignmentSelect : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a PresentationSizeAssignmentSelect SelectType
   Standard_EXPORT StepVisual_PresentationSizeAssignmentSelect();
-  
+
   //! Recognizes a PresentationSizeAssignmentSelect Kind Entity that is :
   //! 1 -> PresentationView
   //! 2 -> PresentationArea
   //! 3 -> AreaInSet
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a PresentationView (Null if another type)
   Standard_EXPORT Handle(StepVisual_PresentationView) PresentationView() const;
-  
+
   //! returns Value as a PresentationArea (Null if another type)
   Standard_EXPORT Handle(StepVisual_PresentationArea) PresentationArea() const;
-  
+
   //! returns Value as a AreaInSet (Null if another type)
   Standard_EXPORT Handle(StepVisual_AreaInSet) AreaInSet() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_PresentationSizeAssignmentSelect_HeaderFile

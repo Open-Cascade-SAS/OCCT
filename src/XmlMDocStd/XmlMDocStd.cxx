@@ -19,12 +19,10 @@
 #include <XmlMDF_ADriverTable.hxx>
 #include <XmlMDocStd_XLinkDriver.hxx>
 
-//=======================================================================
-//function : AddDrivers
-//purpose  : 
-//=======================================================================
-void XmlMDocStd::AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable,
-                             const Handle(Message_Messenger)&   aMessageDriver)
+//=================================================================================================
+
+void XmlMDocStd::AddDrivers(const Handle(XmlMDF_ADriverTable)& aDriverTable,
+                            const Handle(Message_Messenger)&   aMessageDriver)
 {
-  aDriverTable->AddDriver (new XmlMDocStd_XLinkDriver(aMessageDriver)); 
+  aDriverTable->AddDriver(new XmlMDocStd_XLinkDriver(aMessageDriver));
 }

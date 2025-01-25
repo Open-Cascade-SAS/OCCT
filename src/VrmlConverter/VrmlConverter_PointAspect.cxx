@@ -11,40 +11,39 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Vrml_Material.hxx>
 #include <VrmlConverter_PointAspect.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_PointAspect,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_PointAspect, Standard_Transient)
 
 VrmlConverter_PointAspect::VrmlConverter_PointAspect()
 {
- myHasMaterial = Standard_False;
+  myHasMaterial = Standard_False;
 }
 
-VrmlConverter_PointAspect::VrmlConverter_PointAspect (const Handle(Vrml_Material)& aMaterial,
-                                                      const Standard_Boolean OnOff)
+VrmlConverter_PointAspect::VrmlConverter_PointAspect(const Handle(Vrml_Material)& aMaterial,
+                                                     const Standard_Boolean       OnOff)
 {
- myMaterial = aMaterial;
- myHasMaterial = OnOff;
+  myMaterial    = aMaterial;
+  myHasMaterial = OnOff;
 }
-
 
 void VrmlConverter_PointAspect::SetMaterial(const Handle(Vrml_Material)& aMaterial)
 {
- myMaterial = aMaterial;
+  myMaterial = aMaterial;
 }
 
-Handle(Vrml_Material) VrmlConverter_PointAspect::Material() const 
+Handle(Vrml_Material) VrmlConverter_PointAspect::Material() const
 {
- return myMaterial;
+  return myMaterial;
 }
+
 void VrmlConverter_PointAspect::SetHasMaterial(const Standard_Boolean OnOff)
 {
- myHasMaterial = OnOff;
+  myHasMaterial = OnOff;
 }
 
-Standard_Boolean VrmlConverter_PointAspect::HasMaterial() const 
+Standard_Boolean VrmlConverter_PointAspect::HasMaterial() const
 {
- return myHasMaterial;
+  return myHasMaterial;
 }

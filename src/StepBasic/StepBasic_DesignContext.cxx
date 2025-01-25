@@ -11,10 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_DesignContext.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DesignContext,StepBasic_ProductDefinitionContext)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DesignContext, StepBasic_ProductDefinitionContext)
 
-StepBasic_DesignContext::StepBasic_DesignContext  ()    {  }
+StepBasic_DesignContext::StepBasic_DesignContext() {}

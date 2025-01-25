@@ -28,7 +28,6 @@ class Media_Scaler : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Media_Scaler, Standard_Transient)
 public:
-
   //! Empty constructor.
   Standard_EXPORT Media_Scaler();
 
@@ -43,26 +42,24 @@ public:
   //! @param theSrcFormat pixel format (AVPixelFormat) of input frame
   //! @param theResDims   dimensions of destination frame
   //! @param theResFormat pixel format (AVPixelFormat) of destination frame
-  Standard_EXPORT bool Init (const Graphic3d_Vec2i& theSrcDims,
-                             int theSrcFormat,
-                             const Graphic3d_Vec2i& theResDims,
-                             int theResFormat);
+  Standard_EXPORT bool Init(const Graphic3d_Vec2i& theSrcDims,
+                            int                    theSrcFormat,
+                            const Graphic3d_Vec2i& theResDims,
+                            int                    theResFormat);
 
   //! Convert one frame to another.
-  Standard_EXPORT bool Convert (const Handle(Media_Frame)& theSrc,
-                                const Handle(Media_Frame)& theRes);
+  Standard_EXPORT bool Convert(const Handle(Media_Frame)& theSrc,
+                               const Handle(Media_Frame)& theRes);
 
   //! Return TRUE if context was initialized.
   bool IsValid() const { return mySwsContext != NULL; }
 
 protected:
-
   SwsContext*     mySwsContext; //!< conversion context
   Graphic3d_Vec2i mySrcDims;    //!< dimensions of input frame
   int             mySrcFormat;  //!< pixel format (AVPixelFormat) of input frame
   Graphic3d_Vec2i myResDims;    //!< dimensions of destination frame
   int             myResFormat;  //!< pixel format (AVPixelFormat) of destination frame
-
 };
 
 #endif // _Media_Scaler_HeaderFile

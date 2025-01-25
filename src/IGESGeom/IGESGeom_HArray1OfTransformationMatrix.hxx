@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(IGESGeom_HArray1OfTransformationMatrix, IGESGeom_Array1OfTransformationMatrix)
 
-
 #endif

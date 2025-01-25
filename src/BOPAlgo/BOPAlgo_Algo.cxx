@@ -15,60 +15,45 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPAlgo_Algo.hxx>
 
 #include <TColStd_MapOfInteger.hxx>
 
-//=======================================================================
-// function: 
-// purpose: 
-//=======================================================================
-BOPAlgo_Algo::BOPAlgo_Algo()
-:
-  BOPAlgo_Options(NCollection_BaseAllocator::CommonBaseAllocator())
-{}
-//=======================================================================
-// function: 
-// purpose: 
-//=======================================================================
-BOPAlgo_Algo::BOPAlgo_Algo
-  (const Handle(NCollection_BaseAllocator)& theAllocator)
-:
-  BOPAlgo_Options(theAllocator)
-{}
+//=================================================================================================
 
-//=======================================================================
-// function: ~
-// purpose: 
-//=======================================================================
-BOPAlgo_Algo::~BOPAlgo_Algo()
+BOPAlgo_Algo::BOPAlgo_Algo()
+    : BOPAlgo_Options(NCollection_BaseAllocator::CommonBaseAllocator())
 {
 }
 
-//=======================================================================
-// function: CheckData
-// purpose: 
-//=======================================================================
+//=================================================================================================
+
+BOPAlgo_Algo::BOPAlgo_Algo(const Handle(NCollection_BaseAllocator)& theAllocator)
+    : BOPAlgo_Options(theAllocator)
+{
+}
+
+//=================================================================================================
+
+BOPAlgo_Algo::~BOPAlgo_Algo() {}
+
+//=================================================================================================
+
 void BOPAlgo_Algo::CheckData()
 {
   GetReport()->Clear(Message_Fail);
 }
-//=======================================================================
-// function: CheckResult
-// purpose: 
-//=======================================================================
+
+//=================================================================================================
+
 void BOPAlgo_Algo::CheckResult()
 {
   GetReport()->Clear(Message_Fail);
 }
 
-//=======================================================================
-// function: analyzeProgress
-// purpose: 
-//=======================================================================
-void BOPAlgo_Algo::analyzeProgress(const Standard_Real theWhole,
-                                   BOPAlgo_PISteps& theSteps) const
+//=================================================================================================
+
+void BOPAlgo_Algo::analyzeProgress(const Standard_Real theWhole, BOPAlgo_PISteps& theSteps) const
 {
   Standard_Real aWhole = theWhole;
 
@@ -76,7 +61,7 @@ void BOPAlgo_Algo::analyzeProgress(const Standard_Real theWhole,
   fillPIConstants(theWhole, theSteps);
 
   TColStd_Array1OfReal& aSteps = theSteps.ChangeSteps();
-  TColStd_MapOfInteger aMIConst;
+  TColStd_MapOfInteger  aMIConst;
   for (Standard_Integer i = aSteps.Lower(); i <= aSteps.Upper(); ++i)
   {
     if (aSteps(i) > 0.)
@@ -111,18 +96,10 @@ void BOPAlgo_Algo::analyzeProgress(const Standard_Real theWhole,
   }
 }
 
-//=======================================================================
-// function: fillPIConstants
-// purpose: 
-//=======================================================================
-void BOPAlgo_Algo::fillPIConstants (const Standard_Real, BOPAlgo_PISteps&) const
-{
-}
+//=================================================================================================
 
-//=======================================================================
-// function: fillPISteps
-// purpose: 
-//=======================================================================
-void BOPAlgo_Algo::fillPISteps(BOPAlgo_PISteps&) const
-{
-}
+void BOPAlgo_Algo::fillPIConstants(const Standard_Real, BOPAlgo_PISteps&) const {}
+
+//=================================================================================================
+
+void BOPAlgo_Algo::fillPISteps(BOPAlgo_PISteps&) const {}

@@ -28,16 +28,16 @@ IMPLEMENT_STANDARD_RTTIEXT(RWMesh_MaterialMap, Standard_Transient)
 // function : RWMesh_MaterialMap
 // purpose  :
 // =======================================================================
-RWMesh_MaterialMap::RWMesh_MaterialMap (const TCollection_AsciiString& theFile)
-: myFileName (theFile),
-  myKeyPrefix ("mat_"),
-  myNbMaterials (0),
-  myIsFailed (false),
-  myMatNameAsKey (true)
+RWMesh_MaterialMap::RWMesh_MaterialMap(const TCollection_AsciiString& theFile)
+    : myFileName(theFile),
+      myKeyPrefix("mat_"),
+      myNbMaterials(0),
+      myIsFailed(false),
+      myMatNameAsKey(true)
 {
   TCollection_AsciiString aFileName, aFileExt;
-  OSD_Path::FolderAndFileFromPath (theFile, myFolder, aFileName);
-  OSD_Path::FileNameAndExtension (aFileName, myShortFileNameBase, aFileExt);
+  OSD_Path::FolderAndFileFromPath(theFile, myFolder, aFileName);
+  OSD_Path::FileNameAndExtension(aFileName, myShortFileNameBase, aFileExt);
   if (myFolder.IsEmpty())
   {
     myFolder = ".";
@@ -57,25 +57,24 @@ RWMesh_MaterialMap::~RWMesh_MaterialMap()
 // function : AddMaterial
 // purpose  :
 // =======================================================================
-TCollection_AsciiString RWMesh_MaterialMap::AddMaterial (const XCAFPrs_Style& theStyle)
+TCollection_AsciiString RWMesh_MaterialMap::AddMaterial(const XCAFPrs_Style& theStyle)
 {
-  if (myStyles.IsBound1 (theStyle))
+  if (myStyles.IsBound1(theStyle))
   {
-    return myStyles.Find1 (theStyle);
+    return myStyles.Find1(theStyle);
   }
 
   TCollection_AsciiString aMatKey, aMatName, aMatNameSuffix;
-  int  aCounter    = 0;
-  int* aCounterPtr = &myNbMaterials;
+  int                     aCounter    = 0;
+  int*                    aCounterPtr = &myNbMaterials;
   if (myMatNameAsKey)
   {
-    if (!theStyle.Material().IsNull()
-     && !theStyle.Material()->IsEmpty())
+    if (!theStyle.Material().IsNull() && !theStyle.Material()->IsEmpty())
     {
       aCounterPtr = &aCounter;
       Handle(TDataStd_Name) aNodeName;
       if (!theStyle.Material()->Label().IsNull()
-       &&  theStyle.Material()->Label().FindAttribute (TDataStd_Name::GetID(), aNodeName))
+          && theStyle.Material()->Label().FindAttribute(TDataStd_Name::GetID(), aNodeName))
       {
         aMatName = aNodeName->Get();
       }
@@ -89,7 +88,7 @@ TCollection_AsciiString RWMesh_MaterialMap::AddMaterial (const XCAFPrs_Style& th
     {
       ++myNbMaterials;
       aMatNameSuffix = myKeyPrefix;
-      aMatName = aMatNameSuffix + myNbMaterials;
+      aMatName       = aMatNameSuffix + myNbMaterials;
     }
     aMatKey = aMatName;
   }
@@ -102,7 +101,7 @@ TCollection_AsciiString RWMesh_MaterialMap::AddMaterial (const XCAFPrs_Style& th
 
   for (;; ++(*aCounterPtr))
   {
-    if (myStyles.IsBound2 (aMatKey))
+    if (myStyles.IsBound2(aMatKey))
     {
       if (myMatNameAsKey)
       {
@@ -119,8 +118,8 @@ TCollection_AsciiString RWMesh_MaterialMap::AddMaterial (const XCAFPrs_Style& th
     break;
   }
 
-  myStyles.Bind (theStyle, aMatKey);
-  DefineMaterial (theStyle, aMatKey, aMatName);
+  myStyles.Bind(theStyle, aMatKey);
+  DefineMaterial(theStyle, aMatKey, aMatName);
   return aMatKey;
 }
 
@@ -128,11 +127,10 @@ TCollection_AsciiString RWMesh_MaterialMap::AddMaterial (const XCAFPrs_Style& th
 // function : copyFileTo
 // purpose  :
 // =======================================================================
-bool RWMesh_MaterialMap::copyFileTo (const TCollection_AsciiString& theFileSrc,
-                                     const TCollection_AsciiString& theFileDst)
+bool RWMesh_MaterialMap::copyFileTo(const TCollection_AsciiString& theFileSrc,
+                                    const TCollection_AsciiString& theFileDst)
 {
-  if (theFileSrc.IsEmpty()
-   || theFileDst.IsEmpty())
+  if (theFileSrc.IsEmpty() || theFileDst.IsEmpty())
   {
     return false;
   }
@@ -143,20 +141,22 @@ bool RWMesh_MaterialMap::copyFileTo (const TCollection_AsciiString& theFileSrc,
 
   try
   {
-    OSD_Path aSrcPath (theFileSrc);
-    OSD_Path aDstPath (theFileDst);
-    OSD_File aFileSrc (aSrcPath);
+    OSD_Path aSrcPath(theFileSrc);
+    OSD_Path aDstPath(theFileDst);
+    OSD_File aFileSrc(aSrcPath);
     if (!aFileSrc.Exists())
     {
-      Message::SendFail (TCollection_AsciiString("Failed to copy file - source file '") + theFileSrc + "' does not exist");
+      Message::SendFail(TCollection_AsciiString("Failed to copy file - source file '") + theFileSrc
+                        + "' does not exist");
       return false;
     }
-    aFileSrc.Copy (aDstPath);
+    aFileSrc.Copy(aDstPath);
     return !aFileSrc.Failed();
   }
   catch (Standard_Failure const& theException)
   {
-    Message::SendFail (TCollection_AsciiString("Failed to copy file\n") + theException.GetMessageString());
+    Message::SendFail(TCollection_AsciiString("Failed to copy file\n")
+                      + theException.GetMessageString());
     return false;
   }
 }
@@ -165,23 +165,21 @@ bool RWMesh_MaterialMap::copyFileTo (const TCollection_AsciiString& theFileSrc,
 // function : CopyTexture
 // purpose  :
 // =======================================================================
-bool RWMesh_MaterialMap::CopyTexture (TCollection_AsciiString& theResTexture,
-                                      const Handle(Image_Texture)& theTexture,
-                                      const TCollection_AsciiString& theKey)
+bool RWMesh_MaterialMap::CopyTexture(TCollection_AsciiString&       theResTexture,
+                                     const Handle(Image_Texture)&   theTexture,
+                                     const TCollection_AsciiString& theKey)
 {
   CreateTextureFolder();
 
   TCollection_AsciiString aTexFileName;
   TCollection_AsciiString aTextureSrc = theTexture->FilePath();
-  if (!aTextureSrc.IsEmpty()
-    && theTexture->FileOffset() <= 0
-    && theTexture->FileLength() <= 0)
+  if (!aTextureSrc.IsEmpty() && theTexture->FileOffset() <= 0 && theTexture->FileLength() <= 0)
   {
     TCollection_AsciiString aSrcTexFolder;
-    OSD_Path::FolderAndFileFromPath (aTextureSrc, aSrcTexFolder, aTexFileName);
+    OSD_Path::FolderAndFileFromPath(aTextureSrc, aSrcTexFolder, aTexFileName);
     const TCollection_AsciiString aResTexFile = myTexFolder + aTexFileName;
-    theResTexture = myTexFolderShort + aTexFileName;
-    return copyFileTo (aTextureSrc, aResTexFile);
+    theResTexture                             = myTexFolderShort + aTexFileName;
+    return copyFileTo(aTextureSrc, aResTexFile);
   }
 
   TCollection_AsciiString anExt = theTexture->ProbeImageFileFormat();
@@ -192,8 +190,8 @@ bool RWMesh_MaterialMap::CopyTexture (TCollection_AsciiString& theResTexture,
   aTexFileName = theKey + "." + anExt;
 
   const TCollection_AsciiString aResTexFile = myTexFolder + aTexFileName;
-  theResTexture = myTexFolderShort + aTexFileName;
-  return theTexture->WriteImage (aResTexFile);
+  theResTexture                             = myTexFolderShort + aTexFileName;
+  return theTexture->WriteImage(aResTexFile);
 }
 
 // =======================================================================
@@ -209,32 +207,32 @@ bool RWMesh_MaterialMap::CreateTextureFolder()
 
   myTexFolderShort = myShortFileNameBase + "_textures/";
   myTexFolder      = myFolder + "/" + myTexFolderShort;
-  OSD_Path aTexFolderPath (myTexFolder);
-  OSD_Directory aTexDir (aTexFolderPath);
+  OSD_Path      aTexFolderPath(myTexFolder);
+  OSD_Directory aTexDir(aTexFolderPath);
   if (aTexDir.Exists())
   {
     return true;
   }
 
-  OSD_Path aResFolderPath (myFolder);
-  OSD_Directory aResDir (aResFolderPath);
+  OSD_Path      aResFolderPath(myFolder);
+  OSD_Directory aResDir(aResFolderPath);
   if (!aResDir.Exists())
   {
     Message::SendFail() << "Failed to create textures folder '" << myFolder << "'";
     return false;
   }
   const OSD_Protection aParentProt = aResDir.Protection();
-  OSD_Protection aProt = aParentProt;
+  OSD_Protection       aProt       = aParentProt;
   if (aProt.User() == OSD_None)
   {
-    aProt.SetUser (OSD_RWXD);
+    aProt.SetUser(OSD_RWXD);
   }
   if (aProt.System() == OSD_None)
   {
-    aProt.SetSystem (OSD_RWXD);
+    aProt.SetSystem(OSD_RWXD);
   }
 
-  aTexDir.Build (aProt);
+  aTexDir.Build(aProt);
   if (aTexDir.Failed())
   {
     // fallback to the same folder as output model file

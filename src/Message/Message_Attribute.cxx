@@ -17,30 +17,24 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Message_Attribute, Standard_Transient)
 
-//=======================================================================
-//function : Constructor
-//purpose  :
-//=======================================================================
-Message_Attribute::Message_Attribute (const TCollection_AsciiString& theName)
-: myName (theName)
+//=================================================================================================
+
+Message_Attribute::Message_Attribute(const TCollection_AsciiString& theName)
+    : myName(theName)
 {
 }
 
-//=======================================================================
-//function : GetMessageKey
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_CString Message_Attribute::GetMessageKey() const
 {
   return !myName.IsEmpty() ? myName.ToCString() : "";
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  :
-//=======================================================================
-void Message_Attribute::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+//=================================================================================================
+
+void Message_Attribute::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myName)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+  OCCT_DUMP_FIELD_VALUE_STRING(theOStream, myName)
 }

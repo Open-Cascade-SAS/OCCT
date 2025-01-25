@@ -18,16 +18,6 @@
 
 #include <Standard_Type.hxx>
 
-
- 
-
-
-
-
-
-
-
-
 #define Handle_TheKey Handle(TColStd_HArray1OfReal)
 #define TheKey TColStd_HArray1OfReal
 #define TheKey_hxx <TColStd_HArray1OfReal.hxx>
@@ -35,4 +25,3 @@
 #define Interface_JaggedArray_hxx <IGESBasic_HArray1OfHArray1OfReal.hxx>
 #define Handle_Interface_JaggedArray Handle(IGESBasic_HArray1OfHArray1OfReal)
 #include "../Interface/Interface_JaggedArray.gxx"
-

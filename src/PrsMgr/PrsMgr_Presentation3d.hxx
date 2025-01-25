@@ -21,7 +21,8 @@
 
 Standard_DEPRECATED("Deprecated alias to PrsMgr_Presentation3d")
 typedef PrsMgr_Presentation PrsMgr_Presentation3d;
-Standard_DEPRECATED("This typedef will be removed right after 7.9 release. Use Handle(T) directly instead.")
+Standard_DEPRECATED("This typedef will be removed right after 7.9 release. Use Handle(T) directly "
+                    "instead.")
 typedef Handle_PrsMgr_Presentation Handle_PrsMgr_Presentation3d;
 
 #endif // _PrsMgr_Presentation3d_HeaderFile

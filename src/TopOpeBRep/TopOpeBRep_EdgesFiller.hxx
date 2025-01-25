@@ -35,70 +35,74 @@ class TopOpeBRep_Point2d;
 class TopOpeBRepDS_Transition;
 class TopOpeBRepDS_Interference;
 
-
 //! Fills a TopOpeBRepDS_DataStructure with Edge/Edge
 //! intersection data described by TopOpeBRep_EdgesIntersector.
-class TopOpeBRep_EdgesFiller 
+class TopOpeBRep_EdgesFiller
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopOpeBRep_EdgesFiller();
-  
-  Standard_EXPORT void Insert (const TopoDS_Shape& E1, const TopoDS_Shape& E2, TopOpeBRep_EdgesIntersector& EI, const Handle(TopOpeBRepDS_HDataStructure)& HDS);
-  
-  Standard_EXPORT void Face (const Standard_Integer I, const TopoDS_Shape& F);
-  
-  Standard_EXPORT const TopoDS_Shape& Face (const Standard_Integer I) const;
 
+  Standard_EXPORT void Insert(const TopoDS_Shape&                        E1,
+                              const TopoDS_Shape&                        E2,
+                              TopOpeBRep_EdgesIntersector&               EI,
+                              const Handle(TopOpeBRepDS_HDataStructure)& HDS);
 
+  Standard_EXPORT void Face(const Standard_Integer I, const TopoDS_Shape& F);
 
+  Standard_EXPORT const TopoDS_Shape& Face(const Standard_Integer I) const;
 
 protected:
-
-
-
-
-
 private:
+  Standard_EXPORT Standard_Boolean GetGeometry(TopOpeBRepDS_ListIteratorOfListOfInterference& IT,
+                                               const TopOpeBRep_Point2d&                      P,
+                                               Standard_Integer&                              G,
+                                               TopOpeBRepDS_Kind& K) const;
 
-  
-  Standard_EXPORT Standard_Boolean GetGeometry (TopOpeBRepDS_ListIteratorOfListOfInterference& IT, const TopOpeBRep_Point2d& P, Standard_Integer& G, TopOpeBRepDS_Kind& K) const;
-  
-  Standard_EXPORT Standard_Boolean MakeGeometry (const TopOpeBRep_Point2d& P, Standard_Integer& G, TopOpeBRepDS_Kind& K) const;
-  
-  Standard_EXPORT void SetShapeTransition (const TopOpeBRep_Point2d& P, TopOpeBRepDS_Transition& T1, TopOpeBRepDS_Transition& T2) const;
-  
-  Standard_EXPORT Handle(TopOpeBRepDS_Interference) StorePI (const TopOpeBRep_Point2d& P, const TopOpeBRepDS_Transition& T, const Standard_Integer EI, const Standard_Integer PI, const Standard_Real p, const Standard_Integer IE);
-  
-  Standard_EXPORT Handle(TopOpeBRepDS_Interference) StoreVI (const TopOpeBRep_Point2d& P, const TopOpeBRepDS_Transition& T, const Standard_Integer EI, const Standard_Integer VI, const Standard_Boolean VB, const TopOpeBRepDS_Config C, const Standard_Real p, const Standard_Integer IE);
-  
-  Standard_EXPORT Standard_Boolean ToRecompute (const TopOpeBRep_Point2d& P, const Handle(TopOpeBRepDS_Interference)& I, const Standard_Integer IEmother);
-  
-  Standard_EXPORT void StoreRecompute (const Handle(TopOpeBRepDS_Interference)& I, const Standard_Integer IEmother);
-  
-  Standard_EXPORT void RecomputeInterferences (const TopoDS_Edge& E, TopOpeBRepDS_ListOfInterference& LOI);
+  Standard_EXPORT Standard_Boolean MakeGeometry(const TopOpeBRep_Point2d& P,
+                                                Standard_Integer&         G,
+                                                TopOpeBRepDS_Kind&        K) const;
 
+  Standard_EXPORT void SetShapeTransition(const TopOpeBRep_Point2d& P,
+                                          TopOpeBRepDS_Transition&  T1,
+                                          TopOpeBRepDS_Transition&  T2) const;
 
-  TopoDS_Edge myE1;
-  TopoDS_Edge myE2;
-  TopoDS_Face myF1;
-  TopoDS_Face myF2;
+  Standard_EXPORT Handle(TopOpeBRepDS_Interference) StorePI(const TopOpeBRep_Point2d&      P,
+                                                            const TopOpeBRepDS_Transition& T,
+                                                            const Standard_Integer         EI,
+                                                            const Standard_Integer         PI,
+                                                            const Standard_Real            p,
+                                                            const Standard_Integer         IE);
+
+  Standard_EXPORT Handle(TopOpeBRepDS_Interference) StoreVI(const TopOpeBRep_Point2d&      P,
+                                                            const TopOpeBRepDS_Transition& T,
+                                                            const Standard_Integer         EI,
+                                                            const Standard_Integer         VI,
+                                                            const Standard_Boolean         VB,
+                                                            const TopOpeBRepDS_Config      C,
+                                                            const Standard_Real            p,
+                                                            const Standard_Integer         IE);
+
+  Standard_EXPORT Standard_Boolean ToRecompute(const TopOpeBRep_Point2d&                P,
+                                               const Handle(TopOpeBRepDS_Interference)& I,
+                                               const Standard_Integer                   IEmother);
+
+  Standard_EXPORT void StoreRecompute(const Handle(TopOpeBRepDS_Interference)& I,
+                                      const Standard_Integer                   IEmother);
+
+  Standard_EXPORT void RecomputeInterferences(const TopoDS_Edge&               E,
+                                              TopOpeBRepDS_ListOfInterference& LOI);
+
+  TopoDS_Edge                         myE1;
+  TopoDS_Edge                         myE2;
+  TopoDS_Face                         myF1;
+  TopoDS_Face                         myF2;
   Handle(TopOpeBRepDS_HDataStructure) myHDS;
-  TopOpeBRepDS_PDataStructure myPDS;
-  TopOpeBRep_PEdgesIntersector myPEI;
-  TopOpeBRepDS_ListOfInterference myLI1;
-  TopOpeBRepDS_ListOfInterference myLI2;
-
-
+  TopOpeBRepDS_PDataStructure         myPDS;
+  TopOpeBRep_PEdgesIntersector        myPEI;
+  TopOpeBRepDS_ListOfInterference     myLI1;
+  TopOpeBRepDS_ListOfInterference     myLI2;
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRep_EdgesFiller_HeaderFile

@@ -21,5 +21,4 @@
 
 typedef BlendFunc_RuledInv BRepBlend_RuledInv;
 
-
 #endif // _BRepBlend_RuledInv_HeaderFile

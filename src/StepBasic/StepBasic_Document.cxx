@@ -19,27 +19,22 @@
 #include <StepBasic_DocumentType.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Document,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Document, Standard_Transient)
 
-//=======================================================================
-//function : StepBasic_Document
-//purpose  : 
-//=======================================================================
-StepBasic_Document::StepBasic_Document ()
+//=================================================================================================
+
+StepBasic_Document::StepBasic_Document()
 {
   defDescription = Standard_False;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_Document::Init (const Handle(TCollection_HAsciiString) &aId,
-                               const Handle(TCollection_HAsciiString) &aName,
-                               const Standard_Boolean hasDescription,
-                               const Handle(TCollection_HAsciiString) &aDescription,
-                               const Handle(StepBasic_DocumentType) &aKind)
+void StepBasic_Document::Init(const Handle(TCollection_HAsciiString)& aId,
+                              const Handle(TCollection_HAsciiString)& aName,
+                              const Standard_Boolean                  hasDescription,
+                              const Handle(TCollection_HAsciiString)& aDescription,
+                              const Handle(StepBasic_DocumentType)&   aKind)
 {
 
   theId = aId;
@@ -47,100 +42,75 @@ void StepBasic_Document::Init (const Handle(TCollection_HAsciiString) &aId,
   theName = aName;
 
   defDescription = hasDescription;
-  if (defDescription) {
+  if (defDescription)
+  {
     theDescription = aDescription;
   }
-  else theDescription.Nullify();
+  else
+    theDescription.Nullify();
 
   theKind = aKind;
 }
 
-//=======================================================================
-//function : Id
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_Document::Id () const
+Handle(TCollection_HAsciiString) StepBasic_Document::Id() const
 {
   return theId;
 }
 
-//=======================================================================
-//function : SetId
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_Document::SetId (const Handle(TCollection_HAsciiString) &aId)
+void StepBasic_Document::SetId(const Handle(TCollection_HAsciiString)& aId)
 {
   theId = aId;
 }
 
-//=======================================================================
-//function : Name
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_Document::Name () const
+Handle(TCollection_HAsciiString) StepBasic_Document::Name() const
 {
   return theName;
 }
 
-//=======================================================================
-//function : SetName
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_Document::SetName (const Handle(TCollection_HAsciiString) &aName)
+void StepBasic_Document::SetName(const Handle(TCollection_HAsciiString)& aName)
 {
   theName = aName;
 }
 
-//=======================================================================
-//function : Description
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_Document::Description () const
+Handle(TCollection_HAsciiString) StepBasic_Document::Description() const
 {
   return theDescription;
 }
 
-//=======================================================================
-//function : SetDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_Document::SetDescription (const Handle(TCollection_HAsciiString) &aDescription)
+void StepBasic_Document::SetDescription(const Handle(TCollection_HAsciiString)& aDescription)
 {
   theDescription = aDescription;
 }
 
-//=======================================================================
-//function : HasDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean StepBasic_Document::HasDescription () const
+Standard_Boolean StepBasic_Document::HasDescription() const
 {
   return defDescription;
 }
 
-//=======================================================================
-//function : Kind
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_DocumentType) StepBasic_Document::Kind () const
+Handle(StepBasic_DocumentType) StepBasic_Document::Kind() const
 {
   return theKind;
 }
 
-//=======================================================================
-//function : SetKind
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_Document::SetKind (const Handle(StepBasic_DocumentType) &aKind)
+void StepBasic_Document::SetKind(const Handle(StepBasic_DocumentType)& aKind)
 {
   theKind = aKind;
 }

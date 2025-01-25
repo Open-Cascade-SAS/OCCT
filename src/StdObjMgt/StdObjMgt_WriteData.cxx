@@ -16,13 +16,12 @@
 
 #include <Standard_GUID.hxx>
 
-
-StdObjMgt_WriteData::StdObjMgt_WriteData (const Handle(Storage_BaseDriver)& theDriver)
-    : myDriver (theDriver)
+StdObjMgt_WriteData::StdObjMgt_WriteData(const Handle(Storage_BaseDriver)& theDriver)
+    : myDriver(theDriver)
 {
 }
 
-void StdObjMgt_WriteData::WritePersistentObject (const Handle(StdObjMgt_Persistent)& thePersistent)
+void StdObjMgt_WriteData::WritePersistentObject(const Handle(StdObjMgt_Persistent)& thePersistent)
 {
   if (thePersistent)
   {
@@ -33,38 +32,38 @@ void StdObjMgt_WriteData::WritePersistentObject (const Handle(StdObjMgt_Persiste
   }
 }
 
-StdObjMgt_WriteData& StdObjMgt_WriteData::operator << (const Handle(StdObjMgt_Persistent)& thePersistent)
+StdObjMgt_WriteData& StdObjMgt_WriteData::operator<<(
+  const Handle(StdObjMgt_Persistent)& thePersistent)
 {
   myDriver->PutReference(thePersistent ? thePersistent->RefNum() : 0);
   return *this;
 }
 
 //=======================================================================
-//function : operator >>
-//purpose  : Read persistent data from a file
+// function : operator >>
+// purpose  : Read persistent data from a file
 //=======================================================================
-StdObjMgt_WriteData& operator <<
-  (StdObjMgt_WriteData& theWriteData, const Standard_GUID& theGUID)
+StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const Standard_GUID& theGUID)
 {
-  StdObjMgt_WriteData::ObjectSentry aSentry (theWriteData);
+  StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
   const Standard_UUID anUUID = theGUID.ToUUID();
 
   Standard_Integer      a32b;
   Standard_ExtCharacter a16b[3];
-  Standard_Character    a8b [6];
+  Standard_Character    a8b[6];
 
   // see Standard_GUID::Standard_GUID(const Standard_UUID& aWntGuid)
   a32b    = anUUID.Data1;
   a16b[0] = anUUID.Data2;
   a16b[1] = anUUID.Data3;
   a16b[2] = (anUUID.Data4[0] << 8) | (anUUID.Data4[1]);
-  a8b[0] = anUUID.Data4[2];
-  a8b[1] = anUUID.Data4[3];
-  a8b[2] = anUUID.Data4[4];
-  a8b[3] = anUUID.Data4[5];
-  a8b[4] = anUUID.Data4[6];
-  a8b[5] = anUUID.Data4[7];
+  a8b[0]  = anUUID.Data4[2];
+  a8b[1]  = anUUID.Data4[3];
+  a8b[2]  = anUUID.Data4[4];
+  a8b[3]  = anUUID.Data4[5];
+  a8b[4]  = anUUID.Data4[6];
+  a8b[5]  = anUUID.Data4[7];
 
   theWriteData << a32b << a16b[0] << a16b[1] << a16b[2];
   theWriteData << a8b[0] << a8b[1] << a8b[2] << a8b[3] << a8b[4] << a8b[5];

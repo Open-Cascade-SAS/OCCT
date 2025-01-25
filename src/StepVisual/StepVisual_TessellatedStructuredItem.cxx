@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -18,11 +18,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedStructuredItem, StepVisual_TessellatedItem)
 
-//=======================================================================
-//function : StepVisual_TessellatedStructuredItem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepVisual_TessellatedStructuredItem::StepVisual_TessellatedStructuredItem ()
-{
-}
+StepVisual_TessellatedStructuredItem::StepVisual_TessellatedStructuredItem() {}

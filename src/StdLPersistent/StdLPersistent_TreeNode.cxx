@@ -13,32 +13,31 @@
 
 #include <StdLPersistent_TreeNode.hxx>
 
-
 //=======================================================================
-//function : Read
-//purpose  : Read persistent data from a file
+// function : Read
+// purpose  : Read persistent data from a file
 //=======================================================================
-void StdLPersistent_TreeNode::Read (StdObjMgt_ReadData& theReadData)
+void StdLPersistent_TreeNode::Read(StdObjMgt_ReadData& theReadData)
 {
   myDynamicData = new dynamic;
   theReadData >> myDynamicData->First >> myNext >> myDynamicData->TreeID;
 }
 
 //=======================================================================
-//function : Write
-//purpose  : Write persistent data to a file
+// function : Write
+// purpose  : Write persistent data to a file
 //=======================================================================
-void StdLPersistent_TreeNode::Write (StdObjMgt_WriteData& theWriteData) const
+void StdLPersistent_TreeNode::Write(StdObjMgt_WriteData& theWriteData) const
 {
   theWriteData << myDynamicData->First << myNext << myDynamicData->TreeID;
 }
 
 //=======================================================================
-//function : PChildren
-//purpose  : Gets persistent child objects
+// function : PChildren
+// purpose  : Gets persistent child objects
 //=======================================================================
-void StdLPersistent_TreeNode::PChildren
-  (StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+void StdLPersistent_TreeNode::PChildren(
+  StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
 {
   theChildren.Append(myNext);
   if (!myDynamicData.IsNull())
@@ -46,19 +45,19 @@ void StdLPersistent_TreeNode::PChildren
 }
 
 //=======================================================================
-//function : CreateAttribute
-//purpose  : Create an empty transient attribute
+// function : CreateAttribute
+// purpose  : Create an empty transient attribute
 //=======================================================================
 Handle(TDF_Attribute) StdLPersistent_TreeNode::CreateAttribute()
 {
   Static::CreateAttribute();
-  myTransient->SetTreeID (myDynamicData->TreeID);
+  myTransient->SetTreeID(myDynamicData->TreeID);
   return myTransient;
 }
 
 //=======================================================================
-//function : ImportAttribute
-//purpose  : Import transient attribute from the persistent data
+// function : ImportAttribute
+// purpose  : Import transient attribute from the persistent data
 //=======================================================================
 void StdLPersistent_TreeNode::ImportAttribute()
 {
@@ -70,7 +69,7 @@ void StdLPersistent_TreeNode::ImportAttribute()
       if (aChild->myTransient)
         myTransient->Append(aChild->myTransient);
       StdLPersistent_TreeNode* aCurr = aChild.get();
-      aChild = aChild->myNext;
+      aChild                         = aChild->myNext;
       aCurr->myNext.Nullify(); // this reference is no longer needed
     }
 

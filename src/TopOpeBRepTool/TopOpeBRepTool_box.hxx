@@ -23,8 +23,8 @@
 Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceBOX();
 #endif
 
-Standard_EXPORT void FBOX_Prepare();
+Standard_EXPORT void                            FBOX_Prepare();
 Standard_EXPORT Handle(TopOpeBRepTool_HBoxTool) FBOX_GetHBoxTool();
-Standard_EXPORT const Bnd_Box& FBOX_Box(const TopoDS_Shape& S);
+Standard_EXPORT const Bnd_Box&                  FBOX_Box(const TopoDS_Shape& S);
 
 #endif

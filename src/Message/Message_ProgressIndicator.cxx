@@ -13,23 +13,19 @@
 
 #include <Message_ProgressIndicator.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Message_ProgressIndicator,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Message_ProgressIndicator, Standard_Transient)
 
-//=======================================================================
-//function : Message_ProgressIndicator
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Message_ProgressIndicator::Message_ProgressIndicator()
-: myPosition(0.),
-  myRootScope (NULL)
+    : myPosition(0.),
+      myRootScope(NULL)
 {
-  myRootScope = new Message_ProgressScope (this);
+  myRootScope = new Message_ProgressScope(this);
 }
 
-//=======================================================================
-//function : ~Message_ProgressIndicator
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Message_ProgressIndicator::~Message_ProgressIndicator()
 {
   // Avoid calling Increment() from myRootScope.Close()
@@ -38,25 +34,21 @@ Message_ProgressIndicator::~Message_ProgressIndicator()
   delete myRootScope;
 }
 
-//=======================================================================
-//function : Start()
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Message_ProgressRange Message_ProgressIndicator::Start()
 {
-  myPosition = 0.;
+  myPosition           = 0.;
   myRootScope->myValue = 0.;
   Reset();
-  Show (*myRootScope, Standard_False);
+  Show(*myRootScope, Standard_False);
   return myRootScope->Next();
 }
 
-//=======================================================================
-//function : Start()
-//purpose  :
-//=======================================================================
-Message_ProgressRange Message_ProgressIndicator::Start
-                       (const Handle(Message_ProgressIndicator)& theProgress)
+//=================================================================================================
+
+Message_ProgressRange Message_ProgressIndicator::Start(
+  const Handle(Message_ProgressIndicator)& theProgress)
 {
   return theProgress.IsNull() ? Message_ProgressRange() : theProgress->Start();
 }

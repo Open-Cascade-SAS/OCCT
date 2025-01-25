@@ -29,7 +29,6 @@ class gp_Hypr2d;
 class gp_Parab2d;
 class gp_Elips2d;
 
-
 class GccInt_Bisec;
 DEFINE_STANDARD_HANDLE(GccInt_Bisec, Standard_Transient)
 
@@ -56,57 +55,38 @@ class GccInt_Bisec : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns the type of bisecting object (line, circle,
   //! parabola, hyperbola, ellipse, point).
   Standard_EXPORT virtual GccInt_IType ArcType() const = 0;
-  
+
   //! Returns the bisecting line when ArcType returns Pnt.
   //! An exception DomainError is raised if ArcType is not a Pnt.
   Standard_EXPORT virtual gp_Pnt2d Point() const;
-  
+
   //! Returns the bisecting line when ArcType returns Lin.
   //! An exception DomainError is raised if ArcType is not a Lin.
   Standard_EXPORT virtual gp_Lin2d Line() const;
-  
+
   //! Returns the bisecting line when ArcType returns Cir.
   //! An exception DomainError is raised if ArcType is not a Cir.
   Standard_EXPORT virtual gp_Circ2d Circle() const;
-  
+
   //! Returns the bisecting line when ArcType returns Hpr.
   //! An exception DomainError is raised if ArcType is not a Hpr.
   Standard_EXPORT virtual gp_Hypr2d Hyperbola() const;
-  
+
   //! Returns the bisecting line when ArcType returns Par.
   //! An exception DomainError is raised if ArcType is not a Par.
   Standard_EXPORT virtual gp_Parab2d Parabola() const;
-  
+
   //! Returns the bisecting line when ArcType returns Ell.
   //! An exception DomainError is raised if ArcType is not an Ell.
   Standard_EXPORT virtual gp_Elips2d Ellipse() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(GccInt_Bisec,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(GccInt_Bisec, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _GccInt_Bisec_HeaderFile

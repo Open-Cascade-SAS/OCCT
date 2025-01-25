@@ -32,10 +32,7 @@
 #include <BinDrivers.hxx>
 #include <XmlDrivers.hxx>
 
-//=======================================================================
-//function : Find
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 const Handle(TDocStd_Application)& DDocStd::GetApplication()
 {
@@ -56,89 +53,86 @@ const Handle(TDocStd_Application)& DDocStd::GetApplication()
   return anApp;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : GetDocument
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean DDocStd::GetDocument (Standard_CString&         Name,
-				       Handle(TDocStd_Document)& DOC,
-				       const Standard_Boolean    Complain)
+Standard_Boolean DDocStd::GetDocument(Standard_CString&         Name,
+                                      Handle(TDocStd_Document)& DOC,
+                                      const Standard_Boolean    Complain)
 {
-  Handle(DDocStd_DrawDocument) DD = Handle(DDocStd_DrawDocument)::DownCast (Draw::GetExisting (Name));
-  if (DD.IsNull()) {
-    if (Complain) std::cout << Name << " is not a Document" << std::endl; 
+  Handle(DDocStd_DrawDocument) DD = Handle(DDocStd_DrawDocument)::DownCast(Draw::GetExisting(Name));
+  if (DD.IsNull())
+  {
+    if (Complain)
+      std::cout << Name << " is not a Document" << std::endl;
     return Standard_False;
   }
   Handle(TDocStd_Document) STDDOC = DD->GetDocument();
-  if (!STDDOC.IsNull()) {
+  if (!STDDOC.IsNull())
+  {
     DOC = STDDOC;
     return Standard_True;
   }
-  if (Complain) std::cout << Name << " is not a CAF Document" << std::endl; 
+  if (Complain)
+    std::cout << Name << " is not a CAF Document" << std::endl;
   return Standard_False;
 }
 
-
 //=======================================================================
-//function : Label
-//purpose  : try to retrieve a label 
+// function : Label
+// purpose  : try to retrieve a label
 //=======================================================================
 
-Standard_Boolean DDocStd::Find (const Handle(TDocStd_Document)& D,
-				const Standard_CString  Entry,
-				TDF_Label& Label,   
-				const Standard_Boolean  Complain)
+Standard_Boolean DDocStd::Find(const Handle(TDocStd_Document)& D,
+                               const Standard_CString          Entry,
+                               TDF_Label&                      Label,
+                               const Standard_Boolean          Complain)
 {
   Label.Nullify();
-  TDF_Tool::Label(D->GetData(),Entry,Label,Standard_False);
-  if (Label.IsNull() && Complain) std::cout<<"No label for entry "<<Entry<<std::endl;
+  TDF_Tool::Label(D->GetData(), Entry, Label, Standard_False);
+  if (Label.IsNull() && Complain)
+    std::cout << "No label for entry " << Entry << std::endl;
   return !Label.IsNull();
 }
 
 //=======================================================================
-//function : Find
-//purpose  : Try to retrieve an attribute.
+// function : Find
+// purpose  : Try to retrieve an attribute.
 //=======================================================================
 
-Standard_Boolean DDocStd::Find (const Handle(TDocStd_Document)& D,
-				const Standard_CString  Entry,
-				const Standard_GUID&    ID,
-				Handle(TDF_Attribute)&  A,
-				const Standard_Boolean  Complain) 
+Standard_Boolean DDocStd::Find(const Handle(TDocStd_Document)& D,
+                               const Standard_CString          Entry,
+                               const Standard_GUID&            ID,
+                               Handle(TDF_Attribute)&          A,
+                               const Standard_Boolean          Complain)
 {
   TDF_Label L;
-  if (Find(D,Entry,L,Complain)) {
-    if (L.FindAttribute(ID,A)) return Standard_True;
-    if (Complain) std::cout <<"attribute not found for entry : "<< Entry <<std::endl; 
+  if (Find(D, Entry, L, Complain))
+  {
+    if (L.FindAttribute(ID, A))
+      return Standard_True;
+    if (Complain)
+      std::cout << "attribute not found for entry : " << Entry << std::endl;
   }
-  return Standard_False;   
+  return Standard_False;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : ReturnLabel
-//purpose  : 
-//=======================================================================
- 
 Draw_Interpretor& DDocStd::ReturnLabel(Draw_Interpretor& di, const TDF_Label& L)
 {
   TCollection_AsciiString S;
-  TDF_Tool::Entry(L,S);
+  TDF_Tool::Entry(L, S);
   di << S.ToCString();
   return di;
 }
 
-//=======================================================================
-//function : AllCommands
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void DDocStd::AllCommands(Draw_Interpretor& theCommands) 
+void DDocStd::AllCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
-  if (done) return;
+  if (done)
+    return;
   done = Standard_True;
 
   // define commands

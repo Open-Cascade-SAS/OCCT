@@ -25,7 +25,6 @@
 class Standard_Transient;
 class Interface_InterfaceModel;
 
-
 class IGESSelect_SignColor;
 DEFINE_STANDARD_HANDLE(IGESSelect_SignColor, IFSelect_Signature)
 
@@ -44,39 +43,22 @@ class IGESSelect_SignColor : public IFSelect_Signature
 {
 
 public:
-
-  
   //! Creates a SignColor
   //! mode : see above for the meaning
   //! modes 4,5,6 give a numeric integer value
   //! Name is initialised according to the mode
   Standard_EXPORT IGESSelect_SignColor(const Standard_Integer mode);
-  
+
   //! Returns the value (see above)
-  Standard_EXPORT Standard_CString Value (const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_CString
+    Value(const Handle(Standard_Transient)&       ent,
+          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSelect_SignColor,IFSelect_Signature)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SignColor, IFSelect_Signature)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Integer themode;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESSelect_SignColor_HeaderFile

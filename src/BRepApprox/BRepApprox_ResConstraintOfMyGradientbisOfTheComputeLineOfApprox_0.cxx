@@ -21,13 +21,12 @@
 #include <BRepApprox_TheMultiLineToolOfApprox.hxx>
 #include <AppParCurves_MultiCurve.hxx>
 #include <math_Matrix.hxx>
- 
 
 #define MultiLine BRepApprox_TheMultiLineOfApprox
 #define MultiLine_hxx <BRepApprox_TheMultiLineOfApprox.hxx>
 #define ToolLine BRepApprox_TheMultiLineToolOfApprox
 #define ToolLine_hxx <BRepApprox_TheMultiLineToolOfApprox.hxx>
 #define AppParCurves_ResolConstraint BRepApprox_ResConstraintOfMyGradientbisOfTheComputeLineOfApprox
-#define AppParCurves_ResolConstraint_hxx <BRepApprox_ResConstraintOfMyGradientbisOfTheComputeLineOfApprox.hxx>
+#define AppParCurves_ResolConstraint_hxx                                                           \
+  <BRepApprox_ResConstraintOfMyGradientbisOfTheComputeLineOfApprox.hxx>
 #include "../AppParCurves/AppParCurves_ResolConstraint.gxx"
-

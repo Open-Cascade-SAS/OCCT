@@ -27,7 +27,6 @@
 #include <gp_Elips2d.hxx>
 #include <gp_Parab2d.hxx>
 #include <gp_Hypr2d.hxx>
- 
 
 #define TheImpTool IntCurve_IConicTool
 #define TheImpTool_hxx <IntCurve_IConicTool.hxx>
@@ -40,4 +39,3 @@
 #define IntCurve_UserIntConicCurveGen Geom2dInt_IntConicCurveOfGInter
 #define IntCurve_UserIntConicCurveGen_hxx <Geom2dInt_IntConicCurveOfGInter.hxx>
 #include "../IntCurve/IntCurve_UserIntConicCurveGen.gxx"
-

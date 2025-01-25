@@ -27,13 +27,11 @@ class gp_Pnt;
 
 //! A framework to define display of perpendicular
 //! constraints between shapes.
-class DsgPrs_PerpenPresentation 
+class DsgPrs_PerpenPresentation
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Defines the display of elements showing
   //! perpendicular constraints between shapes.
   //! These include the two axis points pAx1 and pAx2,
@@ -42,29 +40,18 @@ public:
   //! These arguments are added to the presentation
   //! object aPresentation. Their display attributes are
   //! defined by the attribute manager aDrawer.
-  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Handle(Prs3d_Drawer)& aDrawer, const gp_Pnt& pAx1, const gp_Pnt& pAx2, const gp_Pnt& pnt1, const gp_Pnt& pnt2, const gp_Pnt& OffsetPoint, const Standard_Boolean intOut1, const Standard_Boolean intOut2);
-
-
-
+  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
+                                  const Handle(Prs3d_Drawer)&       aDrawer,
+                                  const gp_Pnt&                     pAx1,
+                                  const gp_Pnt&                     pAx2,
+                                  const gp_Pnt&                     pnt1,
+                                  const gp_Pnt&                     pnt2,
+                                  const gp_Pnt&                     OffsetPoint,
+                                  const Standard_Boolean            intOut1,
+                                  const Standard_Boolean            intOut2);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _DsgPrs_PerpenPresentation_HeaderFile

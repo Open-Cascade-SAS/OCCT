@@ -25,57 +25,42 @@
 #include <TColStd_HArray1OfReal.hxx>
 class TCollection_HAsciiString;
 
-
 class StepGeom_CartesianPoint;
 DEFINE_STANDARD_HANDLE(StepGeom_CartesianPoint, StepGeom_Point)
-
 
 class StepGeom_CartesianPoint : public StepGeom_Point
 {
 
 public:
-
-  
   //! Returns a CartesianPoint
   Standard_EXPORT StepGeom_CartesianPoint();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TColStd_HArray1OfReal)& aCoordinates);
-  
-  Standard_EXPORT void Init2D (const Handle(TCollection_HAsciiString)& aName, const Standard_Real X, const Standard_Real Y);
-  
-  Standard_EXPORT void Init3D (const Handle(TCollection_HAsciiString)& aName, const Standard_Real X, const Standard_Real Y, const Standard_Real Z);
-  
-  Standard_EXPORT void SetCoordinates (const Handle(TColStd_HArray1OfReal)& aCoordinates);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Handle(TColStd_HArray1OfReal)&    aCoordinates);
+
+  Standard_EXPORT void Init2D(const Handle(TCollection_HAsciiString)& aName,
+                              const Standard_Real                     X,
+                              const Standard_Real                     Y);
+
+  Standard_EXPORT void Init3D(const Handle(TCollection_HAsciiString)& aName,
+                              const Standard_Real                     X,
+                              const Standard_Real                     Y,
+                              const Standard_Real                     Z);
+
+  Standard_EXPORT void SetCoordinates(const Handle(TColStd_HArray1OfReal)& aCoordinates);
+
   Standard_EXPORT Handle(TColStd_HArray1OfReal) Coordinates() const;
-  
-  Standard_EXPORT Standard_Real CoordinatesValue (const Standard_Integer num) const;
-  
+
+  Standard_EXPORT Standard_Real CoordinatesValue(const Standard_Integer num) const;
+
   Standard_EXPORT Standard_Integer NbCoordinates() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_CartesianPoint,StepGeom_Point)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_CartesianPoint, StepGeom_Point)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Integer nbcoord;
-  Standard_Real coords[3];
-
-
+  Standard_Real    coords[3];
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_CartesianPoint_HeaderFile

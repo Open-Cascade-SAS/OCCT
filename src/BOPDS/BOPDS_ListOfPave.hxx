@@ -15,11 +15,10 @@
 #ifndef BOPDS_ListOfPave_HeaderFile
 #define BOPDS_ListOfPave_HeaderFile
 
-#include <NCollection_List.hxx>   
-#include <BOPDS_Pave.hxx>   
+#include <NCollection_List.hxx>
+#include <BOPDS_Pave.hxx>
 
-typedef NCollection_List<BOPDS_Pave> BOPDS_ListOfPave; 
-typedef BOPDS_ListOfPave::Iterator BOPDS_ListIteratorOfListOfPave;
-
+typedef NCollection_List<BOPDS_Pave> BOPDS_ListOfPave;
+typedef BOPDS_ListOfPave::Iterator   BOPDS_ListIteratorOfListOfPave;
 
 #endif

@@ -27,7 +27,7 @@ class Interface_InterfaceModel;
 
 // Avoid possible conflict with SetForm macro defined by windows.h
 #ifdef SetForm
-#undef SetForm
+  #undef SetForm
 #endif
 
 class IGESSelect_IGESTypeForm;
@@ -42,41 +42,24 @@ class IGESSelect_IGESTypeForm : public IFSelect_Signature
 {
 
 public:
-
-  
   //! Creates a Signature for IGES Type & Form Numbers
   //! If <withform> is False, for IGES Type Number only
   Standard_EXPORT IGESSelect_IGESTypeForm(const Standard_Boolean withform = Standard_True);
-  
+
   //! Changes the mode for giving the Form Number
-  Standard_EXPORT void SetForm (const Standard_Boolean withform);
-  
+  Standard_EXPORT void SetForm(const Standard_Boolean withform);
+
   //! Returns the signature for IGES, "mmm nnn" or "mmm" according
   //! creation choice (Type & Form or Type only)
-  Standard_EXPORT Standard_CString Value (const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_CString
+    Value(const Handle(Standard_Transient)&       ent,
+          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSelect_IGESTypeForm,IFSelect_Signature)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_IGESTypeForm, IFSelect_Signature)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Boolean theform;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESSelect_IGESTypeForm_HeaderFile

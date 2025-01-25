@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
@@ -28,83 +27,73 @@
 #include <Standard_Type.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceAngle,ShapeUpgrade_SplitSurface)
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceAngle, ShapeUpgrade_SplitSurface)
 
-//=======================================================================
-//function : ShapeUpgrade_SplitSurfaceAngle
-//purpose  : 
-//=======================================================================
-ShapeUpgrade_SplitSurfaceAngle::ShapeUpgrade_SplitSurfaceAngle (const Standard_Real MaxAngle)
+//=================================================================================================
+
+ShapeUpgrade_SplitSurfaceAngle::ShapeUpgrade_SplitSurfaceAngle(const Standard_Real MaxAngle)
 {
   myMaxAngle = MaxAngle;
 }
 
-//=======================================================================
-//function : SetMaxAngle
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void ShapeUpgrade_SplitSurfaceAngle::SetMaxAngle (const Standard_Real MaxAngle)
+void ShapeUpgrade_SplitSurfaceAngle::SetMaxAngle(const Standard_Real MaxAngle)
 {
   myMaxAngle = MaxAngle;
 }
-     
-//=======================================================================
-//function : MaxAngle
-//purpose  : 
-//=======================================================================
 
-double ShapeUpgrade_SplitSurfaceAngle::MaxAngle () const
+//=================================================================================================
+
+double ShapeUpgrade_SplitSurfaceAngle::MaxAngle() const
 {
   return myMaxAngle;
 }
-     
-//=======================================================================
-//function : Compute
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
 
 void ShapeUpgrade_SplitSurfaceAngle::Compute(const Standard_Boolean /*Segment*/)
 {
   Handle(Geom_Surface) S;
-  Standard_Real U1 = 0.,U2 = 0.;
-  Standard_Boolean isRect = Standard_False;
-  if(mySurface->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface))){
-    Handle(Geom_RectangularTrimmedSurface) rts = 
+  Standard_Real        U1 = 0., U2 = 0.;
+  Standard_Boolean     isRect = Standard_False;
+  if (mySurface->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+  {
+    Handle(Geom_RectangularTrimmedSurface) rts =
       Handle(Geom_RectangularTrimmedSurface)::DownCast(mySurface);
     isRect = Standard_True;
-    Standard_Real V1,V2;
-    rts->Bounds(U1,U2,V1,V2);
+    Standard_Real V1, V2;
+    rts->Bounds(U1, U2, V1, V2);
     S = rts->BasisSurface();
   }
-  else if (mySurface->IsKind(STANDARD_TYPE(Geom_OffsetSurface))) {
-    Handle(Geom_OffsetSurface) ofs = 
-      Handle(Geom_OffsetSurface)::DownCast(mySurface);
-    S = ofs->BasisSurface();
+  else if (mySurface->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
+  {
+    Handle(Geom_OffsetSurface) ofs = Handle(Geom_OffsetSurface)::DownCast(mySurface);
+    S                              = ofs->BasisSurface();
   }
-  else 
+  else
     S = mySurface;
-  
-  if(S->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution))||
-     S->IsKind(STANDARD_TYPE(Geom_ConicalSurface))||
-     S->IsKind(STANDARD_TYPE(Geom_ToroidalSurface))||
-     S->IsKind(STANDARD_TYPE(Geom_CylindricalSurface))||
-     S->IsKind(STANDARD_TYPE(Geom_SphericalSurface))) {
-    
-    Standard_Real UFirst = myUSplitValues->Sequence().First();
-    Standard_Real ULast  = myUSplitValues->Sequence().Last();
-    Standard_Real maxAngle = myMaxAngle; //maximal u length of segment
-    Standard_Real uLength = ULast-UFirst;
-    Standard_Integer nbSegments = Standard_Integer((uLength-Precision::Angular())/maxAngle)+1;
-    if(nbSegments==1)
-      if(!isRect || !(uLength < maxAngle) || !((U2-U1) < maxAngle))
-	myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE2);
-    Standard_Real segAngle = uLength/nbSegments;
-    Standard_Real currAngle = segAngle+UFirst;
+
+  if (S->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution))
+      || S->IsKind(STANDARD_TYPE(Geom_ConicalSurface))
+      || S->IsKind(STANDARD_TYPE(Geom_ToroidalSurface))
+      || S->IsKind(STANDARD_TYPE(Geom_CylindricalSurface))
+      || S->IsKind(STANDARD_TYPE(Geom_SphericalSurface)))
+  {
+
+    Standard_Real    UFirst     = myUSplitValues->Sequence().First();
+    Standard_Real    ULast      = myUSplitValues->Sequence().Last();
+    Standard_Real    maxAngle   = myMaxAngle; // maximal u length of segment
+    Standard_Real    uLength    = ULast - UFirst;
+    Standard_Integer nbSegments = Standard_Integer((uLength - Precision::Angular()) / maxAngle) + 1;
+    if (nbSegments == 1)
+      if (!isRect || !(uLength < maxAngle) || !((U2 - U1) < maxAngle))
+        myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+    Standard_Real                   segAngle    = uLength / nbSegments;
+    Standard_Real                   currAngle   = segAngle + UFirst;
     Handle(TColStd_HSequenceOfReal) splitValues = new TColStd_HSequenceOfReal;
-    for( Standard_Integer i = 1; i < nbSegments; i++, currAngle+=segAngle)
+    for (Standard_Integer i = 1; i < nbSegments; i++, currAngle += segAngle)
       splitValues->Append(currAngle);
-    SetUSplitValues ( splitValues );
+    SetUSplitValues(splitValues);
   }
 }
-   

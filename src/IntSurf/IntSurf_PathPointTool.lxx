@@ -17,58 +17,48 @@
 #include <gp_Pnt.hxx>
 #include <gp_Dir2d.hxx>
 
-inline gp_Pnt IntSurf_PathPointTool::Value3d (const IntSurf_PathPoint& PStart)
+inline gp_Pnt IntSurf_PathPointTool::Value3d(const IntSurf_PathPoint& PStart)
 {
   return PStart.Value();
 }
 
-inline void IntSurf_PathPointTool::Value2d (const IntSurf_PathPoint& PStart,
-					    Standard_Real& U,
-					    Standard_Real& V) {
-  PStart.Value2d(U,V);
+inline void IntSurf_PathPointTool::Value2d(const IntSurf_PathPoint& PStart,
+                                           Standard_Real&           U,
+                                           Standard_Real&           V)
+{
+  PStart.Value2d(U, V);
 }
 
-
-inline Standard_Boolean IntSurf_PathPointTool::IsPassingPnt 
-  (const IntSurf_PathPoint& PStart)   {
+inline Standard_Boolean IntSurf_PathPointTool::IsPassingPnt(const IntSurf_PathPoint& PStart)
+{
 
   return PStart.IsPassingPnt();
 }
 
-
-inline Standard_Boolean IntSurf_PathPointTool::IsTangent 
-  (const IntSurf_PathPoint& PStart) 
+inline Standard_Boolean IntSurf_PathPointTool::IsTangent(const IntSurf_PathPoint& PStart)
 {
   return PStart.IsTangent();
 }
 
-
-inline gp_Vec IntSurf_PathPointTool::Direction3d
-  (const IntSurf_PathPoint& PStart) 
+inline gp_Vec IntSurf_PathPointTool::Direction3d(const IntSurf_PathPoint& PStart)
 {
   return PStart.Direction3d();
 }
 
-inline gp_Dir2d IntSurf_PathPointTool::Direction2d
-  (const IntSurf_PathPoint& PStart) 
+inline gp_Dir2d IntSurf_PathPointTool::Direction2d(const IntSurf_PathPoint& PStart)
 {
   return PStart.Direction2d();
 }
 
-
-inline Standard_Integer IntSurf_PathPointTool::Multiplicity 
-  (const IntSurf_PathPoint& PStart) 
+inline Standard_Integer IntSurf_PathPointTool::Multiplicity(const IntSurf_PathPoint& PStart)
 {
   return PStart.Multiplicity();
 }
 
-
-inline void IntSurf_PathPointTool::Parameters (const IntSurf_PathPoint& PStart,
-					       const Standard_Integer Mult,
-					       Standard_Real& U,
-					       Standard_Real& V)
+inline void IntSurf_PathPointTool::Parameters(const IntSurf_PathPoint& PStart,
+                                              const Standard_Integer   Mult,
+                                              Standard_Real&           U,
+                                              Standard_Real&           V)
 {
-  PStart.Parameters(Mult,U,V);
+  PStart.Parameters(Mult, U, V);
 }
-
-

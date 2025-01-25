@@ -17,11 +17,10 @@
 #ifndef _GeomFill_ApproxStyle_HeaderFile
 #define _GeomFill_ApproxStyle_HeaderFile
 
-
 enum GeomFill_ApproxStyle
 {
-GeomFill_Section,
-GeomFill_Location
+  GeomFill_Section,
+  GeomFill_Location
 };
 
 #endif // _GeomFill_ApproxStyle_HeaderFile

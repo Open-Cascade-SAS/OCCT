@@ -14,81 +14,82 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <HatchGen_Domain.hxx>
 #include <HatchGen_PointOnHatching.hxx>
 #include <Standard_Stream.hxx>
 
-//=======================================================================
-// Function : HatchGen_Domain
-// Purpose  : Constructor.
-//=======================================================================
-HatchGen_Domain::HatchGen_Domain () :
-       myHasFirstPoint  (Standard_False) ,
-       myHasSecondPoint (Standard_False)
+//=================================================================================================
+
+HatchGen_Domain::HatchGen_Domain()
+    : myHasFirstPoint(Standard_False),
+      myHasSecondPoint(Standard_False)
 {
 }
 
-//=======================================================================
-// Function : HatchGen_Domain
-// Purpose  : Constructor.
-//=======================================================================
+//=================================================================================================
 
-HatchGen_Domain::HatchGen_Domain (const HatchGen_PointOnHatching& P1,
-				  const HatchGen_PointOnHatching& P2) :
-       myHasFirstPoint  (Standard_True) ,
-       myFirstPoint     (P1),
-       myHasSecondPoint (Standard_True) ,
-       mySecondPoint    (P2)
+HatchGen_Domain::HatchGen_Domain(const HatchGen_PointOnHatching& P1,
+                                 const HatchGen_PointOnHatching& P2)
+    : myHasFirstPoint(Standard_True),
+      myFirstPoint(P1),
+      myHasSecondPoint(Standard_True),
+      mySecondPoint(P2)
 {
 }
 
-//=======================================================================
-// Function : HatchGen_Domain
-// Purpose  : Constructor.
-//=======================================================================
+//=================================================================================================
 
-HatchGen_Domain::HatchGen_Domain (const HatchGen_PointOnHatching& P,
-				  const Standard_Boolean First)
+HatchGen_Domain::HatchGen_Domain(const HatchGen_PointOnHatching& P, const Standard_Boolean First)
 {
-  if (First) {
-    myHasFirstPoint  = Standard_True ;
-    myHasSecondPoint = Standard_False ;
-    myFirstPoint     = P ;
-  } else {
-    myHasFirstPoint  = Standard_False ;
-    myHasSecondPoint = Standard_True ;
-    mySecondPoint    = P ;
+  if (First)
+  {
+    myHasFirstPoint  = Standard_True;
+    myHasSecondPoint = Standard_False;
+    myFirstPoint     = P;
+  }
+  else
+  {
+    myHasFirstPoint  = Standard_False;
+    myHasSecondPoint = Standard_True;
+    mySecondPoint    = P;
   }
 }
-
 
 //=======================================================================
 // Function : Dump
 // Purpose  : Dump of the domain.
 //=======================================================================
 
-void HatchGen_Domain::Dump (const Standard_Integer Index) const
+void HatchGen_Domain::Dump(const Standard_Integer Index) const
 {
-  std::cout << "=== Domain " ;
-  if (Index > 0) {
-    std::cout << "# " << std::setw(3) << Index << " " ;
-  } else {
-    std::cout << "======" ;
+  std::cout << "=== Domain ";
+  if (Index > 0)
+  {
+    std::cout << "# " << std::setw(3) << Index << " ";
   }
-  std::cout << "=============================" << std::endl ;
+  else
+  {
+    std::cout << "======";
+  }
+  std::cout << "=============================" << std::endl;
 
-  if (myHasFirstPoint) {
-    myFirstPoint.Dump (1) ;
-  } else {
-    std::cout << "    Has not a first point" << std::endl ;
+  if (myHasFirstPoint)
+  {
+    myFirstPoint.Dump(1);
+  }
+  else
+  {
+    std::cout << "    Has not a first point" << std::endl;
   }
 
-  if (myHasSecondPoint) {
-    mySecondPoint.Dump (2) ;
-  } else {
-    std::cout << "    Has not a second point" << std::endl ;
+  if (myHasSecondPoint)
+  {
+    mySecondPoint.Dump(2);
+  }
+  else
+  {
+    std::cout << "    Has not a second point" << std::endl;
   }
 
-  std::cout << "==============================================" << std::endl ;
+  std::cout << "==============================================" << std::endl;
 }

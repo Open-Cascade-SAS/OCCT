@@ -44,227 +44,216 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(PrsDim_EllipseRadiusDimension, PrsDim_Relation)
 
-//=======================================================================
-//function : PrsDim_EllipseRadiusDimension
-//purpose  : 
-//=======================================================================
-PrsDim_EllipseRadiusDimension::PrsDim_EllipseRadiusDimension(const TopoDS_Shape& aShape, 
-						       const TCollection_ExtendedString& aText)
-:PrsDim_Relation()
+//=================================================================================================
+
+PrsDim_EllipseRadiusDimension::PrsDim_EllipseRadiusDimension(
+  const TopoDS_Shape&               aShape,
+  const TCollection_ExtendedString& aText)
+    : PrsDim_Relation()
 {
   myFShape = aShape;
-  myText = aText;
-//  ComputeGeometry( );
+  myText   = aText;
+  //  ComputeGeometry( );
 }
 
-//=======================================================================
-//function : ComputeGeometry
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void PrsDim_EllipseRadiusDimension::ComputeGeometry()
 {
 
- switch (myFShape.ShapeType()) {
-  case TopAbs_FACE :
-    {
+  switch (myFShape.ShapeType())
+  {
+    case TopAbs_FACE: {
       // compute one face case
-      ComputeFaceGeometry ();
+      ComputeFaceGeometry();
       break;
     }
-  case TopAbs_EDGE:
-    {
-      ComputeEdgeGeometry ();
+    case TopAbs_EDGE: {
+      ComputeEdgeGeometry();
       break;
     }
-  default:
-    break;
+    default:
+      break;
   }
- while (myFirstPar > 2*M_PI) myFirstPar -= 2*M_PI;
- while (myLastPar > 2*M_PI)  myLastPar  -= 2*M_PI;
- while (myFirstPar < 0.0)  myFirstPar += 2*M_PI;
- while (myLastPar  < 0.0)  myLastPar  += 2*M_PI;
+  while (myFirstPar > 2 * M_PI)
+    myFirstPar -= 2 * M_PI;
+  while (myLastPar > 2 * M_PI)
+    myLastPar -= 2 * M_PI;
+  while (myFirstPar < 0.0)
+    myFirstPar += 2 * M_PI;
+  while (myLastPar < 0.0)
+    myLastPar += 2 * M_PI;
 }
 
-//=======================================================================
-//function : ComputeFaceGeometry
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void PrsDim_EllipseRadiusDimension::ComputeFaceGeometry()
 {
 
-  gp_Pln aPln;
-  Handle( Geom_Surface ) aBasisSurf;
+  gp_Pln               aPln;
+  Handle(Geom_Surface) aBasisSurf;
   PrsDim_KindOfSurface aSurfType;
-  Standard_Real Offset;
-  PrsDim::GetPlaneFromFace( TopoDS::Face(  myFShape),
-					aPln,
-					aBasisSurf,
-				        aSurfType,
-					Offset ) ;
+  Standard_Real        Offset;
+  PrsDim::GetPlaneFromFace(TopoDS::Face(myFShape), aPln, aBasisSurf, aSurfType, Offset);
 
-  if ( aSurfType == PrsDim_KOS_Plane )
-    ComputePlanarFaceGeometry( );
-  else 
-    ComputeCylFaceGeometry( aSurfType, aBasisSurf, Offset );
-
+  if (aSurfType == PrsDim_KOS_Plane)
+    ComputePlanarFaceGeometry();
+  else
+    ComputeCylFaceGeometry(aSurfType, aBasisSurf, Offset);
 }
 
 //=======================================================================
-//function : ComputeCylFaceGeometry
-//purpose  : defines Ellipse and plane of dimension
+// function : ComputeCylFaceGeometry
+// purpose  : defines Ellipse and plane of dimension
 //=======================================================================
 
 void PrsDim_EllipseRadiusDimension::ComputeCylFaceGeometry(const PrsDim_KindOfSurface  aSurfType,
-							const Handle( Geom_Surface )&  aBasisSurf,
-							const Standard_Real Offset)
+                                                           const Handle(Geom_Surface)& aBasisSurf,
+                                                           const Standard_Real         Offset)
 {
 
   BRepAdaptor_Surface surf1(TopoDS::Face(myFShape));
-  Standard_Real vFirst, vLast;
-  vFirst = surf1.FirstVParameter();
-  vLast  = surf1.LastVParameter();
-  Standard_Real vMid = (vFirst + vLast)*0.5;
-  gp_Pln aPlane;
-  gp_Ax1 Axis;
-//  Standard_Real Param;
+  Standard_Real       vFirst, vLast;
+  vFirst             = surf1.FirstVParameter();
+  vLast              = surf1.LastVParameter();
+  Standard_Real vMid = (vFirst + vLast) * 0.5;
+  gp_Pln        aPlane;
+  gp_Ax1        Axis;
+  //  Standard_Real Param;
   if (aSurfType == PrsDim_KOS_Extrusion)
-    {
-      Axis.SetDirection((Handle( Geom_SurfaceOfLinearExtrusion )::DownCast( aBasisSurf ))
-			->Direction() );
-      Axis.SetLocation( gp_Pnt((Handle( Geom_SurfaceOfLinearExtrusion )::DownCast( aBasisSurf ))
-			       ->Direction().XYZ() ) );
-      
-      aPlane.SetAxis(Axis);
-      aPlane.SetLocation(myEllipse.Location());
-      myPlane = new Geom_Plane(aPlane);
-      
-      Handle(Geom_Curve) aCurve;
-      aCurve =   aBasisSurf->VIso(vMid);
-      if (aCurve->DynamicType() == STANDARD_TYPE(Geom_Ellipse)) 
-	{
-	  myEllipse = Handle(Geom_Ellipse)::DownCast(aCurve)-> Elips();//gp_Elips
-	  myIsAnArc = Standard_False;
-	}
-      else if (aCurve->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve)) {
-	Handle(Geom_TrimmedCurve) tCurve = Handle(Geom_TrimmedCurve)::DownCast(aCurve); 
-	aCurve = tCurve->BasisCurve();
-	myFirstPar = tCurve->FirstParameter();
-	myLastPar  = tCurve->LastParameter();
-	myIsAnArc = Standard_True;
-	if (aCurve->DynamicType() == STANDARD_TYPE(Geom_Ellipse)) 
-	  {
-	    myEllipse = Handle(Geom_Ellipse)::DownCast(aCurve)->Elips();//gp_Elips
-	  }
-      }
-      else 
-	{
-	  throw Standard_ConstructionError("PrsDim:: Not expected type of surface") ;
-	    return;
-	  }
-      
-// Offset  
+  {
+    Axis.SetDirection((Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(aBasisSurf))->Direction());
+    Axis.SetLocation(
+      gp_Pnt((Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(aBasisSurf))->Direction().XYZ()));
 
-      if(surf1.GetType() ==  GeomAbs_OffsetSurface)
-	{
-	  if(Offset <0.0 && Abs(Offset) > myEllipse.MinorRadius ())
-	    {
-	      throw Standard_ConstructionError("PrsDim:: Absolute value of negative offset is larger than MinorRadius");
-		return;
-	      }
-	  
-	  myOffsetCurve = new Geom_OffsetCurve(new Geom_Ellipse(myEllipse), Offset, 
-					       myPlane->Pln().Axis().Direction());
-	  myOffset = Offset;
-	  myIsOffset = Standard_True;
-	  gp_Elips elips = myEllipse;
-	  Standard_Real Val = Offset + elips.MajorRadius ();//simulation
-	  myEllipse.SetMajorRadius (Val);
-	  Val = Offset + elips.MinorRadius ();
-	  myEllipse.SetMinorRadius (Val);
-	}
-      else 
-	myIsOffset = Standard_False;
+    aPlane.SetAxis(Axis);
+    aPlane.SetLocation(myEllipse.Location());
+    myPlane = new Geom_Plane(aPlane);
+
+    Handle(Geom_Curve) aCurve;
+    aCurve = aBasisSurf->VIso(vMid);
+    if (aCurve->DynamicType() == STANDARD_TYPE(Geom_Ellipse))
+    {
+      myEllipse = Handle(Geom_Ellipse)::DownCast(aCurve)->Elips(); // gp_Elips
+      myIsAnArc = Standard_False;
     }
+    else if (aCurve->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve))
+    {
+      Handle(Geom_TrimmedCurve) tCurve = Handle(Geom_TrimmedCurve)::DownCast(aCurve);
+      aCurve                           = tCurve->BasisCurve();
+      myFirstPar                       = tCurve->FirstParameter();
+      myLastPar                        = tCurve->LastParameter();
+      myIsAnArc                        = Standard_True;
+      if (aCurve->DynamicType() == STANDARD_TYPE(Geom_Ellipse))
+      {
+        myEllipse = Handle(Geom_Ellipse)::DownCast(aCurve)->Elips(); // gp_Elips
+      }
+    }
+    else
+    {
+      throw Standard_ConstructionError("PrsDim:: Not expected type of surface");
+      return;
+    }
+
+    // Offset
+
+    if (surf1.GetType() == GeomAbs_OffsetSurface)
+    {
+      if (Offset < 0.0 && Abs(Offset) > myEllipse.MinorRadius())
+      {
+        throw Standard_ConstructionError(
+          "PrsDim:: Absolute value of negative offset is larger than MinorRadius");
+        return;
+      }
+
+      myOffsetCurve       = new Geom_OffsetCurve(new Geom_Ellipse(myEllipse),
+                                           Offset,
+                                           myPlane->Pln().Axis().Direction());
+      myOffset            = Offset;
+      myIsOffset          = Standard_True;
+      gp_Elips      elips = myEllipse;
+      Standard_Real Val   = Offset + elips.MajorRadius(); // simulation
+      myEllipse.SetMajorRadius(Val);
+      Val = Offset + elips.MinorRadius();
+      myEllipse.SetMinorRadius(Val);
+    }
+    else
+      myIsOffset = Standard_False;
+  }
 }
 
-
-//=======================================================================
-//function : ComputePlanarFaceGeometry
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void PrsDim_EllipseRadiusDimension::ComputePlanarFaceGeometry()
 {
 
   Standard_Boolean find = Standard_False;
-  gp_Pnt ptfirst,ptend;
-  TopExp_Explorer ExploEd( TopoDS::Face(myFShape), TopAbs_EDGE );
-  for ( ; ExploEd.More(); ExploEd.Next())
+  gp_Pnt           ptfirst, ptend;
+  TopExp_Explorer  ExploEd(TopoDS::Face(myFShape), TopAbs_EDGE);
+  for (; ExploEd.More(); ExploEd.Next())
+  {
+    TopoDS_Edge          curedge = TopoDS::Edge(ExploEd.Current());
+    Handle(Geom_Curve)   curv;
+    Handle(Geom_Ellipse) ellips;
+    if (PrsDim::ComputeGeometry(curedge, curv, ptfirst, ptend))
     {
-      TopoDS_Edge curedge =  TopoDS::Edge( ExploEd.Current() );
-      Handle(Geom_Curve) curv;
-      Handle(Geom_Ellipse) ellips;
-      if (PrsDim::ComputeGeometry(curedge,curv,ptfirst,ptend)) 
-	{ 
-	  if (curv->DynamicType() == STANDARD_TYPE(Geom_Ellipse))
-	    {
-	      ellips = Handle(Geom_Ellipse)::DownCast(curv);
-	      if ( !ellips.IsNull() ) {
-		myEllipse = ellips->Elips();
-		find = Standard_True;
-		break;
-	      }
-	    }
-	}
-    }
-  if( !find )
-    {
-      throw Standard_ConstructionError("PrsDim:: Curve is not an ellipsee or is Null") ;
-	return;
+      if (curv->DynamicType() == STANDARD_TYPE(Geom_Ellipse))
+      {
+        ellips = Handle(Geom_Ellipse)::DownCast(curv);
+        if (!ellips.IsNull())
+        {
+          myEllipse = ellips->Elips();
+          find      = Standard_True;
+          break;
+        }
       }
-  
-  if ( !ptfirst.IsEqual(ptend, Precision::Confusion()) )
-    {
-      myIsAnArc = Standard_True;
-      myFirstPar = ElCLib::Parameter(myEllipse, ptfirst);
-      myLastPar  = ElCLib::Parameter(myEllipse, ptend); 
     }
+  }
+  if (!find)
+  {
+    throw Standard_ConstructionError("PrsDim:: Curve is not an ellipsee or is Null");
+    return;
+  }
+
+  if (!ptfirst.IsEqual(ptend, Precision::Confusion()))
+  {
+    myIsAnArc  = Standard_True;
+    myFirstPar = ElCLib::Parameter(myEllipse, ptfirst);
+    myLastPar  = ElCLib::Parameter(myEllipse, ptend);
+  }
   else
     myIsAnArc = Standard_False;
 
-  BRepAdaptor_Surface surfAlgo (TopoDS::Face(myFShape));
-  myPlane  = new Geom_Plane( surfAlgo.Plane() );
-  
+  BRepAdaptor_Surface surfAlgo(TopoDS::Face(myFShape));
+  myPlane = new Geom_Plane(surfAlgo.Plane());
 }
 
-//=======================================================================
-//function : ComputeEdgeGeometry
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void PrsDim_EllipseRadiusDimension::ComputeEdgeGeometry()
 {
-  gp_Pnt ptfirst,ptend;
+  gp_Pnt             ptfirst, ptend;
   Handle(Geom_Curve) curv;
-  if (!PrsDim::ComputeGeometry(TopoDS::Edge(myFShape),curv,ptfirst,ptend)) return;
-  
+  if (!PrsDim::ComputeGeometry(TopoDS::Edge(myFShape), curv, ptfirst, ptend))
+    return;
+
   Handle(Geom_Ellipse) elips = Handle(Geom_Ellipse)::DownCast(curv);
-  if ( elips.IsNull()) return;
-  
-  myEllipse =  elips->Elips();
+  if (elips.IsNull())
+    return;
+
+  myEllipse = elips->Elips();
   gp_Pln aPlane;
   aPlane.SetPosition(gp_Ax3(myEllipse.Position()));
-  myPlane  = new Geom_Plane(aPlane);
-  
-  
-  if ( ptfirst.IsEqual(ptend, Precision::Confusion()) ) {
+  myPlane = new Geom_Plane(aPlane);
+
+  if (ptfirst.IsEqual(ptend, Precision::Confusion()))
+  {
     myIsAnArc = Standard_False;
   }
-  else {
-    myIsAnArc = Standard_True;
+  else
+  {
+    myIsAnArc  = Standard_True;
     myFirstPar = ElCLib::Parameter(myEllipse, ptfirst);
-    myLastPar  = ElCLib::Parameter(myEllipse, ptend); 
+    myLastPar  = ElCLib::Parameter(myEllipse, ptend);
   }
 }

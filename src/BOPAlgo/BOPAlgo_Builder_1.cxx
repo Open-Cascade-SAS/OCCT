@@ -15,7 +15,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPAlgo_Builder.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPDS_DS.hxx>
@@ -33,10 +32,8 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-//=======================================================================
-//function : FillImagesVertices
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BOPAlgo_Builder::FillImagesVertices(const Message_ProgressRange& theRange)
 {
   Message_ProgressScope aPS(theRange, "Filling splits of vertices", myDS->ShapesSD().Size());
@@ -47,10 +44,10 @@ void BOPAlgo_Builder::FillImagesVertices(const Message_ProgressRange& theRange)
     {
       return;
     }
-    Standard_Integer nV = aIt.Key();
+    Standard_Integer nV   = aIt.Key();
     Standard_Integer nVSD = aIt.Value();
 
-    const TopoDS_Shape& aV = myDS->Shape(nV);
+    const TopoDS_Shape& aV   = myDS->Shape(nV);
     const TopoDS_Shape& aVSD = myDS->Shape(nVSD);
     // Add to Images map
     myImages.Bound(aV, TopTools_ListOfShape(myAllocator))->Append(aVSD);
@@ -63,50 +60,55 @@ void BOPAlgo_Builder::FillImagesVertices(const Message_ProgressRange& theRange)
     pLOr->Append(aV);
   }
 }
-//=======================================================================
-//function : FillImagesEdges
-//purpose  : 
-//=======================================================================
-  void BOPAlgo_Builder::FillImagesEdges(const Message_ProgressRange& theRange)
+
+//=================================================================================================
+
+void BOPAlgo_Builder::FillImagesEdges(const Message_ProgressRange& theRange)
 {
-  Standard_Integer i, aNbS = myDS->NbSourceShapes();
+  Standard_Integer      i, aNbS = myDS->NbSourceShapes();
   Message_ProgressScope aPS(theRange, "Filling splits of edges", aNbS);
-  for (i = 0; i < aNbS; ++i, aPS.Next()) {
+  for (i = 0; i < aNbS; ++i, aPS.Next())
+  {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
-    if (aSI.ShapeType() != TopAbs_EDGE) {
+    if (aSI.ShapeType() != TopAbs_EDGE)
+    {
       continue;
     }
     //
     // Check if the pave blocks for the edge have been initialized
-    if (!aSI.HasReference()) {
+    if (!aSI.HasReference())
+    {
       continue;
     }
     //
-    const TopoDS_Shape& aE = aSI.Shape();
+    const TopoDS_Shape&          aE   = aSI.Shape();
     const BOPDS_ListOfPaveBlock& aLPB = myDS->PaveBlocks(i);
     //
     // Fill the images of the edge from the list of its pave blocks.
     // The small edges, having no pave blocks, will have the empty list
     // of images and, thus, will be avoided in the result.
-    TopTools_ListOfShape *pLS = myImages.Bound(aE, TopTools_ListOfShape());
+    TopTools_ListOfShape* pLS = myImages.Bound(aE, TopTools_ListOfShape());
     //
     BOPDS_ListIteratorOfListOfPaveBlock aItPB(aLPB);
-    for (; aItPB.More(); aItPB.Next()) {
-      const Handle(BOPDS_PaveBlock)& aPB = aItPB.Value();
-      Handle(BOPDS_PaveBlock) aPBR = myDS->RealPaveBlock(aPB);
+    for (; aItPB.More(); aItPB.Next())
+    {
+      const Handle(BOPDS_PaveBlock)& aPB  = aItPB.Value();
+      Handle(BOPDS_PaveBlock)        aPBR = myDS->RealPaveBlock(aPB);
       //
-      Standard_Integer nSpR = aPBR->Edge();
+      Standard_Integer    nSpR = aPBR->Edge();
       const TopoDS_Shape& aSpR = myDS->Shape(nSpR);
       pLS->Append(aSpR);
       //
       TopTools_ListOfShape* pLOr = myOrigins.ChangeSeek(aSpR);
-      if (!pLOr) {
+      if (!pLOr)
+      {
         pLOr = myOrigins.Bound(aSpR, TopTools_ListOfShape());
       }
       pLOr->Append(aE);
       //
-      if (myDS->IsCommonBlockOnEdge(aPB)) {
-        Standard_Integer nSp = aPB->Edge();
+      if (myDS->IsCommonBlockOnEdge(aPB))
+      {
+        Standard_Integer    nSp = aPB->Edge();
         const TopoDS_Shape& aSp = myDS->Shape(nSp);
         myShapesSD.Bind(aSp, aSpR);
       }
@@ -117,10 +119,9 @@ void BOPAlgo_Builder::FillImagesVertices(const Message_ProgressRange& theRange)
     }
   }
 }
-//=======================================================================
-//function : BuildResult
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
 void BOPAlgo_Builder::BuildResult(const TopAbs_ShapeEnum theType)
 {
   // Fence map
@@ -154,64 +155,65 @@ void BOPAlgo_Builder::BuildResult(const TopAbs_ShapeEnum theType)
     }
   }
 }
-//=======================================================================
-// function: FillImagesContainers
-// purpose: 
-//=======================================================================
-  void BOPAlgo_Builder::FillImagesContainers(const TopAbs_ShapeEnum theType, const Message_ProgressRange& theRange)
+
+//=================================================================================================
+
+void BOPAlgo_Builder::FillImagesContainers(const TopAbs_ShapeEnum       theType,
+                                           const Message_ProgressRange& theRange)
 {
-  Standard_Integer i, aNbS;
+  Standard_Integer    i, aNbS;
   TopTools_MapOfShape aMFP(100, myAllocator);
   //
-  aNbS=myDS->NbSourceShapes();
+  aNbS = myDS->NbSourceShapes();
   Message_ProgressScope aPS(theRange, "Building splits of containers", 1);
-  for (i=0; i<aNbS; ++i) {
-    const BOPDS_ShapeInfo& aSI=myDS->ShapeInfo(i);
-    if (aSI.ShapeType()==theType) {
-      const TopoDS_Shape& aC=aSI.Shape();
+  for (i = 0; i < aNbS; ++i)
+  {
+    const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
+    if (aSI.ShapeType() == theType)
+    {
+      const TopoDS_Shape& aC = aSI.Shape();
       FillImagesContainer(aC, theType);
-    }   
+    }
     if (UserBreak(aPS))
     {
       return;
     }
-  }// for (; aItS.More(); aItS.Next()) {
+  } // for (; aItS.More(); aItS.Next()) {
 }
-//=======================================================================
-// function: FillImagesCompounds
-// purpose: 
-//=======================================================================
-  void BOPAlgo_Builder::FillImagesCompounds(const Message_ProgressRange& theRange)
+
+//=================================================================================================
+
+void BOPAlgo_Builder::FillImagesCompounds(const Message_ProgressRange& theRange)
 {
-  Standard_Integer i, aNbS;
+  Standard_Integer    i, aNbS;
   TopTools_MapOfShape aMFP(100, myAllocator);
   //
-  aNbS=myDS->NbSourceShapes();
+  aNbS = myDS->NbSourceShapes();
   Message_ProgressScope aPS(theRange, "Building splits of compounds", aNbS);
-  for (i=0; i<aNbS; ++i, aPS.Next()) {
-    const BOPDS_ShapeInfo& aSI=myDS->ShapeInfo(i);
-    if (aSI.ShapeType()==TopAbs_COMPOUND) {
-      const TopoDS_Shape& aC=aSI.Shape();
+  for (i = 0; i < aNbS; ++i, aPS.Next())
+  {
+    const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
+    if (aSI.ShapeType() == TopAbs_COMPOUND)
+    {
+      const TopoDS_Shape& aC = aSI.Shape();
       FillImagesCompound(aC, aMFP);
     }
     if (UserBreak(aPS))
     {
       return;
     }
-  }// for (; aItS.More(); aItS.Next()) {
+  } // for (; aItS.More(); aItS.Next()) {
 }
-//=======================================================================
-//function : FillImagesContainer
-//purpose  : 
-//=======================================================================
-  void BOPAlgo_Builder::FillImagesContainer(const TopoDS_Shape& theS,
-                                            const TopAbs_ShapeEnum theType)
+
+//=================================================================================================
+
+void BOPAlgo_Builder::FillImagesContainer(const TopoDS_Shape& theS, const TopAbs_ShapeEnum theType)
 {
   // Check if any of the sub-shapes of the container have been modified
   TopoDS_Iterator aIt(theS);
   for (; aIt.More(); aIt.Next())
   {
-    const TopoDS_Shape& aSS = aIt.Value();
+    const TopoDS_Shape&         aSS   = aIt.Value();
     const TopTools_ListOfShape* pLFIm = myImages.Seek(aSS);
     if (pLFIm && ((pLFIm->Extent() != 1) || !pLFIm->First().IsSame(aSS)))
       break;
@@ -232,7 +234,7 @@ void BOPAlgo_Builder::BuildResult(const TopAbs_ShapeEnum theType)
   aIt.Initialize(theS);
   for (; aIt.More(); aIt.Next())
   {
-    const TopoDS_Shape& aSS = aIt.Value();
+    const TopoDS_Shape&         aSS    = aIt.Value();
     const TopTools_ListOfShape* pLSSIm = myImages.Seek(aSS);
 
     if (!pLSSIm)
@@ -247,8 +249,8 @@ void BOPAlgo_Builder::BuildResult(const TopAbs_ShapeEnum theType)
     for (; aItIm.More(); aItIm.Next())
     {
       TopoDS_Shape aSSIm = aItIm.Value();
-      if (!aSSIm.IsEqual(aSS) &&
-          BOPTools_AlgoTools::IsSplitToReverseWithWarn(aSSIm, aSS, myContext, myReport))
+      if (!aSSIm.IsEqual(aSS)
+          && BOPTools_AlgoTools::IsSplitToReverseWithWarn(aSSIm, aSS, myContext, myReport))
       {
         aSSIm.Reverse();
       }
@@ -259,35 +261,38 @@ void BOPAlgo_Builder::BuildResult(const TopAbs_ShapeEnum theType)
   aCIm.Closed(BRep_Tool::IsClosed(aCIm));
   myImages.Bound(theS, TopTools_ListOfShape(myAllocator))->Append(aCIm);
 }
-//=======================================================================
-//function : FillImagesCompound
-//purpose  : 
-//=======================================================================
-  void BOPAlgo_Builder::FillImagesCompound(const TopoDS_Shape& theS,
-                                           TopTools_MapOfShape& theMFP)
-{ 
-  Standard_Boolean bInterferred;
-  TopAbs_Orientation aOrX;
-  TopoDS_Iterator aIt;
-  BRep_Builder aBB;
-  TopTools_ListIteratorOfListOfShape aItIm; 
+
+//=================================================================================================
+
+void BOPAlgo_Builder::FillImagesCompound(const TopoDS_Shape& theS, TopTools_MapOfShape& theMFP)
+{
+  Standard_Boolean                   bInterferred;
+  TopAbs_Orientation                 aOrX;
+  TopoDS_Iterator                    aIt;
+  BRep_Builder                       aBB;
+  TopTools_ListIteratorOfListOfShape aItIm;
   //
-  if (!theMFP.Add(theS)) {
+  if (!theMFP.Add(theS))
+  {
     return;
   }
   //
-  bInterferred=Standard_False;
+  bInterferred = Standard_False;
   aIt.Initialize(theS);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aSx=aIt.Value();
-    if (aSx.ShapeType()==TopAbs_COMPOUND) {
+  for (; aIt.More(); aIt.Next())
+  {
+    const TopoDS_Shape& aSx = aIt.Value();
+    if (aSx.ShapeType() == TopAbs_COMPOUND)
+    {
       FillImagesCompound(aSx, theMFP);
     }
-    if (myImages.IsBound(aSx)) {
-      bInterferred=Standard_True;
+    if (myImages.IsBound(aSx))
+    {
+      bInterferred = Standard_True;
     }
   }
-  if (!bInterferred){
+  if (!bInterferred)
+  {
     return;
   }
   //
@@ -295,24 +300,28 @@ void BOPAlgo_Builder::BuildResult(const TopAbs_ShapeEnum theType)
   BOPTools_AlgoTools::MakeContainer(TopAbs_COMPOUND, aCIm);
   //
   aIt.Initialize(theS);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aSX=aIt.Value();
-    aOrX=aSX.Orientation();
-    if (myImages.IsBound(aSX)) {
-      const TopTools_ListOfShape& aLFIm=myImages.Find(aSX);
+  for (; aIt.More(); aIt.Next())
+  {
+    const TopoDS_Shape& aSX = aIt.Value();
+    aOrX                    = aSX.Orientation();
+    if (myImages.IsBound(aSX))
+    {
+      const TopTools_ListOfShape& aLFIm = myImages.Find(aSX);
       aItIm.Initialize(aLFIm);
-      for (; aItIm.More(); aItIm.Next()) {
-        TopoDS_Shape aSXIm=aItIm.Value();
+      for (; aItIm.More(); aItIm.Next())
+      {
+        TopoDS_Shape aSXIm = aItIm.Value();
         aSXIm.Orientation(aOrX);
         aBB.Add(aCIm, aSXIm);
       }
     }
-    else {
+    else
+    {
       aBB.Add(aCIm, aSX);
     }
   }
   //
   TopTools_ListOfShape aLSIm(myAllocator);
   aLSIm.Append(aCIm);
-  myImages.Bind(theS, aLSIm); 
+  myImages.Bind(theS, aLSIm);
 }

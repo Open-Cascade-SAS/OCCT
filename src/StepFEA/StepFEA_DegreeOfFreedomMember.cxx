@@ -18,90 +18,87 @@
 #include <StepFEA_DegreeOfFreedomMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_DegreeOfFreedomMember,StepData_SelectNamed)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_DegreeOfFreedomMember, StepData_SelectNamed)
 
 static Standard_CString anEnumeratedCurveElementFreedom = "ENUMERATED_DEGREE_OF_FREEDOM";
-static Standard_CString anApplicationDefinedDegreeOfFreedom ="APPLICATION_DEFINED_DEGREE_OF_FREEDOM";
+static Standard_CString anApplicationDefinedDegreeOfFreedom =
+  "APPLICATION_DEFINED_DEGREE_OF_FREEDOM";
 
-//=======================================================================
-//function : StepFEA_DegreeOfFreedomMember
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepFEA_DegreeOfFreedomMember::StepFEA_DegreeOfFreedomMember () : mycase(0) 
+StepFEA_DegreeOfFreedomMember::StepFEA_DegreeOfFreedomMember()
+    : mycase(0)
 {
 }
 
-//=======================================================================
-//function : HasName
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean StepFEA_DegreeOfFreedomMember::HasName() const
 {
- return mycase >0;
+  return mycase > 0;
 }
 
-//=======================================================================
-//function : Name
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_CString StepFEA_DegreeOfFreedomMember::Name() const
 {
-  switch(mycase)  {
-    case 1  : return anEnumeratedCurveElementFreedom;
-    case 2  : return anApplicationDefinedDegreeOfFreedom;
-    default : break;
+  switch (mycase)
+  {
+    case 1:
+      return anEnumeratedCurveElementFreedom;
+    case 2:
+      return anApplicationDefinedDegreeOfFreedom;
+    default:
+      break;
   }
   return "";
 }
 
-//=======================================================================
-//function : CompareNames
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-static Standard_Integer CompareNames(const Standard_CString name,Standard_Integer &/*numen*/) 
+static Standard_Integer CompareNames(const Standard_CString name, Standard_Integer& /*numen*/)
 {
-  Standard_Integer thecase =0;
-  if (!name || name[0] == '\0') thecase = 0;
-   else if(!strcmp (name,anEnumeratedCurveElementFreedom)) {
-     thecase = 1;
-   }
-   else if(!strcmp (name,anApplicationDefinedDegreeOfFreedom)) { 
-     thecase = 2;
-   }
+  Standard_Integer thecase = 0;
+  if (!name || name[0] == '\0')
+    thecase = 0;
+  else if (!strcmp(name, anEnumeratedCurveElementFreedom))
+  {
+    thecase = 1;
+  }
+  else if (!strcmp(name, anApplicationDefinedDegreeOfFreedom))
+  {
+    thecase = 2;
+  }
   /*if (!name || name[0] == '\0') thecase = 0;
-   else if(!strcmp (name,"XTranslation")) { 
+   else if(!strcmp (name,"XTranslation")) {
      thecase = 1;
      numen =  1;
    }
-   else if(!strcmp (name,"YTranslation")) { 
+   else if(!strcmp (name,"YTranslation")) {
      thecase = 1;
      numen =  2;
    }
-   else if(!strcmp (name,"ZTranslation")) { 
+   else if(!strcmp (name,"ZTranslation")) {
      thecase = 1;
      numen =  3;
    }
-   else if(!strcmp (name,"XRotation")) { 
+   else if(!strcmp (name,"XRotation")) {
      thecase = 1;
      numen =  4;
    }
-   else if(!strcmp (name,"YRotation")) { 
+   else if(!strcmp (name,"YRotation")) {
      thecase = 1;
      numen =  5;
    }
-   else if(!strcmp (name,"ZRotation")) { 
+   else if(!strcmp (name,"ZRotation")) {
      thecase = 1;
      numen =  6;
    }
-   else if(!strcmp (name,"Warp")) { 
+   else if(!strcmp (name,"Warp")) {
      thecase = 1;
      numen =  7;
    }
-   else if(!strcmp (name,"None")) { 
+   else if(!strcmp (name,"None")) {
      thecase = 1;
      numen =  8;
    }
@@ -109,27 +106,22 @@ static Standard_Integer CompareNames(const Standard_CString name,Standard_Intege
   return thecase;
 }
 
-//=======================================================================
-//function : SetName
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean StepFEA_DegreeOfFreedomMember::SetName(const Standard_CString name) 
+Standard_Boolean StepFEA_DegreeOfFreedomMember::SetName(const Standard_CString name)
 {
-  Standard_Integer numit =0;
-  mycase = CompareNames(name,numit);
-  if(numit) SetInteger(numit);
-  return (mycase >0);
+  Standard_Integer numit = 0;
+  mycase                 = CompareNames(name, numit);
+  if (numit)
+    SetInteger(numit);
+  return (mycase > 0);
 }
 
-//=======================================================================
-//function : Matches
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean StepFEA_DegreeOfFreedomMember::Matches(const Standard_CString name) const
 {
-  Standard_Integer numit =0;
-  Standard_Integer thecase =CompareNames(name,numit);
-  return (mycase==thecase);
+  Standard_Integer numit   = 0;
+  Standard_Integer thecase = CompareNames(name, numit);
+  return (mycase == thecase);
 }

@@ -80,455 +80,499 @@
 
 #include <stdio.h>
 
-//#define DRAW 
+// #define DRAW
 
-#ifdef DRAW 
-#include <Draw_Appli.hxx>
-#include <Draw_Segment2D.hxx>
-#include <Draw_Marker2D.hxx>
-#include <Draw_Segment3D.hxx>
-#include <Draw_Marker3D.hxx>
-#include <Draw.hxx>
-#include <DrawTrSurf.hxx>
-#include <BRepAdaptor_Surface.hxx>
+#ifdef DRAW
+  #include <Draw_Appli.hxx>
+  #include <Draw_Segment2D.hxx>
+  #include <Draw_Marker2D.hxx>
+  #include <Draw_Segment3D.hxx>
+  #include <Draw_Marker3D.hxx>
+  #include <Draw.hxx>
+  #include <DrawTrSurf.hxx>
+  #include <BRepAdaptor_Surface.hxx>
 static Standard_Integer IndexOfConge = 0;
 #endif
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean ChFi3d_GettraceDRAWFIL(); 
-extern Standard_Boolean ChFi3d_GettraceDRAWWALK(); 
+extern Standard_Boolean ChFi3d_GettraceDRAWFIL();
+extern Standard_Boolean ChFi3d_GettraceDRAWWALK();
 extern Standard_Boolean ChFi3d_GetcontextNOOPT();
-extern void ChFi3d_SettraceDRAWFIL(const Standard_Boolean b); 
-extern void ChFi3d_SettraceDRAWWALK(const Standard_Boolean b); 
-extern void ChFi3d_SetcontextNOOPT(const Standard_Boolean b);
+extern void             ChFi3d_SettraceDRAWFIL(const Standard_Boolean b);
+extern void             ChFi3d_SettraceDRAWWALK(const Standard_Boolean b);
+extern void             ChFi3d_SetcontextNOOPT(const Standard_Boolean b);
 #endif
 
-#ifdef DRAW 
-static void drawline(const Handle(BRepBlend_Line)& lin,
-		     const Standard_Boolean iscs)
+#ifdef DRAW
+static void drawline(const Handle(BRepBlend_Line)& lin, const Standard_Boolean iscs)
 {
-  Handle(Draw_Marker3D) p3d;
-  Handle(Draw_Marker2D) p2d;
+  Handle(Draw_Marker3D)  p3d;
+  Handle(Draw_Marker2D)  p2d;
   Handle(Draw_Segment3D) tg3d;
   Handle(Draw_Segment2D) tg2d;
-  
-  for(Standard_Integer i = 1; i <= lin->NbPoints(); i++){
-    const Blend_Point& pt = lin->Point(i);
-    gp_Pnt point = pt.PointOnS1();
-    gp_Pnt extr = point.Translated(pt.TangentOnS1());
-    p3d = new Draw_Marker3D(point,Draw_Square,Draw_rouge);
-    dout<<p3d;
-    tg3d = new Draw_Segment3D(point,extr,Draw_rouge);
-    dout<<tg3d;
-    point = pt.PointOnS2();
-    extr = point.Translated(pt.TangentOnS2());
-    p3d = new Draw_Marker3D(point,Draw_Plus,Draw_jaune);
-    dout<<p3d;
-    tg3d = new Draw_Segment3D(point,extr,Draw_jaune);
-    dout<<tg3d;
 
-    Standard_Real u,v;
-    pt.ParametersOnS1(u,v);
-    gp_Pnt2d point2d(u,v);
+  for (Standard_Integer i = 1; i <= lin->NbPoints(); i++)
+  {
+    const Blend_Point& pt    = lin->Point(i);
+    gp_Pnt             point = pt.PointOnS1();
+    gp_Pnt             extr  = point.Translated(pt.TangentOnS1());
+    p3d                      = new Draw_Marker3D(point, Draw_Square, Draw_rouge);
+    dout << p3d;
+    tg3d = new Draw_Segment3D(point, extr, Draw_rouge);
+    dout << tg3d;
+    point = pt.PointOnS2();
+    extr  = point.Translated(pt.TangentOnS2());
+    p3d   = new Draw_Marker3D(point, Draw_Plus, Draw_jaune);
+    dout << p3d;
+    tg3d = new Draw_Segment3D(point, extr, Draw_jaune);
+    dout << tg3d;
+
+    Standard_Real u, v;
+    pt.ParametersOnS1(u, v);
+    gp_Pnt2d point2d(u, v);
     gp_Pnt2d extr2d = point2d.Translated(pt.Tangent2dOnS1());
-    p2d = new Draw_Marker2D(point2d,Draw_Square,Draw_rouge);
-    dout<<p2d;
-    tg2d = new Draw_Segment2D(point2d,extr2d,Draw_rouge);
-    dout<<tg2d;
-    pt.ParametersOnS2(u,v);
-    point2d.SetCoord(u,v);
+    p2d             = new Draw_Marker2D(point2d, Draw_Square, Draw_rouge);
+    dout << p2d;
+    tg2d = new Draw_Segment2D(point2d, extr2d, Draw_rouge);
+    dout << tg2d;
+    pt.ParametersOnS2(u, v);
+    point2d.SetCoord(u, v);
     extr2d = point2d.Translated(pt.Tangent2dOnS2());
-    p2d = new Draw_Marker2D(point2d,Draw_Plus,Draw_jaune);
-    dout<<p2d;
-    tg2d = new Draw_Segment2D(point2d,extr2d,Draw_jaune);
-    dout<<tg2d;
+    p2d    = new Draw_Marker2D(point2d, Draw_Plus, Draw_jaune);
+    dout << p2d;
+    tg2d = new Draw_Segment2D(point2d, extr2d, Draw_jaune);
+    dout << tg2d;
     dout.Flush();
   }
 }
 #endif
 //=======================================================================
-//function : SearchIndex
-//purpose  : 
-//           
+// function : SearchIndex
+// purpose  :
+//
 //=======================================================================
-static Standard_Integer SearchIndex(const Standard_Real Value,
-				    Handle(BRepBlend_Line)& Lin)
+static Standard_Integer SearchIndex(const Standard_Real Value, Handle(BRepBlend_Line)& Lin)
 {
-  Standard_Integer NbPnt =  Lin->NbPoints(), Ind;
+  Standard_Integer NbPnt = Lin->NbPoints(), Ind;
 
-  for (Ind = 1;  
-       (Ind < NbPnt) && (Lin->Point(Ind).Parameter() < Value); )
+  for (Ind = 1; (Ind < NbPnt) && (Lin->Point(Ind).Parameter() < Value);)
     Ind++;
   return Ind;
 }
 
-
 //=======================================================================
-//function : IsObst
-//purpose  : 
-//           
+// function : IsObst
+// purpose  :
+//
 //=======================================================================
 static Standard_Integer nbedconnex(const TopTools_ListOfShape& L)
 {
-  Standard_Integer nb = 0, i = 0;
+  Standard_Integer                   nb = 0, i = 0;
   TopTools_ListIteratorOfListOfShape It1(L);
-  for(;It1.More();It1.Next(),i++){
-    const TopoDS_Shape& curs = It1.Value();
-    Standard_Boolean dejavu = 0;
+  for (; It1.More(); It1.Next(), i++)
+  {
+    const TopoDS_Shape&                curs   = It1.Value();
+    Standard_Boolean                   dejavu = 0;
     TopTools_ListIteratorOfListOfShape It2(L);
-    for(Standard_Integer j = 0; j < i && It2.More(); j++, It2.Next()){
-      if(curs.IsSame(It2.Value())){
-	dejavu = 1;
-	break;
+    for (Standard_Integer j = 0; j < i && It2.More(); j++, It2.Next())
+    {
+      if (curs.IsSame(It2.Value()))
+      {
+        dejavu = 1;
+        break;
       }
     }
-    if(!dejavu) nb++;
+    if (!dejavu)
+      nb++;
   }
   return nb;
 }
 
 static Standard_Boolean IsVois(const TopoDS_Edge&     E,
-			       const TopoDS_Vertex&   Vref,
-			       const ChFiDS_Map&      VEMap,
-			       TopTools_MapOfShape&   DONE,
-			       const Standard_Integer prof,
-			       const Standard_Integer profmax)
+                               const TopoDS_Vertex&   Vref,
+                               const ChFiDS_Map&      VEMap,
+                               TopTools_MapOfShape&   DONE,
+                               const Standard_Integer prof,
+                               const Standard_Integer profmax)
 {
-  if(prof > profmax) return Standard_False;
-  if(DONE.Contains(E)) return Standard_False;
-  TopoDS_Vertex V1,V2;
-  TopExp::Vertices(E,V1,V2);
-  if(Vref.IsSame(V1) || Vref.IsSame(V2)) return Standard_True;
+  if (prof > profmax)
+    return Standard_False;
+  if (DONE.Contains(E))
+    return Standard_False;
+  TopoDS_Vertex V1, V2;
+  TopExp::Vertices(E, V1, V2);
+  if (Vref.IsSame(V1) || Vref.IsSame(V2))
+    return Standard_True;
   DONE.Add(E);
-  const TopTools_ListOfShape& L1 = VEMap(V1);
-  Standard_Integer i1 = nbedconnex(L1);
+  const TopTools_ListOfShape&        L1 = VEMap(V1);
+  Standard_Integer                   i1 = nbedconnex(L1);
   TopTools_ListIteratorOfListOfShape It1(L1);
-  for(;It1.More();It1.Next()){
+  for (; It1.More(); It1.Next())
+  {
     const TopoDS_Edge& curE = TopoDS::Edge(It1.Value());
-    if(i1 <= 2){
-      if(IsVois(curE,Vref,VEMap,DONE,prof,profmax)) return Standard_True;
+    if (i1 <= 2)
+    {
+      if (IsVois(curE, Vref, VEMap, DONE, prof, profmax))
+        return Standard_True;
     }
-    else if(IsVois(curE,Vref,VEMap,DONE,prof+1,profmax)) return Standard_True;
+    else if (IsVois(curE, Vref, VEMap, DONE, prof + 1, profmax))
+      return Standard_True;
   }
   const TopTools_ListOfShape& L2 = VEMap(V2);
 #ifdef OCCT_DEBUG
 //  Standard_Integer i2 = nbedconnex(L2);
 #endif
   TopTools_ListIteratorOfListOfShape It2(L2);
-  for(;It2.More();It2.Next()){
+  for (; It2.More(); It2.Next())
+  {
     const TopoDS_Edge& curE = TopoDS::Edge(It2.Value());
-    if(i1 <= 2){
-      if(IsVois(curE,Vref,VEMap,DONE,prof,profmax)) return Standard_True;
+    if (i1 <= 2)
+    {
+      if (IsVois(curE, Vref, VEMap, DONE, prof, profmax))
+        return Standard_True;
     }
-    else if(IsVois(curE,Vref,VEMap,DONE,prof+1,profmax)) return Standard_True;
+    else if (IsVois(curE, Vref, VEMap, DONE, prof + 1, profmax))
+      return Standard_True;
   }
   return Standard_False;
 }
 
 static Standard_Boolean IsObst(const ChFiDS_CommonPoint& CP,
-			       const TopoDS_Vertex&      Vref,
-			       const ChFiDS_Map&         VEMap)
+                               const TopoDS_Vertex&      Vref,
+                               const ChFiDS_Map&         VEMap)
 {
-  if(!CP.IsOnArc()) return Standard_False;
-  const TopoDS_Edge& E = CP.Arc();
+  if (!CP.IsOnArc())
+    return Standard_False;
+  const TopoDS_Edge&  E = CP.Arc();
   TopTools_MapOfShape DONE;
-  Standard_Integer prof = 4;
-  return !IsVois(E,Vref,VEMap,DONE,0,prof);
+  Standard_Integer    prof = 4;
+  return !IsVois(E, Vref, VEMap, DONE, 0, prof);
 }
 
 //=======================================================================
-//function : CompParam
-//purpose  : 
-//           
+// function : CompParam
+// purpose  :
+//
 //=======================================================================
 
-static void CompParam(const Geom2dAdaptor_Curve&  Carc,
-		      Handle(Geom2d_Curve) Ctg,
-		      Standard_Real&       parc,
-		      Standard_Real&       ptg,
-		      const Standard_Real  prefarc,
-		      const Standard_Real  preftg)
+static void CompParam(const Geom2dAdaptor_Curve& Carc,
+                      Handle(Geom2d_Curve)       Ctg,
+                      Standard_Real&             parc,
+                      Standard_Real&             ptg,
+                      const Standard_Real        prefarc,
+                      const Standard_Real        preftg)
 {
   Standard_Boolean found = 0;
-  //(1) It is checked if the provided parameters are good 
+  //(1) It is checked if the provided parameters are good
   //    if pcurves have the same parameters as the spine.
-  gp_Pnt2d point = Carc.Value(prefarc);
+  gp_Pnt2d      point   = Carc.Value(prefarc);
   Standard_Real distini = point.Distance(Ctg->Value(preftg));
-  if (distini <= Precision::PConfusion()) {
-    parc =  prefarc;
-    ptg = preftg;
+  if (distini <= Precision::PConfusion())
+  {
+    parc  = prefarc;
+    ptg   = preftg;
     found = Standard_True;
   }
-  else {
+  else
+  {
     //(2) Intersection
 #ifdef OCCT_DEBUG
-    std::cout<< "CompParam : bad intersection parameters"<<std::endl; 
+    std::cout << "CompParam : bad intersection parameters" << std::endl;
 #endif
     IntRes2d_IntersectionPoint int2d;
-    Geom2dInt_GInter Intersection;
-    Standard_Integer nbpt,nbseg;
-    Intersection.Perform(Geom2dAdaptor_Curve(Ctg),Carc,
-			 Precision::PIntersection(),
-			 Precision::PIntersection());
+    Geom2dInt_GInter           Intersection;
+    Standard_Integer           nbpt, nbseg;
+    Intersection.Perform(Geom2dAdaptor_Curve(Ctg),
+                         Carc,
+                         Precision::PIntersection(),
+                         Precision::PIntersection());
 
     Standard_Real dist = Precision::Infinite(), p1, p2;
-    if (Intersection.IsDone()){
-      if (!Intersection.IsEmpty()){
-	nbseg = Intersection.NbSegments();
-	if ( nbseg > 0 ){ 
+    if (Intersection.IsDone())
+    {
+      if (!Intersection.IsEmpty())
+      {
+        nbseg = Intersection.NbSegments();
+        if (nbseg > 0)
+        {
 #ifdef OCCT_DEBUG
-	  std::cout<< "segments of intersection on the restrictions"<<std::endl; 
-#endif  
-	}
-	nbpt = Intersection.NbPoints();
-	for (Standard_Integer i = 1; i <= nbpt; i++) {
-	  int2d = Intersection.Point(i);
-	  p1 = int2d.ParamOnFirst();
-	  p2 = int2d.ParamOnSecond();
-	  if(Abs(prefarc - p2) < dist){
-	    ptg  = p1;
-	    parc = p2;
-	    dist = Abs(prefarc - p2);
-	    found = 1;
-	  }
-	}
+          std::cout << "segments of intersection on the restrictions" << std::endl;
+#endif
+        }
+        nbpt = Intersection.NbPoints();
+        for (Standard_Integer i = 1; i <= nbpt; i++)
+        {
+          int2d = Intersection.Point(i);
+          p1    = int2d.ParamOnFirst();
+          p2    = int2d.ParamOnSecond();
+          if (Abs(prefarc - p2) < dist)
+          {
+            ptg   = p1;
+            parc  = p2;
+            dist  = Abs(prefarc - p2);
+            found = 1;
+          }
+        }
       }
     }
   }
-  
-  if(!found){
+
+  if (!found)
+  {
     // (3) Projection...
 #ifdef OCCT_DEBUG
-    std::cout<<"CompParam : failed intersection PC, projection is created."<<std::endl;
+    std::cout << "CompParam : failed intersection PC, projection is created." << std::endl;
 #endif
     parc = prefarc;
-    Geom2dAPI_ProjectPointOnCurve projector(point,Ctg);
+    Geom2dAPI_ProjectPointOnCurve projector(point, Ctg);
 
-    if(projector.NbPoints() == 0){
-      // This happens in some cases when there is a vertex 
+    if (projector.NbPoints() == 0)
+    {
+      // This happens in some cases when there is a vertex
       // at the end of spine...
-      ptg = preftg; 
+      ptg = preftg;
 #ifdef OCCT_DEBUG
-      std::cout<<"CompParam : failed proj p2d/c2d, the extremity is taken!" <<std::endl;
+      std::cout << "CompParam : failed proj p2d/c2d, the extremity is taken!" << std::endl;
 #endif
     }
-    else  {
+    else
+    {
       // It is checked if everything was calculated correctly (EDC402 C2)
-      if  (projector.LowerDistance() < distini) 
-	ptg = projector.LowerDistanceParameter();
-      else  ptg = preftg;
+      if (projector.LowerDistance() < distini)
+        ptg = projector.LowerDistanceParameter();
+      else
+        ptg = preftg;
     }
   }
 }
 
 //=======================================================================
-//function : CompBlendPoint
-//purpose  : create BlendPoint corresponding to a tangency on Vertex
-// pmn : 15/10/1997 : returns false, if there is no pcurve    
+// function : CompBlendPoint
+// purpose  : create BlendPoint corresponding to a tangency on Vertex
+// pmn : 15/10/1997 : returns false, if there is no pcurve
 //=======================================================================
 
 static Standard_Boolean CompBlendPoint(const TopoDS_Vertex& V,
-				       const TopoDS_Edge& E,
-				       const Standard_Real W,
-				       const TopoDS_Face& F1,
-				       const TopoDS_Face& F2,
-				       Blend_Point& BP)
-{    
-  gp_Pnt2d P1, P2;
-  gp_Pnt P3d;
-  Standard_Real param, f, l;
+                                       const TopoDS_Edge&   E,
+                                       const Standard_Real  W,
+                                       const TopoDS_Face&   F1,
+                                       const TopoDS_Face&   F2,
+                                       Blend_Point&         BP)
+{
+  gp_Pnt2d             P1, P2;
+  gp_Pnt               P3d;
+  Standard_Real        param, f, l;
   Handle(Geom2d_Curve) pc;
-  
-  P3d = BRep_Tool::Pnt(V);
-  param = BRep_Tool::Parameter(V,E,F1);
-  pc = BRep_Tool::CurveOnSurface(E,F1,f,l);
-  if (pc.IsNull()) return Standard_False;
-  P1 =  pc->Value(param); 
-  param = BRep_Tool::Parameter(V,E,F2);
-  pc = BRep_Tool::CurveOnSurface(E,F2,f,l);
-  if (pc.IsNull()) return Standard_False;
-  P2 =  pc->Value(param);
-  BP.SetValue(P3d, P3d, W, P1.X(), P1.Y(),  P2.X(), P2.Y());
-  return  Standard_True;
+
+  P3d   = BRep_Tool::Pnt(V);
+  param = BRep_Tool::Parameter(V, E, F1);
+  pc    = BRep_Tool::CurveOnSurface(E, F1, f, l);
+  if (pc.IsNull())
+    return Standard_False;
+  P1    = pc->Value(param);
+  param = BRep_Tool::Parameter(V, E, F2);
+  pc    = BRep_Tool::CurveOnSurface(E, F2, f, l);
+  if (pc.IsNull())
+    return Standard_False;
+  P2 = pc->Value(param);
+  BP.SetValue(P3d, P3d, W, P1.X(), P1.Y(), P2.X(), P2.Y());
+  return Standard_True;
 }
 
 //=======================================================================
-//function :  UpdateLine
-//purpose  : Updates extremities after a partial invalidation   
+// function :  UpdateLine
+// purpose  : Updates extremities after a partial invalidation
 //=======================================================================
 
-static void UpdateLine(Handle(BRepBlend_Line)& Line, 
-		       const Standard_Boolean isfirst)
+static void UpdateLine(Handle(BRepBlend_Line)& Line, const Standard_Boolean isfirst)
 {
   Standard_Real tguide, U, V;
-  if (isfirst) {
-   const Blend_Point& BP = Line->Point(1);
-   tguide = BP.Parameter();
-   if (Line->StartPointOnFirst().ParameterOnGuide() < tguide) {
-     BRepBlend_Extremity BE;
-     BP.ParametersOnS1(U, V);
-     BE.SetValue(BP.PointOnS1(), U, V, Precision::Confusion());
-     Line->SetStartPoints(BE, Line->StartPointOnSecond());
-   }
-   if (Line->StartPointOnSecond().ParameterOnGuide() < tguide) {
-     BRepBlend_Extremity BE;
-     BP.ParametersOnS2(U, V);
-     BE.SetValue(BP.PointOnS2(), U, V, Precision::Confusion());
-     Line->SetStartPoints(Line->StartPointOnFirst(), BE);
-   }
- }
-  else {
-   const Blend_Point& BP = Line->Point(Line->NbPoints());
-   tguide = BP.Parameter();
-   if (Line->EndPointOnFirst().ParameterOnGuide() > tguide) {
-     BRepBlend_Extremity BE;
-     BP.ParametersOnS1(U, V);
-     BE.SetValue(BP.PointOnS1(), U, V, Precision::Confusion());
-     Line->SetEndPoints(BE, Line->EndPointOnSecond());
-   }
-   if (Line->EndPointOnSecond().ParameterOnGuide() > tguide) {
-     BRepBlend_Extremity BE;
-     BP.ParametersOnS2(U, V);
-     BE.SetValue(BP.PointOnS2(), U, V, Precision::Confusion());
-     Line->SetEndPoints(Line->EndPointOnFirst(), BE);
-   }
+  if (isfirst)
+  {
+    const Blend_Point& BP = Line->Point(1);
+    tguide                = BP.Parameter();
+    if (Line->StartPointOnFirst().ParameterOnGuide() < tguide)
+    {
+      BRepBlend_Extremity BE;
+      BP.ParametersOnS1(U, V);
+      BE.SetValue(BP.PointOnS1(), U, V, Precision::Confusion());
+      Line->SetStartPoints(BE, Line->StartPointOnSecond());
+    }
+    if (Line->StartPointOnSecond().ParameterOnGuide() < tguide)
+    {
+      BRepBlend_Extremity BE;
+      BP.ParametersOnS2(U, V);
+      BE.SetValue(BP.PointOnS2(), U, V, Precision::Confusion());
+      Line->SetStartPoints(Line->StartPointOnFirst(), BE);
+    }
+  }
+  else
+  {
+    const Blend_Point& BP = Line->Point(Line->NbPoints());
+    tguide                = BP.Parameter();
+    if (Line->EndPointOnFirst().ParameterOnGuide() > tguide)
+    {
+      BRepBlend_Extremity BE;
+      BP.ParametersOnS1(U, V);
+      BE.SetValue(BP.PointOnS1(), U, V, Precision::Confusion());
+      Line->SetEndPoints(BE, Line->EndPointOnSecond());
+    }
+    if (Line->EndPointOnSecond().ParameterOnGuide() > tguide)
+    {
+      BRepBlend_Extremity BE;
+      BP.ParametersOnS2(U, V);
+      BE.SetValue(BP.PointOnS2(), U, V, Precision::Confusion());
+      Line->SetEndPoints(Line->EndPointOnFirst(), BE);
+    }
   }
 }
 
 //=======================================================================
-//function : CompleteData
-//purpose  : Calculates curves and CommonPoints from the data
+// function : CompleteData
+// purpose  : Calculates curves and CommonPoints from the data
 //           calculated by filling.
 //=======================================================================
 
-Standard_Boolean ChFi3d_Builder::CompleteData
-(Handle(ChFiDS_SurfData)&        Data,
- const Handle(Geom_Surface)&     Surfcoin,
- const Handle(Adaptor3d_Surface)& S1,
- const Handle(Geom2d_Curve)&     PC1,
- const Handle(Adaptor3d_Surface)& S2,
- const Handle(Geom2d_Curve)&     PC2,
- const TopAbs_Orientation        Or,
- const Standard_Boolean          On1,
- const Standard_Boolean          Gd1,
- const Standard_Boolean          Gd2,
- const Standard_Boolean          Gf1,
- const Standard_Boolean          Gf2)
+Standard_Boolean ChFi3d_Builder::CompleteData(Handle(ChFiDS_SurfData)&         Data,
+                                              const Handle(Geom_Surface)&      Surfcoin,
+                                              const Handle(Adaptor3d_Surface)& S1,
+                                              const Handle(Geom2d_Curve)&      PC1,
+                                              const Handle(Adaptor3d_Surface)& S2,
+                                              const Handle(Geom2d_Curve)&      PC2,
+                                              const TopAbs_Orientation         Or,
+                                              const Standard_Boolean           On1,
+                                              const Standard_Boolean           Gd1,
+                                              const Standard_Boolean           Gd2,
+                                              const Standard_Boolean           Gf1,
+                                              const Standard_Boolean           Gf2)
 {
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
-  Data->ChangeSurf(DStr.AddSurface(TopOpeBRepDS_Surface(Surfcoin,tolapp3d)));
+  Data->ChangeSurf(DStr.AddSurface(TopOpeBRepDS_Surface(Surfcoin, tolapp3d)));
 #ifdef DRAW
   ChFi3d_SettraceDRAWFIL(Standard_True);
-  if (ChFi3d_GettraceDRAWFIL()) {
+  if (ChFi3d_GettraceDRAWFIL())
+  {
     IndexOfConge++;
-//    char name[100];
+    //    char name[100];
     char* name = new char[100];
-    sprintf(name,"%s_%d","Surf",IndexOfConge);
-    DrawTrSurf::Set(name,Surfcoin);
+    sprintf(name, "%s_%d", "Surf", IndexOfConge);
+    DrawTrSurf::Set(name, Surfcoin);
   }
 #endif
-    
-  Standard_Real UFirst,ULast,VFirst,VLast;
-  Surfcoin->Bounds(UFirst,ULast,VFirst,VLast);
-  if(!Gd1) Data->ChangeVertexFirstOnS1().SetPoint(Surfcoin->Value(UFirst,VFirst));
-  if(!Gd2) Data->ChangeVertexFirstOnS2().SetPoint(Surfcoin->Value(UFirst,VLast));
-  if(!Gf1) Data->ChangeVertexLastOnS1().SetPoint(Surfcoin->Value(ULast,VFirst));
-  if(!Gf2) Data->ChangeVertexLastOnS2().SetPoint(Surfcoin->Value(ULast,VLast));
 
-  //calculate curves side S1
+  Standard_Real UFirst, ULast, VFirst, VLast;
+  Surfcoin->Bounds(UFirst, ULast, VFirst, VLast);
+  if (!Gd1)
+    Data->ChangeVertexFirstOnS1().SetPoint(Surfcoin->Value(UFirst, VFirst));
+  if (!Gd2)
+    Data->ChangeVertexFirstOnS2().SetPoint(Surfcoin->Value(UFirst, VLast));
+  if (!Gf1)
+    Data->ChangeVertexLastOnS1().SetPoint(Surfcoin->Value(ULast, VFirst));
+  if (!Gf2)
+    Data->ChangeVertexLastOnS2().SetPoint(Surfcoin->Value(ULast, VLast));
+
+  // calculate curves side S1
   Handle(Geom_Curve) Crv3d1;
-  if(!PC1.IsNull()) Crv3d1= Surfcoin->VIso(VFirst);
-  gp_Pnt2d pd1(UFirst,VFirst), pf1(ULast,VFirst);
-  gp_Lin2d lfil1(pd1,gp_Dir2d(gp_Vec2d(pd1,pf1)));
+  if (!PC1.IsNull())
+    Crv3d1 = Surfcoin->VIso(VFirst);
+  gp_Pnt2d             pd1(UFirst, VFirst), pf1(ULast, VFirst);
+  gp_Lin2d             lfil1(pd1, gp_Dir2d(gp_Vec2d(pd1, pf1)));
   Handle(Geom2d_Curve) PCurveOnSurf = new Geom2d_Line(lfil1);
-  TopAbs_Orientation tra1 = TopAbs_FORWARD, orsurf = Or;
-  Standard_Real x,y,w = 0.5*(UFirst+ULast);
-  gp_Pnt p;
-  gp_Vec du,dv;
+  TopAbs_Orientation   tra1 = TopAbs_FORWARD, orsurf = Or;
+  Standard_Real        x, y, w = 0.5 * (UFirst + ULast);
+  gp_Pnt               p;
+  gp_Vec               du, dv;
   Handle(Geom2d_Curve) c2dtrim;
-  Standard_Real tolreached = 1.e-5;
-  if(!PC1.IsNull()){
+  Standard_Real        tolreached = 1.e-5;
+  if (!PC1.IsNull())
+  {
     Handle(GeomAdaptor_Curve) hcS1 = new GeomAdaptor_Curve(Crv3d1);
-    c2dtrim = new Geom2d_TrimmedCurve(PC1,UFirst,ULast);
-    ChFi3d_SameParameter(hcS1,c2dtrim,S1,tolapp3d,tolreached);
-    c2dtrim->Value(w).Coord(x,y);
-    S1->D1(x,y,p,du,dv);
+    c2dtrim                        = new Geom2d_TrimmedCurve(PC1, UFirst, ULast);
+    ChFi3d_SameParameter(hcS1, c2dtrim, S1, tolapp3d, tolreached);
+    c2dtrim->Value(w).Coord(x, y);
+    S1->D1(x, y, p, du, dv);
     gp_Vec nf = du.Crossed(dv);
-    Surfcoin->D1(w,VFirst,p,du,dv);
+    Surfcoin->D1(w, VFirst, p, du, dv);
     gp_Vec ns = du.Crossed(dv);
-    if(nf.Dot(ns) > 0.)  tra1 = TopAbs_REVERSED;
-    else if(On1) orsurf = TopAbs::Reverse(orsurf);
+    if (nf.Dot(ns) > 0.)
+      tra1 = TopAbs_REVERSED;
+    else if (On1)
+      orsurf = TopAbs::Reverse(orsurf);
   }
-  Standard_Integer Index1OfCurve = 
-    DStr.AddCurve(TopOpeBRepDS_Curve(Crv3d1,tolreached));
-  ChFiDS_FaceInterference& Fint1 = Data->ChangeInterferenceOnS1();
+  Standard_Integer         Index1OfCurve = DStr.AddCurve(TopOpeBRepDS_Curve(Crv3d1, tolreached));
+  ChFiDS_FaceInterference& Fint1         = Data->ChangeInterferenceOnS1();
   Fint1.SetFirstParameter(UFirst);
   Fint1.SetLastParameter(ULast);
-  Fint1.SetInterference(Index1OfCurve,tra1,c2dtrim,PCurveOnSurf);
-  //calculate curves side S2
+  Fint1.SetInterference(Index1OfCurve, tra1, c2dtrim, PCurveOnSurf);
+  // calculate curves side S2
   Handle(Geom_Curve) Crv3d2;
-  if(!PC2.IsNull()) Crv3d2 = Surfcoin->VIso(VLast);
-  gp_Pnt2d pd2(UFirst,VLast), pf2(ULast,VLast);
-  gp_Lin2d lfil2(pd2,gp_Dir2d(gp_Vec2d(pd2,pf2)));
-  PCurveOnSurf = new Geom2d_Line(lfil2);
+  if (!PC2.IsNull())
+    Crv3d2 = Surfcoin->VIso(VLast);
+  gp_Pnt2d pd2(UFirst, VLast), pf2(ULast, VLast);
+  gp_Lin2d lfil2(pd2, gp_Dir2d(gp_Vec2d(pd2, pf2)));
+  PCurveOnSurf            = new Geom2d_Line(lfil2);
   TopAbs_Orientation tra2 = TopAbs_FORWARD;
-  if(!PC2.IsNull()){
+  if (!PC2.IsNull())
+  {
     Handle(GeomAdaptor_Curve) hcS2 = new GeomAdaptor_Curve(Crv3d2);
-    c2dtrim = new Geom2d_TrimmedCurve(PC2,UFirst,ULast);
-    ChFi3d_SameParameter(hcS2,c2dtrim,S2,tolapp3d,tolreached);
-    c2dtrim->Value(w).Coord(x,y);
-    S2->D1(x,y,p,du,dv);
+    c2dtrim                        = new Geom2d_TrimmedCurve(PC2, UFirst, ULast);
+    ChFi3d_SameParameter(hcS2, c2dtrim, S2, tolapp3d, tolreached);
+    c2dtrim->Value(w).Coord(x, y);
+    S2->D1(x, y, p, du, dv);
     gp_Vec np = du.Crossed(dv);
-    Surfcoin->D1(w,VLast,p,du,dv);
+    Surfcoin->D1(w, VLast, p, du, dv);
     gp_Vec ns = du.Crossed(dv);
-    if(np.Dot(ns) < 0.) {
+    if (np.Dot(ns) < 0.)
+    {
       tra2 = TopAbs_REVERSED;
-      if(!On1) orsurf = TopAbs::Reverse(orsurf);
+      if (!On1)
+        orsurf = TopAbs::Reverse(orsurf);
     }
   }
-  Standard_Integer Index2OfCurve = 
-    DStr.AddCurve(TopOpeBRepDS_Curve(Crv3d2,tolreached));
-  ChFiDS_FaceInterference& Fint2 = Data->ChangeInterferenceOnS2();
+  Standard_Integer         Index2OfCurve = DStr.AddCurve(TopOpeBRepDS_Curve(Crv3d2, tolreached));
+  ChFiDS_FaceInterference& Fint2         = Data->ChangeInterferenceOnS2();
   Fint2.SetFirstParameter(UFirst);
   Fint2.SetLastParameter(ULast);
-  Fint2.SetInterference(Index2OfCurve,tra2,c2dtrim,PCurveOnSurf);
+  Fint2.SetInterference(Index2OfCurve, tra2, c2dtrim, PCurveOnSurf);
   Data->ChangeOrientation() = orsurf;
   return Standard_True;
 }
 
 //=======================================================================
-//function : CompleteData
-//purpose  : Calculates the surface of curves and eventually 
+// function : CompleteData
+// purpose  : Calculates the surface of curves and eventually
 //           CommonPoints from the data calculated in ComputeData.
 //
 //  11/08/1996 : Use of F(t)
 //
 //=======================================================================
 
-Standard_Boolean ChFi3d_Builder::CompleteData
-(Handle(ChFiDS_SurfData)& Data,
- Blend_Function& Func,
- Handle(BRepBlend_Line)& lin,
- const Handle(Adaptor3d_Surface)& S1,
- const Handle(Adaptor3d_Surface)& S2,
- const TopAbs_Orientation Or1,
- const Standard_Boolean Gd1,
- const Standard_Boolean Gd2,
- const Standard_Boolean Gf1,
- const Standard_Boolean Gf2,
- const Standard_Boolean Reversed)
+Standard_Boolean ChFi3d_Builder::CompleteData(Handle(ChFiDS_SurfData)&         Data,
+                                              Blend_Function&                  Func,
+                                              Handle(BRepBlend_Line)&          lin,
+                                              const Handle(Adaptor3d_Surface)& S1,
+                                              const Handle(Adaptor3d_Surface)& S2,
+                                              const TopAbs_Orientation         Or1,
+                                              const Standard_Boolean           Gd1,
+                                              const Standard_Boolean           Gd2,
+                                              const Standard_Boolean           Gf1,
+                                              const Standard_Boolean           Gf2,
+                                              const Standard_Boolean           Reversed)
 {
-  Handle(BRepBlend_AppFunc) TheFunc 
-    = new (BRepBlend_AppFunc)(lin, Func, tolapp3d, 1.e-5);
+  Handle(BRepBlend_AppFunc) TheFunc = new (BRepBlend_AppFunc)(lin, Func, tolapp3d, 1.e-5);
 
-  Standard_Integer Degmax = 20, Segmax = 5000;
-  BRepBlend_AppSurface approx (TheFunc, 
-			       lin->Point(1).Parameter(),
-			       lin->Point(lin->NbPoints()).Parameter(),
-			       tolapp3d, 1.e-5, //tolapp2d, tolerance max
-			       tolappangle, // Contact G1 
-			       myConti, Degmax, Segmax);  
-  if (!approx.IsDone()) {
+  Standard_Integer     Degmax = 20, Segmax = 5000;
+  BRepBlend_AppSurface approx(TheFunc,
+                              lin->Point(1).Parameter(),
+                              lin->Point(lin->NbPoints()).Parameter(),
+                              tolapp3d,
+                              1.e-5,       // tolapp2d, tolerance max
+                              tolappangle, // Contact G1
+                              myConti,
+                              Degmax,
+                              Segmax);
+  if (!approx.IsDone())
+  {
 #ifdef OCCT_DEBUG
     std::cout << "Approximation non faite !!!" << std::endl;
 #endif
@@ -537,139 +581,139 @@ Standard_Boolean ChFi3d_Builder::CompleteData
 #ifdef OCCT_DEBUG
   approx.Dump(std::cout);
 #endif
-  return StoreData( Data, approx, lin, S1, S2, Or1, Gd1, Gd2, Gf1, Gf2, Reversed);
-} 
-
+  return StoreData(Data, approx, lin, S1, S2, Or1, Gd1, Gd2, Gf1, Gf2, Reversed);
+}
 
 //=======================================================================
-//function : CompleteData
-//purpose  : New overload for functions surf/rst
+// function : CompleteData
+// purpose  : New overload for functions surf/rst
 // jlr le 28/07/97 branchement F(t)
 //=======================================================================
 
-Standard_Boolean ChFi3d_Builder::CompleteData
-(Handle(ChFiDS_SurfData)&        Data,
- Blend_SurfRstFunction&          Func,
- Handle(BRepBlend_Line)&         lin,
- const Handle(Adaptor3d_Surface)& S1,
- const Handle(Adaptor3d_Surface)& S2,
- const TopAbs_Orientation        Or,
- const Standard_Boolean          Reversed)
+Standard_Boolean ChFi3d_Builder::CompleteData(Handle(ChFiDS_SurfData)&         Data,
+                                              Blend_SurfRstFunction&           Func,
+                                              Handle(BRepBlend_Line)&          lin,
+                                              const Handle(Adaptor3d_Surface)& S1,
+                                              const Handle(Adaptor3d_Surface)& S2,
+                                              const TopAbs_Orientation         Or,
+                                              const Standard_Boolean           Reversed)
 {
-  Handle(BRepBlend_AppFuncRst) TheFunc 
-    = new (BRepBlend_AppFuncRst)(lin, Func, tolapp3d, 1.e-5);
-  BRepBlend_AppSurface approx (TheFunc, 
-			       lin->Point(1).Parameter(),
-			       lin->Point(lin->NbPoints()).Parameter(),
-			       tolapp3d, 1.e-5, //tolapp2d, tolerance max
-			       tolappangle, // Contact G1 
-			       myConti);  
- if (!approx.IsDone()) {
+  Handle(BRepBlend_AppFuncRst) TheFunc = new (BRepBlend_AppFuncRst)(lin, Func, tolapp3d, 1.e-5);
+  BRepBlend_AppSurface         approx(TheFunc,
+                              lin->Point(1).Parameter(),
+                              lin->Point(lin->NbPoints()).Parameter(),
+                              tolapp3d,
+                              1.e-5,       // tolapp2d, tolerance max
+                              tolappangle, // Contact G1
+                              myConti);
+  if (!approx.IsDone())
+  {
 #ifdef OCCT_DEBUG
     std::cout << "Approximation is not done!" << std::endl;
-#endif  
+#endif
     return Standard_False;
   }
 #ifdef OCCT_DEBUG
   approx.Dump(std::cout);
 #endif
 
-  return StoreData(Data,approx,lin,S1,S2,Or,0,0,0,0,Reversed);
-} 
-
-
+  return StoreData(Data, approx, lin, S1, S2, Or, 0, 0, 0, 0, Reversed);
+}
 
 //=======================================================================
-//function : CompleteData
-//purpose  : New overload for functions rst/rst
+// function : CompleteData
+// purpose  : New overload for functions rst/rst
 // jlr le 28/07/97 branchement F(t)
 //=======================================================================
 
-Standard_Boolean ChFi3d_Builder::CompleteData
-(Handle(ChFiDS_SurfData)&        Data,
- Blend_RstRstFunction&           Func,
- Handle(BRepBlend_Line)&         lin,
- const Handle(Adaptor3d_Surface)& S1,
- const Handle(Adaptor3d_Surface)& S2,
- const TopAbs_Orientation        Or)
+Standard_Boolean ChFi3d_Builder::CompleteData(Handle(ChFiDS_SurfData)&         Data,
+                                              Blend_RstRstFunction&            Func,
+                                              Handle(BRepBlend_Line)&          lin,
+                                              const Handle(Adaptor3d_Surface)& S1,
+                                              const Handle(Adaptor3d_Surface)& S2,
+                                              const TopAbs_Orientation         Or)
 {
-  Handle(BRepBlend_AppFuncRstRst) TheFunc 
-    = new (BRepBlend_AppFuncRstRst)(lin, Func, tolapp3d, 1.e-5);
-  BRepBlend_AppSurface approx (TheFunc, 
-			       lin->Point(1).Parameter(),
-			       lin->Point(lin->NbPoints()).Parameter(),
-			       tolapp3d, 1.e-5, //tolapp2d, tolerance max
-			       tolappangle, // Contact G1 
-			       myConti);  
- if (!approx.IsDone()) {
+  Handle(BRepBlend_AppFuncRstRst) TheFunc =
+    new (BRepBlend_AppFuncRstRst)(lin, Func, tolapp3d, 1.e-5);
+  BRepBlend_AppSurface approx(TheFunc,
+                              lin->Point(1).Parameter(),
+                              lin->Point(lin->NbPoints()).Parameter(),
+                              tolapp3d,
+                              1.e-5,       // tolapp2d, tolerance max
+                              tolappangle, // Contact G1
+                              myConti);
+  if (!approx.IsDone())
+  {
 #ifdef OCCT_DEBUG
     std::cout << "Approximation non faite !!!" << std::endl;
-#endif  
+#endif
     return Standard_False;
   }
 #ifdef OCCT_DEBUG
   approx.Dump(std::cout);
 #endif
 
-  return StoreData(Data,approx,lin,S1,S2,Or,0,0,0,0);
-} 
-
-
-
+  return StoreData(Data, approx, lin, S1, S2, Or, 0, 0, 0, 0);
+}
 
 //=======================================================================
-//function : StoreData
-//purpose  : Copy of an approximation result in SurfData.
+// function : StoreData
+// purpose  : Copy of an approximation result in SurfData.
 //=======================================================================
 
-Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
-					   const AppBlend_Approx& approx,
-					   const Handle(BRepBlend_Line)& lin,
-					   const Handle(Adaptor3d_Surface)& S1,
-					   const Handle(Adaptor3d_Surface)& S2,
-					   const TopAbs_Orientation Or1,
-					   const Standard_Boolean Gd1,
-					   const Standard_Boolean Gd2,
-					   const Standard_Boolean Gf1,
-					   const Standard_Boolean Gf2,
-					   const Standard_Boolean Reversed)
+Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)&         Data,
+                                           const AppBlend_Approx&           approx,
+                                           const Handle(BRepBlend_Line)&    lin,
+                                           const Handle(Adaptor3d_Surface)& S1,
+                                           const Handle(Adaptor3d_Surface)& S2,
+                                           const TopAbs_Orientation         Or1,
+                                           const Standard_Boolean           Gd1,
+                                           const Standard_Boolean           Gd2,
+                                           const Standard_Boolean           Gf1,
+                                           const Standard_Boolean           Gf2,
+                                           const Standard_Boolean           Reversed)
 {
   // Small control tools.
   static Handle(GeomAdaptor_Curve) checkcurve;
-  if(checkcurve.IsNull()) checkcurve = new GeomAdaptor_Curve();
+  if (checkcurve.IsNull())
+    checkcurve = new GeomAdaptor_Curve();
   GeomAdaptor_Curve& chc = *checkcurve;
-  Standard_Real tolget3d, tolget2d, tolaux, tolC1,  tolcheck;
-  Standard_Real  tolC2 = 0.;
+  Standard_Real      tolget3d, tolget2d, tolaux, tolC1, tolcheck;
+  Standard_Real      tolC2 = 0.;
   approx.TolReached(tolget3d, tolget2d);
   tolaux = approx.TolCurveOnSurf(1);
-  tolC1 = tolget3d + tolaux;
-  if(!S2.IsNull()) {
+  tolC1  = tolget3d + tolaux;
+  if (!S2.IsNull())
+  {
     tolaux = approx.TolCurveOnSurf(2);
-    tolC2 = tolget3d + tolaux;
+    tolC2  = tolget3d + tolaux;
   }
 
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
   // By default parametric space is created using a square surface
   // to be able to parameterize in U by # R*teta // a revoir lbo 29/08/97
-  const TColStd_Array1OfReal& ku = approx.SurfUKnots();
-  const TColStd_Array1OfReal& kv = approx.SurfVKnots();
-  Standard_Real larg = (kv(kv.Upper())-kv(kv.Lower()));
-  TColStd_Array1OfReal& kku = *((TColStd_Array1OfReal*)((void*)&ku));
-  BSplCLib::Reparametrize(0.,larg,kku);
-  Handle(Geom_BSplineSurface) Surf = 
-    new Geom_BSplineSurface(approx.SurfPoles(),approx.SurfWeights(),
-			    kku,kv,
-			    approx.SurfUMults(),approx.SurfVMults(),
-			    approx.UDegree(),approx.VDegree());
-// extension of the surface 
+  const TColStd_Array1OfReal& ku   = approx.SurfUKnots();
+  const TColStd_Array1OfReal& kv   = approx.SurfVKnots();
+  Standard_Real               larg = (kv(kv.Upper()) - kv(kv.Lower()));
+  TColStd_Array1OfReal&       kku  = *((TColStd_Array1OfReal*)((void*)&ku));
+  BSplCLib::Reparametrize(0., larg, kku);
+  Handle(Geom_BSplineSurface) Surf = new Geom_BSplineSurface(approx.SurfPoles(),
+                                                             approx.SurfWeights(),
+                                                             kku,
+                                                             kv,
+                                                             approx.SurfUMults(),
+                                                             approx.SurfVMults(),
+                                                             approx.UDegree(),
+                                                             approx.VDegree());
+  // extension of the surface
 
-  Standard_Real length1,length2;
-  length1=Data->FirstExtensionValue();
-  length2=Data->LastExtensionValue();
+  Standard_Real length1, length2;
+  length1 = Data->FirstExtensionValue();
+  length2 = Data->LastExtensionValue();
 
   Handle(Geom_BoundedSurface) aBndSurf = Surf;
-  Standard_Boolean ext1 = Standard_False, ext2 = Standard_False;
-  Standard_Real eps = Max(tolget3d, 2. * Precision::Confusion());
+  Standard_Boolean            ext1 = Standard_False, ext2 = Standard_False;
+  Standard_Real               eps = Max(tolget3d, 2. * Precision::Confusion());
   if (length1 > eps)
   {
     gp_Pnt P11, P21;
@@ -677,7 +721,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
     P21 = Surf->Pole(Surf->NbUPoles(), 1);
     if (P11.Distance(P21) > eps)
     {
-      //to avoid extending surface with singular boundary
+      // to avoid extending surface with singular boundary
       GeomLib::ExtendSurfByLength(aBndSurf, length1, 1, Standard_False, Standard_False);
       ext1 = Standard_True;
     }
@@ -689,14 +733,14 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
     P22 = Surf->Pole(Surf->NbUPoles(), Surf->NbVPoles());
     if (P12.Distance(P22) > eps)
     {
-      //to avoid extending surface with singular boundary
+      // to avoid extending surface with singular boundary
       GeomLib::ExtendSurfByLength(aBndSurf, length2, 1, Standard_False, Standard_True);
       ext2 = Standard_True;
     }
   }
   Surf = Handle(Geom_BSplineSurface)::DownCast(aBndSurf);
 
-  //Correction of surface on extremities
+  // Correction of surface on extremities
   if (!ext1)
   {
     gp_Pnt P11, P21;
@@ -714,177 +758,203 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
     Surf->SetPole(Surf->NbUPoles(), Surf->NbVPoles(), P22);
   }
 
-  Data->ChangeSurf(DStr.AddSurface(TopOpeBRepDS_Surface(Surf,tolget3d)));
+  Data->ChangeSurf(DStr.AddSurface(TopOpeBRepDS_Surface(Surf, tolget3d)));
 
 #ifdef DRAW
   ChFi3d_SettraceDRAWFIL(Standard_True);
-  if (ChFi3d_GettraceDRAWFIL()) {
+  if (ChFi3d_GettraceDRAWFIL())
+  {
     IndexOfConge++;
-//    char name[100];
-    char* name=new char[100];
-    sprintf(name,"%s_%d","Surf",IndexOfConge);
-    DrawTrSurf::Set(name,Surf);
+    //    char name[100];
+    char* name = new char[100];
+    sprintf(name, "%s_%d", "Surf", IndexOfConge);
+    DrawTrSurf::Set(name, Surf);
   }
 #endif
-  Standard_Real UFirst,ULast,VFirst,VLast,pppdeb,pppfin;
-  Surf->Bounds(UFirst,ULast,VFirst,VLast);
-  BRepAdaptor_Curve2d brc;
-  BRepAdaptor_Curve CArc;
-  Handle(BRepAdaptor_Surface) 
-    BS1 = Handle(BRepAdaptor_Surface)::DownCast(S1);
-  Handle(BRepAdaptor_Surface) 
-    BS2 = Handle(BRepAdaptor_Surface)::DownCast(S2);
+  Standard_Real UFirst, ULast, VFirst, VLast, pppdeb, pppfin;
+  Surf->Bounds(UFirst, ULast, VFirst, VLast);
+  BRepAdaptor_Curve2d           brc;
+  BRepAdaptor_Curve             CArc;
+  Handle(BRepAdaptor_Surface)   BS1 = Handle(BRepAdaptor_Surface)::DownCast(S1);
+  Handle(BRepAdaptor_Surface)   BS2 = Handle(BRepAdaptor_Surface)::DownCast(S2);
   Geom2dAPI_ProjectPointOnCurve projector;
 
-  Standard_Real Uon1 = UFirst, Uon2 = ULast;
+  Standard_Real    Uon1 = UFirst, Uon2 = ULast;
   Standard_Integer ion1 = 1, ion2 = 2;
-  if(Reversed) { Uon1 = ULast; Uon2 = UFirst; ion1 = 2; ion2 = 1; }
-  
+  if (Reversed)
+  {
+    Uon1 = ULast;
+    Uon2 = UFirst;
+    ion1 = 2;
+    ion2 = 1;
+  }
+
   // The SurfData is filled in what concerns S1,
-  Handle(Geom_Curve) Crv3d1 = Surf->UIso(Uon1);
-  gp_Pnt2d pori1(Uon1,0.);
-  gp_Lin2d lfil1(pori1,gp::DY2d());
+  Handle(Geom_Curve)   Crv3d1 = Surf->UIso(Uon1);
+  gp_Pnt2d             pori1(Uon1, 0.);
+  gp_Lin2d             lfil1(pori1, gp::DY2d());
   Handle(Geom2d_Curve) PCurveOnSurf = new Geom2d_Line(lfil1);
   Handle(Geom2d_Curve) PCurveOnFace;
-  PCurveOnFace = new 
-    Geom2d_BSplineCurve(approx.Curve2dPoles(ion1),approx.Curves2dKnots(),
-			approx.Curves2dMults(),approx.Curves2dDegree());
-  
-  
-   Standard_Real par1=PCurveOnFace->FirstParameter();
-   Standard_Real par2= PCurveOnFace->LastParameter();
-   chc.Load(Crv3d1,par1,par2);
-   
- if(!ChFi3d_CheckSameParameter(checkcurve,PCurveOnFace,S1,tolC1,tolcheck)){
+  PCurveOnFace = new Geom2d_BSplineCurve(approx.Curve2dPoles(ion1),
+                                         approx.Curves2dKnots(),
+                                         approx.Curves2dMults(),
+                                         approx.Curves2dDegree());
+
+  Standard_Real par1 = PCurveOnFace->FirstParameter();
+  Standard_Real par2 = PCurveOnFace->LastParameter();
+  chc.Load(Crv3d1, par1, par2);
+
+  if (!ChFi3d_CheckSameParameter(checkcurve, PCurveOnFace, S1, tolC1, tolcheck))
+  {
 #ifdef OCCT_DEBUG
-   std::cout<<"approximate tolerance under-valued : "<<tolC1<<" for "<<tolcheck<<std::endl;
-#endif 
+    std::cout << "approximate tolerance under-valued : " << tolC1 << " for " << tolcheck
+              << std::endl;
+#endif
     tolC1 = tolcheck;
   }
-  Standard_Integer Index1OfCurve = 
-    DStr.AddCurve(TopOpeBRepDS_Curve(Crv3d1,tolC1));
-  
-  Standard_Real uarc,utg;
-  if(Gd1){
+  Standard_Integer Index1OfCurve = DStr.AddCurve(TopOpeBRepDS_Curve(Crv3d1, tolC1));
+
+  Standard_Real uarc, utg;
+  if (Gd1)
+  {
     TopoDS_Face forwfac = BS1->Face();
     forwfac.Orientation(TopAbs_FORWARD);
-    brc.Initialize(Data->VertexFirstOnS1().Arc(),forwfac);
+    brc.Initialize(Data->VertexFirstOnS1().Arc(), forwfac);
     ChFiDS_CommonPoint& V = Data->ChangeVertexFirstOnS1();
     CArc.Initialize(V.Arc());
-    CompParam(brc,PCurveOnFace,uarc,utg, V.ParameterOnArc(), V.Parameter());
+    CompParam(brc, PCurveOnFace, uarc, utg, V.ParameterOnArc(), V.Parameter());
     tolcheck = CArc.Value(uarc).Distance(V.Point());
-    V.SetArc(tolC1+tolcheck,V.Arc(),uarc,V.TransitionOnArc());
+    V.SetArc(tolC1 + tolcheck, V.Arc(), uarc, V.TransitionOnArc());
     pppdeb = utg;
   }
-  else pppdeb = VFirst;
-  if(Gf1){
+  else
+    pppdeb = VFirst;
+  if (Gf1)
+  {
     TopoDS_Face forwfac = BS1->Face();
     forwfac.Orientation(TopAbs_FORWARD);
     ChFiDS_CommonPoint& V = Data->ChangeVertexLastOnS1();
-    brc.Initialize(V.Arc(),forwfac);
+    brc.Initialize(V.Arc(), forwfac);
     CArc.Initialize(V.Arc());
-    CompParam(brc,PCurveOnFace,uarc,utg, V.ParameterOnArc(), V.Parameter());
+    CompParam(brc, PCurveOnFace, uarc, utg, V.ParameterOnArc(), V.Parameter());
     tolcheck = CArc.Value(uarc).Distance(V.Point());
-    V.SetArc(tolC1+tolcheck,V.Arc(),uarc,V.TransitionOnArc());
+    V.SetArc(tolC1 + tolcheck, V.Arc(), uarc, V.TransitionOnArc());
     pppfin = utg;
   }
-  else pppfin = VLast;
+  else
+    pppfin = VLast;
   ChFiDS_FaceInterference& Fint1 = Data->ChangeInterferenceOnS1();
   Fint1.SetFirstParameter(pppdeb);
   Fint1.SetLastParameter(pppfin);
   TopAbs_Orientation TraOn1;
-  if(Reversed) TraOn1 = ChFi3d_TrsfTrans(lin->TransitionOnS2());
-  else TraOn1 = ChFi3d_TrsfTrans(lin->TransitionOnS1());
-  Fint1.SetInterference(Index1OfCurve,TraOn1,PCurveOnFace,PCurveOnSurf);
-  
+  if (Reversed)
+    TraOn1 = ChFi3d_TrsfTrans(lin->TransitionOnS2());
+  else
+    TraOn1 = ChFi3d_TrsfTrans(lin->TransitionOnS1());
+  Fint1.SetInterference(Index1OfCurve, TraOn1, PCurveOnFace, PCurveOnSurf);
+
   // SurfData is filled in what concerns S2,
   Handle(Geom_Curve) Crv3d2 = Surf->UIso(Uon2);
-  gp_Pnt2d pori2(Uon2,0.);
-  gp_Lin2d lfil2(pori2,gp::DY2d());
+  gp_Pnt2d           pori2(Uon2, 0.);
+  gp_Lin2d           lfil2(pori2, gp::DY2d());
   PCurveOnSurf = new Geom2d_Line(lfil2);
-  if(!S2.IsNull()){
+  if (!S2.IsNull())
+  {
     PCurveOnFace = new Geom2d_BSplineCurve(approx.Curve2dPoles(ion2),
-					   approx.Curves2dKnots(),
-					   approx.Curves2dMults(),
-					   approx.Curves2dDegree());
-    chc.Load(Crv3d2,par1,par2);
-   if(!ChFi3d_CheckSameParameter(checkcurve,PCurveOnFace,S2,tolC2,tolcheck)){
+                                           approx.Curves2dKnots(),
+                                           approx.Curves2dMults(),
+                                           approx.Curves2dDegree());
+    chc.Load(Crv3d2, par1, par2);
+    if (!ChFi3d_CheckSameParameter(checkcurve, PCurveOnFace, S2, tolC2, tolcheck))
+    {
 #ifdef OCCT_DEBUG
-      std::cout<<"approximate tolerance under-evaluated : "<<tolC2<<" for "<<tolcheck<<std::endl;
-#endif 
+      std::cout << "approximate tolerance under-evaluated : " << tolC2 << " for " << tolcheck
+                << std::endl;
+#endif
       tolC2 = tolcheck;
     }
   }
-  Standard_Integer Index2OfCurve = 
-    DStr.AddCurve(TopOpeBRepDS_Curve(Crv3d2,tolC2));
-  if(Gd2){
+  Standard_Integer Index2OfCurve = DStr.AddCurve(TopOpeBRepDS_Curve(Crv3d2, tolC2));
+  if (Gd2)
+  {
     TopoDS_Face forwfac = BS2->Face();
     forwfac.Orientation(TopAbs_FORWARD);
-    brc.Initialize(Data->VertexFirstOnS2().Arc(),forwfac);
+    brc.Initialize(Data->VertexFirstOnS2().Arc(), forwfac);
     ChFiDS_CommonPoint& V = Data->ChangeVertexFirstOnS2();
     CArc.Initialize(V.Arc());
-    CompParam(brc,PCurveOnFace,uarc,utg, V.ParameterOnArc(), V.Parameter());
+    CompParam(brc, PCurveOnFace, uarc, utg, V.ParameterOnArc(), V.Parameter());
     tolcheck = CArc.Value(uarc).Distance(V.Point());
-    V.SetArc(tolC2+tolcheck,V.Arc(),uarc,V.TransitionOnArc());
+    V.SetArc(tolC2 + tolcheck, V.Arc(), uarc, V.TransitionOnArc());
     pppdeb = utg;
   }
-  else pppdeb = VFirst;
-  if(Gf2){
+  else
+    pppdeb = VFirst;
+  if (Gf2)
+  {
     TopoDS_Face forwfac = BS2->Face();
     forwfac.Orientation(TopAbs_FORWARD);
-    brc.Initialize(Data->VertexLastOnS2().Arc(),forwfac);
+    brc.Initialize(Data->VertexLastOnS2().Arc(), forwfac);
     ChFiDS_CommonPoint& V = Data->ChangeVertexLastOnS2();
     CArc.Initialize(V.Arc());
-    CompParam(brc,PCurveOnFace,uarc,utg, V.ParameterOnArc(), V.Parameter());
+    CompParam(brc, PCurveOnFace, uarc, utg, V.ParameterOnArc(), V.Parameter());
     tolcheck = CArc.Value(uarc).Distance(V.Point());
-    V.SetArc(tolC2+tolcheck,V.Arc(),uarc,V.TransitionOnArc());
+    V.SetArc(tolC2 + tolcheck, V.Arc(), uarc, V.TransitionOnArc());
     pppfin = utg;
   }
-  else pppfin = VLast;
+  else
+    pppfin = VLast;
   ChFiDS_FaceInterference& Fint2 = Data->ChangeInterferenceOnS2();
   Fint2.SetFirstParameter(pppdeb);
   Fint2.SetLastParameter(pppfin);
-  if(!S2.IsNull()){
+  if (!S2.IsNull())
+  {
     TopAbs_Orientation TraOn2;
-    if(Reversed) TraOn2 = ChFi3d_TrsfTrans(lin->TransitionOnS1());
-    else TraOn2 = ChFi3d_TrsfTrans(lin->TransitionOnS2());
-    Fint2.SetInterference(Index2OfCurve,TraOn2,PCurveOnFace,PCurveOnSurf);
+    if (Reversed)
+      TraOn2 = ChFi3d_TrsfTrans(lin->TransitionOnS1());
+    else
+      TraOn2 = ChFi3d_TrsfTrans(lin->TransitionOnS2());
+    Fint2.SetInterference(Index2OfCurve, TraOn2, PCurveOnFace, PCurveOnSurf);
   }
-  else {
+  else
+  {
     Handle(Geom2d_Curve) bidpc;
-    Fint2.SetInterference
-      (Index2OfCurve,TopAbs_FORWARD,bidpc,PCurveOnSurf);
+    Fint2.SetInterference(Index2OfCurve, TopAbs_FORWARD, bidpc, PCurveOnSurf);
   }
 
   // the orientation of the fillet in relation to the faces is evaluated,
 
   Handle(Adaptor3d_Surface) Sref = S1;
-  PCurveOnFace = Fint1.PCurveOnFace();
-  if(Reversed){ Sref = S2; PCurveOnFace = Fint2.PCurveOnFace(); }
-  
-//  Modified by skv - Wed Jun  9 17:16:26 2004 OCC5898 Begin
-//   gp_Pnt2d PUV = PCurveOnFace->Value((VFirst+VLast)/2.);
-//   gp_Pnt P;
-//   gp_Vec Du1,Du2,Dv1,Dv2;
-//   Sref->D1(PUV.X(),PUV.Y(),P,Du1,Dv1);
-//   Du1.Cross(Dv1);
-//   if (Or1 == TopAbs_REVERSED) Du1.Reverse();
-//   Surf->D1(UFirst,(VFirst+VLast)/2.,P,Du2,Dv2);
-//   Du2.Cross(Dv2);
-//   if (Du1.Dot(Du2)>0) Data->ChangeOrientation() = TopAbs_FORWARD;
-//   else Data->ChangeOrientation() = TopAbs_REVERSED;
+  PCurveOnFace                   = Fint1.PCurveOnFace();
+  if (Reversed)
+  {
+    Sref         = S2;
+    PCurveOnFace = Fint2.PCurveOnFace();
+  }
+
+  //  Modified by skv - Wed Jun  9 17:16:26 2004 OCC5898 Begin
+  //   gp_Pnt2d PUV = PCurveOnFace->Value((VFirst+VLast)/2.);
+  //   gp_Pnt P;
+  //   gp_Vec Du1,Du2,Dv1,Dv2;
+  //   Sref->D1(PUV.X(),PUV.Y(),P,Du1,Dv1);
+  //   Du1.Cross(Dv1);
+  //   if (Or1 == TopAbs_REVERSED) Du1.Reverse();
+  //   Surf->D1(UFirst,(VFirst+VLast)/2.,P,Du2,Dv2);
+  //   Du2.Cross(Dv2);
+  //   if (Du1.Dot(Du2)>0) Data->ChangeOrientation() = TopAbs_FORWARD;
+  //   else Data->ChangeOrientation() = TopAbs_REVERSED;
 
   Standard_Real    aDelta = VLast - VFirst;
   Standard_Integer aDenom = 2;
 
-  for(;;) {
-    Standard_Real aDeltav = aDelta/aDenom;
+  for (;;)
+  {
+    Standard_Real aDeltav = aDelta / aDenom;
     Standard_Real aParam  = VFirst + aDeltav;
     gp_Pnt2d      PUV     = PCurveOnFace->Value(aParam);
     gp_Pnt        P;
-    gp_Vec        Du1,Du2,Dv1,Dv2;
+    gp_Vec        Du1, Du2, Dv1, Dv2;
 
-    Sref->D1(PUV.X(),PUV.Y(),P,Du1,Dv1);
+    Sref->D1(PUV.X(), PUV.Y(), P, Du1, Dv1);
     Du1.Cross(Dv1);
 
     if (Or1 == TopAbs_REVERSED)
@@ -893,871 +963,1070 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
     Surf->D1(UFirst, aParam, P, Du2, Dv2);
     Du2.Cross(Dv2);
 
-    if (Du1.Magnitude() <= tolget3d ||
-	Du2.Magnitude() <= tolget3d) {
+    if (Du1.Magnitude() <= tolget3d || Du2.Magnitude() <= tolget3d)
+    {
       aDenom++;
 
       if (Abs(aDeltav) <= tolget2d)
-	return Standard_False;
+        return Standard_False;
 
       continue;
     }
 
-    if (Du1.Dot(Du2)>0)
+    if (Du1.Dot(Du2) > 0)
       Data->ChangeOrientation() = TopAbs_FORWARD;
     else
       Data->ChangeOrientation() = TopAbs_REVERSED;
 
     break;
   }
-//  Modified by skv - Wed Jun  9 17:16:26 2004 OCC5898 End
-  
-  if(!Gd1 && !S1.IsNull())
-    ChFi3d_FilCommonPoint(lin->StartPointOnFirst(),lin->TransitionOnS1(),
-			  Standard_True, Data->ChangeVertex(1,ion1),tolC1);
-  if(!Gf1 && !S1.IsNull())
-    ChFi3d_FilCommonPoint(lin->EndPointOnFirst(),lin->TransitionOnS1(),
-			  Standard_False,Data->ChangeVertex(0,ion1),tolC1);
-  if(!Gd2 && !S2.IsNull())
-    ChFi3d_FilCommonPoint(lin->StartPointOnSecond(),lin->TransitionOnS2(),
-			  Standard_True, Data->ChangeVertex(1,ion2),tolC2);
-  if(!Gf2 && !S2.IsNull())
-    ChFi3d_FilCommonPoint(lin->EndPointOnSecond(),lin->TransitionOnS2(),
-			  Standard_False, Data->ChangeVertex(0,ion2),tolC2);
+  //  Modified by skv - Wed Jun  9 17:16:26 2004 OCC5898 End
+
+  if (!Gd1 && !S1.IsNull())
+    ChFi3d_FilCommonPoint(lin->StartPointOnFirst(),
+                          lin->TransitionOnS1(),
+                          Standard_True,
+                          Data->ChangeVertex(1, ion1),
+                          tolC1);
+  if (!Gf1 && !S1.IsNull())
+    ChFi3d_FilCommonPoint(lin->EndPointOnFirst(),
+                          lin->TransitionOnS1(),
+                          Standard_False,
+                          Data->ChangeVertex(0, ion1),
+                          tolC1);
+  if (!Gd2 && !S2.IsNull())
+    ChFi3d_FilCommonPoint(lin->StartPointOnSecond(),
+                          lin->TransitionOnS2(),
+                          Standard_True,
+                          Data->ChangeVertex(1, ion2),
+                          tolC2);
+  if (!Gf2 && !S2.IsNull())
+    ChFi3d_FilCommonPoint(lin->EndPointOnSecond(),
+                          lin->TransitionOnS2(),
+                          Standard_False,
+                          Data->ChangeVertex(0, ion2),
+                          tolC2);
   // Parameters on ElSpine
   Standard_Integer nbp = lin->NbPoints();
   Data->FirstSpineParam(lin->Point(1).Parameter());
   Data->LastSpineParam(lin->Point(nbp).Parameter());
   return Standard_True;
-}			 
-
-
+}
 
 //=======================================================================
-//function : ComputeData
-//purpose  : Head of the path edge/face for the bypass of obstacle.
+// function : ComputeData
+// purpose  : Head of the path edge/face for the bypass of obstacle.
 //=======================================================================
 
-Standard_Boolean ChFi3d_Builder::ComputeData
-(Handle(ChFiDS_SurfData)&         Data,
- const Handle(ChFiDS_ElSpine)&   HGuide,
- Handle(BRepBlend_Line)&          Lin,
- const Handle(Adaptor3d_Surface)&  S1,
- const Handle(Adaptor3d_TopolTool)& I1,
- const Handle(Adaptor3d_Surface)&  S2,
- const Handle(Adaptor2d_Curve2d)&  PC2,
- const Handle(Adaptor3d_TopolTool)& I2,
- Standard_Boolean&                Decroch,
- Blend_SurfRstFunction&           Func,
- Blend_FuncInv&                   FInv,
- Blend_SurfPointFuncInv&          FInvP,
- Blend_SurfCurvFuncInv&           FInvC,
- const Standard_Real              PFirst,
- const Standard_Real              MaxStep,
- const Standard_Real              Fleche,
- const Standard_Real              TolGuide,
- Standard_Real&                   First,
- Standard_Real&                   Last,
- const math_Vector&               Soldep,
- const Standard_Boolean           Inside,
- const Standard_Boolean           Appro,
- const Standard_Boolean           Forward,
- const Standard_Boolean           RecP,
- const Standard_Boolean           RecS,
- const Standard_Boolean           RecRst)
+Standard_Boolean ChFi3d_Builder::ComputeData(Handle(ChFiDS_SurfData)&           Data,
+                                             const Handle(ChFiDS_ElSpine)&      HGuide,
+                                             Handle(BRepBlend_Line)&            Lin,
+                                             const Handle(Adaptor3d_Surface)&   S1,
+                                             const Handle(Adaptor3d_TopolTool)& I1,
+                                             const Handle(Adaptor3d_Surface)&   S2,
+                                             const Handle(Adaptor2d_Curve2d)&   PC2,
+                                             const Handle(Adaptor3d_TopolTool)& I2,
+                                             Standard_Boolean&                  Decroch,
+                                             Blend_SurfRstFunction&             Func,
+                                             Blend_FuncInv&                     FInv,
+                                             Blend_SurfPointFuncInv&            FInvP,
+                                             Blend_SurfCurvFuncInv&             FInvC,
+                                             const Standard_Real                PFirst,
+                                             const Standard_Real                MaxStep,
+                                             const Standard_Real                Fleche,
+                                             const Standard_Real                TolGuide,
+                                             Standard_Real&                     First,
+                                             Standard_Real&                     Last,
+                                             const math_Vector&                 Soldep,
+                                             const Standard_Boolean             Inside,
+                                             const Standard_Boolean             Appro,
+                                             const Standard_Boolean             Forward,
+                                             const Standard_Boolean             RecP,
+                                             const Standard_Boolean             RecS,
+                                             const Standard_Boolean             RecRst)
 {
-  BRepBlend_SurfRstLineBuilder TheWalk(S1,I1,S2,PC2,I2);
-  
+  BRepBlend_SurfRstLineBuilder TheWalk(S1, I1, S2, PC2, I2);
+
   Data->FirstExtensionValue(0);
-  Data->LastExtensionValue(0); 
+  Data->LastExtensionValue(0);
 
   Standard_Boolean reverse = (!Forward || Inside);
-  Standard_Real SpFirst = HGuide->FirstParameter();
-  Standard_Real SpLast =  HGuide->LastParameter();
-  Standard_Real Target = SpLast;
-  if(reverse) Target = SpFirst;
+  Standard_Real    SpFirst = HGuide->FirstParameter();
+  Standard_Real    SpLast  = HGuide->LastParameter();
+  Standard_Real    Target  = SpLast;
+  if (reverse)
+    Target = SpFirst;
   Standard_Real Targetsov = Target;
-  
-  Standard_Real MS = MaxStep;
-  Standard_Integer again = 0;
-  Standard_Integer nbptmin = 3; //jlr
-  Standard_Integer Nbpnt = 1;
+
+  Standard_Real    MS      = MaxStep;
+  Standard_Integer again   = 0;
+  Standard_Integer nbptmin = 3; // jlr
+  Standard_Integer Nbpnt   = 1;
   // the initial solution is reframed if necessary.
-  math_Vector ParSol(1,3);
+  math_Vector   ParSol(1, 3);
   Standard_Real NewFirst = PFirst;
-  if(RecP || RecS || RecRst){
-    if(!TheWalk.PerformFirstSection(Func,FInv,FInvP,FInvC,PFirst,Target,Soldep,
-				    tolapp3d,tolapp2d,TolGuide,RecRst,RecP,RecS,
-				    NewFirst,ParSol)){
+  if (RecP || RecS || RecRst)
+  {
+    if (!TheWalk.PerformFirstSection(Func,
+                                     FInv,
+                                     FInvP,
+                                     FInvC,
+                                     PFirst,
+                                     Target,
+                                     Soldep,
+                                     tolapp3d,
+                                     tolapp2d,
+                                     TolGuide,
+                                     RecRst,
+                                     RecP,
+                                     RecS,
+                                     NewFirst,
+                                     ParSol))
+    {
 #ifdef OCCT_DEBUG
-      std::cout<<"ChFi3d_Builder::ComputeData : calculation fail first section"<<std::endl;
+      std::cout << "ChFi3d_Builder::ComputeData : calculation fail first section" << std::endl;
 #endif
       return Standard_False;
     }
   }
-  else {
+  else
+  {
     ParSol = Soldep;
   }
 
-  while (again < 2){
-    TheWalk.Perform (Func,FInv,FInvP,FInvC,NewFirst,Last,
-		     MS,tolapp3d,tolapp2d,TolGuide,ParSol,Fleche,Appro);
+  while (again < 2)
+  {
+    TheWalk.Perform(Func,
+                    FInv,
+                    FInvP,
+                    FInvC,
+                    NewFirst,
+                    Last,
+                    MS,
+                    tolapp3d,
+                    tolapp2d,
+                    TolGuide,
+                    ParSol,
+                    Fleche,
+                    Appro);
 
-    if (!TheWalk.IsDone()) {
+    if (!TheWalk.IsDone())
+    {
 #ifdef OCCT_DEBUG
       std::cout << "Path not created" << std::endl;
-#endif  
+#endif
       return Standard_False;
     }
-  
-    if (reverse) {
-      if (!TheWalk.Complete(Func,FInv,FInvP,FInvC,SpLast)) {
+
+    if (reverse)
+    {
+      if (!TheWalk.Complete(Func, FInv, FInvP, FInvC, SpLast))
+      {
 #ifdef OCCT_DEBUG
-	std::cout << "Not completed" << std::endl;
+        std::cout << "Not completed" << std::endl;
 #endif
       }
-    }  
-  
-
-    Lin = TheWalk.Line();
-    Nbpnt = Lin->NbPoints();
-    if (Nbpnt <= 1 && again == 0)  {
-      again++;
-#ifdef OCCT_DEBUG
-      std::cout <<"one point of the path MS/50 is attempted."<<std::endl;
-#endif  
-      MS = MS/50.; Target = Targetsov;
     }
-    else if (Nbpnt<=nbptmin && again == 0)  {
+
+    Lin   = TheWalk.Line();
+    Nbpnt = Lin->NbPoints();
+    if (Nbpnt <= 1 && again == 0)
+    {
       again++;
 #ifdef OCCT_DEBUG
-      std::cout <<"Number of points is too small, the step is reduced"<<std::endl;
-#endif  
-      Standard_Real u1 = Lin->Point(1).Parameter();
-      Standard_Real u2 = Lin->Point(Nbpnt).Parameter();
-      MS = (u2-u1)/(nbptmin+1.0);
-//      std::cout << " MS : " << MS << " u1 : " << u1 << " u2 : " << u2 << " nbptmin : " << nbptmin << std::endl;
+      std::cout << "one point of the path MS/50 is attempted." << std::endl;
+#endif
+      MS     = MS / 50.;
       Target = Targetsov;
     }
-    else if(Nbpnt<=nbptmin){
+    else if (Nbpnt <= nbptmin && again == 0)
+    {
+      again++;
 #ifdef OCCT_DEBUG
-      std::cout <<"Number of points is still too small, quit"<<std::endl;
-#endif  
+      std::cout << "Number of points is too small, the step is reduced" << std::endl;
+#endif
+      Standard_Real u1 = Lin->Point(1).Parameter();
+      Standard_Real u2 = Lin->Point(Nbpnt).Parameter();
+      MS               = (u2 - u1) / (nbptmin + 1.0);
+      //      std::cout << " MS : " << MS << " u1 : " << u1 << " u2 : " << u2 << " nbptmin : " <<
+      //      nbptmin << std::endl;
+      Target = Targetsov;
+    }
+    else if (Nbpnt <= nbptmin)
+    {
+#ifdef OCCT_DEBUG
+      std::cout << "Number of points is still too small, quit" << std::endl;
+#endif
       return Standard_False;
     }
-    else {
+    else
+    {
       again = 2;
     }
   }
 #ifdef DRAW
   ChFi3d_SettraceDRAWWALK(Standard_True);
-  if(ChFi3d_GettraceDRAWWALK()) drawline(Lin,Standard_True);
-#endif  
-  if(Forward) Decroch = TheWalk.DecrochEnd();
-  else Decroch = TheWalk.DecrochStart();
-  Last = Lin->Point(Nbpnt).Parameter();
+  if (ChFi3d_GettraceDRAWWALK())
+    drawline(Lin, Standard_True);
+#endif
+  if (Forward)
+    Decroch = TheWalk.DecrochEnd();
+  else
+    Decroch = TheWalk.DecrochStart();
+  Last  = Lin->Point(Nbpnt).Parameter();
   First = Lin->Point(1).Parameter();
   return Standard_True;
 }
 
-
 //=======================================================================
-//function : ComputeData
-//purpose  : Heading of the path edge/edge for the bypass of obstacle.
+// function : ComputeData
+// purpose  : Heading of the path edge/edge for the bypass of obstacle.
 //=======================================================================
 
-Standard_Boolean ChFi3d_Builder::ComputeData
-(Handle(ChFiDS_SurfData)&         Data,
- const Handle(ChFiDS_ElSpine)&   HGuide,
- Handle(BRepBlend_Line)&          Lin,
- const Handle(Adaptor3d_Surface)&  S1,
- const Handle(Adaptor2d_Curve2d)&  PC1,
- const Handle(Adaptor3d_TopolTool)& I1,
- Standard_Boolean&                Decroch1,
- const Handle(Adaptor3d_Surface)&  S2,
- const Handle(Adaptor2d_Curve2d)&  PC2,
- const Handle(Adaptor3d_TopolTool)& I2,
- Standard_Boolean&                Decroch2,
- Blend_RstRstFunction&            Func,
- Blend_SurfCurvFuncInv&           FInv1,
- Blend_CurvPointFuncInv&          FInvP1,
- Blend_SurfCurvFuncInv&           FInv2,
- Blend_CurvPointFuncInv&          FInvP2,
- const Standard_Real              PFirst,
- const Standard_Real              MaxStep,
- const Standard_Real              Fleche,
- const Standard_Real              TolGuide,
- Standard_Real&                   First,
- Standard_Real&                   Last,
- const math_Vector&               Soldep,
- const Standard_Boolean           Inside,
- const Standard_Boolean           Appro,
- const Standard_Boolean           Forward,
- const Standard_Boolean           RecP1,
- const Standard_Boolean           RecRst1,
- const Standard_Boolean           RecP2,
- const Standard_Boolean           RecRst2)
+Standard_Boolean ChFi3d_Builder::ComputeData(Handle(ChFiDS_SurfData)&           Data,
+                                             const Handle(ChFiDS_ElSpine)&      HGuide,
+                                             Handle(BRepBlend_Line)&            Lin,
+                                             const Handle(Adaptor3d_Surface)&   S1,
+                                             const Handle(Adaptor2d_Curve2d)&   PC1,
+                                             const Handle(Adaptor3d_TopolTool)& I1,
+                                             Standard_Boolean&                  Decroch1,
+                                             const Handle(Adaptor3d_Surface)&   S2,
+                                             const Handle(Adaptor2d_Curve2d)&   PC2,
+                                             const Handle(Adaptor3d_TopolTool)& I2,
+                                             Standard_Boolean&                  Decroch2,
+                                             Blend_RstRstFunction&              Func,
+                                             Blend_SurfCurvFuncInv&             FInv1,
+                                             Blend_CurvPointFuncInv&            FInvP1,
+                                             Blend_SurfCurvFuncInv&             FInv2,
+                                             Blend_CurvPointFuncInv&            FInvP2,
+                                             const Standard_Real                PFirst,
+                                             const Standard_Real                MaxStep,
+                                             const Standard_Real                Fleche,
+                                             const Standard_Real                TolGuide,
+                                             Standard_Real&                     First,
+                                             Standard_Real&                     Last,
+                                             const math_Vector&                 Soldep,
+                                             const Standard_Boolean             Inside,
+                                             const Standard_Boolean             Appro,
+                                             const Standard_Boolean             Forward,
+                                             const Standard_Boolean             RecP1,
+                                             const Standard_Boolean             RecRst1,
+                                             const Standard_Boolean             RecP2,
+                                             const Standard_Boolean             RecRst2)
 {
   BRepBlend_RstRstLineBuilder TheWalk(S1, PC1, I1, S2, PC2, I2);
-  
+
   Data->FirstExtensionValue(0);
-  Data->LastExtensionValue(0); 
+  Data->LastExtensionValue(0);
 
   Standard_Boolean reverse = (!Forward || Inside);
-  Standard_Real SpFirst = HGuide->FirstParameter();
-  Standard_Real SpLast =  HGuide->LastParameter();
-  Standard_Real Target = SpLast;
-  if(reverse) Target = SpFirst;
+  Standard_Real    SpFirst = HGuide->FirstParameter();
+  Standard_Real    SpLast  = HGuide->LastParameter();
+  Standard_Real    Target  = SpLast;
+  if (reverse)
+    Target = SpFirst;
   Standard_Real Targetsov = Target;
-  
-  Standard_Real MS = MaxStep;
-  Standard_Integer again = 0;
-  Standard_Integer nbptmin = 3; //jlr
-  Standard_Integer Nbpnt = 0;
+
+  Standard_Real    MS      = MaxStep;
+  Standard_Integer again   = 0;
+  Standard_Integer nbptmin = 3; // jlr
+  Standard_Integer Nbpnt   = 0;
   // the initial solution is reframed if necessary.
-  math_Vector ParSol(1,2);
+  math_Vector   ParSol(1, 2);
   Standard_Real NewFirst = PFirst;
-  if (RecP1 || RecRst1 || RecP2 || RecRst2) {
-    if (!TheWalk.PerformFirstSection(Func, FInv1, FInvP1, FInv2, FInvP2, PFirst, Target, Soldep,
-               tolapp3d, TolGuide, RecRst1, RecP1, RecRst2, RecP2,
-				     NewFirst, ParSol)){
+  if (RecP1 || RecRst1 || RecP2 || RecRst2)
+  {
+    if (!TheWalk.PerformFirstSection(Func,
+                                     FInv1,
+                                     FInvP1,
+                                     FInv2,
+                                     FInvP2,
+                                     PFirst,
+                                     Target,
+                                     Soldep,
+                                     tolapp3d,
+                                     TolGuide,
+                                     RecRst1,
+                                     RecP1,
+                                     RecRst2,
+                                     RecP2,
+                                     NewFirst,
+                                     ParSol))
+    {
 #ifdef OCCT_DEBUG
-      std::cout<<"ChFi3d_Builder::ComputeData : fail calculation first section"<<std::endl;
+      std::cout << "ChFi3d_Builder::ComputeData : fail calculation first section" << std::endl;
 #endif
       return Standard_False;
     }
   }
-  else {
+  else
+  {
     ParSol = Soldep;
   }
 
-  while (again < 2){
-    TheWalk.Perform (Func, FInv1, FInvP1, FInv2, FInvP2, NewFirst, Last,
-		     MS, tolapp3d, TolGuide, ParSol, Fleche, Appro);
+  while (again < 2)
+  {
+    TheWalk.Perform(Func,
+                    FInv1,
+                    FInvP1,
+                    FInv2,
+                    FInvP2,
+                    NewFirst,
+                    Last,
+                    MS,
+                    tolapp3d,
+                    TolGuide,
+                    ParSol,
+                    Fleche,
+                    Appro);
 
-    if (!TheWalk.IsDone()) {
+    if (!TheWalk.IsDone())
+    {
 #ifdef OCCT_DEBUG
       std::cout << "Path not done" << std::endl;
-#endif  
+#endif
       return Standard_False;
     }
-  
-    if (reverse) {
-      if (!TheWalk.Complete(Func, FInv1, FInvP1, FInv2, FInvP2, SpLast)) {
+
+    if (reverse)
+    {
+      if (!TheWalk.Complete(Func, FInv1, FInvP1, FInv2, FInvP2, SpLast))
+      {
 #ifdef OCCT_DEBUG
-	std::cout << "Not completed" << std::endl;
+        std::cout << "Not completed" << std::endl;
 #endif
       }
-    }  
-  
-
-    Lin = TheWalk.Line();
-    Nbpnt = Lin->NbPoints();
-    if (Nbpnt <= 1 && again == 0)  {
-      again++;
-#ifdef OCCT_DEBUG
-      std::cout <<"one point of path MS/50 is attempted."<<std::endl;
-#endif  
-      MS = MS/50.; Target = Targetsov;
     }
-    else if (Nbpnt<=nbptmin && again == 0)  {
+
+    Lin   = TheWalk.Line();
+    Nbpnt = Lin->NbPoints();
+    if (Nbpnt <= 1 && again == 0)
+    {
       again++;
 #ifdef OCCT_DEBUG
-      std::cout <<"Number of points is too small, the step is reduced"<<std::endl;
-#endif  
-      Standard_Real u1 = Lin->Point(1).Parameter();
-      Standard_Real u2 = Lin->Point(Nbpnt).Parameter();
-      MS = (u2-u1)/(nbptmin+1);
+      std::cout << "one point of path MS/50 is attempted." << std::endl;
+#endif
+      MS     = MS / 50.;
       Target = Targetsov;
     }
-    else if(Nbpnt<=nbptmin){
+    else if (Nbpnt <= nbptmin && again == 0)
+    {
+      again++;
 #ifdef OCCT_DEBUG
-      std::cout <<"Number of points is still too small, quit"<<std::endl;
-#endif  
+      std::cout << "Number of points is too small, the step is reduced" << std::endl;
+#endif
+      Standard_Real u1 = Lin->Point(1).Parameter();
+      Standard_Real u2 = Lin->Point(Nbpnt).Parameter();
+      MS               = (u2 - u1) / (nbptmin + 1);
+      Target           = Targetsov;
+    }
+    else if (Nbpnt <= nbptmin)
+    {
+#ifdef OCCT_DEBUG
+      std::cout << "Number of points is still too small, quit" << std::endl;
+#endif
       return Standard_False;
     }
-    else {
+    else
+    {
       again = 2;
     }
   }
 #ifdef DRAW
   ChFi3d_SettraceDRAWWALK(Standard_True);
-  if(ChFi3d_GettraceDRAWWALK()) drawline(Lin,Standard_True);
-#endif  
-  if (Forward) {
+  if (ChFi3d_GettraceDRAWWALK())
+    drawline(Lin, Standard_True);
+#endif
+  if (Forward)
+  {
     Decroch1 = TheWalk.Decroch1End();
     Decroch2 = TheWalk.Decroch2End();
   }
-  else {
+  else
+  {
     Decroch1 = TheWalk.Decroch1Start();
-    Decroch2 = TheWalk.Decroch2Start();  
+    Decroch2 = TheWalk.Decroch2Start();
   }
   Last  = Lin->Point(Nbpnt).Parameter();
   First = Lin->Point(1).Parameter();
   return Standard_True;
 }
 
-
 //=======================================================================
-//function : SimulData
-//purpose  : Heading of the path edge/face for the bypass of obstacle in simulation mode.
+// function : SimulData
+// purpose  : Heading of the path edge/face for the bypass of obstacle in simulation mode.
 //=======================================================================
 
-Standard_Boolean ChFi3d_Builder::SimulData
-(Handle(ChFiDS_SurfData)&         /*Data*/,
- const Handle(ChFiDS_ElSpine)&   HGuide,
- Handle(BRepBlend_Line)&          Lin,
- const Handle(Adaptor3d_Surface)&  S1,
- const Handle(Adaptor3d_TopolTool)& I1,
- const Handle(Adaptor3d_Surface)&  S2,
- const Handle(Adaptor2d_Curve2d)&  PC2,
- const Handle(Adaptor3d_TopolTool)& I2,
- Standard_Boolean&                Decroch,
- Blend_SurfRstFunction&           Func,
- Blend_FuncInv&                   FInv,
- Blend_SurfPointFuncInv&          FInvP,
- Blend_SurfCurvFuncInv&           FInvC,
- const Standard_Real              PFirst,
- const Standard_Real              MaxStep,
- const Standard_Real              Fleche,
- const Standard_Real              TolGuide,
- Standard_Real&                   First,
- Standard_Real&                   Last,
- const math_Vector&               Soldep,
- const Standard_Integer           NbSecMin,
- const Standard_Boolean           Inside,
- const Standard_Boolean           Appro,
- const Standard_Boolean           Forward,
- const Standard_Boolean           RecP,
- const Standard_Boolean           RecS,
- const Standard_Boolean           RecRst)
+Standard_Boolean ChFi3d_Builder::SimulData(Handle(ChFiDS_SurfData)& /*Data*/,
+                                           const Handle(ChFiDS_ElSpine)&      HGuide,
+                                           Handle(BRepBlend_Line)&            Lin,
+                                           const Handle(Adaptor3d_Surface)&   S1,
+                                           const Handle(Adaptor3d_TopolTool)& I1,
+                                           const Handle(Adaptor3d_Surface)&   S2,
+                                           const Handle(Adaptor2d_Curve2d)&   PC2,
+                                           const Handle(Adaptor3d_TopolTool)& I2,
+                                           Standard_Boolean&                  Decroch,
+                                           Blend_SurfRstFunction&             Func,
+                                           Blend_FuncInv&                     FInv,
+                                           Blend_SurfPointFuncInv&            FInvP,
+                                           Blend_SurfCurvFuncInv&             FInvC,
+                                           const Standard_Real                PFirst,
+                                           const Standard_Real                MaxStep,
+                                           const Standard_Real                Fleche,
+                                           const Standard_Real                TolGuide,
+                                           Standard_Real&                     First,
+                                           Standard_Real&                     Last,
+                                           const math_Vector&                 Soldep,
+                                           const Standard_Integer             NbSecMin,
+                                           const Standard_Boolean             Inside,
+                                           const Standard_Boolean             Appro,
+                                           const Standard_Boolean             Forward,
+                                           const Standard_Boolean             RecP,
+                                           const Standard_Boolean             RecS,
+                                           const Standard_Boolean             RecRst)
 {
-  BRepBlend_SurfRstLineBuilder TheWalk(S1,I1,S2,PC2,I2);
+  BRepBlend_SurfRstLineBuilder TheWalk(S1, I1, S2, PC2, I2);
 
   Standard_Boolean reverse = (!Forward || Inside);
-  Standard_Real SpFirst = HGuide->FirstParameter();
-  Standard_Real SpLast =  HGuide->LastParameter();
-  Standard_Real Target = SpLast;
-  if(reverse) Target = SpFirst;
+  Standard_Real    SpFirst = HGuide->FirstParameter();
+  Standard_Real    SpLast  = HGuide->LastParameter();
+  Standard_Real    Target  = SpLast;
+  if (reverse)
+    Target = SpFirst;
   Standard_Real Targetsov = Target;
-  
-  Standard_Real MS = MaxStep;
+
+  Standard_Real    MS    = MaxStep;
   Standard_Integer again = 0;
-  Standard_Integer Nbpnt = 0; 
+  Standard_Integer Nbpnt = 0;
   // the starting solution is reframed if needed.
-  math_Vector ParSol(1,3);
+  math_Vector   ParSol(1, 3);
   Standard_Real NewFirst = PFirst;
-  if(RecP || RecS || RecRst){
-    if(!TheWalk.PerformFirstSection(Func,FInv,FInvP,FInvC,PFirst,Target,Soldep,
-				    tolapp3d,tolapp2d,TolGuide,RecRst,RecP,RecS,
-				    NewFirst,ParSol)){
+  if (RecP || RecS || RecRst)
+  {
+    if (!TheWalk.PerformFirstSection(Func,
+                                     FInv,
+                                     FInvP,
+                                     FInvC,
+                                     PFirst,
+                                     Target,
+                                     Soldep,
+                                     tolapp3d,
+                                     tolapp2d,
+                                     TolGuide,
+                                     RecRst,
+                                     RecP,
+                                     RecS,
+                                     NewFirst,
+                                     ParSol))
+    {
 #ifdef OCCT_DEBUG
 
-      std::cout<<"ChFi3d_Builder::SimulData : fail calculate first section"<<std::endl;
+      std::cout << "ChFi3d_Builder::SimulData : fail calculate first section" << std::endl;
 #endif
       return Standard_False;
     }
   }
-  else {
+  else
+  {
     ParSol = Soldep;
   }
 
-  while (again < 2){
-    TheWalk.Perform (Func,FInv,FInvP,FInvC,NewFirst,Last,
-		     MS,tolapp3d,tolapp2d,TolGuide,ParSol,Fleche,Appro);
-    if (!TheWalk.IsDone()) {
+  while (again < 2)
+  {
+    TheWalk.Perform(Func,
+                    FInv,
+                    FInvP,
+                    FInvC,
+                    NewFirst,
+                    Last,
+                    MS,
+                    tolapp3d,
+                    tolapp2d,
+                    TolGuide,
+                    ParSol,
+                    Fleche,
+                    Appro);
+    if (!TheWalk.IsDone())
+    {
 #ifdef OCCT_DEBUG
       std::cout << "Path not done" << std::endl;
 #endif
       return Standard_False;
     }
-    if (reverse) {
-      if (!TheWalk.Complete(Func,FInv,FInvP,FInvC,SpLast)) {
+    if (reverse)
+    {
+      if (!TheWalk.Complete(Func, FInv, FInvP, FInvC, SpLast))
+      {
 #ifdef OCCT_DEBUG
-	std::cout << "Not completed" << std::endl;
+        std::cout << "Not completed" << std::endl;
 #endif
       }
-    }  
-    Lin = TheWalk.Line();
-    Nbpnt = Lin->NbPoints();
-    if (Nbpnt <= 1 && again == 0)  {
-      again++;
-#ifdef OCCT_DEBUG
-      std::cout <<"one point of path MS/50 is attempted."<<std::endl;
-#endif
-      MS = MS/50.; Target = Targetsov;
     }
-    else if (Nbpnt <= NbSecMin && again == 0)  {
+    Lin   = TheWalk.Line();
+    Nbpnt = Lin->NbPoints();
+    if (Nbpnt <= 1 && again == 0)
+    {
       again++;
 #ifdef OCCT_DEBUG
-      std::cout <<"Number of points is too small, the step is reduced"<<std::endl;
+      std::cout << "one point of path MS/50 is attempted." << std::endl;
+#endif
+      MS     = MS / 50.;
+      Target = Targetsov;
+    }
+    else if (Nbpnt <= NbSecMin && again == 0)
+    {
+      again++;
+#ifdef OCCT_DEBUG
+      std::cout << "Number of points is too small, the step is reduced" << std::endl;
 #endif
       Standard_Real u1 = Lin->Point(1).Parameter();
       Standard_Real u2 = Lin->Point(Nbpnt).Parameter();
-      MS = (u2-u1)/(NbSecMin+1);
-      Target = Targetsov;
+      MS               = (u2 - u1) / (NbSecMin + 1);
+      Target           = Targetsov;
     }
-    else if(Nbpnt<=NbSecMin){
+    else if (Nbpnt <= NbSecMin)
+    {
 #ifdef OCCT_DEBUG
-      std::cout <<"Number of points is still too small, quit"<<std::endl;
+      std::cout << "Number of points is still too small, quit" << std::endl;
 #endif
       return Standard_False;
     }
-    else {
+    else
+    {
       again = 2;
     }
   }
 #ifdef DRAW
   ChFi3d_SettraceDRAWWALK(Standard_True);
-  if(ChFi3d_GettraceDRAWWALK()) drawline(Lin,Standard_True);
-#endif  
-  if(Forward) Decroch = TheWalk.DecrochEnd();
-  else Decroch = TheWalk.DecrochStart();
-  Last = Lin->Point(Nbpnt).Parameter();
+  if (ChFi3d_GettraceDRAWWALK())
+    drawline(Lin, Standard_True);
+#endif
+  if (Forward)
+    Decroch = TheWalk.DecrochEnd();
+  else
+    Decroch = TheWalk.DecrochStart();
+  Last  = Lin->Point(Nbpnt).Parameter();
   First = Lin->Point(1).Parameter();
   return Standard_True;
 }
 
-
 //=======================================================================
-//function : SimulData
-//purpose  : Heading of path edge/edge for the bypass
+// function : SimulData
+// purpose  : Heading of path edge/edge for the bypass
 //           of obstacle in simulation mode.
 //=======================================================================
 
-Standard_Boolean ChFi3d_Builder::SimulData
-(Handle(ChFiDS_SurfData)&         /*Data*/,
- const Handle(ChFiDS_ElSpine)&   HGuide,
- Handle(BRepBlend_Line)&          Lin,
- const Handle(Adaptor3d_Surface)&  S1,
- const Handle(Adaptor2d_Curve2d)&  PC1,
- const Handle(Adaptor3d_TopolTool)& I1,
- Standard_Boolean&                Decroch1,
- const Handle(Adaptor3d_Surface)&  S2,
- const Handle(Adaptor2d_Curve2d)&  PC2,
- const Handle(Adaptor3d_TopolTool)& I2,
- Standard_Boolean&                Decroch2,
- Blend_RstRstFunction&            Func,
- Blend_SurfCurvFuncInv&           FInv1,
- Blend_CurvPointFuncInv&          FInvP1,
- Blend_SurfCurvFuncInv&           FInv2,
- Blend_CurvPointFuncInv&          FInvP2,
- const Standard_Real              PFirst,
- const Standard_Real              MaxStep,
- const Standard_Real              Fleche,
- const Standard_Real              TolGuide,
- Standard_Real&                   First,
- Standard_Real&                   Last,
- const math_Vector&               Soldep,
- const Standard_Integer           NbSecMin,
- const Standard_Boolean           Inside,
- const Standard_Boolean           Appro,
- const Standard_Boolean           Forward,
- const Standard_Boolean           RecP1,
- const Standard_Boolean           RecRst1,
- const Standard_Boolean           RecP2,
- const Standard_Boolean           RecRst2)
+Standard_Boolean ChFi3d_Builder::SimulData(Handle(ChFiDS_SurfData)& /*Data*/,
+                                           const Handle(ChFiDS_ElSpine)&      HGuide,
+                                           Handle(BRepBlend_Line)&            Lin,
+                                           const Handle(Adaptor3d_Surface)&   S1,
+                                           const Handle(Adaptor2d_Curve2d)&   PC1,
+                                           const Handle(Adaptor3d_TopolTool)& I1,
+                                           Standard_Boolean&                  Decroch1,
+                                           const Handle(Adaptor3d_Surface)&   S2,
+                                           const Handle(Adaptor2d_Curve2d)&   PC2,
+                                           const Handle(Adaptor3d_TopolTool)& I2,
+                                           Standard_Boolean&                  Decroch2,
+                                           Blend_RstRstFunction&              Func,
+                                           Blend_SurfCurvFuncInv&             FInv1,
+                                           Blend_CurvPointFuncInv&            FInvP1,
+                                           Blend_SurfCurvFuncInv&             FInv2,
+                                           Blend_CurvPointFuncInv&            FInvP2,
+                                           const Standard_Real                PFirst,
+                                           const Standard_Real                MaxStep,
+                                           const Standard_Real                Fleche,
+                                           const Standard_Real                TolGuide,
+                                           Standard_Real&                     First,
+                                           Standard_Real&                     Last,
+                                           const math_Vector&                 Soldep,
+                                           const Standard_Integer             NbSecMin,
+                                           const Standard_Boolean             Inside,
+                                           const Standard_Boolean             Appro,
+                                           const Standard_Boolean             Forward,
+                                           const Standard_Boolean             RecP1,
+                                           const Standard_Boolean             RecRst1,
+                                           const Standard_Boolean             RecP2,
+                                           const Standard_Boolean             RecRst2)
 {
   BRepBlend_RstRstLineBuilder TheWalk(S1, PC1, I1, S2, PC2, I2);
 
   Standard_Boolean reverse = (!Forward || Inside);
-  Standard_Real SpFirst = HGuide->FirstParameter();
-  Standard_Real SpLast =  HGuide->LastParameter();
-  Standard_Real Target = SpLast;
-  if(reverse) Target = SpFirst;
+  Standard_Real    SpFirst = HGuide->FirstParameter();
+  Standard_Real    SpLast  = HGuide->LastParameter();
+  Standard_Real    Target  = SpLast;
+  if (reverse)
+    Target = SpFirst;
   Standard_Real Targetsov = Target;
-  
-  Standard_Real MS = MaxStep;
+
+  Standard_Real    MS    = MaxStep;
   Standard_Integer again = 0;
-  Standard_Integer Nbpnt = 0; 
+  Standard_Integer Nbpnt = 0;
   // The initial solution is reframed if necessary.
-  math_Vector ParSol(1,2);
+  math_Vector   ParSol(1, 2);
   Standard_Real NewFirst = PFirst;
-  if (RecP1 || RecRst1 || RecP2 || RecRst2) {
-    if(!TheWalk.PerformFirstSection(Func, FInv1, FInvP1, FInv2, FInvP2, PFirst, Target, Soldep,
-              tolapp3d, TolGuide, RecRst1, RecP1, RecRst2, RecP2,
-				    NewFirst,ParSol)){
+  if (RecP1 || RecRst1 || RecP2 || RecRst2)
+  {
+    if (!TheWalk.PerformFirstSection(Func,
+                                     FInv1,
+                                     FInvP1,
+                                     FInv2,
+                                     FInvP2,
+                                     PFirst,
+                                     Target,
+                                     Soldep,
+                                     tolapp3d,
+                                     TolGuide,
+                                     RecRst1,
+                                     RecP1,
+                                     RecRst2,
+                                     RecP2,
+                                     NewFirst,
+                                     ParSol))
+    {
 #ifdef OCCT_DEBUG
 
-      std::cout<<"ChFi3d_Builder::SimulData : calculation fail first section"<<std::endl;
+      std::cout << "ChFi3d_Builder::SimulData : calculation fail first section" << std::endl;
 #endif
       return Standard_False;
     }
   }
-  else {
+  else
+  {
     ParSol = Soldep;
   }
 
-  while (again < 2){
-    TheWalk.Perform (Func, FInv1, FInvP1, FInv2, FInvP2, NewFirst, Last,
-		     MS, tolapp3d, TolGuide, ParSol, Fleche, Appro);
-    if (!TheWalk.IsDone()) {
+  while (again < 2)
+  {
+    TheWalk.Perform(Func,
+                    FInv1,
+                    FInvP1,
+                    FInv2,
+                    FInvP2,
+                    NewFirst,
+                    Last,
+                    MS,
+                    tolapp3d,
+                    TolGuide,
+                    ParSol,
+                    Fleche,
+                    Appro);
+    if (!TheWalk.IsDone())
+    {
 #ifdef OCCT_DEBUG
       std::cout << "Path not created" << std::endl;
 #endif
       return Standard_False;
     }
-    if (reverse) {
-      if (!TheWalk.Complete(Func, FInv1, FInvP1, FInv2, FInvP2, SpLast)) {
+    if (reverse)
+    {
+      if (!TheWalk.Complete(Func, FInv1, FInvP1, FInv2, FInvP2, SpLast))
+      {
 #ifdef OCCT_DEBUG
-	std::cout << "Not completed" << std::endl;
+        std::cout << "Not completed" << std::endl;
 #endif
       }
-    }  
-    Lin = TheWalk.Line();
-    Nbpnt = Lin->NbPoints();
-    if (Nbpnt <= 1 && again == 0)  {
-      again++;
-#ifdef OCCT_DEBUG
-      std::cout <<"only one point of path MS/50 is attempted."<<std::endl;
-#endif
-      MS = MS/50.; Target = Targetsov;
     }
-    else if (Nbpnt <= NbSecMin && again == 0)  {
+    Lin   = TheWalk.Line();
+    Nbpnt = Lin->NbPoints();
+    if (Nbpnt <= 1 && again == 0)
+    {
       again++;
 #ifdef OCCT_DEBUG
-      std::cout <<"Number of points is too small, the step is reduced"<<std::endl;
+      std::cout << "only one point of path MS/50 is attempted." << std::endl;
+#endif
+      MS     = MS / 50.;
+      Target = Targetsov;
+    }
+    else if (Nbpnt <= NbSecMin && again == 0)
+    {
+      again++;
+#ifdef OCCT_DEBUG
+      std::cout << "Number of points is too small, the step is reduced" << std::endl;
 #endif
       Standard_Real u1 = Lin->Point(1).Parameter();
       Standard_Real u2 = Lin->Point(Nbpnt).Parameter();
-      MS = (u2-u1)/(NbSecMin+1);
-      Target = Targetsov;
+      MS               = (u2 - u1) / (NbSecMin + 1);
+      Target           = Targetsov;
     }
-    else if(Nbpnt<=NbSecMin){
+    else if (Nbpnt <= NbSecMin)
+    {
 #ifdef OCCT_DEBUG
-      std::cout <<"Number of points is still too small, quit"<<std::endl;
+      std::cout << "Number of points is still too small, quit" << std::endl;
 #endif
       return Standard_False;
     }
-    else {
+    else
+    {
       again = 2;
     }
   }
 #ifdef DRAW
-  if(ChFi3d_GettraceDRAWWALK()) drawline(Lin,Standard_True);
+  if (ChFi3d_GettraceDRAWWALK())
+    drawline(Lin, Standard_True);
 #endif
-  if (Forward) {
+  if (Forward)
+  {
     Decroch1 = TheWalk.Decroch1End();
     Decroch2 = TheWalk.Decroch2End();
   }
-  else {
+  else
+  {
     Decroch1 = TheWalk.Decroch1Start();
-    Decroch2 = TheWalk.Decroch2Start();  
-  }  
+    Decroch2 = TheWalk.Decroch2Start();
+  }
 
-  Last = Lin->Point(Nbpnt).Parameter();
+  Last  = Lin->Point(Nbpnt).Parameter();
   First = Lin->Point(1).Parameter();
   return Standard_True;
 }
 
-
-
-
 //=======================================================================
-//function : ComputeData
-//purpose  : Construction of elementary fillet by path.
+// function : ComputeData
+// purpose  : Construction of elementary fillet by path.
 //
 //=======================================================================
 
-Standard_Boolean ChFi3d_Builder::ComputeData
-(Handle(ChFiDS_SurfData)& Data,
- const Handle(ChFiDS_ElSpine)& HGuide,
- const Handle(ChFiDS_Spine)& Spine,
- Handle(BRepBlend_Line)& Lin,
- const Handle(Adaptor3d_Surface)& S1,
- const Handle(Adaptor3d_TopolTool)& I1,
- const Handle(Adaptor3d_Surface)& S2,
- const Handle(Adaptor3d_TopolTool)& I2,
- Blend_Function& Func,
- Blend_FuncInv& FInv,
- const Standard_Real PFirst,
- const Standard_Real MaxStep,
- const Standard_Real Fleche,
- const Standard_Real tolguide,
- Standard_Real& First,
- Standard_Real& Last,
- const Standard_Boolean Inside,
- const Standard_Boolean Appro,
- const Standard_Boolean Forward,
- const math_Vector& Soldep,
- Standard_Integer& intf,
- Standard_Integer& intl,
- Standard_Boolean& Gd1,
- Standard_Boolean& Gd2,
- Standard_Boolean& Gf1,
- Standard_Boolean& Gf2,
- const Standard_Boolean RecOnS1,
- const Standard_Boolean RecOnS2)
+Standard_Boolean ChFi3d_Builder::ComputeData(Handle(ChFiDS_SurfData)&           Data,
+                                             const Handle(ChFiDS_ElSpine)&      HGuide,
+                                             const Handle(ChFiDS_Spine)&        Spine,
+                                             Handle(BRepBlend_Line)&            Lin,
+                                             const Handle(Adaptor3d_Surface)&   S1,
+                                             const Handle(Adaptor3d_TopolTool)& I1,
+                                             const Handle(Adaptor3d_Surface)&   S2,
+                                             const Handle(Adaptor3d_TopolTool)& I2,
+                                             Blend_Function&                    Func,
+                                             Blend_FuncInv&                     FInv,
+                                             const Standard_Real                PFirst,
+                                             const Standard_Real                MaxStep,
+                                             const Standard_Real                Fleche,
+                                             const Standard_Real                tolguide,
+                                             Standard_Real&                     First,
+                                             Standard_Real&                     Last,
+                                             const Standard_Boolean             Inside,
+                                             const Standard_Boolean             Appro,
+                                             const Standard_Boolean             Forward,
+                                             const math_Vector&                 Soldep,
+                                             Standard_Integer&                  intf,
+                                             Standard_Integer&                  intl,
+                                             Standard_Boolean&                  Gd1,
+                                             Standard_Boolean&                  Gd2,
+                                             Standard_Boolean&                  Gf1,
+                                             Standard_Boolean&                  Gf2,
+                                             const Standard_Boolean             RecOnS1,
+                                             const Standard_Boolean             RecOnS2)
 {
-  //Get offset guide if exists
+  // Get offset guide if exists
   Handle(ChFiDS_ElSpine) OffsetHGuide;
-  if (!Spine.IsNull() &&
-      Spine->Mode() == ChFiDS_ConstThroatWithPenetrationChamfer)
+  if (!Spine.IsNull() && Spine->Mode() == ChFiDS_ConstThroatWithPenetrationChamfer)
   {
-    ChFiDS_ListOfHElSpine& ll = Spine->ChangeElSpines();
-    ChFiDS_ListOfHElSpine& ll_offset = Spine->ChangeOffsetElSpines();
+    ChFiDS_ListOfHElSpine&              ll        = Spine->ChangeElSpines();
+    ChFiDS_ListOfHElSpine&              ll_offset = Spine->ChangeOffsetElSpines();
     ChFiDS_ListIteratorOfListOfHElSpine ILES(ll), ILES_offset(ll_offset);
-    for ( ; ILES.More(); ILES.Next(),ILES_offset.Next())
+    for (; ILES.More(); ILES.Next(), ILES_offset.Next())
     {
       const Handle(ChFiDS_ElSpine)& aHElSpine = ILES.Value();
       if (aHElSpine == HGuide)
         OffsetHGuide = ILES_offset.Value();
     }
   }
-  
-  //The extrensions are created in case of output of two domains
-  //directly and not by path ( too hasardous ).
+
+  // The extrensions are created in case of output of two domains
+  // directly and not by path ( too hasardous ).
   Data->FirstExtensionValue(0);
-  Data-> LastExtensionValue(0);
+  Data->LastExtensionValue(0);
 
-  //The eventual faces are restored to test the jump of edge.
-  TopoDS_Face F1, F2;
-  Handle(BRepAdaptor_Surface) HS = Handle(BRepAdaptor_Surface)::DownCast(S1); 
-  if(!HS.IsNull()) F1 = HS->Face();
-  HS = Handle(BRepAdaptor_Surface)::DownCast(S2); 
-  if(!HS.IsNull()) F2 = HS->Face();
-  
+  // The eventual faces are restored to test the jump of edge.
+  TopoDS_Face                 F1, F2;
+  Handle(BRepAdaptor_Surface) HS = Handle(BRepAdaptor_Surface)::DownCast(S1);
+  if (!HS.IsNull())
+    F1 = HS->Face();
+  HS = Handle(BRepAdaptor_Surface)::DownCast(S2);
+  if (!HS.IsNull())
+    F2 = HS->Face();
+
   // Path framing variables
-  Standard_Real TolGuide=tolguide;
-  Standard_Integer nbptmin = 4;
+  Standard_Real    TolGuide = tolguide;
+  Standard_Integer nbptmin  = 4;
 
-  BRepBlend_Walking TheWalk(S1,S2,I1,I2,HGuide);
+  BRepBlend_Walking TheWalk(S1, S2, I1, I2, HGuide);
 
-  //Start of removal, 2D path controls 
-  //that qui s'accomodent mal des surfaces a parametrages non homogenes
-  //en u et en v are extinguished.
+  // Start of removal, 2D path controls
+  // that qui s'accomodent mal des surfaces a parametrages non homogenes
+  // en u et en v are extinguished.
   TheWalk.Check2d(0);
-  
-  Standard_Real MS = MaxStep;
-  Standard_Integer Nbpnt;
-  Standard_Real SpFirst = HGuide->FirstParameter();
-  Standard_Real SpLast =  HGuide->LastParameter();
 
-  // When the start point is inside, the path goes first to the left  
+  Standard_Real    MS = MaxStep;
+  Standard_Integer Nbpnt;
+  Standard_Real    SpFirst = HGuide->FirstParameter();
+  Standard_Real    SpLast  = HGuide->LastParameter();
+
+  // When the start point is inside, the path goes first to the left
   // to determine the Last for the periodicals.
   Standard_Boolean reverse = (!Forward || Inside);
-  Standard_Real Target;
-  if(reverse){
+  Standard_Real    Target;
+  if (reverse)
+  {
     Target = SpFirst;
-    if(!intf) Target = Last;
+    if (!intf)
+      Target = Last;
   }
-  else{
+  else
+  {
     Target = SpLast + Abs(SpLast);
-    if(!intl) Target = Last;
+    if (!intl)
+      Target = Last;
   }
 
   // In case if the singularity is pre-determined,
   // the path is indicated.
-  if (!Spine.IsNull()){
-    if (Spine->IsTangencyExtremity(Standard_True)) {
-      TopoDS_Vertex V = Spine->FirstVertex();
-      TopoDS_Edge E = Spine->Edges(1);
-      Standard_Real param =  Spine->FirstParameter();
-      Blend_Point BP;
-      if (CompBlendPoint(V, E, param, F1, F2, BP)) {
-	math_Vector vec(1,4);
-	BP.ParametersOnS1(vec(1),vec(2));
-	BP.ParametersOnS2(vec(3),vec(4));
-	Func.Set(param);
-	if (Func.IsSolution(vec, tolapp3d)) {
-	  TheWalk.AddSingularPoint(BP);
-	}
+  if (!Spine.IsNull())
+  {
+    if (Spine->IsTangencyExtremity(Standard_True))
+    {
+      TopoDS_Vertex V     = Spine->FirstVertex();
+      TopoDS_Edge   E     = Spine->Edges(1);
+      Standard_Real param = Spine->FirstParameter();
+      Blend_Point   BP;
+      if (CompBlendPoint(V, E, param, F1, F2, BP))
+      {
+        math_Vector vec(1, 4);
+        BP.ParametersOnS1(vec(1), vec(2));
+        BP.ParametersOnS2(vec(3), vec(4));
+        Func.Set(param);
+        if (Func.IsSolution(vec, tolapp3d))
+        {
+          TheWalk.AddSingularPoint(BP);
+        }
       }
     }
-    if (Spine->IsTangencyExtremity(Standard_False)) {
-      TopoDS_Vertex V = Spine->LastVertex();
-      TopoDS_Edge E = Spine->Edges( Spine->NbEdges()); 
-      Standard_Real param =  Spine->LastParameter();
-      Blend_Point BP;
-      if (CompBlendPoint(V, E, param, F1, F2, BP)) {
-	math_Vector vec(1,4);
-	BP.ParametersOnS1(vec(1),vec(2));
-	BP.ParametersOnS2(vec(3),vec(4));
-	Func.Set(param);
-	if (Func.IsSolution(vec, tolapp3d)) {
-	  TheWalk.AddSingularPoint(BP);
-	}
+    if (Spine->IsTangencyExtremity(Standard_False))
+    {
+      TopoDS_Vertex V     = Spine->LastVertex();
+      TopoDS_Edge   E     = Spine->Edges(Spine->NbEdges());
+      Standard_Real param = Spine->LastParameter();
+      Blend_Point   BP;
+      if (CompBlendPoint(V, E, param, F1, F2, BP))
+      {
+        math_Vector vec(1, 4);
+        BP.ParametersOnS1(vec(1), vec(2));
+        BP.ParametersOnS2(vec(3), vec(4));
+        Func.Set(param);
+        if (Func.IsSolution(vec, tolapp3d))
+        {
+          TheWalk.AddSingularPoint(BP);
+        }
       }
     }
   }
 
-  //The starting solution is reframed if necessary.
+  // The starting solution is reframed if necessary.
   //**********************************************//
-  math_Vector ParSol(1,4);
+  math_Vector   ParSol(1, 4);
   Standard_Real NewFirst = PFirst;
-  if(RecOnS1 || RecOnS2){
-    if(!TheWalk.PerformFirstSection(Func,FInv,PFirst,Target,Soldep,
-				    tolapp3d,TolGuide,RecOnS1,RecOnS2,
-				    NewFirst,ParSol)){
+  if (RecOnS1 || RecOnS2)
+  {
+    if (!TheWalk.PerformFirstSection(Func,
+                                     FInv,
+                                     PFirst,
+                                     Target,
+                                     Soldep,
+                                     tolapp3d,
+                                     TolGuide,
+                                     RecOnS1,
+                                     RecOnS2,
+                                     NewFirst,
+                                     ParSol))
+    {
 #ifdef OCCT_DEBUG
-      std::cout<<"ChFi3d_Builder::ComputeData : calculation fail first section"<<std::endl;
+      std::cout << "ChFi3d_Builder::ComputeData : calculation fail first section" << std::endl;
 #endif
       return Standard_False;
     }
   }
-  else {
+  else
+  {
     ParSol = Soldep;
   }
 
-  //First the valid part is calculate, without caring for the extensions.
+  // First the valid part is calculate, without caring for the extensions.
   //******************************************************************//
-  Standard_Integer again = 0;
+  Standard_Integer again      = 0;
   Standard_Boolean tchernobyl = 0;
-  Standard_Real u1sov = 0., u2sov = 0.;
-  TopoDS_Face bif;
-  //Max step is relevant, but too great, the vector is required to detect
-  //the twists.
-  if( (Abs(Last-First) <= MS * 5.) &&
-      (Abs(Last-First) >= 0.01*Abs(NewFirst-Target)) ){ 
-    MS = Abs(Last-First)*0.2; 
+  Standard_Real    u1sov = 0., u2sov = 0.;
+  TopoDS_Face      bif;
+  // Max step is relevant, but too great, the vector is required to detect
+  // the twists.
+  if ((Abs(Last - First) <= MS * 5.) && (Abs(Last - First) >= 0.01 * Abs(NewFirst - Target)))
+  {
+    MS = Abs(Last - First) * 0.2;
   }
 
-  while(again < 3){
-    //Path. 
-    if(!again && (MS < 5*TolGuide)) MS = 5*TolGuide;
-    else {
-      if (5*TolGuide > MS) TolGuide = MS/5;
+  while (again < 3)
+  {
+    // Path.
+    if (!again && (MS < 5 * TolGuide))
+      MS = 5 * TolGuide;
+    else
+    {
+      if (5 * TolGuide > MS)
+        TolGuide = MS / 5;
     }
-    TheWalk.Perform(Func,FInv,NewFirst,Target,MS,tolapp3d,TolGuide,
-		    ParSol,Fleche,Appro);
-    if (!TheWalk.IsDone()) {
+    TheWalk.Perform(Func, FInv, NewFirst, Target, MS, tolapp3d, TolGuide, ParSol, Fleche, Appro);
+    if (!TheWalk.IsDone())
+    {
 #ifdef OCCT_DEBUG
       std::cout << "Path is not created" << std::endl;
 #endif
       return Standard_False;
     }
     Lin = TheWalk.Line();
-    if(HGuide->IsPeriodic() && Inside) {
+    if (HGuide->IsPeriodic() && Inside)
+    {
       SpFirst = Lin->Point(1).Parameter();
       SpLast  = SpFirst + HGuide->Period();
       HGuide->FirstParameter(SpFirst);
-      HGuide->LastParameter (SpLast );
+      HGuide->LastParameter(SpLast);
       HGuide->SetOrigin(SpFirst);
       if (!OffsetHGuide.IsNull())
       {
         OffsetHGuide->FirstParameter(SpFirst);
-        OffsetHGuide->LastParameter (SpLast );
+        OffsetHGuide->LastParameter(SpLast);
         OffsetHGuide->SetOrigin(SpFirst);
       }
     }
     Standard_Boolean complmnt = Standard_True;
-    if (Inside)  complmnt = TheWalk.Complete(Func,FInv,SpLast);
-    if(!complmnt){
+    if (Inside)
+      complmnt = TheWalk.Complete(Func, FInv, SpLast);
+    if (!complmnt)
+    {
 #ifdef OCCT_DEBUG
       std::cout << "Not completed" << std::endl;
 #endif
       return Standard_False;
     }
-    
-    //The result is controlled using two criterions :
+
+    // The result is controlled using two criterions :
     //- if there is enough points,
     //- if one has gone far enough.
     Nbpnt = Lin->NbPoints();
-    if (Nbpnt == 0){
+    if (Nbpnt == 0)
+    {
 #ifdef OCCT_DEBUG
-      std::cout <<"0 point of path, quit."<<std::endl;
+      std::cout << "0 point of path, quit." << std::endl;
 #endif
       return Standard_False;
     }
     Standard_Real fpointpar = Lin->Point(1).Parameter();
     Standard_Real lpointpar = Lin->Point(Nbpnt).Parameter();
-    
-    Standard_Real factor =  1./(nbptmin + 1);
-    Standard_Boolean okdeb = (Forward && !Inside);  
-    Standard_Boolean okfin = (!Forward && !Inside);
-    if(!okdeb){
+
+    Standard_Real    factor = 1. / (nbptmin + 1);
+    Standard_Boolean okdeb  = (Forward && !Inside);
+    Standard_Boolean okfin  = (!Forward && !Inside);
+    if (!okdeb)
+    {
       Standard_Integer narc1 = Lin->StartPointOnFirst().NbPointOnRst();
       Standard_Integer narc2 = Lin->StartPointOnSecond().NbPointOnRst();
-      okdeb = (narc1 > 0 || narc2 > 0 || (fpointpar-First) < 10*TolGuide); 
+      okdeb                  = (narc1 > 0 || narc2 > 0 || (fpointpar - First) < 10 * TolGuide);
     }
-    if(!okfin){
+    if (!okfin)
+    {
       Standard_Integer narc1 = Lin->EndPointOnFirst().NbPointOnRst();
       Standard_Integer narc2 = Lin->EndPointOnSecond().NbPointOnRst();
-      okfin = (narc1 > 0 || narc2 > 0 || (Last-lpointpar) < 10*TolGuide);
+      okfin                  = (narc1 > 0 || narc2 > 0 || (Last - lpointpar) < 10 * TolGuide);
     }
-    if(!okdeb || !okfin || Nbpnt == 1){
-      //It drags, the controls are extended, it is  expected to evaluate a
-      //satisfactory maximum step. If it already done, quit.
-      if(tchernobyl){
+    if (!okdeb || !okfin || Nbpnt == 1)
+    {
+      // It drags, the controls are extended, it is  expected to evaluate a
+      // satisfactory maximum step. If it already done, quit.
+      if (tchernobyl)
+      {
 #ifdef OCCT_DEBUG
-	std::cout <<"If it drags without control, quit."<<std::endl;
+        std::cout << "If it drags without control, quit." << std::endl;
 #endif
-	return Standard_False;
+        return Standard_False;
       }
       tchernobyl = Standard_True;
       TheWalk.Check(0);
-      if (Nbpnt == 1){
+      if (Nbpnt == 1)
+      {
 #ifdef OCCT_DEBUG
-	std::cout <<"only one point of path MS/100 is attempted"<<std::endl;
-	std::cout <<"and the controls are extended."<<std::endl;
+        std::cout << "only one point of path MS/100 is attempted" << std::endl;
+        std::cout << "and the controls are extended." << std::endl;
 #endif
-	MS *= 0.01;
+        MS *= 0.01;
       }
-      else{
+      else
+      {
 #ifdef OCCT_DEBUG
-	std::cout <<"It drags, the controls are extended."<<std::endl;
+        std::cout << "It drags, the controls are extended." << std::endl;
 #endif
-	MS = (lpointpar-fpointpar)/Nbpnt; //EvalStep(Lin);
+        MS = (lpointpar - fpointpar) / Nbpnt; // EvalStep(Lin);
       }
     }
-    else if (Nbpnt < nbptmin){
-      if(again == 0){
+    else if (Nbpnt < nbptmin)
+    {
+      if (again == 0)
+      {
 #ifdef OCCT_DEBUG
-	std::cout <<"Number of points is too small, the step is reduced"<<std::endl;
+        std::cout << "Number of points is too small, the step is reduced" << std::endl;
 #endif
-	u1sov = fpointpar;
-	u2sov = lpointpar;
-	MS = (lpointpar - fpointpar) * factor;
+        u1sov = fpointpar;
+        u2sov = lpointpar;
+        MS    = (lpointpar - fpointpar) * factor;
       }
-      else if(again == 1){
-	if(Abs(fpointpar-u1sov)>=TolGuide || 
-	   Abs(lpointpar-u2sov)>=TolGuide){
+      else if (again == 1)
+      {
+        if (Abs(fpointpar - u1sov) >= TolGuide || Abs(lpointpar - u2sov) >= TolGuide)
+        {
 #ifdef OCCT_DEBUG
-	  std::cout <<"Number of points is still too small, the step is reduced"<<std::endl;
-#endif  
-	  MS = (lpointpar - fpointpar) * factor;
-	}
-	else{
+          std::cout << "Number of points is still too small, the step is reduced" << std::endl;
+#endif
+          MS = (lpointpar - fpointpar) * factor;
+        }
+        else
+        {
 #ifdef OCCT_DEBUG
-	  std::cout <<"Number of points is still too small, quit"<<std::endl;
-#endif  
-	  return Standard_False;
-	}
+          std::cout << "Number of points is still too small, quit" << std::endl;
+#endif
+          return Standard_False;
+        }
       }
       again++;
     }
-    else {
+    else
+    {
       again = 3;
     }
   }
 
-  if(TheWalk.TwistOnS1()){
+  if (TheWalk.TwistOnS1())
+  {
     Data->TwistOnS1(Standard_True);
 #ifdef OCCT_DEBUG
-    std::cout<<"Path completed, but TWIST on S1"<<std::endl;
+    std::cout << "Path completed, but TWIST on S1" << std::endl;
 #endif
   }
-  if(TheWalk.TwistOnS2()){
+  if (TheWalk.TwistOnS2())
+  {
     Data->TwistOnS2(Standard_True);
 #ifdef OCCT_DEBUG
-    std::cout<<"Parh completed, but TWIST on S2"<<std::endl;
+    std::cout << "Parh completed, but TWIST on S2" << std::endl;
 #endif
   }
 
-
-  //Here there is a more or less presentable result 
-  //however it covers a the minimum zone.
-  //The extensions are targeted.
+  // Here there is a more or less presentable result
+  // however it covers a the minimum zone.
+  // The extensions are targeted.
   //*****************************//
 
   Gd1 = Gd2 = Gf1 = Gf2 = Standard_False;
-  
+
   Standard_Boolean unseulsuffitdeb = (intf >= 2);
   Standard_Boolean unseulsuffitfin = (intl >= 2);
-  Standard_Boolean noproldeb = (intf >= 3);
-  Standard_Boolean noprolfin = (intl >= 3);
+  Standard_Boolean noproldeb       = (intf >= 3);
+  Standard_Boolean noprolfin       = (intl >= 3);
 
-  Standard_Real Rab = 0.03*(SpLast-SpFirst);
+  Standard_Real Rab = 0.03 * (SpLast - SpFirst);
 
   Standard_Boolean debarc1 = 0, debarc2 = 0;
   Standard_Boolean debcas1 = 0, debcas2 = 0;
@@ -1770,490 +2039,607 @@ Standard_Boolean ChFi3d_Builder::ComputeData
   Standard_Integer narc1, narc2;
 
   Standard_Boolean backwContinueFailed = Standard_False; // eap
-  if(reverse && intf) {
+  if (reverse && intf)
+  {
     narc1 = Lin->StartPointOnFirst().NbPointOnRst();
     narc2 = Lin->StartPointOnSecond().NbPointOnRst();
-    if(narc1 != 0) {
-      ChFi3d_FilCommonPoint(Lin->StartPointOnFirst(),Lin->TransitionOnS1(),
-			    Standard_True, Data->ChangeVertexFirstOnS1(), tolapp3d);
+    if (narc1 != 0)
+    {
+      ChFi3d_FilCommonPoint(Lin->StartPointOnFirst(),
+                            Lin->TransitionOnS1(),
+                            Standard_True,
+                            Data->ChangeVertexFirstOnS1(),
+                            tolapp3d);
       debarc1 = Standard_True;
-      if(!SearchFace(Spine,Data->VertexFirstOnS1(),F1,bif)){
-	//It is checked if there is not an obstacle.
-	debcas1 = Standard_True;
-	if(!Spine.IsNull()){
-	  if(Spine->IsPeriodic()){
-	    debobst1 = 1;
-	  }
-	  else{
-	    debobst1 = IsObst(Data->VertexFirstOnS1(),
-			      Spine->FirstVertex(),myVEMap);
-	  }
-	}
+      if (!SearchFace(Spine, Data->VertexFirstOnS1(), F1, bif))
+      {
+        // It is checked if there is not an obstacle.
+        debcas1 = Standard_True;
+        if (!Spine.IsNull())
+        {
+          if (Spine->IsPeriodic())
+          {
+            debobst1 = 1;
+          }
+          else
+          {
+            debobst1 = IsObst(Data->VertexFirstOnS1(), Spine->FirstVertex(), myVEMap);
+          }
+        }
       }
     }
-    if(narc2 != 0){
-      ChFi3d_FilCommonPoint(Lin->StartPointOnSecond(),Lin->TransitionOnS2(),
-			    Standard_True, Data->ChangeVertexFirstOnS2(),tolapp3d);
+    if (narc2 != 0)
+    {
+      ChFi3d_FilCommonPoint(Lin->StartPointOnSecond(),
+                            Lin->TransitionOnS2(),
+                            Standard_True,
+                            Data->ChangeVertexFirstOnS2(),
+                            tolapp3d);
       debarc2 = Standard_True;
-      if(!SearchFace(Spine,Data->VertexFirstOnS2(),F2,bif)){
-	//It is checked if it is not an obstacle.
-	debcas2 = Standard_True;
-	if(!Spine.IsNull()){
-	  if(Spine->IsPeriodic()){
-	    debobst2 = 1;
-	  }
-	  else{
-	    debobst2 = IsObst(Data->VertexFirstOnS2(),
-			      Spine->FirstVertex(),myVEMap);
-	  }
-	}
+      if (!SearchFace(Spine, Data->VertexFirstOnS2(), F2, bif))
+      {
+        // It is checked if it is not an obstacle.
+        debcas2 = Standard_True;
+        if (!Spine.IsNull())
+        {
+          if (Spine->IsPeriodic())
+          {
+            debobst2 = 1;
+          }
+          else
+          {
+            debobst2 = IsObst(Data->VertexFirstOnS2(), Spine->FirstVertex(), myVEMap);
+          }
+        }
       }
     }
     Standard_Boolean oncontinue = !noproldeb && (narc1 != 0 || narc2 != 0);
-    if(debobst1 || debobst2) oncontinue = Standard_False;
-    else if(debcas1 && debcas2) oncontinue = Standard_False;
-    else if((!debcas1 && debarc1) || (!debcas2 && debarc2)) oncontinue = Standard_False;
+    if (debobst1 || debobst2)
+      oncontinue = Standard_False;
+    else if (debcas1 && debcas2)
+      oncontinue = Standard_False;
+    else if ((!debcas1 && debarc1) || (!debcas2 && debarc2))
+      oncontinue = Standard_False;
 
-    if(oncontinue) {
+    if (oncontinue)
+    {
       TheWalk.ClassificationOnS1(!debarc1);
       TheWalk.ClassificationOnS2(!debarc2);
       TheWalk.Check2d(Standard_True); // It should be strict (PMN)
-      TheWalk.Continu(Func,FInv,Target);
+      TheWalk.Continu(Func, FInv, Target);
       TheWalk.ClassificationOnS1(Standard_True);
       TheWalk.ClassificationOnS2(Standard_True);
       TheWalk.Check2d(Standard_False);
       narc1 = Lin->StartPointOnFirst().NbPointOnRst();
       narc2 = Lin->StartPointOnSecond().NbPointOnRst();
-//  modified by eap Fri Feb  8 11:43:48 2002 ___BEGIN___
-      if(!debarc1) {
-	if (narc1 == 0)
-	  backwContinueFailed = Lin->StartPointOnFirst().ParameterOnGuide() > Target;
-	else {
-	  ChFi3d_FilCommonPoint(Lin->StartPointOnFirst(),Lin->TransitionOnS1(),
-				Standard_True, Data->ChangeVertexFirstOnS1(), tolapp3d);
-	  debarc1 = Standard_True;
-	  if(!SearchFace(Spine,Data->VertexFirstOnS1(),F1,bif)){
-	    //It is checked if it is not an obstacle.
-	    debcas1 = Standard_True;
-// 	    if(!Spine.IsNull()) {
-// 	      if(Spine->IsPeriodic()){
-// 	        debobst1 = 1;
-// 	      }
-// 	      else{
-// 		debobst1 = IsObst(Data->VertexFirstOnS1(),
-// 				  Spine->FirstVertex(),myVEMap);
-// 	      }
-// 	    }
-	  }
-	}
-      }
-      if(!debarc2) {
-	if (narc2 == 0)
-	  backwContinueFailed = Lin->StartPointOnSecond().ParameterOnGuide() > Target;
-	else {
-	  ChFi3d_FilCommonPoint(Lin->StartPointOnSecond(),Lin->TransitionOnS2(),
-                                Standard_True, Data->ChangeVertexFirstOnS2(), tolapp3d);
-          debarc2 = Standard_True;
-          if(!SearchFace(Spine,Data->VertexFirstOnS2(),F2,bif)){
-	    //It is checked if it is not an obstacle.
-            debcas2 = Standard_True;
-//             if(!Spine.IsNull()){
-//               if(Spine->IsPeriodic()){
-//                 debobst2 = 1;
-//               }
-//               else{
-//                 debobst2 = IsObst(Data->VertexFirstOnS2(),
-//                                   Spine->FirstVertex(),myVEMap);
-//               }
-//             }
+      //  modified by eap Fri Feb  8 11:43:48 2002 ___BEGIN___
+      if (!debarc1)
+      {
+        if (narc1 == 0)
+          backwContinueFailed = Lin->StartPointOnFirst().ParameterOnGuide() > Target;
+        else
+        {
+          ChFi3d_FilCommonPoint(Lin->StartPointOnFirst(),
+                                Lin->TransitionOnS1(),
+                                Standard_True,
+                                Data->ChangeVertexFirstOnS1(),
+                                tolapp3d);
+          debarc1 = Standard_True;
+          if (!SearchFace(Spine, Data->VertexFirstOnS1(), F1, bif))
+          {
+            // It is checked if it is not an obstacle.
+            debcas1 = Standard_True;
+            // 	    if(!Spine.IsNull()) {
+            // 	      if(Spine->IsPeriodic()){
+            // 	        debobst1 = 1;
+            // 	      }
+            // 	      else{
+            // 		debobst1 = IsObst(Data->VertexFirstOnS1(),
+            // 				  Spine->FirstVertex(),myVEMap);
+            // 	      }
+            // 	    }
           }
         }
       }
-      if (backwContinueFailed) {
-	// if we leave backwContinueFailed as is, we will stop in this direction
-	// but we are to continue if there are no more faces on the side with arc
-	// check this condition
-	const ChFiDS_CommonPoint& aCP
-	  = debarc1 ? Data->VertexFirstOnS1() : Data->VertexFirstOnS2();
-	if (aCP.IsOnArc() && bif.IsNull())
-	  backwContinueFailed = Standard_False;
+      if (!debarc2)
+      {
+        if (narc2 == 0)
+          backwContinueFailed = Lin->StartPointOnSecond().ParameterOnGuide() > Target;
+        else
+        {
+          ChFi3d_FilCommonPoint(Lin->StartPointOnSecond(),
+                                Lin->TransitionOnS2(),
+                                Standard_True,
+                                Data->ChangeVertexFirstOnS2(),
+                                tolapp3d);
+          debarc2 = Standard_True;
+          if (!SearchFace(Spine, Data->VertexFirstOnS2(), F2, bif))
+          {
+            // It is checked if it is not an obstacle.
+            debcas2 = Standard_True;
+            //             if(!Spine.IsNull()){
+            //               if(Spine->IsPeriodic()){
+            //                 debobst2 = 1;
+            //               }
+            //               else{
+            //                 debobst2 = IsObst(Data->VertexFirstOnS2(),
+            //                                   Spine->FirstVertex(),myVEMap);
+            //               }
+            //             }
+          }
+        }
+      }
+      if (backwContinueFailed)
+      {
+        // if we leave backwContinueFailed as is, we will stop in this direction
+        // but we are to continue if there are no more faces on the side with arc
+        // check this condition
+        const ChFiDS_CommonPoint& aCP = debarc1 ? Data->VertexFirstOnS1() : Data->VertexFirstOnS2();
+        if (aCP.IsOnArc() && bif.IsNull())
+          backwContinueFailed = Standard_False;
       }
     }
   }
   Standard_Boolean forwContinueFailed = Standard_False;
-//  modified by eap Fri Feb  8 11:44:11 2002 ___END___
-  if(Forward && intl) {
+  //  modified by eap Fri Feb  8 11:44:11 2002 ___END___
+  if (Forward && intl)
+  {
     Target = SpLast;
-    narc1 = Lin->EndPointOnFirst().NbPointOnRst();
-    narc2 = Lin->EndPointOnSecond().NbPointOnRst();
-    if(narc1 != 0){
-      ChFi3d_FilCommonPoint(Lin->EndPointOnFirst(),Lin->TransitionOnS1(),
-			    Standard_False, Data->ChangeVertexLastOnS1(), tolapp3d);
+    narc1  = Lin->EndPointOnFirst().NbPointOnRst();
+    narc2  = Lin->EndPointOnSecond().NbPointOnRst();
+    if (narc1 != 0)
+    {
+      ChFi3d_FilCommonPoint(Lin->EndPointOnFirst(),
+                            Lin->TransitionOnS1(),
+                            Standard_False,
+                            Data->ChangeVertexLastOnS1(),
+                            tolapp3d);
       finarc1 = Standard_True;
-      if(!SearchFace(Spine,Data->VertexLastOnS1(),F1,bif)){
-             //It is checked if it is not an obstacle.
-	fincas1 = Standard_True;
-	if(!Spine.IsNull()){
-	  finobst1 = IsObst(Data->VertexLastOnS1(),
-			    Spine->LastVertex(),myVEMap);
-	}
+      if (!SearchFace(Spine, Data->VertexLastOnS1(), F1, bif))
+      {
+        // It is checked if it is not an obstacle.
+        fincas1 = Standard_True;
+        if (!Spine.IsNull())
+        {
+          finobst1 = IsObst(Data->VertexLastOnS1(), Spine->LastVertex(), myVEMap);
+        }
       }
     }
-    if(narc2 != 0){
-      ChFi3d_FilCommonPoint(Lin->EndPointOnSecond(),Lin->TransitionOnS2(),
-			    Standard_False, Data->ChangeVertexLastOnS2(), tolapp3d);
+    if (narc2 != 0)
+    {
+      ChFi3d_FilCommonPoint(Lin->EndPointOnSecond(),
+                            Lin->TransitionOnS2(),
+                            Standard_False,
+                            Data->ChangeVertexLastOnS2(),
+                            tolapp3d);
       finarc2 = Standard_True;
-      if(!SearchFace(Spine,Data->VertexLastOnS2(),F2,bif)){
-	 //It is checked if it is not an obstacle.
-	fincas2 = Standard_True;
-	if(!Spine.IsNull()){
-	  finobst2 = IsObst(Data->VertexLastOnS2(),
-			    Spine->LastVertex(),myVEMap);
-	}
+      if (!SearchFace(Spine, Data->VertexLastOnS2(), F2, bif))
+      {
+        // It is checked if it is not an obstacle.
+        fincas2 = Standard_True;
+        if (!Spine.IsNull())
+        {
+          finobst2 = IsObst(Data->VertexLastOnS2(), Spine->LastVertex(), myVEMap);
+        }
       }
     }
     Standard_Boolean oncontinue = !noprolfin && (narc1 != 0 || narc2 != 0);
-    if(finobst1 || finobst2) oncontinue = Standard_False;
-    else if(fincas1 && fincas2) oncontinue = Standard_False;
-    else if((!fincas1 && finarc1) || (!fincas2 && finarc2)) oncontinue = Standard_False;
-    
-    if(oncontinue){
+    if (finobst1 || finobst2)
+      oncontinue = Standard_False;
+    else if (fincas1 && fincas2)
+      oncontinue = Standard_False;
+    else if ((!fincas1 && finarc1) || (!fincas2 && finarc2))
+      oncontinue = Standard_False;
+
+    if (oncontinue)
+    {
       TheWalk.ClassificationOnS1(!finarc1);
       TheWalk.ClassificationOnS2(!finarc2);
       TheWalk.Check2d(Standard_True); // It should be strict (PMN)
-      TheWalk.Continu(Func,FInv,Target);
+      TheWalk.Continu(Func, FInv, Target);
       TheWalk.ClassificationOnS1(Standard_True);
       TheWalk.ClassificationOnS2(Standard_True);
       TheWalk.Check2d(Standard_False);
       narc1 = Lin->EndPointOnFirst().NbPointOnRst();
       narc2 = Lin->EndPointOnSecond().NbPointOnRst();
-//  modified by eap Fri Feb  8 11:44:57 2002 ___BEGIN___
-      if(!finarc1) {
-	if (narc1 == 0) 
-	  forwContinueFailed = Lin->EndPointOnFirst().ParameterOnGuide() < Target;
-	else {
-	  ChFi3d_FilCommonPoint(Lin->EndPointOnFirst(),Lin->TransitionOnS1(),
-				Standard_False, Data->ChangeVertexLastOnS1(), tolapp3d);
-	  finarc1 = Standard_True;
-	  if(!SearchFace(Spine,Data->VertexLastOnS1(),F1,bif)){
-             //It is checked if it is not an obstacle.
-	    fincas1 = Standard_True;
-// 	    if(!Spine.IsNull()){
-// 	      finobst1 = IsObst(Data->VertexLastOnS1(),
-// 				Spine->LastVertex(),myVEMap);
-// 	    }
-	  }
-	}
+      //  modified by eap Fri Feb  8 11:44:57 2002 ___BEGIN___
+      if (!finarc1)
+      {
+        if (narc1 == 0)
+          forwContinueFailed = Lin->EndPointOnFirst().ParameterOnGuide() < Target;
+        else
+        {
+          ChFi3d_FilCommonPoint(Lin->EndPointOnFirst(),
+                                Lin->TransitionOnS1(),
+                                Standard_False,
+                                Data->ChangeVertexLastOnS1(),
+                                tolapp3d);
+          finarc1 = Standard_True;
+          if (!SearchFace(Spine, Data->VertexLastOnS1(), F1, bif))
+          {
+            // It is checked if it is not an obstacle.
+            fincas1 = Standard_True;
+            // 	    if(!Spine.IsNull()){
+            // 	      finobst1 = IsObst(Data->VertexLastOnS1(),
+            // 				Spine->LastVertex(),myVEMap);
+            // 	    }
+          }
+        }
       }
-      if(!finarc2) {
-	if (narc2 == 0)
-	  forwContinueFailed = Lin->EndPointOnSecond().ParameterOnGuide() < Target;
-	else {
-	  ChFi3d_FilCommonPoint(Lin->EndPointOnSecond(),Lin->TransitionOnS2(),
-				Standard_False, Data->ChangeVertexLastOnS2(), tolapp3d);
-	  finarc2 = Standard_True;
-	  if(!SearchFace(Spine,Data->VertexLastOnS2(),F2,bif)){
-	    //On regarde si ce n'est pas un obstacle.
-	    fincas2 = Standard_True;
-// 	    if(!Spine.IsNull()){
-// 	      finobst2 = IsObst(Data->VertexLastOnS2(),
-// 				Spine->LastVertex(),myVEMap);
-// 	    }
-	  }
-	}
+      if (!finarc2)
+      {
+        if (narc2 == 0)
+          forwContinueFailed = Lin->EndPointOnSecond().ParameterOnGuide() < Target;
+        else
+        {
+          ChFi3d_FilCommonPoint(Lin->EndPointOnSecond(),
+                                Lin->TransitionOnS2(),
+                                Standard_False,
+                                Data->ChangeVertexLastOnS2(),
+                                tolapp3d);
+          finarc2 = Standard_True;
+          if (!SearchFace(Spine, Data->VertexLastOnS2(), F2, bif))
+          {
+            // On regarde si ce n'est pas un obstacle.
+            fincas2 = Standard_True;
+            // 	    if(!Spine.IsNull()){
+            // 	      finobst2 = IsObst(Data->VertexLastOnS2(),
+            // 				Spine->LastVertex(),myVEMap);
+            // 	    }
+          }
+        }
       }
-      if (forwContinueFailed) {
-	// if we leave forwContinueFailed as is, we will stop in this direction
-	// but we are to continue if there are no more faces on the side with arc
-	// check this condition
-	const ChFiDS_CommonPoint& aCP
-	  = finarc1 ? Data->VertexLastOnS1() : Data->VertexLastOnS2();
-	if (aCP.IsOnArc() && bif.IsNull())
-	  forwContinueFailed = Standard_False;
+      if (forwContinueFailed)
+      {
+        // if we leave forwContinueFailed as is, we will stop in this direction
+        // but we are to continue if there are no more faces on the side with arc
+        // check this condition
+        const ChFiDS_CommonPoint& aCP = finarc1 ? Data->VertexLastOnS1() : Data->VertexLastOnS2();
+        if (aCP.IsOnArc() && bif.IsNull())
+          forwContinueFailed = Standard_False;
       }
-//  modified by eap Fri Feb  8 11:45:10 2002 ___END___
+      //  modified by eap Fri Feb  8 11:45:10 2002 ___END___
     }
   }
   Nbpnt = Lin->NbPoints();
 #ifdef DRAW
-  if(ChFi3d_GettraceDRAWWALK()) drawline(Lin,Standard_False);
-#endif  
+  if (ChFi3d_GettraceDRAWWALK())
+    drawline(Lin, Standard_False);
+#endif
   First = Lin->Point(1).Parameter();
   Last  = Lin->Point(Nbpnt).Parameter();
 
   // ============= INVALIDATION EVENTUELLE =============
   // ------ Preparation des prolongement par plan tangent -----
-  if(reverse && intf){
-    Gd1 = debcas1/* && !debobst1*/; // skv(occ67)
-    Gd2 = debcas2/* && !debobst2*/; // skv(occ67)
-    if ((debarc1^debarc2) && !unseulsuffitdeb && (First!=SpFirst)) {
-      // Case of incomplete path, of course this ends badly : 
+  if (reverse && intf)
+  {
+    Gd1 = debcas1 /* && !debobst1*/; // skv(occ67)
+    Gd2 = debcas2 /* && !debobst2*/; // skv(occ67)
+    if ((debarc1 ^ debarc2) && !unseulsuffitdeb && (First != SpFirst))
+    {
+      // Case of incomplete path, of course this ends badly :
       // the result is truncated instead of exit.
-      Standard_Real sortie;
+      Standard_Real    sortie;
       Standard_Integer ind;
-      if (debarc1)  sortie = Data->VertexFirstOnS1().Parameter();
-      else  sortie = Data->VertexFirstOnS2().Parameter();
-      if (sortie - First > tolesp) {
-	ind = SearchIndex(sortie, Lin);
-	if (Lin->Point(ind).Parameter() == sortie) ind--;
-	if (ind >= 1) {
-	  Lin->Remove(1, ind);
-	  UpdateLine(Lin, Standard_True);
-	}
-	Nbpnt = Lin->NbPoints();
-	First = Lin->Point(1).Parameter();
+      if (debarc1)
+        sortie = Data->VertexFirstOnS1().Parameter();
+      else
+        sortie = Data->VertexFirstOnS2().Parameter();
+      if (sortie - First > tolesp)
+      {
+        ind = SearchIndex(sortie, Lin);
+        if (Lin->Point(ind).Parameter() == sortie)
+          ind--;
+        if (ind >= 1)
+        {
+          Lin->Remove(1, ind);
+          UpdateLine(Lin, Standard_True);
+        }
+        Nbpnt = Lin->NbPoints();
+        First = Lin->Point(1).Parameter();
       }
     }
-    else if ((intf>=5) && !debarc1 && !debarc2 && (First!=SpFirst)) {
-      Standard_Real sortie = (2*First+Last)/3;
+    else if ((intf >= 5) && !debarc1 && !debarc2 && (First != SpFirst))
+    {
+      Standard_Real    sortie = (2 * First + Last) / 3;
       Standard_Integer ind;
-      if (sortie - First > tolesp) {
-	ind = SearchIndex(sortie, Lin);
-	if (Lin->Point(ind).Parameter() == sortie) ind--;
-        if (Nbpnt-ind < 3) ind = Nbpnt -3;
-	if (ind >= 1) {
-	  Lin->Remove(1, ind);
-	  UpdateLine(Lin, Standard_True);
-	}
-	Nbpnt = Lin->NbPoints();
-	First = Lin->Point(1).Parameter();
+      if (sortie - First > tolesp)
+      {
+        ind = SearchIndex(sortie, Lin);
+        if (Lin->Point(ind).Parameter() == sortie)
+          ind--;
+        if (Nbpnt - ind < 3)
+          ind = Nbpnt - 3;
+        if (ind >= 1)
+        {
+          Lin->Remove(1, ind);
+          UpdateLine(Lin, Standard_True);
+        }
+        Nbpnt = Lin->NbPoints();
+        First = Lin->Point(1).Parameter();
       }
     }
-    if(Gd1 && Gd2){
-      Target = Min((Lin->Point(1).Parameter() - Rab),First);
-      Target = Max(Target,SpFirst);
-      Data->FirstExtensionValue(Abs(Lin->Point(1).Parameter()-Target));
+    if (Gd1 && Gd2)
+    {
+      Target = Min((Lin->Point(1).Parameter() - Rab), First);
+      Target = Max(Target, SpFirst);
+      Data->FirstExtensionValue(Abs(Lin->Point(1).Parameter() - Target));
     }
-    if (intf && !unseulsuffitdeb) intf = (Gd1 && Gd2)//;
-      || backwContinueFailed; // eap
-    else if (intf && unseulsuffitdeb && (intf<5)) {
+    if (intf && !unseulsuffitdeb)
+      intf = (Gd1 && Gd2)            //;
+             || backwContinueFailed; // eap
+    else if (intf && unseulsuffitdeb && (intf < 5))
+    {
       intf = (Gd1 || Gd2);
       // It is checked if there is no new face.
-      if (intf && 
-	  ((!debcas1 && debarc1) || (!debcas2 && debarc2)) ) intf = 0;  
+      if (intf && ((!debcas1 && debarc1) || (!debcas2 && debarc2)))
+        intf = 0;
     }
-    else if (intf < 5) intf = 0;
+    else if (intf < 5)
+      intf = 0;
   }
 
-  if(Forward && intl){
-    Gf1 = fincas1/* && !finobst1*/; // skv(occ67)
-    Gf2 = fincas2/* && !finobst2*/; // skv(occ67)
-    if ((finarc1 ^finarc2) && !unseulsuffitfin && (Last!=SpLast)) {
-      // Case of incomplete path, of course, this ends badly : 
+  if (Forward && intl)
+  {
+    Gf1 = fincas1 /* && !finobst1*/; // skv(occ67)
+    Gf2 = fincas2 /* && !finobst2*/; // skv(occ67)
+    if ((finarc1 ^ finarc2) && !unseulsuffitfin && (Last != SpLast))
+    {
+      // Case of incomplete path, of course, this ends badly :
       // the result is truncated instead of exit.
-      Standard_Real sortie;
+      Standard_Real    sortie;
       Standard_Integer ind;
-      if (finarc1)  sortie = Data->VertexLastOnS1().Parameter();
-      else  sortie = Data->VertexLastOnS2().Parameter();
-      if (Last - sortie > tolesp) {
-	ind = SearchIndex(sortie, Lin);
-        if (Lin->Point(ind).Parameter() == sortie) ind++;
-	if (ind<= Nbpnt) {
-	  Lin->Remove(ind, Nbpnt);
-	  UpdateLine(Lin, Standard_False);
-	}
-	Nbpnt = Lin->NbPoints();
-	Last = Lin->Point(Nbpnt).Parameter();
+      if (finarc1)
+        sortie = Data->VertexLastOnS1().Parameter();
+      else
+        sortie = Data->VertexLastOnS2().Parameter();
+      if (Last - sortie > tolesp)
+      {
+        ind = SearchIndex(sortie, Lin);
+        if (Lin->Point(ind).Parameter() == sortie)
+          ind++;
+        if (ind <= Nbpnt)
+        {
+          Lin->Remove(ind, Nbpnt);
+          UpdateLine(Lin, Standard_False);
+        }
+        Nbpnt = Lin->NbPoints();
+        Last  = Lin->Point(Nbpnt).Parameter();
       }
     }
-    else if ((intl>=5) && !finarc1 && !finarc2 && (Last!=SpLast) ) {
+    else if ((intl >= 5) && !finarc1 && !finarc2 && (Last != SpLast))
+    {
       // The same in case when the entire "Lin" is an extension
-      Standard_Real sortie = (First+2*Last)/3;
+      Standard_Real    sortie = (First + 2 * Last) / 3;
       Standard_Integer ind;
-      if (Last - sortie > tolesp) {
-	ind = SearchIndex(sortie, Lin);
-	if (Lin->Point(ind).Parameter() == sortie) ind++;
-        if (ind < 3) ind = 3;
-	if (ind <= Nbpnt) {
-	  Lin->Remove(ind, Nbpnt);
-	  UpdateLine(Lin, Standard_False);
-	}
-	Nbpnt = Lin->NbPoints();
-	Last = Lin->Point(Nbpnt).Parameter();
+      if (Last - sortie > tolesp)
+      {
+        ind = SearchIndex(sortie, Lin);
+        if (Lin->Point(ind).Parameter() == sortie)
+          ind++;
+        if (ind < 3)
+          ind = 3;
+        if (ind <= Nbpnt)
+        {
+          Lin->Remove(ind, Nbpnt);
+          UpdateLine(Lin, Standard_False);
+        }
+        Nbpnt = Lin->NbPoints();
+        Last  = Lin->Point(Nbpnt).Parameter();
       }
     }
-    if(Gf1 && Gf2) {
-      Target = Max((Lin->Point(Nbpnt).Parameter() + Rab),Last);
-      Target = Min(Target,SpLast);
-      Data->LastExtensionValue(Abs(Target-Lin->Point(Nbpnt).Parameter()));
-    }    
-
-    if (intl && !unseulsuffitfin) intl = (Gf1 && Gf2)//;
-      || forwContinueFailed;  // eap
-    else if (intl && unseulsuffitfin && (intl<5)) {
-      intl = (Gf1 || Gf2);// It is checked if there is no new face.
-      if (intl && 
-	  ((!fincas1 && finarc1) || (!fincas2 && finarc2)) ) intl = 0;  
+    if (Gf1 && Gf2)
+    {
+      Target = Max((Lin->Point(Nbpnt).Parameter() + Rab), Last);
+      Target = Min(Target, SpLast);
+      Data->LastExtensionValue(Abs(Target - Lin->Point(Nbpnt).Parameter()));
     }
-    else if (intl <5) intl = 0;
+
+    if (intl && !unseulsuffitfin)
+      intl = (Gf1 && Gf2)           //;
+             || forwContinueFailed; // eap
+    else if (intl && unseulsuffitfin && (intl < 5))
+    {
+      intl = (Gf1 || Gf2); // It is checked if there is no new face.
+      if (intl && ((!fincas1 && finarc1) || (!fincas2 && finarc2)))
+        intl = 0;
+    }
+    else if (intl < 5)
+      intl = 0;
   }
   return Standard_True;
 }
 
-//=======================================================================
-//function : SimulData
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean ChFi3d_Builder::SimulData
-(Handle(ChFiDS_SurfData)& /*Data*/,
- const Handle(ChFiDS_ElSpine)& HGuide,
- const Handle(ChFiDS_ElSpine)& AdditionalHGuide,
- Handle(BRepBlend_Line)& Lin,
- const Handle(Adaptor3d_Surface)& S1,
- const Handle(Adaptor3d_TopolTool)& I1,
- const Handle(Adaptor3d_Surface)& S2,
- const Handle(Adaptor3d_TopolTool)& I2,
- Blend_Function& Func,
- Blend_FuncInv& FInv,
- const Standard_Real PFirst,
- const Standard_Real MaxStep,
- const Standard_Real Fleche,
- const Standard_Real tolguide,
- Standard_Real& First,
- Standard_Real& Last,
- const Standard_Boolean Inside,
- const Standard_Boolean Appro,
- const Standard_Boolean Forward,
- const math_Vector& Soldep,
- const Standard_Integer NbSecMin,
- const Standard_Boolean RecOnS1,
- const Standard_Boolean RecOnS2)
+Standard_Boolean ChFi3d_Builder::SimulData(Handle(ChFiDS_SurfData)& /*Data*/,
+                                           const Handle(ChFiDS_ElSpine)&      HGuide,
+                                           const Handle(ChFiDS_ElSpine)&      AdditionalHGuide,
+                                           Handle(BRepBlend_Line)&            Lin,
+                                           const Handle(Adaptor3d_Surface)&   S1,
+                                           const Handle(Adaptor3d_TopolTool)& I1,
+                                           const Handle(Adaptor3d_Surface)&   S2,
+                                           const Handle(Adaptor3d_TopolTool)& I2,
+                                           Blend_Function&                    Func,
+                                           Blend_FuncInv&                     FInv,
+                                           const Standard_Real                PFirst,
+                                           const Standard_Real                MaxStep,
+                                           const Standard_Real                Fleche,
+                                           const Standard_Real                tolguide,
+                                           Standard_Real&                     First,
+                                           Standard_Real&                     Last,
+                                           const Standard_Boolean             Inside,
+                                           const Standard_Boolean             Appro,
+                                           const Standard_Boolean             Forward,
+                                           const math_Vector&                 Soldep,
+                                           const Standard_Integer             NbSecMin,
+                                           const Standard_Boolean             RecOnS1,
+                                           const Standard_Boolean             RecOnS2)
 {
-  BRepBlend_Walking TheWalk(S1,S2,I1,I2,HGuide);
+  BRepBlend_Walking TheWalk(S1, S2, I1, I2, HGuide);
   TheWalk.Check2d(Standard_False);
-  
-  Standard_Real MS = MaxStep;
-  Standard_Real TolGuide=tolguide;
-  Standard_Integer Nbpnt = 0;
-  Standard_Real SpFirst = HGuide->FirstParameter();
-  Standard_Real SpLast =  HGuide->LastParameter();
-  Standard_Boolean reverse = (!Forward || Inside);
-  Standard_Real Target;
-  if(reverse){
+
+  Standard_Real    MS       = MaxStep;
+  Standard_Real    TolGuide = tolguide;
+  Standard_Integer Nbpnt    = 0;
+  Standard_Real    SpFirst  = HGuide->FirstParameter();
+  Standard_Real    SpLast   = HGuide->LastParameter();
+  Standard_Boolean reverse  = (!Forward || Inside);
+  Standard_Real    Target;
+  if (reverse)
+  {
     Target = SpFirst;
   }
-  else{
+  else
+  {
     Target = SpLast;
   }
 
   Standard_Real Targetsov = Target;
-  Standard_Real u1sov = 0., u2sov = 0.; 
+  Standard_Real u1sov = 0., u2sov = 0.;
   // on recadre la solution de depart a la demande.
-  math_Vector ParSol(1,4);
+  math_Vector   ParSol(1, 4);
   Standard_Real NewFirst = PFirst;
-  if(RecOnS1 || RecOnS2){
-    if(!TheWalk.PerformFirstSection(Func,FInv,PFirst,Target,Soldep,
-            tolapp3d,TolGuide,RecOnS1,RecOnS2,
-				    NewFirst,ParSol)){
+  if (RecOnS1 || RecOnS2)
+  {
+    if (!TheWalk.PerformFirstSection(Func,
+                                     FInv,
+                                     PFirst,
+                                     Target,
+                                     Soldep,
+                                     tolapp3d,
+                                     TolGuide,
+                                     RecOnS1,
+                                     RecOnS2,
+                                     NewFirst,
+                                     ParSol))
+    {
 #ifdef OCCT_DEBUG
-      std::cout<<"ChFi3d_Builder::SimulData : calculation fail first section"<<std::endl;
+      std::cout << "ChFi3d_Builder::SimulData : calculation fail first section" << std::endl;
 #endif
       return Standard_False;
     }
   }
-  else {
+  else
+  {
     ParSol = Soldep;
   }
   Standard_Integer again = 0;
-  while(again < 3){
-     // When the start point is inside, the path goes first to the left  
-     // to determine the Last for the periodicals.
-    if(!again && (MS < 5*TolGuide)) MS = 5*TolGuide;
-    else  {
-      if (5*TolGuide > MS) TolGuide = MS/5;
+  while (again < 3)
+  {
+    // When the start point is inside, the path goes first to the left
+    // to determine the Last for the periodicals.
+    if (!again && (MS < 5 * TolGuide))
+      MS = 5 * TolGuide;
+    else
+    {
+      if (5 * TolGuide > MS)
+        TolGuide = MS / 5;
     }
-      
-    TheWalk.Perform(Func,FInv,NewFirst,Target,MS,tolapp3d,TolGuide,
-		    ParSol,Fleche,Appro);
-    
-    if (!TheWalk.IsDone()) {
+
+    TheWalk.Perform(Func, FInv, NewFirst, Target, MS, tolapp3d, TolGuide, ParSol, Fleche, Appro);
+
+    if (!TheWalk.IsDone())
+    {
 #ifdef OCCT_DEBUG
       std::cout << "Path not created" << std::endl;
 #endif
       return Standard_False;
     }
     Lin = TheWalk.Line();
-    if(reverse){
-      if(HGuide->IsPeriodic()) {
-	SpFirst = Lin->Point(1).Parameter();
-	SpLast  = SpFirst + HGuide->Period();
-	HGuide->FirstParameter(SpFirst);
-	HGuide->LastParameter (SpLast );
+    if (reverse)
+    {
+      if (HGuide->IsPeriodic())
+      {
+        SpFirst = Lin->Point(1).Parameter();
+        SpLast  = SpFirst + HGuide->Period();
+        HGuide->FirstParameter(SpFirst);
+        HGuide->LastParameter(SpLast);
         if (!AdditionalHGuide.IsNull())
         {
           AdditionalHGuide->FirstParameter(SpFirst);
-          AdditionalHGuide->LastParameter (SpLast );
+          AdditionalHGuide->LastParameter(SpLast);
         }
       }
       Standard_Boolean complmnt = Standard_True;
-      if (Inside)  complmnt = TheWalk.Complete(Func,FInv,SpLast);
-      if(!complmnt){
+      if (Inside)
+        complmnt = TheWalk.Complete(Func, FInv, SpLast);
+      if (!complmnt)
+      {
 #ifdef OCCT_DEBUG
-	std::cout << "Not completed" << std::endl;
+        std::cout << "Not completed" << std::endl;
 #endif
-	return Standard_False;
+        return Standard_False;
       }
     }
-    Nbpnt = Lin->NbPoints();
-    Standard_Real factor =  1./(NbSecMin + 1);
-    if (Nbpnt == 0){
+    Nbpnt                = Lin->NbPoints();
+    Standard_Real factor = 1. / (NbSecMin + 1);
+    if (Nbpnt == 0)
+    {
 #ifdef OCCT_DEBUG
-      std::cout <<"0 point of path, quit."<<std::endl;
+      std::cout << "0 point of path, quit." << std::endl;
 #endif
       return Standard_False;
     }
-    else if (Nbpnt == 1 && again == 0)  {
+    else if (Nbpnt == 1 && again == 0)
+    {
       again++;
 #ifdef OCCT_DEBUG
-      std::cout <<"only one point of path, MS/100 is attempted."<<std::endl;
+      std::cout << "only one point of path, MS/100 is attempted." << std::endl;
 #endif
-      MS *= 0.01; Target = Targetsov;
+      MS *= 0.01;
+      Target = Targetsov;
       u1sov = u2sov = Lin->Point(1).Parameter();
     }
-    else if (Nbpnt< NbSecMin && again == 0)  {
+    else if (Nbpnt < NbSecMin && again == 0)
+    {
       again++;
 #ifdef OCCT_DEBUG
-      std::cout <<"Number of points is too small, the step is reduced"<<std::endl;
+      std::cout << "Number of points is too small, the step is reduced" << std::endl;
 #endif
       Standard_Real u1 = u1sov = Lin->Point(1).Parameter();
       Standard_Real u2 = u2sov = Lin->Point(Nbpnt).Parameter();
-      MS = (u2-u1)*factor;
-      Target = Targetsov;
+      MS                       = (u2 - u1) * factor;
+      Target                   = Targetsov;
     }
-    else if (Nbpnt < NbSecMin && again == 1)  {
+    else if (Nbpnt < NbSecMin && again == 1)
+    {
       Standard_Real u1 = Lin->Point(1).Parameter();
       Standard_Real u2 = Lin->Point(Nbpnt).Parameter();
-      if(Abs(u1-u1sov)>=TolGuide || Abs(u2-u2sov)>=TolGuide){
-	again++;
+      if (Abs(u1 - u1sov) >= TolGuide || Abs(u2 - u2sov) >= TolGuide)
+      {
+        again++;
 #ifdef OCCT_DEBUG
-	std::cout <<"Number of points is still too small, the step is reduced"<<std::endl;
+        std::cout << "Number of points is still too small, the step is reduced" << std::endl;
 #endif
-	MS /= 100;
-	Target = Targetsov;
+        MS /= 100;
+        Target = Targetsov;
       }
-      else{
+      else
+      {
 #ifdef OCCT_DEBUG
-	std::cout <<"Number of points is still too small, quit"<<std::endl;
+        std::cout << "Number of points is still too small, quit" << std::endl;
 #endif
-	return Standard_False;
+        return Standard_False;
       }
     }
-    else if(Nbpnt < NbSecMin){
+    else if (Nbpnt < NbSecMin)
+    {
 #ifdef OCCT_DEBUG
-      std::cout <<"Number of points is still too small, quit"<<std::endl;
+      std::cout << "Number of points is still too small, quit" << std::endl;
 #endif
       return Standard_False;
     }
-    else {
+    else
+    {
       again = 3;
     }
   }
 #ifdef DRAW
-  if(ChFi3d_GettraceDRAWWALK()) drawline(Lin,Standard_False);
-#endif  
+  if (ChFi3d_GettraceDRAWWALK())
+    drawline(Lin, Standard_False);
+#endif
   First = Lin->Point(1).Parameter();
   Last  = Lin->Point(Nbpnt).Parameter();
   return Standard_True;
 }
-

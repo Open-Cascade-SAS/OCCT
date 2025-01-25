@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <DNaming.hxx>
@@ -33,27 +32,23 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(DNaming_PointDriver,TFunction_Driver)
+IMPLEMENT_STANDARD_RTTIEXT(DNaming_PointDriver, TFunction_Driver)
 
-//OCCT
-// OCAF
-//=======================================================================
-//function : DNaming_PointDriver
-//purpose  : Constructor
-//=======================================================================
-DNaming_PointDriver::DNaming_PointDriver()
-{}
+// OCCT
+//  OCAF
+//=================================================================================================
+
+DNaming_PointDriver::DNaming_PointDriver() {}
 
 //=======================================================================
-//function : Validate
-//purpose  : Validates labels of a function in <log>.
+// function : Validate
+// purpose  : Validates labels of a function in <log>.
 //=======================================================================
-void DNaming_PointDriver::Validate(Handle(TFunction_Logbook)&) const
-{}
+void DNaming_PointDriver::Validate(Handle(TFunction_Logbook)&) const {}
 
 //=======================================================================
-//function : MustExecute
-//purpose  : Analyse in <log> if the loaded function must be executed
+// function : MustExecute
+// purpose  : Analyse in <log> if the loaded function must be executed
 //=======================================================================
 Standard_Boolean DNaming_PointDriver::MustExecute(const Handle(TFunction_Logbook)&) const
 {
@@ -61,65 +56,71 @@ Standard_Boolean DNaming_PointDriver::MustExecute(const Handle(TFunction_Logbook
 }
 
 //=======================================================================
-//function : Execute
-//purpose  : Execute the function and push in <log> the impacted labels
+// function : Execute
+// purpose  : Execute the function and push in <log> the impacted labels
 //=======================================================================
 Standard_Integer DNaming_PointDriver::Execute(Handle(TFunction_Logbook)& theLog) const
 {
   Handle(TFunction_Function) aFunction;
-  Label().FindAttribute(TFunction_Function::GetID(),aFunction);
-  if(aFunction.IsNull()) return -1;
-      
-// perform calculations
+  Label().FindAttribute(TFunction_Function::GetID(), aFunction);
+  if (aFunction.IsNull())
+    return -1;
 
-  Standard_Real aDX = DNaming::GetReal(aFunction,PNT_DX)->Get();
-  Standard_Real aDY = DNaming::GetReal(aFunction,PNT_DY)->Get();
-  Standard_Real aDZ = DNaming::GetReal(aFunction,PNT_DZ)->Get();
+  // perform calculations
+
+  Standard_Real aDX = DNaming::GetReal(aFunction, PNT_DX)->Get();
+  Standard_Real aDY = DNaming::GetReal(aFunction, PNT_DY)->Get();
+  Standard_Real aDZ = DNaming::GetReal(aFunction, PNT_DZ)->Get();
 
   Handle(TNaming_NamedShape) aPrevPnt = DNaming::GetFunctionResult(aFunction);
-// Save location
+  // Save location
   TopLoc_Location aLocation;
-  if (!aPrevPnt.IsNull() && !aPrevPnt->IsEmpty()) {
+  if (!aPrevPnt.IsNull() && !aPrevPnt->IsEmpty())
+  {
     aLocation = aPrevPnt->Get().Location();
   }
   gp_Pnt aPoint;
-  if(aFunction->GetDriverGUID() == PNTRLT_GUID) {
-    Handle(TDataStd_UAttribute) aRefPnt = DNaming::GetObjectArg(aFunction,PNTRLT_REF);
-    Handle(TNaming_NamedShape) aRefPntNS = DNaming::GetObjectValue(aRefPnt);
-    if (aRefPntNS.IsNull() || aRefPntNS->IsEmpty()) {
+  if (aFunction->GetDriverGUID() == PNTRLT_GUID)
+  {
+    Handle(TDataStd_UAttribute) aRefPnt   = DNaming::GetObjectArg(aFunction, PNTRLT_REF);
+    Handle(TNaming_NamedShape)  aRefPntNS = DNaming::GetObjectValue(aRefPnt);
+    if (aRefPntNS.IsNull() || aRefPntNS->IsEmpty())
+    {
 #ifdef OCCT_DEBUG
-      std::cout<<"PointDriver:: Ref Point is empty"<<std::endl;
+      std::cout << "PointDriver:: Ref Point is empty" << std::endl;
 #endif
       aFunction->SetFailure(WRONG_ARGUMENT);
       return -1;
     }
-    TopoDS_Shape aRefPntShape = aRefPntNS->Get();
-    TopoDS_Vertex aVertex = TopoDS::Vertex(aRefPntShape);
-    aPoint = BRep_Tool::Pnt(aVertex);
-    aPoint.SetX(aPoint.X()+aDX);
-    aPoint.SetY(aPoint.Y()+aDY);
-    aPoint.SetZ(aPoint.Z()+aDZ);
-  } else 
+    TopoDS_Shape  aRefPntShape = aRefPntNS->Get();
+    TopoDS_Vertex aVertex      = TopoDS::Vertex(aRefPntShape);
+    aPoint                     = BRep_Tool::Pnt(aVertex);
+    aPoint.SetX(aPoint.X() + aDX);
+    aPoint.SetY(aPoint.Y() + aDY);
+    aPoint.SetZ(aPoint.Z() + aDZ);
+  }
+  else
     aPoint = gp_Pnt(aDX, aDY, aDZ);
 
   BRepBuilderAPI_MakeVertex aMakeVertex(aPoint);
 
-  if(!aMakeVertex.IsDone()) {
+  if (!aMakeVertex.IsDone())
+  {
     aFunction->SetFailure(ALGO_FAILED);
     return -1;
   }
 
   // Naming
   const TDF_Label& aResultLabel = RESPOSITION(aFunction);
-  TNaming_Builder aBuilder(aResultLabel);
+  TNaming_Builder  aBuilder(aResultLabel);
   aBuilder.Generated(aMakeVertex.Shape());
-  
+
   // restore location
-  if(!aLocation.IsIdentity())
+  if (!aLocation.IsIdentity())
     TNaming::Displace(aResultLabel, aLocation, Standard_True);
 
-  theLog->SetValid(aResultLabel, Standard_True);  
-  
+  theLog->SetValid(aResultLabel, Standard_True);
+
   aFunction->SetFailure(DONE);
   return 0;
 }

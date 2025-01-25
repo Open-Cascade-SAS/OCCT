@@ -20,7 +20,7 @@
 #include <StepGeom_CompositeCurveSegment.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<Handle(StepGeom_CompositeCurveSegment)> StepGeom_Array1OfCompositeCurveSegment;
-
+typedef NCollection_Array1<Handle(StepGeom_CompositeCurveSegment)>
+  StepGeom_Array1OfCompositeCurveSegment;
 
 #endif

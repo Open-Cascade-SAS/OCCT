@@ -23,23 +23,23 @@ class BinMXCAFDoc_VisMaterialToolDriver : public BinMDF_ADriver
 {
   DEFINE_STANDARD_RTTIEXT(BinMXCAFDoc_VisMaterialToolDriver, BinMDF_ADriver)
 public:
-
   //! Main constructor.
-  Standard_EXPORT BinMXCAFDoc_VisMaterialToolDriver (const Handle(Message_Messenger)& theMsgDriver);
+  Standard_EXPORT BinMXCAFDoc_VisMaterialToolDriver(const Handle(Message_Messenger)& theMsgDriver);
 
   //! Create new instance of XCAFDoc_VisMaterialTool.
   Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
   //! Paste attribute from persistence into document.
-  Standard_EXPORT virtual Standard_Boolean Paste (const BinObjMgt_Persistent&  theSource,
-                                                  const Handle(TDF_Attribute)& theTarget,
-                                                  BinObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Paste(const BinObjMgt_Persistent&  theSource,
+                                                 const Handle(TDF_Attribute)& theTarget,
+                                                 BinObjMgt_RRelocationTable&  theRelocTable) const
+    Standard_OVERRIDE;
 
   //! Paste attribute from document into persistence.
-  Standard_EXPORT virtual void Paste (const Handle(TDF_Attribute)& theSource,
-                                      BinObjMgt_Persistent& theTarget,
-                                      BinObjMgt_SRelocationTable& theRelocTable) const Standard_OVERRIDE;
-
+  Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)& theSource,
+                                     BinObjMgt_Persistent&        theTarget,
+                                     BinObjMgt_SRelocationTable&  theRelocTable) const
+    Standard_OVERRIDE;
 };
 
 #endif // _BinMXCAFDoc_VisMaterialToolDriver_HeaderFile

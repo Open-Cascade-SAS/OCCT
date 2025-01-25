@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <DsgPrs_IdenticPresentation.hxx>
 #include <ElCLib.hxx>
 #include <gp_Ax2.hxx>
@@ -35,11 +34,11 @@
 #include <Prs3d_Text.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-void DsgPrs_IdenticPresentation::Add( const Handle(Prs3d_Presentation)& aPresentation,
-				      const Handle(Prs3d_Drawer)& aDrawer,
-				      const TCollection_ExtendedString& aText,
-				      const gp_Pnt& aPntAttach,
-				      const gp_Pnt& aPntOffset)
+void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
+                                     const Handle(Prs3d_Drawer)&       aDrawer,
+                                     const TCollection_ExtendedString& aText,
+                                     const gp_Pnt&                     aPntAttach,
+                                     const gp_Pnt&                     aPntOffset)
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
@@ -51,28 +50,28 @@ void DsgPrs_IdenticPresentation::Add( const Handle(Prs3d_Presentation)& aPresent
 
   aPresentation->NewGroup();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Quantity_Color aColor = LA->LineAspect()->Aspect()->Color();
-  Handle(Graphic3d_AspectMarker3d) aMarkerAsp = new Graphic3d_AspectMarker3d (Aspect_TOM_O, aColor, 1.0);
-  aPresentation->CurrentGroup()->SetPrimitivesAspect (aMarkerAsp);
-  Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
-  anArrayOfPoints->AddVertex (aPntAttach.X(), aPntAttach.Y(), aPntAttach.Z());
-  aPresentation->CurrentGroup()->AddPrimitiveArray (anArrayOfPoints);
+  Quantity_Color                   aColor = LA->LineAspect()->Aspect()->Color();
+  Handle(Graphic3d_AspectMarker3d) aMarkerAsp =
+    new Graphic3d_AspectMarker3d(Aspect_TOM_O, aColor, 1.0);
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(aMarkerAsp);
+  Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints(1);
+  anArrayOfPoints->AddVertex(aPntAttach.X(), aPntAttach.Y(), aPntAttach.Z());
+  aPresentation->CurrentGroup()->AddPrimitiveArray(anArrayOfPoints);
 
-  // texte 
-  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, aPntOffset);
+  // texte
+  Prs3d_Text::Draw(aPresentation->CurrentGroup(), LA->TextAspect(), aText, aPntOffset);
 }
 
-
-void DsgPrs_IdenticPresentation::Add( const Handle(Prs3d_Presentation)& aPresentation,
-				      const Handle(Prs3d_Drawer)& aDrawer,
-				      const TCollection_ExtendedString& aText,
-				      const gp_Pnt& aFAttach,
-				      const gp_Pnt& aSAttach,
-				      const gp_Pnt& aPntOffset)
+void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
+                                     const Handle(Prs3d_Drawer)&       aDrawer,
+                                     const TCollection_ExtendedString& aText,
+                                     const gp_Pnt&                     aFAttach,
+                                     const gp_Pnt&                     aSAttach,
+                                     const gp_Pnt&                     aPntOffset)
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  
+
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(4);
 
   aPrims->AddVertex(aFAttach);
@@ -83,30 +82,29 @@ void DsgPrs_IdenticPresentation::Add( const Handle(Prs3d_Presentation)& aPresent
   gp_Vec v2(aSAttach, aPntOffset);
 
   aPrims->AddVertex(aPntOffset);
-  if ( !v1.IsParallel(v2, Precision::Angular()))
+  if (!v1.IsParallel(v2, Precision::Angular()))
   {
     // on joint aPntOffset a son projete
     gp_Lin ll(aFAttach, gp_Dir(v1));
-    aPrims->AddVertex(ElCLib::Value(ElCLib::Parameter(ll,aPntOffset ), ll));
+    aPrims->AddVertex(ElCLib::Value(ElCLib::Parameter(ll, aPntOffset), ll));
   }
   else
     aPrims->AddVertex(aSAttach);
 
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
-  // texte 
-  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, aPntOffset);
+  // texte
+  Prs3d_Text::Draw(aPresentation->CurrentGroup(), LA->TextAspect(), aText, aPntOffset);
 }
 
-
 void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-				     const Handle(Prs3d_Drawer)& aDrawer,
-				     const TCollection_ExtendedString& aText,
-				     const gp_Ax2& theAxe,
-				     const gp_Pnt& aCenter,
-				     const gp_Pnt& aFAttach,
-				     const gp_Pnt& aSAttach,
-				     const gp_Pnt& aPntOffset)
+                                     const Handle(Prs3d_Drawer)&       aDrawer,
+                                     const TCollection_ExtendedString& aText,
+                                     const gp_Ax2&                     theAxe,
+                                     const gp_Pnt&                     aCenter,
+                                     const gp_Pnt&                     aFAttach,
+                                     const gp_Pnt&                     aSAttach,
+                                     const gp_Pnt&                     aPntOffset)
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
@@ -114,48 +112,49 @@ void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   gp_Ax2 ax = theAxe;
   ax.SetLocation(aCenter);
   Standard_Real rad = aCenter.Distance(aFAttach);
-  gp_Circ CC(ax,rad );
-  Standard_Real pFAttach =  ElCLib::Parameter(CC, aFAttach);
-  Standard_Real pSAttach =  ElCLib::Parameter(CC, aSAttach);
-  Standard_Real alpha = pSAttach - pFAttach;
-  if ( alpha < 0 ) alpha += 2. * M_PI;
-  const Standard_Integer nb = (Standard_Integer )( 50. * alpha / M_PI);
-  const Standard_Integer nbp = Max (4, nb);
-  const Standard_Real dteta = alpha/(nbp-1);
+  gp_Circ       CC(ax, rad);
+  Standard_Real pFAttach = ElCLib::Parameter(CC, aFAttach);
+  Standard_Real pSAttach = ElCLib::Parameter(CC, aSAttach);
+  Standard_Real alpha    = pSAttach - pFAttach;
+  if (alpha < 0)
+    alpha += 2. * M_PI;
+  const Standard_Integer nb    = (Standard_Integer)(50. * alpha / M_PI);
+  const Standard_Integer nbp   = Max(4, nb);
+  const Standard_Real    dteta = alpha / (nbp - 1);
 
   Handle(Graphic3d_ArrayOfPolylines) aPrims;
-  
+
   // trait joignant aPntOffset
-  if ( Abs((aPntOffset.Distance(aCenter) - rad )) >= Precision::Confusion() )
+  if (Abs((aPntOffset.Distance(aCenter) - rad)) >= Precision::Confusion())
   {
-    aPrims = new Graphic3d_ArrayOfPolylines(nbp+2,2);
+    aPrims = new Graphic3d_ArrayOfPolylines(nbp + 2, 2);
     aPrims->AddBound(2);
     aPrims->AddVertex(aPntOffset);
-    aPrims->AddVertex(ElCLib::Value(ElCLib::Parameter(CC,aPntOffset ), CC));
+    aPrims->AddVertex(ElCLib::Value(ElCLib::Parameter(CC, aPntOffset), CC));
     aPrims->AddBound(nbp);
   }
   else
     aPrims = new Graphic3d_ArrayOfPolylines(nbp);
 
-  for (Standard_Integer i = 1; i<=nbp; i++)
-    aPrims->AddVertex(ElCLib::Value(pFAttach + dteta*(i-1),CC));
+  for (Standard_Integer i = 1; i <= nbp; i++)
+    aPrims->AddVertex(ElCLib::Value(pFAttach + dteta * (i - 1), CC));
 
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
-  // texte 
-  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, aPntOffset);
+  // texte
+  Prs3d_Text::Draw(aPresentation->CurrentGroup(), LA->TextAspect(), aText, aPntOffset);
 }
 
 // jfa 16/10/2000
 void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-				     const Handle(Prs3d_Drawer)& aDrawer,
-				     const TCollection_ExtendedString& aText,
-				     const gp_Ax2& theAxe,
-				     const gp_Pnt& aCenter,
-				     const gp_Pnt& aFAttach,
-				     const gp_Pnt& aSAttach,
-				     const gp_Pnt& aPntOffset,
-				     const gp_Pnt& aPntOnCirc)
+                                     const Handle(Prs3d_Drawer)&       aDrawer,
+                                     const TCollection_ExtendedString& aText,
+                                     const gp_Ax2&                     theAxe,
+                                     const gp_Pnt&                     aCenter,
+                                     const gp_Pnt&                     aFAttach,
+                                     const gp_Pnt&                     aSAttach,
+                                     const gp_Pnt&                     aPntOffset,
+                                     const gp_Pnt&                     aPntOnCirc)
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
@@ -163,21 +162,22 @@ void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   gp_Ax2 ax = theAxe;
   ax.SetLocation(aCenter);
   Standard_Real rad = aCenter.Distance(aFAttach);
-  gp_Circ CC(ax,rad );
+  gp_Circ       CC(ax, rad);
   Standard_Real pFAttach = ElCLib::Parameter(CC, aFAttach);
   Standard_Real pSAttach = ElCLib::Parameter(CC, aSAttach);
-  Standard_Real alpha = pSAttach - pFAttach;
-  if ( alpha < 0 ) alpha += 2. * M_PI;
-  const Standard_Integer nb = (Standard_Integer)( 50. * alpha / M_PI);
-  const Standard_Integer nbp = Max (4, nb);
-  const Standard_Real dteta = alpha/(nbp-1);
+  Standard_Real alpha    = pSAttach - pFAttach;
+  if (alpha < 0)
+    alpha += 2. * M_PI;
+  const Standard_Integer nb    = (Standard_Integer)(50. * alpha / M_PI);
+  const Standard_Integer nbp   = Max(4, nb);
+  const Standard_Real    dteta = alpha / (nbp - 1);
 
   Handle(Graphic3d_ArrayOfPolylines) aPrims;
 
   // trait joignant aPntOffset
-  if ( aPntOffset.Distance(aPntOnCirc) >= Precision::Confusion() )
+  if (aPntOffset.Distance(aPntOnCirc) >= Precision::Confusion())
   {
-    aPrims = new Graphic3d_ArrayOfPolylines(nbp+2,2);
+    aPrims = new Graphic3d_ArrayOfPolylines(nbp + 2, 2);
     aPrims->AddBound(2);
     aPrims->AddVertex(aPntOffset);
     aPrims->AddVertex(aPntOnCirc);
@@ -186,43 +186,45 @@ void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   else
     aPrims = new Graphic3d_ArrayOfPolylines(nbp);
 
-  for (Standard_Integer i = 1; i<=nbp; i++)
-    aPrims->AddVertex(ElCLib::Value(pFAttach + dteta*(i-1),CC));
+  for (Standard_Integer i = 1; i <= nbp; i++)
+    aPrims->AddVertex(ElCLib::Value(pFAttach + dteta * (i - 1), CC));
 
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
-  // texte 
-  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, aPntOffset);
+  // texte
+  Prs3d_Text::Draw(aPresentation->CurrentGroup(), LA->TextAspect(), aText, aPntOffset);
 }
+
 // jfa 16/10/2000 end
 
 // jfa 10/10/2000
 void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-				     const Handle(Prs3d_Drawer)& aDrawer,
-				     const TCollection_ExtendedString& aText,
-				     const gp_Elips& anEllipse,
-				     const gp_Pnt& aFAttach,
-				     const gp_Pnt& aSAttach,
-				     const gp_Pnt& aPntOffset,
-				     const gp_Pnt& aPntOnElli)
+                                     const Handle(Prs3d_Drawer)&       aDrawer,
+                                     const TCollection_ExtendedString& aText,
+                                     const gp_Elips&                   anEllipse,
+                                     const gp_Pnt&                     aFAttach,
+                                     const gp_Pnt&                     aSAttach,
+                                     const gp_Pnt&                     aPntOffset,
+                                     const gp_Pnt&                     aPntOnElli)
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-  Standard_Real pFAttach =  ElCLib::Parameter(anEllipse, aFAttach);
-  Standard_Real pSAttach =  ElCLib::Parameter(anEllipse, aSAttach);
-  Standard_Real alpha = pSAttach - pFAttach;
-  if ( alpha < 0 ) alpha += 2. * M_PI;
-  const Standard_Integer nb = (Standard_Integer)(50.0*alpha/M_PI);
-  const Standard_Integer nbp = Max (4, nb);
-  const Standard_Real dteta = alpha/(nbp-1);
+  Standard_Real pFAttach = ElCLib::Parameter(anEllipse, aFAttach);
+  Standard_Real pSAttach = ElCLib::Parameter(anEllipse, aSAttach);
+  Standard_Real alpha    = pSAttach - pFAttach;
+  if (alpha < 0)
+    alpha += 2. * M_PI;
+  const Standard_Integer nb    = (Standard_Integer)(50.0 * alpha / M_PI);
+  const Standard_Integer nbp   = Max(4, nb);
+  const Standard_Real    dteta = alpha / (nbp - 1);
 
   Handle(Graphic3d_ArrayOfPolylines) aPrims;
-  
+
   // trait joignant aPntOffset
-  if ( ! aPntOnElli.IsEqual(aPntOffset, Precision::Confusion()) )
+  if (!aPntOnElli.IsEqual(aPntOffset, Precision::Confusion()))
   {
-    aPrims = new Graphic3d_ArrayOfPolylines(nbp+2,2);
+    aPrims = new Graphic3d_ArrayOfPolylines(nbp + 2, 2);
     aPrims->AddBound(2);
     aPrims->AddVertex(aPntOffset);
     aPrims->AddVertex(aPntOnElli);
@@ -231,12 +233,13 @@ void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   else
     aPrims = new Graphic3d_ArrayOfPolylines(nbp);
 
-  for (Standard_Integer i = 1; i<=nbp; i++)
-    aPrims->AddVertex(ElCLib::Value(pFAttach + dteta*(i-1),anEllipse));
+  for (Standard_Integer i = 1; i <= nbp; i++)
+    aPrims->AddVertex(ElCLib::Value(pFAttach + dteta * (i - 1), anEllipse));
 
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
-  // texte 
-  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, aPntOffset);
+  // texte
+  Prs3d_Text::Draw(aPresentation->CurrentGroup(), LA->TextAspect(), aText, aPntOffset);
 }
+
 // jfa 10/10/2000 end

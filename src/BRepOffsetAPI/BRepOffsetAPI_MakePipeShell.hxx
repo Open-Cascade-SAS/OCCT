@@ -35,7 +35,6 @@ class TopoDS_Shape;
 class TopoDS_Vertex;
 class Law_Function;
 
-
 //! This class provides for a framework to construct a shell
 //! or a solid along a spine consisting in a wire.
 //! To produce a solid, the initial wire must be closed.
@@ -54,42 +53,40 @@ class Law_Function;
 //! Warning: some limitations exist
 //! -- Mode with auxiliary spine is incompatible with hometetic laws
 //! -- Mode with auxiliary spine and keep contact produce only CO surface.
-class BRepOffsetAPI_MakePipeShell  : public BRepPrimAPI_MakeSweep
+class BRepOffsetAPI_MakePipeShell : public BRepPrimAPI_MakeSweep
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs the shell-generating framework defined by the wire Spine.
   //! Sets an sweep's mode
   //! If no mode are set, the mode use in MakePipe is used
   Standard_EXPORT BRepOffsetAPI_MakePipeShell(const TopoDS_Wire& Spine);
-  
+
   //! Sets a Frenet or a CorrectedFrenet trihedron
   //! to  perform  the  sweeping
   //! If IsFrenet is false, a corrected Frenet trihedron is used.
-  Standard_EXPORT void SetMode (const Standard_Boolean IsFrenet = Standard_False);
-  
+  Standard_EXPORT void SetMode(const Standard_Boolean IsFrenet = Standard_False);
+
   //! Sets a Discrete trihedron
   //! to  perform  the  sweeping
   Standard_EXPORT void SetDiscreteMode();
-  
+
   //! Sets  a  fixed  trihedron  to  perform  the  sweeping
   //! all sections will be parallel.
-  Standard_EXPORT void SetMode (const gp_Ax2& Axe);
-  
+  Standard_EXPORT void SetMode(const gp_Ax2& Axe);
+
   //! Sets a fixed BiNormal  direction to perform the --
   //! sweeping.   Angular   relations   between  the
   //! section(s) and <BiNormal> will be constant
-  Standard_EXPORT void SetMode (const gp_Dir& BiNormal);
-  
+  Standard_EXPORT void SetMode(const gp_Dir& BiNormal);
+
   //! Sets support to the spine to define the BiNormal of
   //! the trihedron, like the normal  to the surfaces.
   //! Warning:  To be effective, Each  edge of the <spine> must
   //! have a representation on one face of<SpineSupport>
-  Standard_EXPORT Standard_Boolean SetMode (const TopoDS_Shape& SpineSupport);
-  
+  Standard_EXPORT Standard_Boolean SetMode(const TopoDS_Shape& SpineSupport);
+
   //! Sets  an  auxiliary  spine  to  define  the Normal
   //! For  each  Point  of  the  Spine  P,  an  Point  Q  is  evalued
   //! on  <AuxiliarySpine>
@@ -118,8 +115,10 @@ public:
   //! on the sweeped shape
   //! - correspondence between spine, and section on the sweeped shape
   //! defined by a vertex of the spine
-  Standard_EXPORT void SetMode (const TopoDS_Wire& AuxiliarySpine, const Standard_Boolean CurvilinearEquivalence, const BRepFill_TypeOfContact KeepContact = BRepFill_NoContact);
-  
+  Standard_EXPORT void SetMode(const TopoDS_Wire&           AuxiliarySpine,
+                               const Standard_Boolean       CurvilinearEquivalence,
+                               const BRepFill_TypeOfContact KeepContact = BRepFill_NoContact);
+
   //! Adds the section Profile to this framework. First and last
   //! sections may be punctual, so the shape Profile may be
   //! both wire and vertex. Correspondent point on spine is
@@ -130,62 +129,76 @@ public:
   //! orthogonal to the spine?s tangent in the correspondent
   //! point. This option has no sense if the section is punctual
   //! (Profile is of type TopoDS_Vertex).
-  Standard_EXPORT void Add (const TopoDS_Shape& Profile, const Standard_Boolean WithContact = Standard_False, const Standard_Boolean WithCorrection = Standard_False);
-  
+  Standard_EXPORT void Add(const TopoDS_Shape&    Profile,
+                           const Standard_Boolean WithContact    = Standard_False,
+                           const Standard_Boolean WithCorrection = Standard_False);
+
   //! Adds the section Profile to this framework.
   //! Correspondent point on the spine is given by Location.
   //! Warning:
   //! To be effective, it is not recommended to combine methods Add and SetLaw.
-  Standard_EXPORT void Add (const TopoDS_Shape& Profile, const TopoDS_Vertex& Location, const Standard_Boolean WithContact = Standard_False, const Standard_Boolean WithCorrection = Standard_False);
-  
+  Standard_EXPORT void Add(const TopoDS_Shape&    Profile,
+                           const TopoDS_Vertex&   Location,
+                           const Standard_Boolean WithContact    = Standard_False,
+                           const Standard_Boolean WithCorrection = Standard_False);
+
   //! Sets the evolution law defined by the wire Profile with
   //! its position (Location, WithContact, WithCorrection
   //! are the same options as in methods Add) and a
   //! homotetic law defined by the function L.
   //! Warning:
   //! To be effective, it is not recommended to combine methods Add and SetLaw.
-  Standard_EXPORT void SetLaw (const TopoDS_Shape& Profile, const Handle(Law_Function)& L, const Standard_Boolean WithContact = Standard_False, const Standard_Boolean WithCorrection = Standard_False);
-  
+  Standard_EXPORT void SetLaw(const TopoDS_Shape&         Profile,
+                              const Handle(Law_Function)& L,
+                              const Standard_Boolean      WithContact    = Standard_False,
+                              const Standard_Boolean      WithCorrection = Standard_False);
+
   //! Sets the evolution law defined by the wire Profile with
   //! its position (Location, WithContact, WithCorrection
   //! are the same options as in methods Add) and a
   //! homotetic law defined by the function L.
   //! Warning:
   //! To be effective, it is not recommended to combine methods Add and SetLaw.
-  Standard_EXPORT void SetLaw (const TopoDS_Shape& Profile, const Handle(Law_Function)& L, const TopoDS_Vertex& Location, const Standard_Boolean WithContact = Standard_False, const Standard_Boolean WithCorrection = Standard_False);
-  
+  Standard_EXPORT void SetLaw(const TopoDS_Shape&         Profile,
+                              const Handle(Law_Function)& L,
+                              const TopoDS_Vertex&        Location,
+                              const Standard_Boolean      WithContact    = Standard_False,
+                              const Standard_Boolean      WithCorrection = Standard_False);
+
   //! Removes the section Profile from this framework.
-  Standard_EXPORT void Delete (const TopoDS_Shape& Profile);
-  
+  Standard_EXPORT void Delete(const TopoDS_Shape& Profile);
+
   //! Returns true if this tool object is ready to build the
   //! shape, i.e. has a definition for the wire section Profile.
   Standard_EXPORT Standard_Boolean IsReady() const;
-  
+
   //! Get a status, when Simulate or Build failed.       It can be
   //! BRepBuilderAPI_PipeDone,
   //! BRepBuilderAPI_PipeNotDone,
   //! BRepBuilderAPI_PlaneNotIntersectGuide,
   //! BRepBuilderAPI_ImpossibleContact.
   Standard_EXPORT BRepBuilderAPI_PipeError GetStatus() const;
-  
+
   //! Sets the following tolerance values
   //! - 3D tolerance Tol3d
   //! - boundary tolerance BoundTol
   //! - angular tolerance TolAngular.
-  Standard_EXPORT void SetTolerance (const Standard_Real Tol3d = 1.0e-4, const Standard_Real BoundTol = 1.0e-4, const Standard_Real TolAngular = 1.0e-2);
-  
+  Standard_EXPORT void SetTolerance(const Standard_Real Tol3d      = 1.0e-4,
+                                    const Standard_Real BoundTol   = 1.0e-4,
+                                    const Standard_Real TolAngular = 1.0e-2);
+
   //! Define the maximum V degree of resulting surface
-  Standard_EXPORT void SetMaxDegree (const Standard_Integer NewMaxDegree);
-  
+  Standard_EXPORT void SetMaxDegree(const Standard_Integer NewMaxDegree);
+
   //! Define the maximum number of spans in V-direction
   //! on resulting surface
-  Standard_EXPORT void SetMaxSegments (const Standard_Integer NewMaxSegments);
-  
+  Standard_EXPORT void SetMaxSegments(const Standard_Integer NewMaxSegments);
+
   //! Set the flag that indicates attempt to approximate
   //! a C1-continuous surface if a swept surface proved
   //! to be C0.
-  Standard_EXPORT void SetForceApproxC1 (const Standard_Boolean ForceApproxC1);
-  
+  Standard_EXPORT void SetForceApproxC1(const Standard_Boolean ForceApproxC1);
+
   //! Sets the transition mode to manage discontinuities on
   //! the swept shape caused by fractures on the spine. The
   //! transition mode can be BRepBuilderAPI_Transformed
@@ -223,8 +236,9 @@ public:
   //! assuredly provide a good result only if a profile was set
   //! with option WithCorrection = True, i.e. it is strictly
   //! orthogonal to the spine.
-  Standard_EXPORT void SetTransitionMode (const BRepBuilderAPI_TransitionMode Mode = BRepBuilderAPI_Transformed);
-  
+  Standard_EXPORT void SetTransitionMode(
+    const BRepBuilderAPI_TransitionMode Mode = BRepBuilderAPI_Transformed);
+
   //! Simulates the resulting shape by calculating its
   //! cross-sections. The spine is divided by this
   //! cross-sections into (NumberOfSection - 1) equal
@@ -234,59 +248,41 @@ public:
   //! This gives a rapid preview of the resulting shape,
   //! which will be obtained using the settings you have provided.
   //! Raises  NotDone if  <me> it is not Ready
-  Standard_EXPORT void Simulate (const Standard_Integer NumberOfSection, TopTools_ListOfShape& Result);
-  
+  Standard_EXPORT void Simulate(const Standard_Integer NumberOfSection,
+                                TopTools_ListOfShape&  Result);
+
   //! Builds the resulting shape (redefined from MakeShape).
-  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void Build(
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+
   //! Transforms the sweeping Shell in Solid.
   //! If a propfile is not closed returns False
   Standard_EXPORT Standard_Boolean MakeSolid();
-  
+
   //! Returns the  TopoDS  Shape of the bottom of the sweep.
   Standard_EXPORT virtual TopoDS_Shape FirstShape() Standard_OVERRIDE;
-  
+
   //! Returns the TopoDS Shape of the top of the sweep.
   Standard_EXPORT virtual TopoDS_Shape LastShape() Standard_OVERRIDE;
-  
+
   //! Returns a list of new shapes generated from the shape
   //! S by the shell-generating algorithm.
   //! This function is redefined from BRepOffsetAPI_MakeShape::Generated.
   //! S can be an edge or a vertex of a given Profile (see methods Add).
-  Standard_EXPORT virtual const TopTools_ListOfShape& Generated (const TopoDS_Shape& S) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
+    Standard_OVERRIDE;
+
   Standard_EXPORT Standard_Real ErrorOnSurface() const;
 
   //! Returns the list of original profiles
-  void Profiles(TopTools_ListOfShape& theProfiles)
-  {
-    myPipe->Profiles(theProfiles);
-  }
+  void Profiles(TopTools_ListOfShape& theProfiles) { myPipe->Profiles(theProfiles); }
 
   //! Returns the spine
-  const TopoDS_Wire& Spine()
-  {
-    return myPipe->Spine();
-  }
+  const TopoDS_Wire& Spine() { return myPipe->Spine(); }
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(BRepFill_PipeShell) myPipe;
-
 };
-
-
-
-
-
-
 
 #endif // _BRepOffsetAPI_MakePipeShell_HeaderFile

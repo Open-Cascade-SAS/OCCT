@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:14 2020 
+// Created on : Sat May 02 12:41:14 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -18,42 +18,30 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationContextReference, Standard_Transient)
 
-//=======================================================================
-//function : StepRepr_RepresentationContextReference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepRepr_RepresentationContextReference::StepRepr_RepresentationContextReference ()
-{
-}
+StepRepr_RepresentationContextReference::StepRepr_RepresentationContextReference() {}
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepRepr_RepresentationContextReference::Init (const Handle(TCollection_HAsciiString)& theContextIdentifier)
+void StepRepr_RepresentationContextReference::Init(
+  const Handle(TCollection_HAsciiString)& theContextIdentifier)
 {
 
   myContextIdentifier = theContextIdentifier;
 }
 
-//=======================================================================
-//function : ContextIdentifier
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_RepresentationContextReference::ContextIdentifier () const
+Handle(TCollection_HAsciiString) StepRepr_RepresentationContextReference::ContextIdentifier() const
 {
   return myContextIdentifier;
 }
 
-//=======================================================================
-//function : SetContextIdentifier
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepRepr_RepresentationContextReference::SetContextIdentifier (const Handle(TCollection_HAsciiString)& theContextIdentifier)
+void StepRepr_RepresentationContextReference::SetContextIdentifier(
+  const Handle(TCollection_HAsciiString)& theContextIdentifier)
 {
   myContextIdentifier = theContextIdentifier;
 }

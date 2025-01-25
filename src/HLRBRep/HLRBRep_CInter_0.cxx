@@ -29,7 +29,6 @@
 #include <HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter.hxx>
 #include <HLRBRep_ExactIntersectionPointOfTheIntPCurvePCurveOfCInter.hxx>
 #include <IntRes2d_Domain.hxx>
- 
 
 #define TheCurve Standard_Address
 #define TheCurve_hxx <Standard_Address.hxx>
@@ -38,36 +37,49 @@
 #define IntCurve_TheProjPCur HLRBRep_TheProjPCurOfCInter
 #define IntCurve_TheProjPCur_hxx <HLRBRep_TheProjPCurOfCInter.hxx>
 #define IntCurve_TheCurveLocatorOfTheProjPCur HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter
-#define IntCurve_TheCurveLocatorOfTheProjPCur_hxx <HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter.hxx>
+#define IntCurve_TheCurveLocatorOfTheProjPCur_hxx                                                  \
+  <HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter.hxx>
 #define IntCurve_TheLocateExtPCOfTheProjPCur HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter
 #define IntCurve_TheLocateExtPCOfTheProjPCur_hxx <HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter.hxx>
 #define IntCurve_TheCurveLocatorOfTheProjPCur HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter
-#define IntCurve_TheCurveLocatorOfTheProjPCur_hxx <HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter.hxx>
+#define IntCurve_TheCurveLocatorOfTheProjPCur_hxx                                                  \
+  <HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter.hxx>
 #define IntCurve_TheLocateExtPCOfTheProjPCur HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter
 #define IntCurve_TheLocateExtPCOfTheProjPCur_hxx <HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter.hxx>
 #define IntCurve_TheIntConicCurve HLRBRep_TheIntConicCurveOfCInter
 #define IntCurve_TheIntConicCurve_hxx <HLRBRep_TheIntConicCurveOfCInter.hxx>
 #define IntCurve_TheIntersectorOfTheIntConicCurve HLRBRep_TheIntersectorOfTheIntConicCurveOfCInter
-#define IntCurve_TheIntersectorOfTheIntConicCurve_hxx <HLRBRep_TheIntersectorOfTheIntConicCurveOfCInter.hxx>
+#define IntCurve_TheIntersectorOfTheIntConicCurve_hxx                                              \
+  <HLRBRep_TheIntersectorOfTheIntConicCurveOfCInter.hxx>
 #define IntCurve_TheIntersectorOfTheIntConicCurve HLRBRep_TheIntersectorOfTheIntConicCurveOfCInter
-#define IntCurve_TheIntersectorOfTheIntConicCurve_hxx <HLRBRep_TheIntersectorOfTheIntConicCurveOfCInter.hxx>
+#define IntCurve_TheIntersectorOfTheIntConicCurve_hxx                                              \
+  <HLRBRep_TheIntersectorOfTheIntConicCurveOfCInter.hxx>
 #define IntCurve_IntConicCurve HLRBRep_IntConicCurveOfCInter
 #define IntCurve_IntConicCurve_hxx <HLRBRep_IntConicCurveOfCInter.hxx>
 #define IntCurve_TheIntPCurvePCurve HLRBRep_TheIntPCurvePCurveOfCInter
 #define IntCurve_TheIntPCurvePCurve_hxx <HLRBRep_TheIntPCurvePCurveOfCInter.hxx>
 #define IntCurve_ThePolygon2dOfTheIntPCurvePCurve HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter
-#define IntCurve_ThePolygon2dOfTheIntPCurvePCurve_hxx <HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter.hxx>
-#define IntCurve_TheDistBetweenPCurvesOfTheIntPCurvePCurve HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter
-#define IntCurve_TheDistBetweenPCurvesOfTheIntPCurvePCurve_hxx <HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter.hxx>
-#define IntCurve_ExactIntersectionPointOfTheIntPCurvePCurve HLRBRep_ExactIntersectionPointOfTheIntPCurvePCurveOfCInter
-#define IntCurve_ExactIntersectionPointOfTheIntPCurvePCurve_hxx <HLRBRep_ExactIntersectionPointOfTheIntPCurvePCurveOfCInter.hxx>
+#define IntCurve_ThePolygon2dOfTheIntPCurvePCurve_hxx                                              \
+  <HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter.hxx>
+#define IntCurve_TheDistBetweenPCurvesOfTheIntPCurvePCurve                                         \
+  HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter
+#define IntCurve_TheDistBetweenPCurvesOfTheIntPCurvePCurve_hxx                                     \
+  <HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter.hxx>
+#define IntCurve_ExactIntersectionPointOfTheIntPCurvePCurve                                        \
+  HLRBRep_ExactIntersectionPointOfTheIntPCurvePCurveOfCInter
+#define IntCurve_ExactIntersectionPointOfTheIntPCurvePCurve_hxx                                    \
+  <HLRBRep_ExactIntersectionPointOfTheIntPCurvePCurveOfCInter.hxx>
 #define IntCurve_ThePolygon2dOfTheIntPCurvePCurve HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter
-#define IntCurve_ThePolygon2dOfTheIntPCurvePCurve_hxx <HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter.hxx>
-#define IntCurve_TheDistBetweenPCurvesOfTheIntPCurvePCurve HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter
-#define IntCurve_TheDistBetweenPCurvesOfTheIntPCurvePCurve_hxx <HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter.hxx>
-#define IntCurve_ExactIntersectionPointOfTheIntPCurvePCurve HLRBRep_ExactIntersectionPointOfTheIntPCurvePCurveOfCInter
-#define IntCurve_ExactIntersectionPointOfTheIntPCurvePCurve_hxx <HLRBRep_ExactIntersectionPointOfTheIntPCurvePCurveOfCInter.hxx>
+#define IntCurve_ThePolygon2dOfTheIntPCurvePCurve_hxx                                              \
+  <HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter.hxx>
+#define IntCurve_TheDistBetweenPCurvesOfTheIntPCurvePCurve                                         \
+  HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter
+#define IntCurve_TheDistBetweenPCurvesOfTheIntPCurvePCurve_hxx                                     \
+  <HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter.hxx>
+#define IntCurve_ExactIntersectionPointOfTheIntPCurvePCurve                                        \
+  HLRBRep_ExactIntersectionPointOfTheIntPCurvePCurveOfCInter
+#define IntCurve_ExactIntersectionPointOfTheIntPCurvePCurve_hxx                                    \
+  <HLRBRep_ExactIntersectionPointOfTheIntPCurvePCurveOfCInter.hxx>
 #define IntCurve_IntCurveCurveGen HLRBRep_CInter
 #define IntCurve_IntCurveCurveGen_hxx <HLRBRep_CInter.hxx>
 #include "../IntCurve/IntCurve_IntCurveCurveGen.gxx"
-

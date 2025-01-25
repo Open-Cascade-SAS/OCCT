@@ -31,59 +31,66 @@ class Geom2dInt_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfGInter;
 class IntRes2d_Domain;
 class gp_Pnt2d;
 
-
-
-class Geom2dInt_TheIntersectorOfTheIntConicCurveOfGInter  : public IntRes2d_Intersection
+class Geom2dInt_TheIntersectorOfTheIntConicCurveOfGInter : public IntRes2d_Intersection
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor.
   Standard_EXPORT Geom2dInt_TheIntersectorOfTheIntConicCurveOfGInter();
-  
+
   //! Intersection between an implicit curve and
   //! a parametrised curve.
   //! The exception ConstructionError is raised if the domain
   //! of the parametrised curve does not verify HasFirstPoint
   //! and HasLastPoint return True.
-  Standard_EXPORT Geom2dInt_TheIntersectorOfTheIntConicCurveOfGInter(const IntCurve_IConicTool& ITool, const IntRes2d_Domain& Dom1, const Adaptor2d_Curve2d& PCurve, const IntRes2d_Domain& Dom2, const Standard_Real TolConf, const Standard_Real Tol);
-  
+  Standard_EXPORT Geom2dInt_TheIntersectorOfTheIntConicCurveOfGInter(
+    const IntCurve_IConicTool& ITool,
+    const IntRes2d_Domain&     Dom1,
+    const Adaptor2d_Curve2d&   PCurve,
+    const IntRes2d_Domain&     Dom2,
+    const Standard_Real        TolConf,
+    const Standard_Real        Tol);
+
   //! Intersection between an implicit curve and
   //! a parametrised curve.
   //! The exception ConstructionError is raised if the domain
   //! of the parametrised curve does not verify HasFirstPoint
   //! and HasLastPoint return True.
-  Standard_EXPORT void Perform (const IntCurve_IConicTool& ITool, const IntRes2d_Domain& Dom1, const Adaptor2d_Curve2d& PCurve, const IntRes2d_Domain& Dom2, const Standard_Real TolConf, const Standard_Real Tol);
-  
-  Standard_EXPORT Standard_Real FindU (const Standard_Real parameter, gp_Pnt2d& point, const Adaptor2d_Curve2d& TheParCurev, const IntCurve_IConicTool& TheImpTool) const;
-  
-  Standard_EXPORT Standard_Real FindV (const Standard_Real parameter, gp_Pnt2d& point, const IntCurve_IConicTool& TheImpTool, const Adaptor2d_Curve2d& ParCurve, const IntRes2d_Domain& TheParCurveDomain, const Standard_Real V0, const Standard_Real V1, const Standard_Real Tolerance) const;
-  
-  Standard_EXPORT void And_Domaine_Objet1_Intersections (const IntCurve_IConicTool& TheImpTool, const Adaptor2d_Curve2d& TheParCurve, const IntRes2d_Domain& TheImpCurveDomain, const IntRes2d_Domain& TheParCurveDomain, Standard_Integer& NbResultats, TColStd_Array1OfReal& Inter2_And_Domain2, TColStd_Array1OfReal& Inter1, TColStd_Array1OfReal& Resultat1, TColStd_Array1OfReal& Resultat2, const Standard_Real EpsNul) const;
+  Standard_EXPORT void Perform(const IntCurve_IConicTool& ITool,
+                               const IntRes2d_Domain&     Dom1,
+                               const Adaptor2d_Curve2d&   PCurve,
+                               const IntRes2d_Domain&     Dom2,
+                               const Standard_Real        TolConf,
+                               const Standard_Real        Tol);
 
+  Standard_EXPORT Standard_Real FindU(const Standard_Real        parameter,
+                                      gp_Pnt2d&                  point,
+                                      const Adaptor2d_Curve2d&   TheParCurev,
+                                      const IntCurve_IConicTool& TheImpTool) const;
 
+  Standard_EXPORT Standard_Real FindV(const Standard_Real        parameter,
+                                      gp_Pnt2d&                  point,
+                                      const IntCurve_IConicTool& TheImpTool,
+                                      const Adaptor2d_Curve2d&   ParCurve,
+                                      const IntRes2d_Domain&     TheParCurveDomain,
+                                      const Standard_Real        V0,
+                                      const Standard_Real        V1,
+                                      const Standard_Real        Tolerance) const;
 
+  Standard_EXPORT void And_Domaine_Objet1_Intersections(const IntCurve_IConicTool& TheImpTool,
+                                                        const Adaptor2d_Curve2d&   TheParCurve,
+                                                        const IntRes2d_Domain& TheImpCurveDomain,
+                                                        const IntRes2d_Domain& TheParCurveDomain,
+                                                        Standard_Integer&      NbResultats,
+                                                        TColStd_Array1OfReal&  Inter2_And_Domain2,
+                                                        TColStd_Array1OfReal&  Inter1,
+                                                        TColStd_Array1OfReal&  Resultat1,
+                                                        TColStd_Array1OfReal&  Resultat2,
+                                                        const Standard_Real    EpsNul) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Geom2dInt_TheIntersectorOfTheIntConicCurveOfGInter_HeaderFile

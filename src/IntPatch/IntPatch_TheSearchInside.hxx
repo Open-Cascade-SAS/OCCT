@@ -25,52 +25,46 @@ class Adaptor3d_TopolTool;
 class IntPatch_HInterTool;
 class IntPatch_TheSurfFunction;
 
-class IntPatch_TheSearchInside 
+class IntPatch_TheSearchInside
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT IntPatch_TheSearchInside();
-  
-  Standard_EXPORT IntPatch_TheSearchInside(IntPatch_TheSurfFunction& F, const Handle(Adaptor3d_Surface)& Surf, const Handle(Adaptor3d_TopolTool)& T, const Standard_Real Epsilon);
-  
-  Standard_EXPORT void Perform (IntPatch_TheSurfFunction& F, const Handle(Adaptor3d_Surface)& Surf, const Handle(Adaptor3d_TopolTool)& T, const Standard_Real Epsilon);
-  
-  Standard_EXPORT void Perform (IntPatch_TheSurfFunction& F, const Handle(Adaptor3d_Surface)& Surf, const Standard_Real UStart, const Standard_Real VStart);
-  
-    Standard_Boolean IsDone() const;
-  
+
+  Standard_EXPORT IntPatch_TheSearchInside(IntPatch_TheSurfFunction&          F,
+                                           const Handle(Adaptor3d_Surface)&   Surf,
+                                           const Handle(Adaptor3d_TopolTool)& T,
+                                           const Standard_Real                Epsilon);
+
+  Standard_EXPORT void Perform(IntPatch_TheSurfFunction&          F,
+                               const Handle(Adaptor3d_Surface)&   Surf,
+                               const Handle(Adaptor3d_TopolTool)& T,
+                               const Standard_Real                Epsilon);
+
+  Standard_EXPORT void Perform(IntPatch_TheSurfFunction&        F,
+                               const Handle(Adaptor3d_Surface)& Surf,
+                               const Standard_Real              UStart,
+                               const Standard_Real              VStart);
+
+  Standard_Boolean IsDone() const;
+
   //! Returns the number of points.
   //! The exception NotDone if raised if IsDone
   //! returns False.
-    Standard_Integer NbPoints() const;
-  
+  Standard_Integer NbPoints() const;
+
   //! Returns the point of range Index.
   //! The exception NotDone if raised if IsDone
   //! returns False.
   //! The exception OutOfRange if raised if
   //! Index <= 0 or Index > NbPoints.
-    const IntSurf_InteriorPoint& Value (const Standard_Integer Index) const;
-
-
-
+  const IntSurf_InteriorPoint& Value(const Standard_Integer Index) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Boolean done;
+  Standard_Boolean                done;
   IntSurf_SequenceOfInteriorPoint list;
-
-
 };
 
 #define ThePSurface Handle(Adaptor3d_Surface)
@@ -102,8 +96,5 @@ private:
 #undef TheFunction_hxx
 #undef IntStart_SearchInside
 #undef IntStart_SearchInside_hxx
-
-
-
 
 #endif // _IntPatch_TheSearchInside_HeaderFile

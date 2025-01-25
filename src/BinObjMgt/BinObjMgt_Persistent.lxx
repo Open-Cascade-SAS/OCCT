@@ -13,111 +13,108 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define BP_HEADSIZE        ((Standard_Integer)(3 * sizeof(Standard_Integer)))
-#define BP_PIECESIZE       102400
+#define BP_HEADSIZE ((Standard_Integer)(3 * sizeof(Standard_Integer)))
+#define BP_PIECESIZE 102400
 
 //=======================================================================
-//function : SetId
-//purpose  : Sets the Id of the object
+// function : SetId
+// purpose  : Sets the Id of the object
 //=======================================================================
 
-inline void BinObjMgt_Persistent::SetId (const Standard_Integer theId)
+inline void BinObjMgt_Persistent::SetId(const Standard_Integer theId)
 {
-  ((Standard_Integer*) myData(1)) [1] = theId;
+  ((Standard_Integer*)myData(1))[1] = theId;
 }
 
 //=======================================================================
-//function : SetTypeId
-//purpose  : Sets the Id of the type of the object
+// function : SetTypeId
+// purpose  : Sets the Id of the type of the object
 //=======================================================================
 
-inline void BinObjMgt_Persistent::SetTypeId (const Standard_Integer theTypeId)
+inline void BinObjMgt_Persistent::SetTypeId(const Standard_Integer theTypeId)
 {
-  ((Standard_Integer*) myData(1)) [0] = theTypeId;
+  ((Standard_Integer*)myData(1))[0] = theTypeId;
   myStreamStart.Nullify();
 }
 
 //=======================================================================
-//function : Id
-//purpose  : Returns the Id of the object
+// function : Id
+// purpose  : Returns the Id of the object
 //=======================================================================
 
-inline Standard_Integer BinObjMgt_Persistent::Id () const
+inline Standard_Integer BinObjMgt_Persistent::Id() const
 {
-  return ((Standard_Integer*) myData(1)) [1];
+  return ((Standard_Integer*)myData(1))[1];
 }
 
 //=======================================================================
-//function : TypeId
-//purpose  : Returns the Id of the type of the object
+// function : TypeId
+// purpose  : Returns the Id of the type of the object
 //=======================================================================
 
-inline Standard_Integer BinObjMgt_Persistent::TypeId () const
+inline Standard_Integer BinObjMgt_Persistent::TypeId() const
 {
-  return ((Standard_Integer*) myData(1)) [0];
+  return ((Standard_Integer*)myData(1))[0];
 }
 
 //=======================================================================
-//function : Length
-//purpose  : Returns the length of data
+// function : Length
+// purpose  : Returns the length of data
 //=======================================================================
 
-inline Standard_Integer BinObjMgt_Persistent::Length () const
+inline Standard_Integer BinObjMgt_Persistent::Length() const
 {
   return mySize - BP_HEADSIZE;
 }
 
 //=======================================================================
-//function : operator <<
-//purpose  : 
+// function : operator <<
+// purpose  :
 //=======================================================================
 
-inline Standard_OStream& operator << (Standard_OStream& theOS,
-				      BinObjMgt_Persistent& theObj)
+inline Standard_OStream& operator<<(Standard_OStream& theOS, BinObjMgt_Persistent& theObj)
 {
-  return theObj.Write (theOS);
+  return theObj.Write(theOS);
 }
 
 //=======================================================================
-//function : operator >>
-//purpose  : 
+// function : operator >>
+// purpose  :
 //=======================================================================
 
-inline Standard_IStream& operator >> (Standard_IStream& theIS,
-				      BinObjMgt_Persistent& theObj)
+inline Standard_IStream& operator>>(Standard_IStream& theIS, BinObjMgt_Persistent& theObj)
 {
-  return theObj.Read (theIS);
+  return theObj.Read(theIS);
 }
 
 //=======================================================================
-//function : Position
-//purpose  : Tells the current position for get/put
+// function : Position
+// purpose  : Tells the current position for get/put
 //=======================================================================
 
 inline Standard_Integer BinObjMgt_Persistent::Position() const
 {
-  return (myIndex-1) * BP_PIECESIZE + myOffset;
+  return (myIndex - 1) * BP_PIECESIZE + myOffset;
 }
 
 //=======================================================================
-//function : SetPosition
-//purpose  : Sets the current position for get/put.
+// function : SetPosition
+// purpose  : Sets the current position for get/put.
 //           Resets an error state depending on the validity of thePos.
 //           Returns the new state (value of IsOK())
 //=======================================================================
 
-inline Standard_Boolean BinObjMgt_Persistent::SetPosition
-  (const Standard_Integer thePos) const
+inline Standard_Boolean BinObjMgt_Persistent::SetPosition(const Standard_Integer thePos) const
 {
-  ((BinObjMgt_Persistent*)this)->myIndex = thePos / BP_PIECESIZE + 1;
-  ((BinObjMgt_Persistent*)this)->myOffset = thePos % BP_PIECESIZE;
+  ((BinObjMgt_Persistent*)this)->myIndex   = thePos / BP_PIECESIZE + 1;
+  ((BinObjMgt_Persistent*)this)->myOffset  = thePos % BP_PIECESIZE;
   ((BinObjMgt_Persistent*)this)->myIsError = thePos > mySize || thePos < BP_HEADSIZE;
   return !myIsError;
 }
 
 //=======================================================================
-//function : Truncate
-//purpose  : Truncates the buffer by current position,
+// function : Truncate
+// purpose  : Truncates the buffer by current position,
 //           i.e. updates mySize
 //=======================================================================
 
@@ -127,8 +124,8 @@ inline void BinObjMgt_Persistent::Truncate()
 }
 
 //=======================================================================
-//function : IsError
-//purpose  : Indicates an error after Get methods or SetPosition
+// function : IsError
+// purpose  : Indicates an error after Get methods or SetPosition
 //=======================================================================
 
 inline Standard_Boolean BinObjMgt_Persistent::IsError() const
@@ -137,8 +134,8 @@ inline Standard_Boolean BinObjMgt_Persistent::IsError() const
 }
 
 //=======================================================================
-//function : IsOK
-//purpose  : Indicates a good state after Get methods or SetPosition
+// function : IsOK
+// purpose  : Indicates a good state after Get methods or SetPosition
 //=======================================================================
 
 inline Standard_Boolean BinObjMgt_Persistent::IsOK() const
@@ -147,87 +144,86 @@ inline Standard_Boolean BinObjMgt_Persistent::IsOK() const
 }
 
 //=======================================================================
-//function : alignOffset
-//purpose  : Aligns myOffset to the given size;
+// function : alignOffset
+// purpose  : Aligns myOffset to the given size;
 //           enters the next piece if the end of the current one is reached;
 //           toClear==true means to fill unused space by 0
 //=======================================================================
 
-inline void BinObjMgt_Persistent::alignOffset
-  (const Standard_Integer theSize,
-   const Standard_Boolean toClear) const
+inline void BinObjMgt_Persistent::alignOffset(const Standard_Integer theSize,
+                                              const Standard_Boolean toClear) const
 {
-  unsigned alignMask = theSize - 1;
-  Standard_Integer anOffset = (myOffset + alignMask) & ~alignMask;
+  unsigned         alignMask = theSize - 1;
+  Standard_Integer anOffset  = (myOffset + alignMask) & ~alignMask;
 
-  if (anOffset > myOffset) {
+  if (anOffset > myOffset)
+  {
     if (toClear && anOffset <= BP_PIECESIZE)
-      memset ( ((char*)myData(myIndex)) + myOffset, 0, anOffset - myOffset);
+      memset(((char*)myData(myIndex)) + myOffset, 0, anOffset - myOffset);
     ((BinObjMgt_Persistent*)this)->myOffset = anOffset;
   }
 
   // ensure there is a room for at least one item in the current piece
-  if (myOffset >= BP_PIECESIZE) {
+  if (myOffset >= BP_PIECESIZE)
+  {
     ((BinObjMgt_Persistent*)this)->myIndex++;
     ((BinObjMgt_Persistent*)this)->myOffset = 0;
   }
 }
 
 //=======================================================================
-//function : prepareForPut
-//purpose  : Prepares the room for theSize bytes;
+// function : prepareForPut
+// purpose  : Prepares the room for theSize bytes;
 //           returns the number of pieces except for the current one
 //           are to be occupied
 //=======================================================================
 
-inline Standard_Integer BinObjMgt_Persistent::prepareForPut
-  (const Standard_Integer theSize)
+inline Standard_Integer BinObjMgt_Persistent::prepareForPut(const Standard_Integer theSize)
 {
   Standard_Integer nbPieces = (myOffset + theSize - 1) / BP_PIECESIZE;
-  Standard_Integer nbToAdd = myIndex + nbPieces - myData.Length();
+  Standard_Integer nbToAdd  = myIndex + nbPieces - myData.Length();
   if (nbToAdd > 0)
     // create needed pieces
-    incrementData (nbToAdd);
+    incrementData(nbToAdd);
   Standard_Integer aNewPosition = Position() + theSize;
-  if (aNewPosition > mySize) mySize = aNewPosition;
+  if (aNewPosition > mySize)
+    mySize = aNewPosition;
   return nbPieces;
 }
 
 //=======================================================================
-//function : noMoreData
-//purpose  : Checks if there is no more data of the given size starting
+// function : noMoreData
+// purpose  : Checks if there is no more data of the given size starting
 //           from the current position in myData
 //=======================================================================
 
-inline Standard_Boolean BinObjMgt_Persistent::noMoreData
-  (const Standard_Integer theSize) const
+inline Standard_Boolean BinObjMgt_Persistent::noMoreData(const Standard_Integer theSize) const
 {
   ((BinObjMgt_Persistent*)this)->myIsError = Position() + theSize > mySize;
   return myIsError;
 }
 
 //=======================================================================
-//function : PutBoolean
-//purpose  : 
+// function : PutBoolean
+// purpose  :
 //=======================================================================
 
-inline BinObjMgt_Persistent& BinObjMgt_Persistent::PutBoolean
-  (const Standard_Boolean theValue)
+inline BinObjMgt_Persistent& BinObjMgt_Persistent::PutBoolean(const Standard_Boolean theValue)
 {
-  return PutInteger ((Standard_Integer) theValue);
+  return PutInteger((Standard_Integer)theValue);
 }
 
 //=======================================================================
-//function : GetBoolean
-//purpose  : 
+// function : GetBoolean
+// purpose  :
 //=======================================================================
 
-inline const BinObjMgt_Persistent& BinObjMgt_Persistent::GetBoolean
-  (Standard_Boolean& theValue) const
+inline const BinObjMgt_Persistent& BinObjMgt_Persistent::GetBoolean(
+  Standard_Boolean& theValue) const
 {
-//  Standard_Integer anIntVal = (Standard_Integer) theValue;
+  //  Standard_Integer anIntVal = (Standard_Integer) theValue;
   Standard_Integer anIntVal;
-  GetInteger (anIntVal);
+  GetInteger(anIntVal);
   theValue = anIntVal != 0;
   return *this;
 }

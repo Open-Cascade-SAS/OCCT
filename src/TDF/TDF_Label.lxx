@@ -16,7 +16,7 @@
 //              --------------
 
 // Version:     0.0
-//Version Date            Purpose
+// Version Date            Purpose
 //              0.0     Feb  7 1997     Creation
 
 #include <TDF_LabelNode.hxx>
@@ -25,63 +25,93 @@
 
 namespace std
 {
-  template<>
-  struct hash<TDF_Label>
+template <>
+struct hash<TDF_Label>
+{
+  size_t operator()(const TDF_Label& theNode) const
   {
-    size_t operator()(const TDF_Label& theNode) const
-    {
-      return std::hash<TDF_LabelNodePtr>{}(theNode.myLabelNode);
-    }
-  };
-}
+    return std::hash<TDF_LabelNodePtr>{}(theNode.myLabelNode);
+  }
+};
+} // namespace std
 
 inline TDF_Label::TDF_Label()
-:myLabelNode(NULL)
-{}
+    : myLabelNode(NULL)
+{
+}
 
 inline TDF_Label::TDF_Label(const TDF_LabelNodePtr& aNode)
-:myLabelNode(aNode)
-{}
+    : myLabelNode(aNode)
+{
+}
 
 inline void TDF_Label::Nullify()
-{ myLabelNode = NULL; }
+{
+  myLabelNode = NULL;
+}
 
 inline Standard_Boolean TDF_Label::IsRoot() const
-{ return myLabelNode->IsRoot(); }
+{
+  return myLabelNode->IsRoot();
+}
 
 inline Standard_Boolean TDF_Label::IsNull() const
-{ return (myLabelNode == NULL); }
+{
+  return (myLabelNode == NULL);
+}
 
 inline Standard_Boolean TDF_Label::IsImported() const
-{ return myLabelNode->IsImported(); }
+{
+  return myLabelNode->IsImported();
+}
 
 inline Standard_Boolean TDF_Label::IsEqual(const TDF_Label& aLabel) const
-{ return (myLabelNode == aLabel.myLabelNode); }
+{
+  return (myLabelNode == aLabel.myLabelNode);
+}
 
 inline Standard_Boolean TDF_Label::IsDifferent(const TDF_Label& aLabel) const
-{ return (myLabelNode != aLabel.myLabelNode); }
+{
+  return (myLabelNode != aLabel.myLabelNode);
+}
 
 inline Standard_Integer TDF_Label::Tag() const
-{ return myLabelNode->Tag(); }
+{
+  return myLabelNode->Tag();
+}
 
 inline const TDF_Label TDF_Label::Father() const
-{ return TDF_Label(myLabelNode->Father()); }
+{
+  return TDF_Label(myLabelNode->Father());
+}
 
 inline Standard_Boolean TDF_Label::HasChild() const
-{ return (myLabelNode->FirstChild() != NULL); }
+{
+  return (myLabelNode->FirstChild() != NULL);
+}
 
 inline Standard_Boolean TDF_Label::AttributesModified() const
-{ return myLabelNode->AttributesModified(); }
+{
+  return myLabelNode->AttributesModified();
+}
 
 inline Standard_Boolean TDF_Label::MayBeModified() const
-{ return myLabelNode->MayBeModified(); }
+{
+  return myLabelNode->MayBeModified();
+}
 
 inline Handle(TDF_Data) TDF_Label::Data() const
-{ return myLabelNode->Data(); }
+{
+  return myLabelNode->Data();
+}
 
-inline Standard_OStream& operator << (Standard_OStream& anOS,
-                                      const TDF_Label& aLab)
-{ aLab.Dump(anOS); return anOS; }
+inline Standard_OStream& operator<<(Standard_OStream& anOS, const TDF_Label& aLab)
+{
+  aLab.Dump(anOS);
+  return anOS;
+}
 
-inline TDF_Label TDF_Label::NewChild () const
-{ return TDF_TagSource::NewChild(*this); }
+inline TDF_Label TDF_Label::NewChild() const
+{
+  return TDF_TagSource::NewChild(*this);
+}

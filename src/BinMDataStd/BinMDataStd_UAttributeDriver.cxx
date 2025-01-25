@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMDataStd_UAttributeDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <Message_Messenger.hxx>
@@ -21,53 +20,43 @@
 #include <TDataStd_UAttribute.hxx>
 #include <TDF_Attribute.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_UAttributeDriver,BinMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_UAttributeDriver, BinMDF_ADriver)
 
-//=======================================================================
-//function : BinMDataStd_UAttributeDriver
-//purpose  : Constructor
-//=======================================================================
-BinMDataStd_UAttributeDriver::BinMDataStd_UAttributeDriver
-                        (const Handle(Message_Messenger)& theMsgDriver)
-      : BinMDF_ADriver (theMsgDriver, NULL)
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+BinMDataStd_UAttributeDriver::BinMDataStd_UAttributeDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : BinMDF_ADriver(theMsgDriver, NULL)
+{
+}
+
+//=================================================================================================
+
 Handle(TDF_Attribute) BinMDataStd_UAttributeDriver::NewEmpty() const
 {
   return (new TDataStd_UAttribute());
 }
 
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-Standard_Boolean BinMDataStd_UAttributeDriver::Paste
-                                (const BinObjMgt_Persistent&  theSource,
-                                 const Handle(TDF_Attribute)& theTarget,
-                                 BinObjMgt_RRelocationTable&  ) const
+//=================================================================================================
+
+Standard_Boolean BinMDataStd_UAttributeDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                     const Handle(TDF_Attribute)& theTarget,
+                                                     BinObjMgt_RRelocationTable&) const
 {
-  Handle(TDataStd_UAttribute) anUAttr =
-    Handle(TDataStd_UAttribute)::DownCast (theTarget);
-  Standard_GUID aGUID;
-  Standard_Boolean ok = theSource >> aGUID;
+  Handle(TDataStd_UAttribute) anUAttr = Handle(TDataStd_UAttribute)::DownCast(theTarget);
+  Standard_GUID               aGUID;
+  Standard_Boolean            ok = theSource >> aGUID;
   if (ok)
-    anUAttr -> SetID (aGUID);
+    anUAttr->SetID(aGUID);
   return ok;
 }
 
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BinMDataStd_UAttributeDriver::Paste(const Handle(TDF_Attribute)& theSource,
                                          BinObjMgt_Persistent&        theTarget,
-                                         BinObjMgt_SRelocationTable&  ) const
+                                         BinObjMgt_SRelocationTable&) const
 {
-  Handle(TDataStd_UAttribute) anUAttr =
-    Handle(TDataStd_UAttribute)::DownCast(theSource);
+  Handle(TDataStd_UAttribute) anUAttr = Handle(TDataStd_UAttribute)::DownCast(theSource);
   theTarget << anUAttr->ID();
 }

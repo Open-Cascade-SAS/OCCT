@@ -31,11 +31,9 @@ class TopoDS_Face;
 class BRepExtrema_DistanceSS
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
 public: //! @name Constructor from two shapes
-
   //! Computes the distance between two Shapes (face edge vertex).
   //! @param theS1 - First shape
   //! @param theS2 - Second shape
@@ -48,94 +46,88 @@ public: //! @name Constructor from two shapes
   //!                     (default is MINMAX, applied only to point-face extrema)
   //! @param theExtAlgo - Specifies which extrema algorithm is to be used
   //!                     (default is Grad algo, applied only to point-face extrema)
-  BRepExtrema_DistanceSS(const TopoDS_Shape& theS1, const TopoDS_Shape& theS2,
-                         const Bnd_Box& theBox1, const Bnd_Box& theBox2,
-                         const Standard_Real theDstRef,
-                         const Standard_Real theDeflection = Precision::Confusion(),
-                         const Extrema_ExtFlag theExtFlag = Extrema_ExtFlag_MINMAX,
-                         const Extrema_ExtAlgo theExtAlgo = Extrema_ExtAlgo_Grad)
-  :
-    myDstRef(theDstRef),
-    myModif(Standard_False),
-    myEps(theDeflection),
-    myFlag(theExtFlag),
-    myAlgo(theExtAlgo)
+  BRepExtrema_DistanceSS(const TopoDS_Shape&   theS1,
+                         const TopoDS_Shape&   theS2,
+                         const Bnd_Box&        theBox1,
+                         const Bnd_Box&        theBox2,
+                         const Standard_Real   theDstRef,
+                         const Standard_Real   theDeflection = Precision::Confusion(),
+                         const Extrema_ExtFlag theExtFlag    = Extrema_ExtFlag_MINMAX,
+                         const Extrema_ExtAlgo theExtAlgo    = Extrema_ExtAlgo_Grad)
+      : myDstRef(theDstRef),
+        myModif(Standard_False),
+        myEps(theDeflection),
+        myFlag(theExtFlag),
+        myAlgo(theExtAlgo)
   {
     Perform(theS1, theS2, theBox1, theBox2);
   }
 
 public: //! @name Results
-
   //! Returns true if the distance has been computed, false otherwise.
-  Standard_Boolean IsDone() const
-  {
-    return myModif;
-  }
+  Standard_Boolean IsDone() const { return myModif; }
 
   //! Returns the distance value.
-  Standard_Real DistValue() const
-  {
-    return myDstRef;
-  }
+  Standard_Real DistValue() const { return myDstRef; }
 
   //! Returns the list of solutions on the first shape.
-  const BRepExtrema_SeqOfSolution& Seq1Value() const
-  {
-    return mySeqSolShape1;
-  }
+  const BRepExtrema_SeqOfSolution& Seq1Value() const { return mySeqSolShape1; }
 
   //! Returns the list of solutions on the second shape.
-  const BRepExtrema_SeqOfSolution& Seq2Value() const
-  {
-    return mySeqSolShape2;
-  }
+  const BRepExtrema_SeqOfSolution& Seq2Value() const { return mySeqSolShape2; }
 
 private: //! @name private methods performing the search
-
   //! Computes the distance between two Shapes (face edge vertex).
   //! General method to sort out the shape types and call the specific method.
-  Standard_EXPORT void Perform(const TopoDS_Shape& theS1, const TopoDS_Shape& theS2,
-                               const Bnd_Box& theBox1,    const Bnd_Box& theBox2);
+  Standard_EXPORT void Perform(const TopoDS_Shape& theS1,
+                               const TopoDS_Shape& theS2,
+                               const Bnd_Box&      theBox1,
+                               const Bnd_Box&      theBox2);
 
   //! Computes the distance between two vertices.
-  void Perform(const TopoDS_Vertex& S1, const TopoDS_Vertex& S2,
+  void Perform(const TopoDS_Vertex&       S1,
+               const TopoDS_Vertex&       S2,
                BRepExtrema_SeqOfSolution& theSeqSolShape1,
                BRepExtrema_SeqOfSolution& theSeqSolShape2);
 
   //! Computes the minimum distance between a vertex and an edge.
-  void Perform(const TopoDS_Vertex& theS1, const TopoDS_Edge& theS2,
+  void Perform(const TopoDS_Vertex&       theS1,
+               const TopoDS_Edge&         theS2,
                BRepExtrema_SeqOfSolution& theSeqSolShape1,
                BRepExtrema_SeqOfSolution& theSeqSolShape2);
 
   //! Computes the minimum distance between a vertex and a face.
-  void Perform(const TopoDS_Vertex& theS1, const TopoDS_Face& theS2,
+  void Perform(const TopoDS_Vertex&       theS1,
+               const TopoDS_Face&         theS2,
                BRepExtrema_SeqOfSolution& theSeqSolShape1,
                BRepExtrema_SeqOfSolution& theSeqSolShape2);
 
   //! Computes the minimum distance between two edges.
-  void Perform(const TopoDS_Edge& theS1, const TopoDS_Edge& theS2,
+  void Perform(const TopoDS_Edge&         theS1,
+               const TopoDS_Edge&         theS2,
                BRepExtrema_SeqOfSolution& theSeqSolShape1,
                BRepExtrema_SeqOfSolution& theSeqSolShape2);
 
   //! Computes the minimum distance between an edge and a face.
-  void Perform(const TopoDS_Edge& theS1, const TopoDS_Face& theS2,
+  void Perform(const TopoDS_Edge&         theS1,
+               const TopoDS_Face&         theS2,
                BRepExtrema_SeqOfSolution& theSeqSolShape1,
                BRepExtrema_SeqOfSolution& theSeqSolShape2);
 
   //! Computes the minimum distance between two faces.
-  void Perform(const TopoDS_Face& theS1, const TopoDS_Face& theS2,
+  void Perform(const TopoDS_Face&         theS1,
+               const TopoDS_Face&         theS2,
                BRepExtrema_SeqOfSolution& theSeqSolShape1,
                BRepExtrema_SeqOfSolution& theSeqSolShape2);
 
-private: //! @name Fields
-
+private:                                    //! @name Fields
   BRepExtrema_SeqOfSolution mySeqSolShape1; //!< Solutions on the first shape
   BRepExtrema_SeqOfSolution mySeqSolShape2; //!< Solutions on the second shape
-  Standard_Real myDstRef;   //!< The minimal distance found
-  Standard_Boolean myModif; //!< Flag indicating whether the solution was improved or not
-  Standard_Real myEps;      //!< Deflection
-  Extrema_ExtFlag myFlag;   //!< Extrema flag indicating what solutions to look for
-  Extrema_ExtAlgo myAlgo;   //!< Extrema algo to be used to look for solutions
+  Standard_Real             myDstRef;       //!< The minimal distance found
+  Standard_Boolean          myModif; //!< Flag indicating whether the solution was improved or not
+  Standard_Real             myEps;   //!< Deflection
+  Extrema_ExtFlag           myFlag;  //!< Extrema flag indicating what solutions to look for
+  Extrema_ExtAlgo           myAlgo;  //!< Extrema algo to be used to look for solutions
 };
 
 #endif

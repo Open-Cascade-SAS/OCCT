@@ -27,48 +27,31 @@ class StepGeom_OrientedSurface;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write tool for OrientedSurface
-class RWStepGeom_RWOrientedSurface 
+class RWStepGeom_RWOrientedSurface
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_HIDDEN RWStepGeom_RWOrientedSurface();
-  
+
   //! Reads OrientedSurface
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepGeom_OrientedSurface)& ent) const;
-  
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&  data,
+                                const Standard_Integer                  num,
+                                Handle(Interface_Check)&                ach,
+                                const Handle(StepGeom_OrientedSurface)& ent) const;
+
   //! Writes OrientedSurface
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepGeom_OrientedSurface)& ent) const;
-  
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                    SW,
+                                 const Handle(StepGeom_OrientedSurface)& ent) const;
+
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepGeom_OrientedSurface)& ent, Interface_EntityIterator& iter) const;
-
-
-
+  Standard_HIDDEN void Share(const Handle(StepGeom_OrientedSurface)& ent,
+                             Interface_EntityIterator&               iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepGeom_RWOrientedSurface_HeaderFile

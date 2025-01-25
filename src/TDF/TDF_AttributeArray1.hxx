@@ -21,5 +21,4 @@
 
 typedef NCollection_Array1<Handle(TDF_Attribute)> TDF_AttributeArray1;
 
-
 #endif

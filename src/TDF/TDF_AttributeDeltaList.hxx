@@ -19,8 +19,7 @@
 #include <TDF_AttributeDelta.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<Handle(TDF_AttributeDelta)> TDF_AttributeDeltaList;
+typedef NCollection_List<Handle(TDF_AttributeDelta)>           TDF_AttributeDeltaList;
 typedef NCollection_List<Handle(TDF_AttributeDelta)>::Iterator TDF_ListIteratorOfAttributeDeltaList;
-
 
 #endif

@@ -27,8 +27,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_Protocol, IGESData_Protocol)
 
-IGESDefs_Protocol::IGESDefs_Protocol()
-{}
+IGESDefs_Protocol::IGESDefs_Protocol() {}
 
 Standard_Integer IGESDefs_Protocol::NbResources() const
 {

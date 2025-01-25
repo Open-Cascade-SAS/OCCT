@@ -19,12 +19,12 @@
 
 #include <Graphic3d_Aspects.hxx>
 
-//! This class defines graphic attributes for opaque 3d primitives (polygons, triangles, quadrilaterals).
+//! This class defines graphic attributes for opaque 3d primitives (polygons, triangles,
+//! quadrilaterals).
 class Graphic3d_AspectFillArea3d : public Graphic3d_Aspects
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_AspectFillArea3d, Graphic3d_Aspects)
 public:
-
   //! Creates a context table for fill area primitives defined with the following default values:
   //!
   //! InteriorStyle : Aspect_IS_EMPTY
@@ -41,25 +41,24 @@ public:
   //! The edges are not drawn.
   //! Polygon offset parameters: mode = Aspect_POM_None, factor = 1., units = 0.
   Standard_EXPORT Graphic3d_AspectFillArea3d();
-  
+
   //! Creates a context table for fill area primitives defined with the specified values.
   //! Display of back-facing filled polygons.
   //! No distinction between external and internal faces of FillAreas.
   //! The edges are not drawn.
   //! Polygon offset parameters: mode = Aspect_POM_None, factor = 1., units = 0.
-  Standard_EXPORT Graphic3d_AspectFillArea3d (const Aspect_InteriorStyle theInterior,
-                                              const Quantity_Color&      theInteriorColor,
-                                              const Quantity_Color&      theEdgeColor,
-                                              const Aspect_TypeOfLine    theEdgeLineType,
-                                              const Standard_Real        theEdgeWidth,
-                                              const Graphic3d_MaterialAspect& theFrontMaterial,
-                                              const Graphic3d_MaterialAspect& theBackMaterial);
+  Standard_EXPORT Graphic3d_AspectFillArea3d(const Aspect_InteriorStyle      theInterior,
+                                             const Quantity_Color&           theInteriorColor,
+                                             const Quantity_Color&           theEdgeColor,
+                                             const Aspect_TypeOfLine         theEdgeLineType,
+                                             const Standard_Real             theEdgeWidth,
+                                             const Graphic3d_MaterialAspect& theFrontMaterial,
+                                             const Graphic3d_MaterialAspect& theBackMaterial);
 
 public:
-
   Standard_DEPRECATED("Deprecated method, ToDrawEdges() should be used instead")
-  bool Edge() const { return ToDrawEdges(); }
 
+  bool Edge() const { return ToDrawEdges(); }
 };
 
 DEFINE_STANDARD_HANDLE(Graphic3d_AspectFillArea3d, Graphic3d_Aspects)

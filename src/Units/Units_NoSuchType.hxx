@@ -26,8 +26,9 @@ class Units_NoSuchType;
 DEFINE_STANDARD_HANDLE(Units_NoSuchType, Standard_NoSuchObject)
 
 #if !defined No_Exception && !defined No_Units_NoSuchType
-  #define Units_NoSuchType_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Units_NoSuchType(MESSAGE);
+  #define Units_NoSuchType_Raise_if(CONDITION, MESSAGE)                                            \
+    if (CONDITION)                                                                                 \
+      throw Units_NoSuchType(MESSAGE);
 #else
   #define Units_NoSuchType_Raise_if(CONDITION, MESSAGE)
 #endif

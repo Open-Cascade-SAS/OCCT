@@ -20,6 +20,7 @@
 #include <IntPatch_TheSegmentOfTheSOnBounds.hxx>
 #include <NCollection_Sequence.hxx>
 
-typedef NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBounds> IntPatch_SequenceOfSegmentOfTheSOnBounds;
+typedef NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBounds>
+  IntPatch_SequenceOfSegmentOfTheSOnBounds;
 
 #endif // _IntPatch_SequenceOfSegmentOfTheSOnBounds_HeaderFile

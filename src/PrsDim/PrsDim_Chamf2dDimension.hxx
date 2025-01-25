@@ -33,39 +33,47 @@ class PrsDim_Chamf2dDimension : public PrsDim_Relation
 {
   DEFINE_STANDARD_RTTIEXT(PrsDim_Chamf2dDimension, PrsDim_Relation)
 public:
-
   //! Constructs the display object for 2D chamfers.
   //! This object is defined by the face aFShape, the
   //! dimension aVal, the plane aPlane and the text aText.
-  Standard_EXPORT PrsDim_Chamf2dDimension(const TopoDS_Shape& aFShape, const Handle(Geom_Plane)& aPlane, const Standard_Real aVal, const TCollection_ExtendedString& aText);
-  
+  Standard_EXPORT PrsDim_Chamf2dDimension(const TopoDS_Shape&               aFShape,
+                                          const Handle(Geom_Plane)&         aPlane,
+                                          const Standard_Real               aVal,
+                                          const TCollection_ExtendedString& aText);
+
   //! Constructs the display object for 2D chamfers.
   //! This object is defined by the face aFShape, the plane
   //! aPlane, the dimension aVal, the position aPosition,
   //! the type of arrow aSymbolPrs with the size
   //! anArrowSize, and the text aText.
-  Standard_EXPORT PrsDim_Chamf2dDimension(const TopoDS_Shape& aFShape, const Handle(Geom_Plane)& aPlane, const Standard_Real aVal, const TCollection_ExtendedString& aText, const gp_Pnt& aPosition, const DsgPrs_ArrowSide aSymbolPrs, const Standard_Real anArrowSize = 0.0);
+  Standard_EXPORT PrsDim_Chamf2dDimension(const TopoDS_Shape&               aFShape,
+                                          const Handle(Geom_Plane)&         aPlane,
+                                          const Standard_Real               aVal,
+                                          const TCollection_ExtendedString& aText,
+                                          const gp_Pnt&                     aPosition,
+                                          const DsgPrs_ArrowSide            aSymbolPrs,
+                                          const Standard_Real               anArrowSize = 0.0);
 
   //! Indicates that we are concerned with a 2d length.
-  virtual PrsDim_KindOfDimension KindOfDimension() const Standard_OVERRIDE { return PrsDim_KOD_LENGTH; }
+  virtual PrsDim_KindOfDimension KindOfDimension() const Standard_OVERRIDE
+  {
+    return PrsDim_KOD_LENGTH;
+  }
 
   //! Returns true if the 2d chamfer dimension is movable.
   virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
 
 private:
+  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                       const Handle(Prs3d_Presentation)&         thePrs,
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                        const Handle(Prs3d_Presentation)& thePrs,
-                                        const Standard_Integer theMode) Standard_OVERRIDE;
-
-  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
-                                                 const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
 private:
-
   gp_Pnt myPntAttach;
   gp_Dir myDir;
-
 };
 
 #endif // _PrsDim_Chamf2dDimension_HeaderFile

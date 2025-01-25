@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(Storage_CallBack)> Storage_ArrayOfCallBack;
 
-
 #endif

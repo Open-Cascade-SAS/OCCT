@@ -41,90 +41,147 @@ class Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter;
 class Geom2dInt_ExactIntersectionPointOfTheIntPCurvePCurveOfGInter;
 class IntRes2d_Domain;
 
-
-
-class Geom2dInt_GInter  : public IntRes2d_Intersection
+class Geom2dInt_GInter : public IntRes2d_Intersection
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor.
-    Geom2dInt_GInter();
-  
+  Geom2dInt_GInter();
+
   //! Self Intersection of a curve
-    Geom2dInt_GInter(const Adaptor2d_Curve2d& C, const Standard_Real TolConf, const Standard_Real Tol);
-  
+  Geom2dInt_GInter(const Adaptor2d_Curve2d& C,
+                   const Standard_Real      TolConf,
+                   const Standard_Real      Tol);
+
   //! Self Intersection of a curve with a domain.
-    Geom2dInt_GInter(const Adaptor2d_Curve2d& C, const IntRes2d_Domain& D, const Standard_Real TolConf, const Standard_Real Tol);
-  
+  Geom2dInt_GInter(const Adaptor2d_Curve2d& C,
+                   const IntRes2d_Domain&   D,
+                   const Standard_Real      TolConf,
+                   const Standard_Real      Tol);
+
   //! Intersection between 2 curves.
-    Geom2dInt_GInter(const Adaptor2d_Curve2d& C1, const Adaptor2d_Curve2d& C2, const Standard_Real TolConf, const Standard_Real Tol);
-  
+  Geom2dInt_GInter(const Adaptor2d_Curve2d& C1,
+                   const Adaptor2d_Curve2d& C2,
+                   const Standard_Real      TolConf,
+                   const Standard_Real      Tol);
+
   //! Intersection between 2 curves.
-    Geom2dInt_GInter(const Adaptor2d_Curve2d& C1, const IntRes2d_Domain& D1, const Adaptor2d_Curve2d& C2, const Standard_Real TolConf, const Standard_Real Tol);
-  
+  Geom2dInt_GInter(const Adaptor2d_Curve2d& C1,
+                   const IntRes2d_Domain&   D1,
+                   const Adaptor2d_Curve2d& C2,
+                   const Standard_Real      TolConf,
+                   const Standard_Real      Tol);
+
   //! Intersection between 2 curves.
-    Geom2dInt_GInter(const Adaptor2d_Curve2d& C1, const Adaptor2d_Curve2d& C2, const IntRes2d_Domain& D2, const Standard_Real TolConf, const Standard_Real Tol);
-  
+  Geom2dInt_GInter(const Adaptor2d_Curve2d& C1,
+                   const Adaptor2d_Curve2d& C2,
+                   const IntRes2d_Domain&   D2,
+                   const Standard_Real      TolConf,
+                   const Standard_Real      Tol);
+
   //! Intersection between 2 curves.
-    Geom2dInt_GInter(const Adaptor2d_Curve2d& C1, const IntRes2d_Domain& D1, const Adaptor2d_Curve2d& C2, const IntRes2d_Domain& D2, const Standard_Real TolConf, const Standard_Real Tol);
-  
+  Geom2dInt_GInter(const Adaptor2d_Curve2d& C1,
+                   const IntRes2d_Domain&   D1,
+                   const Adaptor2d_Curve2d& C2,
+                   const IntRes2d_Domain&   D2,
+                   const Standard_Real      TolConf,
+                   const Standard_Real      Tol);
+
   //! Intersection between 2 curves.
-  Standard_EXPORT void Perform (const Adaptor2d_Curve2d& C1, const IntRes2d_Domain& D1, const Adaptor2d_Curve2d& C2, const IntRes2d_Domain& D2, const Standard_Real TolConf, const Standard_Real Tol);
-  
+  Standard_EXPORT void Perform(const Adaptor2d_Curve2d& C1,
+                               const IntRes2d_Domain&   D1,
+                               const Adaptor2d_Curve2d& C2,
+                               const IntRes2d_Domain&   D2,
+                               const Standard_Real      TolConf,
+                               const Standard_Real      Tol);
+
   //! Intersection between 2 curves.
-    void Perform (const Adaptor2d_Curve2d& C1, const Adaptor2d_Curve2d& C2, const Standard_Real TolConf, const Standard_Real Tol);
-  
+  void Perform(const Adaptor2d_Curve2d& C1,
+               const Adaptor2d_Curve2d& C2,
+               const Standard_Real      TolConf,
+               const Standard_Real      Tol);
+
   //! Intersection between 2 curves.
-  Standard_EXPORT void Perform (const Adaptor2d_Curve2d& C1, const IntRes2d_Domain& D1, const Standard_Real TolConf, const Standard_Real Tol);
-  
+  Standard_EXPORT void Perform(const Adaptor2d_Curve2d& C1,
+                               const IntRes2d_Domain&   D1,
+                               const Standard_Real      TolConf,
+                               const Standard_Real      Tol);
+
   //! Intersection between 2 curves.
-  Standard_EXPORT void Perform (const Adaptor2d_Curve2d& C1, const Standard_Real TolConf, const Standard_Real Tol);
-  
+  Standard_EXPORT void Perform(const Adaptor2d_Curve2d& C1,
+                               const Standard_Real      TolConf,
+                               const Standard_Real      Tol);
+
   //! Intersection between 2 curves.
-    void Perform (const Adaptor2d_Curve2d& C1, const IntRes2d_Domain& D1, const Adaptor2d_Curve2d& C2, const Standard_Real TolConf, const Standard_Real Tol);
-  
+  void Perform(const Adaptor2d_Curve2d& C1,
+               const IntRes2d_Domain&   D1,
+               const Adaptor2d_Curve2d& C2,
+               const Standard_Real      TolConf,
+               const Standard_Real      Tol);
+
   //! Intersection between 2 curves.
-    void Perform (const Adaptor2d_Curve2d& C1, const Adaptor2d_Curve2d& C2, const IntRes2d_Domain& D2, const Standard_Real TolConf, const Standard_Real Tol);
-  
+  void Perform(const Adaptor2d_Curve2d& C1,
+               const Adaptor2d_Curve2d& C2,
+               const IntRes2d_Domain&   D2,
+               const Standard_Real      TolConf,
+               const Standard_Real      Tol);
+
   //! Create a domain from a curve
-  Standard_EXPORT IntRes2d_Domain ComputeDomain (const Adaptor2d_Curve2d& C1, const Standard_Real TolDomain) const;
+  Standard_EXPORT IntRes2d_Domain ComputeDomain(const Adaptor2d_Curve2d& C1,
+                                                const Standard_Real      TolDomain) const;
 
   //! Set / get minimum number of points in polygon intersection.
-  Standard_EXPORT void SetMinNbSamples (const Standard_Integer theMinNbSamples);
-  Standard_EXPORT Standard_Integer GetMinNbSamples () const;
-
+  Standard_EXPORT void             SetMinNbSamples(const Standard_Integer theMinNbSamples);
+  Standard_EXPORT Standard_Integer GetMinNbSamples() const;
 
 protected:
-
-
-
-
-
 private:
-
-  
   //! Intersection between 2 curves.
-  Standard_EXPORT void InternalPerform (const Adaptor2d_Curve2d& C1, const IntRes2d_Domain& D1, const Adaptor2d_Curve2d& C2, const IntRes2d_Domain& D2, const Standard_Real TolConf, const Standard_Real Tol, const Standard_Boolean Composite);
-  
+  Standard_EXPORT void InternalPerform(const Adaptor2d_Curve2d& C1,
+                                       const IntRes2d_Domain&   D1,
+                                       const Adaptor2d_Curve2d& C2,
+                                       const IntRes2d_Domain&   D2,
+                                       const Standard_Real      TolConf,
+                                       const Standard_Real      Tol,
+                                       const Standard_Boolean   Composite);
+
   //! Part of InternalCompositePerform function
-  Standard_EXPORT void InternalCompositePerform_noRecurs (const Standard_Integer NbInterC1, const Adaptor2d_Curve2d& C1, const Standard_Integer NumInterC1, const TColStd_Array1OfReal& Tab1, const IntRes2d_Domain& D1, const Standard_Integer NbInterC2, const Adaptor2d_Curve2d& C2, const Standard_Integer NumInterC2, const TColStd_Array1OfReal& Tab2, const IntRes2d_Domain& D2, const Standard_Real TolConf, const Standard_Real Tol);
-  
+  Standard_EXPORT void InternalCompositePerform_noRecurs(const Standard_Integer      NbInterC1,
+                                                         const Adaptor2d_Curve2d&    C1,
+                                                         const Standard_Integer      NumInterC1,
+                                                         const TColStd_Array1OfReal& Tab1,
+                                                         const IntRes2d_Domain&      D1,
+                                                         const Standard_Integer      NbInterC2,
+                                                         const Adaptor2d_Curve2d&    C2,
+                                                         const Standard_Integer      NumInterC2,
+                                                         const TColStd_Array1OfReal& Tab2,
+                                                         const IntRes2d_Domain&      D2,
+                                                         const Standard_Real         TolConf,
+                                                         const Standard_Real         Tol);
+
   //! Intersection between 2 curves.
-  Standard_EXPORT void InternalCompositePerform (const Adaptor2d_Curve2d& C1, const IntRes2d_Domain& D1, const Standard_Integer N1, const Standard_Integer NB1, const TColStd_Array1OfReal& Tab1, const Adaptor2d_Curve2d& C2, const IntRes2d_Domain& D2, const Standard_Integer N2, const Standard_Integer NB2, const TColStd_Array1OfReal& Tab2, const Standard_Real TolConf, const Standard_Real Tol, const Standard_Boolean Composite);
+  Standard_EXPORT void InternalCompositePerform(const Adaptor2d_Curve2d&    C1,
+                                                const IntRes2d_Domain&      D1,
+                                                const Standard_Integer      N1,
+                                                const Standard_Integer      NB1,
+                                                const TColStd_Array1OfReal& Tab1,
+                                                const Adaptor2d_Curve2d&    C2,
+                                                const IntRes2d_Domain&      D2,
+                                                const Standard_Integer      N2,
+                                                const Standard_Integer      NB2,
+                                                const TColStd_Array1OfReal& Tab2,
+                                                const Standard_Real         TolConf,
+                                                const Standard_Real         Tol,
+                                                const Standard_Boolean      Composite);
 
-
-  Standard_Real param1inf;
-  Standard_Real param1sup;
-  Standard_Real param2inf;
-  Standard_Real param2sup;
-  IntCurve_IntConicConic intconiconi;
-  Geom2dInt_TheIntConicCurveOfGInter intconicurv;
+  Standard_Real                        param1inf;
+  Standard_Real                        param1sup;
+  Standard_Real                        param2inf;
+  Standard_Real                        param2sup;
+  IntCurve_IntConicConic               intconiconi;
+  Geom2dInt_TheIntConicCurveOfGInter   intconicurv;
   Geom2dInt_TheIntPCurvePCurveOfGInter intcurvcurv;
-
-
 };
 
 #define TheCurve Adaptor2d_Curve2d
@@ -134,35 +191,51 @@ private:
 #define IntCurve_TheProjPCur Geom2dInt_TheProjPCurOfGInter
 #define IntCurve_TheProjPCur_hxx <Geom2dInt_TheProjPCurOfGInter.hxx>
 #define IntCurve_TheCurveLocatorOfTheProjPCur Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter
-#define IntCurve_TheCurveLocatorOfTheProjPCur_hxx <Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter.hxx>
+#define IntCurve_TheCurveLocatorOfTheProjPCur_hxx                                                  \
+  <Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter.hxx>
 #define IntCurve_TheLocateExtPCOfTheProjPCur Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter
-#define IntCurve_TheLocateExtPCOfTheProjPCur_hxx <Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter.hxx>
+#define IntCurve_TheLocateExtPCOfTheProjPCur_hxx                                                   \
+  <Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter.hxx>
 #define IntCurve_TheCurveLocatorOfTheProjPCur Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter
-#define IntCurve_TheCurveLocatorOfTheProjPCur_hxx <Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter.hxx>
+#define IntCurve_TheCurveLocatorOfTheProjPCur_hxx                                                  \
+  <Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter.hxx>
 #define IntCurve_TheLocateExtPCOfTheProjPCur Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter
-#define IntCurve_TheLocateExtPCOfTheProjPCur_hxx <Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter.hxx>
+#define IntCurve_TheLocateExtPCOfTheProjPCur_hxx                                                   \
+  <Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter.hxx>
 #define IntCurve_TheIntConicCurve Geom2dInt_TheIntConicCurveOfGInter
 #define IntCurve_TheIntConicCurve_hxx <Geom2dInt_TheIntConicCurveOfGInter.hxx>
 #define IntCurve_TheIntersectorOfTheIntConicCurve Geom2dInt_TheIntersectorOfTheIntConicCurveOfGInter
-#define IntCurve_TheIntersectorOfTheIntConicCurve_hxx <Geom2dInt_TheIntersectorOfTheIntConicCurveOfGInter.hxx>
+#define IntCurve_TheIntersectorOfTheIntConicCurve_hxx                                              \
+  <Geom2dInt_TheIntersectorOfTheIntConicCurveOfGInter.hxx>
 #define IntCurve_TheIntersectorOfTheIntConicCurve Geom2dInt_TheIntersectorOfTheIntConicCurveOfGInter
-#define IntCurve_TheIntersectorOfTheIntConicCurve_hxx <Geom2dInt_TheIntersectorOfTheIntConicCurveOfGInter.hxx>
+#define IntCurve_TheIntersectorOfTheIntConicCurve_hxx                                              \
+  <Geom2dInt_TheIntersectorOfTheIntConicCurveOfGInter.hxx>
 #define IntCurve_IntConicCurve Geom2dInt_IntConicCurveOfGInter
 #define IntCurve_IntConicCurve_hxx <Geom2dInt_IntConicCurveOfGInter.hxx>
 #define IntCurve_TheIntPCurvePCurve Geom2dInt_TheIntPCurvePCurveOfGInter
 #define IntCurve_TheIntPCurvePCurve_hxx <Geom2dInt_TheIntPCurvePCurveOfGInter.hxx>
 #define IntCurve_ThePolygon2dOfTheIntPCurvePCurve Geom2dInt_ThePolygon2dOfTheIntPCurvePCurveOfGInter
-#define IntCurve_ThePolygon2dOfTheIntPCurvePCurve_hxx <Geom2dInt_ThePolygon2dOfTheIntPCurvePCurveOfGInter.hxx>
-#define IntCurve_TheDistBetweenPCurvesOfTheIntPCurvePCurve Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter
-#define IntCurve_TheDistBetweenPCurvesOfTheIntPCurvePCurve_hxx <Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter.hxx>
-#define IntCurve_ExactIntersectionPointOfTheIntPCurvePCurve Geom2dInt_ExactIntersectionPointOfTheIntPCurvePCurveOfGInter
-#define IntCurve_ExactIntersectionPointOfTheIntPCurvePCurve_hxx <Geom2dInt_ExactIntersectionPointOfTheIntPCurvePCurveOfGInter.hxx>
+#define IntCurve_ThePolygon2dOfTheIntPCurvePCurve_hxx                                              \
+  <Geom2dInt_ThePolygon2dOfTheIntPCurvePCurveOfGInter.hxx>
+#define IntCurve_TheDistBetweenPCurvesOfTheIntPCurvePCurve                                         \
+  Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter
+#define IntCurve_TheDistBetweenPCurvesOfTheIntPCurvePCurve_hxx                                     \
+  <Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter.hxx>
+#define IntCurve_ExactIntersectionPointOfTheIntPCurvePCurve                                        \
+  Geom2dInt_ExactIntersectionPointOfTheIntPCurvePCurveOfGInter
+#define IntCurve_ExactIntersectionPointOfTheIntPCurvePCurve_hxx                                    \
+  <Geom2dInt_ExactIntersectionPointOfTheIntPCurvePCurveOfGInter.hxx>
 #define IntCurve_ThePolygon2dOfTheIntPCurvePCurve Geom2dInt_ThePolygon2dOfTheIntPCurvePCurveOfGInter
-#define IntCurve_ThePolygon2dOfTheIntPCurvePCurve_hxx <Geom2dInt_ThePolygon2dOfTheIntPCurvePCurveOfGInter.hxx>
-#define IntCurve_TheDistBetweenPCurvesOfTheIntPCurvePCurve Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter
-#define IntCurve_TheDistBetweenPCurvesOfTheIntPCurvePCurve_hxx <Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter.hxx>
-#define IntCurve_ExactIntersectionPointOfTheIntPCurvePCurve Geom2dInt_ExactIntersectionPointOfTheIntPCurvePCurveOfGInter
-#define IntCurve_ExactIntersectionPointOfTheIntPCurvePCurve_hxx <Geom2dInt_ExactIntersectionPointOfTheIntPCurvePCurveOfGInter.hxx>
+#define IntCurve_ThePolygon2dOfTheIntPCurvePCurve_hxx                                              \
+  <Geom2dInt_ThePolygon2dOfTheIntPCurvePCurveOfGInter.hxx>
+#define IntCurve_TheDistBetweenPCurvesOfTheIntPCurvePCurve                                         \
+  Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter
+#define IntCurve_TheDistBetweenPCurvesOfTheIntPCurvePCurve_hxx                                     \
+  <Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter.hxx>
+#define IntCurve_ExactIntersectionPointOfTheIntPCurvePCurve                                        \
+  Geom2dInt_ExactIntersectionPointOfTheIntPCurvePCurveOfGInter
+#define IntCurve_ExactIntersectionPointOfTheIntPCurvePCurve_hxx                                    \
+  <Geom2dInt_ExactIntersectionPointOfTheIntPCurvePCurveOfGInter.hxx>
 #define IntCurve_IntCurveCurveGen Geom2dInt_GInter
 #define IntCurve_IntCurveCurveGen_hxx <Geom2dInt_GInter.hxx>
 
@@ -206,8 +279,5 @@ private:
 #undef IntCurve_ExactIntersectionPointOfTheIntPCurvePCurve_hxx
 #undef IntCurve_IntCurveCurveGen
 #undef IntCurve_IntCurveCurveGen_hxx
-
-
-
 
 #endif // _Geom2dInt_GInter_HeaderFile

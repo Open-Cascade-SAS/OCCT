@@ -18,6 +18,7 @@
 #include <NCollection_DataMap.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
 
-typedef NCollection_DataMap<Standard_Integer, BOPDS_ListOfPaveBlock> BOPDS_DataMapOfIntegerListOfPaveBlock; 
- 
+typedef NCollection_DataMap<Standard_Integer, BOPDS_ListOfPaveBlock>
+  BOPDS_DataMapOfIntegerListOfPaveBlock;
+
 #endif

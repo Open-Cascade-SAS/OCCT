@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef MessageModel_Actions_H
 #define MessageModel_Actions_H
@@ -45,11 +45,10 @@ class MessageModel_Actions : public QObject
   Q_OBJECT
 
 public:
-
   //! Constructor
-  Standard_EXPORT MessageModel_Actions (QWidget* theParent,
-                                        MessageModel_TreeModel* theTreeModel,
-                                        QItemSelectionModel* theModel);
+  Standard_EXPORT MessageModel_Actions(QWidget*                theParent,
+                                       MessageModel_TreeModel* theTreeModel,
+                                       QItemSelectionModel*    theModel);
 
   //! Destructor
   virtual ~MessageModel_Actions() Standard_OVERRIDE {}
@@ -57,17 +56,19 @@ public:
   //! Returns action by the type
   //! \param theType an action type
   //! \return an action instance if it exists
-  Standard_EXPORT QAction* GetAction (const MessageModel_ActionType& theType);
+  Standard_EXPORT QAction* GetAction(const MessageModel_ActionType& theType);
 
   //! Fills popup menu with actions depending on the current selection
   //! \param theSelectedIndices tree model selected indices
   //! \param theMenu menu to be filled
-  Standard_EXPORT void AddMenuActions (const QModelIndexList& theSelectedIndices, QMenu* theMenu);
+  Standard_EXPORT void AddMenuActions(const QModelIndexList& theSelectedIndices, QMenu* theMenu);
 
-  //! Sets parameters container, it should be used when the plugin is initialized or in update content
-  //! \param theParameters a parameters container
-  void SetParameters (const Handle(TInspectorAPI_PluginParameters)& theParameters)
-  { myParameters = theParameters; }
+  //! Sets parameters container, it should be used when the plugin is initialized or in update
+  //! content \param theParameters a parameters container
+  void SetParameters(const Handle(TInspectorAPI_PluginParameters)& theParameters)
+  {
+    myParameters = theParameters;
+  }
 
 public slots:
   //! Set selected report active
@@ -86,13 +87,13 @@ protected:
   //! Returns report of selected tree view item if a report item is selected
   //! \param theReportIndex tree model index of the found report
   //! \return report instance or NULL
-  Handle(Message_Report) getSelectedReport (QModelIndex& theReportIndex) const;
+  Handle(Message_Report) getSelectedReport(QModelIndex& theReportIndex) const;
 
 protected:
-  MessageModel_TreeModel* myTreeModel; //< tree model
-  QItemSelectionModel* mySelectionModel; //< selection model
-  Handle(TInspectorAPI_PluginParameters) myParameters; //!< plugins parameters container
-  QMap<MessageModel_ActionType, QAction*> myActions; //!< container of all actions
+  MessageModel_TreeModel*                 myTreeModel;      //< tree model
+  QItemSelectionModel*                    mySelectionModel; //< selection model
+  Handle(TInspectorAPI_PluginParameters)  myParameters;     //!< plugins parameters container
+  QMap<MessageModel_ActionType, QAction*> myActions;        //!< container of all actions
 };
 
 #endif

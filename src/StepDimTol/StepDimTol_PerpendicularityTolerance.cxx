@@ -17,12 +17,9 @@
 
 #include <StepDimTol_PerpendicularityTolerance.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_PerpendicularityTolerance,StepDimTol_GeometricToleranceWithDatumReference)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_PerpendicularityTolerance,
+                           StepDimTol_GeometricToleranceWithDatumReference)
 
-//=======================================================================
-//function : StepDimTol_PerpendicularityTolerance
-//purpose  : 
-//=======================================================================
-StepDimTol_PerpendicularityTolerance::StepDimTol_PerpendicularityTolerance ()
-{
-}
+//=================================================================================================
+
+StepDimTol_PerpendicularityTolerance::StepDimTol_PerpendicularityTolerance() {}

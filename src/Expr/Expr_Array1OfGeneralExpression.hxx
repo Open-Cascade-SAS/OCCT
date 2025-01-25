@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(Expr_GeneralExpression)> Expr_Array1OfGeneralExpression;
 
-
 #endif

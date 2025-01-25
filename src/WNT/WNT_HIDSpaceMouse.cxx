@@ -15,121 +15,148 @@
 
 namespace
 {
-  //! Enumeration of known Space Mouse models.
-  enum SpacePid
+//! Enumeration of known Space Mouse models.
+enum SpacePid
+{
+  // VENDOR_ID_LOGITECH
+  SpacePid_SpaceMouse        = 0xC603,
+  SpacePid_CADMan            = 0xC605,
+  SpacePid_SpaceMouseClassic = 0xC606,
+  SpacePid_SpaceBall5000     = 0xC621,
+  SpacePid_SpaceTraveler     = 0xC623,
+  SpacePid_SpacePilot        = 0xC625,
+  SpacePid_SpaceNavigator =
+    0xC626, //!< has only 2 "menu" buttons (second one is treated as SpaceVKey_Fit)
+  SpacePid_SpaceExplorer = 0xC627, //!< 15 buttons
+  SpacePid_NavigatorForNotebooks =
+    0xC628, //!< has only 2 "menu" buttons (second one is treated as SpaceVKey_Fit)
+  SpacePid_SpacePilotPro = 0xC629, //!< 31 buttons
+  SpacePid_SpaceMousePro = 0xC62B, //!< has only 15 buttons, but codes range from 0 to 26
+  // VENDOR_ID_3DCONNEXION
+  SpacePid_SpaceMouseWireless1    = 0xC62E, //!< [plugged in] has only  2 buttons
+  SpacePid_SpaceMouseWireless2    = 0xC62F, //!< [wireless]   has only  2 buttons
+  SpacePid_SpaceMouseProWireless1 = 0xC631, //!< [plugged in] has only 15 buttons
+  SpacePid_SpaceMouseProWireless2 = 0xC632, //!< [wireless]   has only 15 buttons
+  SpacePid_SpaceMouseEnterprise   = 0xC633, //!< 31 buttons
+  SpacePid_SpaceMouseCompact      = 0xC635
+};
+
+//! Enumeration of known keys available on various Space Mouse models.
+enum SpaceVKey
+{
+  SpaceVKey_INVALID = 0,
+  SpaceVKey_Menu    = 1,
+  SpaceVKey_Fit,
+  SpaceVKey_Top,
+  SpaceVKey_Left,
+  SpaceVKey_Right,
+  SpaceVKey_Front,
+  SpaceVKey_Bottom,
+  SpaceVKey_Back,
+  SpaceVKey_RollCW,
+  SpaceVKey_RollCCW,
+  SpaceVKey_ISO1,
+  SpaceVKey_ISO2,
+  SpaceVKey_1,
+  SpaceVKey_2,
+  SpaceVKey_3,
+  SpaceVKey_4,
+  SpaceVKey_5,
+  SpaceVKey_6,
+  SpaceVKey_7,
+  SpaceVKey_8,
+  SpaceVKey_9,
+  SpaceVKey_10,
+  SpaceVKey_Esc,
+  SpaceVKey_Alt,
+  SpaceVKey_Shift,
+  SpaceVKey_Ctrl,
+  SpaceVKey_Rotate,
+  SpaceVKey_PanZoom,
+  SpaceVKey_Dominant,
+  SpaceVKey_Plus,
+  SpaceVKey_Minus,
+};
+
+//! The raw value range on tested device is [-350; 350].
+enum
+{
+  THE_RAW_RANGE_350 = 350
+};
+
+//! Convert key state bit into virtual key.
+static SpaceVKey hidToSpaceKey(unsigned long theProductId, unsigned short theKeyBit)
+{
+  static const SpaceVKey THE_PILOT_KEYS[] = {
+    SpaceVKey_1,    SpaceVKey_2,    SpaceVKey_3,     SpaceVKey_4,        SpaceVKey_5,
+    SpaceVKey_6,    SpaceVKey_Top,  SpaceVKey_Left,  SpaceVKey_Right,    SpaceVKey_Front,
+    SpaceVKey_Esc,  SpaceVKey_Alt,  SpaceVKey_Shift, SpaceVKey_Ctrl,     SpaceVKey_Fit,
+    SpaceVKey_Menu, SpaceVKey_Plus, SpaceVKey_Minus, SpaceVKey_Dominant, SpaceVKey_Rotate};
+  const int THE_NB_PILOT_KEYS = sizeof(THE_PILOT_KEYS) / sizeof(SpaceVKey);
+
+  static const SpaceVKey THE_EXPLORER_KEYS[]  = {SpaceVKey_1,
+                                                 SpaceVKey_2,
+                                                 SpaceVKey_Top,
+                                                 SpaceVKey_Left,
+                                                 SpaceVKey_Right,
+                                                 SpaceVKey_Front,
+                                                 SpaceVKey_Esc,
+                                                 SpaceVKey_Alt,
+                                                 SpaceVKey_Shift,
+                                                 SpaceVKey_Ctrl,
+                                                 SpaceVKey_Fit,
+                                                 SpaceVKey_Menu,
+                                                 SpaceVKey_Plus,
+                                                 SpaceVKey_Minus,
+                                                 SpaceVKey_Rotate};
+  const int              THE_NB_EXPLORER_KEYS = sizeof(THE_EXPLORER_KEYS) / sizeof(SpaceVKey);
+
+  // shared by latest 3Dconnexion hardware
+  static const SpaceVKey THE_SPACEMOUSEPRO_KEYS[] = {
+    SpaceVKey_Menu,  SpaceVKey_Fit,    SpaceVKey_Top,     SpaceVKey_Left,     SpaceVKey_Right,
+    SpaceVKey_Front, SpaceVKey_Bottom, SpaceVKey_Back,    SpaceVKey_RollCW,   SpaceVKey_RollCCW,
+    SpaceVKey_ISO1,  SpaceVKey_ISO2,   SpaceVKey_1,       SpaceVKey_2,        SpaceVKey_3,
+    SpaceVKey_4,     SpaceVKey_5,      SpaceVKey_6,       SpaceVKey_7,        SpaceVKey_8,
+    SpaceVKey_9,     SpaceVKey_10,     SpaceVKey_Esc,     SpaceVKey_Alt,      SpaceVKey_Shift,
+    SpaceVKey_Ctrl,  SpaceVKey_Rotate, SpaceVKey_PanZoom, SpaceVKey_Dominant, SpaceVKey_Plus,
+    SpaceVKey_Minus};
+  const int THE_NB_SPACEMOUSEPRO_KEYS = sizeof(THE_SPACEMOUSEPRO_KEYS) / sizeof(SpaceVKey);
+
+  switch (theProductId)
   {
-    // VENDOR_ID_LOGITECH
-    SpacePid_SpaceMouse             = 0xC603,
-    SpacePid_CADMan                 = 0xC605,
-    SpacePid_SpaceMouseClassic      = 0xC606,
-    SpacePid_SpaceBall5000          = 0xC621,
-    SpacePid_SpaceTraveler          = 0xC623,
-    SpacePid_SpacePilot             = 0xC625,
-    SpacePid_SpaceNavigator         = 0xC626, //!< has only 2 "menu" buttons (second one is treated as SpaceVKey_Fit)
-    SpacePid_SpaceExplorer          = 0xC627, //!< 15 buttons
-    SpacePid_NavigatorForNotebooks  = 0xC628, //!< has only 2 "menu" buttons (second one is treated as SpaceVKey_Fit)
-    SpacePid_SpacePilotPro          = 0xC629, //!< 31 buttons
-    SpacePid_SpaceMousePro          = 0xC62B, //!< has only 15 buttons, but codes range from 0 to 26
-    // VENDOR_ID_3DCONNEXION
-    SpacePid_SpaceMouseWireless1    = 0xC62E, //!< [plugged in] has only  2 buttons
-    SpacePid_SpaceMouseWireless2    = 0xC62F, //!< [wireless]   has only  2 buttons
-    SpacePid_SpaceMouseProWireless1 = 0xC631, //!< [plugged in] has only 15 buttons
-    SpacePid_SpaceMouseProWireless2 = 0xC632, //!< [wireless]   has only 15 buttons
-    SpacePid_SpaceMouseEnterprise   = 0xC633, //!< 31 buttons
-    SpacePid_SpaceMouseCompact      = 0xC635
-  };
-
-  //! Enumeration of known keys available on various Space Mouse models.
-  enum SpaceVKey
-  {
-    SpaceVKey_INVALID = 0,
-    SpaceVKey_Menu = 1, SpaceVKey_Fit,
-    SpaceVKey_Top, SpaceVKey_Left, SpaceVKey_Right, SpaceVKey_Front, SpaceVKey_Bottom, SpaceVKey_Back,
-    SpaceVKey_RollCW, SpaceVKey_RollCCW,
-    SpaceVKey_ISO1, SpaceVKey_ISO2,
-    SpaceVKey_1, SpaceVKey_2, SpaceVKey_3, SpaceVKey_4, SpaceVKey_5, SpaceVKey_6, SpaceVKey_7, SpaceVKey_8, SpaceVKey_9, SpaceVKey_10,
-    SpaceVKey_Esc, SpaceVKey_Alt, SpaceVKey_Shift, SpaceVKey_Ctrl,
-    SpaceVKey_Rotate, SpaceVKey_PanZoom, SpaceVKey_Dominant,
-    SpaceVKey_Plus, SpaceVKey_Minus,
-  };
-
-  //! The raw value range on tested device is [-350; 350].
-  enum { THE_RAW_RANGE_350 = 350 };
-
-  //! Convert key state bit into virtual key.
-  static SpaceVKey hidToSpaceKey (unsigned long theProductId,
-                                  unsigned short theKeyBit)
-  {
-    static const SpaceVKey THE_PILOT_KEYS[] =
-    {
-      SpaceVKey_1, SpaceVKey_2, SpaceVKey_3, SpaceVKey_4, SpaceVKey_5, SpaceVKey_6,
-      SpaceVKey_Top, SpaceVKey_Left, SpaceVKey_Right, SpaceVKey_Front,
-      SpaceVKey_Esc, SpaceVKey_Alt, SpaceVKey_Shift, SpaceVKey_Ctrl,
-      SpaceVKey_Fit, SpaceVKey_Menu,
-      SpaceVKey_Plus, SpaceVKey_Minus,
-      SpaceVKey_Dominant, SpaceVKey_Rotate
-    };
-    const int THE_NB_PILOT_KEYS = sizeof(THE_PILOT_KEYS) / sizeof(SpaceVKey);
-
-    static const SpaceVKey THE_EXPLORER_KEYS[] =
-    {
-      SpaceVKey_1, SpaceVKey_2,
-      SpaceVKey_Top, SpaceVKey_Left, SpaceVKey_Right, SpaceVKey_Front,
-      SpaceVKey_Esc, SpaceVKey_Alt,  SpaceVKey_Shift, SpaceVKey_Ctrl,
-      SpaceVKey_Fit, SpaceVKey_Menu,
-      SpaceVKey_Plus, SpaceVKey_Minus,
-      SpaceVKey_Rotate
-    };
-    const int THE_NB_EXPLORER_KEYS = sizeof(THE_EXPLORER_KEYS) / sizeof(SpaceVKey);
-
-    // shared by latest 3Dconnexion hardware
-    static const SpaceVKey THE_SPACEMOUSEPRO_KEYS[] =
-    {
-      SpaceVKey_Menu, SpaceVKey_Fit,
-      SpaceVKey_Top, SpaceVKey_Left, SpaceVKey_Right, SpaceVKey_Front, SpaceVKey_Bottom, SpaceVKey_Back,
-      SpaceVKey_RollCW, SpaceVKey_RollCCW, SpaceVKey_ISO1, SpaceVKey_ISO2,
-      SpaceVKey_1, SpaceVKey_2, SpaceVKey_3, SpaceVKey_4,
-      SpaceVKey_5, SpaceVKey_6, SpaceVKey_7, SpaceVKey_8, SpaceVKey_9, SpaceVKey_10,
-      SpaceVKey_Esc, SpaceVKey_Alt, SpaceVKey_Shift, SpaceVKey_Ctrl,
-      SpaceVKey_Rotate,
-      SpaceVKey_PanZoom, SpaceVKey_Dominant, SpaceVKey_Plus, SpaceVKey_Minus
-    };
-    const int THE_NB_SPACEMOUSEPRO_KEYS = sizeof(THE_SPACEMOUSEPRO_KEYS) / sizeof(SpaceVKey);
-
-    switch (theProductId)
-    {
-      case SpacePid_SpacePilot:
-        return theKeyBit < THE_NB_PILOT_KEYS ? THE_PILOT_KEYS[theKeyBit] : SpaceVKey_INVALID;
-      case SpacePid_SpaceExplorer:
-        return theKeyBit < THE_NB_EXPLORER_KEYS ? THE_EXPLORER_KEYS[theKeyBit] : SpaceVKey_INVALID;
-      case SpacePid_SpaceNavigator:
-      case SpacePid_NavigatorForNotebooks:
-      case SpacePid_SpacePilotPro:
-      case SpacePid_SpaceMousePro:
-      case SpacePid_SpaceMouseWireless1:
-      case SpacePid_SpaceMouseWireless2:
-      case SpacePid_SpaceMouseProWireless1:
-      case SpacePid_SpaceMouseProWireless2:
-      case SpacePid_SpaceMouseEnterprise:
-      case SpacePid_SpaceMouseCompact:
-        return theKeyBit < THE_NB_SPACEMOUSEPRO_KEYS ? THE_SPACEMOUSEPRO_KEYS[theKeyBit] : SpaceVKey_INVALID;
-    }
-    return SpaceVKey_INVALID;
+    case SpacePid_SpacePilot:
+      return theKeyBit < THE_NB_PILOT_KEYS ? THE_PILOT_KEYS[theKeyBit] : SpaceVKey_INVALID;
+    case SpacePid_SpaceExplorer:
+      return theKeyBit < THE_NB_EXPLORER_KEYS ? THE_EXPLORER_KEYS[theKeyBit] : SpaceVKey_INVALID;
+    case SpacePid_SpaceNavigator:
+    case SpacePid_NavigatorForNotebooks:
+    case SpacePid_SpacePilotPro:
+    case SpacePid_SpaceMousePro:
+    case SpacePid_SpaceMouseWireless1:
+    case SpacePid_SpaceMouseWireless2:
+    case SpacePid_SpaceMouseProWireless1:
+    case SpacePid_SpaceMouseProWireless2:
+    case SpacePid_SpaceMouseEnterprise:
+    case SpacePid_SpaceMouseCompact:
+      return theKeyBit < THE_NB_SPACEMOUSEPRO_KEYS ? THE_SPACEMOUSEPRO_KEYS[theKeyBit]
+                                                   : SpaceVKey_INVALID;
   }
-
+  return SpaceVKey_INVALID;
 }
+
+} // namespace
 
 // =======================================================================
 // function : WNT_HIDSpaceMouse
 // purpose  :
 // =======================================================================
-WNT_HIDSpaceMouse::WNT_HIDSpaceMouse (unsigned long theProductId,
-                                      const Standard_Byte* theData,
-                                      Standard_Size theSize)
-: myData (theData),
-  mySize (theSize),
-  myProductId (theProductId),
-  myValueRange (THE_RAW_RANGE_350)
+WNT_HIDSpaceMouse::WNT_HIDSpaceMouse(unsigned long        theProductId,
+                                     const Standard_Byte* theData,
+                                     Standard_Size        theSize)
+    : myData(theData),
+      mySize(theSize),
+      myProductId(theProductId),
+      myValueRange(THE_RAW_RANGE_350)
 {
   //
 }
@@ -138,7 +165,7 @@ WNT_HIDSpaceMouse::WNT_HIDSpaceMouse (unsigned long theProductId,
 // function : IsKnownProduct
 // purpose  :
 // =======================================================================
-bool WNT_HIDSpaceMouse::IsKnownProduct (unsigned long theProductId)
+bool WNT_HIDSpaceMouse::IsKnownProduct(unsigned long theProductId)
 {
   switch (theProductId)
   {
@@ -163,31 +190,28 @@ bool WNT_HIDSpaceMouse::IsKnownProduct (unsigned long theProductId)
 // function : Translation
 // purpose  :
 // =======================================================================
-Graphic3d_Vec3d WNT_HIDSpaceMouse::Translation (bool& theIsIdle,
-                                                bool theIsQuadric) const
+Graphic3d_Vec3d WNT_HIDSpaceMouse::Translation(bool& theIsIdle, bool theIsQuadric) const
 {
   theIsIdle = true;
-  return myData[0] == SpaceRawInput_Translation
-      && (mySize == 7 || mySize == 13)
-       ? fromRawVec3 (theIsIdle, myData + 1, true, theIsQuadric)
-       : Graphic3d_Vec3d();
+  return myData[0] == SpaceRawInput_Translation && (mySize == 7 || mySize == 13)
+           ? fromRawVec3(theIsIdle, myData + 1, true, theIsQuadric)
+           : Graphic3d_Vec3d();
 }
 
 // =======================================================================
 // function : Rotation
 // purpose  :
 // =======================================================================
-Graphic3d_Vec3d WNT_HIDSpaceMouse::Rotation (bool& theIsIdle,
-                                             bool theIsQuadric) const
+Graphic3d_Vec3d WNT_HIDSpaceMouse::Rotation(bool& theIsIdle, bool theIsQuadric) const
 {
   theIsIdle = true;
   if (myData[0] == SpaceRawInput_Rotation && mySize == 7)
   {
-    return fromRawVec3 (theIsIdle, myData + 1, false, theIsQuadric);
+    return fromRawVec3(theIsIdle, myData + 1, false, theIsQuadric);
   }
   else if (myData[0] == SpaceRawInput_Translation && mySize == 13)
   {
-    return fromRawVec3 (theIsIdle, myData + 7, false, theIsQuadric);
+    return fromRawVec3(theIsIdle, myData + 7, false, theIsQuadric);
   }
   return Graphic3d_Vec3d();
 }
@@ -196,14 +220,15 @@ Graphic3d_Vec3d WNT_HIDSpaceMouse::Rotation (bool& theIsIdle,
 // function : fromRawVec3
 // purpose  :
 // =======================================================================
-Graphic3d_Vec3d WNT_HIDSpaceMouse::fromRawVec3 (bool& theIsIdle,
-                                                const Standard_Byte* theData,
-                                                bool theIsTrans,
-                                                bool theIsQuadric) const
+Graphic3d_Vec3d WNT_HIDSpaceMouse::fromRawVec3(bool&                theIsIdle,
+                                               const Standard_Byte* theData,
+                                               bool                 theIsTrans,
+                                               bool                 theIsQuadric) const
 {
   theIsIdle = true;
-  const NCollection_Vec3<int16_t>& aRaw16 = *reinterpret_cast<const NCollection_Vec3<int16_t>*>(theData);
-  Graphic3d_Vec3d aVec (aRaw16.x(), aRaw16.y(), aRaw16.z());
+  const NCollection_Vec3<int16_t>& aRaw16 =
+    *reinterpret_cast<const NCollection_Vec3<int16_t>*>(theData);
+  Graphic3d_Vec3d aVec(aRaw16.x(), aRaw16.y(), aRaw16.z());
   if (theIsTrans)
   {
     static const int16_t THE_MIN_RAW_TRANS   = 4;
@@ -239,8 +264,7 @@ Graphic3d_Vec3d WNT_HIDSpaceMouse::fromRawVec3 (bool& theIsIdle,
   // determine raw value range
   for (int aCompIter = 0; aCompIter < 3; ++aCompIter)
   {
-    if (aRaw16[aCompIter] > myValueRange
-    || -aRaw16[aCompIter] > myValueRange)
+    if (aRaw16[aCompIter] > myValueRange || -aRaw16[aCompIter] > myValueRange)
     {
       myValueRange = 32767; // SHRT_MAX
       break;
@@ -254,9 +278,8 @@ Graphic3d_Vec3d WNT_HIDSpaceMouse::fromRawVec3 (bool& theIsIdle,
 
   for (int aCompIter = 0; aCompIter < 3; ++aCompIter)
   {
-    aVec[aCompIter] =  aRaw16[aCompIter] > 0
-                    ?  aVec[aCompIter] * aVec[aCompIter]
-                    : -aVec[aCompIter] * aVec[aCompIter];
+    aVec[aCompIter] = aRaw16[aCompIter] > 0 ? aVec[aCompIter] * aVec[aCompIter]
+                                            : -aVec[aCompIter] * aVec[aCompIter];
   }
   return aVec / (double(myValueRange) * double(myValueRange));
 }
@@ -265,9 +288,9 @@ Graphic3d_Vec3d WNT_HIDSpaceMouse::fromRawVec3 (bool& theIsIdle,
 // function : HidToSpaceKey
 // purpose  :
 // =======================================================================
-Aspect_VKey WNT_HIDSpaceMouse::HidToSpaceKey (unsigned short theKeyBit) const
+Aspect_VKey WNT_HIDSpaceMouse::HidToSpaceKey(unsigned short theKeyBit) const
 {
-  const SpaceVKey aKey = hidToSpaceKey (myProductId, theKeyBit);
+  const SpaceVKey aKey = hidToSpaceKey(myProductId, theKeyBit);
   switch (aKey)
   {
     case SpaceVKey_1:

@@ -20,7 +20,7 @@
 #include <TopOpeBRepDS_DataMapOfIntegerListOfInterference.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<TopOpeBRepDS_DataMapOfIntegerListOfInterference> TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference;
-
+typedef NCollection_Array1<TopOpeBRepDS_DataMapOfIntegerListOfInterference>
+  TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference;
 
 #endif

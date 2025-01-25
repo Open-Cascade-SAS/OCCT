@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_MeasureValueMember.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
@@ -22,46 +21,37 @@
 #include <StepRepr_MeasureRepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_MeasureRepresentationItem,StepRepr_RepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_MeasureRepresentationItem, StepRepr_RepresentationItem)
 
-//=======================================================================
-//function : StepRepr_MeasureRepresentationItem
-//purpose  : 
-//=======================================================================
-StepRepr_MeasureRepresentationItem::StepRepr_MeasureRepresentationItem() 
+//=================================================================================================
+
+StepRepr_MeasureRepresentationItem::StepRepr_MeasureRepresentationItem()
 {
   myMeasure = new StepBasic_MeasureWithUnit;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepRepr_MeasureRepresentationItem::Init (const Handle(TCollection_HAsciiString) &aName,
-					       const Handle(StepBasic_MeasureValueMember) &aValueComponent,
-					       const StepBasic_Unit &aUnitComponent)
+void StepRepr_MeasureRepresentationItem::Init(
+  const Handle(TCollection_HAsciiString)&     aName,
+  const Handle(StepBasic_MeasureValueMember)& aValueComponent,
+  const StepBasic_Unit&                       aUnitComponent)
 {
-  StepRepr_RepresentationItem::Init ( aName );
-  myMeasure->Init ( aValueComponent, aUnitComponent );
+  StepRepr_RepresentationItem::Init(aName);
+  myMeasure->Init(aValueComponent, aUnitComponent);
 }
 
-//=======================================================================
-//function : SetMeasureUnit
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepRepr_MeasureRepresentationItem::SetMeasure (const Handle(StepBasic_MeasureWithUnit) &Measure)
+void StepRepr_MeasureRepresentationItem::SetMeasure(
+  const Handle(StepBasic_MeasureWithUnit)& Measure)
 {
   myMeasure = Measure;
 }
 
-//=======================================================================
-//function : Measure
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_MeasureWithUnit) StepRepr_MeasureRepresentationItem::Measure () const
+Handle(StepBasic_MeasureWithUnit) StepRepr_MeasureRepresentationItem::Measure() const
 {
   return myMeasure;
 }

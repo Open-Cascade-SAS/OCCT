@@ -36,75 +36,61 @@ class GeomInt_ParFunctionOfMyGradientbisOfTheComputeLineOfWLApprox;
 class GeomInt_Gradient_BFGSOfMyGradientbisOfTheComputeLineOfWLApprox;
 class AppParCurves_MultiCurve;
 
-
-
-class GeomInt_MyGradientbisOfTheComputeLineOfWLApprox 
+class GeomInt_MyGradientbisOfTheComputeLineOfWLApprox
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Tries to minimize the sum (square(||Qui - Bi*Pi||))
   //! where Pui describe the approximating Bezier curves'Poles
   //! and Qi the MultiLine points with a parameter ui.
   //! In this algorithm, the parameters ui are the unknowns.
   //! The tolerance required on this sum is given by Tol.
   //! The desired degree of the resulting curve is Deg.
-  Standard_EXPORT GeomInt_MyGradientbisOfTheComputeLineOfWLApprox(const GeomInt_TheMultiLineOfWLApprox& SSP, const Standard_Integer FirstPoint, const Standard_Integer LastPoint, const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints, math_Vector& Parameters, const Standard_Integer Deg, const Standard_Real Tol3d, const Standard_Real Tol2d, const Standard_Integer NbIterations = 200);
-  
+  Standard_EXPORT GeomInt_MyGradientbisOfTheComputeLineOfWLApprox(
+    const GeomInt_TheMultiLineOfWLApprox&                 SSP,
+    const Standard_Integer                                FirstPoint,
+    const Standard_Integer                                LastPoint,
+    const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+    math_Vector&                                          Parameters,
+    const Standard_Integer                                Deg,
+    const Standard_Real                                   Tol3d,
+    const Standard_Real                                   Tol2d,
+    const Standard_Integer                                NbIterations = 200);
+
   //! returns True if all has been correctly done.
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
+
   //! returns all the Bezier curves approximating the
   //! MultiLine SSP after minimization of the parameter.
   Standard_EXPORT AppParCurves_MultiCurve Value() const;
-  
+
   //! returns the difference between the old and the new
   //! approximation.
   //! An exception is raised if NotDone.
   //! An exception is raised if Index<1 or Index>NbParameters.
-  Standard_EXPORT Standard_Real Error (const Standard_Integer Index) const;
-  
+  Standard_EXPORT Standard_Real Error(const Standard_Integer Index) const;
+
   //! returns the maximum difference between the old and the
   //! new approximation.
   Standard_EXPORT Standard_Real MaxError3d() const;
-  
+
   //! returns the maximum difference between the old and the
   //! new approximation.
   Standard_EXPORT Standard_Real MaxError2d() const;
-  
+
   //! returns the average error between the old and the
   //! new approximation.
   Standard_EXPORT Standard_Real AverageError() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   AppParCurves_MultiCurve SCU;
-  math_Vector ParError;
-  Standard_Real AvError;
-  Standard_Real MError3d;
-  Standard_Real MError2d;
-  Standard_Boolean Done;
-
-
+  math_Vector             ParError;
+  Standard_Real           AvError;
+  Standard_Real           MError3d;
+  Standard_Real           MError2d;
+  Standard_Boolean        Done;
 };
-
-
-
-
-
-
 
 #endif // _GeomInt_MyGradientbisOfTheComputeLineOfWLApprox_HeaderFile

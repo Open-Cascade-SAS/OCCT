@@ -23,8 +23,7 @@
 #include <Select3D_SensitiveEntity.hxx>
 #include <Select3D_BndBox3d.hxx>
 
-
-typedef NCollection_List<Handle(TColgp_HArray1OfPnt)> MeshVS_PolyhedronVerts;
+typedef NCollection_List<Handle(TColgp_HArray1OfPnt)>           MeshVS_PolyhedronVerts;
 typedef NCollection_List<Handle(TColgp_HArray1OfPnt)>::Iterator MeshVS_PolyhedronVertsIter;
 
 //! This class is used to detect selection of a polyhedron. The main
@@ -34,15 +33,16 @@ typedef NCollection_List<Handle(TColgp_HArray1OfPnt)>::Iterator MeshVS_Polyhedro
 class MeshVS_SensitivePolyhedron : public Select3D_SensitiveEntity
 {
 public:
-
-  Standard_EXPORT MeshVS_SensitivePolyhedron (const Handle(SelectMgr_EntityOwner)& theOwner,
-                                              const TColgp_Array1OfPnt& theNodes,
-                                              const Handle(MeshVS_HArray1OfSequenceOfInteger)& theTopo);
+  Standard_EXPORT MeshVS_SensitivePolyhedron(
+    const Handle(SelectMgr_EntityOwner)&             theOwner,
+    const TColgp_Array1OfPnt&                        theNodes,
+    const Handle(MeshVS_HArray1OfSequenceOfInteger)& theTopo);
 
   Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
-                                                    SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                                   SelectBasics_PickResult& thePickResult)
+    Standard_OVERRIDE;
 
   //! Returns the amount of nodes of polyhedron
   Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
@@ -51,14 +51,13 @@ public:
 
   Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(MeshVS_SensitivePolyhedron,Select3D_SensitiveEntity)
+  DEFINE_STANDARD_RTTIEXT(MeshVS_SensitivePolyhedron, Select3D_SensitiveEntity)
 
 private:
-
-  MeshVS_PolyhedronVerts myTopology;
-  gp_XYZ myCenter;
-  Select3D_BndBox3d myBndBox;
-  Handle(TColgp_HArray1OfPnt) myNodes;
+  MeshVS_PolyhedronVerts                    myTopology;
+  gp_XYZ                                    myCenter;
+  Select3D_BndBox3d                         myBndBox;
+  Handle(TColgp_HArray1OfPnt)               myNodes;
   Handle(MeshVS_HArray1OfSequenceOfInteger) myTopo;
 };
 

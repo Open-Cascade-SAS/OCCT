@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<StepGeom_TrimmingSelect> StepGeom_Array1OfTrimmingSelect;
 
-
 #endif

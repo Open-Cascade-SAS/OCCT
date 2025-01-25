@@ -14,14 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-Handle(StepGeom_Vector) Vect = new StepGeom_Vector;
-  Handle(StepGeom_Direction) aDirection;
-  Standard_Real aMagnitude;
+Handle(StepGeom_Vector)    Vect = new StepGeom_Vector;
+Handle(StepGeom_Direction) aDirection;
+Standard_Real              aMagnitude;
 
-  GeomToStep_MakeDirection MkDir(D);
-  aDirection = MkDir.Value();
-  aMagnitude = V.Magnitude();
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-  Vect->Init(name, aDirection, aMagnitude / lFactor);
-  theVector = Vect;
-  done = Standard_True;
+GeomToStep_MakeDirection MkDir(D);
+aDirection                            = MkDir.Value();
+aMagnitude                            = V.Magnitude();
+Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+Vect->Init(name, aDirection, aMagnitude / lFactor);
+theVector = Vect;
+done      = Standard_True;

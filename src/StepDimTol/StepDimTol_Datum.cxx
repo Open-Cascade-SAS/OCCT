@@ -19,26 +19,19 @@
 #include <StepRepr_ProductDefinitionShape.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_Datum,StepRepr_ShapeAspect)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_Datum, StepRepr_ShapeAspect)
 
-//=======================================================================
-//function : StepDimTol_Datum
-//purpose  : 
-//=======================================================================
-StepDimTol_Datum::StepDimTol_Datum ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepDimTol_Datum::StepDimTol_Datum() {}
 
-void StepDimTol_Datum::Init (const Handle(TCollection_HAsciiString)& theShapeAspect_Name,
-                             const Handle(TCollection_HAsciiString)& theShapeAspect_Description,
-                             const Handle(StepRepr_ProductDefinitionShape)& theShapeAspect_OfShape,
-                             const StepData_Logical theShapeAspect_ProductDefinitional,
-                             const Handle(TCollection_HAsciiString)& theIdentification)
+//=================================================================================================
+
+void StepDimTol_Datum::Init(const Handle(TCollection_HAsciiString)& theShapeAspect_Name,
+                            const Handle(TCollection_HAsciiString)& theShapeAspect_Description,
+                            const Handle(StepRepr_ProductDefinitionShape)& theShapeAspect_OfShape,
+                            const StepData_Logical theShapeAspect_ProductDefinitional,
+                            const Handle(TCollection_HAsciiString)& theIdentification)
 {
   StepRepr_ShapeAspect::Init(theShapeAspect_Name,
                              theShapeAspect_Description,
@@ -47,22 +40,16 @@ void StepDimTol_Datum::Init (const Handle(TCollection_HAsciiString)& theShapeAsp
   myIdentification = theIdentification;
 }
 
-//=======================================================================
-//function : Identification
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepDimTol_Datum::Identification () const
+Handle(TCollection_HAsciiString) StepDimTol_Datum::Identification() const
 {
   return myIdentification;
 }
 
-//=======================================================================
-//function : SetIdentification
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepDimTol_Datum::SetIdentification (const Handle(TCollection_HAsciiString) &theIdentification)
+void StepDimTol_Datum::SetIdentification(const Handle(TCollection_HAsciiString)& theIdentification)
 {
   myIdentification = theIdentification;
 }

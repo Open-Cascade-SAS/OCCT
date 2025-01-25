@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowserPane_AttributePaneModel_H
 #define DFBrowserPane_AttributePaneModel_H
@@ -34,7 +34,6 @@
 class DFBrowserPane_AttributePaneModel : public QAbstractTableModel
 {
 public:
-
   //! Constructor
   Standard_EXPORT DFBrowserPane_AttributePaneModel(QObject* theParent = 0);
 
@@ -43,7 +42,7 @@ public:
 
   //! Sets direction of the values applying, whether it should be placed by rows or by columns
   //! \param theOrientation if horizontal, the values are applied by rows, otherwise by columns
-  void SetOrientation (const Qt::Orientation& theOrientation) { myOrientation = theOrientation; }
+  void SetOrientation(const Qt::Orientation& theOrientation) { myOrientation = theOrientation; }
 
   //! Returns table orientation for setting data values
   //! \return thye current orientation
@@ -51,22 +50,25 @@ public:
 
   //! Sets number of columns
   //! \param theColumnCount a column count
-  void SetColumnCount (const int theColumnCount) { myColumnCount = theColumnCount; }
+  void SetColumnCount(const int theColumnCount) { myColumnCount = theColumnCount; }
 
   //! Fills the model with the values. Store the values in a cache.
   //! \param theValues a container of values
-  Standard_EXPORT void Init (const QList<QVariant>& theValues);
+  Standard_EXPORT void Init(const QList<QVariant>& theValues);
 
   //! Fills the model header values for orientation.
   //! \param theValues a container of header text values
   //! \param theOrientation an orientation of header
-  Standard_EXPORT void SetHeaderValues (const QList<QVariant>& theValues, Qt::Orientation theOrientation);
+  Standard_EXPORT void SetHeaderValues(const QList<QVariant>& theValues,
+                                       Qt::Orientation        theOrientation);
 
   //! Returns header values for orientation.
   //! \param theValues a container of header text values
   //! \param theOrientation an orientation of header
-  const QList<QVariant>& HeaderValues (Qt::Orientation theOrientation)
-    { return theOrientation == Qt::Horizontal ? myHorizontalHeaderValues : myVerticalHeaderValues; }
+  const QList<QVariant>& HeaderValues(Qt::Orientation theOrientation)
+  {
+    return theOrientation == Qt::Horizontal ? myHorizontalHeaderValues : myVerticalHeaderValues;
+  }
 
   //! Returns indices of italic columns
   //! \return indices of columns
@@ -74,48 +76,50 @@ public:
 
   //! Sets indices of italic columns
   //! \param theValues indices of columns
-  void SetItalicColumns (const QList<int>& theValues) { myItalicColumns = theValues; }
+  void SetItalicColumns(const QList<int>& theValues) { myItalicColumns = theValues; }
 
   //! Returns number of columns, depending on orientation: myColumnCount or size of values container
   //! \param theParent an index of the parent item
   //! \return an integer value
-  Standard_EXPORT virtual int columnCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE;
+  Standard_EXPORT virtual int columnCount(const QModelIndex& theParent = QModelIndex()) const
+    Standard_OVERRIDE;
 
   //! Returns number of rows, depending on orientation: myColumnCount or size of values container
   //! \param theParent an index of the parent item
   //! \return an integer value
-  Standard_EXPORT virtual int rowCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE;
+  Standard_EXPORT virtual int rowCount(const QModelIndex& theParent = QModelIndex()) const
+    Standard_OVERRIDE;
 
-  //! Returns content of the model index for the given role, it is obtained from internal container of values
-  //! It returns value only for DisplayRole.
-  //! \param theIndex a model index
-  //! \param theRole a view role
-  //! \return value interpreted depending on the given role
-  Standard_EXPORT virtual QVariant data (const QModelIndex& theIndex, int theRole = Qt::DisplayRole) const Standard_OVERRIDE;
+  //! Returns content of the model index for the given role, it is obtained from internal container
+  //! of values It returns value only for DisplayRole. \param theIndex a model index \param theRole
+  //! a view role \return value interpreted depending on the given role
+  Standard_EXPORT virtual QVariant data(const QModelIndex& theIndex,
+                                        int theRole = Qt::DisplayRole) const Standard_OVERRIDE;
 
-  //! Returns content of the model index for the given role, it is obtainer from internal container of header values
-  //! It returns value only for DisplayRole.
-  //! \param theSection an index of value in the container 
-  //! \param theIndex a model index
-  //! \param theRole a view role
-  //! \return value interpreted depending on the given role
-  Standard_EXPORT virtual QVariant headerData (int theSection, Qt::Orientation theOrientation, int theRole = Qt::DisplayRole) const Standard_OVERRIDE;
+  //! Returns content of the model index for the given role, it is obtainer from internal container
+  //! of header values It returns value only for DisplayRole. \param theSection an index of value in
+  //! the container \param theIndex a model index \param theRole a view role \return value
+  //! interpreted depending on the given role
+  Standard_EXPORT virtual QVariant headerData(int             theSection,
+                                              Qt::Orientation theOrientation,
+                                              int             theRole = Qt::DisplayRole) const
+    Standard_OVERRIDE;
 
   //! Returns flags for the item: ItemIsEnabled | Qt::ItemIsSelectable
   //! \param theIndex a model index
   //! \return flags
-  virtual Qt::ItemFlags flags (const QModelIndex& theIndex) const Standard_OVERRIDE
-  { return theIndex.isValid() ? Qt::ItemIsEnabled | Qt::ItemIsSelectable : Qt::NoItemFlags; }
+  virtual Qt::ItemFlags flags(const QModelIndex& theIndex) const Standard_OVERRIDE
+  {
+    return theIndex.isValid() ? Qt::ItemIsEnabled | Qt::ItemIsSelectable : Qt::NoItemFlags;
+  }
 
 private:
-
   Qt::Orientation myOrientation; //!< orientation how the values should fill the current table view
-  int myColumnCount; //!< number of table columns
-  QMap< int, QList<QVariant> > myValuesMap; //!< container of values, filled in Init(), used in data()
-  QList<QVariant> myHorizontalHeaderValues; //!< table horizontal header values
-  QList<QVariant> myVerticalHeaderValues; //!< table vertical header values
+  int             myColumnCount; //!< number of table columns
+  QMap<int, QList<QVariant>> myValuesMap; //!< container of values, filled in Init(), used in data()
+  QList<QVariant>            myHorizontalHeaderValues; //!< table horizontal header values
+  QList<QVariant>            myVerticalHeaderValues;   //!< table vertical header values
   QList<int> myItalicColumns; //!< indices of columns that should be visualized in gray and italic
-
 };
 
 #endif

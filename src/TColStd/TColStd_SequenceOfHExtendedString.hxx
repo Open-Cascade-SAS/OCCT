@@ -20,5 +20,4 @@
 
 typedef NCollection_Sequence<Handle(TCollection_HExtendedString)> TColStd_SequenceOfHExtendedString;
 
-
 #endif

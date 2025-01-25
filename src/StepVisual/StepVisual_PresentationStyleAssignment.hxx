@@ -24,52 +24,32 @@
 #include <Standard_Integer.hxx>
 class StepVisual_PresentationStyleSelect;
 
-
 class StepVisual_PresentationStyleAssignment;
 DEFINE_STANDARD_HANDLE(StepVisual_PresentationStyleAssignment, Standard_Transient)
-
 
 class StepVisual_PresentationStyleAssignment : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a PresentationStyleAssignment
   Standard_EXPORT StepVisual_PresentationStyleAssignment();
-  
-  Standard_EXPORT void Init (const Handle(StepVisual_HArray1OfPresentationStyleSelect)& aStyles);
-  
-  Standard_EXPORT void SetStyles (const Handle(StepVisual_HArray1OfPresentationStyleSelect)& aStyles);
-  
+
+  Standard_EXPORT void Init(const Handle(StepVisual_HArray1OfPresentationStyleSelect)& aStyles);
+
+  Standard_EXPORT void SetStyles(
+    const Handle(StepVisual_HArray1OfPresentationStyleSelect)& aStyles);
+
   Standard_EXPORT Handle(StepVisual_HArray1OfPresentationStyleSelect) Styles() const;
-  
-  Standard_EXPORT StepVisual_PresentationStyleSelect StylesValue (const Standard_Integer num) const;
-  
+
+  Standard_EXPORT StepVisual_PresentationStyleSelect StylesValue(const Standard_Integer num) const;
+
   Standard_EXPORT Standard_Integer NbStyles() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationStyleAssignment,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationStyleAssignment, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepVisual_HArray1OfPresentationStyleSelect) styles;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_PresentationStyleAssignment_HeaderFile

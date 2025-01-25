@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <Draw_Display.hxx>
@@ -29,76 +28,53 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(DrawDim_Distance,DrawDim_Dimension)
+IMPLEMENT_STANDARD_RTTIEXT(DrawDim_Distance, DrawDim_Dimension)
 
-//=======================================================================
-//function : DrawDim_Distance
-//purpose  : 
-//=======================================================================
-DrawDim_Distance::DrawDim_Distance (const TopoDS_Face& plane1,
-				    const TopoDS_Face& plane2)
+//=================================================================================================
+
+DrawDim_Distance::DrawDim_Distance(const TopoDS_Face& plane1, const TopoDS_Face& plane2)
 {
   myPlane1 = plane1;
   myPlane2 = plane2;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : DrawDim_Distance
-//purpose  : 
-//=======================================================================
-
-DrawDim_Distance::DrawDim_Distance (const TopoDS_Face& plane1)
+DrawDim_Distance::DrawDim_Distance(const TopoDS_Face& plane1)
 
 {
   myPlane1 = plane1;
 }
 
-//=======================================================================
-//function : Plane1
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 const TopoDS_Face& DrawDim_Distance::Plane1() const
 {
   return myPlane1;
 }
 
-//=======================================================================
-//function : Plane1
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- void DrawDim_Distance::Plane1(const TopoDS_Face& face) 
+void DrawDim_Distance::Plane1(const TopoDS_Face& face)
 {
   myPlane1 = face;
 }
 
-//=======================================================================
-//function : Plane2
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 const TopoDS_Face& DrawDim_Distance::Plane2() const
 {
   return myPlane2;
 }
 
-//=======================================================================
-//function : Plane2
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void DrawDim_Distance::Plane2(const TopoDS_Face& face) 
-{ 
+void DrawDim_Distance::Plane2(const TopoDS_Face& face)
+{
   myPlane2 = face;
 }
 
-
-//=======================================================================
-//function : DrawOn
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void DrawDim_Distance::DrawOn(Draw_Display& dis) const
 {
@@ -111,38 +87,40 @@ void DrawDim_Distance::DrawOn(Draw_Display& dis) const
     return;
 
   gp_Ax1 anAx1 = surf1.Plane().Axis();
-  gp_Vec V = anAx1.Direction();
+  gp_Vec V     = anAx1.Direction();
 
   // output
-  gp_Pnt FAttach;   // first attach point
-  gp_Pnt SAttach;   // second attach point
+  gp_Pnt FAttach; // first attach point
+  gp_Pnt SAttach; // second attach point
 
   // first point, try a vertex
-  TopExp_Explorer explo(myPlane1,TopAbs_VERTEX);
-  if (explo.More()) {
+  TopExp_Explorer explo(myPlane1, TopAbs_VERTEX);
+  if (explo.More())
+  {
     FAttach = BRep_Tool::Pnt(TopoDS::Vertex(explo.Current()));
   }
-  else {
+  else
+  {
     // no vertex, use the origin
     FAttach = anAx1.Location();
   }
-  
 
-  if (!myPlane2.IsNull()) {
+  if (!myPlane2.IsNull())
+  {
     // translate the point until the second face
     BRepAdaptor_Surface surf2(myPlane2);
-    surf2.D0(0,0,SAttach);
-    Standard_Real r = V.Dot(gp_Vec(FAttach,SAttach));
+    surf2.D0(0, 0, SAttach);
+    Standard_Real r = V.Dot(gp_Vec(FAttach, SAttach));
     V *= r;
   }
-    
+
   SAttach = FAttach;
   SAttach.Translate(V);
 
   // DISPLAY
-  dis.Draw (FAttach,SAttach);
+  dis.Draw(FAttach, SAttach);
   V *= 0.5;
   FAttach.Translate(V);
   dis.DrawMarker(FAttach, Draw_Losange);
-  DrawText(FAttach,dis);
+  DrawText(FAttach, dis);
 }

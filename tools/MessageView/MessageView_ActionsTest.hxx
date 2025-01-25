@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef MessageView_ActionsTest_H
 #define MessageView_ActionsTest_H
@@ -44,9 +44,10 @@ class MessageView_ActionsTest : public QObject
 {
   Q_OBJECT
 public:
-
   //! Constructor
-  MessageView_ActionsTest (QWidget* theParent, MessageModel_TreeModel* theTreeModel, QItemSelectionModel* theModel);
+  MessageView_ActionsTest(QWidget*                theParent,
+                          MessageModel_TreeModel* theTreeModel,
+                          QItemSelectionModel*    theModel);
 
   //! Destructor
   virtual ~MessageView_ActionsTest() {}
@@ -54,7 +55,7 @@ public:
   //! Fills popup menu with actions depending on the current selection
   //! \param theSelectedIndices tree model selected indices
   //! \param theMenu menu to be filled
-  Standard_EXPORT void AddMenuActions (const QModelIndexList& theSelectedIndices, QMenu* theMenu);
+  Standard_EXPORT void AddMenuActions(const QModelIndexList& theSelectedIndices, QMenu* theMenu);
 
 public slots:
   //! Sending several alerts to check metric of message-alert-tool mechanizm
@@ -70,12 +71,12 @@ protected:
   //! Returns report of selected tree view item if a report item is selected
   //! \param theReportIndex tree model index of the found report
   //! \return report instance or NULL
-  Handle(Message_Report) getSelectedReport (QModelIndex& theReportIndex) const;
+  Handle(Message_Report) getSelectedReport(QModelIndex& theReportIndex) const;
 
 protected:
-  MessageModel_TreeModel* myTreeModel; //< tree model
-  QItemSelectionModel* mySelectionModel; //< selection model
-  QMap<MessageModel_ActionType, QAction*> myActions; //!< container of all actions
+  MessageModel_TreeModel*                 myTreeModel;      //< tree model
+  QItemSelectionModel*                    mySelectionModel; //< selection model
+  QMap<MessageModel_ActionType, QAction*> myActions;        //!< container of all actions
 };
 
 #endif

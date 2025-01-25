@@ -17,12 +17,11 @@
 #ifndef _CDF_StoreSetNameStatus_HeaderFile
 #define _CDF_StoreSetNameStatus_HeaderFile
 
-
 enum CDF_StoreSetNameStatus
 {
-CDF_SSNS_OK,
-CDF_SSNS_ReplacingAnExistentDocument,
-CDF_SSNS_OpenDocument
+  CDF_SSNS_OK,
+  CDF_SSNS_ReplacingAnExistentDocument,
+  CDF_SSNS_OpenDocument
 };
 
 #endif // _CDF_StoreSetNameStatus_HeaderFile

@@ -25,7 +25,6 @@
 #include <TColStd_Array1OfInteger.hxx>
 class Geom_BSplineSurface;
 
-
 //! An algorithm to determine isoparametric curves along
 //! which a BSpline surface should be split in order to
 //! obtain patches of the same continuity. The continuity order is given at the
@@ -48,13 +47,11 @@ class Geom_BSplineSurface;
 //! local derivatives on the surface you don't need to create the
 //! BSpline patches, you can use the functions LocalD1, LocalD2,
 //! LocalD3, LocalDN of the class BSplineSurface from package Geom.
-class GeomConvert_BSplineSurfaceKnotSplitting 
+class GeomConvert_BSplineSurfaceKnotSplitting
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Determines the u- and v-isoparametric curves
   //! along which the BSpline surface BasisSurface
   //! should be split in order to obtain patches with a
@@ -73,8 +70,11 @@ public:
   //! Exceptions
   //! Standard_RangeError if UContinuityRange or
   //! VContinuityRange is less than zero.
-  Standard_EXPORT GeomConvert_BSplineSurfaceKnotSplitting(const Handle(Geom_BSplineSurface)& BasisSurface, const Standard_Integer UContinuityRange, const Standard_Integer VContinuityRange);
-  
+  Standard_EXPORT GeomConvert_BSplineSurfaceKnotSplitting(
+    const Handle(Geom_BSplineSurface)& BasisSurface,
+    const Standard_Integer             UContinuityRange,
+    const Standard_Integer             VContinuityRange);
+
   //! Returns the number of u-isoparametric curves
   //! along which the analysed BSpline surface should be
   //! split in order to obtain patches with the continuity
@@ -84,7 +84,7 @@ public:
   //! Note that the four curves which bound the surface are
   //! counted among these splitting curves.
   Standard_EXPORT Standard_Integer NbUSplits() const;
-  
+
   //! Returns the number of v-isoparametric curves
   //! along which the analysed BSpline surface should be
   //! split in order to obtain patches with the continuity
@@ -94,7 +94,7 @@ public:
   //! Note that the four curves which bound the surface are
   //! counted among these splitting curves.
   Standard_EXPORT Standard_Integer NbVSplits() const;
-  
+
   //! Loads the USplit and VSplit tables with the split
   //! knots values computed in this framework. Each value
   //! in these tables is an index in the knots table
@@ -121,8 +121,9 @@ public:
   //! -   the number of split knots in the v parametric
   //! direction computed in this framework (as given
   //! by the function NbVSplits).
-  Standard_EXPORT void Splitting (TColStd_Array1OfInteger& USplit, TColStd_Array1OfInteger& VSplit) const;
-  
+  Standard_EXPORT void Splitting(TColStd_Array1OfInteger& USplit,
+                                 TColStd_Array1OfInteger& VSplit) const;
+
   //! Returns the split knot of index UIndex
   //! to the split knots table for the u  parametric direction
   //! computed in this framework. The returned value is
@@ -135,8 +136,8 @@ public:
   //! Exceptions
   //! Standard_RangeError if UIndex  is less than 1 or greater than the number
   //! of split knots for the u parametric direction computed in this framework.
-  Standard_EXPORT Standard_Integer USplitValue (const Standard_Integer UIndex) const;
-  
+  Standard_EXPORT Standard_Integer USplitValue(const Standard_Integer UIndex) const;
+
   //! Returns the split knot of index VIndex
   //! to the split knots table for the v  parametric direction
   //! computed in this framework. The returned value is
@@ -149,31 +150,12 @@ public:
   //! Exceptions
   //! Standard_RangeError if VIndex  is less than 1 or greater than the number
   //! of split knots for the v parametric direction computed in this framework.
-  Standard_EXPORT Standard_Integer VSplitValue (const Standard_Integer VIndex) const;
-
-
-
+  Standard_EXPORT Standard_Integer VSplitValue(const Standard_Integer VIndex) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(TColStd_HArray1OfInteger) usplitIndexes;
   Handle(TColStd_HArray1OfInteger) vsplitIndexes;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeomConvert_BSplineSurfaceKnotSplitting_HeaderFile

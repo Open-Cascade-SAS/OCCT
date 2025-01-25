@@ -22,40 +22,44 @@
 #include <StepData_StepWriter.hxx>
 #include <StepDimTol_PositionTolerance.hxx>
 
-//=======================================================================
-//function : RWStepDimTol_RWPositionTolerance
-//purpose  : 
-//=======================================================================
-RWStepDimTol_RWPositionTolerance::RWStepDimTol_RWPositionTolerance ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
+RWStepDimTol_RWPositionTolerance::RWStepDimTol_RWPositionTolerance() {}
 
-void RWStepDimTol_RWPositionTolerance::ReadStep (const Handle(StepData_StepReaderData)& data,
-                                                 const Standard_Integer num,
-                                                 Handle(Interface_Check)& ach,
-                                                 const Handle(StepDimTol_PositionTolerance) &ent) const
+//=================================================================================================
+
+void RWStepDimTol_RWPositionTolerance::ReadStep(
+  const Handle(StepData_StepReaderData)&      data,
+  const Standard_Integer                      num,
+  Handle(Interface_Check)&                    ach,
+  const Handle(StepDimTol_PositionTolerance)& ent) const
 {
   // Check number of parameters
-  if ( ! data->CheckNbParams(num,4,ach,"position_tolerance") ) return;
+  if (!data->CheckNbParams(num, 4, ach, "position_tolerance"))
+    return;
 
   // Inherited fields of GeometricTolerance
 
   Handle(TCollection_HAsciiString) aGeometricTolerance_Name;
-  data->ReadString (num, 1, "geometric_tolerance.name", ach, aGeometricTolerance_Name);
+  data->ReadString(num, 1, "geometric_tolerance.name", ach, aGeometricTolerance_Name);
 
   Handle(TCollection_HAsciiString) aGeometricTolerance_Description;
-  data->ReadString (num, 2, "geometric_tolerance.description", ach, aGeometricTolerance_Description);
+  data->ReadString(num, 2, "geometric_tolerance.description", ach, aGeometricTolerance_Description);
 
   Handle(StepBasic_MeasureWithUnit) aGeometricTolerance_Magnitude;
-  data->ReadEntity (num, 3, "geometric_tolerance.magnitude", ach, STANDARD_TYPE(StepBasic_MeasureWithUnit), aGeometricTolerance_Magnitude);
+  data->ReadEntity(num,
+                   3,
+                   "geometric_tolerance.magnitude",
+                   ach,
+                   STANDARD_TYPE(StepBasic_MeasureWithUnit),
+                   aGeometricTolerance_Magnitude);
 
   StepDimTol_GeometricToleranceTarget aGeometricTolerance_TolerancedShapeAspect;
-  data->ReadEntity (num, 4, "geometric_tolerance.toleranced_shape_aspect", ach, aGeometricTolerance_TolerancedShapeAspect);
+  data->ReadEntity(num,
+                   4,
+                   "geometric_tolerance.toleranced_shape_aspect",
+                   ach,
+                   aGeometricTolerance_TolerancedShapeAspect);
 
   // Initialize entity
   ent->Init(aGeometricTolerance_Name,
@@ -64,38 +68,33 @@ void RWStepDimTol_RWPositionTolerance::ReadStep (const Handle(StepData_StepReade
             aGeometricTolerance_TolerancedShapeAspect);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepDimTol_RWPositionTolerance::WriteStep (StepData_StepWriter& SW,
-                                                  const Handle(StepDimTol_PositionTolerance) &ent) const
+void RWStepDimTol_RWPositionTolerance::WriteStep(
+  StepData_StepWriter&                        SW,
+  const Handle(StepDimTol_PositionTolerance)& ent) const
 {
 
   // Inherited fields of GeometricTolerance
 
-  SW.Send (ent->StepDimTol_GeometricTolerance::Name());
+  SW.Send(ent->StepDimTol_GeometricTolerance::Name());
 
-  SW.Send (ent->StepDimTol_GeometricTolerance::Description());
+  SW.Send(ent->StepDimTol_GeometricTolerance::Description());
 
-  SW.Send (ent->StepDimTol_GeometricTolerance::Magnitude());
+  SW.Send(ent->StepDimTol_GeometricTolerance::Magnitude());
 
-  SW.Send (ent->StepDimTol_GeometricTolerance::TolerancedShapeAspect().Value());
+  SW.Send(ent->StepDimTol_GeometricTolerance::TolerancedShapeAspect().Value());
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepDimTol_RWPositionTolerance::Share (const Handle(StepDimTol_PositionTolerance) &ent,
-                                              Interface_EntityIterator& iter) const
+void RWStepDimTol_RWPositionTolerance::Share(const Handle(StepDimTol_PositionTolerance)& ent,
+                                             Interface_EntityIterator&                   iter) const
 {
 
   // Inherited fields of GeometricTolerance
 
-  iter.AddItem (ent->StepDimTol_GeometricTolerance::Magnitude());
+  iter.AddItem(ent->StepDimTol_GeometricTolerance::Magnitude());
 
-  iter.AddItem (ent->StepDimTol_GeometricTolerance::TolerancedShapeAspect().Value());
+  iter.AddItem(ent->StepDimTol_GeometricTolerance::TolerancedShapeAspect().Value());
 }

@@ -24,7 +24,6 @@
 #include <SelectMgr_Filter.hxx>
 class SelectMgr_EntityOwner;
 
-
 class AIS_TypeFilter;
 DEFINE_STANDARD_HANDLE(AIS_TypeFilter, SelectMgr_Filter)
 
@@ -55,38 +54,21 @@ class AIS_TypeFilter : public SelectMgr_Filter
 {
 
 public:
-
-  
   //! Initializes filter for type, aGivenKind.
   Standard_EXPORT AIS_TypeFilter(const AIS_KindOfInteractive aGivenKind);
-  
+
   //! Returns False if the transient is not an Interactive
   //! Object, or if the type of the Interactive Object is not
   //! the same as that stored in the filter.
-  Standard_EXPORT virtual Standard_Boolean IsOk (const Handle(SelectMgr_EntityOwner)& anobj) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& anobj) const
+    Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(AIS_TypeFilter,SelectMgr_Filter)
+  DEFINE_STANDARD_RTTIEXT(AIS_TypeFilter, SelectMgr_Filter)
 
 protected:
-
-
   AIS_KindOfInteractive myKind;
 
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _AIS_TypeFilter_HeaderFile

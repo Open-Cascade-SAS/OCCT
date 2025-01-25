@@ -24,8 +24,6 @@
 #include <Convert_ElementarySurfaceToBSplineSurface.hxx>
 class gp_Cone;
 
-
-
 //! This algorithm converts a bounded Cone into a rational
 //! B-spline  surface.
 //! The cone a Cone from package gp. Its parametrization is :
@@ -38,49 +36,32 @@ class gp_Cone;
 //! [0, 2PI].
 //! KeyWords :
 //! Convert, Cone, BSplineSurface.
-class Convert_ConeToBSplineSurface  : public Convert_ElementarySurfaceToBSplineSurface
+class Convert_ConeToBSplineSurface : public Convert_ElementarySurfaceToBSplineSurface
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! The equivalent B-spline surface as the same orientation as the
   //! Cone in the U and V parametric directions.
   //!
   //! Raised if U1 = U2 or U1 = U2 + 2.0 * Pi
   //! Raised if V1 = V2.
-  Standard_EXPORT Convert_ConeToBSplineSurface(const gp_Cone& C, const Standard_Real U1, const Standard_Real U2, const Standard_Real V1, const Standard_Real V2);
-  
+  Standard_EXPORT Convert_ConeToBSplineSurface(const gp_Cone&      C,
+                                               const Standard_Real U1,
+                                               const Standard_Real U2,
+                                               const Standard_Real V1,
+                                               const Standard_Real V2);
 
   //! The equivalent B-spline surface as the same orientation as the
   //! Cone in the U and V parametric directions.
   //!
   //! Raised if V1 = V2.
-  Standard_EXPORT Convert_ConeToBSplineSurface(const gp_Cone& C, const Standard_Real V1, const Standard_Real V2);
-
-
-
+  Standard_EXPORT Convert_ConeToBSplineSurface(const gp_Cone&      C,
+                                               const Standard_Real V1,
+                                               const Standard_Real V2);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Convert_ConeToBSplineSurface_HeaderFile

@@ -14,20 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_TypeFilter.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(AIS_TypeFilter,SelectMgr_Filter)
+IMPLEMENT_STANDARD_RTTIEXT(AIS_TypeFilter, SelectMgr_Filter)
 
-AIS_TypeFilter::AIS_TypeFilter(const AIS_KindOfInteractive TheKind):
-myKind(TheKind){}
-
-Standard_Boolean AIS_TypeFilter::IsOk(const Handle(SelectMgr_EntityOwner)& anObj) const 
+AIS_TypeFilter::AIS_TypeFilter(const AIS_KindOfInteractive TheKind)
+    : myKind(TheKind)
 {
-  Handle(AIS_InteractiveObject) anObject = 
-    Handle(AIS_InteractiveObject)::DownCast (anObj->Selectable());
-  return ! anObject.IsNull() && anObject->Type()== myKind;
+}
+
+Standard_Boolean AIS_TypeFilter::IsOk(const Handle(SelectMgr_EntityOwner)& anObj) const
+{
+  Handle(AIS_InteractiveObject) anObject =
+    Handle(AIS_InteractiveObject)::DownCast(anObj->Selectable());
+  return !anObject.IsNull() && anObject->Type() == myKind;
 }

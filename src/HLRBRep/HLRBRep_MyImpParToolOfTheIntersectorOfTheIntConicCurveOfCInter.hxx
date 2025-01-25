@@ -27,53 +27,37 @@
 class IntCurve_IConicTool;
 class HLRBRep_CurveTool;
 
-
-
-class HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter  : public math_FunctionWithDerivative
+class HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter
+    : public math_FunctionWithDerivative
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructor of the class.
-  Standard_EXPORT HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter(const IntCurve_IConicTool& IT, const Standard_Address& PC);
-  
+  Standard_EXPORT HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter(
+    const IntCurve_IConicTool& IT,
+    const Standard_Address&    PC);
+
   //! Computes the value of the signed distance between
   //! the implicit curve and the point at parameter Param
   //! on the parametrised curve.
-  Standard_EXPORT Standard_Boolean Value (const Standard_Real Param, Standard_Real& F) Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Boolean Value(const Standard_Real Param,
+                                         Standard_Real&      F) Standard_OVERRIDE;
+
   //! Computes the derivative of the previous function at
   //! parameter Param.
-  Standard_EXPORT Standard_Boolean Derivative (const Standard_Real Param, Standard_Real& D) Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Boolean Derivative(const Standard_Real Param,
+                                              Standard_Real&      D) Standard_OVERRIDE;
+
   //! Computes the value and the derivative of the function.
-  Standard_EXPORT Standard_Boolean Values (const Standard_Real Param, Standard_Real& F, Standard_Real& D) Standard_OVERRIDE;
-
-
-
+  Standard_EXPORT Standard_Boolean Values(const Standard_Real Param,
+                                          Standard_Real&      F,
+                                          Standard_Real&      D) Standard_OVERRIDE;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Address TheParCurve;
+  Standard_Address    TheParCurve;
   IntCurve_IConicTool TheImpTool;
-
-
 };
-
-
-
-
-
-
 
 #endif // _HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter_HeaderFile

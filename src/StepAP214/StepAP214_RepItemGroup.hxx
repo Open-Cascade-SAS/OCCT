@@ -24,7 +24,6 @@
 class StepRepr_RepresentationItem;
 class TCollection_HAsciiString;
 
-
 class StepAP214_RepItemGroup;
 DEFINE_STANDARD_HANDLE(StepAP214_RepItemGroup, StepBasic_Group)
 
@@ -33,42 +32,27 @@ class StepAP214_RepItemGroup : public StepBasic_Group
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepAP214_RepItemGroup();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aGroup_Name, const Standard_Boolean hasGroup_Description, const Handle(TCollection_HAsciiString)& aGroup_Description, const Handle(TCollection_HAsciiString)& aRepresentationItem_Name);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aGroup_Name,
+                            const Standard_Boolean                  hasGroup_Description,
+                            const Handle(TCollection_HAsciiString)& aGroup_Description,
+                            const Handle(TCollection_HAsciiString)& aRepresentationItem_Name);
+
   //! Returns data for supertype RepresentationItem
   Standard_EXPORT Handle(StepRepr_RepresentationItem) RepresentationItem() const;
-  
+
   //! Set data for supertype RepresentationItem
-  Standard_EXPORT void SetRepresentationItem (const Handle(StepRepr_RepresentationItem)& RepresentationItem);
+  Standard_EXPORT void SetRepresentationItem(
+    const Handle(StepRepr_RepresentationItem)& RepresentationItem);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepAP214_RepItemGroup,StepBasic_Group)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_RepItemGroup, StepBasic_Group)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepRepr_RepresentationItem) theRepresentationItem;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepAP214_RepItemGroup_HeaderFile

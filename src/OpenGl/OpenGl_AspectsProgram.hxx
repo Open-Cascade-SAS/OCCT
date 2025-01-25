@@ -27,34 +27,36 @@ public:
   DEFINE_STANDARD_ALLOC
 public:
   //! Empty constructor.
-  OpenGl_AspectsProgram() : myIsShaderReady (false) {}
+  OpenGl_AspectsProgram()
+      : myIsShaderReady(false)
+  {
+  }
 
   //! Return shading program.
-  const Handle(OpenGl_ShaderProgram)& ShaderProgram (const Handle(OpenGl_Context)& theCtx,
-                                                     const Handle(Graphic3d_ShaderProgram)& theShader)
+  const Handle(OpenGl_ShaderProgram)& ShaderProgram(
+    const Handle(OpenGl_Context)&          theCtx,
+    const Handle(Graphic3d_ShaderProgram)& theShader)
   {
     if (!myIsShaderReady)
     {
-      build (theCtx, theShader);
+      build(theCtx, theShader);
       myIsShaderReady = true;
     }
     return myShaderProgram;
   }
 
   //! Update shader resource up-to-date state.
-  Standard_EXPORT void UpdateRediness (const Handle(Graphic3d_Aspects)& theAspect);
+  Standard_EXPORT void UpdateRediness(const Handle(Graphic3d_Aspects)& theAspect);
 
   //! Release resource.
-  Standard_EXPORT void Release (OpenGl_Context* theCtx);
+  Standard_EXPORT void Release(OpenGl_Context* theCtx);
 
 private:
-
   //! Build shader resource.
-  Standard_EXPORT void build (const Handle(OpenGl_Context)& theCtx,
-                              const Handle(Graphic3d_ShaderProgram)& theShader);
+  Standard_EXPORT void build(const Handle(OpenGl_Context)&          theCtx,
+                             const Handle(Graphic3d_ShaderProgram)& theShader);
 
 private:
-
   Handle(OpenGl_ShaderProgram) myShaderProgram;
   TCollection_AsciiString      myShaderProgramId;
   Standard_Boolean             myIsShaderReady;

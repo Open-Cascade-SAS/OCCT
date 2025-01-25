@@ -19,5 +19,6 @@
 #include <StepDimTol_DatumReferenceModifier.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<StepDimTol_DatumReferenceModifier> StepDimTol_Array1OfDatumReferenceModifier;
+typedef NCollection_Array1<StepDimTol_DatumReferenceModifier>
+  StepDimTol_Array1OfDatumReferenceModifier;
 #endif // _StepDimTol_Array1OfDatumReferenceModifier_HeaderFile

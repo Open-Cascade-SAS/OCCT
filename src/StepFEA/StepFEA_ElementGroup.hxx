@@ -24,7 +24,6 @@
 class TCollection_HAsciiString;
 class StepFEA_FeaModel;
 
-
 class StepFEA_ElementGroup;
 DEFINE_STANDARD_HANDLE(StepFEA_ElementGroup, StepFEA_FeaGroup)
 
@@ -33,42 +32,26 @@ class StepFEA_ElementGroup : public StepFEA_FeaGroup
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepFEA_ElementGroup();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aGroup_Name, const Handle(TCollection_HAsciiString)& aGroup_Description, const Handle(StepFEA_FeaModel)& aFeaGroup_ModelRef, const Handle(StepFEA_HArray1OfElementRepresentation)& aElements);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aGroup_Name,
+                            const Handle(TCollection_HAsciiString)& aGroup_Description,
+                            const Handle(StepFEA_FeaModel)&         aFeaGroup_ModelRef,
+                            const Handle(StepFEA_HArray1OfElementRepresentation)& aElements);
+
   //! Returns field Elements
   Standard_EXPORT Handle(StepFEA_HArray1OfElementRepresentation) Elements() const;
-  
+
   //! Set field Elements
-  Standard_EXPORT void SetElements (const Handle(StepFEA_HArray1OfElementRepresentation)& Elements);
+  Standard_EXPORT void SetElements(const Handle(StepFEA_HArray1OfElementRepresentation)& Elements);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepFEA_ElementGroup,StepFEA_FeaGroup)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_ElementGroup, StepFEA_FeaGroup)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepFEA_HArray1OfElementRepresentation) theElements;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepFEA_ElementGroup_HeaderFile

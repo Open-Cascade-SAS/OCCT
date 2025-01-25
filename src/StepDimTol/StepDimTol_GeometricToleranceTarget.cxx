@@ -20,36 +20,46 @@
 #include <StepRepr_ProductDefinitionShape.hxx>
 #include <StepRepr_ShapeAspect.hxx>
 
-//=======================================================================
-//function : StepDimTol_GeometricToleranceTarget
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepDimTol_GeometricToleranceTarget::StepDimTol_GeometricToleranceTarget () {  }
+StepDimTol_GeometricToleranceTarget::StepDimTol_GeometricToleranceTarget() {}
 
-//=======================================================================
-//function : CaseNum
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer StepDimTol_GeometricToleranceTarget::CaseNum(const Handle(Standard_Transient)& ent) const
+Standard_Integer StepDimTol_GeometricToleranceTarget::CaseNum(
+  const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalSize))) return 2;
-  if (ent->IsKind(STANDARD_TYPE(StepRepr_ProductDefinitionShape))) return 3;
-  if (ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect))) return 4;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalSize)))
+    return 2;
+  if (ent->IsKind(STANDARD_TYPE(StepRepr_ProductDefinitionShape)))
+    return 3;
+  if (ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect)))
+    return 4;
   return 0;
 }
 
-Handle(StepShape_DimensionalLocation) StepDimTol_GeometricToleranceTarget::DimensionalLocation() const
-{  return GetCasted(StepShape_DimensionalLocation,Value());  }
+Handle(StepShape_DimensionalLocation) StepDimTol_GeometricToleranceTarget::DimensionalLocation()
+  const
+{
+  return GetCasted(StepShape_DimensionalLocation, Value());
+}
 
 Handle(StepShape_DimensionalSize) StepDimTol_GeometricToleranceTarget::DimensionalSize() const
-{  return GetCasted(StepShape_DimensionalSize,Value());  }
+{
+  return GetCasted(StepShape_DimensionalSize, Value());
+}
 
-Handle(StepRepr_ProductDefinitionShape) StepDimTol_GeometricToleranceTarget::ProductDefinitionShape() const
-{  return GetCasted(StepRepr_ProductDefinitionShape,Value());  }
+Handle(StepRepr_ProductDefinitionShape) StepDimTol_GeometricToleranceTarget::
+  ProductDefinitionShape() const
+{
+  return GetCasted(StepRepr_ProductDefinitionShape, Value());
+}
 
 Handle(StepRepr_ShapeAspect) StepDimTol_GeometricToleranceTarget::ShapeAspect() const
-{  return GetCasted(StepRepr_ShapeAspect,Value());  }
+{
+  return GetCasted(StepRepr_ShapeAspect, Value());
+}

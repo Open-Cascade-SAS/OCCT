@@ -11,50 +11,52 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepVisual_CurveStyle.hxx>
 #include <StepVisual_SurfaceStyleParameterLine.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleParameterLine,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleParameterLine, Standard_Transient)
 
-StepVisual_SurfaceStyleParameterLine::StepVisual_SurfaceStyleParameterLine ()  {}
+StepVisual_SurfaceStyleParameterLine::StepVisual_SurfaceStyleParameterLine() {}
 
 void StepVisual_SurfaceStyleParameterLine::Init(
-	const Handle(StepVisual_CurveStyle)& aStyleOfParameterLines,
-	const Handle(StepVisual_HArray1OfDirectionCountSelect)& aDirectionCounts)
+  const Handle(StepVisual_CurveStyle)&                    aStyleOfParameterLines,
+  const Handle(StepVisual_HArray1OfDirectionCountSelect)& aDirectionCounts)
 {
-	// --- classe own fields ---
-	styleOfParameterLines = aStyleOfParameterLines;
-	directionCounts = aDirectionCounts;
+  // --- classe own fields ---
+  styleOfParameterLines = aStyleOfParameterLines;
+  directionCounts       = aDirectionCounts;
 }
 
-
-void StepVisual_SurfaceStyleParameterLine::SetStyleOfParameterLines(const Handle(StepVisual_CurveStyle)& aStyleOfParameterLines)
+void StepVisual_SurfaceStyleParameterLine::SetStyleOfParameterLines(
+  const Handle(StepVisual_CurveStyle)& aStyleOfParameterLines)
 {
-	styleOfParameterLines = aStyleOfParameterLines;
+  styleOfParameterLines = aStyleOfParameterLines;
 }
 
 Handle(StepVisual_CurveStyle) StepVisual_SurfaceStyleParameterLine::StyleOfParameterLines() const
 {
-	return styleOfParameterLines;
+  return styleOfParameterLines;
 }
 
-void StepVisual_SurfaceStyleParameterLine::SetDirectionCounts(const Handle(StepVisual_HArray1OfDirectionCountSelect)& aDirectionCounts)
+void StepVisual_SurfaceStyleParameterLine::SetDirectionCounts(
+  const Handle(StepVisual_HArray1OfDirectionCountSelect)& aDirectionCounts)
 {
-	directionCounts = aDirectionCounts;
+  directionCounts = aDirectionCounts;
 }
 
-Handle(StepVisual_HArray1OfDirectionCountSelect) StepVisual_SurfaceStyleParameterLine::DirectionCounts() const
+Handle(StepVisual_HArray1OfDirectionCountSelect) StepVisual_SurfaceStyleParameterLine::
+  DirectionCounts() const
 {
-	return directionCounts;
+  return directionCounts;
 }
 
-StepVisual_DirectionCountSelect StepVisual_SurfaceStyleParameterLine::DirectionCountsValue(const Standard_Integer num) const
+StepVisual_DirectionCountSelect StepVisual_SurfaceStyleParameterLine::DirectionCountsValue(
+  const Standard_Integer num) const
 {
-	return directionCounts->Value(num);
+  return directionCounts->Value(num);
 }
 
-Standard_Integer StepVisual_SurfaceStyleParameterLine::NbDirectionCounts () const
+Standard_Integer StepVisual_SurfaceStyleParameterLine::NbDirectionCounts() const
 {
-	return directionCounts->Length();
+  return directionCounts->Length();
 }

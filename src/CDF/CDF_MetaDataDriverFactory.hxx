@@ -23,40 +23,19 @@
 #include <Standard_Transient.hxx>
 class CDF_MetaDataDriver;
 
-
 class CDF_MetaDataDriverFactory;
 DEFINE_STANDARD_HANDLE(CDF_MetaDataDriverFactory, Standard_Transient)
-
 
 class CDF_MetaDataDriverFactory : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT virtual Handle(CDF_MetaDataDriver) Build() const = 0;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(CDF_MetaDataDriverFactory,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(CDF_MetaDataDriverFactory, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _CDF_MetaDataDriverFactory_HeaderFile

@@ -25,7 +25,6 @@
 class IGESBasic_SubfigureDef;
 class gp_Pnt;
 
-
 class IGESGeom_Point;
 DEFINE_STANDARD_HANDLE(IGESGeom_Point, IGESData_IGESEntity)
 
@@ -35,51 +34,32 @@ class IGESGeom_Point : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESGeom_Point();
-  
+
   //! This method is used to set the fields of the class Point
   //! - aPoint  : Coordinates of point
   //! - aSymbol : SubfigureDefinition entity specifying the
   //! display symbol if there exists one, or zero
-  Standard_EXPORT void Init (const gp_XYZ& aPoint, const Handle(IGESBasic_SubfigureDef)& aSymbol);
-  
+  Standard_EXPORT void Init(const gp_XYZ& aPoint, const Handle(IGESBasic_SubfigureDef)& aSymbol);
+
   //! returns coordinates of the point
   Standard_EXPORT gp_Pnt Value() const;
-  
+
   //! returns coordinates of the point after applying Transf. Matrix
   Standard_EXPORT gp_Pnt TransformedValue() const;
-  
+
   //! returns True if symbol exists
   Standard_EXPORT Standard_Boolean HasDisplaySymbol() const;
-  
+
   //! returns display symbol entity if it exists
   Standard_EXPORT Handle(IGESBasic_SubfigureDef) DisplaySymbol() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESGeom_Point,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_Point, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-  gp_XYZ thePoint;
+  gp_XYZ                         thePoint;
   Handle(IGESBasic_SubfigureDef) theSymbol;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESGeom_Point_HeaderFile

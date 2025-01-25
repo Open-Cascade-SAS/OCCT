@@ -14,21 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Graphic3d_TextureMap.hxx>
 #include <Graphic3d_TextureParams.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_TextureMap,Graphic3d_TextureRoot)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_TextureMap, Graphic3d_TextureRoot)
 
 // =======================================================================
 // function : Graphic3d_TextureMap
 // purpose  :
 // =======================================================================
-Graphic3d_TextureMap::Graphic3d_TextureMap (const TCollection_AsciiString& theFileName,
-                                            const Graphic3d_TypeOfTexture  theType)
-: Graphic3d_TextureRoot (theFileName, theType)
+Graphic3d_TextureMap::Graphic3d_TextureMap(const TCollection_AsciiString& theFileName,
+                                           const Graphic3d_TypeOfTexture  theType)
+    : Graphic3d_TextureRoot(theFileName, theType)
 {
 }
 
@@ -36,9 +35,9 @@ Graphic3d_TextureMap::Graphic3d_TextureMap (const TCollection_AsciiString& theFi
 // function : Graphic3d_TextureMap
 // purpose  :
 // =======================================================================
-Graphic3d_TextureMap::Graphic3d_TextureMap (const Handle(Image_PixMap)&   thePixMap,
-                                            const Graphic3d_TypeOfTexture theType)
-: Graphic3d_TextureRoot (thePixMap, theType)
+Graphic3d_TextureMap::Graphic3d_TextureMap(const Handle(Image_PixMap)&   thePixMap,
+                                           const Graphic3d_TypeOfTexture theType)
+    : Graphic3d_TextureRoot(thePixMap, theType)
 {
 }
 
@@ -48,7 +47,7 @@ Graphic3d_TextureMap::Graphic3d_TextureMap (const Handle(Image_PixMap)&   thePix
 // =======================================================================
 void Graphic3d_TextureMap::EnableSmooth()
 {
-  myParams->SetFilter (Graphic3d_TOTF_TRILINEAR);
+  myParams->SetFilter(Graphic3d_TOTF_TRILINEAR);
 }
 
 // =======================================================================
@@ -57,7 +56,7 @@ void Graphic3d_TextureMap::EnableSmooth()
 // =======================================================================
 void Graphic3d_TextureMap::DisableSmooth()
 {
-  myParams->SetFilter (Graphic3d_TOTF_NEAREST);
+  myParams->SetFilter(Graphic3d_TOTF_NEAREST);
 }
 
 // =======================================================================
@@ -75,7 +74,7 @@ Standard_Boolean Graphic3d_TextureMap::IsSmoothed() const
 // =======================================================================
 void Graphic3d_TextureMap::EnableModulate()
 {
-  myParams->SetModulate (Standard_True);
+  myParams->SetModulate(Standard_True);
 }
 
 // =======================================================================
@@ -84,7 +83,7 @@ void Graphic3d_TextureMap::EnableModulate()
 // =======================================================================
 void Graphic3d_TextureMap::DisableModulate()
 {
-  myParams->SetModulate (Standard_False);
+  myParams->SetModulate(Standard_False);
 }
 
 // =======================================================================
@@ -102,7 +101,7 @@ Standard_Boolean Graphic3d_TextureMap::IsModulate() const
 // =======================================================================
 void Graphic3d_TextureMap::EnableRepeat()
 {
-  myParams->SetRepeat (Standard_True);
+  myParams->SetRepeat(Standard_True);
 }
 
 // =======================================================================
@@ -111,7 +110,7 @@ void Graphic3d_TextureMap::EnableRepeat()
 // =======================================================================
 void Graphic3d_TextureMap::DisableRepeat()
 {
-  myParams->SetRepeat (Standard_False);
+  myParams->SetRepeat(Standard_False);
 }
 
 // =======================================================================
@@ -136,7 +135,7 @@ Graphic3d_LevelOfTextureAnisotropy Graphic3d_TextureMap::AnisoFilter() const
 // function : SetAnisoFilter
 // purpose  :
 // =======================================================================
-void Graphic3d_TextureMap::SetAnisoFilter (const Graphic3d_LevelOfTextureAnisotropy theLevel)
+void Graphic3d_TextureMap::SetAnisoFilter(const Graphic3d_LevelOfTextureAnisotropy theLevel)
 {
-  myParams->SetAnisoFilter (theLevel);
+  myParams->SetAnisoFilter(theLevel);
 }

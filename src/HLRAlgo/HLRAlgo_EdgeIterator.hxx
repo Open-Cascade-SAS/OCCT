@@ -23,71 +23,55 @@
 
 class HLRAlgo_EdgeStatus;
 
-
-
-class HLRAlgo_EdgeIterator 
+class HLRAlgo_EdgeIterator
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Iterator  on the  visible or  hidden  parts of  an
   //! edge.
   Standard_EXPORT HLRAlgo_EdgeIterator();
-  
-  Standard_EXPORT void InitHidden (HLRAlgo_EdgeStatus& status);
-  
-    Standard_Boolean MoreHidden() const;
-  
+
+  Standard_EXPORT void InitHidden(HLRAlgo_EdgeStatus& status);
+
+  Standard_Boolean MoreHidden() const;
+
   Standard_EXPORT void NextHidden();
-  
+
   //! Returns the bounds and the tolerances
   //! of the current Hidden Interval
-    void Hidden (Standard_Real& Start, Standard_ShortReal& TolStart, Standard_Real& End, Standard_ShortReal& TolEnd) const;
-  
-    void InitVisible (HLRAlgo_EdgeStatus& status);
-  
-    Standard_Boolean MoreVisible() const;
-  
-    void NextVisible();
-  
+  void Hidden(Standard_Real&      Start,
+              Standard_ShortReal& TolStart,
+              Standard_Real&      End,
+              Standard_ShortReal& TolEnd) const;
+
+  void InitVisible(HLRAlgo_EdgeStatus& status);
+
+  Standard_Boolean MoreVisible() const;
+
+  void NextVisible();
+
   //! Returns the bounds and the tolerances
   //! of the current Visible Interval
-    void Visible (Standard_Real& Start, Standard_ShortReal& TolStart, Standard_Real& End, Standard_ShortReal& TolEnd);
-
-
-
+  void Visible(Standard_Real&      Start,
+               Standard_ShortReal& TolStart,
+               Standard_Real&      End,
+               Standard_ShortReal& TolEnd);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Integer myNbVis;
-  Standard_Integer myNbHid;
+  Standard_Integer    myNbVis;
+  Standard_Integer    myNbHid;
   HLRAlgo_EdgeStatus* EVis;
   HLRAlgo_EdgeStatus* EHid;
-  Standard_Integer iVis;
-  Standard_Integer iHid;
-  Standard_Real myHidStart;
-  Standard_Real myHidEnd;
-  Standard_ShortReal myHidTolStart;
-  Standard_ShortReal myHidTolEnd;
-
-
+  Standard_Integer    iVis;
+  Standard_Integer    iHid;
+  Standard_Real       myHidStart;
+  Standard_Real       myHidEnd;
+  Standard_ShortReal  myHidTolStart;
+  Standard_ShortReal  myHidTolEnd;
 };
 
-
 #include <HLRAlgo_EdgeIterator.lxx>
-
-
-
-
 
 #endif // _HLRAlgo_EdgeIterator_HeaderFile

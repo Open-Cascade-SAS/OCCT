@@ -32,37 +32,22 @@ class IGESData_DefaultSpecific : public IGESData_SpecificModule
 {
 
 public:
-
-  
   //! Creates a DefaultSpecific and puts it into SpecificLib
   Standard_EXPORT IGESData_DefaultSpecific();
-  
+
   //! Specific Dump for UndefinedEntity : it concerns only
   //! own parameters, the general data (Directory Part, Lists) are
   //! taken into account by the IGESDumper
-  Standard_EXPORT void OwnDump (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent, const IGESData_IGESDumper& dumper, Standard_OStream& S, const Standard_Integer own) const Standard_OVERRIDE;
+  Standard_EXPORT void OwnDump(const Standard_Integer             CN,
+                               const Handle(IGESData_IGESEntity)& ent,
+                               const IGESData_IGESDumper&         dumper,
+                               Standard_OStream&                  S,
+                               const Standard_Integer             own) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESData_DefaultSpecific,IGESData_SpecificModule)
+  DEFINE_STANDARD_RTTIEXT(IGESData_DefaultSpecific, IGESData_SpecificModule)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESData_DefaultSpecific_HeaderFile

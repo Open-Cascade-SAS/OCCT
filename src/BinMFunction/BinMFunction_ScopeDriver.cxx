@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMDF_ADriver.hxx>
 #include <BinMFunction_ScopeDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
@@ -27,21 +26,16 @@
 #include <TDF_Tool.hxx>
 #include <TFunction_Scope.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMFunction_ScopeDriver,BinMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinMFunction_ScopeDriver, BinMDF_ADriver)
 
-//=======================================================================
-//function : BinMFunction_GraphNodeDriver
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 BinMFunction_ScopeDriver::BinMFunction_ScopeDriver(const Handle(Message_Messenger)& theMsgDriver)
-: BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TFunction_Scope)->Name())
+    : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TFunction_Scope)->Name())
 {
 }
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(TDF_Attribute) BinMFunction_ScopeDriver::NewEmpty() const
 {
@@ -49,18 +43,18 @@ Handle(TDF_Attribute) BinMFunction_ScopeDriver::NewEmpty() const
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
 Standard_Boolean BinMFunction_ScopeDriver::Paste(const BinObjMgt_Persistent&  theSource,
-						 const Handle(TDF_Attribute)& theTarget,
-						 BinObjMgt_RRelocationTable&  ) const
+                                                 const Handle(TDF_Attribute)& theTarget,
+                                                 BinObjMgt_RRelocationTable&) const
 {
   Handle(TFunction_Scope) S = Handle(TFunction_Scope)::DownCast(theTarget);
 
   Standard_Integer nb;
-  if ( !(theSource >> nb) )
+  if (!(theSource >> nb))
     return Standard_False;
   if (!nb)
     return Standard_True;
@@ -69,14 +63,14 @@ Standard_Boolean BinMFunction_ScopeDriver::Paste(const BinObjMgt_Persistent&  th
 
   // IDs
   TColStd_Array1OfInteger IDs(1, nb);
-  theSource.GetIntArray (&IDs(1), nb);
+  theSource.GetIntArray(&IDs(1), nb);
 
   // Labels
   Standard_Integer freeID = 0;
   for (Standard_Integer i = 1; i <= nb; i++)
   {
     TCollection_AsciiString entry;
-    if ( !(theSource >> entry) )
+    if (!(theSource >> entry))
       return Standard_False;
     TDF_Label L;
     TDF_Tool::Label(S->Label().Data(), entry, L, Standard_True);
@@ -84,7 +78,7 @@ Standard_Boolean BinMFunction_ScopeDriver::Paste(const BinObjMgt_Persistent&  th
     {
       map.Bind(IDs.Value(i), L);
       if (IDs.Value(i) > freeID)
-	freeID = IDs.Value(i);
+        freeID = IDs.Value(i);
     }
   }
 
@@ -96,17 +90,17 @@ Standard_Boolean BinMFunction_ScopeDriver::Paste(const BinObjMgt_Persistent&  th
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMFunction_ScopeDriver::Paste (const Handle(TDF_Attribute)& theSource,
-				      BinObjMgt_Persistent&        theTarget,
-				      BinObjMgt_SRelocationTable&  ) const
+void BinMFunction_ScopeDriver::Paste(const Handle(TDF_Attribute)& theSource,
+                                     BinObjMgt_Persistent&        theTarget,
+                                     BinObjMgt_SRelocationTable&) const
 {
-  Handle(TFunction_Scope) S = Handle(TFunction_Scope)::DownCast(theSource);
+  Handle(TFunction_Scope)                  S   = Handle(TFunction_Scope)::DownCast(theSource);
   const TFunction_DoubleMapOfIntegerLabel& map = S->GetFunctions();
-  const Standard_Integer nb = map.Extent();
+  const Standard_Integer                   nb  = map.Extent();
 
   // Number of functions
   theTarget << nb;
@@ -115,13 +109,13 @@ void BinMFunction_ScopeDriver::Paste (const Handle(TDF_Attribute)& theSource,
 
   // IDs
   {
-    TColStd_Array1OfInteger aSourceArray(1, nb);
+    TColStd_Array1OfInteger                              aSourceArray(1, nb);
     TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel itr(map);
     for (Standard_Integer i = 1; itr.More(); itr.Next(), i++)
     {
       aSourceArray.SetValue(i, itr.Key1());
     }
-    Standard_Integer *aPtr = (Standard_Integer *) &aSourceArray(1);
+    Standard_Integer* aPtr = (Standard_Integer*)&aSourceArray(1);
     theTarget.PutIntArray(aPtr, nb);
   }
 
@@ -133,11 +127,10 @@ void BinMFunction_ScopeDriver::Paste (const Handle(TDF_Attribute)& theSource,
       TDF_Label L = itr.Key2();
       if (!L.IsNull())
       {
-	TCollection_AsciiString entry;
-	TDF_Tool::Entry(L, entry);
-	theTarget << entry;
+        TCollection_AsciiString entry;
+        TDF_Tool::Entry(L, entry);
+        theTarget << entry;
       }
     }
   }
 }
-

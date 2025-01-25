@@ -14,138 +14,104 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Draft_VertexInfo.hxx>
 #include <Standard_DomainError.hxx>
 #include <TColStd_ListIteratorOfListOfReal.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 
-//=======================================================================
-//function : Draft_VertexInfo
-//purpose  : 
-//=======================================================================
-Draft_VertexInfo::Draft_VertexInfo () {}
+//=================================================================================================
 
+Draft_VertexInfo::Draft_VertexInfo() {}
 
-//=======================================================================
-//function : Add
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void Draft_VertexInfo::Add(const TopoDS_Edge& E)
 {
-  for (myItEd.Initialize(myEdges); myItEd.More(); myItEd.Next()) {
-    if (E.IsSame(myItEd.Value())) {
+  for (myItEd.Initialize(myEdges); myItEd.More(); myItEd.Next())
+  {
+    if (E.IsSame(myItEd.Value()))
+    {
       break;
     }
   }
-  if (!myItEd.More()) {
+  if (!myItEd.More())
+  {
     myEdges.Append(E);
     myParams.Append(RealLast());
   }
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Geometry
-//purpose  : 
-//=======================================================================
-
-const gp_Pnt& Draft_VertexInfo::Geometry () const
+const gp_Pnt& Draft_VertexInfo::Geometry() const
 {
   return myGeom;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : ChangeGeometry
-//purpose  : 
-//=======================================================================
-
-gp_Pnt& Draft_VertexInfo::ChangeGeometry ()
+gp_Pnt& Draft_VertexInfo::ChangeGeometry()
 {
   return myGeom;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Parameter
-//purpose  : 
-//=======================================================================
-
-Standard_Real Draft_VertexInfo::Parameter (const TopoDS_Edge& E)
+Standard_Real Draft_VertexInfo::Parameter(const TopoDS_Edge& E)
 {
   TColStd_ListIteratorOfListOfReal itp(myParams);
   myItEd.Initialize(myEdges);
-  for (; myItEd.More(); myItEd.Next(),itp.Next()) {
-    if (myItEd.Value().IsSame(E)) {
+  for (; myItEd.More(); myItEd.Next(), itp.Next())
+  {
+    if (myItEd.Value().IsSame(E))
+    {
       return itp.Value();
     }
   }
   throw Standard_DomainError();
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : ChangeParameter
-//purpose  : 
-//=======================================================================
-
-Standard_Real& Draft_VertexInfo::ChangeParameter (const TopoDS_Edge& E)
+Standard_Real& Draft_VertexInfo::ChangeParameter(const TopoDS_Edge& E)
 {
   TColStd_ListIteratorOfListOfReal itp(myParams);
   myItEd.Initialize(myEdges);
-  for (; myItEd.More(); myItEd.Next(),itp.Next()) {
-    if (myItEd.Value().IsSame(E)) {
+  for (; myItEd.More(); myItEd.Next(), itp.Next())
+  {
+    if (myItEd.Value().IsSame(E))
+    {
       return itp.ChangeValue();
     }
   }
   throw Standard_DomainError();
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : InitEdgeIterator
-//purpose  : 
-//=======================================================================
-
-void Draft_VertexInfo::InitEdgeIterator () 
+void Draft_VertexInfo::InitEdgeIterator()
 {
   myItEd.Initialize(myEdges);
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Edge
-//purpose  : 
-//=======================================================================
-
-const TopoDS_Edge& Draft_VertexInfo::Edge () const
+const TopoDS_Edge& Draft_VertexInfo::Edge() const
 {
   return TopoDS::Edge(myItEd.Value());
 }
 
-
-//=======================================================================
-//function : MoreEdge
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean Draft_VertexInfo::MoreEdge() const
 {
   return myItEd.More();
 }
 
-
-//=======================================================================
-//function : NextEdge
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void Draft_VertexInfo::NextEdge()
 {
   myItEd.Next();
 }
-
-

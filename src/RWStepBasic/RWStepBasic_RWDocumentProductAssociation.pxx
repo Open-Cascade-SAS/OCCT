@@ -27,48 +27,31 @@ class StepBasic_DocumentProductAssociation;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write tool for DocumentProductAssociation
-class RWStepBasic_RWDocumentProductAssociation 
+class RWStepBasic_RWDocumentProductAssociation
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_HIDDEN RWStepBasic_RWDocumentProductAssociation();
-  
+
   //! Reads DocumentProductAssociation
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepBasic_DocumentProductAssociation)& ent) const;
-  
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&              data,
+                                const Standard_Integer                              num,
+                                Handle(Interface_Check)&                            ach,
+                                const Handle(StepBasic_DocumentProductAssociation)& ent) const;
+
   //! Writes DocumentProductAssociation
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepBasic_DocumentProductAssociation)& ent) const;
-  
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                SW,
+                                 const Handle(StepBasic_DocumentProductAssociation)& ent) const;
+
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepBasic_DocumentProductAssociation)& ent, Interface_EntityIterator& iter) const;
-
-
-
+  Standard_HIDDEN void Share(const Handle(StepBasic_DocumentProductAssociation)& ent,
+                             Interface_EntityIterator&                           iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepBasic_RWDocumentProductAssociation_HeaderFile

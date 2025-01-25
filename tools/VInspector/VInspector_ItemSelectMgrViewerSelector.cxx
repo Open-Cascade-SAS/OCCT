@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/VInspector_ItemSelectMgrViewerSelector.hxx>
 
@@ -33,13 +33,14 @@ int VInspector_ItemSelectMgrViewerSelector::initRowCount() const
 // function : initValue
 // purpose :
 // =======================================================================
-QVariant VInspector_ItemSelectMgrViewerSelector::initValue (const int theItemRole) const
+QVariant VInspector_ItemSelectMgrViewerSelector::initValue(const int theItemRole) const
 {
-  QVariant aParentValue = VInspector_ItemBase::initValue (theItemRole);
+  QVariant aParentValue = VInspector_ItemBase::initValue(theItemRole);
   if (aParentValue.isValid())
     return aParentValue;
 
-  if (theItemRole != Qt::DisplayRole && theItemRole != Qt::EditRole && theItemRole != Qt::ToolTipRole)
+  if (theItemRole != Qt::DisplayRole && theItemRole != Qt::EditRole
+      && theItemRole != Qt::ToolTipRole)
     return QVariant();
 
   if (GetViewerSelector().IsNull())
@@ -54,15 +55,17 @@ QVariant VInspector_ItemSelectMgrViewerSelector::initValue (const int theItemRol
 // =======================================================================
 void VInspector_ItemSelectMgrViewerSelector::Init()
 {
-  VInspector_ItemContextPropertiesPtr aParentItem = itemDynamicCast<VInspector_ItemContextProperties>(Parent());
+  VInspector_ItemContextPropertiesPtr aParentItem =
+    itemDynamicCast<VInspector_ItemContextProperties>(Parent());
   Handle(SelectMgr_ViewerSelector) aViewerSelector;
   if (aParentItem)
   {
-    VInspector_ItemContextPtr aParentContextItem = itemDynamicCast<VInspector_ItemContext>(aParentItem->Parent());
+    VInspector_ItemContextPtr aParentContextItem =
+      itemDynamicCast<VInspector_ItemContext>(aParentItem->Parent());
     if (aParentContextItem)
     {
       Handle(AIS_InteractiveContext) aContext = aParentContextItem->GetContext();
-      aViewerSelector = aContext->MainSelector();
+      aViewerSelector                         = aContext->MainSelector();
     }
   }
   myViewerSelector = aViewerSelector;
@@ -95,11 +98,11 @@ void VInspector_ItemSelectMgrViewerSelector::initItem() const
 // function : initStream
 // purpose :
 // =======================================================================
-void VInspector_ItemSelectMgrViewerSelector::initStream (Standard_OStream& theOStream) const
+void VInspector_ItemSelectMgrViewerSelector::initStream(Standard_OStream& theOStream) const
 {
   Handle(SelectMgr_ViewerSelector) aViewerSelector = GetViewerSelector();
   if (aViewerSelector.IsNull())
     return;
 
-  aViewerSelector->DumpJson (theOStream);
+  aViewerSelector->DumpJson(theOStream);
 }

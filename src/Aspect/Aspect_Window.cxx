@@ -29,16 +29,16 @@
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Aspect_Window,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Aspect_Window, Standard_Transient)
 
 //-Aliases
 //-Global data definitions
 //-Destructors
 //-Constructors
 Aspect_Window::Aspect_Window()
-: MyBackground(),
-  MyGradientBackground(),
-  MyBackgroundFillMethod(Aspect_FM_NONE)
+    : MyBackground(),
+      MyGradientBackground(),
+      MyBackgroundFillMethod(Aspect_FM_NONE)
 {
 }
 
@@ -62,46 +62,44 @@ Standard_Boolean Aspect_Window::IsVirtual() const
   return MyIsVirtual;
 }
 
-void Aspect_Window::SetVirtual (const Standard_Boolean theVirtual)
+void Aspect_Window::SetVirtual(const Standard_Boolean theVirtual)
 {
   MyIsVirtual = theVirtual;
 }
 
-void Aspect_Window::SetBackground (const Aspect_Background& theBackground)
+void Aspect_Window::SetBackground(const Aspect_Background& theBackground)
 {
-  SetBackground (theBackground.Color());
+  SetBackground(theBackground.Color());
 }
 
-void Aspect_Window::SetBackground (const Quantity_Color& theColor)
+void Aspect_Window::SetBackground(const Quantity_Color& theColor)
 {
-  MyBackground.SetColor (theColor);
+  MyBackground.SetColor(theColor);
 }
 
-void Aspect_Window::SetBackground (const Aspect_GradientBackground& theBackground)
+void Aspect_Window::SetBackground(const Aspect_GradientBackground& theBackground)
 {
   Quantity_Color aFirstColor, aSecondColor;
-  theBackground.Colors (aFirstColor, aSecondColor);
-  SetBackground (aFirstColor, aSecondColor, theBackground.BgGradientFillMethod());
+  theBackground.Colors(aFirstColor, aSecondColor);
+  SetBackground(aFirstColor, aSecondColor, theBackground.BgGradientFillMethod());
 }
 
-void Aspect_Window::SetBackground (const Quantity_Color& theFirstColor,
-                                   const Quantity_Color& theSecondColor,
-                                   const Aspect_GradientFillMethod theFillMethod)
+void Aspect_Window::SetBackground(const Quantity_Color&           theFirstColor,
+                                  const Quantity_Color&           theSecondColor,
+                                  const Aspect_GradientFillMethod theFillMethod)
 {
-  MyGradientBackground.SetColors (theFirstColor, theSecondColor, theFillMethod);
+  MyGradientBackground.SetColors(theFirstColor, theSecondColor, theFillMethod);
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void Aspect_Window::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-  
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &MyBackground)
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &MyGradientBackground)
+//=================================================================================================
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, MyBackgroundFillMethod)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, MyIsVirtual)
+void Aspect_Window::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &MyBackground)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &MyGradientBackground)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, MyBackgroundFillMethod)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, MyIsVirtual)
 }

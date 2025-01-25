@@ -29,73 +29,80 @@
 
 #include <TDataStd_ListOfExtendedString.hxx>
 
-
-
-
 //=======================================================================
-//function : DDataStd_SetName
-//purpose  : SetName (DF, entry, name [,guid])
+// function : DDataStd_SetName
+// purpose  : SetName (DF, entry, name [,guid])
 //=======================================================================
 
-static Standard_Integer DDataStd_SetName (Draw_Interpretor& di,
-					  Standard_Integer nb, 
-					  const char** arg) 
+static Standard_Integer DDataStd_SetName(Draw_Interpretor& di,
+                                         Standard_Integer  nb,
+                                         const char**      arg)
 {
 
-  if (nb == 4 || nb == 5) {     
+  if (nb == 4 || nb == 5)
+  {
     Handle(TDF_Data) DF;
-    if (!DDF::GetDF(arg[1],DF)) return 1;
+    if (!DDF::GetDF(arg[1], DF))
+      return 1;
     TDF_Label L;
     DDF::AddLabel(DF, arg[2], L);
-    if(L.IsNull()) di << "Label is not found"   << "\n";
-	if(nb == 4) 
-      TDataStd_Name::Set(L,TCollection_ExtendedString(arg[3],Standard_True)); 
-	else {	
-	  if (!Standard_GUID::CheckGUIDFormat(arg[4])) {
-        di<<"DDataStd_SetReal: The format of GUID is invalid\n";
+    if (L.IsNull())
+      di << "Label is not found" << "\n";
+    if (nb == 4)
+      TDataStd_Name::Set(L, TCollection_ExtendedString(arg[3], Standard_True));
+    else
+    {
+      if (!Standard_GUID::CheckGUIDFormat(arg[4]))
+      {
+        di << "DDataStd_SetReal: The format of GUID is invalid\n";
         return 1;
-	  }
-	  Standard_GUID guid(arg[4]);
-	  TDataStd_Name::Set(L, guid, TCollection_ExtendedString(arg[3],Standard_True)); 
-     }
+      }
+      Standard_GUID guid(arg[4]);
+      TDataStd_Name::Set(L, guid, TCollection_ExtendedString(arg[3], Standard_True));
+    }
     return 0;
   }
   di << "DDataStd_SetName : Error\n";
   return 1;
 }
 
-//#define DEB_DDataStd
+// #define DEB_DDataStd
 //=======================================================================
-//function : DDataStd_GetName
-//purpose  : GetName (DF, entry [,guid])
+// function : DDataStd_GetName
+// purpose  : GetName (DF, entry [,guid])
 //=======================================================================
 
-static Standard_Integer DDataStd_GetName (Draw_Interpretor& di,
-					  Standard_Integer nb, 
-					  const char** arg) 
-{   
-  if (nb == 3 || nb == 4) {    
+static Standard_Integer DDataStd_GetName(Draw_Interpretor& di,
+                                         Standard_Integer  nb,
+                                         const char**      arg)
+{
+  if (nb == 3 || nb == 4)
+  {
     Handle(TDF_Data) DF;
-    if (!DDF::GetDF(arg[1],DF)) return 1; 
+    if (!DDF::GetDF(arg[1], DF))
+      return 1;
     TDF_Label L;
     DDF::FindLabel(DF, arg[2], L);
-    if(L.IsNull()) di << "Label is not found"   << "\n";
-	Standard_GUID aGuid (TDataStd_Name::GetID());
-	if(nb == 4) {
-      if (!Standard_GUID::CheckGUIDFormat(arg[3])) {
-        di<<"DDataStd_GetAsciiString: The format of GUID is invalid\n";
+    if (L.IsNull())
+      di << "Label is not found" << "\n";
+    Standard_GUID aGuid(TDataStd_Name::GetID());
+    if (nb == 4)
+    {
+      if (!Standard_GUID::CheckGUIDFormat(arg[3]))
+      {
+        di << "DDataStd_GetAsciiString: The format of GUID is invalid\n";
         return 1;
-	  }
-	  aGuid = Standard_GUID(arg[3]);
-	}
-	Handle(TDataStd_Name) N;	  
-	if( !L.FindAttribute(aGuid, N) )
-  {
-    di << "Name attribute is not found or not set";
-	  return 1;
-	}
+      }
+      aGuid = Standard_GUID(arg[3]);
+    }
+    Handle(TDataStd_Name) N;
+    if (!L.FindAttribute(aGuid, N))
+    {
+      di << "Name attribute is not found or not set";
+      return 1;
+    }
 #ifdef DEB_DDataStd
-	if(!N.IsNull()) 
+    if (!N.IsNull())
       std::cout << "String = " << N->Get() << std::endl;
 #endif
     di << N->Get();
@@ -105,31 +112,19 @@ static Standard_Integer DDataStd_GetName (Draw_Interpretor& di,
   return 1;
 }
 
+//=================================================================================================
 
-
-
-//=======================================================================
-//function : SetCommands
-//purpose  : 
-//=======================================================================
-
-void DDataStd::NameCommands (Draw_Interpretor& theCommands)
-{  
+void DDataStd::NameCommands(Draw_Interpretor& theCommands)
+{
 
   static Standard_Boolean done = Standard_False;
-  if (done) return;
+  if (done)
+    return;
   done = Standard_True;
 
   const char* g = "DDataStd : Name attribute commands";
 
-  theCommands.Add ("SetName", 
-                   "SetName (DF, entry, name [,guid])",
-		   __FILE__, DDataStd_SetName, g);   
+  theCommands.Add("SetName", "SetName (DF, entry, name [,guid])", __FILE__, DDataStd_SetName, g);
 
-  theCommands.Add ("GetName", 
-                   "GetNmae (DF, entry [,guid])",
-                    __FILE__, DDataStd_GetName, g);  
-
-
+  theCommands.Add("GetName", "GetNmae (DF, entry [,guid])", __FILE__, DDataStd_GetName, g);
 }
-

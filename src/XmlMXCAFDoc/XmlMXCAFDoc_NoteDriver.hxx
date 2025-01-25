@@ -34,22 +34,19 @@ DEFINE_STANDARD_HANDLE(XmlMXCAFDoc_NoteDriver, XmlMDF_ADriver)
 class XmlMXCAFDoc_NoteDriver : public XmlMDF_ADriver
 {
 public:
-
-  Standard_EXPORT Standard_Boolean Paste(const XmlObjMgt_Persistent&  theSource,
-    const Handle(TDF_Attribute)& theTarget,
-    XmlObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean
+    Paste(const XmlObjMgt_Persistent&  theSource,
+          const Handle(TDF_Attribute)& theTarget,
+          XmlObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE;
 
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)& theSource,
-    XmlObjMgt_Persistent&        theTarget,
-    XmlObjMgt_SRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+                             XmlObjMgt_Persistent&        theTarget,
+                             XmlObjMgt_SRelocationTable&  theRelocTable) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(XmlMXCAFDoc_NoteDriver, XmlMDF_ADriver)
 
 protected:
-
-  XmlMXCAFDoc_NoteDriver(const Handle(Message_Messenger)& theMsgDriver,
-                         Standard_CString                 theName);
-
+  XmlMXCAFDoc_NoteDriver(const Handle(Message_Messenger)& theMsgDriver, Standard_CString theName);
 };
 
 #endif // _XmlMXCAFDoc_NoteDriver_HeaderFile

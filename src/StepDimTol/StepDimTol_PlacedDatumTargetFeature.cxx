@@ -18,12 +18,8 @@
 #include <Standard_Type.hxx>
 #include <StepDimTol_PlacedDatumTargetFeature.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_PlacedDatumTargetFeature,StepDimTol_DatumTarget)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_PlacedDatumTargetFeature, StepDimTol_DatumTarget)
 
-//=======================================================================
-//function : StepDimTol_PlacedDatumTargetFeature
-//purpose  : 
-//=======================================================================
-StepDimTol_PlacedDatumTargetFeature::StepDimTol_PlacedDatumTargetFeature ()
-{
-}
+//=================================================================================================
+
+StepDimTol_PlacedDatumTargetFeature::StepDimTol_PlacedDatumTargetFeature() {}

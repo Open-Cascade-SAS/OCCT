@@ -89,11 +89,11 @@ public:
   struct DEBRep_InternalSection
   {
     // Write
-    bool WriteBinary = true;    //!< Defines the binary file format
-                                // clang-format off
+    bool WriteBinary = true;          //!< Defines the binary file format
+                                      // clang-format off
     BinTools_FormatVersion WriteVersionBin = BinTools_FormatVersion_CURRENT; //!< Defines the writer version for the binary format
     TopTools_FormatVersion WriteVersionAscii = TopTools_FormatVersion_CURRENT; //!< Defines the writer version for the ASCII format
-                                // clang-format on
+                                      // clang-format on
     bool WriteTriangles = true; //!< Defines the flag for storing shape with(without) triangles
     bool WriteNormals   = true; //!< Defines the flag for storing shape with(without) normals
 

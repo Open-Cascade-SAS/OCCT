@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -18,25 +18,20 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedWire, StepVisual_TessellatedItem)
 
-//=======================================================================
-//function : StepVisual_TessellatedWire
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepVisual_TessellatedWire::StepVisual_TessellatedWire ()
+StepVisual_TessellatedWire::StepVisual_TessellatedWire()
 {
   myHasGeometricModelLink = Standard_False;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedWire::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                       const Handle(StepVisual_HArray1OfTessellatedEdgeOrVertex)& theItems,
-                                       const Standard_Boolean theHasGeometricModelLink,
-                                       const StepVisual_PathOrCompositeCurve& theGeometricModelLink)
+void StepVisual_TessellatedWire::Init(
+  const Handle(TCollection_HAsciiString)&                    theRepresentationItem_Name,
+  const Handle(StepVisual_HArray1OfTessellatedEdgeOrVertex)& theItems,
+  const Standard_Boolean                                     theHasGeometricModelLink,
+  const StepVisual_PathOrCompositeCurve&                     theGeometricModelLink)
 {
   StepVisual_TessellatedItem::Init(theRepresentationItem_Name);
 
@@ -53,31 +48,22 @@ void StepVisual_TessellatedWire::Init (const Handle(TCollection_HAsciiString)& t
   }
 }
 
-//=======================================================================
-//function : Items
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepVisual_HArray1OfTessellatedEdgeOrVertex) StepVisual_TessellatedWire::Items () const
+Handle(StepVisual_HArray1OfTessellatedEdgeOrVertex) StepVisual_TessellatedWire::Items() const
 {
   return myItems;
 }
 
-//=======================================================================
-//function : SetItems
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedWire::SetItems(const Handle(StepVisual_HArray1OfTessellatedEdgeOrVertex)& theItems)
+void StepVisual_TessellatedWire::SetItems(
+  const Handle(StepVisual_HArray1OfTessellatedEdgeOrVertex)& theItems)
 {
   myItems = theItems;
 }
 
-
-//=======================================================================
-//function : NbItems
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer StepVisual_TessellatedWire::NbItems() const
 {
@@ -88,43 +74,32 @@ Standard_Integer StepVisual_TessellatedWire::NbItems() const
   return myItems->Length();
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : ItemsValue
-//purpose  : 
-//=======================================================================
-
-const StepVisual_TessellatedEdgeOrVertex& StepVisual_TessellatedWire::ItemsValue(const Standard_Integer theNum) const
+const StepVisual_TessellatedEdgeOrVertex& StepVisual_TessellatedWire::ItemsValue(
+  const Standard_Integer theNum) const
 {
   return myItems->Value(theNum);
 }
 
-//=======================================================================
-//function : GeometricModelLink
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepVisual_PathOrCompositeCurve StepVisual_TessellatedWire::GeometricModelLink () const
+StepVisual_PathOrCompositeCurve StepVisual_TessellatedWire::GeometricModelLink() const
 {
   return myGeometricModelLink;
 }
 
-//=======================================================================
-//function : SetGeometricModelLink
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedWire::SetGeometricModelLink(const StepVisual_PathOrCompositeCurve& theGeometricModelLink)
+void StepVisual_TessellatedWire::SetGeometricModelLink(
+  const StepVisual_PathOrCompositeCurve& theGeometricModelLink)
 {
   myGeometricModelLink = theGeometricModelLink;
 }
 
-//=======================================================================
-//function : HasGeometricModelLink
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean StepVisual_TessellatedWire::HasGeometricModelLink () const
+Standard_Boolean StepVisual_TessellatedWire::HasGeometricModelLink() const
 {
   return myHasGeometricModelLink;
 }

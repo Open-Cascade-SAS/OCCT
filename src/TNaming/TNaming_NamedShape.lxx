@@ -15,39 +15,41 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : ID
-//purpose  : 
+// function : ID
+// purpose  :
 //=======================================================================
 
 inline const Standard_GUID& TNaming_NamedShape::ID() const
-{ return GetID(); }
+{
+  return GetID();
+}
 
 //=======================================================================
-//function : 
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
 
-inline TNaming_Evolution TNaming_NamedShape::Evolution () const 
+inline TNaming_Evolution TNaming_NamedShape::Evolution() const
 {
   return myEvolution;
 }
 
 //=======================================================================
-//function : 
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer TNaming_NamedShape::Version () const 
+inline Standard_Integer TNaming_NamedShape::Version() const
 {
   return myVersion;
 }
 
 //=======================================================================
-//function : 
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
 
-inline void TNaming_NamedShape::SetVersion (const Standard_Integer v)
+inline void TNaming_NamedShape::SetVersion(const Standard_Integer v)
 {
   myVersion = v;
 }

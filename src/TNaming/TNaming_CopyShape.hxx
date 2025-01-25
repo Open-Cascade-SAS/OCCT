@@ -25,46 +25,30 @@ class TopoDS_Shape;
 class TNaming_TranslateTool;
 class TopLoc_Location;
 
-
-
-class TNaming_CopyShape 
+class TNaming_CopyShape
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Makes  copy  a  set  of  shape(s),  using the  aMap
-  Standard_EXPORT static void CopyTool (const TopoDS_Shape& aShape, TColStd_IndexedDataMapOfTransientTransient& aMap, TopoDS_Shape& aResult);
-  
+  Standard_EXPORT static void CopyTool(const TopoDS_Shape&                         aShape,
+                                       TColStd_IndexedDataMapOfTransientTransient& aMap,
+                                       TopoDS_Shape&                               aResult);
+
   //! Translates  a  Transient  shape(s)  to  Transient
-  Standard_EXPORT static void Translate (const TopoDS_Shape& aShape, TColStd_IndexedDataMapOfTransientTransient& aMap, TopoDS_Shape& aResult, const Handle(TNaming_TranslateTool)& TrTool);
-  
+  Standard_EXPORT static void Translate(const TopoDS_Shape&                         aShape,
+                                        TColStd_IndexedDataMapOfTransientTransient& aMap,
+                                        TopoDS_Shape&                               aResult,
+                                        const Handle(TNaming_TranslateTool)&        TrTool);
+
   //! Translates a Topological  Location  to an  other  Top.
   //! Location
-  Standard_EXPORT static TopLoc_Location Translate (const TopLoc_Location& L, TColStd_IndexedDataMapOfTransientTransient& aMap);
-
-
-
+  Standard_EXPORT static TopLoc_Location Translate(
+    const TopLoc_Location&                      L,
+    TColStd_IndexedDataMapOfTransientTransient& aMap);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _TNaming_CopyShape_HeaderFile

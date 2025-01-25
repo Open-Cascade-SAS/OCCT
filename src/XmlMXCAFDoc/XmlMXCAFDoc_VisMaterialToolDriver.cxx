@@ -19,43 +19,36 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_VisMaterialToolDriver, XmlMDF_ADriver)
 
-//=======================================================================
-//function : XmlMXCAFDoc_VisMaterialToolDriver
-//purpose  :
-//=======================================================================
-XmlMXCAFDoc_VisMaterialToolDriver::XmlMXCAFDoc_VisMaterialToolDriver (const Handle(Message_Messenger)& theMsgDriver)
-: XmlMDF_ADriver (theMsgDriver, "xcaf", "VisMaterialTool")
+//=================================================================================================
+
+XmlMXCAFDoc_VisMaterialToolDriver::XmlMXCAFDoc_VisMaterialToolDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : XmlMDF_ADriver(theMsgDriver, "xcaf", "VisMaterialTool")
 {
   //
 }
 
-//=======================================================================
-//function : NewEmpty
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Handle(TDF_Attribute) XmlMXCAFDoc_VisMaterialToolDriver::NewEmpty() const
 {
   return new XCAFDoc_VisMaterialTool();
 }
 
-//=======================================================================
-//function : Paste
-//purpose  :
-//=======================================================================
-Standard_Boolean XmlMXCAFDoc_VisMaterialToolDriver::Paste (const XmlObjMgt_Persistent& ,
-                                                           const Handle(TDF_Attribute)& ,
-                                                           XmlObjMgt_RRelocationTable& ) const
+//=================================================================================================
+
+Standard_Boolean XmlMXCAFDoc_VisMaterialToolDriver::Paste(const XmlObjMgt_Persistent&,
+                                                          const Handle(TDF_Attribute)&,
+                                                          XmlObjMgt_RRelocationTable&) const
 {
   return Standard_True;
 }
 
-//=======================================================================
-//function : Paste
-//purpose  :
-//=======================================================================
-void XmlMXCAFDoc_VisMaterialToolDriver::Paste (const Handle(TDF_Attribute)& ,
-                                               XmlObjMgt_Persistent& ,
-                                               XmlObjMgt_SRelocationTable& ) const
+//=================================================================================================
+
+void XmlMXCAFDoc_VisMaterialToolDriver::Paste(const Handle(TDF_Attribute)&,
+                                              XmlObjMgt_Persistent&,
+                                              XmlObjMgt_SRelocationTable&) const
 {
   //
 }

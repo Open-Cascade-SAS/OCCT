@@ -17,13 +17,12 @@
 #ifndef _Vrml_CylinderParts_HeaderFile
 #define _Vrml_CylinderParts_HeaderFile
 
-
 enum Vrml_CylinderParts
 {
-Vrml_CylinderSIDES,
-Vrml_CylinderTOP,
-Vrml_CylinderBOTTOM,
-Vrml_CylinderALL
+  Vrml_CylinderSIDES,
+  Vrml_CylinderTOP,
+  Vrml_CylinderBOTTOM,
+  Vrml_CylinderALL
 };
 
 #endif // _Vrml_CylinderParts_HeaderFile

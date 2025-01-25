@@ -23,48 +23,27 @@
 #include <Standard_Transient.hxx>
 class StepVisual_Colour;
 
-
 class StepVisual_TextStyleForDefinedFont;
 DEFINE_STANDARD_HANDLE(StepVisual_TextStyleForDefinedFont, Standard_Transient)
-
 
 class StepVisual_TextStyleForDefinedFont : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a TextStyleForDefinedFont
   Standard_EXPORT StepVisual_TextStyleForDefinedFont();
-  
-  Standard_EXPORT void Init (const Handle(StepVisual_Colour)& aTextColour);
-  
-  Standard_EXPORT void SetTextColour (const Handle(StepVisual_Colour)& aTextColour);
-  
+
+  Standard_EXPORT void Init(const Handle(StepVisual_Colour)& aTextColour);
+
+  Standard_EXPORT void SetTextColour(const Handle(StepVisual_Colour)& aTextColour);
+
   Standard_EXPORT Handle(StepVisual_Colour) TextColour() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_TextStyleForDefinedFont,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_TextStyleForDefinedFont, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepVisual_Colour) textColour;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_TextStyleForDefinedFont_HeaderFile

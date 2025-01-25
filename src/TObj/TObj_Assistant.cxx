@@ -23,10 +23,7 @@
 #include <TColStd_IndexedMapOfTransient.hxx>
 #include <Standard_Type.hxx>
 
-//=======================================================================
-//function : getModels
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TColStd_SequenceOfTransient& TObj_Assistant::getModels()
 {
@@ -34,10 +31,7 @@ TColStd_SequenceOfTransient& TObj_Assistant::getModels()
   return sModels;
 }
 
-//=======================================================================
-//function : getTypes
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TColStd_IndexedMapOfTransient& TObj_Assistant::getTypes()
 {
@@ -45,10 +39,7 @@ TColStd_IndexedMapOfTransient& TObj_Assistant::getTypes()
   return sTypes;
 }
 
-//=======================================================================
-//function : getTypes
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(TObj_Model)& TObj_Assistant::getCurrentModel()
 {
@@ -56,10 +47,7 @@ Handle(TObj_Model)& TObj_Assistant::getCurrentModel()
   return sCurrentModel;
 }
 
-//=======================================================================
-//function : getVersion
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer& TObj_Assistant::getVersion()
 {
@@ -67,106 +55,79 @@ Standard_Integer& TObj_Assistant::getVersion()
   return sVersion;
 }
 
-//=======================================================================
-//function : FindModel
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TObj_Model) TObj_Assistant::FindModel
-  (const Standard_CString theName)
+Handle(TObj_Model) TObj_Assistant::FindModel(const Standard_CString theName)
 {
   TCollection_ExtendedString aName(theName, Standard_True);
-  Standard_Integer i = getModels().Length();
-  Handle(TObj_Model) aModel;
-  for(; i > 0; i --)
+  Standard_Integer           i = getModels().Length();
+  Handle(TObj_Model)         aModel;
+  for (; i > 0; i--)
   {
-    aModel = Handle(TObj_Model)::DownCast(getModels().Value( i ));
-    if ( aName == aModel->GetModelName()->String() )
+    aModel = Handle(TObj_Model)::DownCast(getModels().Value(i));
+    if (aName == aModel->GetModelName()->String())
       break;
   }
   if (i == 0)
     aModel.Nullify();
-  
+
   return aModel;
 }
 
-//=======================================================================
-//function : BindModel
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TObj_Assistant::BindModel (const Handle(TObj_Model)& theModel)
+void TObj_Assistant::BindModel(const Handle(TObj_Model)& theModel)
 {
   getModels().Append(theModel);
 }
 
-//=======================================================================
-//function : Clear
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TObj_Assistant::ClearModelMap ()
+void TObj_Assistant::ClearModelMap()
 {
   getModels().Clear();
 }
 
-//=======================================================================
-//function : FindType
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(Standard_Type) TObj_Assistant::FindType
-  (const Standard_Integer theTypeIndex)
+Handle(Standard_Type) TObj_Assistant::FindType(const Standard_Integer theTypeIndex)
 {
-  if(theTypeIndex > 0 && theTypeIndex <= getTypes().Extent())
+  if (theTypeIndex > 0 && theTypeIndex <= getTypes().Extent())
     return Handle(Standard_Type)::DownCast(getTypes().FindKey(theTypeIndex));
 
   return 0;
 }
 
-//=======================================================================
-//function : FindTypeIndex
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer TObj_Assistant::FindTypeIndex
-  (const Handle(Standard_Type)& theType)
+Standard_Integer TObj_Assistant::FindTypeIndex(const Handle(Standard_Type)& theType)
 {
-  if(!getTypes().Contains(theType))
+  if (!getTypes().Contains(theType))
     return 0;
 
   return getTypes().FindIndex(theType);
 }
 
-//=======================================================================
-//class    : TObj_Assistant_UnknownType
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 class TObj_Assistant_UnknownType : public Standard_Transient
 {
- public:
-  
+public:
   TObj_Assistant_UnknownType() {}
-    // Empty constructor
-  
+  // Empty constructor
+
   // CASCADE RTTI
-  DEFINE_STANDARD_RTTI_INLINE(TObj_Assistant_UnknownType,Standard_Transient)
+  DEFINE_STANDARD_RTTI_INLINE(TObj_Assistant_UnknownType, Standard_Transient)
 };
 
 // Define handle class for TObj_Assistant_UnknownType
-DEFINE_STANDARD_HANDLE(TObj_Assistant_UnknownType,Standard_Transient)
+DEFINE_STANDARD_HANDLE(TObj_Assistant_UnknownType, Standard_Transient)
 
+//=================================================================================================
 
-//=======================================================================
-//function : BindType
-//purpose  : 
-//=======================================================================
-
-Standard_Integer TObj_Assistant::BindType
-  (const Handle(Standard_Type)& theType)
+Standard_Integer TObj_Assistant::BindType(const Handle(Standard_Type)& theType)
 {
-  if(theType.IsNull())
+  if (theType.IsNull())
   {
     Handle(Standard_Transient) anUnknownType;
     anUnknownType = new TObj_Assistant_UnknownType;
@@ -176,51 +137,36 @@ Standard_Integer TObj_Assistant::BindType
   return getTypes().Add(theType);
 }
 
-//=======================================================================
-//function : ClearTypeMap
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TObj_Assistant::ClearTypeMap ()
+void TObj_Assistant::ClearTypeMap()
 {
   getTypes().Clear();
 }
 
-//=======================================================================
-//function : SetCurrentModel
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TObj_Assistant::SetCurrentModel (const Handle(TObj_Model)& theModel)
+void TObj_Assistant::SetCurrentModel(const Handle(TObj_Model)& theModel)
 {
   getCurrentModel() = theModel;
-  getVersion() = -1;
+  getVersion()      = -1;
 }
 
-//=======================================================================
-//function : GetCurrentModel
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TObj_Model) TObj_Assistant::GetCurrentModel ()
+Handle(TObj_Model) TObj_Assistant::GetCurrentModel()
 {
   return getCurrentModel();
 }
 
-//=======================================================================
-//function : UnSetCurrentModel
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TObj_Assistant::UnSetCurrentModel ()
+void TObj_Assistant::UnSetCurrentModel()
 {
   getCurrentModel().Nullify();
 }
 
-//=======================================================================
-//function : GetAppVersion
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer TObj_Assistant::GetAppVersion()
 {

@@ -21,5 +21,4 @@
 
 DEFINE_HARRAY1(TColStd_HArray1OfExtendedString, TColStd_Array1OfExtendedString)
 
-
 #endif

@@ -22,19 +22,19 @@
 
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   #ifdef __OBJC__
-    @class UIView;
-    @class UIWindow;
+@class UIView;
+@class UIWindow;
   #else
-    struct UIView;
-    struct UIWindow;
+struct UIView;
+struct UIWindow;
   #endif
 #else
   #ifdef __OBJC__
-    @class NSView;
-    @class NSWindow;
+@class NSView;
+@class NSWindow;
   #else
-    struct NSView;
-    struct NSWindow;
+struct NSView;
+struct NSWindow;
   #endif
 #endif
 
@@ -60,25 +60,23 @@ class Aspect_GradientBackground;
 class Cocoa_Window : public Aspect_Window
 {
 public:
-
   //! Convert Carbon virtual key into Aspect_VKey.
-  Standard_EXPORT static Aspect_VKey VirtualKeyFromNative (Standard_Integer theKey);
+  Standard_EXPORT static Aspect_VKey VirtualKeyFromNative(Standard_Integer theKey);
 
 public:
-
   //! Creates a NSWindow and NSView defined by his position and size in pixels
-  Standard_EXPORT Cocoa_Window (const Standard_CString theTitle,
-                                const Standard_Integer thePxLeft,
-                                const Standard_Integer thePxTop,
-                                const Standard_Integer thePxWidth,
-                                const Standard_Integer thePxHeight);
+  Standard_EXPORT Cocoa_Window(const Standard_CString theTitle,
+                               const Standard_Integer thePxLeft,
+                               const Standard_Integer thePxTop,
+                               const Standard_Integer thePxWidth,
+                               const Standard_Integer thePxHeight);
 
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   //! Creates a wrapper over existing UIView handle
-  Standard_EXPORT Cocoa_Window (UIView* theViewUI);
+  Standard_EXPORT Cocoa_Window(UIView* theViewUI);
 #else
   //! Creates a wrapper over existing NSView handle
-  Standard_EXPORT Cocoa_Window (NSView* theViewNS);
+  Standard_EXPORT Cocoa_Window(NSView* theViewNS);
 #endif
 
   //! Destroys the Window and all resourses attached to it
@@ -103,58 +101,55 @@ public:
   Standard_EXPORT virtual Standard_Real Ratio() const Standard_OVERRIDE;
 
   //! Returns The Window POSITION in PIXEL
-  Standard_EXPORT virtual void Position (Standard_Integer& X1,
-                                         Standard_Integer& Y1,
-                                         Standard_Integer& X2,
-                                         Standard_Integer& Y2) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Position(Standard_Integer& X1,
+                                        Standard_Integer& Y1,
+                                        Standard_Integer& X2,
+                                        Standard_Integer& Y2) const Standard_OVERRIDE;
 
   //! Returns The Window SIZE in PIXEL
-  Standard_EXPORT virtual void Size (Standard_Integer& theWidth,
-                                     Standard_Integer& theHeight) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Size(Standard_Integer& theWidth,
+                                    Standard_Integer& theHeight) const Standard_OVERRIDE;
 
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   //! @return associated UIView
   UIView* HView() const { return myHView; }
 
   //! Setup new UIView.
-  Standard_EXPORT void SetHView (UIView* theView);
+  Standard_EXPORT void SetHView(UIView* theView);
 #else
   //! @return associated NSView
   NSView* HView() const { return myHView; }
 
   //! Setup new NSView.
-  Standard_EXPORT void SetHView (NSView* theView);
+  Standard_EXPORT void SetHView(NSView* theView);
 #endif
 
   //! @return native Window handle
   virtual Aspect_Drawable NativeHandle() const Standard_OVERRIDE
   {
-    return (Aspect_Drawable )HView();
+    return (Aspect_Drawable)HView();
   }
 
   //! @return parent of native Window handle
-  virtual Aspect_Drawable NativeParentHandle() const Standard_OVERRIDE
-  {
-    return 0;
-  }
+  virtual Aspect_Drawable NativeParentHandle() const Standard_OVERRIDE { return 0; }
 
   //! Returns nothing on OS X
   virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return NULL; }
 
   //! Sets window title.
-  Standard_EXPORT virtual void SetTitle (const TCollection_AsciiString& theTitle) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetTitle(const TCollection_AsciiString& theTitle) Standard_OVERRIDE;
 
   //! Invalidate entire window content by setting NSView::setNeedsDisplay property.
   //! Call will be implicitly redirected to the main thread when called from non-GUI thread.
-  Standard_EXPORT virtual void InvalidateContent (const Handle(Aspect_DisplayConnection)& theDisp = NULL) Standard_OVERRIDE;
+  Standard_EXPORT virtual void InvalidateContent(
+    const Handle(Aspect_DisplayConnection)& theDisp = NULL) Standard_OVERRIDE;
 
 protected:
-
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
-  UIView*          myHView;
+  UIView* myHView;
 #else
-  NSWindow*        myHWindow;
-  NSView*          myHView;
+  NSWindow* myHWindow;
+  NSView*   myHView;
 #endif
   Standard_Integer myXLeft;
   Standard_Integer myYTop;
@@ -162,9 +157,7 @@ protected:
   Standard_Integer myYBottom;
 
 public:
-
-  DEFINE_STANDARD_RTTIEXT(Cocoa_Window,Aspect_Window)
-
+  DEFINE_STANDARD_RTTIEXT(Cocoa_Window, Aspect_Window)
 };
 
 DEFINE_STANDARD_HANDLE(Cocoa_Window, Aspect_Window)

@@ -15,40 +15,35 @@
 
 #include <XCAFView_Object.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XCAFView_Object,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(XCAFView_Object, Standard_Transient)
 
-//=======================================================================
-//function : XCAFView_Object
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 XCAFView_Object::XCAFView_Object()
 {
-  myClippingExpression = new TCollection_HAsciiString();
-  myFrontPlaneClipping = Standard_False;
-  myBackPlaneClipping = Standard_False;
+  myClippingExpression      = new TCollection_HAsciiString();
+  myFrontPlaneClipping      = Standard_False;
+  myBackPlaneClipping       = Standard_False;
   myViewVolumeSidesClipping = Standard_False;
-  myGDTPoints = NULL;
+  myGDTPoints               = NULL;
 }
 
-//=======================================================================
-//function : XCAFView_Object
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 XCAFView_Object::XCAFView_Object(const Handle(XCAFView_Object)& theObj)
 {
-  myType = theObj->myType;
-  myProjectionPoint = theObj->myProjectionPoint;
-  myViewDirection = theObj->myViewDirection;
-  myUpDirection = theObj->myUpDirection;
-  myZoomFactor = theObj->myZoomFactor;
-  myWindowHorizontalSize = theObj->myWindowHorizontalSize;
-  myWindowVerticalSize = theObj->myWindowVerticalSize;
-  myClippingExpression = theObj->myClippingExpression;
-  myFrontPlaneClipping = theObj->myFrontPlaneClipping;
-  myFrontPlaneDistance = theObj->myFrontPlaneDistance;
-  myBackPlaneClipping = theObj->myBackPlaneClipping;
-  myBackPlaneDistance = theObj->myBackPlaneDistance;
+  myType                    = theObj->myType;
+  myProjectionPoint         = theObj->myProjectionPoint;
+  myViewDirection           = theObj->myViewDirection;
+  myUpDirection             = theObj->myUpDirection;
+  myZoomFactor              = theObj->myZoomFactor;
+  myWindowHorizontalSize    = theObj->myWindowHorizontalSize;
+  myWindowVerticalSize      = theObj->myWindowVerticalSize;
+  myClippingExpression      = theObj->myClippingExpression;
+  myFrontPlaneClipping      = theObj->myFrontPlaneClipping;
+  myFrontPlaneDistance      = theObj->myFrontPlaneDistance;
+  myBackPlaneClipping       = theObj->myBackPlaneClipping;
+  myBackPlaneDistance       = theObj->myBackPlaneDistance;
   myViewVolumeSidesClipping = theObj->myViewVolumeSidesClipping;
-  myGDTPoints = NULL;
+  myGDTPoints               = NULL;
 }
-

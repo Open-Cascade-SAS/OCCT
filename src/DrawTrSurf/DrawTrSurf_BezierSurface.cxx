@@ -27,37 +27,40 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_BezierSurface, DrawTrSurf_Surface)
 
-DrawTrSurf_BezierSurface::DrawTrSurf_BezierSurface (const Handle(Geom_BezierSurface)& S)
-: DrawTrSurf_Surface (S, 1, 1, Draw_jaune, Draw_bleu, 30, 0.05, 0)
+DrawTrSurf_BezierSurface::DrawTrSurf_BezierSurface(const Handle(Geom_BezierSurface)& S)
+    : DrawTrSurf_Surface(S, 1, 1, Draw_jaune, Draw_bleu, 30, 0.05, 0)
 {
   drawPoles = Standard_True;
   polesLook = Draw_rouge;
 }
 
-DrawTrSurf_BezierSurface::DrawTrSurf_BezierSurface (const Handle(Geom_BezierSurface)& S,
-                                                    const Standard_Integer NbUIsos, const Standard_Integer NbVIsos,
-                                                    const Draw_Color& BoundsColor, const Draw_Color& IsosColor,
-                                                    const Draw_Color& PolesColor, const Standard_Boolean ShowPoles,
-                                                    const Standard_Integer Discret,const Standard_Real Deflection,
-                                                    const Standard_Integer DrawMode)
-: DrawTrSurf_Surface (S, NbUIsos, NbVIsos, BoundsColor, IsosColor, 
-  Discret, Deflection, DrawMode)
+DrawTrSurf_BezierSurface::DrawTrSurf_BezierSurface(const Handle(Geom_BezierSurface)& S,
+                                                   const Standard_Integer            NbUIsos,
+                                                   const Standard_Integer            NbVIsos,
+                                                   const Draw_Color&                 BoundsColor,
+                                                   const Draw_Color&                 IsosColor,
+                                                   const Draw_Color&                 PolesColor,
+                                                   const Standard_Boolean            ShowPoles,
+                                                   const Standard_Integer            Discret,
+                                                   const Standard_Real               Deflection,
+                                                   const Standard_Integer            DrawMode)
+    : DrawTrSurf_Surface(S, NbUIsos, NbVIsos, BoundsColor, IsosColor, Discret, Deflection, DrawMode)
 {
   drawPoles = ShowPoles;
   polesLook = PolesColor;
 }
 
-void DrawTrSurf_BezierSurface::DrawOn (Draw_Display& dis) const
+void DrawTrSurf_BezierSurface::DrawOn(Draw_Display& dis) const
 {
-  Standard_Integer i,j;
+  Standard_Integer           i, j;
   Handle(Geom_BezierSurface) S = Handle(Geom_BezierSurface)::DownCast(surf);
   if (drawPoles)
   {
     Standard_Integer NbUPoles = S->NbUPoles();
     Standard_Integer NbVPoles = S->NbVPoles();
     dis.SetColor(polesLook);
-    TColgp_Array2OfPnt SPoles (1, NbUPoles, 1, NbVPoles);
-    S->Poles (SPoles);
+    TColgp_Array2OfPnt SPoles(1, NbUPoles, 1, NbVPoles);
+    S->Poles(SPoles);
     for (j = 1; j <= NbVPoles; j++)
     {
       dis.MoveTo(SPoles(1, j));
@@ -75,15 +78,19 @@ void DrawTrSurf_BezierSurface::DrawOn (Draw_Display& dis) const
       }
     }
   }
-  DrawTrSurf_Surface::DrawOn (dis);
+  DrawTrSurf_Surface::DrawOn(dis);
 }
 
-void DrawTrSurf_BezierSurface::FindPole (const Standard_Real X, const Standard_Real Y, const Draw_Display& D,
-                                         const Standard_Real XPrec, Standard_Integer& UIndex, Standard_Integer& VIndex) const
+void DrawTrSurf_BezierSurface::FindPole(const Standard_Real X,
+                                        const Standard_Real Y,
+                                        const Draw_Display& D,
+                                        const Standard_Real XPrec,
+                                        Standard_Integer&   UIndex,
+                                        Standard_Integer&   VIndex) const
 {
   Handle(Geom_BezierSurface) bs = Handle(Geom_BezierSurface)::DownCast(surf);
-  gp_Pnt2d p1(X/D.Zoom(),Y/D.Zoom());
-  Standard_Real Prec = XPrec / D.Zoom();
+  gp_Pnt2d                   p1(X / D.Zoom(), Y / D.Zoom());
+  Standard_Real              Prec = XPrec / D.Zoom();
   UIndex++;
   VIndex++;
   Standard_Integer NbUPoles = bs->NbUPoles();
@@ -104,33 +111,41 @@ void DrawTrSurf_BezierSurface::FindPole (const Standard_Real X, const Standard_R
   UIndex = VIndex = 0;
 }
 
-//=======================================================================
-//function : Copy
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Handle(Draw_Drawable3D) DrawTrSurf_BezierSurface::Copy() const
 {
-  Handle(DrawTrSurf_BezierSurface) DS = new DrawTrSurf_BezierSurface
-    (Handle(Geom_BezierSurface)::DownCast(surf->Copy()),
-     nbUIsos,nbVIsos,
-     boundsLook,isosLook,polesLook,drawPoles,
-     GetDiscretisation(),GetDeflection(),GetDrawMode());
-     
+  Handle(DrawTrSurf_BezierSurface) DS =
+    new DrawTrSurf_BezierSurface(Handle(Geom_BezierSurface)::DownCast(surf->Copy()),
+                                 nbUIsos,
+                                 nbVIsos,
+                                 boundsLook,
+                                 isosLook,
+                                 polesLook,
+                                 drawPoles,
+                                 GetDiscretisation(),
+                                 GetDeflection(),
+                                 GetDrawMode());
+
   return DS;
 }
 
-//=======================================================================
-//function : Restore
-//purpose  :
-//=======================================================================
-Handle(Draw_Drawable3D) DrawTrSurf_BezierSurface::Restore (Standard_IStream& theStream)
+//=================================================================================================
+
+Handle(Draw_Drawable3D) DrawTrSurf_BezierSurface::Restore(Standard_IStream& theStream)
 {
-  const DrawTrSurf_Params& aParams = DrawTrSurf::Parameters();
-  Handle(Geom_BezierSurface) aGeomSurface = Handle(Geom_BezierSurface)::DownCast (GeomTools_SurfaceSet::ReadSurface (theStream));
-  Handle(DrawTrSurf_BezierSurface) aDrawSurface = new DrawTrSurf_BezierSurface (aGeomSurface,
-                                                                                aParams.NbUIsos, aParams.NbVIsos,
-                                                                                aParams.BoundsColor, aParams.IsosColor, aParams.PolesColor,
-                                                                                aParams.IsShowPoles, aParams.Discret,
-                                                                                aParams.Deflection, aParams.DrawMode);
+  const DrawTrSurf_Params&   aParams = DrawTrSurf::Parameters();
+  Handle(Geom_BezierSurface) aGeomSurface =
+    Handle(Geom_BezierSurface)::DownCast(GeomTools_SurfaceSet::ReadSurface(theStream));
+  Handle(DrawTrSurf_BezierSurface) aDrawSurface = new DrawTrSurf_BezierSurface(aGeomSurface,
+                                                                               aParams.NbUIsos,
+                                                                               aParams.NbVIsos,
+                                                                               aParams.BoundsColor,
+                                                                               aParams.IsosColor,
+                                                                               aParams.PolesColor,
+                                                                               aParams.IsShowPoles,
+                                                                               aParams.Discret,
+                                                                               aParams.Deflection,
+                                                                               aParams.DrawMode);
   return aDrawSurface;
 }

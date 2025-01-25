@@ -35,49 +35,30 @@ class TopoDS_Solid;
 //! StepShape. All the topology and geometry comprised
 //! into the shell or the solid are taken into account and
 //! translated.
-class TopoDSToStep_MakeManifoldSolidBrep  : public TopoDSToStep_Root
+class TopoDSToStep_MakeManifoldSolidBrep : public TopoDSToStep_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT TopoDSToStep_MakeManifoldSolidBrep(const TopoDS_Shell& S,
-                                                     const Handle(Transfer_FinderProcess)& FP,
-                                                     const StepData_Factors& theLocalFactors = StepData_Factors(),
-                                                     const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
-  Standard_EXPORT TopoDSToStep_MakeManifoldSolidBrep(const TopoDS_Solid& S,
-                                                     const Handle(Transfer_FinderProcess)& FP,
-                                                     const StepData_Factors& theLocalFactors = StepData_Factors(),
-                                                     const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+  Standard_EXPORT TopoDSToStep_MakeManifoldSolidBrep(
+    const TopoDS_Shell&                   S,
+    const Handle(Transfer_FinderProcess)& FP,
+    const StepData_Factors&               theLocalFactors = StepData_Factors(),
+    const Message_ProgressRange&          theProgress     = Message_ProgressRange());
+
+  Standard_EXPORT TopoDSToStep_MakeManifoldSolidBrep(
+    const TopoDS_Solid&                   S,
+    const Handle(Transfer_FinderProcess)& FP,
+    const StepData_Factors&               theLocalFactors = StepData_Factors(),
+    const Message_ProgressRange&          theProgress     = Message_ProgressRange());
+
   Standard_EXPORT const Handle(StepShape_ManifoldSolidBrep)& Value() const;
-  Standard_EXPORT const Handle(StepVisual_TessellatedItem)& TessellatedValue() const;
-
-
-
+  Standard_EXPORT const Handle(StepVisual_TessellatedItem)&  TessellatedValue() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(StepShape_ManifoldSolidBrep) theManifoldSolidBrep;
-  Handle(StepVisual_TessellatedItem) theTessellatedItem;
-
-
+  Handle(StepVisual_TessellatedItem)  theTessellatedItem;
 };
-
-
-
-
-
-
 
 #endif // _TopoDSToStep_MakeManifoldSolidBrep_HeaderFile

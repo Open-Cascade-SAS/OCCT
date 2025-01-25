@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef Convert_TransientShape_H
 #define Convert_TransientShape_H
@@ -29,9 +29,8 @@
 class Convert_TransientShape : public Standard_Transient
 {
 public:
-
   //! Constructor
-  Convert_TransientShape (const TopoDS_Shape& theShape) { SetShape (theShape); }
+  Convert_TransientShape(const TopoDS_Shape& theShape) { SetShape(theShape); }
 
   //! Destructor
   virtual ~Convert_TransientShape() {}
@@ -40,12 +39,12 @@ public:
   const TopoDS_Shape Shape() const { return myShape; }
 
   //! Fills current shape
-  void SetShape (const TopoDS_Shape& theShape) { myShape = theShape; }
+  void SetShape(const TopoDS_Shape& theShape) { myShape = theShape; }
 
-  DEFINE_STANDARD_RTTI_INLINE (Convert_TransientShape, Standard_Transient)
+  DEFINE_STANDARD_RTTI_INLINE(Convert_TransientShape, Standard_Transient)
 
 private:
   TopoDS_Shape myShape; //!< the shape
 };
 
-#endif 
+#endif

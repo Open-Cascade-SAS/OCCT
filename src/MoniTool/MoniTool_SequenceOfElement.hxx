@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(MoniTool_Element)> MoniTool_SequenceOfElement;
 
-
 #endif

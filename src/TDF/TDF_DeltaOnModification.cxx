@@ -15,27 +15,23 @@
 
 //      	---------------------------
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Oct 10 1997	Creation
 
 #include <TDF_DeltaOnModification.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDF_DeltaOnModification,TDF_AttributeDelta)
+IMPLEMENT_STANDARD_RTTIEXT(TDF_DeltaOnModification, TDF_AttributeDelta)
 
-//=======================================================================
-//function : TDF_DeltaOnModification
-//purpose  : 
-//=======================================================================
-TDF_DeltaOnModification::TDF_DeltaOnModification
-(const Handle(TDF_Attribute)& anAttribute)
-: TDF_AttributeDelta(anAttribute)
-{}
+//=================================================================================================
 
+TDF_DeltaOnModification::TDF_DeltaOnModification(const Handle(TDF_Attribute)& anAttribute)
+    : TDF_AttributeDelta(anAttribute)
+{
+}
 
-//=======================================================================
-//function : Apply
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TDF_DeltaOnModification::Apply() 
-{ Attribute()->DeltaOnModification(this); }
+void TDF_DeltaOnModification::Apply()
+{
+  Attribute()->DeltaOnModification(this);
+}

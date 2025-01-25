@@ -23,7 +23,6 @@
 #include <Draw_Color.hxx>
 #include <Standard_Transient.hxx>
 
-
 class DBRep_Edge;
 DEFINE_STANDARD_HANDLE(DBRep_Edge, Standard_Transient)
 
@@ -32,42 +31,24 @@ class DBRep_Edge : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT DBRep_Edge(const TopoDS_Edge& E, const Draw_Color& C);
-  
-    const TopoDS_Edge& Edge() const;
-  
-    void Edge (const TopoDS_Edge& E);
-  
-    const Draw_Color& Color() const;
-  
-    void Color (const Draw_Color& C);
 
+  const TopoDS_Edge& Edge() const;
 
+  void Edge(const TopoDS_Edge& E);
 
+  const Draw_Color& Color() const;
 
-  DEFINE_STANDARD_RTTIEXT(DBRep_Edge,Standard_Transient)
+  void Color(const Draw_Color& C);
+
+  DEFINE_STANDARD_RTTIEXT(DBRep_Edge, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   TopoDS_Edge myEdge;
-  Draw_Color myColor;
-
-
+  Draw_Color  myColor;
 };
 
-
 #include <DBRep_Edge.lxx>
-
-
-
-
 
 #endif // _DBRep_Edge_HeaderFile

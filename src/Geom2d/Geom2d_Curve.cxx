@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_UndefinedDerivative.hxx>
 #include <Geom2d_UndefinedValue.hxx>
@@ -24,77 +23,56 @@
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Curve,Geom2d_Geometry)
+IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Curve, Geom2d_Geometry)
 
-typedef Geom2d_Curve         Curve;
+typedef Geom2d_Curve Curve;
 
+//=================================================================================================
 
-//=======================================================================
-//function : Reversed
-//purpose  : 
-//=======================================================================
-
-Handle(Geom2d_Curve) Geom2d_Curve::Reversed () const
+Handle(Geom2d_Curve) Geom2d_Curve::Reversed() const
 {
   Handle(Geom2d_Curve) C = Handle(Geom2d_Curve)::DownCast(Copy());
   C->Reverse();
   return C;
 }
 
-//=======================================================================
-//function : TransformedParameter
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Real Geom2d_Curve::TransformedParameter(const Standard_Real U,
-						 const gp_Trsf2d& ) const
+Standard_Real Geom2d_Curve::TransformedParameter(const Standard_Real U, const gp_Trsf2d&) const
 {
   return U;
 }
 
-//=======================================================================
-//function : ParametricTransformation
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Real Geom2d_Curve::ParametricTransformation(const gp_Trsf2d& ) const
+Standard_Real Geom2d_Curve::ParametricTransformation(const gp_Trsf2d&) const
 {
   return 1.;
 }
 
-//=======================================================================
-//function : Period
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Real Geom2d_Curve::Period() const
 {
-  Standard_NoSuchObject_Raise_if
-    ( !IsPeriodic(),"Geom2d_Curve::Period");
+  Standard_NoSuchObject_Raise_if(!IsPeriodic(), "Geom2d_Curve::Period");
 
-  return ( LastParameter() - FirstParameter());
+  return (LastParameter() - FirstParameter());
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
-
-gp_Pnt2d  Geom2d_Curve::Value(const Standard_Real U)const 
+gp_Pnt2d Geom2d_Curve::Value(const Standard_Real U) const
 {
   gp_Pnt2d P;
-  D0(U,P);
+  D0(U, P);
   return P;
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void Geom2d_Curve::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+//=================================================================================================
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom2d_Geometry)
+void Geom2d_Curve::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Geom2d_Geometry)
 }

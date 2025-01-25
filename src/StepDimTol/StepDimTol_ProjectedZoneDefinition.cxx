@@ -15,28 +15,21 @@
 
 #include <StepDimTol_ProjectedZoneDefinition.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ProjectedZoneDefinition,StepDimTol_ToleranceZoneDefinition)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ProjectedZoneDefinition, StepDimTol_ToleranceZoneDefinition)
 
-//=======================================================================
-//function : StepDimTol_ProjectedZoneDefinition
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepDimTol_ProjectedZoneDefinition::StepDimTol_ProjectedZoneDefinition ()
-{
-}
+StepDimTol_ProjectedZoneDefinition::StepDimTol_ProjectedZoneDefinition() {}
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepDimTol_ProjectedZoneDefinition::Init (const Handle(StepDimTol_ToleranceZone)& theZone,
-                                               const Handle(StepRepr_HArray1OfShapeAspect)& theBoundaries,
-                                               const Handle(StepRepr_ShapeAspect)& theProjectionEnd,
-                                               const Handle(StepBasic_LengthMeasureWithUnit)& theProjectionLength)
+void StepDimTol_ProjectedZoneDefinition::Init(
+  const Handle(StepDimTol_ToleranceZone)&        theZone,
+  const Handle(StepRepr_HArray1OfShapeAspect)&   theBoundaries,
+  const Handle(StepRepr_ShapeAspect)&            theProjectionEnd,
+  const Handle(StepBasic_LengthMeasureWithUnit)& theProjectionLength)
 {
   StepDimTol_ToleranceZoneDefinition::Init(theZone, theBoundaries);
-  myProjectionEnd = theProjectionEnd;
+  myProjectionEnd    = theProjectionEnd;
   myProjectionLength = theProjectionLength;
 }

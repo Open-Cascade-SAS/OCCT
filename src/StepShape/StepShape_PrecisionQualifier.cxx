@@ -11,21 +11,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepShape_PrecisionQualifier.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_PrecisionQualifier,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_PrecisionQualifier, Standard_Transient)
 
-StepShape_PrecisionQualifier::StepShape_PrecisionQualifier  ()    {  }
+StepShape_PrecisionQualifier::StepShape_PrecisionQualifier() {}
 
-void  StepShape_PrecisionQualifier::Init
-  (const Standard_Integer precision_value)
-{  thePrecisionValue = precision_value;  }
+void StepShape_PrecisionQualifier::Init(const Standard_Integer precision_value)
+{
+  thePrecisionValue = precision_value;
+}
 
-Standard_Integer  StepShape_PrecisionQualifier::PrecisionValue () const
-{  return thePrecisionValue; }
+Standard_Integer StepShape_PrecisionQualifier::PrecisionValue() const
+{
+  return thePrecisionValue;
+}
 
-void  StepShape_PrecisionQualifier::SetPrecisionValue
-  (const Standard_Integer precision_value)
-{  thePrecisionValue = precision_value;  }
+void StepShape_PrecisionQualifier::SetPrecisionValue(const Standard_Integer precision_value)
+{
+  thePrecisionValue = precision_value;
+}

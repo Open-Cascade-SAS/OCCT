@@ -33,7 +33,6 @@ class BRepTools_Modifier;
 class ShapeBuild_ReShape;
 class ShapeCustom_RestrictionParameters;
 
-
 //! This package is intended to
 //! convert geometrical objects and topological. The
 //! modifications of one geometrical object to another
@@ -47,26 +46,26 @@ class ShapeCustom_RestrictionParameters;
 //! surface to bspline,
 //! modification of parameterization, degree, number of segments of bspline
 //! surfaces,  scale the shape.
-class ShapeCustom 
+class ShapeCustom
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Applies modifier to shape and checks sharing in the case assemblies.
-  Standard_EXPORT static TopoDS_Shape ApplyModifier
-    (const TopoDS_Shape& S, const Handle(BRepTools_Modification)& M,
-     TopTools_DataMapOfShapeShape& context, BRepTools_Modifier& MD,
-     const Message_ProgressRange& theProgress = Message_ProgressRange(),
-     const Handle(ShapeBuild_ReShape)& aReShape = NULL);
-  
+  Standard_EXPORT static TopoDS_Shape ApplyModifier(
+    const TopoDS_Shape&                   S,
+    const Handle(BRepTools_Modification)& M,
+    TopTools_DataMapOfShapeShape&         context,
+    BRepTools_Modifier&                   MD,
+    const Message_ProgressRange&          theProgress = Message_ProgressRange(),
+    const Handle(ShapeBuild_ReShape)&     aReShape    = NULL);
+
   //! Returns a new shape without indirect surfaces.
-  Standard_EXPORT static TopoDS_Shape DirectFaces (const TopoDS_Shape& S);
-  
+  Standard_EXPORT static TopoDS_Shape DirectFaces(const TopoDS_Shape& S);
+
   //! Returns a new shape which is scaled original
-  Standard_EXPORT static TopoDS_Shape ScaleShape (const TopoDS_Shape& S, const Standard_Real scale);
-  
+  Standard_EXPORT static TopoDS_Shape ScaleShape(const TopoDS_Shape& S, const Standard_Real scale);
+
   //! Returns a new shape with all surfaces, curves and pcurves
   //! which type is BSpline/Bezier or based on them converted
   //! having Degree less than <MaxDegree> or number of spans less
@@ -83,21 +82,35 @@ public:
   //! If flags ConvOffSurf,ConvOffCurve3d,ConvOffCurve2d are Standard_True there are means
   //! that Offset surfaces , Offset curves 3d and Offset curves 2d are converted to BSPline
   //! correspondingly.
-  Standard_EXPORT static TopoDS_Shape BSplineRestriction (const TopoDS_Shape& S, const Standard_Real Tol3d, const Standard_Real Tol2d, const Standard_Integer MaxDegree, const Standard_Integer MaxNbSegment, const GeomAbs_Shape Continuity3d, const GeomAbs_Shape Continuity2d, const Standard_Boolean Degree, const Standard_Boolean Rational, const Handle(ShapeCustom_RestrictionParameters)& aParameters);
-  
+  Standard_EXPORT static TopoDS_Shape BSplineRestriction(
+    const TopoDS_Shape&                              S,
+    const Standard_Real                              Tol3d,
+    const Standard_Real                              Tol2d,
+    const Standard_Integer                           MaxDegree,
+    const Standard_Integer                           MaxNbSegment,
+    const GeomAbs_Shape                              Continuity3d,
+    const GeomAbs_Shape                              Continuity2d,
+    const Standard_Boolean                           Degree,
+    const Standard_Boolean                           Rational,
+    const Handle(ShapeCustom_RestrictionParameters)& aParameters);
+
   //! Returns a new shape with all elementary periodic surfaces converted
   //! to Geom_SurfaceOfRevolution
-  Standard_EXPORT static TopoDS_Shape ConvertToRevolution (const TopoDS_Shape& S);
-  
+  Standard_EXPORT static TopoDS_Shape ConvertToRevolution(const TopoDS_Shape& S);
+
   //! Returns a new shape with all surfaces of revolution and linear extrusion
   //! convert to elementary periodic surfaces
-  Standard_EXPORT static TopoDS_Shape SweptToElementary (const TopoDS_Shape& S);
-  
+  Standard_EXPORT static TopoDS_Shape SweptToElementary(const TopoDS_Shape& S);
+
   //! Returns a new shape with all surfaces of linear extrusion, revolution,
   //! offset, and planar surfaces converted according to flags to
   //! Geom_BSplineSurface (with same parameterisation).
-  Standard_EXPORT static TopoDS_Shape ConvertToBSpline (const TopoDS_Shape& S, const Standard_Boolean extrMode, const Standard_Boolean revolMode, const Standard_Boolean offsetMode, const Standard_Boolean planeMode = Standard_False);
-
+  Standard_EXPORT static TopoDS_Shape ConvertToBSpline(
+    const TopoDS_Shape&    S,
+    const Standard_Boolean extrMode,
+    const Standard_Boolean revolMode,
+    const Standard_Boolean offsetMode,
+    const Standard_Boolean planeMode = Standard_False);
 };
 
 #endif // _ShapeCustom_HeaderFile

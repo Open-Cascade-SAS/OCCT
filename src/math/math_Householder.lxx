@@ -14,31 +14,26 @@
 
 #include <StdFail_NotDone.hxx>
 
+inline Standard_Boolean math_Householder::IsDone() const
+{
+  return Done;
+}
 
-inline Standard_Boolean math_Householder::IsDone() const {return Done; }
-
-inline Standard_OStream& operator<<(Standard_OStream& o,
-				    const math_Householder& H)
+inline Standard_OStream& operator<<(Standard_OStream& o, const math_Householder& H)
 {
   H.Dump(o);
   return o;
 }
 
-inline void math_Householder::Value(math_Vector& sol,
-				    const Standard_Integer Index) const {
+inline void math_Householder::Value(math_Vector& sol, const Standard_Integer Index) const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
-  Standard_OutOfRange_Raise_if((Index<1) || (Index>Sol.ColNumber()), " ");
+  Standard_OutOfRange_Raise_if((Index < 1) || (Index > Sol.ColNumber()), " ");
   sol = Sol.Col(Index);
 }
 
-
-inline const math_Matrix& math_Householder::AllValues() const {
+inline const math_Matrix& math_Householder::AllValues() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return Sol;
 }
-
-
-
-
-
-

@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowserPane_Tools_H
 #define DFBrowserPane_Tools_H
@@ -37,26 +37,28 @@
 class DFBrowserPane_Tools
 {
 public:
-
   //! Returns default value for table view model: width[0] = 200, width[others] = 120
   //! \param theColumnId a column index
   //! \returns value
-  Standard_EXPORT static int DefaultPanelColumnWidth (const int theColumnId);
+  Standard_EXPORT static int DefaultPanelColumnWidth(const int theColumnId);
 
   //! Returns a string presentation of the label
   //! \param theLabel a label object
   //! \return the string value
-  Standard_EXPORT static TCollection_AsciiString GetEntry (const TDF_Label& theLabel);
+  Standard_EXPORT static TCollection_AsciiString GetEntry(const TDF_Label& theLabel);
 
   //! Returns string value corresponded to the shape type if it is not null.
   //! \param theShape a checked shape
   //! \return string value or empty string value
-  Standard_EXPORT static QVariant ShapeTypeInfo (const TopoDS_Shape& theShape);
+  Standard_EXPORT static QVariant ShapeTypeInfo(const TopoDS_Shape& theShape);
 
   //! Returns "true" or "false" text for the given boolean state
   //! \param theValue a boolean value
   //! \return string value
-  Standard_EXPORT static QString BoolToStr (const bool theValue) { return theValue ? "true" : "false"; }
+  Standard_EXPORT static QString BoolToStr(const bool theValue)
+  {
+    return theValue ? "true" : "false";
+  }
 
   //! Converts a Qt string to OCCT extended string
   //! \param theValue a converted string
@@ -74,8 +76,8 @@ public:
   //! \param theType an enumeration kind
   //! \param theEnumId an enumeration value
   //! \return string presentation
-  Standard_EXPORT static TCollection_AsciiString ToName (const DFBrowserPane_OcctEnumType& theType,
-                                                         const Standard_Integer& theEnumId);
+  Standard_EXPORT static TCollection_AsciiString ToName(const DFBrowserPane_OcctEnumType& theType,
+                                                        const Standard_Integer& theEnumId);
 };
 
 #endif

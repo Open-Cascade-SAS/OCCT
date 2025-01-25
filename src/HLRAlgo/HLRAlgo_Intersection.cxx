@@ -14,40 +14,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <HLRAlgo_Intersection.hxx>
 
-//=======================================================================
-//function : HLRAlgo_Intersection
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 HLRAlgo_Intersection::HLRAlgo_Intersection()
-: mySegIndex(0),
-  myIndex(0),
-  myLevel(0),
-  myParam(0.0),
-  myToler(0.0)
+    : mySegIndex(0),
+      myIndex(0),
+      myLevel(0),
+      myParam(0.0),
+      myToler(0.0)
 {
 }
 
-//=======================================================================
-//function : HLRAlgo_Intersection
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-HLRAlgo_Intersection::HLRAlgo_Intersection
-  (const TopAbs_Orientation Ori,
-   const Standard_Integer Lev,
-   const Standard_Integer SegInd,
-   const Standard_Integer Ind,
-   const Standard_Real P,
-   const Standard_ShortReal Tol,
-   const TopAbs_State S) :
-  myOrien(Ori),
-  mySegIndex(SegInd),
-  myIndex(Ind),
-  myLevel(Lev),
-  myParam(P),
-  myToler(Tol),
-  myState(S)
-{}
+HLRAlgo_Intersection::HLRAlgo_Intersection(const TopAbs_Orientation Ori,
+                                           const Standard_Integer   Lev,
+                                           const Standard_Integer   SegInd,
+                                           const Standard_Integer   Ind,
+                                           const Standard_Real      P,
+                                           const Standard_ShortReal Tol,
+                                           const TopAbs_State       S)
+    : myOrien(Ori),
+      mySegIndex(SegInd),
+      myIndex(Ind),
+      myLevel(Lev),
+      myParam(P),
+      myToler(Tol),
+      myState(S)
+{
+}

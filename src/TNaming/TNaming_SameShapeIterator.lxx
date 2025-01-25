@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : More
-//purpose  : 
+// function : More
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean TNaming_SameShapeIterator::More() const

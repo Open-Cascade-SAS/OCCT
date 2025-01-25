@@ -20,40 +20,44 @@
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_AnnotationCurveOccurrenceAndGeomReprItem.hxx>
 
-//=======================================================================
-//function : RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem
-//purpose  : 
-//=======================================================================
-RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::
-  RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem() {}
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
-void RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::ReadStep
-(const Handle(StepData_StepReaderData)& data,
-const Standard_Integer num0,
-Handle(Interface_Check)& ach,
-const Handle(StepVisual_AnnotationCurveOccurrenceAndGeomReprItem)& ent) const
+RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::
+  RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem()
+{
+}
+
+//=================================================================================================
+
+void RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::ReadStep(
+  const Handle(StepData_StepReaderData)&                             data,
+  const Standard_Integer                                             num0,
+  Handle(Interface_Check)&                                           ach,
+  const Handle(StepVisual_AnnotationCurveOccurrenceAndGeomReprItem)& ent) const
 {
   Standard_Integer num = 0;
   data->NamedForComplex("REPRESENTATION_ITEM", "RPRITM", num0, num, ach);
-  // Inherited field : name 
+  // Inherited field : name
   Handle(TCollection_HAsciiString) aName;
   data->ReadString(num, 1, "name", ach, aName);
 
   data->NamedForComplex("STYLED_ITEM", "STYITM", num0, num, ach);
   // Inherited field : styles
   Handle(StepVisual_HArray1OfPresentationStyleAssignment) aStyles;
-  Handle(StepVisual_PresentationStyleAssignment) anEnt;
-  Standard_Integer nsub;
-  if (data->ReadSubList(num, 1, "styles", ach, nsub)) {
+  Handle(StepVisual_PresentationStyleAssignment)          anEnt;
+  Standard_Integer                                        nsub;
+  if (data->ReadSubList(num, 1, "styles", ach, nsub))
+  {
     Standard_Integer nb = data->NbParams(nsub);
-    aStyles = new StepVisual_HArray1OfPresentationStyleAssignment(1, nb);
-    for (Standard_Integer i = 1; i <= nb; i++) {
-      if (data->ReadEntity(nsub, i, "presentation_style_assignment", ach,
-        STANDARD_TYPE(StepVisual_PresentationStyleAssignment), anEnt))
+    aStyles             = new StepVisual_HArray1OfPresentationStyleAssignment(1, nb);
+    for (Standard_Integer i = 1; i <= nb; i++)
+    {
+      if (data->ReadEntity(nsub,
+                           i,
+                           "presentation_style_assignment",
+                           ach,
+                           STANDARD_TYPE(StepVisual_PresentationStyleAssignment),
+                           anEnt))
         aStyles->SetValue(i, anEnt);
     }
   }
@@ -66,25 +70,24 @@ const Handle(StepVisual_AnnotationCurveOccurrenceAndGeomReprItem)& ent) const
   ent->Init(aName, aStyles, aItem);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
-void RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::WriteStep
-(StepData_StepWriter& SW,
-const Handle(StepVisual_AnnotationCurveOccurrenceAndGeomReprItem)& ent) const
+//=================================================================================================
+
+void RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::WriteStep(
+  StepData_StepWriter&                                               SW,
+  const Handle(StepVisual_AnnotationCurveOccurrenceAndGeomReprItem)& ent) const
 {
   SW.StartEntity("ANNOTATION_CURVE_OCCURRENCE");
   SW.StartEntity("ANNOTATION_OCCURRENCE");
   SW.StartEntity("GEOMETRIC_REPRESENTATION_ITEM");
   SW.StartEntity("REPRESENTATION_ITEM");
-  //Inherited field : name
+  // Inherited field : name
   SW.Send(ent->Name());
 
   SW.StartEntity("STYLED_ITEM");
   // Inherited field : styles
   SW.OpenSub();
-  for (Standard_Integer i = 1; i <= ent->NbStyles(); i++) {
+  for (Standard_Integer i = 1; i <= ent->NbStyles(); i++)
+  {
     SW.Send(ent->StylesValue(i));
   }
   SW.CloseSub();
@@ -93,17 +96,16 @@ const Handle(StepVisual_AnnotationCurveOccurrenceAndGeomReprItem)& ent) const
   SW.Send(ent->Item());
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::Share(
   const Handle(StepVisual_AnnotationCurveOccurrenceAndGeomReprItem)& ent,
-  Interface_EntityIterator& iter) const
+  Interface_EntityIterator&                                          iter) const
 {
 
   Standard_Integer nbElem = ent->NbStyles();
-  for (Standard_Integer i = 1; i <= nbElem; i++) {
+  for (Standard_Integer i = 1; i <= nbElem; i++)
+  {
     iter.GetOneItem(ent->StylesValue(i));
   }
 

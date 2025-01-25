@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef BRepClass3d_DataMapIteratorOfMapOfInter_HeaderFile
 #define BRepClass3d_DataMapIteratorOfMapOfInter_HeaderFile
 

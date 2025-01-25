@@ -17,35 +17,32 @@
 #include <Intf_SeqOfSectionPoint.hxx>
 
 //=======================================================================
-//function : NumberOfPoint
-//purpose  : Return the points number of the tangent zone.
+// function : NumberOfPoint
+// purpose  : Return the points number of the tangent zone.
 //=======================================================================
 
-inline Standard_Integer Intf_TangentZone::NumberOfPoints   () const
+inline Standard_Integer Intf_TangentZone::NumberOfPoints() const
 {
   return Result.Length();
 }
 
 //=======================================================================
-//function : ParamOnFirst
-//purpose  : 
+// function : ParamOnFirst
+// purpose  :
 //=======================================================================
 
-inline void Intf_TangentZone::ParamOnFirst(Standard_Real& paraMin,
-				    Standard_Real& paraMax) const
+inline void Intf_TangentZone::ParamOnFirst(Standard_Real& paraMin, Standard_Real& paraMax) const
 {
   paraMin = ParamOnFirstMin;
   paraMax = ParamOnFirstMax;
 }
 
-
 //=======================================================================
-//function : ParamOnSecond
-//purpose  : 
+// function : ParamOnSecond
+// purpose  :
 //=======================================================================
 
-inline void Intf_TangentZone::ParamOnSecond(Standard_Real& paraMin,
-				     Standard_Real& paraMax) const
+inline void Intf_TangentZone::ParamOnSecond(Standard_Real& paraMin, Standard_Real& paraMax) const
 {
   paraMin = ParamOnSecondMin;
   paraMax = ParamOnSecondMax;

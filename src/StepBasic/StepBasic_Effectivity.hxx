@@ -23,47 +23,26 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-
 class StepBasic_Effectivity;
 DEFINE_STANDARD_HANDLE(StepBasic_Effectivity, Standard_Transient)
-
 
 class StepBasic_Effectivity : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT StepBasic_Effectivity();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aid);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aid);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) Id() const;
-  
-  Standard_EXPORT void SetId (const Handle(TCollection_HAsciiString)& aid);
 
+  Standard_EXPORT void SetId(const Handle(TCollection_HAsciiString)& aid);
 
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_Effectivity,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_Effectivity, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TCollection_HAsciiString) theid;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_Effectivity_HeaderFile

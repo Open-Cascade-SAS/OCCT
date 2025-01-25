@@ -21,7 +21,6 @@
 
 #include <StepRepr_ShapeAspectRelationship.hxx>
 
-
 class StepRepr_FeatureForDatumTargetRelationship;
 DEFINE_STANDARD_HANDLE(StepRepr_FeatureForDatumTargetRelationship, StepRepr_ShapeAspectRelationship)
 
@@ -30,30 +29,14 @@ class StepRepr_FeatureForDatumTargetRelationship : public StepRepr_ShapeAspectRe
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepRepr_FeatureForDatumTargetRelationship();
 
-
-  DEFINE_STANDARD_RTTIEXT(StepRepr_FeatureForDatumTargetRelationship,StepRepr_ShapeAspectRelationship)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_FeatureForDatumTargetRelationship,
+                          StepRepr_ShapeAspectRelationship)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepRepr_FeatureForDatumtargetRelationship_HeaderFile

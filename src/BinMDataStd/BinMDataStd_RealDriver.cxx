@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMDataStd_RealDriver.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
@@ -21,22 +20,16 @@
 #include <TDF_Attribute.hxx>
 #include <BinMDataStd.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_RealDriver,BinMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_RealDriver, BinMDF_ADriver)
 
-//=======================================================================
-//function : BinMDataStd_RealDriver
-//purpose  : Constructor
-//=======================================================================
-BinMDataStd_RealDriver::BinMDataStd_RealDriver 
-                        (const Handle(Message_Messenger)& theMsgDriver)
-     : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataStd_Real)->Name())
+//=================================================================================================
+
+BinMDataStd_RealDriver::BinMDataStd_RealDriver(const Handle(Message_Messenger)& theMsgDriver)
+    : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDataStd_Real)->Name())
 {
 }
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(TDF_Attribute) BinMDataStd_RealDriver::NewEmpty() const
 {
@@ -44,48 +37,53 @@ Handle(TDF_Attribute) BinMDataStd_RealDriver::NewEmpty() const
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMDataStd_RealDriver::Paste
-                                (const BinObjMgt_Persistent&  theSource,
-                                 const Handle(TDF_Attribute)& theTarget,
-                                 BinObjMgt_RRelocationTable&  theRelocTable) const
+Standard_Boolean BinMDataStd_RealDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                               const Handle(TDF_Attribute)& theTarget,
+                                               BinObjMgt_RRelocationTable&  theRelocTable) const
 {
-  Handle(TDataStd_Real) anAtt= Handle(TDataStd_Real)::DownCast(theTarget);
-  Standard_Real aValue;
-  Standard_Boolean ok = theSource >> aValue;
+  Handle(TDataStd_Real) anAtt = Handle(TDataStd_Real)::DownCast(theTarget);
+  Standard_Real         aValue;
+  Standard_Boolean      ok = theSource >> aValue;
   if (ok)
     anAtt->Set(aValue);
-  if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_9) { // process user defined guid
-	const Standard_Integer& aPos = theSource.Position();
-	Standard_GUID aGuid;
-	ok = theSource >> aGuid;	
-	if (!ok) {
-	  theSource.SetPosition(aPos);	  
-	  anAtt->SetID(TDataStd_Real::GetID());
-	  ok = Standard_True;
-	} else {	  
-	  anAtt->SetID(aGuid);
-	}
-  } else
-	anAtt->SetID(TDataStd_Real::GetID());
+  if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue()
+      >= TDocStd_FormatVersion_VERSION_9)
+  { // process user defined guid
+    const Standard_Integer& aPos = theSource.Position();
+    Standard_GUID           aGuid;
+    ok = theSource >> aGuid;
+    if (!ok)
+    {
+      theSource.SetPosition(aPos);
+      anAtt->SetID(TDataStd_Real::GetID());
+      ok = Standard_True;
+    }
+    else
+    {
+      anAtt->SetID(aGuid);
+    }
+  }
+  else
+    anAtt->SetID(TDataStd_Real::GetID());
   return ok;
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDataStd_RealDriver::Paste (const Handle(TDF_Attribute)& theSource,
-                                    BinObjMgt_Persistent&        theTarget,
-                                    BinObjMgt_SRelocationTable&  ) const
+void BinMDataStd_RealDriver::Paste(const Handle(TDF_Attribute)& theSource,
+                                   BinObjMgt_Persistent&        theTarget,
+                                   BinObjMgt_SRelocationTable&) const
 {
-  Handle(TDataStd_Real) anAtt= Handle(TDataStd_Real)::DownCast(theSource);
+  Handle(TDataStd_Real) anAtt = Handle(TDataStd_Real)::DownCast(theSource);
   theTarget << anAtt->Get();
   // process user defined guid
-  if(anAtt->ID() != TDataStd_Real::GetID()) 
-	theTarget << anAtt->ID();
+  if (anAtt->ID() != TDataStd_Real::GetID())
+    theTarget << anAtt->ID();
 }

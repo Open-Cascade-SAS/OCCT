@@ -20,8 +20,7 @@
 #include <CDM_Document.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<Handle(CDM_Document)> CDM_ListOfDocument;
+typedef NCollection_List<Handle(CDM_Document)>           CDM_ListOfDocument;
 typedef NCollection_List<Handle(CDM_Document)>::Iterator CDM_ListIteratorOfListOfDocument;
-
 
 #endif

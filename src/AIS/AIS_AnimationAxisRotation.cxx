@@ -15,37 +15,35 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_AnimationAxisRotation, AIS_BaseAnimationObject)
 
-//=============================================================================
-//function : Constructor
-//purpose  :
-//=============================================================================
-AIS_AnimationAxisRotation::AIS_AnimationAxisRotation (const TCollection_AsciiString& theAnimationName,
-                                                      const Handle(AIS_InteractiveContext)& theContext,
-                                                      const Handle(AIS_InteractiveObject)& theObject,
-                                                      const gp_Ax1& theAxis,
-                                                      const Standard_Real theAngleStart,
-                                                      const Standard_Real theAngleEnd)
-: AIS_BaseAnimationObject (theAnimationName, theContext, theObject),
-  myRotAxis    (theAxis),
-  myAngleStart (theAngleStart),
-  myAngleEnd   (theAngleEnd)
+//=================================================================================================
+
+AIS_AnimationAxisRotation::AIS_AnimationAxisRotation(
+  const TCollection_AsciiString&        theAnimationName,
+  const Handle(AIS_InteractiveContext)& theContext,
+  const Handle(AIS_InteractiveObject)&  theObject,
+  const gp_Ax1&                         theAxis,
+  const Standard_Real                   theAngleStart,
+  const Standard_Real                   theAngleEnd)
+    : AIS_BaseAnimationObject(theAnimationName, theContext, theObject),
+      myRotAxis(theAxis),
+      myAngleStart(theAngleStart),
+      myAngleEnd(theAngleEnd)
 {
   //
 }
 
-//=============================================================================
-//function : update
-//purpose  :
-//=============================================================================
-void AIS_AnimationAxisRotation::update (const AIS_AnimationProgress& theProgress)
+//=================================================================================================
+
+void AIS_AnimationAxisRotation::update(const AIS_AnimationProgress& theProgress)
 {
   if (myObject.IsNull())
   {
     return;
   }
 
-  gp_Trsf aTrsf;
-  Standard_Real aCurrentAngle = (1.0 - theProgress.LocalNormalized) * myAngleStart + theProgress.LocalNormalized * myAngleEnd;
-  aTrsf.SetRotation (myRotAxis, aCurrentAngle);
-  updateTrsf (aTrsf);
+  gp_Trsf       aTrsf;
+  Standard_Real aCurrentAngle =
+    (1.0 - theProgress.LocalNormalized) * myAngleStart + theProgress.LocalNormalized * myAngleEnd;
+  aTrsf.SetRotation(myRotAxis, aCurrentAngle);
+  updateTrsf(aTrsf);
 }

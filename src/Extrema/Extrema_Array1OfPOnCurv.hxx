@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Extrema_POnCurv> Extrema_Array1OfPOnCurv;
 
-
 #endif

@@ -14,59 +14,44 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRep_PointsOnSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRep_PointsOnSurface,BRep_PointRepresentation)
+IMPLEMENT_STANDARD_RTTIEXT(BRep_PointsOnSurface, BRep_PointRepresentation)
 
-//=======================================================================
-//function : BRep_PointsOnSurface
-//purpose  : 
-//=======================================================================
-BRep_PointsOnSurface::BRep_PointsOnSurface(const Standard_Real P, 
-					   const Handle(Geom_Surface)& S, 
-					   const TopLoc_Location& L) :
-       BRep_PointRepresentation(P,L),
-       mySurface(S)
+//=================================================================================================
+
+BRep_PointsOnSurface::BRep_PointsOnSurface(const Standard_Real         P,
+                                           const Handle(Geom_Surface)& S,
+                                           const TopLoc_Location&      L)
+    : BRep_PointRepresentation(P, L),
+      mySurface(S)
 {
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Surface
-//purpose  : 
-//=======================================================================
-
-const Handle(Geom_Surface)&  BRep_PointsOnSurface::Surface()const 
+const Handle(Geom_Surface)& BRep_PointsOnSurface::Surface() const
 {
   return mySurface;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Surface
-//purpose  : 
-//=======================================================================
-
-void  BRep_PointsOnSurface::Surface(const Handle(Geom_Surface)& S)
+void BRep_PointsOnSurface::Surface(const Handle(Geom_Surface)& S)
 {
   mySurface = S;
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void BRep_PointsOnSurface::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+//=================================================================================================
+
+void BRep_PointsOnSurface::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, BRep_PointRepresentation)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, BRep_PointRepresentation)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, mySurface.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, mySurface.get())
 }
-
-

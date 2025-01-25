@@ -31,143 +31,146 @@
 
 #include <algorithm>
 
-//=======================================================================
-//function : IntTools::GetRadius
-//purpose  : 
-//=======================================================================
-  Standard_Integer IntTools::GetRadius(const BRepAdaptor_Curve& C,
-				       const Standard_Real t1,
-				       const Standard_Real t3,
-				       Standard_Real& aR)
+//=================================================================================================
+
+Standard_Integer IntTools::GetRadius(const BRepAdaptor_Curve& C,
+                                     const Standard_Real      t1,
+                                     const Standard_Real      t3,
+                                     Standard_Real&           aR)
 {
-  GeomAbs_CurveType aType=C.GetType();
-  if (aType==GeomAbs_Line) {
+  GeomAbs_CurveType aType = C.GetType();
+  if (aType == GeomAbs_Line)
+  {
     return 1;
   }
 
-  if (aType==GeomAbs_Circle) {
-    gp_Circ aCrc=C.Circle();
-    aR=aCrc.Radius();
+  if (aType == GeomAbs_Circle)
+  {
+    gp_Circ aCrc = C.Circle();
+    aR           = aCrc.Radius();
     return 0;
   }
 
   Standard_Real t2;
-  gp_Pnt P1, P2, P3;
+  gp_Pnt        P1, P2, P3;
 
-  t2=0.5*(t1+t3);
-  
-  P1=C.Value(t1);
-  P2=C.Value(t2);
-  P3=C.Value(t3);
+  t2 = 0.5 * (t1 + t3);
+
+  P1 = C.Value(t1);
+  P2 = C.Value(t2);
+  P3 = C.Value(t3);
   //
   //
-  gce_MakeCirc aMakeCirc(P1, P2, P3);
+  gce_MakeCirc  aMakeCirc(P1, P2, P3);
   gce_ErrorType anErrorType;
-  
-  anErrorType=aMakeCirc.Status();
 
-  if (!aMakeCirc.IsDone()) {
-    
-    if (anErrorType==gce_ConfusedPoints ||
-	anErrorType==gce_IntersectionError ||
-	anErrorType==gce_ColinearPoints) {//modified by NIZNHY-PKV Fri Sep 24 09:54:05 2004ft
+  anErrorType = aMakeCirc.Status();
+
+  if (!aMakeCirc.IsDone())
+  {
+
+    if (anErrorType == gce_ConfusedPoints || anErrorType == gce_IntersectionError
+        || anErrorType == gce_ColinearPoints)
+    { // modified by NIZNHY-PKV Fri Sep 24 09:54:05 2004ft
       return 2;
     }
     return -1;
   }
   //
   //
-  gp_Circ aCirc=aMakeCirc.Value();
-  aR=aCirc.Radius();
-  
+  gp_Circ aCirc = aMakeCirc.Value();
+  aR            = aCirc.Radius();
+
   return 0;
 }
 
-//=======================================================================
-//function : PrepareArgs
-//purpose  : 
-//=======================================================================
-Standard_Integer IntTools::PrepareArgs (BRepAdaptor_Curve& C,
-                                        const Standard_Real Tmax,
-                                        const Standard_Real Tmin,
-                                        const Standard_Integer Discret,
-                                        const Standard_Real Deflection,
-                                        TColStd_Array1OfReal& anArgs)
+//=================================================================================================
+
+Standard_Integer IntTools::PrepareArgs(BRepAdaptor_Curve&     C,
+                                       const Standard_Real    Tmax,
+                                       const Standard_Real    Tmin,
+                                       const Standard_Integer Discret,
+                                       const Standard_Real    Deflection,
+                                       TColStd_Array1OfReal&  anArgs)
 {
-  
+
   TColStd_ListOfReal aPars;
-  Standard_Real dt, tCurrent, tNext, aR, anAbsDeflection;
-  Standard_Integer ip, i, j, aNbDeflectionPoints;
-  Standard_Boolean aRFlag; 
-  
+  Standard_Real      dt, tCurrent, tNext, aR, anAbsDeflection;
+  Standard_Integer   ip, i, j, aNbDeflectionPoints;
+  Standard_Boolean   aRFlag;
+
   GeomAbs_CurveType aCurveType;
-  aCurveType=C.GetType();
-  
-  dt=(Tmax-Tmin)/Discret;
-  aRFlag=(dt > 1.e-5); 
-  for (i=1; i<=Discret; i++) {
-    tCurrent=Tmin+(i-1)*dt;
+  aCurveType = C.GetType();
+
+  dt     = (Tmax - Tmin) / Discret;
+  aRFlag = (dt > 1.e-5);
+  for (i = 1; i <= Discret; i++)
+  {
+    tCurrent = Tmin + (i - 1) * dt;
     aPars.Append(tCurrent);
-    tNext=tCurrent+dt;
-    if (i==Discret)
-      tNext=Tmax;
+    tNext = tCurrent + dt;
+    if (i == Discret)
+      tNext = Tmax;
     ///////////////////////////////////////////////////
-    if (!aRFlag) {
+    if (!aRFlag)
+    {
       continue;
     }
-    if (aCurveType==GeomAbs_BSplineCurve||
-	aCurveType==GeomAbs_BezierCurve ||
-	aCurveType==GeomAbs_OffsetCurve ||
-	aCurveType==GeomAbs_Ellipse ||
-	aCurveType==GeomAbs_OtherCurve) { //modified by NIZNHY-PKV Fri Sep 24 09:52:42 2004ft
+    if (aCurveType == GeomAbs_BSplineCurve || aCurveType == GeomAbs_BezierCurve
+        || aCurveType == GeomAbs_OffsetCurve || aCurveType == GeomAbs_Ellipse
+        || aCurveType == GeomAbs_OtherCurve)
+    { // modified by NIZNHY-PKV Fri Sep 24 09:52:42 2004ft
       continue;
     }
     //
-    ip=IntTools::GetRadius (C, tCurrent, tNext, aR);  
-    if (ip<0) {
+    ip = IntTools::GetRadius(C, tCurrent, tNext, aR);
+    if (ip < 0)
+    {
       return 1;
     }
     //
-    if (!ip) {
-      anAbsDeflection=Deflection*aR;
+    if (!ip)
+    {
+      anAbsDeflection = Deflection * aR;
       GCPnts_QuasiUniformDeflection anUD;
-      anUD.Initialize (C, anAbsDeflection, tCurrent, tNext);
-      if (!anUD.IsDone()) {
-	return 2;
+      anUD.Initialize(C, anAbsDeflection, tCurrent, tNext);
+      if (!anUD.IsDone())
+      {
+        return 2;
       }
-      
-      aNbDeflectionPoints=anUD.NbPoints();
-      if (aNbDeflectionPoints > 2) {
-	aNbDeflectionPoints--;
-	for (j=2; j<=aNbDeflectionPoints; j++) {
-	  tCurrent=anUD.Parameter(j);
-	  aPars.Append(tCurrent);
-	}
+
+      aNbDeflectionPoints = anUD.NbPoints();
+      if (aNbDeflectionPoints > 2)
+      {
+        aNbDeflectionPoints--;
+        for (j = 2; j <= aNbDeflectionPoints; j++)
+        {
+          tCurrent = anUD.Parameter(j);
+          aPars.Append(tCurrent);
+        }
       }
     }
   }
 
   aPars.Append(Tmax);
   const Standard_Integer aDiscretBis = aPars.Extent();
-  anArgs.Resize (0, aDiscretBis - 1, false);
+  anArgs.Resize(0, aDiscretBis - 1, false);
   TColStd_ListIteratorOfListOfReal anIt(aPars);
   for (i = 0; anIt.More(); anIt.Next(), i++)
   {
-    anArgs.SetValue (i, anIt.Value());
+    anArgs.SetValue(i, anIt.Value());
   }
   return 0;
 }
 
-//=======================================================================
-//function : IntTools::Length
-//purpose  : 
-//=======================================================================
-  Standard_Real IntTools::Length (const TopoDS_Edge& anEdge)
-{
-  Standard_Real aLength=0;
+//=================================================================================================
 
-  if (!BRep_Tool::Degenerated(anEdge) &&
-      BRep_Tool::IsGeometric(anEdge)) {
+Standard_Real IntTools::Length(const TopoDS_Edge& anEdge)
+{
+  Standard_Real aLength = 0;
+
+  if (!BRep_Tool::Degenerated(anEdge) && BRep_Tool::IsGeometric(anEdge))
+  {
 
     GProp_GProps Temp;
     BRepGProp::LinearProperties(anEdge, Temp);
@@ -175,24 +178,24 @@ Standard_Integer IntTools::PrepareArgs (BRepAdaptor_Curve& C,
   }
   return aLength;
 }
-  
-//=======================================================================
-//function : RemoveIdenticalRoots 
-//purpose  : 
-//=======================================================================
-  void IntTools::RemoveIdenticalRoots(IntTools_SequenceOfRoots& aSR,
-				      const Standard_Real anEpsT)
+
+//=================================================================================================
+
+void IntTools::RemoveIdenticalRoots(IntTools_SequenceOfRoots& aSR, const Standard_Real anEpsT)
 {
   Standard_Integer aNbRoots, j, k;
-  Standard_Real anEpsT2=0.5*anEpsT;
-  aNbRoots=aSR.Length();
-  for (j=1; j<=aNbRoots; j++) { 
-    const IntTools_Root& aRj=aSR(j);
-    for (k=j+1; k<=aNbRoots; k++) {
-      const IntTools_Root& aRk=aSR(k);
-      if (fabs (aRj.Root()-aRk.Root()) < anEpsT2) {
-	aSR.Remove(k);
-	aNbRoots=aSR.Length();
+  Standard_Real    anEpsT2 = 0.5 * anEpsT;
+  aNbRoots                 = aSR.Length();
+  for (j = 1; j <= aNbRoots; j++)
+  {
+    const IntTools_Root& aRj = aSR(j);
+    for (k = j + 1; k <= aNbRoots; k++)
+    {
+      const IntTools_Root& aRk = aSR(k);
+      if (fabs(aRj.Root() - aRk.Root()) < anEpsT2)
+      {
+        aSR.Remove(k);
+        aNbRoots = aSR.Length();
       }
     }
   }
@@ -200,96 +203,107 @@ Standard_Integer IntTools::PrepareArgs (BRepAdaptor_Curve& C,
 
 //=======================================================================
 
-namespace {
-  // Auxiliary: comparator function for sorting roots
-  bool IntTools_RootComparator (const IntTools_Root& theLeft, const IntTools_Root& theRight)
-  {
-    return theLeft.Root() < theRight.Root();
-  }
+namespace
+{
+// Auxiliary: comparator function for sorting roots
+bool IntTools_RootComparator(const IntTools_Root& theLeft, const IntTools_Root& theRight)
+{
+  return theLeft.Root() < theRight.Root();
 }
+} // namespace
 
-//=======================================================================
-//function : SortRoots
-//purpose  : 
-//=======================================================================
-  void IntTools::SortRoots(IntTools_SequenceOfRoots& mySequenceOfRoots,
-			   const Standard_Real /*myEpsT*/)
+//=================================================================================================
+
+void IntTools::SortRoots(IntTools_SequenceOfRoots& mySequenceOfRoots,
+                         const Standard_Real /*myEpsT*/)
 {
   Standard_Integer j, aNbRoots;
 
-  aNbRoots=mySequenceOfRoots.Length();
+  aNbRoots = mySequenceOfRoots.Length();
 
-  IntTools_Array1OfRoots anArray1OfRoots(1, aNbRoots);  
-  for (j=1; j<=aNbRoots; j++) {
-    anArray1OfRoots(j)=mySequenceOfRoots(j);
+  IntTools_Array1OfRoots anArray1OfRoots(1, aNbRoots);
+  for (j = 1; j <= aNbRoots; j++)
+  {
+    anArray1OfRoots(j) = mySequenceOfRoots(j);
   }
-  
-  std::sort (anArray1OfRoots.begin(), anArray1OfRoots.end(), IntTools_RootComparator);
-  
+
+  std::sort(anArray1OfRoots.begin(), anArray1OfRoots.end(), IntTools_RootComparator);
+
   mySequenceOfRoots.Clear();
-  for (j=1; j<=aNbRoots; j++) {
+  for (j = 1; j <= aNbRoots; j++)
+  {
     mySequenceOfRoots.Append(anArray1OfRoots(j));
   }
 }
-//=======================================================================
-//function :FindRootStates
-//purpose  : 
-//=======================================================================
-  void  IntTools::FindRootStates(IntTools_SequenceOfRoots& mySequenceOfRoots,
-				 const Standard_Real myEpsNull)
+
+//=================================================================================================
+
+void IntTools::FindRootStates(IntTools_SequenceOfRoots& mySequenceOfRoots,
+                              const Standard_Real       myEpsNull)
 {
   Standard_Integer aType, j, aNbRoots;
-  Standard_Real t1, t2, f1, f2, absf2;
+  Standard_Real    t1, t2, f1, f2, absf2;
 
-  aNbRoots=mySequenceOfRoots.Length();
+  aNbRoots = mySequenceOfRoots.Length();
 
-  for (j=1; j<=aNbRoots; j++) {
-    IntTools_Root& aR=mySequenceOfRoots.ChangeValue(j);
-    
-    aR.Interval (t1, t2, f1, f2);
+  for (j = 1; j <= aNbRoots; j++)
+  {
+    IntTools_Root& aR = mySequenceOfRoots.ChangeValue(j);
 
-    aType=aR.Type();
-    switch (aType) {
-    case 0: // Simple Root
-      if (f1>0. && f2<0.) {
-	aR.SetStateBefore(TopAbs_OUT);
-	aR.SetStateAfter (TopAbs_IN);
-      }
-    else {
-      aR.SetStateBefore(TopAbs_IN);
-      aR.SetStateAfter (TopAbs_OUT);
-    }
-      break;
-    
-    case 1: // Complete 0;
-      aR.SetStateBefore(TopAbs_ON);
-      aR.SetStateAfter (TopAbs_ON);
-      break;
-      
-    case 2: // Smart;
-      absf2=fabs(f2);
-      if (absf2 < myEpsNull) {
-	aR.SetStateAfter (TopAbs_ON);
-	if (f1>0.) {
-	  aR.SetStateBefore(TopAbs_OUT);
-	}
-	else {
-	  aR.SetStateBefore(TopAbs_IN);
-	}
-      }
-      
-      else {
-	aR.SetStateBefore(TopAbs_ON);
-	if (f2>0.) {
-	  aR.SetStateAfter (TopAbs_OUT);
-	}
-	else {
-	  aR.SetStateAfter (TopAbs_IN);
-	}
-      }
-      
-    default: break;
-    } // switch (aType)  
+    aR.Interval(t1, t2, f1, f2);
+
+    aType = aR.Type();
+    switch (aType)
+    {
+      case 0: // Simple Root
+        if (f1 > 0. && f2 < 0.)
+        {
+          aR.SetStateBefore(TopAbs_OUT);
+          aR.SetStateAfter(TopAbs_IN);
+        }
+        else
+        {
+          aR.SetStateBefore(TopAbs_IN);
+          aR.SetStateAfter(TopAbs_OUT);
+        }
+        break;
+
+      case 1: // Complete 0;
+        aR.SetStateBefore(TopAbs_ON);
+        aR.SetStateAfter(TopAbs_ON);
+        break;
+
+      case 2: // Smart;
+        absf2 = fabs(f2);
+        if (absf2 < myEpsNull)
+        {
+          aR.SetStateAfter(TopAbs_ON);
+          if (f1 > 0.)
+          {
+            aR.SetStateBefore(TopAbs_OUT);
+          }
+          else
+          {
+            aR.SetStateBefore(TopAbs_IN);
+          }
+        }
+
+        else
+        {
+          aR.SetStateBefore(TopAbs_ON);
+          if (f2 > 0.)
+          {
+            aR.SetStateAfter(TopAbs_OUT);
+          }
+          else
+          {
+            aR.SetStateAfter(TopAbs_IN);
+          }
+        }
+
+      default:
+        break;
+    } // switch (aType)
   }
 }
 
@@ -301,76 +315,71 @@ namespace {
 #include <gp_Parab.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 
-//=======================================================================
-//function :Parameter
-//purpose  :
-//=======================================================================
-  Standard_Integer  IntTools::Parameter (const gp_Pnt& aP,
-					 const Handle(Geom_Curve)& aCurve,
-					 Standard_Real& aParameter)
+//=================================================================================================
+
+Standard_Integer IntTools::Parameter(const gp_Pnt&             aP,
+                                     const Handle(Geom_Curve)& aCurve,
+                                     Standard_Real&            aParameter)
 {
-  Standard_Real aFirst, aLast;
+  Standard_Real     aFirst, aLast;
   GeomAbs_CurveType aCurveType;
 
-  aFirst=aCurve->FirstParameter();
-  aLast =aCurve->LastParameter ();
+  aFirst = aCurve->FirstParameter();
+  aLast  = aCurve->LastParameter();
 
   GeomAdaptor_Curve aGAC;
-  
-  aGAC.Load (aCurve, aFirst, aLast);
 
-  aCurveType=aGAC.GetType();
-  
-  switch (aCurveType){
+  aGAC.Load(aCurve, aFirst, aLast);
 
-  case GeomAbs_Line:
-    {
-      gp_Lin aLin=aGAC.Line();
-      aParameter=ElCLib::Parameter (aLin, aP);
+  aCurveType = aGAC.GetType();
+
+  switch (aCurveType)
+  {
+
+    case GeomAbs_Line: {
+      gp_Lin aLin = aGAC.Line();
+      aParameter  = ElCLib::Parameter(aLin, aP);
       return 0;
     }
-  case GeomAbs_Circle:
-    {
-      gp_Circ aCircle=aGAC.Circle();
-      aParameter=ElCLib::Parameter (aCircle, aP);
+    case GeomAbs_Circle: {
+      gp_Circ aCircle = aGAC.Circle();
+      aParameter      = ElCLib::Parameter(aCircle, aP);
       return 0;
     }
-  case GeomAbs_Ellipse: 
-    {
-      gp_Elips aElips=aGAC.Ellipse();
-      aParameter=ElCLib::Parameter (aElips, aP);
+    case GeomAbs_Ellipse: {
+      gp_Elips aElips = aGAC.Ellipse();
+      aParameter      = ElCLib::Parameter(aElips, aP);
       return 0;
     }
-  case GeomAbs_Hyperbola: 
-    {
-      gp_Hypr aHypr=aGAC.Hyperbola();
-      aParameter=ElCLib::Parameter (aHypr, aP);
+    case GeomAbs_Hyperbola: {
+      gp_Hypr aHypr = aGAC.Hyperbola();
+      aParameter    = ElCLib::Parameter(aHypr, aP);
       return 0;
     }
-  case GeomAbs_Parabola: 
-    {
-      gp_Parab aParab=aGAC.Parabola();
-      aParameter=ElCLib::Parameter (aParab, aP);
+    case GeomAbs_Parabola: {
+      gp_Parab aParab = aGAC.Parabola();
+      aParameter      = ElCLib::Parameter(aParab, aP);
       return 0;
     }
 
-  case GeomAbs_BezierCurve:
-  case GeomAbs_BSplineCurve:
-    {
+    case GeomAbs_BezierCurve:
+    case GeomAbs_BSplineCurve: {
       GeomAPI_ProjectPointOnCurve aProjector;
-      
+
       aProjector.Init(aP, aCurve, aFirst, aLast);
-      Standard_Integer aNbPoints=aProjector.NbPoints();
-      if (aNbPoints) {
-	aParameter=aProjector.LowerDistanceParameter();
-	return 0;
+      Standard_Integer aNbPoints = aProjector.NbPoints();
+      if (aNbPoints)
+      {
+        aParameter = aProjector.LowerDistanceParameter();
+        return 0;
       }
-      else {
-	return 2;
+      else
+      {
+        return 2;
       }
     }
-  default: 
-    break;
+    default:
+      break;
   }
   return 1;
 }

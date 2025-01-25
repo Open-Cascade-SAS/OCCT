@@ -24,7 +24,6 @@
 class TDF_Label;
 class AIS_InteractiveObject;
 
-
 class TPrsStd_NamedShapeDriver;
 DEFINE_STANDARD_HANDLE(TPrsStd_NamedShapeDriver, TPrsStd_Driver)
 
@@ -33,38 +32,21 @@ class TPrsStd_NamedShapeDriver : public TPrsStd_Driver
 {
 
 public:
-
-  
   //! Constructs an empty named shape driver.
   Standard_EXPORT TPrsStd_NamedShapeDriver();
-  
+
   //! Build the AISObject (if null) or update it.
   //! No compute is done.
   //! Returns <True> if information was found
   //! and AISObject updated.
-  Standard_EXPORT virtual Standard_Boolean Update (const TDF_Label& aLabel, Handle(AIS_InteractiveObject)& anAISObject) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Update(const TDF_Label&               aLabel,
+                                                  Handle(AIS_InteractiveObject)& anAISObject)
+    Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(TPrsStd_NamedShapeDriver,TPrsStd_Driver)
+  DEFINE_STANDARD_RTTIEXT(TPrsStd_NamedShapeDriver, TPrsStd_Driver)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _TPrsStd_NamedShapeDriver_HeaderFile

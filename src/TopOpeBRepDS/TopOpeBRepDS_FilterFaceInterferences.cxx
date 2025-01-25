@@ -14,43 +14,45 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopOpeBRepDS_Filter.hxx>
 #include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 
-Standard_EXPORT Standard_Integer FUN_unkeepFdoubleGBoundinterferences(TopOpeBRepDS_ListOfInterference& LI,const TopOpeBRepDS_DataStructure& BDS,const Standard_Integer SIX);
-Standard_EXPORT void FUN_resolveFUNKNOWN
-(TopOpeBRepDS_ListOfInterference& LI,TopOpeBRepDS_DataStructure& BDS,
- const Standard_Integer SIX,
- const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp,
- TopOpeBRepTool_PShapeClassifier pClassif);
+Standard_EXPORT Standard_Integer
+                     FUN_unkeepFdoubleGBoundinterferences(TopOpeBRepDS_ListOfInterference&  LI,
+                                                          const TopOpeBRepDS_DataStructure& BDS,
+                                                          const Standard_Integer            SIX);
+Standard_EXPORT void FUN_resolveFUNKNOWN(TopOpeBRepDS_ListOfInterference&                      LI,
+                                         TopOpeBRepDS_DataStructure&                           BDS,
+                                         const Standard_Integer                                SIX,
+                                         const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp,
+                                         TopOpeBRepTool_PShapeClassifier pClassif);
 
-//=======================================================================
-//function : ProcessFaceInterferences
-//purpose  : 
-//=======================================================================
-void TopOpeBRepDS_Filter::ProcessFaceInterferences
-(const Standard_Integer SIX,const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp)
+//=================================================================================================
+
+void TopOpeBRepDS_Filter::ProcessFaceInterferences(
+  const Standard_Integer                                SIX,
+  const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp)
 {
   TopOpeBRepDS_DataStructure& BDS = myHDS->ChangeDS();
 
   //                 BDS.Shape(SIX);
   TopOpeBRepDS_ListOfInterference& LI = BDS.ChangeShapeInterferences(SIX);
-  ::FUN_reducedoublons(LI,BDS,SIX);
+  ::FUN_reducedoublons(LI, BDS, SIX);
 
-  TopOpeBRepDS_ListOfInterference lw, lE, lFE, lFEF, lF, lUU, lall; lall.Assign(LI);
+  TopOpeBRepDS_ListOfInterference lw, lE, lFE, lFEF, lF, lUU, lall;
+  lall.Assign(LI);
 
-  ::FUN_selectTRAUNKinterference(lall,lUU);
-  FUN_resolveFUNKNOWN(lUU,BDS,SIX,MEsp,myPShapeClassif);
+  ::FUN_selectTRAUNKinterference(lall, lUU);
+  FUN_resolveFUNKNOWN(lUU, BDS, SIX, MEsp, myPShapeClassif);
   lw.Append(lall);
   lw.Append(lUU);
 
-  ::FUN_selectTRASHAinterference(lw,TopAbs_FACE,lF);
-  ::FUN_selectGKinterference(lF,TopOpeBRepDS_EDGE,lFE);
-  ::FUN_selectSKinterference(lFE,TopOpeBRepDS_FACE,lFEF);
-  ::FUN_selectTRASHAinterference(lw,TopAbs_EDGE,lE);
-  
+  ::FUN_selectTRASHAinterference(lw, TopAbs_FACE, lF);
+  ::FUN_selectGKinterference(lF, TopOpeBRepDS_EDGE, lFE);
+  ::FUN_selectSKinterference(lFE, TopOpeBRepDS_FACE, lFEF);
+  ::FUN_selectTRASHAinterference(lw, TopAbs_EDGE, lE);
+
   LI.Clear();
   LI.Append(lF);
   LI.Append(lFE);

@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Geom2d_AxisPlacement.hxx>
 #include <Geom_Axis1Placement.hxx>
 #include <GeomToStep_MakeAxis1Placement.hxx>
@@ -32,18 +31,19 @@
 //=============================================================================
 // Creation d' un axis1_placement de prostep a partir d' un Ax1 de gp
 //=============================================================================
-GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement
-( const gp_Ax1& A,
+GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement(
+  const gp_Ax1&           A,
   const StepData_Factors& theLocalFactors)
 {
 #include "GeomToStep_MakeAxis1Placement_gen.pxx"
 }
+
 //=============================================================================
 // Creation d' un axis1_placement de prostep a partir d' un Ax2d de gp
 //=============================================================================
 
-GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement
-( const gp_Ax2d& A,
+GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement(
+  const gp_Ax2d&          A,
   const StepData_Factors& theLocalFactors)
 {
 #include "GeomToStep_MakeAxis1Placement_gen.pxx"
@@ -54,9 +54,9 @@ GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement
 // Geom
 //=============================================================================
 
-GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement
-( const Handle(Geom_Axis1Placement)& Axis1,
-  const StepData_Factors& theLocalFactors)
+GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement(
+  const Handle(Geom_Axis1Placement)& Axis1,
+  const StepData_Factors&            theLocalFactors)
 {
   gp_Ax1 A;
   A = Axis1->Ax1();
@@ -68,9 +68,9 @@ GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement
 // Geom2d
 //=============================================================================
 
-GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement
-( const Handle(Geom2d_AxisPlacement)& Axis1,
-  const StepData_Factors& theLocalFactors)
+GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement(
+  const Handle(Geom2d_AxisPlacement)& Axis1,
+  const StepData_Factors&             theLocalFactors)
 {
   gp_Ax2d A;
   A = Axis1->Ax2d();
@@ -81,9 +81,8 @@ GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_Axis1Placement) &
-      GeomToStep_MakeAxis1Placement::Value() const
+const Handle(StepGeom_Axis1Placement)& GeomToStep_MakeAxis1Placement::Value() const
 {
-  StdFail_NotDone_Raise_if (!done, "GeomToStep_MakeAxis1Placement::Value() - no result");
+  StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeAxis1Placement::Value() - no result");
   return theAxis1Placement;
 }

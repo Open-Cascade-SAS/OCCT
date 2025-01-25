@@ -21,52 +21,30 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-
-class StepVisual_DirectionCountSelect 
+class StepVisual_DirectionCountSelect
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT StepVisual_DirectionCountSelect();
-  
-  Standard_EXPORT void SetTypeOfContent (const Standard_Integer aTypeOfContent);
-  
+
+  Standard_EXPORT void SetTypeOfContent(const Standard_Integer aTypeOfContent);
+
   Standard_EXPORT Standard_Integer TypeOfContent() const;
-  
+
   Standard_EXPORT Standard_Integer UDirectionCount() const;
-  
-  Standard_EXPORT void SetUDirectionCount (const Standard_Integer aUDirectionCount);
-  
+
+  Standard_EXPORT void SetUDirectionCount(const Standard_Integer aUDirectionCount);
+
   Standard_EXPORT Standard_Integer VDirectionCount() const;
-  
-  Standard_EXPORT void SetVDirectionCount (const Standard_Integer aUDirectionCount);
 
-
-
+  Standard_EXPORT void SetVDirectionCount(const Standard_Integer aUDirectionCount);
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Integer theUDirectionCount;
   Standard_Integer theVDirectionCount;
   Standard_Integer theTypeOfContent;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_DirectionCountSelect_HeaderFile

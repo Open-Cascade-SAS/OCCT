@@ -22,53 +22,33 @@
 
 #include <Standard_Transient.hxx>
 
-
 class StepVisual_CurveStyleFontPattern;
 DEFINE_STANDARD_HANDLE(StepVisual_CurveStyleFontPattern, Standard_Transient)
-
 
 class StepVisual_CurveStyleFontPattern : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a CurveStyleFontPattern
   Standard_EXPORT StepVisual_CurveStyleFontPattern();
-  
-  Standard_EXPORT void Init (const Standard_Real aVisibleSegmentLength, const Standard_Real aInvisibleSegmentLength);
-  
-  Standard_EXPORT void SetVisibleSegmentLength (const Standard_Real aVisibleSegmentLength);
-  
+
+  Standard_EXPORT void Init(const Standard_Real aVisibleSegmentLength,
+                            const Standard_Real aInvisibleSegmentLength);
+
+  Standard_EXPORT void SetVisibleSegmentLength(const Standard_Real aVisibleSegmentLength);
+
   Standard_EXPORT Standard_Real VisibleSegmentLength() const;
-  
-  Standard_EXPORT void SetInvisibleSegmentLength (const Standard_Real aInvisibleSegmentLength);
-  
+
+  Standard_EXPORT void SetInvisibleSegmentLength(const Standard_Real aInvisibleSegmentLength);
+
   Standard_EXPORT Standard_Real InvisibleSegmentLength() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_CurveStyleFontPattern,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_CurveStyleFontPattern, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Real visibleSegmentLength;
   Standard_Real invisibleSegmentLength;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_CurveStyleFontPattern_HeaderFile

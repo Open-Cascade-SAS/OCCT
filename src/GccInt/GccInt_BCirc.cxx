@@ -14,23 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GccInt_BCirc.hxx>
 #include <gp_Circ2d.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(GccInt_BCirc,GccInt_Bisec)
+IMPLEMENT_STANDARD_RTTIEXT(GccInt_BCirc, GccInt_Bisec)
 
-GccInt_BCirc::
-   GccInt_BCirc(const gp_Circ2d& Circ) {
-   cir = gp_Circ2d(Circ);
- }
+GccInt_BCirc::GccInt_BCirc(const gp_Circ2d& Circ)
+{
+  cir = gp_Circ2d(Circ);
+}
 
-GccInt_IType GccInt_BCirc::
-   ArcType() const {
-   return GccInt_Cir;
- }
+GccInt_IType GccInt_BCirc::ArcType() const
+{
+  return GccInt_Cir;
+}
 
-gp_Circ2d GccInt_BCirc::
-  Circle() const { return cir; }
-
+gp_Circ2d GccInt_BCirc::Circle() const
+{
+  return cir;
+}

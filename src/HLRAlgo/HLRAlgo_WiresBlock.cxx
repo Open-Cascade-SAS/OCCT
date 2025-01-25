@@ -15,10 +15,10 @@
 // commercial license or contractual agreement.
 
 #ifndef No_Exception
-#define No_Exception
+  #define No_Exception
 #endif
 
 #include <HLRAlgo_WiresBlock.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_WiresBlock,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_WiresBlock, Standard_Transient)

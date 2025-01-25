@@ -25,7 +25,6 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Standard_Boolean.hxx>
 
-
 //! Describes functions for building a qualified 2D curve.
 //! A qualified 2D curve is a curve with a qualifier which
 //! specifies whether the solution of a construction
@@ -34,13 +33,11 @@
 //! -   is enclosed by the curve, or
 //! -   is built so that both the curve and it are external to one another, or
 //! -   is undefined (all solutions apply).
-class Geom2dGcc_QualifiedCurve 
+class Geom2dGcc_QualifiedCurve
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs a qualified curve by assigning the qualifier
   //! Qualifier to the curve Curve. Qualifier may be:
   //! -   GccEnt_enclosing if the solution of a construction
@@ -62,8 +59,9 @@ public:
   //! GccEnt_Position myQualif = GccEnt_outside ;
   //! Geom2dGcc_QualifiedCurve myQCurve ( Curve, myQualif );
   //! is private;
-  Standard_EXPORT Geom2dGcc_QualifiedCurve(const Geom2dAdaptor_Curve& Curve, const GccEnt_Position Qualifier);
-  
+  Standard_EXPORT Geom2dGcc_QualifiedCurve(const Geom2dAdaptor_Curve& Curve,
+                                           const GccEnt_Position      Qualifier);
+
   //! Returns a 2D curve to which the qualifier is assigned.
   //! Warning
   //! The returned curve is an adapted curve, i.e. an object
@@ -76,51 +74,32 @@ public:
   //! Geom2dAdaptor_Curve myAdaptedCurve = myQualifiedCurve.Qualified();
   //! Handle(Geom2d_Curve) = myAdaptedCurve.Curve();
   Standard_EXPORT Geom2dAdaptor_Curve Qualified() const;
-  
+
   //! Returns
   //! - the qualifier of this qualified curve if it is enclosing,
   //! enclosed or outside, or
   //! -   GccEnt_noqualifier if it is unqualified.
   Standard_EXPORT GccEnt_Position Qualifier() const;
-  
+
   //! Returns true if the solution is unqualified and false in the other cases.
   Standard_EXPORT Standard_Boolean IsUnqualified() const;
-  
+
   //! It returns true if the solution is Enclosing the Curv and false in
   //! the other cases.
   Standard_EXPORT Standard_Boolean IsEnclosing() const;
-  
+
   //! It returns true if the solution is Enclosed in the Curv and false in
   //! the other cases.
   Standard_EXPORT Standard_Boolean IsEnclosed() const;
-  
+
   //! It returns true if the solution is Outside the Curv and false in
   //! the other cases.
   Standard_EXPORT Standard_Boolean IsOutside() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-  GccEnt_Position TheQualifier;
+  GccEnt_Position     TheQualifier;
   Geom2dAdaptor_Curve TheQualified;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Geom2dGcc_QualifiedCurve_HeaderFile

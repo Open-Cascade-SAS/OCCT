@@ -24,7 +24,6 @@
 #include <Standard_OStream.hxx>
 #include <Standard_CString.hxx>
 
-
 //! Vrml package  implements the specification  of the
 //! VRML ( Virtual  Reality Modeling Language ).  VRML
 //! is a standard  language for describing interactive
@@ -34,19 +33,17 @@
 //! This package is used by VrmlConverter package.
 //! The developer should  already be familiar with VRML
 //! specification before using this package.
-class Vrml 
+class Vrml
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Writes a header in anOStream (VRML file).
   //! Writes one line of commentary in  anOStream (VRML file).
-  Standard_EXPORT static Standard_OStream& VrmlHeaderWriter (Standard_OStream& anOStream);
-  
-  Standard_EXPORT static Standard_OStream& CommentWriter (const Standard_CString aComment, Standard_OStream& anOStream);
+  Standard_EXPORT static Standard_OStream& VrmlHeaderWriter(Standard_OStream& anOStream);
 
+  Standard_EXPORT static Standard_OStream& CommentWriter(const Standard_CString aComment,
+                                                         Standard_OStream&      anOStream);
 };
 
 #endif // _Vrml_HeaderFile

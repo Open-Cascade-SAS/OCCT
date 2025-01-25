@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Adaptor3d_Curve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
@@ -30,139 +29,140 @@
 #include <StdPrs_PoleCurve.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 
-//=======================================================================
-//function : Add
-//purpose  : 
-//=======================================================================
-void StdPrs_PoleCurve::Add (const Handle (Prs3d_Presentation)& aPresentation,
-			    const Adaptor3d_Curve&               aCurve,
-			    const Handle (Prs3d_Drawer)&       aDrawer) 
+//=================================================================================================
+
+void StdPrs_PoleCurve::Add(const Handle(Prs3d_Presentation)& aPresentation,
+                           const Adaptor3d_Curve&            aCurve,
+                           const Handle(Prs3d_Drawer)&       aDrawer)
 {
   aPresentation->CurrentGroup()->SetPrimitivesAspect(aDrawer->LineAspect()->Aspect());
 
   GeomAbs_CurveType CType = aCurve.GetType();
-  if (CType == GeomAbs_BezierCurve || CType == GeomAbs_BSplineCurve) {
+  if (CType == GeomAbs_BezierCurve || CType == GeomAbs_BSplineCurve)
+  {
     Standard_Integer i, Nb;
-    if (CType == GeomAbs_BezierCurve) {
-      Handle(Geom_BezierCurve) Bz = aCurve.Bezier();
-      Nb = Bz->NbPoles();
+    if (CType == GeomAbs_BezierCurve)
+    {
+      Handle(Geom_BezierCurve) Bz               = aCurve.Bezier();
+      Nb                                        = Bz->NbPoles();
       Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(Nb);
       for (i = 1; i <= Nb; i++)
         aPrims->AddVertex(Bz->Pole(i));
       aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
     }
-    else if (CType == GeomAbs_BSplineCurve) {
-      Handle(Geom_BSplineCurve) Bs = aCurve.BSpline();
-      Nb = Bs->NbPoles();
+    else if (CType == GeomAbs_BSplineCurve)
+    {
+      Handle(Geom_BSplineCurve) Bs              = aCurve.BSpline();
+      Nb                                        = Bs->NbPoles();
       Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(Nb);
       for (i = 1; i <= Nb; i++)
         aPrims->AddVertex(Bs->Pole(i));
       aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
     }
   }
-  
-  if (aDrawer->LineArrowDraw()) {
+
+  if (aDrawer->LineArrowDraw())
+  {
     gp_Pnt Location;
     gp_Vec Direction;
-    aCurve.D1(aCurve.LastParameter(),Location,Direction);
-    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(),
-		       Location,
-		       gp_Dir(Direction),
-		       aDrawer->ArrowAspect()->Angle(),
-		       aDrawer->ArrowAspect()->Length());
+    aCurve.D1(aCurve.LastParameter(), Location, Direction);
+    Prs3d_Arrow::Draw(aPresentation->CurrentGroup(),
+                      Location,
+                      gp_Dir(Direction),
+                      aDrawer->ArrowAspect()->Angle(),
+                      aDrawer->ArrowAspect()->Length());
   }
 }
-     
 
-//=======================================================================
-//function : Match
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean StdPrs_PoleCurve::Match(const Standard_Real        X,
-					 const Standard_Real        Y,
-					 const Standard_Real        Z,
-					 const Standard_Real        aDistance,
-					 const Adaptor3d_Curve&         aCurve,
-					 const Handle (Prs3d_Drawer)& /*aDrawer*/) 
+Standard_Boolean StdPrs_PoleCurve::Match(const Standard_Real    X,
+                                         const Standard_Real    Y,
+                                         const Standard_Real    Z,
+                                         const Standard_Real    aDistance,
+                                         const Adaptor3d_Curve& aCurve,
+                                         const Handle(Prs3d_Drawer)& /*aDrawer*/)
 {
   GeomAbs_CurveType CType = aCurve.GetType();
-  Standard_Integer i, Nb = 0;
-  Standard_Real x,y,z;
-  if (CType == GeomAbs_BezierCurve) {
+  Standard_Integer  i, Nb = 0;
+  Standard_Real     x, y, z;
+  if (CType == GeomAbs_BezierCurve)
+  {
     Handle(Geom_BezierCurve) Bz = aCurve.Bezier();
-    Nb = Bz->NbPoles();
-    for (i = 1; i <= Nb; i++) { 
-      Bz->Pole(i).Coord(x,y,z);
-      if ( Abs(X-x) +Abs(Y-y)+Abs(Z-z) <= aDistance) return Standard_True;
+    Nb                          = Bz->NbPoles();
+    for (i = 1; i <= Nb; i++)
+    {
+      Bz->Pole(i).Coord(x, y, z);
+      if (Abs(X - x) + Abs(Y - y) + Abs(Z - z) <= aDistance)
+        return Standard_True;
     }
     return Standard_False;
   }
-  else if (CType == GeomAbs_BSplineCurve) {
+  else if (CType == GeomAbs_BSplineCurve)
+  {
     Handle(Geom_BSplineCurve) Bs = aCurve.BSpline();
-    Nb = Bs->NbPoles();
-    for (i = 1; i <= Nb; i++) { 
-      Bs->Pole(i).Coord(x,y,z);
-      if ( Abs(X-x) +Abs(Y-y)+Abs(Z-z) <= aDistance) return Standard_True;
+    Nb                           = Bs->NbPoles();
+    for (i = 1; i <= Nb; i++)
+    {
+      Bs->Pole(i).Coord(x, y, z);
+      if (Abs(X - x) + Abs(Y - y) + Abs(Z - z) <= aDistance)
+        return Standard_True;
     }
     return Standard_False;
   }
   return Standard_False;
 }
 
-//=======================================================================
-//function : Pick
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer StdPrs_PoleCurve::Pick
-             (const Standard_Real       X,
-	      const Standard_Real       Y,
-	      const Standard_Real       Z,
-	      const Standard_Real       aDistance,
-	      const Adaptor3d_Curve&        aCurve,
-	      const Handle(Prs3d_Drawer)& /*aDrawer*/) 
+Standard_Integer StdPrs_PoleCurve::Pick(const Standard_Real    X,
+                                        const Standard_Real    Y,
+                                        const Standard_Real    Z,
+                                        const Standard_Real    aDistance,
+                                        const Adaptor3d_Curve& aCurve,
+                                        const Handle(Prs3d_Drawer)& /*aDrawer*/)
 {
-  Standard_Real x, y, z, DistMin = RealLast();
-  Standard_Integer num = 0, i, Nb = 0;
-  Standard_Real dist;
+  Standard_Real     x, y, z, DistMin = RealLast();
+  Standard_Integer  num = 0, i, Nb = 0;
+  Standard_Real     dist;
   GeomAbs_CurveType CType = aCurve.GetType();
 
-  if (CType == GeomAbs_BezierCurve) {
+  if (CType == GeomAbs_BezierCurve)
+  {
     Handle(Geom_BezierCurve) Bz = aCurve.Bezier();
-    Nb = Bz->NbPoles();
-    for (i = 1; i <= Nb; i++) { 
-      Bz->Pole(i).Coord(x,y,z);
-      dist = Abs(X-x) +Abs(Y-y)+Abs(Z-z);
-      if ( dist <= aDistance) {
-	if (dist < DistMin) {
-	  DistMin = dist;
-	  num = i;
-	}
+    Nb                          = Bz->NbPoles();
+    for (i = 1; i <= Nb; i++)
+    {
+      Bz->Pole(i).Coord(x, y, z);
+      dist = Abs(X - x) + Abs(Y - y) + Abs(Z - z);
+      if (dist <= aDistance)
+      {
+        if (dist < DistMin)
+        {
+          DistMin = dist;
+          num     = i;
+        }
       }
     }
   }
-  else if (CType == GeomAbs_BSplineCurve) {
+  else if (CType == GeomAbs_BSplineCurve)
+  {
     Handle(Geom_BSplineCurve) Bs = aCurve.BSpline();
-    Nb = Bs->NbPoles();
-    for (i = 1; i <= Nb; i++) { 
-      Bs->Pole(i).Coord(x,y,z);
-      dist = Abs(X-x) +Abs(Y-y)+Abs(Z-z);
-      if (dist <= aDistance) {
-	if (dist < DistMin) {
-	  DistMin = dist;
-	  num = i;
-	}
+    Nb                           = Bs->NbPoles();
+    for (i = 1; i <= Nb; i++)
+    {
+      Bs->Pole(i).Coord(x, y, z);
+      dist = Abs(X - x) + Abs(Y - y) + Abs(Z - z);
+      if (dist <= aDistance)
+      {
+        if (dist < DistMin)
+        {
+          DistMin = dist;
+          num     = i;
+        }
       }
     }
   }
 
   return num;
 }
-
-
-
-     
-
-
-

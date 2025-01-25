@@ -29,30 +29,29 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_AssemblyItemRef, TDF_Attribute)
 
-enum {
+enum
+{
   ExtraRef_None,
   ExtraRef_AttrGUID,
   ExtraRef_SubshapeIndex
 };
 
-const Standard_GUID& 
-XCAFDoc_AssemblyItemRef::GetID()
+const Standard_GUID& XCAFDoc_AssemblyItemRef::GetID()
 {
   static Standard_GUID s_ID("3F2E4CD6-169B-4747-A321-5670E4291F5D");
   return s_ID;
 }
 
-Handle(XCAFDoc_AssemblyItemRef) 
-XCAFDoc_AssemblyItemRef::Get(const TDF_Label& theLabel)
+Handle(XCAFDoc_AssemblyItemRef) XCAFDoc_AssemblyItemRef::Get(const TDF_Label& theLabel)
 {
   Handle(XCAFDoc_AssemblyItemRef) aThis;
   theLabel.FindAttribute(XCAFDoc_AssemblyItemRef::GetID(), aThis);
   return aThis;
 }
 
-Handle(XCAFDoc_AssemblyItemRef) 
-XCAFDoc_AssemblyItemRef::Set(const TDF_Label&              theLabel,
-                             const XCAFDoc_AssemblyItemId& theItemId)
+Handle(XCAFDoc_AssemblyItemRef) XCAFDoc_AssemblyItemRef::Set(
+  const TDF_Label&              theLabel,
+  const XCAFDoc_AssemblyItemId& theItemId)
 {
   Handle(XCAFDoc_AssemblyItemRef) aThis;
   if (!theLabel.IsNull() && !theLabel.FindAttribute(XCAFDoc_AssemblyItemRef::GetID(), aThis))
@@ -64,10 +63,10 @@ XCAFDoc_AssemblyItemRef::Set(const TDF_Label&              theLabel,
   return aThis;
 }
 
-Handle(XCAFDoc_AssemblyItemRef) 
-XCAFDoc_AssemblyItemRef::Set(const TDF_Label&              theLabel,
-                             const XCAFDoc_AssemblyItemId& theItemId,
-                             const Standard_GUID&          theAttrGUID)
+Handle(XCAFDoc_AssemblyItemRef) XCAFDoc_AssemblyItemRef::Set(
+  const TDF_Label&              theLabel,
+  const XCAFDoc_AssemblyItemId& theItemId,
+  const Standard_GUID&          theAttrGUID)
 {
   Handle(XCAFDoc_AssemblyItemRef) aThis;
   if (!theLabel.IsNull() && !theLabel.FindAttribute(XCAFDoc_AssemblyItemRef::GetID(), aThis))
@@ -80,10 +79,10 @@ XCAFDoc_AssemblyItemRef::Set(const TDF_Label&              theLabel,
   return aThis;
 }
 
-Handle(XCAFDoc_AssemblyItemRef) 
-XCAFDoc_AssemblyItemRef::Set(const TDF_Label&              theLabel,
-                             const XCAFDoc_AssemblyItemId& theItemId,
-                             const Standard_Integer        theShapeIndex)
+Handle(XCAFDoc_AssemblyItemRef) XCAFDoc_AssemblyItemRef::Set(
+  const TDF_Label&              theLabel,
+  const XCAFDoc_AssemblyItemId& theItemId,
+  const Standard_Integer        theShapeIndex)
 {
   Handle(XCAFDoc_AssemblyItemRef) aThis;
   if (!theLabel.IsNull() && !theLabel.FindAttribute(XCAFDoc_AssemblyItemRef::GetID(), aThis))
@@ -97,13 +96,11 @@ XCAFDoc_AssemblyItemRef::Set(const TDF_Label&              theLabel,
 }
 
 XCAFDoc_AssemblyItemRef::XCAFDoc_AssemblyItemRef()
-  : myExtraRef(ExtraRef_None)
+    : myExtraRef(ExtraRef_None)
 {
-
 }
 
-Standard_Boolean 
-XCAFDoc_AssemblyItemRef::IsOrphan() const
+Standard_Boolean XCAFDoc_AssemblyItemRef::IsOrphan() const
 {
   if (myItemId.IsNull())
     return Standard_True;
@@ -141,7 +138,7 @@ XCAFDoc_AssemblyItemRef::IsOrphan() const
       if (!aLabel.FindAttribute(TNaming_NamedShape::GetID(), aNamedShape))
         return Standard_True;
 
-      TopoDS_Shape aShape = aNamedShape->Get();
+      TopoDS_Shape               aShape = aNamedShape->Get();
       TopTools_IndexedMapOfShape aMap;
       TopExp::MapShapes(aShape, aMap);
       Standard_Integer aSubshapeIndex = GetSubshapeIndex();
@@ -153,32 +150,27 @@ XCAFDoc_AssemblyItemRef::IsOrphan() const
   return Standard_False;
 }
 
-Standard_Boolean 
-XCAFDoc_AssemblyItemRef::HasExtraRef() const
+Standard_Boolean XCAFDoc_AssemblyItemRef::HasExtraRef() const
 {
   return (myExtraRef != ExtraRef_None);
 }
 
-Standard_Boolean 
-XCAFDoc_AssemblyItemRef::IsGUID() const
+Standard_Boolean XCAFDoc_AssemblyItemRef::IsGUID() const
 {
   return (myExtraRef == ExtraRef_AttrGUID && Standard_GUID::CheckGUIDFormat(myExtraId.ToCString()));
 }
 
-Standard_Boolean 
-XCAFDoc_AssemblyItemRef::IsSubshapeIndex() const
+Standard_Boolean XCAFDoc_AssemblyItemRef::IsSubshapeIndex() const
 {
   return (myExtraRef == ExtraRef_SubshapeIndex && myExtraId.IsIntegerValue());
 }
 
-const XCAFDoc_AssemblyItemId& 
-XCAFDoc_AssemblyItemRef::GetItem() const
+const XCAFDoc_AssemblyItemId& XCAFDoc_AssemblyItemRef::GetItem() const
 {
   return myItemId;
 }
 
-Standard_GUID 
-XCAFDoc_AssemblyItemRef::GetGUID() const
+Standard_GUID XCAFDoc_AssemblyItemRef::GetGUID() const
 {
   if (IsGUID())
     return Standard_GUID(myExtraId.ToCString());
@@ -186,8 +178,7 @@ XCAFDoc_AssemblyItemRef::GetGUID() const
     return Standard_GUID();
 }
 
-Standard_Integer 
-XCAFDoc_AssemblyItemRef::GetSubshapeIndex() const
+Standard_Integer XCAFDoc_AssemblyItemRef::GetSubshapeIndex() const
 {
   if (IsSubshapeIndex())
     return myExtraId.IntegerValue();
@@ -195,24 +186,21 @@ XCAFDoc_AssemblyItemRef::GetSubshapeIndex() const
     return 0;
 }
 
-void 
-XCAFDoc_AssemblyItemRef::SetItem(const XCAFDoc_AssemblyItemId& theItemId)
+void XCAFDoc_AssemblyItemRef::SetItem(const XCAFDoc_AssemblyItemId& theItemId)
 {
   Backup();
   myItemId = theItemId;
   ClearExtraRef();
 }
 
-void
-XCAFDoc_AssemblyItemRef::SetItem(const TColStd_ListOfAsciiString& thePath)
+void XCAFDoc_AssemblyItemRef::SetItem(const TColStd_ListOfAsciiString& thePath)
 {
   Backup();
   myItemId.Init(thePath);
   ClearExtraRef();
 }
 
-void
-XCAFDoc_AssemblyItemRef::SetItem(const TCollection_AsciiString& theString)
+void XCAFDoc_AssemblyItemRef::SetItem(const TCollection_AsciiString& theString)
 {
   Backup();
   myItemId.Init(theString);
@@ -224,14 +212,13 @@ void XCAFDoc_AssemblyItemRef::SetGUID(const Standard_GUID& theAttrGUID)
   Backup();
   myExtraRef = ExtraRef_AttrGUID;
   Standard_Character aGUIDStr[Standard_GUID_SIZE + 1];
-  theAttrGUID.ToCString(aGUIDStr); 
+  theAttrGUID.ToCString(aGUIDStr);
   aGUIDStr[Standard_GUID_SIZE] = '\0';
   myExtraId.Clear();
   myExtraId.AssignCat(aGUIDStr);
 }
 
-void 
-XCAFDoc_AssemblyItemRef::SetSubshapeIndex(Standard_Integer theSubshapeIndex)
+void XCAFDoc_AssemblyItemRef::SetSubshapeIndex(Standard_Integer theSubshapeIndex)
 {
   Backup();
   myExtraRef = ExtraRef_SubshapeIndex;
@@ -239,53 +226,47 @@ XCAFDoc_AssemblyItemRef::SetSubshapeIndex(Standard_Integer theSubshapeIndex)
   myExtraId.AssignCat(theSubshapeIndex);
 }
 
-void 
-XCAFDoc_AssemblyItemRef::ClearExtraRef()
+void XCAFDoc_AssemblyItemRef::ClearExtraRef()
 {
   Backup();
   myExtraRef = ExtraRef_None;
   myExtraId.Clear();
 }
 
-const Standard_GUID& 
-XCAFDoc_AssemblyItemRef::ID() const
+const Standard_GUID& XCAFDoc_AssemblyItemRef::ID() const
 {
   return GetID();
 }
 
-Handle(TDF_Attribute) 
-XCAFDoc_AssemblyItemRef::NewEmpty() const
+Handle(TDF_Attribute) XCAFDoc_AssemblyItemRef::NewEmpty() const
 {
   return new XCAFDoc_AssemblyItemRef();
 }
 
-void 
-XCAFDoc_AssemblyItemRef::Restore(const Handle(TDF_Attribute)& theAttrFrom)
+void XCAFDoc_AssemblyItemRef::Restore(const Handle(TDF_Attribute)& theAttrFrom)
 {
   Handle(XCAFDoc_AssemblyItemRef) anOther = Handle(XCAFDoc_AssemblyItemRef)::DownCast(theAttrFrom);
   if (!anOther.IsNull())
   {
-    myItemId = anOther->myItemId;
+    myItemId   = anOther->myItemId;
     myExtraRef = anOther->myExtraRef;
-    myExtraId = anOther->myExtraId;
+    myExtraId  = anOther->myExtraId;
   }
 }
 
-void 
-XCAFDoc_AssemblyItemRef::Paste(const Handle(TDF_Attribute)&       theAttrInto,
-                               const Handle(TDF_RelocationTable)& /*theRT*/) const
+void XCAFDoc_AssemblyItemRef::Paste(const Handle(TDF_Attribute)& theAttrInto,
+                                    const Handle(TDF_RelocationTable)& /*theRT*/) const
 {
   Handle(XCAFDoc_AssemblyItemRef) anOther = Handle(XCAFDoc_AssemblyItemRef)::DownCast(theAttrInto);
   if (!anOther.IsNull())
   {
-    anOther->myItemId = myItemId;
+    anOther->myItemId   = myItemId;
     anOther->myExtraRef = myExtraRef;
-    anOther->myExtraId = myExtraId;
+    anOther->myExtraId  = myExtraId;
   }
 }
 
-Standard_OStream& 
-XCAFDoc_AssemblyItemRef::Dump(Standard_OStream& theOS) const
+Standard_OStream& XCAFDoc_AssemblyItemRef::Dump(Standard_OStream& theOS) const
 {
   theOS << "Path: " << myItemId.ToString();
   if (IsGUID())
@@ -295,17 +276,16 @@ XCAFDoc_AssemblyItemRef::Dump(Standard_OStream& theOS) const
   return theOS;
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void XCAFDoc_AssemblyItemRef::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+//=================================================================================================
+
+void XCAFDoc_AssemblyItemRef::DumpJson(Standard_OStream& theOStream,
+                                       Standard_Integer  theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDF_Attribute)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myItemId)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myExtraRef)
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myExtraId)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myItemId)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myExtraRef)
+  OCCT_DUMP_FIELD_VALUE_STRING(theOStream, myExtraId)
 }

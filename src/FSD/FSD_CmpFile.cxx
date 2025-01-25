@@ -22,36 +22,34 @@ const Standard_CString MAGICNUMBER = "CMPFILE";
 
 IMPLEMENT_STANDARD_RTTIEXT(FSD_CmpFile, FSD_File)
 
-//=======================================================================
-//function : FSD_CmpFile
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-FSD_CmpFile::FSD_CmpFile()
-{}
+FSD_CmpFile::FSD_CmpFile() {}
 
 //=======================================================================
-//function : IsGoodFileType
-//purpose  : INFO SECTION
+// function : IsGoodFileType
+// purpose  : INFO SECTION
 //           write
 //=======================================================================
 
 Storage_Error FSD_CmpFile::IsGoodFileType(const TCollection_AsciiString& aName)
 {
-  FSD_CmpFile      f;
+  FSD_CmpFile   f;
   Storage_Error s;
 
   s = f.Open(aName, Storage_VSRead);
 
-  if (s == Storage_VSOk) {
+  if (s == Storage_VSOk)
+  {
     TCollection_AsciiString l;
-    Standard_Size len = strlen(FSD_CmpFile::MagicNumber());
+    Standard_Size           len = strlen(FSD_CmpFile::MagicNumber());
 
     f.ReadChar(l, len);
 
     f.Close();
 
-    if (strncmp(FSD_CmpFile::MagicNumber(), l.ToCString(), len) != 0) {
+    if (strncmp(FSD_CmpFile::MagicNumber(), l.ToCString(), len) != 0)
+    {
       s = Storage_VSFormatError;
     }
   }
@@ -59,74 +57,72 @@ Storage_Error FSD_CmpFile::IsGoodFileType(const TCollection_AsciiString& aName)
   return s;
 }
 
-//=======================================================================
-//function : Open
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Storage_Error FSD_CmpFile::Open(const TCollection_AsciiString& aName, const Storage_OpenMode aMode)
 {
   Storage_Error result = Storage_VSOk;
   SetName(aName);
 
-  if (OpenMode() == Storage_VSNone) {
+  if (OpenMode() == Storage_VSNone)
+  {
     std::ios_base::openmode anOpenMode = std::ios_base::openmode{};
     switch (aMode)
     {
-    case Storage_VSNone:
-    {
-      break;
-    }
-    case Storage_VSRead:
-    {
-      // std::ios::nocreate is not portable
+      case Storage_VSNone: {
+        break;
+      }
+      case Storage_VSRead: {
+        // std::ios::nocreate is not portable
 #if !defined(IRIX) && !defined(DECOSF1)
-      anOpenMode = std::ios::in | std::ios::binary;
+        anOpenMode = std::ios::in | std::ios::binary;
 #else
-      anOpenMode = std::ios::in;
+        anOpenMode = std::ios::in;
 #endif
-      break;
-    }
-    case Storage_VSWrite:
-    {
+        break;
+      }
+      case Storage_VSWrite: {
 #if !defined(IRIX) && !defined(DECOSF1)
-      anOpenMode = std::ios::out | std::ios::binary;
+        anOpenMode = std::ios::out | std::ios::binary;
 #else
-      anOpenMode = std::ios::out;
+        anOpenMode = std::ios::out;
 #endif
-      break;
-    }
-    case Storage_VSReadWrite:
-    {
+        break;
+      }
+      case Storage_VSReadWrite: {
 #if !defined(IRIX) && !defined(DECOSF1)
-      anOpenMode = std::ios::in | std::ios::out | std::ios::binary;
+        anOpenMode = std::ios::in | std::ios::out | std::ios::binary;
 #else
-      anOpenMode = std::ios::in | std::ios::out;
+        anOpenMode = std::ios::in | std::ios::out;
 #endif
-      break;
-    }
+        break;
+      }
     }
     if (anOpenMode != 0)
     {
       OSD_OpenStream(myStream, aName, anOpenMode);
     }
-    if (myStream.fail()) {
+    if (myStream.fail())
+    {
       result = Storage_VSOpenError;
     }
-    else {
+    else
+    {
       myStream.precision(17);
       myStream.imbue(std::locale::classic()); // use always C locale
       SetOpenMode(aMode);
     }
-    }
-  else {
+  }
+  else
+  {
     result = Storage_VSAlreadyOpen;
   }
   return result;
-    }
+}
 
 //=======================================================================
-//function : MagicNumber
-//purpose  : ------------------ PROTECTED
+// function : MagicNumber
+// purpose  : ------------------ PROTECTED
 //=======================================================================
 
 Standard_CString FSD_CmpFile::MagicNumber()
@@ -135,8 +131,8 @@ Standard_CString FSD_CmpFile::MagicNumber()
 }
 
 //=======================================================================
-//function : ReadLine
-//purpose  : read from the current position to the end of line.
+// function : ReadLine
+// purpose  : read from the current position to the end of line.
 //=======================================================================
 
 void FSD_CmpFile::ReadLine(TCollection_AsciiString& buffer)
@@ -144,16 +140,18 @@ void FSD_CmpFile::ReadLine(TCollection_AsciiString& buffer)
   buffer.Clear();
   TCollection_AsciiString aBuf('\0');
   FSD_File::ReadLine(aBuf);
-  for (Standard_Integer lv = aBuf.Length(); lv >= 1 && (aBuf.Value(lv) == '\r' || (aBuf.Value(lv) == '\n')); lv--)
+  for (Standard_Integer lv = aBuf.Length();
+       lv >= 1 && (aBuf.Value(lv) == '\r' || (aBuf.Value(lv) == '\n'));
+       lv--)
   {
-    aBuf.Trunc (lv - 1);
+    aBuf.Trunc(lv - 1);
   }
   buffer = aBuf;
 }
 
 //=======================================================================
-//function : WriteExtendedLine
-//purpose  : write from the current position to the end of line.
+// function : WriteExtendedLine
+// purpose  : write from the current position to the end of line.
 //=======================================================================
 
 void FSD_CmpFile::WriteExtendedLine(const TCollection_ExtendedString& buffer)
@@ -178,26 +176,25 @@ void FSD_CmpFile::WriteExtendedLine(const TCollection_ExtendedString& buffer)
 
   extBuffer = buffer.ToExtString();
   PutInteger(buffer.Length());
-  for (i = 0; i < buffer.Length(); i++) {
+  for (i = 0; i < buffer.Length(); i++)
+  {
     PutExtCharacter(extBuffer[i]);
   }
 
   myStream << "\n";
 }
 
-//=======================================================================
-//function : ReadExtendedLine
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void FSD_CmpFile::ReadExtendedLine(TCollection_ExtendedString& buffer)
 {
   Standard_ExtCharacter c;
-  Standard_Integer i;
+  Standard_Integer      i;
 
   GetInteger(i);
 
-  for (i = 0; i < buffer.Length(); i++) {
+  for (i = 0; i < buffer.Length(); i++)
+  {
     GetExtCharacter(c);
     buffer += c;
   }
@@ -206,8 +203,8 @@ void FSD_CmpFile::ReadExtendedLine(TCollection_ExtendedString& buffer)
 }
 
 //=======================================================================
-//function : ReadString
-//purpose  : read from the first none space character position to the end of line.
+// function : ReadString
+// purpose  : read from the first none space character position to the end of line.
 //=======================================================================
 
 void FSD_CmpFile::ReadString(TCollection_AsciiString& buffer)
@@ -215,195 +212,178 @@ void FSD_CmpFile::ReadString(TCollection_AsciiString& buffer)
   buffer.Clear();
   TCollection_AsciiString aBuf('\0');
   FSD_File::ReadString(aBuf);
-  for (Standard_Integer lv = aBuf.Length(); lv >= 1 && (aBuf.Value(lv) == '\r' || (aBuf.Value(lv) == '\n')); lv--)
+  for (Standard_Integer lv = aBuf.Length();
+       lv >= 1 && (aBuf.Value(lv) == '\r' || (aBuf.Value(lv) == '\n'));
+       lv--)
   {
-    aBuf.Trunc (lv - 1);
+    aBuf.Trunc(lv - 1);
   }
   buffer = aBuf;
 }
 
-//=======================================================================
-//function : Destroy
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void FSD_CmpFile::Destroy()
 {
-  if (OpenMode() != Storage_VSNone) {
+  if (OpenMode() != Storage_VSNone)
+  {
     Close();
   }
 }
 
 //=======================================================================
-//function : BeginWriteInfoSection
-//purpose  : -------------------------- INFO : WRITE
+// function : BeginWriteInfoSection
+// purpose  : -------------------------- INFO : WRITE
 //=======================================================================
 
 Storage_Error FSD_CmpFile::BeginWriteInfoSection()
 {
   myStream << FSD_CmpFile::MagicNumber() << '\n';
   myStream << "BEGIN_INFO_SECTION\n";
-  if (myStream.bad()) throw Storage_StreamWriteError();
+  if (myStream.bad())
+    throw Storage_StreamWriteError();
 
   return Storage_VSOk;
 }
 
-//=======================================================================
-//function : BeginReadInfoSection
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Storage_Error FSD_CmpFile::BeginReadInfoSection()
 {
-  Storage_Error s;
+  Storage_Error           s;
   TCollection_AsciiString l;
-  Standard_Size        len = strlen(FSD_CmpFile::MagicNumber());
+  Standard_Size           len = strlen(FSD_CmpFile::MagicNumber());
 
   ReadChar(l, len);
 
-  if (strncmp(FSD_CmpFile::MagicNumber(), l.ToCString(), len) != 0) {
+  if (strncmp(FSD_CmpFile::MagicNumber(), l.ToCString(), len) != 0)
+  {
     s = Storage_VSFormatError;
   }
-  else {
+  else
+  {
     s = FindTag("BEGIN_INFO_SECTION");
   }
 
   return s;
 }
 
-//=======================================================================
-//function : WritePersistentObjectHeader
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void FSD_CmpFile::WritePersistentObjectHeader(const Standard_Integer aRef,
                                               const Standard_Integer aType)
 {
   myStream << "\n#" << aRef << "%" << aType << " ";
-  if (myStream.bad()) throw Storage_StreamWriteError();
+  if (myStream.bad())
+    throw Storage_StreamWriteError();
 }
 
-//=======================================================================
-//function : BeginWritePersistentObjectData
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void FSD_CmpFile::BeginWritePersistentObjectData()
 {
-  if (myStream.bad()) throw Storage_StreamWriteError();
+  if (myStream.bad())
+    throw Storage_StreamWriteError();
 }
 
-//=======================================================================
-//function : BeginWriteObjectData
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void FSD_CmpFile::BeginWriteObjectData()
 {
-  if (myStream.bad()) throw Storage_StreamWriteError();
+  if (myStream.bad())
+    throw Storage_StreamWriteError();
 }
 
-//=======================================================================
-//function : EndWriteObjectData
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void FSD_CmpFile::EndWriteObjectData()
 {
-  if (myStream.bad()) throw Storage_StreamWriteError();
+  if (myStream.bad())
+    throw Storage_StreamWriteError();
 }
 
-//=======================================================================
-//function : EndWritePersistentObjectData
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void FSD_CmpFile::EndWritePersistentObjectData()
 {
-  if (myStream.bad()) throw Storage_StreamWriteError();
+  if (myStream.bad())
+    throw Storage_StreamWriteError();
 }
 
-//=======================================================================
-//function : ReadPersistentObjectHeader
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void FSD_CmpFile::ReadPersistentObjectHeader(Standard_Integer& aRef,
-                                             Standard_Integer& aType)
+void FSD_CmpFile::ReadPersistentObjectHeader(Standard_Integer& aRef, Standard_Integer& aType)
 {
   char c = '\0';
 
   myStream.get(c);
 
-  while (c != '#') {
-    if (IsEnd() || (c != ' ') || (c == '\r') || (c == '\n')) {
+  while (c != '#')
+  {
+    if (IsEnd() || (c != ' ') || (c == '\r') || (c == '\n'))
+    {
       throw Storage_StreamFormatError();
     }
     myStream.get(c);
   }
 
-  if (!(myStream >> aRef)) throw Storage_StreamTypeMismatchError();
+  if (!(myStream >> aRef))
+    throw Storage_StreamTypeMismatchError();
 
   myStream.get(c);
 
-  while (c != '%') {
-    if (IsEnd() || (c != ' ') || (c == '\r') || (c == '\n')) {
+  while (c != '%')
+  {
+    if (IsEnd() || (c != ' ') || (c == '\r') || (c == '\n'))
+    {
       throw Storage_StreamFormatError();
     }
     myStream.get(c);
   }
 
-  if (!(myStream >> aType)) throw Storage_StreamTypeMismatchError();
+  if (!(myStream >> aType))
+    throw Storage_StreamTypeMismatchError();
   //  std::cout << "REF:" << aRef << " TYPE:"<< aType << std::endl;
 }
 
-//=======================================================================
-//function : BeginReadPersistentObjectData
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void FSD_CmpFile::BeginReadPersistentObjectData()
 {
-  //std::cout << "BeginReadPersistentObjectData" << std::endl;
+  // std::cout << "BeginReadPersistentObjectData" << std::endl;
 }
 
-//=======================================================================
-//function : BeginReadObjectData
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void FSD_CmpFile::BeginReadObjectData()
 {
   //  std::cout << "BeginReadObjectData" << std::endl;
 }
 
-//=======================================================================
-//function : EndReadObjectData
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void FSD_CmpFile::EndReadObjectData()
 {
   //  std::cout << "EndReadObjectData" << std::endl;
 }
 
-//=======================================================================
-//function : EndReadPersistentObjectData
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void FSD_CmpFile::EndReadPersistentObjectData()
 {
   char c = '\0';
 
   myStream.get(c);
-  while (c != '\n' && (c != '\r')) {
-    if (IsEnd() || (c != ' ')) {
+  while (c != '\n' && (c != '\r'))
+  {
+    if (IsEnd() || (c != ' '))
+    {
       throw Storage_StreamFormatError();
     }
     myStream.get(c);
   }
-  if (c == '\r') {
+  if (c == '\r')
+  {
     myStream.get(c);
   }
   //  std::cout << "EndReadPersistentObjectData" << std::endl;

@@ -26,33 +26,33 @@
 #include <XmlMDataXtd_PositionDriver.hxx>
 
 static Standard_Integer myDocumentVersion = -1;
-//=======================================================================
-//function : AddDrivers
-//purpose  : 
-//=======================================================================
-void XmlMDataXtd::AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable,
-                              const Handle(Message_Messenger)&   anMsgDrv)
-{
-  aDriverTable->AddDriver(new XmlMDataXtd_GeometryDriver      (anMsgDrv));
-  aDriverTable->AddDriver(new XmlMDataXtd_ConstraintDriver    (anMsgDrv));
-  aDriverTable->AddDriver(new XmlMDataXtd_PatternStdDriver    (anMsgDrv));
-  aDriverTable->AddDriver(new XmlMDataXtd_TriangulationDriver (anMsgDrv));
 
-  aDriverTable->AddDriver(new XmlMDataXtd_PresentationDriver  (anMsgDrv));
-  aDriverTable->AddDriver(new XmlMDataXtd_PositionDriver      (anMsgDrv));
+//=================================================================================================
+
+void XmlMDataXtd::AddDrivers(const Handle(XmlMDF_ADriverTable)& aDriverTable,
+                             const Handle(Message_Messenger)&   anMsgDrv)
+{
+  aDriverTable->AddDriver(new XmlMDataXtd_GeometryDriver(anMsgDrv));
+  aDriverTable->AddDriver(new XmlMDataXtd_ConstraintDriver(anMsgDrv));
+  aDriverTable->AddDriver(new XmlMDataXtd_PatternStdDriver(anMsgDrv));
+  aDriverTable->AddDriver(new XmlMDataXtd_TriangulationDriver(anMsgDrv));
+
+  aDriverTable->AddDriver(new XmlMDataXtd_PresentationDriver(anMsgDrv));
+  aDriverTable->AddDriver(new XmlMDataXtd_PositionDriver(anMsgDrv));
 }
 
 //=======================================================================
-//function : SetDocumentVersion
-//purpose  : Sets current document version
+// function : SetDocumentVersion
+// purpose  : Sets current document version
 //=======================================================================
 void XmlMDataXtd::SetDocumentVersion(const Standard_Integer theVersion)
 {
   myDocumentVersion = theVersion;
 }
+
 //=======================================================================
-//function : DocumentVersion
-//purpose  : Retrieved document version
+// function : DocumentVersion
+// purpose  : Retrieved document version
 //=======================================================================
 Standard_Integer XmlMDataXtd::DocumentVersion()
 {

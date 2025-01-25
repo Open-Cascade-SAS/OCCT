@@ -16,12 +16,13 @@
 #define TopTools_DataMapOfShapeBox_HeaderFile
 
 #include <Bnd_Box.hxx>
-#include <TopoDS_Shape.hxx>  
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
-  
+
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TopoDS_Shape, Bnd_Box, TopTools_ShapeMapHasher> TopTools_DataMapOfShapeBox;
+typedef NCollection_DataMap<TopoDS_Shape, Bnd_Box, TopTools_ShapeMapHasher>
+                                             TopTools_DataMapOfShapeBox;
 typedef TopTools_DataMapOfShapeBox::Iterator TopTools_DataMapIteratorOfDataMapOfShapeBox;
- 
+
 #endif

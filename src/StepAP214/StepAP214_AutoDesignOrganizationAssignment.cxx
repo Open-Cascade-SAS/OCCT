@@ -11,43 +11,45 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepAP214_AutoDesignOrganizationAssignment.hxx>
 #include <StepBasic_Organization.hxx>
 #include <StepBasic_OrganizationRole.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignOrganizationAssignment,StepBasic_OrganizationAssignment)
+IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignOrganizationAssignment,
+                           StepBasic_OrganizationAssignment)
 
-StepAP214_AutoDesignOrganizationAssignment::StepAP214_AutoDesignOrganizationAssignment ()  {}
+StepAP214_AutoDesignOrganizationAssignment::StepAP214_AutoDesignOrganizationAssignment() {}
 
 void StepAP214_AutoDesignOrganizationAssignment::Init(
-	const Handle(StepBasic_Organization)& aAssignedOrganization,
-	const Handle(StepBasic_OrganizationRole)& aRole,
-	const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems)
+  const Handle(StepBasic_Organization)&                      aAssignedOrganization,
+  const Handle(StepBasic_OrganizationRole)&                  aRole,
+  const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems)
 {
-	// --- classe own fields ---
-	items = aItems;
-	// --- classe inherited fields ---
-	StepBasic_OrganizationAssignment::Init(aAssignedOrganization, aRole);
+  // --- classe own fields ---
+  items = aItems;
+  // --- classe inherited fields ---
+  StepBasic_OrganizationAssignment::Init(aAssignedOrganization, aRole);
 }
 
-
-void StepAP214_AutoDesignOrganizationAssignment::SetItems(const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems)
+void StepAP214_AutoDesignOrganizationAssignment::SetItems(
+  const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems)
 {
-	items = aItems;
+  items = aItems;
 }
 
-Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem) StepAP214_AutoDesignOrganizationAssignment::Items() const
+Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem) StepAP214_AutoDesignOrganizationAssignment::
+  Items() const
 {
-	return items;
+  return items;
 }
 
-StepAP214_AutoDesignGeneralOrgItem StepAP214_AutoDesignOrganizationAssignment::ItemsValue(const Standard_Integer num) const
+StepAP214_AutoDesignGeneralOrgItem StepAP214_AutoDesignOrganizationAssignment::ItemsValue(
+  const Standard_Integer num) const
 {
-	return items->Value(num);
+  return items->Value(num);
 }
 
-Standard_Integer StepAP214_AutoDesignOrganizationAssignment::NbItems () const
+Standard_Integer StepAP214_AutoDesignOrganizationAssignment::NbItems() const
 {
-	return items->Length();
+  return items->Length();
 }

@@ -23,7 +23,6 @@
 #include <StepData_Protocol.hxx>
 #include <Standard_Integer.hxx>
 
-
 class HeaderSection_Protocol;
 DEFINE_STANDARD_HANDLE(HeaderSection_Protocol, StepData_Protocol)
 
@@ -33,36 +32,19 @@ class HeaderSection_Protocol : public StepData_Protocol
 {
 
 public:
-
-  
   Standard_EXPORT HeaderSection_Protocol();
-  
+
   //! Returns a Case Number for each of the HeaderSection Entities
-  Standard_EXPORT virtual Standard_Integer TypeNumber (const Handle(Standard_Type)& atype) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_CString SchemaName(const Handle(Interface_InterfaceModel)&) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer TypeNumber(const Handle(Standard_Type)& atype) const
+    Standard_OVERRIDE;
 
+  Standard_EXPORT virtual Standard_CString SchemaName(const Handle(Interface_InterfaceModel)&) const
+    Standard_OVERRIDE;
 
-
-
-  DEFINE_STANDARD_RTTIEXT(HeaderSection_Protocol,StepData_Protocol)
+  DEFINE_STANDARD_RTTIEXT(HeaderSection_Protocol, StepData_Protocol)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _HeaderSection_Protocol_HeaderFile

@@ -14,8 +14,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : SetFace
-//purpose  : 
+// function : SetFace
+// purpose  :
 //=======================================================================
 
 inline void ShapeUpgrade_EdgeDivide::SetFace(const TopoDS_Face& F)
@@ -24,8 +24,8 @@ inline void ShapeUpgrade_EdgeDivide::SetFace(const TopoDS_Face& F)
 }
 
 //=======================================================================
-//function : HasCurve2d
-//purpose  : 
+// function : HasCurve2d
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean ShapeUpgrade_EdgeDivide::HasCurve2d() const
@@ -34,8 +34,8 @@ inline Standard_Boolean ShapeUpgrade_EdgeDivide::HasCurve2d() const
 }
 
 //=======================================================================
-//function : HasCurve3d
-//purpose  : 
+// function : HasCurve3d
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean ShapeUpgrade_EdgeDivide::HasCurve3d() const
@@ -44,8 +44,8 @@ inline Standard_Boolean ShapeUpgrade_EdgeDivide::HasCurve3d() const
 }
 
 //=======================================================================
-//function : Knots2d
-//purpose  : 
+// function : Knots2d
+// purpose  :
 //=======================================================================
 
 inline Handle(TColStd_HSequenceOfReal) ShapeUpgrade_EdgeDivide::Knots2d() const
@@ -54,8 +54,8 @@ inline Handle(TColStd_HSequenceOfReal) ShapeUpgrade_EdgeDivide::Knots2d() const
 }
 
 //=======================================================================
-//function : Knots3d
-//purpose  : 
+// function : Knots3d
+// purpose  :
 //=======================================================================
 
 inline Handle(TColStd_HSequenceOfReal) ShapeUpgrade_EdgeDivide::Knots3d() const

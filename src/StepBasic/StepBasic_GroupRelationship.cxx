@@ -19,128 +19,99 @@
 #include <StepBasic_GroupRelationship.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_GroupRelationship,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_GroupRelationship, Standard_Transient)
 
-//=======================================================================
-//function : StepBasic_GroupRelationship
-//purpose  : 
-//=======================================================================
-StepBasic_GroupRelationship::StepBasic_GroupRelationship ()
+//=================================================================================================
+
+StepBasic_GroupRelationship::StepBasic_GroupRelationship()
 {
   defDescription = Standard_False;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_GroupRelationship::Init (const Handle(TCollection_HAsciiString) &aName,
-                                        const Standard_Boolean hasDescription,
-                                        const Handle(TCollection_HAsciiString) &aDescription,
-                                        const Handle(StepBasic_Group) &aRelatingGroup,
-                                        const Handle(StepBasic_Group) &aRelatedGroup)
+void StepBasic_GroupRelationship::Init(const Handle(TCollection_HAsciiString)& aName,
+                                       const Standard_Boolean                  hasDescription,
+                                       const Handle(TCollection_HAsciiString)& aDescription,
+                                       const Handle(StepBasic_Group)&          aRelatingGroup,
+                                       const Handle(StepBasic_Group)&          aRelatedGroup)
 {
 
   theName = aName;
 
   defDescription = hasDescription;
-  if (defDescription) {
+  if (defDescription)
+  {
     theDescription = aDescription;
   }
-  else theDescription.Nullify();
+  else
+    theDescription.Nullify();
 
   theRelatingGroup = aRelatingGroup;
 
   theRelatedGroup = aRelatedGroup;
 }
 
-//=======================================================================
-//function : Name
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_GroupRelationship::Name () const
+Handle(TCollection_HAsciiString) StepBasic_GroupRelationship::Name() const
 {
   return theName;
 }
 
-//=======================================================================
-//function : SetName
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_GroupRelationship::SetName (const Handle(TCollection_HAsciiString) &aName)
+void StepBasic_GroupRelationship::SetName(const Handle(TCollection_HAsciiString)& aName)
 {
   theName = aName;
 }
 
-//=======================================================================
-//function : Description
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_GroupRelationship::Description () const
+Handle(TCollection_HAsciiString) StepBasic_GroupRelationship::Description() const
 {
   return theDescription;
 }
 
-//=======================================================================
-//function : SetDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_GroupRelationship::SetDescription (const Handle(TCollection_HAsciiString) &aDescription)
+void StepBasic_GroupRelationship::SetDescription(
+  const Handle(TCollection_HAsciiString)& aDescription)
 {
   theDescription = aDescription;
 }
 
-//=======================================================================
-//function : HasDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean StepBasic_GroupRelationship::HasDescription () const
+Standard_Boolean StepBasic_GroupRelationship::HasDescription() const
 {
   return defDescription;
 }
 
-//=======================================================================
-//function : RelatingGroup
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_Group) StepBasic_GroupRelationship::RelatingGroup () const
+Handle(StepBasic_Group) StepBasic_GroupRelationship::RelatingGroup() const
 {
   return theRelatingGroup;
 }
 
-//=======================================================================
-//function : SetRelatingGroup
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_GroupRelationship::SetRelatingGroup (const Handle(StepBasic_Group) &aRelatingGroup)
+void StepBasic_GroupRelationship::SetRelatingGroup(const Handle(StepBasic_Group)& aRelatingGroup)
 {
   theRelatingGroup = aRelatingGroup;
 }
 
-//=======================================================================
-//function : RelatedGroup
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_Group) StepBasic_GroupRelationship::RelatedGroup () const
+Handle(StepBasic_Group) StepBasic_GroupRelationship::RelatedGroup() const
 {
   return theRelatedGroup;
 }
 
-//=======================================================================
-//function : SetRelatedGroup
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_GroupRelationship::SetRelatedGroup (const Handle(StepBasic_Group) &aRelatedGroup)
+void StepBasic_GroupRelationship::SetRelatedGroup(const Handle(StepBasic_Group)& aRelatedGroup)
 {
   theRelatedGroup = aRelatedGroup;
 }

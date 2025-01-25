@@ -27,51 +27,28 @@ class Standard_Transient;
 class StepShape_OpenShell;
 class StepShape_ClosedShell;
 
-
-
-class StepShape_Shell  : public StepData_SelectType
+class StepShape_Shell : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a Shell SelectType
   Standard_EXPORT StepShape_Shell();
-  
+
   //! Recognizes a Shell Kind Entity that is :
   //! 1 -> OpenShell
   //! 2 -> ClosedShell
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a OpenShell (Null if another type)
   Standard_EXPORT Handle(StepShape_OpenShell) OpenShell() const;
-  
+
   //! returns Value as a ClosedShell (Null if another type)
   Standard_EXPORT Handle(StepShape_ClosedShell) ClosedShell() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_Shell_HeaderFile

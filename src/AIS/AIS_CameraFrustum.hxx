@@ -27,7 +27,6 @@ class AIS_CameraFrustum : public AIS_InteractiveObject
 {
   DEFINE_STANDARD_RTTIEXT(AIS_CameraFrustum, AIS_InteractiveObject)
 public:
-
   //! Selection modes supported by this object
   enum SelectionMode
   {
@@ -36,15 +35,14 @@ public:
   };
 
 public:
-
   //! Constructs camera frustum with default configuration.
   Standard_EXPORT AIS_CameraFrustum();
 
   //! Sets camera frustum.
-  Standard_EXPORT void SetCameraFrustum (const Handle(Graphic3d_Camera)& theCamera);
+  Standard_EXPORT void SetCameraFrustum(const Handle(Graphic3d_Camera)& theCamera);
 
   //! Setup custom color.
-  Standard_EXPORT virtual void SetColor (const Quantity_Color& theColor) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
 
   //! Restore default color.
   Standard_EXPORT virtual void UnsetColor() Standard_OVERRIDE;
@@ -53,21 +51,20 @@ public:
   Standard_EXPORT virtual void UnsetTransparency() Standard_OVERRIDE;
 
   //! Return true if specified display mode is supported.
-  Standard_EXPORT virtual Standard_Boolean AcceptDisplayMode (const Standard_Integer theMode) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const
+    Standard_OVERRIDE;
 
 protected:
-
   //! Computes presentation of camera frustum.
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                        const Handle(Prs3d_Presentation)& thePrs,
-                                        const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                       const Handle(Prs3d_Presentation)&         thePrs,
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Compute selection.
-  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
-                                                 const Standard_Integer             theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
 private:
-
   //! Fills triangles primitive array for camera frustum filling.
   void fillTriangles();
 
@@ -75,11 +72,9 @@ private:
   void fillBorders();
 
 protected:
-
   NCollection_Array1<Graphic3d_Vec3d> myPoints;    //!< Array of points
   Handle(Graphic3d_ArrayOfTriangles)  myTriangles; //!< Triangles for camera frustum filling
   Handle(Graphic3d_ArrayOfSegments)   myBorders;   //!< Segments for camera frustum borders
-
 };
 
 #endif // _AIS_CameraFrustum_HeaderFile

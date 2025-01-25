@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMDataStd_GenericEmptyDriver.hxx>
 #include <BinMDF_ADriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
@@ -22,51 +21,47 @@
 #include <TDataStd_GenericEmpty.hxx>
 #include <TDF_Attribute.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_GenericEmptyDriver,BinMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_GenericEmptyDriver, BinMDF_ADriver)
 
-//=======================================================================
-//function : BinMDataStd_GenericEmptyDriver
-//purpose  : 
-//=======================================================================
-BinMDataStd_GenericEmptyDriver::BinMDataStd_GenericEmptyDriver(const Handle(Message_Messenger)& theMsgDriver)
-: BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataStd_GenericEmpty)->Name())
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+BinMDataStd_GenericEmptyDriver::BinMDataStd_GenericEmptyDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDataStd_GenericEmpty)->Name())
+{
+}
+
+//=================================================================================================
+
 Handle(TDF_Attribute) BinMDataStd_GenericEmptyDriver::NewEmpty() const
 {
   return Handle(TDF_Attribute)(); // this attribute can not be created
 }
 
-//=======================================================================
-//function : SourceType
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 const Handle(Standard_Type)& BinMDataStd_GenericEmptyDriver::SourceType() const
 {
   return Standard_Type::Instance<TDataStd_GenericEmpty>();
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
 Standard_Boolean BinMDataStd_GenericEmptyDriver::Paste(const BinObjMgt_Persistent&,
-						    const Handle(TDF_Attribute)&,
-						    BinObjMgt_RRelocationTable& ) const
+                                                       const Handle(TDF_Attribute)&,
+                                                       BinObjMgt_RRelocationTable&) const
 {
   return Standard_True;
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //=======================================================================
 void BinMDataStd_GenericEmptyDriver::Paste(const Handle(TDF_Attribute)&,
-					BinObjMgt_Persistent&,
-					BinObjMgt_SRelocationTable&  ) const
+                                           BinObjMgt_Persistent&,
+                                           BinObjMgt_SRelocationTable&) const
 {
 }

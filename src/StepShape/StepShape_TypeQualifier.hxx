@@ -22,7 +22,6 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-
 class StepShape_TypeQualifier;
 DEFINE_STANDARD_HANDLE(StepShape_TypeQualifier, Standard_Transient)
 
@@ -31,38 +30,19 @@ class StepShape_TypeQualifier : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT StepShape_TypeQualifier();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& name);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& name);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
-  
-  Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& name);
 
+  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& name);
 
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_TypeQualifier,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepShape_TypeQualifier, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TCollection_HAsciiString) theName;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_TypeQualifier_HeaderFile

@@ -40,4 +40,3 @@
 #define Extrema_FuncExtPC Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter
 #define Extrema_FuncExtPC_hxx <Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter.hxx>
 #include "../Extrema/Extrema_FuncExtPC.gxx"
-

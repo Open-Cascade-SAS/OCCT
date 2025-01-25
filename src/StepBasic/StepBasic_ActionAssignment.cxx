@@ -20,43 +20,30 @@
 #include <StepBasic_Action.hxx>
 #include <StepBasic_ActionAssignment.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ActionAssignment,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ActionAssignment, Standard_Transient)
 
-//=======================================================================
-//function : StepBasic_ActionAssignment
-//purpose  : 
-//=======================================================================
-StepBasic_ActionAssignment::StepBasic_ActionAssignment ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepBasic_ActionAssignment::StepBasic_ActionAssignment() {}
 
-void StepBasic_ActionAssignment::Init (const Handle(StepBasic_Action) &aAssignedAction)
+//=================================================================================================
+
+void StepBasic_ActionAssignment::Init(const Handle(StepBasic_Action)& aAssignedAction)
 {
 
   theAssignedAction = aAssignedAction;
 }
 
-//=======================================================================
-//function : AssignedAction
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_Action) StepBasic_ActionAssignment::AssignedAction () const
+Handle(StepBasic_Action) StepBasic_ActionAssignment::AssignedAction() const
 {
   return theAssignedAction;
 }
 
-//=======================================================================
-//function : SetAssignedAction
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ActionAssignment::SetAssignedAction (const Handle(StepBasic_Action) &aAssignedAction)
+void StepBasic_ActionAssignment::SetAssignedAction(const Handle(StepBasic_Action)& aAssignedAction)
 {
   theAssignedAction = aAssignedAction;
 }

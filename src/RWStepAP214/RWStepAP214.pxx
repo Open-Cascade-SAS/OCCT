@@ -21,19 +21,13 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-
-
-
-class RWStepAP214 
+class RWStepAP214
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! enforced the initialisation of the  libraries
   Standard_HIDDEN static void Init();
-
 };
 
 #endif // _RWStepAP214_HeaderFile

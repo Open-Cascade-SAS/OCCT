@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRepFill_PipeShell.hxx>
 #include <BRepOffsetAPI_MakePipeShell.hxx>
 #include <GeomFill_PipeError.hxx>
@@ -26,288 +25,235 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 BRepOffsetAPI_MakePipeShell::BRepOffsetAPI_MakePipeShell(const TopoDS_Wire& Spine)
 {
-  myPipe = new (BRepFill_PipeShell) (Spine);
+  myPipe = new (BRepFill_PipeShell)(Spine);
   SetTolerance();
   SetTransitionMode();
   NotDone();
 }
 
-//=======================================================================
-//function : SetMode
-//purpose  : 
-//=======================================================================
- void BRepOffsetAPI_MakePipeShell::SetMode(const Standard_Boolean IsFrenet) 
+//=================================================================================================
+
+void BRepOffsetAPI_MakePipeShell::SetMode(const Standard_Boolean IsFrenet)
 {
   myPipe->Set(IsFrenet);
 }
 
-//=======================================================================
-//function : SetDiscreteMode
-//purpose  : 
-//=======================================================================
- void BRepOffsetAPI_MakePipeShell::SetDiscreteMode() 
+//=================================================================================================
+
+void BRepOffsetAPI_MakePipeShell::SetDiscreteMode()
 {
   myPipe->SetDiscrete();
 }
 
-//=======================================================================
-//function : SetMode
-//purpose  : 
-//=======================================================================
- void BRepOffsetAPI_MakePipeShell::SetMode(const gp_Ax2& Axe) 
+//=================================================================================================
+
+void BRepOffsetAPI_MakePipeShell::SetMode(const gp_Ax2& Axe)
 {
   myPipe->Set(Axe);
 }
 
-//=======================================================================
-//function : SetMode
-//purpose  : 
-//=======================================================================
- void BRepOffsetAPI_MakePipeShell::SetMode(const gp_Dir& BiNormal) 
+//=================================================================================================
+
+void BRepOffsetAPI_MakePipeShell::SetMode(const gp_Dir& BiNormal)
 {
   myPipe->Set(BiNormal);
 }
 
-//=======================================================================
-//function : SetMode
-//purpose  : 
-//=======================================================================
- Standard_Boolean BRepOffsetAPI_MakePipeShell::SetMode(const TopoDS_Shape& SpineSupport) 
+//=================================================================================================
+
+Standard_Boolean BRepOffsetAPI_MakePipeShell::SetMode(const TopoDS_Shape& SpineSupport)
 {
   return myPipe->Set(SpineSupport);
 }
 
-//=======================================================================
-//function : SetMode
-//purpose  : 
-//=======================================================================
- void BRepOffsetAPI_MakePipeShell::SetMode(const TopoDS_Wire& AuxiliarySpine,
-                                           const Standard_Boolean CurvilinearEquivalence,
-                                           const BRepFill_TypeOfContact KeepContact) 
+//=================================================================================================
+
+void BRepOffsetAPI_MakePipeShell::SetMode(const TopoDS_Wire&           AuxiliarySpine,
+                                          const Standard_Boolean       CurvilinearEquivalence,
+                                          const BRepFill_TypeOfContact KeepContact)
 {
-   myPipe->Set(AuxiliarySpine, CurvilinearEquivalence, KeepContact);
+  myPipe->Set(AuxiliarySpine, CurvilinearEquivalence, KeepContact);
 }
 
-//=======================================================================
-//function :Add
-//purpose  : 
-//=======================================================================
- void BRepOffsetAPI_MakePipeShell::Add(const TopoDS_Shape& Profile,
-				       const Standard_Boolean WithContact,
-				       const Standard_Boolean WithCorrection) 
+//=================================================================================================
+
+void BRepOffsetAPI_MakePipeShell::Add(const TopoDS_Shape&    Profile,
+                                      const Standard_Boolean WithContact,
+                                      const Standard_Boolean WithCorrection)
 {
   myPipe->Add(Profile, WithContact, WithCorrection);
 }
 
-//=======================================================================
-//function : Add
-//purpose  : 
-//=======================================================================
- void BRepOffsetAPI_MakePipeShell::Add(const TopoDS_Shape& Profile,
-				       const TopoDS_Vertex& Location,
-				       const Standard_Boolean WithContact,
-				       const Standard_Boolean WithCorrection) 
+//=================================================================================================
+
+void BRepOffsetAPI_MakePipeShell::Add(const TopoDS_Shape&    Profile,
+                                      const TopoDS_Vertex&   Location,
+                                      const Standard_Boolean WithContact,
+                                      const Standard_Boolean WithCorrection)
 {
   myPipe->Add(Profile, Location, WithContact, WithCorrection);
 }
 
-//=======================================================================
-//function : SetLaw
-//purpose  : 
-//=======================================================================
- void BRepOffsetAPI_MakePipeShell::SetLaw(const TopoDS_Shape& Profile,
-					  const Handle(Law_Function)& L,
-					  const Standard_Boolean WithContact,
-					  const Standard_Boolean WithCorrection) 
+//=================================================================================================
+
+void BRepOffsetAPI_MakePipeShell::SetLaw(const TopoDS_Shape&         Profile,
+                                         const Handle(Law_Function)& L,
+                                         const Standard_Boolean      WithContact,
+                                         const Standard_Boolean      WithCorrection)
 {
   myPipe->SetLaw(Profile, L, WithContact, WithCorrection);
 }
 
-//=======================================================================
-//function : SetLaw
-//purpose  : 
-//=======================================================================
- void BRepOffsetAPI_MakePipeShell::SetLaw(const TopoDS_Shape& Profile,
-					  const Handle(Law_Function)& L,
-					  const TopoDS_Vertex& Location,
-					  const Standard_Boolean WithContact,
-					  const Standard_Boolean WithCorrection) 
+//=================================================================================================
+
+void BRepOffsetAPI_MakePipeShell::SetLaw(const TopoDS_Shape&         Profile,
+                                         const Handle(Law_Function)& L,
+                                         const TopoDS_Vertex&        Location,
+                                         const Standard_Boolean      WithContact,
+                                         const Standard_Boolean      WithCorrection)
 {
   myPipe->SetLaw(Profile, L, Location, WithContact, WithCorrection);
 }
 
-//=======================================================================
-//function : Delete
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void BRepOffsetAPI_MakePipeShell::Delete( const TopoDS_Shape& Profile)
+void BRepOffsetAPI_MakePipeShell::Delete(const TopoDS_Shape& Profile)
 {
   myPipe->DeleteProfile(Profile);
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : IsReady
-//purpose  : 
-//=======================================================================
- Standard_Boolean BRepOffsetAPI_MakePipeShell::IsReady() const
+Standard_Boolean BRepOffsetAPI_MakePipeShell::IsReady() const
 {
   return myPipe->IsReady();
 }
 
-//=======================================================================
-//function : GetStatus
-//purpose  : 
-//=======================================================================
- BRepBuilderAPI_PipeError BRepOffsetAPI_MakePipeShell::GetStatus() const
+//=================================================================================================
+
+BRepBuilderAPI_PipeError BRepOffsetAPI_MakePipeShell::GetStatus() const
 {
   GeomFill_PipeError stat;
   stat = myPipe->GetStatus();
-  switch (stat) {
-  case GeomFill_PipeOk :
-    {
+  switch (stat)
+  {
+    case GeomFill_PipeOk: {
       return BRepBuilderAPI_PipeDone;
     }
-  case  GeomFill_PlaneNotIntersectGuide :
-    {
+    case GeomFill_PlaneNotIntersectGuide: {
       return BRepBuilderAPI_PlaneNotIntersectGuide;
     }
-  case  GeomFill_ImpossibleContact :
-    {
+    case GeomFill_ImpossibleContact: {
       return BRepBuilderAPI_ImpossibleContact;
     }
-    default :
+    default:
       return BRepBuilderAPI_PipeNotDone;
   }
 }
 
-//=======================================================================
-//function : SetTolerance
-//purpose  : 
-//=======================================================================
- void BRepOffsetAPI_MakePipeShell::SetTolerance(const Standard_Real Tol3d,
-					 const Standard_Real BoundTol,
-					 const Standard_Real TolAngular)
+//=================================================================================================
+
+void BRepOffsetAPI_MakePipeShell::SetTolerance(const Standard_Real Tol3d,
+                                               const Standard_Real BoundTol,
+                                               const Standard_Real TolAngular)
 {
- myPipe->SetTolerance(Tol3d, BoundTol, TolAngular);
+  myPipe->SetTolerance(Tol3d, BoundTol, TolAngular);
 }
 
-//=======================================================================
-//function : SetMaxDegree
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BRepOffsetAPI_MakePipeShell::SetMaxDegree(const Standard_Integer NewMaxDegree)
 {
   myPipe->SetMaxDegree(NewMaxDegree);
 }
 
-//=======================================================================
-//function : SetMaxSegments
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BRepOffsetAPI_MakePipeShell::SetMaxSegments(const Standard_Integer NewMaxSegments)
 {
   myPipe->SetMaxSegments(NewMaxSegments);
 }
 
 //=======================================================================
-//function : SetForceApproxC1
-//purpose  : Set the flag that indicates attempt to approximate
+// function : SetForceApproxC1
+// purpose  : Set the flag that indicates attempt to approximate
 //           a C1-continuous surface if a swept surface proved
 //           to be C0.
 //=======================================================================
- void BRepOffsetAPI_MakePipeShell::SetForceApproxC1(const Standard_Boolean ForceApproxC1)
+void BRepOffsetAPI_MakePipeShell::SetForceApproxC1(const Standard_Boolean ForceApproxC1)
 {
   myPipe->SetForceApproxC1(ForceApproxC1);
 }
 
-//=======================================================================
-//function : SetTransitionMode
-//purpose  : 
-//=======================================================================
- void BRepOffsetAPI_MakePipeShell::SetTransitionMode(const BRepBuilderAPI_TransitionMode Mode)
+//=================================================================================================
+
+void BRepOffsetAPI_MakePipeShell::SetTransitionMode(const BRepBuilderAPI_TransitionMode Mode)
 {
-  myPipe->SetTransition( (BRepFill_TransitionStyle)Mode );
+  myPipe->SetTransition((BRepFill_TransitionStyle)Mode);
 }
 
-//=======================================================================
-//function :Simulate
-//purpose  : 
-//=======================================================================
- void BRepOffsetAPI_MakePipeShell::Simulate(const Standard_Integer N,
-				     TopTools_ListOfShape& R) 
+//=================================================================================================
+
+void BRepOffsetAPI_MakePipeShell::Simulate(const Standard_Integer N, TopTools_ListOfShape& R)
 {
- myPipe->Simulate(N, R); 
+  myPipe->Simulate(N, R);
 }
 
-//=======================================================================
-//function :Build() 
-//purpose  : 
-//=======================================================================
- void BRepOffsetAPI_MakePipeShell::Build(const Message_ProgressRange& /*theRange*/)
+//=================================================================================================
+
+void BRepOffsetAPI_MakePipeShell::Build(const Message_ProgressRange& /*theRange*/)
 {
   Standard_Boolean Ok;
   Ok = myPipe->Build();
-  if (Ok) {
+  if (Ok)
+  {
     myShape = myPipe->Shape();
     Done();
   }
-  else NotDone(); 
+  else
+    NotDone();
 }
 
-//=======================================================================
-//function : MakeSolid
-//purpose  : 
-//=======================================================================
- Standard_Boolean BRepOffsetAPI_MakePipeShell::MakeSolid() 
+//=================================================================================================
+
+Standard_Boolean BRepOffsetAPI_MakePipeShell::MakeSolid()
 {
-  if (!IsDone()) throw StdFail_NotDone("BRepOffsetAPI_MakePipeShell::MakeSolid");
+  if (!IsDone())
+    throw StdFail_NotDone("BRepOffsetAPI_MakePipeShell::MakeSolid");
   Standard_Boolean Ok;
   Ok = myPipe->MakeSolid();
-  if (Ok) myShape = myPipe->Shape();
+  if (Ok)
+    myShape = myPipe->Shape();
   return Ok;
 }
 
-//=======================================================================
-//function :FirstShape()
-//purpose  : 
-//=======================================================================
- TopoDS_Shape BRepOffsetAPI_MakePipeShell::FirstShape() 
+//=================================================================================================
+
+TopoDS_Shape BRepOffsetAPI_MakePipeShell::FirstShape()
 {
   return myPipe->FirstShape();
 }
 
-//=======================================================================
-//function : LastShape()
-//purpose  : 
-//=======================================================================
- TopoDS_Shape BRepOffsetAPI_MakePipeShell::LastShape() 
+//=================================================================================================
+
+TopoDS_Shape BRepOffsetAPI_MakePipeShell::LastShape()
 {
   return myPipe->LastShape();
 }
 
-//=======================================================================
-//function : Generated
-//purpose  : 
-//=======================================================================
-const TopTools_ListOfShape& 
-BRepOffsetAPI_MakePipeShell::Generated(const TopoDS_Shape& S) 
+//=================================================================================================
+
+const TopTools_ListOfShape& BRepOffsetAPI_MakePipeShell::Generated(const TopoDS_Shape& S)
 {
   myPipe->Generated(S, myGenerated);
   return myGenerated;
 }
 
-//=======================================================================
-//function : ErrorOnSurface
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Real BRepOffsetAPI_MakePipeShell::ErrorOnSurface() const
 {

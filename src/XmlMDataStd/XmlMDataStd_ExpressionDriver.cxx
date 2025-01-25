@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Expression.hxx>
@@ -24,48 +23,45 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_ExpressionDriver,XmlMDF_ADriver)
-IMPLEMENT_DOMSTRING (VariablesString, "variables")
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_ExpressionDriver, XmlMDF_ADriver)
+IMPLEMENT_DOMSTRING(VariablesString, "variables")
 
-//=======================================================================
-//function : XmlMDataStd_ExpressionDriver
-//purpose  : Constructor
-//=======================================================================
-XmlMDataStd_ExpressionDriver::XmlMDataStd_ExpressionDriver
-                        (const Handle(Message_Messenger)& theMsgDriver)
-      : XmlMDF_ADriver (theMsgDriver, NULL)
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+XmlMDataStd_ExpressionDriver::XmlMDataStd_ExpressionDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : XmlMDF_ADriver(theMsgDriver, NULL)
+{
+}
+
+//=================================================================================================
+
 Handle(TDF_Attribute) XmlMDataStd_ExpressionDriver::NewEmpty() const
 {
   return (new TDataStd_Expression());
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMDataStd_ExpressionDriver::Paste
-                        (const XmlObjMgt_Persistent&  theSource,
-                         const Handle(TDF_Attribute)& theTarget,
-                         XmlObjMgt_RRelocationTable&  theRelocTable) const
+Standard_Boolean XmlMDataStd_ExpressionDriver::Paste(
+  const XmlObjMgt_Persistent&  theSource,
+  const Handle(TDF_Attribute)& theTarget,
+  XmlObjMgt_RRelocationTable&  theRelocTable) const
 {
-  Handle(TDataStd_Expression) aC = 
-    Handle(TDataStd_Expression)::DownCast(theTarget);
-  const XmlObjMgt_Element& anElem = theSource;
+  Handle(TDataStd_Expression) aC     = Handle(TDataStd_Expression)::DownCast(theTarget);
+  const XmlObjMgt_Element&    anElem = theSource;
 
-  Standard_Integer aNb;
+  Standard_Integer           aNb;
   TCollection_ExtendedString aMsgString;
 
   // expression
   TCollection_ExtendedString aString;
-  if (!XmlObjMgt::GetExtendedString (theSource, aString))
+  if (!XmlObjMgt::GetExtendedString(theSource, aString))
   {
-    myMessageDriver->Send("error retrieving ExtendedString for type TDataStd_Expression", Message_Fail);
+    myMessageDriver->Send("error retrieving ExtendedString for type TDataStd_Expression",
+                          Message_Fail);
     return Standard_False;
   }
   aC->SetExpression(aString);
@@ -79,10 +75,11 @@ Standard_Boolean XmlMDataStd_ExpressionDriver::Paste
     // first variable
     if (!XmlObjMgt::GetInteger(aVs, aNb))
     {
-      aMsgString = TCollection_ExtendedString
-        ("XmlMDataStd_ExpressionDriver: Cannot retrieve reference on first variable from \"")
-          + aDOMStr + "\"";
-      myMessageDriver->Send (aMsgString, Message_Fail);
+      aMsgString =
+        TCollection_ExtendedString(
+          "XmlMDataStd_ExpressionDriver: Cannot retrieve reference on first variable from \"")
+        + aDOMStr + "\"";
+      myMessageDriver->Send(aMsgString, Message_Fail);
       return Standard_False;
     }
     while (aNb > 0)
@@ -98,7 +95,8 @@ Standard_Boolean XmlMDataStd_ExpressionDriver::Paste
       aC->GetVariables().Append(aV);
 
       // next variable
-      if (!XmlObjMgt::GetInteger(aVs, aNb)) aNb = 0;
+      if (!XmlObjMgt::GetInteger(aVs, aNb))
+        aNb = 0;
     }
   }
 
@@ -106,33 +104,31 @@ Standard_Boolean XmlMDataStd_ExpressionDriver::Paste
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMDataStd_ExpressionDriver::Paste
-                        (const Handle(TDF_Attribute)& theSource,
-                         XmlObjMgt_Persistent&        theTarget,
-                         XmlObjMgt_SRelocationTable&  theRelocTable) const
+void XmlMDataStd_ExpressionDriver::Paste(const Handle(TDF_Attribute)& theSource,
+                                         XmlObjMgt_Persistent&        theTarget,
+                                         XmlObjMgt_SRelocationTable&  theRelocTable) const
 {
-  Handle(TDataStd_Expression) aC =
-    Handle(TDataStd_Expression)::DownCast(theSource);
-  XmlObjMgt_Element& anElem = theTarget;
+  Handle(TDataStd_Expression) aC     = Handle(TDataStd_Expression)::DownCast(theSource);
+  XmlObjMgt_Element&          anElem = theTarget;
 
-  Standard_Integer aNb;
-  Handle(TDF_Attribute) TV;   
+  Standard_Integer      aNb;
+  Handle(TDF_Attribute) TV;
 
   // expression
-  XmlObjMgt::SetExtendedString (theTarget, aC->Name());
+  XmlObjMgt::SetExtendedString(theTarget, aC->Name());
 
   // variables
   Standard_Integer nbvar = aC->GetVariables().Extent();
   if (nbvar >= 1)
   {
-    TCollection_AsciiString aGsStr;
+    TCollection_AsciiString         aGsStr;
     TDF_ListIteratorOfAttributeList it;
     for (it.Initialize(aC->GetVariables()); it.More(); it.Next())
     {
-      TV = it.Value(); 
+      TV = it.Value();
       if (!TV.IsNull())
       {
         aNb = theRelocTable.FindIndex(TV);
@@ -142,7 +138,8 @@ void XmlMDataStd_ExpressionDriver::Paste
         }
         aGsStr += TCollection_AsciiString(aNb) + " ";
       }
-      else aGsStr += "0 ";
+      else
+        aGsStr += "0 ";
     }
     anElem.setAttribute(::VariablesString(), aGsStr.ToCString());
   }

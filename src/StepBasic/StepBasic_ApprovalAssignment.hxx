@@ -23,45 +23,24 @@
 #include <Standard_Transient.hxx>
 class StepBasic_Approval;
 
-
 class StepBasic_ApprovalAssignment;
 DEFINE_STANDARD_HANDLE(StepBasic_ApprovalAssignment, Standard_Transient)
-
 
 class StepBasic_ApprovalAssignment : public Standard_Transient
 {
 
 public:
+  Standard_EXPORT void Init(const Handle(StepBasic_Approval)& aAssignedApproval);
 
-  
-  Standard_EXPORT void Init (const Handle(StepBasic_Approval)& aAssignedApproval);
-  
-  Standard_EXPORT void SetAssignedApproval (const Handle(StepBasic_Approval)& aAssignedApproval);
-  
+  Standard_EXPORT void SetAssignedApproval(const Handle(StepBasic_Approval)& aAssignedApproval);
+
   Standard_EXPORT Handle(StepBasic_Approval) AssignedApproval() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ApprovalAssignment,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ApprovalAssignment, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_Approval) assignedApproval;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_ApprovalAssignment_HeaderFile

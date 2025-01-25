@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<TopoDS_Shape> TopTools_Array1OfShape;
 
-
 #endif

@@ -25,48 +25,29 @@
 #include <StepBasic_SiUnitName.hxx>
 class StepBasic_RatioUnit;
 
-
 class StepBasic_SiUnitAndRatioUnit;
 DEFINE_STANDARD_HANDLE(StepBasic_SiUnitAndRatioUnit, StepBasic_SiUnit)
-
 
 class StepBasic_SiUnitAndRatioUnit : public StepBasic_SiUnit
 {
 
 public:
-
-  
   //! Returns a SiUnitAndRatioUnit
   Standard_EXPORT StepBasic_SiUnitAndRatioUnit();
-  
-  Standard_EXPORT void Init (const Standard_Boolean hasAprefix, const StepBasic_SiPrefix aPrefix, const StepBasic_SiUnitName aName);
-  
-  Standard_EXPORT void SetRatioUnit (const Handle(StepBasic_RatioUnit)& aRatioUnit);
-  
+
+  Standard_EXPORT void Init(const Standard_Boolean     hasAprefix,
+                            const StepBasic_SiPrefix   aPrefix,
+                            const StepBasic_SiUnitName aName);
+
+  Standard_EXPORT void SetRatioUnit(const Handle(StepBasic_RatioUnit)& aRatioUnit);
+
   Standard_EXPORT Handle(StepBasic_RatioUnit) RatioUnit() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnitAndRatioUnit,StepBasic_SiUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnitAndRatioUnit, StepBasic_SiUnit)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_RatioUnit) ratioUnit;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_SiUnitAndRatioUnit_HeaderFile

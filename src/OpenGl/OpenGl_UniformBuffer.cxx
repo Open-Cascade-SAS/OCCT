@@ -23,7 +23,9 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_UniformBuffer, OpenGl_Buffer)
 // purpose  :
 // =======================================================================
 OpenGl_UniformBuffer::OpenGl_UniformBuffer()
-: OpenGl_Buffer() {}
+    : OpenGl_Buffer()
+{
+}
 
 // =======================================================================
 // function : GetTarget

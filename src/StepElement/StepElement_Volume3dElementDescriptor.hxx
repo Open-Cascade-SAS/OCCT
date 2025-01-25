@@ -24,7 +24,6 @@
 #include <StepElement_ElementOrder.hxx>
 class TCollection_HAsciiString;
 
-
 class StepElement_Volume3dElementDescriptor;
 DEFINE_STANDARD_HANDLE(StepElement_Volume3dElementDescriptor, StepElement_ElementDescriptor)
 
@@ -33,49 +32,34 @@ class StepElement_Volume3dElementDescriptor : public StepElement_ElementDescript
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepElement_Volume3dElementDescriptor();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const StepElement_ElementOrder aElementDescriptor_TopologyOrder, const Handle(TCollection_HAsciiString)& aElementDescriptor_Description, const Handle(StepElement_HArray1OfVolumeElementPurposeMember)& aPurpose, const StepElement_Volume3dElementShape aShape);
-  
+  Standard_EXPORT void Init(const StepElement_ElementOrder aElementDescriptor_TopologyOrder,
+                            const Handle(TCollection_HAsciiString)& aElementDescriptor_Description,
+                            const Handle(StepElement_HArray1OfVolumeElementPurposeMember)& aPurpose,
+                            const StepElement_Volume3dElementShape                         aShape);
+
   //! Returns field Purpose
   Standard_EXPORT Handle(StepElement_HArray1OfVolumeElementPurposeMember) Purpose() const;
-  
+
   //! Set field Purpose
-  Standard_EXPORT void SetPurpose (const Handle(StepElement_HArray1OfVolumeElementPurposeMember)& Purpose);
-  
+  Standard_EXPORT void SetPurpose(
+    const Handle(StepElement_HArray1OfVolumeElementPurposeMember)& Purpose);
+
   //! Returns field Shape
   Standard_EXPORT StepElement_Volume3dElementShape Shape() const;
-  
+
   //! Set field Shape
-  Standard_EXPORT void SetShape (const StepElement_Volume3dElementShape Shape);
+  Standard_EXPORT void SetShape(const StepElement_Volume3dElementShape Shape);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepElement_Volume3dElementDescriptor,StepElement_ElementDescriptor)
+  DEFINE_STANDARD_RTTIEXT(StepElement_Volume3dElementDescriptor, StepElement_ElementDescriptor)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepElement_HArray1OfVolumeElementPurposeMember) thePurpose;
-  StepElement_Volume3dElementShape theShape;
-
-
+  StepElement_Volume3dElementShape                        theShape;
 };
-
-
-
-
-
-
 
 #endif // _StepElement_Volume3dElementDescriptor_HeaderFile

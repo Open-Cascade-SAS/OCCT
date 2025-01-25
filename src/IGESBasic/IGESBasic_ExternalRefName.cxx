@@ -20,20 +20,17 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_ExternalRefName,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_ExternalRefName, IGESData_IGESEntity)
 
-IGESBasic_ExternalRefName::IGESBasic_ExternalRefName ()    {  }
+IGESBasic_ExternalRefName::IGESBasic_ExternalRefName() {}
 
-
-    void  IGESBasic_ExternalRefName::Init
-  (const Handle(TCollection_HAsciiString)& anExtName)
+void IGESBasic_ExternalRefName::Init(const Handle(TCollection_HAsciiString)& anExtName)
 {
   theExtRefEntitySymbName = anExtName;
-  InitTypeAndForm(416,3);
+  InitTypeAndForm(416, 3);
 }
 
-    Handle(TCollection_HAsciiString)  IGESBasic_ExternalRefName::ReferenceName
-  () const
+Handle(TCollection_HAsciiString) IGESBasic_ExternalRefName::ReferenceName() const
 {
   return theExtRefEntitySymbName;
 }

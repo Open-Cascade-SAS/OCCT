@@ -16,8 +16,7 @@
 
 #include <Standard_NegativeValue.hxx>
 
-inline Standard_OStream& operator<< (Standard_OStream& o, 
-				     const FairCurve_Batten& Bat) 
+inline Standard_OStream& operator<<(Standard_OStream& o, const FairCurve_Batten& Bat)
 {
   Bat.Dump(o);
   return o;
@@ -48,9 +47,9 @@ inline void FairCurve_Batten::SetAngle2(const Standard_Real Angle2)
   NewAngle2 = Angle2;
 }
 
- inline void FairCurve_Batten::SetHeight(const Standard_Real Height)
+inline void FairCurve_Batten::SetHeight(const Standard_Real Height)
 {
-  if (Height <= 0) 
+  if (Height <= 0)
     throw Standard_NegativeValue("FairCurve : Height is no positive");
   NewHeight = Height;
 }
@@ -65,53 +64,52 @@ inline void FairCurve_Batten::SetSlidingFactor(const Standard_Real SlidingFactor
   NewSlidingFactor = SlidingFactor;
 }
 
-inline Standard_Boolean FairCurve_Batten::GetFreeSliding() const 
+inline Standard_Boolean FairCurve_Batten::GetFreeSliding() const
 {
   return OldFreeSliding;
 }
 
-inline Standard_Integer FairCurve_Batten::GetConstraintOrder1() const 
+inline Standard_Integer FairCurve_Batten::GetConstraintOrder1() const
 {
   return OldConstraintOrder1;
 }
 
-inline Standard_Integer FairCurve_Batten::GetConstraintOrder2() const 
+inline Standard_Integer FairCurve_Batten::GetConstraintOrder2() const
 {
   return OldConstraintOrder2;
 }
 
-inline const gp_Pnt2d& FairCurve_Batten::GetP1() const 
+inline const gp_Pnt2d& FairCurve_Batten::GetP1() const
 {
   return OldP1;
 }
 
-inline const gp_Pnt2d& FairCurve_Batten::GetP2() const 
+inline const gp_Pnt2d& FairCurve_Batten::GetP2() const
 {
   return OldP2;
 }
 
-inline Standard_Real FairCurve_Batten::GetAngle1() const 
+inline Standard_Real FairCurve_Batten::GetAngle1() const
 {
   return OldAngle1;
 }
 
-inline Standard_Real FairCurve_Batten::GetAngle2() const 
+inline Standard_Real FairCurve_Batten::GetAngle2() const
 {
   return OldAngle2;
 }
 
-inline Standard_Real FairCurve_Batten::GetHeight() const 
+inline Standard_Real FairCurve_Batten::GetHeight() const
 {
   return OldHeight;
 }
 
-inline Standard_Real FairCurve_Batten::GetSlope() const 
+inline Standard_Real FairCurve_Batten::GetSlope() const
 {
   return OldSlope;
 }
 
-inline Standard_Real FairCurve_Batten::GetSlidingFactor() const 
+inline Standard_Real FairCurve_Batten::GetSlidingFactor() const
 {
   return OldSlidingFactor;
 }
-

@@ -20,8 +20,7 @@
 #include <BRepOffset_Interval.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<BRepOffset_Interval> BRepOffset_ListOfInterval;
+typedef NCollection_List<BRepOffset_Interval>           BRepOffset_ListOfInterval;
 typedef NCollection_List<BRepOffset_Interval>::Iterator BRepOffset_ListIteratorOfListOfInterval;
-
 
 #endif

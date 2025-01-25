@@ -18,8 +18,8 @@
 #include <Units_Token.hxx>
 
 //=======================================================================
-//function : Sequence
-//purpose  : 
+// function : Sequence
+// purpose  :
 //=======================================================================
 
 inline Handle(Units_TokensSequence) Units_Lexicon::Sequence() const
@@ -28,14 +28,14 @@ inline Handle(Units_TokensSequence) Units_Lexicon::Sequence() const
 }
 
 //=======================================================================
-//function : Dump
-//purpose  : 
+// function : Dump
+// purpose  :
 //=======================================================================
 
 inline void Units_Lexicon::Dump() const
 {
   Standard_Integer index;
-  std::cout<<" LEXICON : "<<std::endl;
-  for(index=1;index<=thesequenceoftokens->Length();index++)
-    thesequenceoftokens->Value(index)->Dump(1,0);
+  std::cout << " LEXICON : " << std::endl;
+  for (index = 1; index <= thesequenceoftokens->Length(); index++)
+    thesequenceoftokens->Value(index)->Dump(1, 0);
 }

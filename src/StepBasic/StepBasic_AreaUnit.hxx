@@ -22,40 +22,19 @@
 
 #include <StepBasic_NamedUnit.hxx>
 
-
 class StepBasic_AreaUnit;
 DEFINE_STANDARD_HANDLE(StepBasic_AreaUnit, StepBasic_NamedUnit)
-
 
 class StepBasic_AreaUnit : public StepBasic_NamedUnit
 {
 
 public:
-
-  
   Standard_EXPORT StepBasic_AreaUnit();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_AreaUnit,StepBasic_NamedUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_AreaUnit, StepBasic_NamedUnit)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_AreaUnit_HeaderFile

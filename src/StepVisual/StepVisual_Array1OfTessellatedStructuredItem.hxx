@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -14,13 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef StepVisual_Array1OfTessellatedStructuredItem_HeaderFile
 #define StepVisual_Array1OfTessellatedStructuredItem_HeaderFile
 
 #include <StepVisual_TessellatedStructuredItem.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<Handle(StepVisual_TessellatedStructuredItem)> StepVisual_Array1OfTessellatedStructuredItem;
+typedef NCollection_Array1<Handle(StepVisual_TessellatedStructuredItem)>
+  StepVisual_Array1OfTessellatedStructuredItem;
 
 #endif

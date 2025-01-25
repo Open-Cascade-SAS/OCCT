@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(GeomFill_LocationLaw)> GeomFill_Array1OfLocationLaw;
 
-
 #endif

@@ -31,59 +31,61 @@ class V3d_RectangularGrid : public Aspect_RectangularGrid
 {
   DEFINE_STANDARD_RTTIEXT(V3d_RectangularGrid, Aspect_RectangularGrid)
 public:
-
-  Standard_EXPORT V3d_RectangularGrid(const V3d_ViewerPointer& aViewer, const Quantity_Color& aColor, const Quantity_Color& aTenthColor);
+  Standard_EXPORT V3d_RectangularGrid(const V3d_ViewerPointer& aViewer,
+                                      const Quantity_Color&    aColor,
+                                      const Quantity_Color&    aTenthColor);
 
   Standard_EXPORT virtual ~V3d_RectangularGrid();
-  
-  Standard_EXPORT virtual void SetColors (const Quantity_Color& aColor, const Quantity_Color& aTenthColor) Standard_OVERRIDE;
-  
+
+  Standard_EXPORT virtual void SetColors(const Quantity_Color& aColor,
+                                         const Quantity_Color& aTenthColor) Standard_OVERRIDE;
+
   Standard_EXPORT virtual void Display() Standard_OVERRIDE;
-  
+
   Standard_EXPORT virtual void Erase() const Standard_OVERRIDE;
-  
+
   Standard_EXPORT virtual Standard_Boolean IsDisplayed() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void GraphicValues (Standard_Real& XSize, Standard_Real& YSize, Standard_Real& OffSet) const;
-  
-  Standard_EXPORT void SetGraphicValues (const Standard_Real XSize, const Standard_Real YSize, const Standard_Real OffSet);
-  
+
+  Standard_EXPORT void GraphicValues(Standard_Real& XSize,
+                                     Standard_Real& YSize,
+                                     Standard_Real& OffSet) const;
+
+  Standard_EXPORT void SetGraphicValues(const Standard_Real XSize,
+                                        const Standard_Real YSize,
+                                        const Standard_Real OffSet);
+
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 protected:
-  
   Standard_EXPORT virtual void UpdateDisplay() Standard_OVERRIDE;
 
 private:
-
   Standard_EXPORT void DefineLines();
-  
+
   Standard_EXPORT void DefinePoints();
 
 private:
-
   //! Custom Graphic3d_Structure implementation.
   class RectangularGridStructure;
 
 private:
-
   Handle(Graphic3d_Structure) myStructure;
-  Handle(Graphic3d_Group) myGroup;
-  gp_Ax3 myCurViewPlane;
-  V3d_ViewerPointer myViewer;
-  Standard_Boolean myCurAreDefined;
-  Standard_Boolean myToComputePrs;
-  Aspect_GridDrawMode myCurDrawMode;
-  Standard_Real myCurXo;
-  Standard_Real myCurYo;
-  Standard_Real myCurAngle;
-  Standard_Real myCurXStep;
-  Standard_Real myCurYStep;
-  Standard_Real myXSize;
-  Standard_Real myYSize;
-  Standard_Real myOffSet;
-
+  Handle(Graphic3d_Group)     myGroup;
+  gp_Ax3                      myCurViewPlane;
+  V3d_ViewerPointer           myViewer;
+  Standard_Boolean            myCurAreDefined;
+  Standard_Boolean            myToComputePrs;
+  Aspect_GridDrawMode         myCurDrawMode;
+  Standard_Real               myCurXo;
+  Standard_Real               myCurYo;
+  Standard_Real               myCurAngle;
+  Standard_Real               myCurXStep;
+  Standard_Real               myCurYStep;
+  Standard_Real               myXSize;
+  Standard_Real               myYSize;
+  Standard_Real               myOffSet;
 };
 
 DEFINE_STANDARD_HANDLE(V3d_RectangularGrid, Aspect_RectangularGrid)

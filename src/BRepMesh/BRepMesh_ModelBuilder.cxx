@@ -24,62 +24,50 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_ModelBuilder, IMeshTools_ModelBuilder)
 
-//=======================================================================
-// Function: Constructor
-// Purpose : 
-//=======================================================================
-BRepMesh_ModelBuilder::BRepMesh_ModelBuilder ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-// Function: Destructor
-// Purpose : 
-//=======================================================================
-BRepMesh_ModelBuilder::~BRepMesh_ModelBuilder ()
-{
-}
+BRepMesh_ModelBuilder::BRepMesh_ModelBuilder() {}
 
-//=======================================================================
-// Function: Perform
-// Purpose : 
-//=======================================================================
-Handle (IMeshData_Model) BRepMesh_ModelBuilder::performInternal (
+//=================================================================================================
+
+BRepMesh_ModelBuilder::~BRepMesh_ModelBuilder() {}
+
+//=================================================================================================
+
+Handle(IMeshData_Model) BRepMesh_ModelBuilder::performInternal(
   const TopoDS_Shape&          theShape,
   const IMeshTools_Parameters& theParameters)
 {
-  Handle (BRepMeshData_Model) aModel;
+  Handle(BRepMeshData_Model) aModel;
 
   Bnd_Box aBox;
-  BRepBndLib::Add (theShape, aBox, Standard_False);
+  BRepBndLib::Add(theShape, aBox, Standard_False);
 
-  if (!aBox.IsVoid ())
+  if (!aBox.IsVoid())
   {
     // Build data model for further processing.
-    aModel = new BRepMeshData_Model (theShape);
+    aModel = new BRepMeshData_Model(theShape);
 
     if (theParameters.Relative)
     {
       Standard_Real aMaxSize;
-      BRepMesh_ShapeTool::BoxMaxDimension (aBox, aMaxSize);
+      BRepMesh_ShapeTool::BoxMaxDimension(aBox, aMaxSize);
       aModel->SetMaxSize(aMaxSize);
     }
     else
     {
-      aModel->SetMaxSize(Max(theParameters.Deflection,
-                             theParameters.DeflectionInterior));
+      aModel->SetMaxSize(Max(theParameters.Deflection, theParameters.DeflectionInterior));
     }
 
-    Handle (IMeshTools_ShapeVisitor) aVisitor =
-      new BRepMesh_ShapeVisitor (aModel);
+    Handle(IMeshTools_ShapeVisitor) aVisitor = new BRepMesh_ShapeVisitor(aModel);
 
-    IMeshTools_ShapeExplorer aExplorer (theShape);
-    aExplorer.Accept (aVisitor);
-    SetStatus (Message_Done1);
+    IMeshTools_ShapeExplorer aExplorer(theShape);
+    aExplorer.Accept(aVisitor);
+    SetStatus(Message_Done1);
   }
   else
   {
-    SetStatus (Message_Fail1);
+    SetStatus(Message_Fail1);
   }
 
   return aModel;

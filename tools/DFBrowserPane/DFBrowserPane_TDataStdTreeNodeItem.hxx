@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowserPane_TDataStdTreeNodeItem_H
 #define DFBrowserPane_TDataStdTreeNodeItem_H
@@ -28,43 +28,55 @@
 #include <Standard_WarningsRestore.hxx>
 
 class DFBrowserPane_TDataStdTreeNodeItem;
-typedef QExplicitlySharedDataPointer<DFBrowserPane_TDataStdTreeNodeItem> DFBrowserPane_TDataStdTreeNodeItemPtr;
+typedef QExplicitlySharedDataPointer<DFBrowserPane_TDataStdTreeNodeItem>
+  DFBrowserPane_TDataStdTreeNodeItemPtr;
 
 //! \class DFBrowserPane_TDataStdTreeNodeItem
 //! An item connected to TDataStd_TreeNode attribute. Parent is NULL or tree node item.
-//! Childrens are items for children of tree node attribute. 
+//! Childrens are items for children of tree node attribute.
 class DFBrowserPane_TDataStdTreeNodeItem : public TreeModel_ItemBase
 {
 
 public:
-
   //! Creates an item wrapped by a shared pointer
   //! \param theRow the item row position in the parent item
   //! \param theColumn the item column position in the parent item
   //! \return the pointer to the created item
-  static DFBrowserPane_TDataStdTreeNodeItemPtr CreateItem (TreeModel_ItemBasePtr theParent,
-                                                           const int theRow, const int theColumn)
-  { return DFBrowserPane_TDataStdTreeNodeItemPtr (new DFBrowserPane_TDataStdTreeNodeItem (theParent, theRow, theColumn)); }
+  static DFBrowserPane_TDataStdTreeNodeItemPtr CreateItem(TreeModel_ItemBasePtr theParent,
+                                                          const int             theRow,
+                                                          const int             theColumn)
+  {
+    return DFBrowserPane_TDataStdTreeNodeItemPtr(
+      new DFBrowserPane_TDataStdTreeNodeItem(theParent, theRow, theColumn));
+  }
 
-  //!Destructor
+  //! Destructor
   virtual ~DFBrowserPane_TDataStdTreeNodeItem() Standard_OVERRIDE {}
 
   //! Store a current attribute
   //! \param theAttribute an attribute
-  void SetAttribute (const Handle(TDF_Attribute)& theAttribute) { myAttribute = theAttribute; }
+  void SetAttribute(const Handle(TDF_Attribute)& theAttribute) { myAttribute = theAttribute; }
 
   //! Returns the current attribute
   //! \return an attribute
-  Handle(TDF_Attribute) GetAttribute () const { initItem(); return myAttribute; }
+  Handle(TDF_Attribute) GetAttribute() const
+  {
+    initItem();
+    return myAttribute;
+  }
 
   //! Set state if the attribute is current(corresponds to the selected attribute in tree)
   //! \param theCurrent boolean state
-  void setCurrentAttribute (const bool theCurrent) { Reset(); myIsCurrentItem = theCurrent; }
+  void setCurrentAttribute(const bool theCurrent)
+  {
+    Reset();
+    myIsCurrentItem = theCurrent;
+  }
 
   //! Returns child attribute of the current attribute
   //! \param theChildRow an index of a child attribute
   //! \returns an attribute
-  Standard_EXPORT Handle(TDF_Attribute) getChildAttribute (const int theChildRow) const;
+  Standard_EXPORT Handle(TDF_Attribute) getChildAttribute(const int theChildRow) const;
 
   //! Inits the item, fills internal containers
   Standard_EXPORT virtual void Init() Standard_OVERRIDE;
@@ -73,10 +85,9 @@ public:
   Standard_EXPORT virtual void Reset() Standard_OVERRIDE;
 
 protected:
-
   //! Returns the data stored under the given role for the current item.
   //! \param theRole an enumeration value of role for data obtaining
-  virtual QVariant initValue (const int theRole = Qt::DisplayRole) const Standard_OVERRIDE;
+  virtual QVariant initValue(const int theRole = Qt::DisplayRole) const Standard_OVERRIDE;
 
   //! \return number of children.
   virtual int initRowCount() const Standard_OVERRIDE { return getRowCount(); }
@@ -85,16 +96,20 @@ protected:
   //! \param theRow the child row position
   //! \param theColumn the child column position
   //! \return the created item
-  virtual TreeModel_ItemBasePtr createChild (int theRow, int theColumn) Standard_OVERRIDE;
+  virtual TreeModel_ItemBasePtr createChild(int theRow, int theColumn) Standard_OVERRIDE;
 
 protected:
-
   //! Constructor
   //! \param theParent a parent item
   //! \param theRow the item row position in the parent item
   //! \param theColumn the item column position in the parent item
-  DFBrowserPane_TDataStdTreeNodeItem(TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
-    : TreeModel_ItemBase (theParent, theRow, theColumn), myIsCurrentItem (false) {}
+  DFBrowserPane_TDataStdTreeNodeItem(TreeModel_ItemBasePtr theParent,
+                                     const int             theRow,
+                                     const int             theColumn)
+      : TreeModel_ItemBase(theParent, theRow, theColumn),
+        myIsCurrentItem(false)
+  {
+  }
 
   //! Initializes the current item. It creates a backup of the specific item information
   virtual void initItem() const Standard_OVERRIDE;
@@ -106,12 +121,13 @@ protected:
   QString getName() const { return myLabelName; }
 
 private:
-
   Handle(TDF_Attribute) myAttribute; //! current attribute in tree node hierarchy
-  bool myIsCurrentItem; //! state whether this attribute is active in DFBrowser selected attribute in tree
+  bool myIsCurrentItem; //! state whether this attribute is active in DFBrowser selected attribute
+                        //! in tree
 
   int myRowCount; //! cached value of rows count
-  QString myLabelName; //! cached value of label name of the label of the current tree node attribute
+  QString
+    myLabelName; //! cached value of label name of the label of the current tree node attribute
 };
 
 #endif

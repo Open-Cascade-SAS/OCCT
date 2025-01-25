@@ -13,33 +13,31 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : BOPAlgo_MakerVolume
-//purpose  : 
+// function : BOPAlgo_MakerVolume
+// purpose  :
 //=======================================================================
 inline BOPAlgo_MakerVolume::BOPAlgo_MakerVolume()
-:
-  BOPAlgo_Builder(),
-  myIntersect(Standard_True),
-  myAvoidInternalShapes(Standard_False)
+    : BOPAlgo_Builder(),
+      myIntersect(Standard_True),
+      myAvoidInternalShapes(Standard_False)
 {
 }
 
 //=======================================================================
-//function : BOPAlgo_MakerVolume
-//purpose  : 
+// function : BOPAlgo_MakerVolume
+// purpose  :
 //=======================================================================
-inline BOPAlgo_MakerVolume::BOPAlgo_MakerVolume
-  (const Handle(NCollection_BaseAllocator)& theAllocator)
-:
-  BOPAlgo_Builder(theAllocator),
-  myIntersect(Standard_True),
-  myAvoidInternalShapes(Standard_False)
+inline BOPAlgo_MakerVolume::BOPAlgo_MakerVolume(
+  const Handle(NCollection_BaseAllocator)& theAllocator)
+    : BOPAlgo_Builder(theAllocator),
+      myIntersect(Standard_True),
+      myAvoidInternalShapes(Standard_False)
 {
 }
 
 //=======================================================================
-//function : ~BOPAlgo_MakerVolume
-//purpose  : 
+// function : ~BOPAlgo_MakerVolume
+// purpose  :
 //=======================================================================
 inline BOPAlgo_MakerVolume::~BOPAlgo_MakerVolume()
 {
@@ -47,22 +45,22 @@ inline BOPAlgo_MakerVolume::~BOPAlgo_MakerVolume()
 }
 
 //=======================================================================
-//function : Clear
-//purpose  : 
+// function : Clear
+// purpose  :
 //=======================================================================
 inline void BOPAlgo_MakerVolume::Clear()
 {
   BOPAlgo_Builder::Clear();
   myIntersect = Standard_True;
-  myBBox = Bnd_Box();
+  myBBox      = Bnd_Box();
   mySBox.Nullify();
   myFaces.Clear();
   myAvoidInternalShapes = Standard_False;
 }
 
 //=======================================================================
-//function : SetIntersect
-//purpose  : 
+// function : SetIntersect
+// purpose  :
 //=======================================================================
 inline void BOPAlgo_MakerVolume::SetIntersect(const Standard_Boolean bIntersect)
 {
@@ -70,28 +68,28 @@ inline void BOPAlgo_MakerVolume::SetIntersect(const Standard_Boolean bIntersect)
 }
 
 //=======================================================================
-//function : IsIntersect
-//purpose  : 
+// function : IsIntersect
+// purpose  :
 //=======================================================================
-inline Standard_Boolean BOPAlgo_MakerVolume::IsIntersect()const
+inline Standard_Boolean BOPAlgo_MakerVolume::IsIntersect() const
 {
   return myIntersect;
 }
 
 //=======================================================================
-//function : Box
-//purpose  : 
+// function : Box
+// purpose  :
 //=======================================================================
-inline const TopoDS_Solid& BOPAlgo_MakerVolume::Box()const
+inline const TopoDS_Solid& BOPAlgo_MakerVolume::Box() const
 {
   return mySBox;
 }
 
 //=======================================================================
-//function : Faces
-//purpose  : 
+// function : Faces
+// purpose  :
 //=======================================================================
-inline const TopTools_ListOfShape& BOPAlgo_MakerVolume::Faces()const
+inline const TopTools_ListOfShape& BOPAlgo_MakerVolume::Faces() const
 {
   return myFaces;
 }

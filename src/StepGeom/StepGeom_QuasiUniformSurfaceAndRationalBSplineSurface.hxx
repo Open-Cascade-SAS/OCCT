@@ -30,65 +30,66 @@ class StepGeom_QuasiUniformSurface;
 class StepGeom_RationalBSplineSurface;
 class TCollection_HAsciiString;
 
-
 class StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface;
-DEFINE_STANDARD_HANDLE(StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface, StepGeom_BSplineSurface)
-
+DEFINE_STANDARD_HANDLE(StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface,
+                       StepGeom_BSplineSurface)
 
 class StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface : public StepGeom_BSplineSurface
 {
 
 public:
-
-  
   //! Returns a QuasiUniformSurfaceAndRationalBSplineSurface
   Standard_EXPORT StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aUDegree, const Standard_Integer aVDegree, const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineSurfaceForm aSurfaceForm, const StepData_Logical aUClosed, const StepData_Logical aVClosed, const StepData_Logical aSelfIntersect, const Handle(StepGeom_QuasiUniformSurface)& aQuasiUniformSurface, const Handle(StepGeom_RationalBSplineSurface)& aRationalBSplineSurface);
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aUDegree, const Standard_Integer aVDegree, const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineSurfaceForm aSurfaceForm, const StepData_Logical aUClosed, const StepData_Logical aVClosed, const StepData_Logical aSelfIntersect, const Handle(TColStd_HArray2OfReal)& aWeightsData);
-  
-  Standard_EXPORT void SetQuasiUniformSurface (const Handle(StepGeom_QuasiUniformSurface)& aQuasiUniformSurface);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&         aName,
+                            const Standard_Integer                          aUDegree,
+                            const Standard_Integer                          aVDegree,
+                            const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList,
+                            const StepGeom_BSplineSurfaceForm               aSurfaceForm,
+                            const StepData_Logical                          aUClosed,
+                            const StepData_Logical                          aVClosed,
+                            const StepData_Logical                          aSelfIntersect,
+                            const Handle(StepGeom_QuasiUniformSurface)&     aQuasiUniformSurface,
+                            const Handle(StepGeom_RationalBSplineSurface)& aRationalBSplineSurface);
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&         aName,
+                            const Standard_Integer                          aUDegree,
+                            const Standard_Integer                          aVDegree,
+                            const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList,
+                            const StepGeom_BSplineSurfaceForm               aSurfaceForm,
+                            const StepData_Logical                          aUClosed,
+                            const StepData_Logical                          aVClosed,
+                            const StepData_Logical                          aSelfIntersect,
+                            const Handle(TColStd_HArray2OfReal)&            aWeightsData);
+
+  Standard_EXPORT void SetQuasiUniformSurface(
+    const Handle(StepGeom_QuasiUniformSurface)& aQuasiUniformSurface);
+
   Standard_EXPORT Handle(StepGeom_QuasiUniformSurface) QuasiUniformSurface() const;
-  
-  Standard_EXPORT void SetRationalBSplineSurface (const Handle(StepGeom_RationalBSplineSurface)& aRationalBSplineSurface);
-  
+
+  Standard_EXPORT void SetRationalBSplineSurface(
+    const Handle(StepGeom_RationalBSplineSurface)& aRationalBSplineSurface);
+
   Standard_EXPORT Handle(StepGeom_RationalBSplineSurface) RationalBSplineSurface() const;
-  
-  Standard_EXPORT void SetWeightsData (const Handle(TColStd_HArray2OfReal)& aWeightsData);
-  
+
+  Standard_EXPORT void SetWeightsData(const Handle(TColStd_HArray2OfReal)& aWeightsData);
+
   Standard_EXPORT Handle(TColStd_HArray2OfReal) WeightsData() const;
-  
-  Standard_EXPORT Standard_Real WeightsDataValue (const Standard_Integer num1, const Standard_Integer num2) const;
-  
+
+  Standard_EXPORT Standard_Real WeightsDataValue(const Standard_Integer num1,
+                                                 const Standard_Integer num2) const;
+
   Standard_EXPORT Standard_Integer NbWeightsDataI() const;
-  
+
   Standard_EXPORT Standard_Integer NbWeightsDataJ() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface,StepGeom_BSplineSurface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface,
+                          StepGeom_BSplineSurface)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(StepGeom_QuasiUniformSurface) quasiUniformSurface;
+  Handle(StepGeom_QuasiUniformSurface)    quasiUniformSurface;
   Handle(StepGeom_RationalBSplineSurface) rationalBSplineSurface;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface_HeaderFile

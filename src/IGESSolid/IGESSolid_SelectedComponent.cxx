@@ -23,36 +23,36 @@
 #include <IGESSolid_SelectedComponent.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SelectedComponent,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SelectedComponent, IGESData_IGESEntity)
 
-IGESSolid_SelectedComponent::IGESSolid_SelectedComponent ()    {  }
+IGESSolid_SelectedComponent::IGESSolid_SelectedComponent() {}
 
-
-    void  IGESSolid_SelectedComponent::Init
-  (const Handle(IGESSolid_BooleanTree)& anEntity, const gp_XYZ& SelectPnt)
+void IGESSolid_SelectedComponent::Init(const Handle(IGESSolid_BooleanTree)& anEntity,
+                                       const gp_XYZ&                        SelectPnt)
 {
   theEntity      = anEntity;
   theSelectPoint = SelectPnt;
-  InitTypeAndForm(182,0);
+  InitTypeAndForm(182, 0);
 }
 
-    Handle(IGESSolid_BooleanTree)  IGESSolid_SelectedComponent::Component () const
+Handle(IGESSolid_BooleanTree) IGESSolid_SelectedComponent::Component() const
 {
   return theEntity;
 }
 
-    gp_Pnt  IGESSolid_SelectedComponent::SelectPoint () const
+gp_Pnt IGESSolid_SelectedComponent::SelectPoint() const
 {
   return gp_Pnt(theSelectPoint);
 }
 
-    gp_Pnt  IGESSolid_SelectedComponent::TransformedSelectPoint () const
+gp_Pnt IGESSolid_SelectedComponent::TransformedSelectPoint() const
 {
-  if (!HasTransf()) return gp_Pnt(theSelectPoint);
+  if (!HasTransf())
+    return gp_Pnt(theSelectPoint);
   else
-    {
-      gp_XYZ tmp = theSelectPoint;
-      Location().Transforms(tmp);
-      return gp_Pnt(tmp);
-    }
+  {
+    gp_XYZ tmp = theSelectPoint;
+    Location().Transforms(tmp);
+    return gp_Pnt(tmp);
+  }
 }

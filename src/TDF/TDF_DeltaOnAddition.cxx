@@ -15,7 +15,7 @@
 
 //      	-----------------------
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Oct 10 1997	Creation
 
 #include <Standard_GUID.hxx>
@@ -23,27 +23,22 @@
 #include <TDF_DeltaOnAddition.hxx>
 #include <TDF_Label.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDF_DeltaOnAddition,TDF_AttributeDelta)
+IMPLEMENT_STANDARD_RTTIEXT(TDF_DeltaOnAddition, TDF_AttributeDelta)
 
-//=======================================================================
-//function : TDF_DeltaOnAddition
-//purpose  : 
-//=======================================================================
-TDF_DeltaOnAddition::TDF_DeltaOnAddition
-(const Handle(TDF_Attribute)& anAtt)
-: TDF_AttributeDelta(anAtt)
-{}
+//=================================================================================================
 
+TDF_DeltaOnAddition::TDF_DeltaOnAddition(const Handle(TDF_Attribute)& anAtt)
+    : TDF_AttributeDelta(anAtt)
+{
+}
 
-//=======================================================================
-//function : Apply
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TDF_DeltaOnAddition::Apply() 
+void TDF_DeltaOnAddition::Apply()
 {
   Handle(TDF_Attribute) currentAtt;
-  if (Label().FindAttribute(ID(),currentAtt)) {
-    Label().ForgetAttribute (currentAtt);
+  if (Label().FindAttribute(ID(), currentAtt))
+  {
+    Label().ForgetAttribute(currentAtt);
   }
 }

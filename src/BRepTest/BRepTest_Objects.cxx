@@ -16,30 +16,20 @@
 #include <BRepTest_Objects.hxx>
 
 //=======================================================================
-//function : BRepTest_Session
-//purpose  : Class for the objects in the session
+// function : BRepTest_Session
+// purpose  : Class for the objects in the session
 //=======================================================================
 class BRepTest_Session
 {
 public:
-
   //! Empty constructor
-  BRepTest_Session()
-  {
-    SetDefaultValues();
-  }
+  BRepTest_Session() { SetDefaultValues(); }
 
   //! Sets the default values for the options
-  void SetDefaultValues()
-  {
-    myFillHistory = Standard_True;
-  }
+  void SetDefaultValues() { myFillHistory = Standard_True; }
 
   //! Sets the History in the session
-  void SetHistory(const Handle(BRepTools_History)& theHistory)
-  {
-    myHistory = theHistory;
-  }
+  void SetHistory(const Handle(BRepTools_History)& theHistory) { myHistory = theHistory; }
 
   //! Add the History to the history in the session
   void AddHistory(const Handle(BRepTools_History)& theHistory)
@@ -50,76 +40,57 @@ public:
   }
 
   //! Returns the history from the session
-  const Handle(BRepTools_History)& History() const
-  {
-    return myHistory;
-  }
+  const Handle(BRepTools_History)& History() const { return myHistory; }
 
   //! Enables/Disables the history saving
-  void SetToFillHistory(const Standard_Boolean theFillHist)
-  {
-    myFillHistory = theFillHist;
-  }
+  void SetToFillHistory(const Standard_Boolean theFillHist) { myFillHistory = theFillHist; }
 
   //! Returns the flag controlling the history saving
   Standard_Boolean IsHistoryNeeded() const { return myFillHistory; }
 
 private:
-
   Handle(BRepTools_History) myHistory;
-  Standard_Boolean myFillHistory;
+  Standard_Boolean          myFillHistory;
 };
 
-//=======================================================================
-//function : GetSession
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 static BRepTest_Session& GetSession()
 {
   static BRepTest_Session* pSession = new BRepTest_Session();
   return *pSession;
 }
 
-//=======================================================================
-//function : SetHistory
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BRepTest_Objects::SetHistory(const Handle(BRepTools_History)& theHistory)
 {
   GetSession().SetHistory(theHistory);
 }
 
-//=======================================================================
-//function : AddHistory
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BRepTest_Objects::AddHistory(const Handle(BRepTools_History)& theHistory)
 {
   GetSession().AddHistory(theHistory);
 }
 
-//=======================================================================
-//function : History
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Handle(BRepTools_History) BRepTest_Objects::History()
 {
   return GetSession().History();
 }
 
-//=======================================================================
-//function : SetToFillHistory
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BRepTest_Objects::SetToFillHistory(const Standard_Boolean theFillHist)
 {
   return GetSession().SetToFillHistory(theFillHist);
 }
 
-//=======================================================================
-//function : IsHistoryNeeded
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean BRepTest_Objects::IsHistoryNeeded()
 {
   return GetSession().IsHistoryNeeded();

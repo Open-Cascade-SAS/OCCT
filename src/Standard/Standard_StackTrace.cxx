@@ -26,16 +26,16 @@
 #if defined(__EMSCRIPTEN__)
   #include <emscripten/emscripten.h>
 #elif defined(__ANDROID__)
-  //#include <unwind.h>
+// #include <unwind.h>
 #elif defined(__QNX__)
-  //#include <backtrace.h> // requires linking to libbacktrace
+// #include <backtrace.h> // requires linking to libbacktrace
 #elif !defined(_WIN32) && !(defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE)
   #include <execinfo.h>
 #elif defined(_WIN32) && !defined(OCCT_UWP)
 
-#include <Standard_WarningsDisable.hxx>
+  #include <Standard_WarningsDisable.hxx>
   #include <dbghelp.h>
-#include <Standard_WarningsRestore.hxx>
+  #include <Standard_WarningsRestore.hxx>
 
 //! This is a wrapper of DbgHelp library loaded dynamically.
 //! DbgHelp is coming with Windows SDK, so that technically it is always available.
@@ -49,17 +49,20 @@
 class Standard_DbgHelper
 {
 public: // dbgHelp.dll function types
-
-  typedef BOOL (WINAPI *SYMINITIALIZEPROC) (HANDLE, PCSTR, BOOL);
-  typedef BOOL (WINAPI *STACKWALK64PROC) (DWORD, HANDLE, HANDLE, LPSTACKFRAME64,
-                                          PVOID, PREAD_PROCESS_MEMORY_ROUTINE64,
-                                          PFUNCTION_TABLE_ACCESS_ROUTINE64,
-                                          PGET_MODULE_BASE_ROUTINE64, PTRANSLATE_ADDRESS_ROUTINE64);
-  typedef BOOL (WINAPI *SYMCLEANUPPROC) (HANDLE);
-  typedef BOOL (WINAPI *SYMFROMADDRPROC) (HANDLE, DWORD64, PDWORD64, PSYMBOL_INFO);
+  typedef BOOL(WINAPI* SYMINITIALIZEPROC)(HANDLE, PCSTR, BOOL);
+  typedef BOOL(WINAPI* STACKWALK64PROC)(DWORD,
+                                        HANDLE,
+                                        HANDLE,
+                                        LPSTACKFRAME64,
+                                        PVOID,
+                                        PREAD_PROCESS_MEMORY_ROUTINE64,
+                                        PFUNCTION_TABLE_ACCESS_ROUTINE64,
+                                        PGET_MODULE_BASE_ROUTINE64,
+                                        PTRANSLATE_ADDRESS_ROUTINE64);
+  typedef BOOL(WINAPI* SYMCLEANUPPROC)(HANDLE);
+  typedef BOOL(WINAPI* SYMFROMADDRPROC)(HANDLE, DWORD64, PDWORD64, PSYMBOL_INFO);
 
 public:
-
   //! Return global instance.
   static Standard_DbgHelper& GetDbgHelper()
   {
@@ -75,7 +78,6 @@ public:
   }
 
 public:
-
   SYMINITIALIZEPROC                SymInitialize;
   SYMCLEANUPPROC                   SymCleanup;
   STACKWALK64PROC                  StackWalk64;
@@ -90,17 +92,16 @@ public:
   const char* ErrorMessage() const { return myError; }
 
 private:
-
   //! Main constructor.
   Standard_DbgHelper()
-  : SymInitialize (NULL),
-    SymCleanup (NULL),
-    StackWalk64 (NULL),
-    SymFunctionTableAccess64 (NULL),
-    SymGetModuleBase64 (NULL),
-    SymFromAddr (NULL),
-    myDbgHelpLib (LoadLibraryW (L"DbgHelp.dll")),
-    myError (NULL)
+      : SymInitialize(NULL),
+        SymCleanup(NULL),
+        StackWalk64(NULL),
+        SymFunctionTableAccess64(NULL),
+        SymGetModuleBase64(NULL),
+        SymFromAddr(NULL),
+        myDbgHelpLib(LoadLibraryW(L"DbgHelp.dll")),
+        myError(NULL)
   {
     if (myDbgHelpLib == NULL)
     {
@@ -108,37 +109,42 @@ private:
       return;
     }
 
-    if ((SymInitialize = (SYMINITIALIZEPROC) GetProcAddress (myDbgHelpLib, "SymInitialize")) == NULL)
+    if ((SymInitialize = (SYMINITIALIZEPROC)GetProcAddress(myDbgHelpLib, "SymInitialize")) == NULL)
     {
       myError = "Standard_DbgHelper, Function not found in DbgHelp.dll: SymInitialize";
       unload();
       return;
     }
-    if ((SymCleanup = (SYMCLEANUPPROC) GetProcAddress (myDbgHelpLib, "SymCleanup")) == NULL)
+    if ((SymCleanup = (SYMCLEANUPPROC)GetProcAddress(myDbgHelpLib, "SymCleanup")) == NULL)
     {
       myError = "Standard_DbgHelper, Function not found in DbgHelp.dll: SymCleanup";
       unload();
       return;
     }
-    if ((StackWalk64 = (STACKWALK64PROC) GetProcAddress (myDbgHelpLib, "StackWalk64")) == NULL)
+    if ((StackWalk64 = (STACKWALK64PROC)GetProcAddress(myDbgHelpLib, "StackWalk64")) == NULL)
     {
       myError = "Standard_DbgHelper, Function not found in DbgHelp.dll: StackWalk64";
       unload();
       return;
     }
-    if ((SymFunctionTableAccess64 = (PFUNCTION_TABLE_ACCESS_ROUTINE64) GetProcAddress (myDbgHelpLib, "SymFunctionTableAccess64")) == NULL)
+    if ((SymFunctionTableAccess64 =
+           (PFUNCTION_TABLE_ACCESS_ROUTINE64)GetProcAddress(myDbgHelpLib,
+                                                            "SymFunctionTableAccess64"))
+        == NULL)
     {
       myError = "Standard_DbgHelper, Function not found in DbgHelp.dll: SymFunctionTableAccess64";
       unload();
       return;
     }
-    if ((SymGetModuleBase64 = (PGET_MODULE_BASE_ROUTINE64) GetProcAddress (myDbgHelpLib, "SymGetModuleBase64")) == NULL)
+    if ((SymGetModuleBase64 =
+           (PGET_MODULE_BASE_ROUTINE64)GetProcAddress(myDbgHelpLib, "SymGetModuleBase64"))
+        == NULL)
     {
       myError = "Standard_DbgHelper, Function not found in DbgHelp.dll: SymGetModuleBase64";
       unload();
       return;
     }
-    if ((SymFromAddr = (SYMFROMADDRPROC) GetProcAddress (myDbgHelpLib, "SymFromAddr")) == NULL)
+    if ((SymFromAddr = (SYMFROMADDRPROC)GetProcAddress(myDbgHelpLib, "SymFromAddr")) == NULL)
     {
       myError = "Standard_DbgHelper, Function not found in DbgHelp.dll: SymFromAddr";
       unload();
@@ -150,7 +156,7 @@ private:
   ~Standard_DbgHelper()
   {
     // we could unload library here, but don't do it as it is kept loaded
-    //unload();
+    // unload();
   }
 
   //! Unload library.
@@ -158,40 +164,32 @@ private:
   {
     if (myDbgHelpLib != NULL)
     {
-      FreeLibrary (myDbgHelpLib);
+      FreeLibrary(myDbgHelpLib);
       myDbgHelpLib = NULL;
     }
   }
 
 private:
-
-  Standard_DbgHelper            (const Standard_DbgHelper& );
-  Standard_DbgHelper& operator= (const Standard_DbgHelper& );
+  Standard_DbgHelper(const Standard_DbgHelper&);
+  Standard_DbgHelper& operator=(const Standard_DbgHelper&);
 
 private:
-
   HMODULE     myDbgHelpLib; //!< handle to DbgHelp
   const char* myError;      //!< loading error message
-
 };
 
 #endif
 
-//=======================================================================
-//function : StackTrace
-//purpose  :
-//=======================================================================
-Standard_Boolean Standard::StackTrace (char* theBuffer,
-                                       const int theBufferSize,
-                                       const int theNbTraces = 10,
-                                       void* theContext,
-                                       const int theNbTopSkip)
+//=================================================================================================
+
+Standard_Boolean Standard::StackTrace(char*     theBuffer,
+                                      const int theBufferSize,
+                                      const int theNbTraces = 10,
+                                      void*     theContext,
+                                      const int theNbTopSkip)
 {
-  (void )theContext;
-  if (theBufferSize < 1
-   || theNbTraces < 1
-   || theBuffer == NULL
-   || theNbTopSkip < 0)
+  (void)theContext;
+  if (theBufferSize < 1 || theNbTraces < 1 || theBuffer == NULL || theNbTopSkip < 0)
   {
     return false;
   }
@@ -199,76 +197,86 @@ Standard_Boolean Standard::StackTrace (char* theBuffer,
 #if defined(__EMSCRIPTEN__)
   // theNbTraces is ignored
   // EM_LOG_JS_STACK?
-  return emscripten_get_callstack (EM_LOG_C_STACK | EM_LOG_DEMANGLE | EM_LOG_NO_PATHS | EM_LOG_FUNC_PARAMS, theBuffer, theBufferSize) > 0;
+  return emscripten_get_callstack(EM_LOG_C_STACK | EM_LOG_DEMANGLE | EM_LOG_NO_PATHS
+                                    | EM_LOG_FUNC_PARAMS,
+                                  theBuffer,
+                                  theBufferSize)
+         > 0;
 #elif defined(__ANDROID__)
-  Message::SendTrace ("Standard::StackTrace() is not implemented for this platform");
+  Message::SendTrace("Standard::StackTrace() is not implemented for this platform");
   return false;
 #elif defined(__QNX__)
   // bt_get_backtrace()
-  Message::SendTrace ("Standard::StackTrace() is not implemented for this platform");
+  Message::SendTrace("Standard::StackTrace() is not implemented for this platform");
   return false;
 #elif defined(OCCT_UWP) || (defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE)
-  Message::SendTrace ("Standard::StackTrace() is not implemented for this platform");
+  Message::SendTrace("Standard::StackTrace() is not implemented for this platform");
   return false;
 #elif defined(_WIN32)
   // Each CPU architecture requires manual stack frame setup,
   // and 32-bit version requires also additional hacks to retrieve current context;
   // this implementation currently covers only x86_64 architecture.
-#if defined(_M_X64)
-  int aNbTraces = theNbTraces;
+  #if defined(_M_X64)
+  int          aNbTraces  = theNbTraces;
   const HANDLE anHProcess = GetCurrentProcess();
-  const HANDLE anHThread = GetCurrentThread();
-  CONTEXT aCtx;
+  const HANDLE anHThread  = GetCurrentThread();
+  CONTEXT      aCtx;
   if (theContext != NULL)
   {
-    memcpy (&aCtx, theContext, sizeof(aCtx));
+    memcpy(&aCtx, theContext, sizeof(aCtx));
   }
   else
   {
     ++aNbTraces;
-    memset (&aCtx, 0, sizeof(aCtx));
+    memset(&aCtx, 0, sizeof(aCtx));
     aCtx.ContextFlags = CONTEXT_FULL;
-    RtlCaptureContext (&aCtx);
+    RtlCaptureContext(&aCtx);
   }
 
   // DbgHelp is not thread-safe library, hence global lock is used for serial access
-  Standard_Mutex::Sentry aSentry (Standard_DbgHelper::Mutex());
-  Standard_DbgHelper& aDbgHelp = Standard_DbgHelper::GetDbgHelper();
+  Standard_Mutex::Sentry aSentry(Standard_DbgHelper::Mutex());
+  Standard_DbgHelper&    aDbgHelp = Standard_DbgHelper::GetDbgHelper();
   if (!aDbgHelp.IsLoaded())
   {
-    strcat_s (theBuffer, theBufferSize, "\n==Backtrace==\n");
-    strcat_s (theBuffer, theBufferSize, aDbgHelp.ErrorMessage());
-    strcat_s (theBuffer, theBufferSize, "\n=============");
+    strcat_s(theBuffer, theBufferSize, "\n==Backtrace==\n");
+    strcat_s(theBuffer, theBufferSize, aDbgHelp.ErrorMessage());
+    strcat_s(theBuffer, theBufferSize, "\n=============");
     return false;
   }
 
-  aDbgHelp.SymInitialize (anHProcess, NULL, TRUE);
+  aDbgHelp.SymInitialize(anHProcess, NULL, TRUE);
 
-  DWORD anImage = 0;
+  DWORD        anImage = 0;
   STACKFRAME64 aStackFrame;
-  memset (&aStackFrame, 0, sizeof(aStackFrame));
+  memset(&aStackFrame, 0, sizeof(aStackFrame));
 
-  anImage = IMAGE_FILE_MACHINE_AMD64;
-  aStackFrame.AddrPC.Offset = aCtx.Rip;
-  aStackFrame.AddrPC.Mode = AddrModeFlat;
+  anImage                      = IMAGE_FILE_MACHINE_AMD64;
+  aStackFrame.AddrPC.Offset    = aCtx.Rip;
+  aStackFrame.AddrPC.Mode      = AddrModeFlat;
   aStackFrame.AddrFrame.Offset = aCtx.Rsp;
-  aStackFrame.AddrFrame.Mode = AddrModeFlat;
+  aStackFrame.AddrFrame.Mode   = AddrModeFlat;
   aStackFrame.AddrStack.Offset = aCtx.Rsp;
-  aStackFrame.AddrStack.Mode = AddrModeFlat;
+  aStackFrame.AddrStack.Mode   = AddrModeFlat;
 
-  char aModBuffer[MAX_PATH] = {};
-  char aSymBuffer[sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(CHAR)];
-  SYMBOL_INFO* aSymbol = (SYMBOL_INFO*) aSymBuffer;
+  char         aModBuffer[MAX_PATH] = {};
+  char         aSymBuffer[sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(CHAR)];
+  SYMBOL_INFO* aSymbol  = (SYMBOL_INFO*)aSymBuffer;
   aSymbol->SizeOfStruct = sizeof(SYMBOL_INFO);
-  aSymbol->MaxNameLen = MAX_SYM_NAME;
+  aSymbol->MaxNameLen   = MAX_SYM_NAME;
 
   int aTopSkip = theNbTopSkip + 1; // skip this function call and specified extra number
-  strcat_s (theBuffer, theBufferSize, "\n==Backtrace==");
+  strcat_s(theBuffer, theBufferSize, "\n==Backtrace==");
   for (int aLineIter = 0; aLineIter < aNbTraces; ++aLineIter)
   {
-    BOOL aRes = aDbgHelp.StackWalk64 (anImage, anHProcess, anHThread,
-                                      &aStackFrame, &aCtx, NULL,
-                                      aDbgHelp.SymFunctionTableAccess64, aDbgHelp.SymGetModuleBase64, NULL);
+    BOOL aRes = aDbgHelp.StackWalk64(anImage,
+                                     anHProcess,
+                                     anHThread,
+                                     &aStackFrame,
+                                     &aCtx,
+                                     NULL,
+                                     aDbgHelp.SymFunctionTableAccess64,
+                                     aDbgHelp.SymGetModuleBase64,
+                                     NULL);
     if (!aRes)
     {
       break;
@@ -284,80 +292,79 @@ Standard_Boolean Standard::StackTrace (char* theBuffer,
       break;
     }
 
-    strcat_s (theBuffer, theBufferSize, "\n");
+    strcat_s(theBuffer, theBufferSize, "\n");
 
-    const DWORD64 aModuleBase = aDbgHelp.SymGetModuleBase64 (anHProcess, aStackFrame.AddrPC.Offset);
-    if (aModuleBase != 0
-     && GetModuleFileNameA ((HINSTANCE) aModuleBase, aModBuffer, MAX_PATH))
+    const DWORD64 aModuleBase = aDbgHelp.SymGetModuleBase64(anHProcess, aStackFrame.AddrPC.Offset);
+    if (aModuleBase != 0 && GetModuleFileNameA((HINSTANCE)aModuleBase, aModBuffer, MAX_PATH))
     {
-      strcat_s (theBuffer, theBufferSize, aModBuffer);
+      strcat_s(theBuffer, theBufferSize, aModBuffer);
     }
 
     DWORD64 aDisp = 0;
-    strcat_s (theBuffer, theBufferSize, "(");
-    if (aDbgHelp.SymFromAddr (anHProcess, aStackFrame.AddrPC.Offset, &aDisp, aSymbol))
+    strcat_s(theBuffer, theBufferSize, "(");
+    if (aDbgHelp.SymFromAddr(anHProcess, aStackFrame.AddrPC.Offset, &aDisp, aSymbol))
     {
-      strcat_s (theBuffer, theBufferSize, aSymbol->Name);
+      strcat_s(theBuffer, theBufferSize, aSymbol->Name);
     }
     else
     {
-      strcat_s (theBuffer, theBufferSize, "???");
+      strcat_s(theBuffer, theBufferSize, "???");
     }
-    strcat_s (theBuffer, theBufferSize, ")");
+    strcat_s(theBuffer, theBufferSize, ")");
   }
-  strcat_s (theBuffer, theBufferSize, "\n=============");
+  strcat_s(theBuffer, theBufferSize, "\n=============");
 
-  aDbgHelp.SymCleanup (anHProcess);
+  aDbgHelp.SymCleanup(anHProcess);
   return true;
-#else
-  Message::SendTrace ("Standard::StackTrace() is not implemented for this CPU architecture");
+  #else
+  Message::SendTrace("Standard::StackTrace() is not implemented for this CPU architecture");
   return false;
-#endif
+  #endif
 #else
-  const int aTopSkip = theNbTopSkip + 1; // skip this function call and specified extra number
-  int aNbTraces = theNbTraces + aTopSkip;
-  void** aStackArr = (void** )alloca (sizeof(void*) * aNbTraces);
+  const int aTopSkip  = theNbTopSkip + 1; // skip this function call and specified extra number
+  int       aNbTraces = theNbTraces + aTopSkip;
+  void**    aStackArr = (void**)alloca(sizeof(void*) * aNbTraces);
   if (aStackArr == NULL)
   {
     return false;
   }
 
-  aNbTraces = ::backtrace (aStackArr, aNbTraces);
+  aNbTraces = ::backtrace(aStackArr, aNbTraces);
   if (aNbTraces <= 1)
   {
     return false;
   }
 
   aNbTraces -= aTopSkip;
-  char** aStrings = ::backtrace_symbols (aStackArr + aTopSkip, aNbTraces);
+  char** aStrings = ::backtrace_symbols(aStackArr + aTopSkip, aNbTraces);
   if (aStrings == NULL)
   {
     return false;
   }
 
-  const size_t aLenInit = strlen (theBuffer);
-  size_t aLimit = (size_t) theBufferSize - aLenInit - 1;
+  const size_t aLenInit = strlen(theBuffer);
+  size_t       aLimit   = (size_t)theBufferSize - aLenInit - 1;
   if (aLimit > 14)
   {
-    strcat (theBuffer, "\n==Backtrace==");
+    strcat(theBuffer, "\n==Backtrace==");
     aLimit -= 14;
   }
   for (int aLineIter = 0; aLineIter < aNbTraces; ++aLineIter)
   {
-    const size_t aLen = strlen (aStrings[aLineIter]);
+    const size_t aLen = strlen(aStrings[aLineIter]);
     if (aLen + 1 >= aLimit)
     {
       break;
     }
 
-    strcat (theBuffer, "\n");
-    strcat (theBuffer, aStrings[aLineIter]);
+    strcat(theBuffer, "\n");
+    strcat(theBuffer, aStrings[aLineIter]);
     aLimit -= aLen + 1;
   }
-  free (aStrings);
+  free(aStrings);
   if (aLimit > 14)
   {
-    strcat (theBuffer, "\n=============");
+    strcat(theBuffer, "\n=============");
   }
   return true;
 #endif

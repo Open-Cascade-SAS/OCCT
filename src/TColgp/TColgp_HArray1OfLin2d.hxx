@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY1(TColgp_HArray1OfLin2d, TColgp_Array1OfLin2d)
 
-
 #endif

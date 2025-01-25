@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMDataStd_GenericExtStringDriver.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
@@ -19,75 +18,72 @@
 #include <TDF_Attribute.hxx>
 #include <BinMDataStd.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_GenericExtStringDriver,BinMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_GenericExtStringDriver, BinMDF_ADriver)
 
-//=======================================================================
-//function : BinMDataStd_GenericExtStringDriver
-//purpose  :
-//=======================================================================
-BinMDataStd_GenericExtStringDriver::BinMDataStd_GenericExtStringDriver
-                         (const Handle(Message_Messenger)& theMessageDriver)
-     : BinMDF_ADriver (theMessageDriver, STANDARD_TYPE(TDataStd_GenericExtString)->Name())
+//=================================================================================================
+
+BinMDataStd_GenericExtStringDriver::BinMDataStd_GenericExtStringDriver(
+  const Handle(Message_Messenger)& theMessageDriver)
+    : BinMDF_ADriver(theMessageDriver, STANDARD_TYPE(TDataStd_GenericExtString)->Name())
 {
 }
 
-//=======================================================================
-//function : NewEmpty
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
 Handle(TDF_Attribute) BinMDataStd_GenericExtStringDriver::NewEmpty() const
 {
   return new TDataStd_Name;
 }
 
-//=======================================================================
-//function : SourceType
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 const Handle(Standard_Type)& BinMDataStd_GenericExtStringDriver::SourceType() const
 {
   return Standard_Type::Instance<TDataStd_GenericExtString>();
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMDataStd_GenericExtStringDriver::Paste
-                         (const BinObjMgt_Persistent&  Source,
-                          const Handle(TDF_Attribute)& Target,
-                          BinObjMgt_RRelocationTable&  RelocTable) const
+Standard_Boolean BinMDataStd_GenericExtStringDriver::Paste(
+  const BinObjMgt_Persistent&  Source,
+  const Handle(TDF_Attribute)& Target,
+  BinObjMgt_RRelocationTable&  RelocTable) const
 {
   Handle(TDataStd_GenericExtString) aStrAttr = Handle(TDataStd_GenericExtString)::DownCast(Target);
-  TCollection_ExtendedString aStr;
-  Standard_Boolean ok = Source >> aStr;
+  TCollection_ExtendedString        aStr;
+  Standard_Boolean                  ok = Source >> aStr;
   if (ok)
-    aStrAttr->Set( aStr );
-  if(RelocTable.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_9) { // process user defined guid
-	const Standard_Integer& aPos = Source.Position();
-	Standard_GUID aGuid;
-	ok = Source >> aGuid;	
-	if (!ok) {
-	  Source.SetPosition(aPos);	  
-	  ok = Standard_True;
-	} else {	  
-    aStrAttr->SetID(aGuid);
-	}
+    aStrAttr->Set(aStr);
+  if (RelocTable.GetHeaderData()->StorageVersion().IntegerValue()
+      >= TDocStd_FormatVersion_VERSION_9)
+  { // process user defined guid
+    const Standard_Integer& aPos = Source.Position();
+    Standard_GUID           aGuid;
+    ok = Source >> aGuid;
+    if (!ok)
+    {
+      Source.SetPosition(aPos);
+      ok = Standard_True;
+    }
+    else
+    {
+      aStrAttr->SetID(aGuid);
+    }
   }
   return ok;
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDataStd_GenericExtStringDriver::Paste
-                         (const Handle(TDF_Attribute)& Source,
-                          BinObjMgt_Persistent&        Target,
-                          BinObjMgt_SRelocationTable&  /*RelocTable*/) const
+void BinMDataStd_GenericExtStringDriver::Paste(const Handle(TDF_Attribute)& Source,
+                                               BinObjMgt_Persistent&        Target,
+                                               BinObjMgt_SRelocationTable& /*RelocTable*/) const
 {
   Handle(TDataStd_GenericExtString) aStrAttr = Handle(TDataStd_GenericExtString)::DownCast(Source);
   Target << aStrAttr->Get();

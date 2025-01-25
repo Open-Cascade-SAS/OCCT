@@ -19,5 +19,6 @@
 #include <StepVisual_DraughtingCalloutElement.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<StepVisual_DraughtingCalloutElement> StepVisual_Array1OfDraughtingCalloutElement;
+typedef NCollection_Array1<StepVisual_DraughtingCalloutElement>
+  StepVisual_Array1OfDraughtingCalloutElement;
 #endif // _StepVisual_Array1OfDraughtingCalloutElement_HeaderFile

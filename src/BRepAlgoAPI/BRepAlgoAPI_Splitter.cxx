@@ -17,24 +17,22 @@
 #include <BOPAlgo_Alerts.hxx>
 #include <BOPAlgo_Splitter.hxx>
 
-//=======================================================================
-// function: Empty constructor
-// purpose: 
-//=======================================================================
+//=================================================================================================
+
 BRepAlgoAPI_Splitter::BRepAlgoAPI_Splitter()
-  : BRepAlgoAPI_BuilderAlgo() {}
+    : BRepAlgoAPI_BuilderAlgo()
+{
+}
 
-//=======================================================================
-// function: Constructor with already prepared PaveFiller
-// purpose: 
-//=======================================================================
+//=================================================================================================
+
 BRepAlgoAPI_Splitter::BRepAlgoAPI_Splitter(const BOPAlgo_PaveFiller& thePF)
-  : BRepAlgoAPI_BuilderAlgo(thePF) {}
+    : BRepAlgoAPI_BuilderAlgo(thePF)
+{
+}
 
-//=======================================================================
-// function: Build
-// purpose: 
-//=======================================================================
+//=================================================================================================
+
 void BRepAlgoAPI_Splitter::Build(const Message_ProgressRange& theRange)
 {
   // Set Not Done status by default
@@ -42,15 +40,16 @@ void BRepAlgoAPI_Splitter::Build(const Message_ProgressRange& theRange)
   // Clear the contents
   Clear();
   // Check for availability of arguments and tools
-  if (myArguments.IsEmpty() ||
-     (myArguments.Extent() + myTools.Extent()) < 2)
+  if (myArguments.IsEmpty() || (myArguments.Extent() + myTools.Extent()) < 2)
   {
-    AddError (new BOPAlgo_AlertTooFewArguments);
+    AddError(new BOPAlgo_AlertTooFewArguments);
     return;
   }
 
   // If necessary perform intersection of the argument shapes
-  Message_ProgressScope aPS(theRange, "Performing Split operation", myIsIntersectionNeeded ? 100 : 30);
+  Message_ProgressScope aPS(theRange,
+                            "Performing Split operation",
+                            myIsIntersectionNeeded ? 100 : 30);
   if (myIsIntersectionNeeded)
   {
     // Combine Arguments and Tools for intersection into a single list

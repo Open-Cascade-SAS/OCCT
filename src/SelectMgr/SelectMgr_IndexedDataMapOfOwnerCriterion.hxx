@@ -21,6 +21,7 @@
 #include <SelectMgr_SortCriterion.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-typedef NCollection_IndexedDataMap<Handle(SelectMgr_EntityOwner), SelectMgr_SortCriterion> SelectMgr_IndexedDataMapOfOwnerCriterion;
+typedef NCollection_IndexedDataMap<Handle(SelectMgr_EntityOwner), SelectMgr_SortCriterion>
+  SelectMgr_IndexedDataMapOfOwnerCriterion;
 
 #endif

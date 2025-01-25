@@ -15,25 +15,22 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : SetUVPoints2
-//purpose  : 
+// function : SetUVPoints2
+// purpose  :
 //=======================================================================
 
-inline void  BRep_CurveOnClosedSurface::SetUVPoints2(const gp_Pnt2d& P1, 
-						     const gp_Pnt2d& P2)
+inline void BRep_CurveOnClosedSurface::SetUVPoints2(const gp_Pnt2d& P1, const gp_Pnt2d& P2)
 {
   myUV21 = P1;
   myUV22 = P2;
 }
 
-
 //=======================================================================
-//function : UVPoints2
-//purpose  : 
+// function : UVPoints2
+// purpose  :
 //=======================================================================
 
-inline void  BRep_CurveOnClosedSurface::UVPoints2(gp_Pnt2d& P1, 
-						  gp_Pnt2d& P2)const 
+inline void BRep_CurveOnClosedSurface::UVPoints2(gp_Pnt2d& P1, gp_Pnt2d& P2) const
 {
   P1 = myUV21;
   P2 = myUV22;

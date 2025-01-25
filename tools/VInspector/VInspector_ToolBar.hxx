@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef VInspector_ToolBar_H
 #define VInspector_ToolBar_H
@@ -35,9 +35,8 @@ class VInspector_ToolBar : public QObject
   Q_OBJECT
 
 public:
-
   //! Constructor
-  Standard_EXPORT VInspector_ToolBar (QWidget* theParent);
+  Standard_EXPORT VInspector_ToolBar(QWidget* theParent);
 
   //! Destructor
   virtual ~VInspector_ToolBar() {}
@@ -47,13 +46,13 @@ public:
 
   //! Returns tool button by action index
   //! \param theActionId index of action
-  Standard_EXPORT QPushButton* GetToolButton (const VInspector_ToolActionType& theActionId) const;
+  Standard_EXPORT QPushButton* GetToolButton(const VInspector_ToolActionType& theActionId) const;
 
 signals:
 
   //! Signal about action click
   //! \param theActionId an action index
-  void actionClicked (int theActionId);
+  void actionClicked(int theActionId);
 
 private slots:
 
@@ -61,8 +60,7 @@ private slots:
   void onActionClicked();
 
 private:
-
-  QWidget* myMainWindow; //!< the main control
+  QWidget*                                      myMainWindow; //!< the main control
   QMap<VInspector_ToolActionType, QPushButton*> myActionsMap; //!< container of type into button
 };
 

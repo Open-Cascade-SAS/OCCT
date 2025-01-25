@@ -23,35 +23,35 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Message_PrinterOStream,Message_Printer)
+IMPLEMENT_STANDARD_RTTIEXT(Message_PrinterOStream, Message_Printer)
 
 #if !defined(_MSC_VER)
   #include <strings.h>
 #endif
 
 //=======================================================================
-//function : Constructor
-//purpose  : Empty constructor, defaulting to cerr
+// function : Constructor
+// purpose  : Empty constructor, defaulting to cerr
 //=======================================================================
-Message_PrinterOStream::Message_PrinterOStream (const Message_Gravity theTraceLevel)
-: myStream  (&std::cout),
-  myIsFile  (Standard_False),
-  myToColorize (Standard_True)
+Message_PrinterOStream::Message_PrinterOStream(const Message_Gravity theTraceLevel)
+    : myStream(&std::cout),
+      myIsFile(Standard_False),
+      myToColorize(Standard_True)
 {
   myTraceLevel = theTraceLevel;
 }
 
 //=======================================================================
-//function : Constructor
-//purpose  : Opening a file as an std::ostream
+// function : Constructor
+// purpose  : Opening a file as an std::ostream
 //           for specific file names standard streams are created
 //=======================================================================
-Message_PrinterOStream::Message_PrinterOStream (const Standard_CString theFileName,
-                                                const Standard_Boolean theToAppend,
-                                                const Message_Gravity  theTraceLevel)
-: myStream (&std::cout),
-  myIsFile (Standard_False),
-  myToColorize (Standard_True)
+Message_PrinterOStream::Message_PrinterOStream(const Standard_CString theFileName,
+                                               const Standard_Boolean theToAppend,
+                                               const Message_Gravity  theTraceLevel)
+    : myStream(&std::cout),
+      myIsFile(Standard_False),
+      myToColorize(Standard_True)
 {
   myTraceLevel = theTraceLevel;
   if (strcasecmp(theFileName, "cerr") == 0)
@@ -65,17 +65,19 @@ Message_PrinterOStream::Message_PrinterOStream (const Standard_CString theFileNa
     return;
   }
 
-  TCollection_AsciiString aFileName (theFileName);
+  TCollection_AsciiString aFileName(theFileName);
 #ifdef _WIN32
-  aFileName.ChangeAll ('/', '\\');
+  aFileName.ChangeAll('/', '\\');
 #endif
 
   std::ofstream* aFile = new std::ofstream();
-  OSD_OpenStream (*aFile, aFileName.ToCString(), (theToAppend ? (std::ios_base::app | std::ios_base::out) : std::ios_base::out));
+  OSD_OpenStream(*aFile,
+                 aFileName.ToCString(),
+                 (theToAppend ? (std::ios_base::app | std::ios_base::out) : std::ios_base::out));
   if (aFile->is_open())
   {
-    myStream = (Standard_OStream* )aFile;
-    myIsFile = Standard_True;
+    myStream     = (Standard_OStream*)aFile;
+    myIsFile     = Standard_True;
     myToColorize = Standard_False;
   }
   else
@@ -88,63 +90,58 @@ Message_PrinterOStream::Message_PrinterOStream (const Standard_CString theFileNa
   }
 }
 
-//=======================================================================
-//function : Close
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void Message_PrinterOStream::Close ()
+void Message_PrinterOStream::Close()
 {
-  if ( ! myStream ) return;
+  if (!myStream)
+    return;
   Standard_OStream* ostr = (Standard_OStream*)myStream;
-  myStream = 0;
+  myStream               = 0;
 
   ostr->flush();
-  if ( myIsFile )
+  if (myIsFile)
   {
-    std::ofstream* ofile = (std::ofstream* )ostr;
+    std::ofstream* ofile = (std::ofstream*)ostr;
     ofile->close();
     delete ofile;
     myIsFile = Standard_False;
   }
 }
 
-//=======================================================================
-//function : send
-//purpose  :
-//=======================================================================
-void Message_PrinterOStream::send (const TCollection_AsciiString& theString,
-                                   const Message_Gravity theGravity) const
+//=================================================================================================
+
+void Message_PrinterOStream::send(const TCollection_AsciiString& theString,
+                                  const Message_Gravity          theGravity) const
 {
-  if (theGravity < myTraceLevel
-   || myStream == NULL)
+  if (theGravity < myTraceLevel || myStream == NULL)
   {
     return;
   }
 
-  Message_ConsoleColor aColor = Message_ConsoleColor_Default;
-  bool toIntense = false;
+  Message_ConsoleColor aColor    = Message_ConsoleColor_Default;
+  bool                 toIntense = false;
   if (myToColorize && !myIsFile)
   {
-    switch(theGravity)
+    switch (theGravity)
     {
       case Message_Trace:
         aColor = Message_ConsoleColor_Yellow;
         break;
       case Message_Info:
-        aColor = Message_ConsoleColor_Green;
+        aColor    = Message_ConsoleColor_Green;
         toIntense = true;
         break;
       case Message_Warning:
-        aColor = Message_ConsoleColor_Yellow;
+        aColor    = Message_ConsoleColor_Yellow;
         toIntense = true;
         break;
       case Message_Alarm:
-        aColor = Message_ConsoleColor_Red;
+        aColor    = Message_ConsoleColor_Red;
         toIntense = true;
         break;
       case Message_Fail:
-        aColor = Message_ConsoleColor_Red;
+        aColor    = Message_ConsoleColor_Red;
         toIntense = true;
         break;
     }
@@ -153,9 +150,9 @@ void Message_PrinterOStream::send (const TCollection_AsciiString& theString,
   Standard_OStream* aStream = (Standard_OStream*)myStream;
   if (toIntense || aColor != Message_ConsoleColor_Default)
   {
-    SetConsoleTextColor (aStream, aColor, toIntense);
+    SetConsoleTextColor(aStream, aColor, toIntense);
     *aStream << theString;
-    SetConsoleTextColor (aStream, Message_ConsoleColor_Default, false);
+    SetConsoleTextColor(aStream, Message_ConsoleColor_Default, false);
   }
   else
   {
@@ -164,18 +161,16 @@ void Message_PrinterOStream::send (const TCollection_AsciiString& theString,
   (*aStream) << std::endl;
 }
 
-//=======================================================================
-//function : SetConsoleTextColor
-//purpose  :
-//=======================================================================
-void Message_PrinterOStream::SetConsoleTextColor (Standard_OStream* theOStream,
-                                                  Message_ConsoleColor theTextColor,
-                                                  bool theIsIntenseText)
+//=================================================================================================
+
+void Message_PrinterOStream::SetConsoleTextColor(Standard_OStream*    theOStream,
+                                                 Message_ConsoleColor theTextColor,
+                                                 bool                 theIsIntenseText)
 {
 #ifdef _WIN32
   // there is no difference between STD_OUTPUT_HANDLE/STD_ERROR_HANDLE for std::cout/std::cerr
-  (void )theOStream;
-  if (HANDLE anStdOut = GetStdHandle (STD_OUTPUT_HANDLE))
+  (void)theOStream;
+  if (HANDLE anStdOut = GetStdHandle(STD_OUTPUT_HANDLE))
   {
     WORD aFlags = 0;
     if (theIsIntenseText)
@@ -209,14 +204,14 @@ void Message_PrinterOStream::SetConsoleTextColor (Standard_OStream* theOStream,
         aFlags |= FOREGROUND_RED | FOREGROUND_BLUE;
         break;
     }
-    SetConsoleTextAttribute (anStdOut, aFlags);
+    SetConsoleTextAttribute(anStdOut, aFlags);
   }
 #elif defined(__EMSCRIPTEN__)
   // Terminal capabilities are undefined on this platform.
   // std::cout could be redirected to HTML page, into terminal or somewhere else.
-  (void )theOStream;
-  (void )theTextColor;
-  (void )theIsIntenseText;
+  (void)theOStream;
+  (void)theTextColor;
+  (void)theIsIntenseText;
 #else
   if (theOStream == NULL)
   {

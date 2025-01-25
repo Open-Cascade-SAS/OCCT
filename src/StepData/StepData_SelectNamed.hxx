@@ -26,7 +26,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 
-
 class StepData_SelectNamed;
 DEFINE_STANDARD_HANDLE(StepData_SelectNamed, StepData_SelectMember)
 
@@ -37,63 +36,44 @@ class StepData_SelectNamed : public StepData_SelectMember
 {
 
 public:
-
-  
   Standard_EXPORT StepData_SelectNamed();
-  
+
   Standard_EXPORT virtual Standard_Boolean HasName() const Standard_OVERRIDE;
-  
+
   Standard_EXPORT virtual Standard_CString Name() const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_Boolean SetName (const Standard_CString name) Standard_OVERRIDE;
-  
+
+  Standard_EXPORT virtual Standard_Boolean SetName(const Standard_CString name) Standard_OVERRIDE;
+
   Standard_EXPORT const StepData_Field& Field() const;
-  
+
   Standard_EXPORT StepData_Field& CField();
-  
+
   Standard_EXPORT virtual Standard_Integer Kind() const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void SetKind (const Standard_Integer kind) Standard_OVERRIDE;
-  
+
+  Standard_EXPORT virtual void SetKind(const Standard_Integer kind) Standard_OVERRIDE;
+
   //! This internal method gives access to a value implemented by an
   //! Integer (to read it)
   Standard_EXPORT virtual Standard_Integer Int() const Standard_OVERRIDE;
-  
+
   //! This internal method gives access to a value implemented by an
   //! Integer (to set it)
-  Standard_EXPORT virtual void SetInt (const Standard_Integer val) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void SetInt(const Standard_Integer val) Standard_OVERRIDE;
+
   Standard_EXPORT virtual Standard_Real Real() const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void SetReal (const Standard_Real val) Standard_OVERRIDE;
-  
+
+  Standard_EXPORT virtual void SetReal(const Standard_Real val) Standard_OVERRIDE;
+
   Standard_EXPORT virtual Standard_CString String() const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void SetString (const Standard_CString val) Standard_OVERRIDE;
 
+  Standard_EXPORT virtual void SetString(const Standard_CString val) Standard_OVERRIDE;
 
-
-
-  DEFINE_STANDARD_RTTIEXT(StepData_SelectNamed,StepData_SelectMember)
+  DEFINE_STANDARD_RTTIEXT(StepData_SelectNamed, StepData_SelectMember)
 
 protected:
-
-
-
-
 private:
-
-
   TCollection_AsciiString thename;
-  StepData_Field theval;
-
-
+  StepData_Field          theval;
 };
-
-
-
-
-
-
 
 #endif // _StepData_SelectNamed_HeaderFile

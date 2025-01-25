@@ -15,16 +15,11 @@
 
 #include <LDOM_LDOMImplementation.hxx>
 
-//=======================================================================
-//function : createDocument
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-LDOM_Document LDOM_LDOMImplementation::createDocument
-                                      (const LDOMString&      /*aNamespaceURI*/,
-                                       const LDOMString&        aQualifiedName,
-                                       const LDOM_DocumentType& /*aDocType*/)
+LDOM_Document LDOM_LDOMImplementation::createDocument(const LDOMString& /*aNamespaceURI*/,
+                                                      const LDOMString& aQualifiedName,
+                                                      const LDOM_DocumentType& /*aDocType*/)
 {
-  return LDOM_Document::createDocument (aQualifiedName);
+  return LDOM_Document::createDocument(aQualifiedName);
 }
-

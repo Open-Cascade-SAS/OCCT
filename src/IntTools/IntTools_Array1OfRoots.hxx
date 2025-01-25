@@ -21,5 +21,4 @@
 
 typedef NCollection_Array1<IntTools_Root> IntTools_Array1OfRoots;
 
-
 #endif

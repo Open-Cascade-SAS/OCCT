@@ -29,81 +29,60 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Express_Schema, Standard_Transient)
 
-//=======================================================================
-// function : Express_Schema
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
-Express_Schema::Express_Schema (const Standard_CString theName,
-                                const Handle(Express_HSequenceOfItem)& theItems)
+Express_Schema::Express_Schema(const Standard_CString                 theName,
+                               const Handle(Express_HSequenceOfItem)& theItems)
 {
-  myName = new TCollection_HAsciiString (theName);
+  myName  = new TCollection_HAsciiString(theName);
   myItems = theItems;
   Prepare();
 }
 
-//=======================================================================
-// function : Express_Schema
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
-Express_Schema::Express_Schema (const Handle(TCollection_HAsciiString)& theName,
-                                const Handle(Express_HSequenceOfItem)& theItems)
+Express_Schema::Express_Schema(const Handle(TCollection_HAsciiString)& theName,
+                               const Handle(Express_HSequenceOfItem)&  theItems)
 {
-  myName = theName;
+  myName  = theName;
   myItems = theItems;
   Prepare();
 }
 
-//=======================================================================
-// function : Name
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 const Handle(TCollection_HAsciiString)& Express_Schema::Name() const
 {
   return myName;
 }
 
-//=======================================================================
-// function : Items
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 const Handle(Express_HSequenceOfItem)& Express_Schema::Items() const
 {
   return myItems;
 }
 
-//=======================================================================
-// function : NbItems
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer Express_Schema::NbItems() const
 {
   return myItems->Length();
 }
 
-//=======================================================================
-// function : Item
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
-Handle(Express_Item) Express_Schema::Item (const Standard_Integer theNum) const
+Handle(Express_Item) Express_Schema::Item(const Standard_Integer theNum) const
 {
-  return myItems->Value (theNum);
+  return myItems->Value(theNum);
 }
 
-//=======================================================================
-// function : Item
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
-Handle(Express_Item) Express_Schema::Item (const Standard_CString theName,
-                                           const Standard_Boolean theSilent) const
+Handle(Express_Item) Express_Schema::Item(const Standard_CString theName,
+                                          const Standard_Boolean theSilent) const
 {
-  if (!myDict.IsBound (theName))
+  if (!myDict.IsBound(theName))
   {
     if (!theSilent)
     {
@@ -111,27 +90,21 @@ Handle(Express_Item) Express_Schema::Item (const Standard_CString theName,
     }
     return {};
   }
-  return myDict.Find (theName);
+  return myDict.Find(theName);
 }
 
-//=======================================================================
-// function : Item
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
-Handle(Express_Item) Express_Schema::Item (const TCollection_AsciiString& theName) const
+Handle(Express_Item) Express_Schema::Item(const TCollection_AsciiString& theName) const
 {
-  return Item (theName.ToCString());
+  return Item(theName.ToCString());
 }
 
-//=======================================================================
-// function : Item
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
-Handle(Express_Item) Express_Schema::Item (const Handle(TCollection_HAsciiString)& theName) const
+Handle(Express_Item) Express_Schema::Item(const Handle(TCollection_HAsciiString)& theName) const
 {
-  return Item (theName->ToCString());
+  return Item(theName->ToCString());
 }
 
 //=======================================================================
@@ -140,7 +113,7 @@ Handle(Express_Item) Express_Schema::Item (const Handle(TCollection_HAsciiString
 //           Convert STEP-style name (lowercase, with underscores)
 //           to CASCADE-style name (each word starts with uppercase, no intervals)
 //=======================================================================
-static void nameToCasCade (const Handle(TCollection_HAsciiString)& theName)
+static void nameToCasCade(const Handle(TCollection_HAsciiString)& theName)
 {
   if (theName.IsNull())
   {
@@ -148,15 +121,15 @@ static void nameToCasCade (const Handle(TCollection_HAsciiString)& theName)
   }
   for (Standard_Integer i = 1; i <= theName->Length(); i++)
   {
-    if (theName->Value (i) == '_')
+    if (theName->Value(i) == '_')
     {
-      theName->Remove (i);
+      theName->Remove(i);
     }
     else if (i > 1)
     {
       continue;
     }
-    theName->SetValue (i, UpperCase (theName->Value (i)));
+    theName->SetValue(i, UpperCase(theName->Value(i)));
   }
 }
 
@@ -165,17 +138,17 @@ static void nameToCasCade (const Handle(TCollection_HAsciiString)& theName)
 // purpose  : auxilary for Prepare()
 //           Convert names for Type object
 //=======================================================================
-static void nameToCasCade (const Handle(Express_Type)& theType)
+static void nameToCasCade(const Handle(Express_Type)& theType)
 {
-  if (theType->IsKind (STANDARD_TYPE(Express_NamedType)))
+  if (theType->IsKind(STANDARD_TYPE(Express_NamedType)))
   {
-    const Handle(Express_NamedType) aNamedType = Handle(Express_NamedType)::DownCast (theType);
-    nameToCasCade (aNamedType->HName());
+    const Handle(Express_NamedType) aNamedType = Handle(Express_NamedType)::DownCast(theType);
+    nameToCasCade(aNamedType->HName());
   }
-  else if (theType->IsKind (STANDARD_TYPE(Express_ComplexType)))
+  else if (theType->IsKind(STANDARD_TYPE(Express_ComplexType)))
   {
-    const Handle(Express_ComplexType) aComplexType = Handle(Express_ComplexType)::DownCast (theType);
-    nameToCasCade (aComplexType->Type());
+    const Handle(Express_ComplexType) aComplexType = Handle(Express_ComplexType)::DownCast(theType);
+    nameToCasCade(aComplexType->Type());
   }
 }
 
@@ -199,132 +172,131 @@ void Express_Schema::Prepare()
   for (Standard_Integer aNum = 1; aNum <= aNbItems; aNum++)
   {
     // get item
-    const Handle(Express_Item) anItem = Item (aNum);
+    const Handle(Express_Item) anItem = Item(aNum);
 
     // change item name
-    nameToCasCade (anItem->HName());
+    nameToCasCade(anItem->HName());
 
     // change names of referred types and other names
-    if (anItem->IsKind (STANDARD_TYPE(Express_Alias)))
+    if (anItem->IsKind(STANDARD_TYPE(Express_Alias)))
     {
-      const Handle(Express_Alias) anAlias = Handle(Express_Alias)::DownCast (anItem);
-      nameToCasCade (anAlias->Type());
+      const Handle(Express_Alias) anAlias = Handle(Express_Alias)::DownCast(anItem);
+      nameToCasCade(anAlias->Type());
     }
-    else if (anItem->IsKind (STANDARD_TYPE(Express_Select)))
+    else if (anItem->IsKind(STANDARD_TYPE(Express_Select)))
     {
-      const Handle(Express_Select) aSelect = Handle(Express_Select)::DownCast (anItem);
+      const Handle(Express_Select) aSelect = Handle(Express_Select)::DownCast(anItem);
       for (Standard_Integer i = 1; i <= aSelect->Names()->Length(); i++)
       {
-        nameToCasCade (aSelect->Names()->Value (i));
+        nameToCasCade(aSelect->Names()->Value(i));
       }
     }
-    else if (anItem->IsKind (STANDARD_TYPE(Express_Enum)))
+    else if (anItem->IsKind(STANDARD_TYPE(Express_Enum)))
     {
-      const Handle(Express_Enum) anEnum = Handle(Express_Enum)::DownCast (anItem);
+      const Handle(Express_Enum) anEnum = Handle(Express_Enum)::DownCast(anItem);
       for (Standard_Integer i = 1; i <= anEnum->Names()->Length(); i++)
       {
-        nameToCasCade (anEnum->Names()->Value (i));
+        nameToCasCade(anEnum->Names()->Value(i));
       }
     }
-    else if (anItem->IsKind (STANDARD_TYPE(Express_Entity)))
+    else if (anItem->IsKind(STANDARD_TYPE(Express_Entity)))
     {
-      const Handle(Express_Entity) anEntity = Handle(Express_Entity)::DownCast (anItem);
+      const Handle(Express_Entity) anEntity = Handle(Express_Entity)::DownCast(anItem);
       for (Standard_Integer i = 1; i <= anEntity->SuperTypes()->Length(); i++)
       {
-        nameToCasCade (anEntity->SuperTypes()->Value (i));
+        nameToCasCade(anEntity->SuperTypes()->Value(i));
       }
       const Handle(Express_HSequenceOfField) aFields = anEntity->Fields();
       for (Standard_Integer i = 1; i <= aFields->Length(); i++)
       {
-        nameToCasCade (aFields->Value (i)->HName());
-        nameToCasCade (aFields->Value (i)->Type());
+        nameToCasCade(aFields->Value(i)->HName());
+        nameToCasCade(aFields->Value(i)->Type());
       }
     }
 
     // add to dictionary
-    myDict.Bind (anItem->Name(), anItem);
+    myDict.Bind(anItem->Name(), anItem);
   }
 
   // set references to items from other items and types
   for (Standard_Integer aNum = 1; aNum <= aNbItems; aNum++)
   {
-    const Handle(Express_Item) anItem = Item (aNum);
+    const Handle(Express_Item) anItem = Item(aNum);
 
-    if (anItem->IsKind (STANDARD_TYPE(Express_Alias)))
+    if (anItem->IsKind(STANDARD_TYPE(Express_Alias)))
     {
-      const Handle(Express_Alias) anAlias = Handle(Express_Alias)::DownCast (anItem);
-      PrepareType (anAlias->Type());
+      const Handle(Express_Alias) anAlias = Handle(Express_Alias)::DownCast(anItem);
+      PrepareType(anAlias->Type());
       // for aliases, define package to avoid warnings
-      anAlias->SetPackageName ("Standard");
+      anAlias->SetPackageName("Standard");
       continue;
     }
-    else if (anItem->IsKind (STANDARD_TYPE(Express_Select)))
+    else if (anItem->IsKind(STANDARD_TYPE(Express_Select)))
     {
-      const Handle(Express_Select) aSelect = Handle(Express_Select)::DownCast (anItem);
-      Handle(TColStd_HSequenceOfHAsciiString) aNames = aSelect->Names();
-      Handle(Express_HSequenceOfItem) anItems = aSelect->Items();
+      const Handle(Express_Select)            aSelect = Handle(Express_Select)::DownCast(anItem);
+      Handle(TColStd_HSequenceOfHAsciiString) aNames  = aSelect->Names();
+      Handle(Express_HSequenceOfItem)         anItems = aSelect->Items();
       for (Standard_Integer i = 1; i <= aNames->Length(); i++)
       {
-        Handle(Express_Item) aSubItem = Item (aNames->Value (i));
+        Handle(Express_Item) aSubItem = Item(aNames->Value(i));
         // if select refers to another select, expand it
-        if (aSubItem->IsKind (STANDARD_TYPE(Express_Select)))
+        if (aSubItem->IsKind(STANDARD_TYPE(Express_Select)))
         {
-          Message::SendInfo() << "Info: SELECT " << anItem->Name() << " refers to another SELECT " << aSubItem->Name() << "; expanded";
-          const Handle(Express_Select) aSubSelect = Handle(Express_Select)::DownCast (aSubItem);
-          Standard_Integer j = 1;
+          Message::SendInfo() << "Info: SELECT " << anItem->Name() << " refers to another SELECT "
+                              << aSubItem->Name() << "; expanded";
+          const Handle(Express_Select) aSubSelect = Handle(Express_Select)::DownCast(aSubItem);
+          Standard_Integer             j          = 1;
           for (; j <= aSubSelect->Names()->Length(); j++)
           {
-            aNames->InsertBefore (i + j - 1, aSubSelect->Names()->Value (j));
+            aNames->InsertBefore(i + j - 1, aSubSelect->Names()->Value(j));
           }
-          aNames->Remove (i + j - 1);
+          aNames->Remove(i + j - 1);
           i--;
           continue;
         }
-        anItems->Append (aSubItem);
+        anItems->Append(aSubItem);
       }
     }
-    else if (anItem->IsKind (STANDARD_TYPE(Express_Entity)))
+    else if (anItem->IsKind(STANDARD_TYPE(Express_Entity)))
     {
-      const Handle(Express_Entity) anEntity = Handle(Express_Entity)::DownCast (anItem);
-      Handle(TColStd_HSequenceOfHAsciiString) aNames = anEntity->SuperTypes();
-      Handle(Express_HSequenceOfEntity) anInhItems = anEntity->Inherit();
+      const Handle(Express_Entity)            anEntity   = Handle(Express_Entity)::DownCast(anItem);
+      Handle(TColStd_HSequenceOfHAsciiString) aNames     = anEntity->SuperTypes();
+      Handle(Express_HSequenceOfEntity)       anInhItems = anEntity->Inherit();
       for (Standard_Integer i = 1; i <= aNames->Length(); i++)
       {
-        Handle(Express_Entity) aSubEntity = Handle(Express_Entity)::DownCast (Item (aNames->Value (i)));
+        Handle(Express_Entity) aSubEntity =
+          Handle(Express_Entity)::DownCast(Item(aNames->Value(i)));
         if (!aSubEntity.IsNull())
         {
-          anInhItems->Append (aSubEntity);
+          anInhItems->Append(aSubEntity);
         }
         else
         {
-          Message::SendFail() << "Error in " << anItem->Name() << ": supertype " << aNames->Value (i)->String() << " is not an ENTITY; ignored";
+          Message::SendFail() << "Error in " << anItem->Name() << ": supertype "
+                              << aNames->Value(i)->String() << " is not an ENTITY; ignored";
         }
       }
       const Handle(Express_HSequenceOfField) aFields = anEntity->Fields();
       for (Standard_Integer i = 1; i <= aFields->Length(); i++)
       {
-        PrepareType (aFields->Value (i)->Type());
+        PrepareType(aFields->Value(i)->Type());
       }
     }
   }
-
 }
 
-//=======================================================================
-// function : PrepareType
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
-void Express_Schema::PrepareType (const Handle(Express_Type)& theType) const
+void Express_Schema::PrepareType(const Handle(Express_Type)& theType) const
 {
-  if (theType->IsKind (STANDARD_TYPE(Express_NamedType)))
+  if (theType->IsKind(STANDARD_TYPE(Express_NamedType)))
   {
-    Handle(Express_NamedType) aNamedType = Handle(Express_NamedType)::DownCast (theType);
-    aNamedType->SetItem (Item (aNamedType->Name()));
+    Handle(Express_NamedType) aNamedType = Handle(Express_NamedType)::DownCast(theType);
+    aNamedType->SetItem(Item(aNamedType->Name()));
   }
-  else if (theType->IsKind (STANDARD_TYPE(Express_ComplexType)))
+  else if (theType->IsKind(STANDARD_TYPE(Express_ComplexType)))
   {
-    Handle(Express_ComplexType) aComplexType = Handle(Express_ComplexType)::DownCast (theType);
-    PrepareType (aComplexType->Type());
+    Handle(Express_ComplexType) aComplexType = Handle(Express_ComplexType)::DownCast(theType);
+    PrepareType(aComplexType->Type());
   }
 }

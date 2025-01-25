@@ -20,14 +20,13 @@
 class D3DHostTest
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Adds Draw commands to the draw interpretor.
-  Standard_EXPORT static void Commands (Draw_Interpretor& theDI);
+  Standard_EXPORT static void Commands(Draw_Interpretor& theDI);
 
   //! Plugin entry point function.
-  Standard_EXPORT static void Factory (Draw_Interpretor& theDI);
+  Standard_EXPORT static void Factory(Draw_Interpretor& theDI);
 };
 
 #endif // _D3DHostTest_HeaderFile

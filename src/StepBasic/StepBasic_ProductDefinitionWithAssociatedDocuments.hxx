@@ -28,53 +28,39 @@ class StepBasic_ProductDefinitionFormation;
 class StepBasic_ProductDefinitionContext;
 class StepBasic_Document;
 
-
 class StepBasic_ProductDefinitionWithAssociatedDocuments;
-DEFINE_STANDARD_HANDLE(StepBasic_ProductDefinitionWithAssociatedDocuments, StepBasic_ProductDefinition)
-
+DEFINE_STANDARD_HANDLE(StepBasic_ProductDefinitionWithAssociatedDocuments,
+                       StepBasic_ProductDefinition)
 
 class StepBasic_ProductDefinitionWithAssociatedDocuments : public StepBasic_ProductDefinition
 {
 
 public:
-
-  
   Standard_EXPORT StepBasic_ProductDefinitionWithAssociatedDocuments();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aId, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepBasic_ProductDefinitionFormation)& aFormation, const Handle(StepBasic_ProductDefinitionContext)& aFrame, const Handle(StepBasic_HArray1OfDocument)& aDocIds);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&             aId,
+                            const Handle(TCollection_HAsciiString)&             aDescription,
+                            const Handle(StepBasic_ProductDefinitionFormation)& aFormation,
+                            const Handle(StepBasic_ProductDefinitionContext)&   aFrame,
+                            const Handle(StepBasic_HArray1OfDocument)&          aDocIds);
+
   Standard_EXPORT Handle(StepBasic_HArray1OfDocument) DocIds() const;
-  
-  Standard_EXPORT void SetDocIds (const Handle(StepBasic_HArray1OfDocument)& DocIds);
-  
+
+  Standard_EXPORT void SetDocIds(const Handle(StepBasic_HArray1OfDocument)& DocIds);
+
   Standard_EXPORT Standard_Integer NbDocIds() const;
-  
-  Standard_EXPORT Handle(StepBasic_Document) DocIdsValue (const Standard_Integer num) const;
-  
-  Standard_EXPORT void SetDocIdsValue (const Standard_Integer num, const Handle(StepBasic_Document)& adoc);
 
+  Standard_EXPORT Handle(StepBasic_Document) DocIdsValue(const Standard_Integer num) const;
 
+  Standard_EXPORT void SetDocIdsValue(const Standard_Integer            num,
+                                      const Handle(StepBasic_Document)& adoc);
 
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionWithAssociatedDocuments,StepBasic_ProductDefinition)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionWithAssociatedDocuments,
+                          StepBasic_ProductDefinition)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_HArray1OfDocument) theDocIds;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_ProductDefinitionWithAssociatedDocuments_HeaderFile

@@ -26,72 +26,50 @@
 #include <OSD_SysType.hxx>
 #include <OSD_OEMType.hxx>
 
-
 //! Carries information about a Host
 //! System version ,host name, nodename ...
-class OSD_Host 
+class OSD_Host
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Initializes current host by default.
   Standard_EXPORT OSD_Host();
-  
+
   //! Returns system name and version
   Standard_EXPORT TCollection_AsciiString SystemVersion();
-  
+
   //! Returns the system type (UNIX System V, UNIX BSD, MS-DOS...)
   Standard_EXPORT OSD_SysType SystemId() const;
-  
+
   //! Returns host name.
   Standard_EXPORT TCollection_AsciiString HostName();
-  
+
   //! Returns available memory in Kilobytes.
   Standard_EXPORT Standard_Integer AvailableMemory();
-  
+
   //! Returns Internet address of current host.
   Standard_EXPORT TCollection_AsciiString InternetAddress();
-  
+
   //! Returns type of current machine.
   Standard_EXPORT OSD_OEMType MachineType();
-  
+
   //! Returns TRUE if an error occurs
   Standard_EXPORT Standard_Boolean Failed() const;
-  
+
   //! Resets error counter to zero
   Standard_EXPORT void Reset();
-  
+
   //! Raises OSD_Error
   Standard_EXPORT void Perror();
-  
+
   //! Returns error number if 'Failed' is TRUE.
   Standard_EXPORT Standard_Integer Error() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   TCollection_AsciiString myName;
-  OSD_Error myError;
-
-
+  OSD_Error               myError;
 };
-
-
-
-
-
-
 
 #endif // _OSD_Host_HeaderFile

@@ -20,7 +20,7 @@
 #include <StepRepr_MaterialPropertyRepresentation.hxx>
 #include <NCollection_Sequence.hxx>
 
-typedef NCollection_Sequence<Handle(StepRepr_MaterialPropertyRepresentation)> StepRepr_SequenceOfMaterialPropertyRepresentation;
-
+typedef NCollection_Sequence<Handle(StepRepr_MaterialPropertyRepresentation)>
+  StepRepr_SequenceOfMaterialPropertyRepresentation;
 
 #endif

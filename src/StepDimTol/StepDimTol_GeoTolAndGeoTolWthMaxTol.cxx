@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthMaxTol.hxx>
@@ -21,49 +20,48 @@
 #include <StepRepr_ShapeAspect.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeoTolAndGeoTolWthMaxTol,StepDimTol_GeoTolAndGeoTolWthMod)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeoTolAndGeoTolWthMaxTol, StepDimTol_GeoTolAndGeoTolWthMod)
 
-//=======================================================================
-//function : StepDimTol_GeoTolAndGeoTolWthMaxTol
-//purpose  : 
-//=======================================================================
-StepDimTol_GeoTolAndGeoTolWthMaxTol::StepDimTol_GeoTolAndGeoTolWthMaxTol()
+//=================================================================================================
+
+StepDimTol_GeoTolAndGeoTolWthMaxTol::StepDimTol_GeoTolAndGeoTolWthMaxTol() {}
+
+//=================================================================================================
+
+void StepDimTol_GeoTolAndGeoTolWthMaxTol::Init(
+  const Handle(TCollection_HAsciiString)&                   theName,
+  const Handle(TCollection_HAsciiString)&                   theDescription,
+  const Handle(StepBasic_MeasureWithUnit)&                  theMagnitude,
+  const Handle(StepRepr_ShapeAspect)&                       theTolerancedShapeAspect,
+  const Handle(StepDimTol_GeometricToleranceWithModifiers)& theGTWM,
+  const Handle(StepBasic_LengthMeasureWithUnit)&            theMaxTol,
+  const StepDimTol_GeometricToleranceType                   theType)
 {
-}
-
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void StepDimTol_GeoTolAndGeoTolWthMaxTol::Init
-  (const Handle(TCollection_HAsciiString)& theName,
-   const Handle(TCollection_HAsciiString)& theDescription,
-   const Handle(StepBasic_MeasureWithUnit)& theMagnitude,
-   const Handle(StepRepr_ShapeAspect)& theTolerancedShapeAspect,
-   const Handle(StepDimTol_GeometricToleranceWithModifiers)& theGTWM,
-   const Handle(StepBasic_LengthMeasureWithUnit)& theMaxTol,
-   const StepDimTol_GeometricToleranceType theType)
-{
-  StepDimTol_GeoTolAndGeoTolWthMod::Init(theName, theDescription, theMagnitude, theTolerancedShapeAspect, theGTWM, theType);
+  StepDimTol_GeoTolAndGeoTolWthMod::Init(theName,
+                                         theDescription,
+                                         theMagnitude,
+                                         theTolerancedShapeAspect,
+                                         theGTWM,
+                                         theType);
   myMaxTol = theMaxTol;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepDimTol_GeoTolAndGeoTolWthMaxTol::Init
-  (const Handle(TCollection_HAsciiString)& theName,
-   const Handle(TCollection_HAsciiString)& theDescription,
-   const Handle(StepBasic_MeasureWithUnit)& theMagnitude,
-   const StepDimTol_GeometricToleranceTarget& theTolerancedShapeAspect,
-   const Handle(StepDimTol_GeometricToleranceWithModifiers)& theGTWM,
-   const Handle(StepBasic_LengthMeasureWithUnit)& theMaxTol,
-   const StepDimTol_GeometricToleranceType theType)
+void StepDimTol_GeoTolAndGeoTolWthMaxTol::Init(
+  const Handle(TCollection_HAsciiString)&                   theName,
+  const Handle(TCollection_HAsciiString)&                   theDescription,
+  const Handle(StepBasic_MeasureWithUnit)&                  theMagnitude,
+  const StepDimTol_GeometricToleranceTarget&                theTolerancedShapeAspect,
+  const Handle(StepDimTol_GeometricToleranceWithModifiers)& theGTWM,
+  const Handle(StepBasic_LengthMeasureWithUnit)&            theMaxTol,
+  const StepDimTol_GeometricToleranceType                   theType)
 {
-  StepDimTol_GeoTolAndGeoTolWthMod::Init(theName, theDescription, theMagnitude, theTolerancedShapeAspect, theGTWM, theType);
+  StepDimTol_GeoTolAndGeoTolWthMod::Init(theName,
+                                         theDescription,
+                                         theMagnitude,
+                                         theTolerancedShapeAspect,
+                                         theGTWM,
+                                         theType);
   myMaxTol = theMaxTol;
 }

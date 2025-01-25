@@ -27,24 +27,25 @@ class Interface_EntityIterator;
 class RWStepVisual_RWRepositionedTessellatedGeometricSet
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
   RWStepVisual_RWRepositionedTessellatedGeometricSet() {};
 
   //! Reads RepositionedTessellatedGeometricSet
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& theData,
-                                 const Standard_Integer theNum,
-                                 Handle(Interface_Check)& theAch,
-                                 const Handle(StepVisual_RepositionedTessellatedGeometricSet)& theEnt) const;
+  Standard_HIDDEN void ReadStep(
+    const Handle(StepData_StepReaderData)&                        theData,
+    const Standard_Integer                                        theNum,
+    Handle(Interface_Check)&                                      theAch,
+    const Handle(StepVisual_RepositionedTessellatedGeometricSet)& theEnt) const;
 
   //! Writes RepositionedTessellatedGeometricSet
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& theSW,
-                                  const Handle(StepVisual_RepositionedTessellatedGeometricSet)& theEnt) const;
+  Standard_HIDDEN void WriteStep(
+    StepData_StepWriter&                                          theSW,
+    const Handle(StepVisual_RepositionedTessellatedGeometricSet)& theEnt) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepVisual_RepositionedTessellatedGeometricSet)& theEnt,
-                              Interface_EntityIterator& theIter) const;
+  Standard_HIDDEN void Share(const Handle(StepVisual_RepositionedTessellatedGeometricSet)& theEnt,
+                             Interface_EntityIterator& theIter) const;
 };
 #endif // _RWStepVisual_RWRepositionedTessellatedGeometricSet_HeaderFile

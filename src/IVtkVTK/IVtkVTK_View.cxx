@@ -1,7 +1,7 @@
-// Created on: 2011-10-14 
+// Created on: 2011-10-14
 // Created by: Roman KOZLOV
-// Copyright (c) 2011-2014 OPEN CASCADE SAS 
-// 
+// Copyright (c) 2011-2014 OPEN CASCADE SAS
+//
 // This file is part of Open CASCADE Technology software library.
 //
 // This library is free software; you can redistribute it and/or modify it under
@@ -15,9 +15,9 @@
 
 #include <IVtkVTK_View.hxx>
 
-// prevent disabling some MSVC warning messages by VTK headers 
+// prevent disabling some MSVC warning messages by VTK headers
 #ifdef _MSC_VER
-#pragma warning(push)
+  #pragma warning(push)
 #endif
 #include <vtkAutoInit.h>
 #include <vtkCamera.h>
@@ -25,10 +25,10 @@
 #include <vtkRenderWindow.h>
 #include <vtkTransform.h>
 #ifdef _MSC_VER
-#pragma warning(pop)
+  #pragma warning(pop)
 #endif
 
-IMPLEMENT_STANDARD_RTTIEXT(IVtkVTK_View,IVtk_IView)
+IMPLEMENT_STANDARD_RTTIEXT(IVtkVTK_View, IVtk_IView)
 
 // Initialization of VTK object factories.
 // Since VTK 6 the factory methods require "auto-initialization" depending on
@@ -43,150 +43,117 @@ VTK_MODULE_INIT(vtkInteractionStyle)
 
 // Handle implementation
 
+//=================================================================================================
 
-//================================================================
-// Function : Constructor
-// Purpose  : 
-//================================================================
-IVtkVTK_View::IVtkVTK_View (vtkRenderer* theRenderer)
-: myRenderer (theRenderer)
-{ }
+IVtkVTK_View::IVtkVTK_View(vtkRenderer* theRenderer)
+    : myRenderer(theRenderer)
+{
+}
 
-//================================================================
-// Function : Destructor
-// Purpose  : 
-//================================================================
-IVtkVTK_View::~IVtkVTK_View()
-{ }
+//=================================================================================================
 
-//================================================================
-// Function : IsPerspective
-// Purpose  : 
-//================================================================
+IVtkVTK_View::~IVtkVTK_View() {}
+
+//=================================================================================================
+
 bool IVtkVTK_View::IsPerspective() const
 {
   return !myRenderer->GetActiveCamera()->GetParallelProjection();
 }
 
-//================================================================
-// Function : GetDistance
-// Purpose  : 
-//================================================================
+//=================================================================================================
+
 double IVtkVTK_View::GetDistance() const
 {
   return myRenderer->GetActiveCamera()->GetDistance();
 }
 
-//================================================================
-// Function : GetEyePosition
-// Purpose  : 
-//================================================================
-void IVtkVTK_View::GetEyePosition (double& theX, double& theY, double& theZ) const
+//=================================================================================================
+
+void IVtkVTK_View::GetEyePosition(double& theX, double& theY, double& theZ) const
 {
-  myRenderer->GetActiveCamera()->GetPosition (theX, theY, theZ);
+  myRenderer->GetActiveCamera()->GetPosition(theX, theY, theZ);
 }
 
-//================================================================
-// Function : GetPosition
-// Purpose  : 
-//================================================================
-void IVtkVTK_View::GetPosition (double& theX, double& theY, double& theZ) const
+//=================================================================================================
+
+void IVtkVTK_View::GetPosition(double& theX, double& theY, double& theZ) const
 {
-  myRenderer->GetActiveCamera()->GetFocalPoint (theX, theY, theZ);
+  myRenderer->GetActiveCamera()->GetFocalPoint(theX, theY, theZ);
 }
 
-//================================================================
-// Function : GetViewUp
-// Purpose  : 
-//================================================================
-void IVtkVTK_View::GetViewUp (double& theDx, double& theDy, double& theDz) const
+//=================================================================================================
+
+void IVtkVTK_View::GetViewUp(double& theDx, double& theDy, double& theDz) const
 {
   myRenderer->GetActiveCamera()->OrthogonalizeViewUp();
-  myRenderer->GetActiveCamera()->GetViewUp (theDx, theDy, theDz);
+  myRenderer->GetActiveCamera()->GetViewUp(theDx, theDy, theDz);
 }
 
-//================================================================
-// Function : GetDirectionOfProjection
-// Purpose  : 
-//================================================================
-void IVtkVTK_View::GetDirectionOfProjection (double& theDx,
-                                             double& theDy,
-                                             double& theDz) const
+//=================================================================================================
+
+void IVtkVTK_View::GetDirectionOfProjection(double& theDx, double& theDy, double& theDz) const
 {
-  myRenderer->GetActiveCamera()->GetDirectionOfProjection (theDx, theDy, theDz);
+  myRenderer->GetActiveCamera()->GetDirectionOfProjection(theDx, theDy, theDz);
   theDx = -theDx;
   theDy = -theDy;
   theDz = -theDz;
 }
 
-//================================================================
-// Function : GetScale
-// Purpose  : 
-//================================================================
-void IVtkVTK_View::GetScale (double& theX, double& theY, double& theZ) const
+//=================================================================================================
+
+void IVtkVTK_View::GetScale(double& theX, double& theY, double& theZ) const
 {
   double aScale[3];
-  myRenderer->GetActiveCamera()->GetViewTransformObject()->GetScale (aScale);
+  myRenderer->GetActiveCamera()->GetViewTransformObject()->GetScale(aScale);
   theX = aScale[0];
   theY = aScale[1];
   theZ = aScale[2];
 }
 
-//================================================================
-// Function : GetParallelScale
-// Purpose  : 
-//================================================================
+//=================================================================================================
+
 double IVtkVTK_View::GetParallelScale() const
 {
   return myRenderer->GetActiveCamera()->GetParallelScale();
 }
 
-//================================================================
-// Function : GetViewAngle
-// Purpose  : 
-//================================================================
+//=================================================================================================
+
 double IVtkVTK_View::GetViewAngle() const
 {
   return myRenderer->GetActiveCamera()->GetViewAngle();
 }
 
-//================================================================
-// Function : GetAspectRatio
-// Purpose  : 
-//================================================================
+//=================================================================================================
+
 double IVtkVTK_View::GetAspectRatio() const
 {
   return myRenderer->GetTiledAspectRatio();
 }
 
-//================================================================
-// Function : GetClippingRange
-// Purpose  : 
-//================================================================
-void IVtkVTK_View::GetClippingRange (double& theZNear, double& theZFar) const
+//=================================================================================================
+
+void IVtkVTK_View::GetClippingRange(double& theZNear, double& theZFar) const
 {
-  myRenderer->GetActiveCamera()->GetClippingRange (theZNear, theZFar);
+  myRenderer->GetActiveCamera()->GetClippingRange(theZNear, theZFar);
 }
 
-//================================================================
-// Function : GetViewCenter
-// Purpose  : 
-//================================================================
-void IVtkVTK_View::GetViewCenter (double& theX, double& theY) const
+//=================================================================================================
+
+void IVtkVTK_View::GetViewCenter(double& theX, double& theY) const
 {
   double* aCenter = myRenderer->GetCenter();
-  theX = aCenter[0];
-  theY = aCenter[1];
+  theX            = aCenter[0];
+  theY            = aCenter[1];
 }
 
-//================================================================
-// Function : DisplayToWorld
-// Purpose  : 
-//================================================================
-bool IVtkVTK_View::DisplayToWorld (const gp_XY& theDisplayPnt, gp_XYZ& theWorldPnt) const
+//=================================================================================================
+
+bool IVtkVTK_View::DisplayToWorld(const gp_XY& theDisplayPnt, gp_XYZ& theWorldPnt) const
 {
   // Convert the selection point into world coordinates.
-  myRenderer->SetDisplayPoint (theDisplayPnt.X(), theDisplayPnt.Y(), 0.0);
+  myRenderer->SetDisplayPoint(theDisplayPnt.X(), theDisplayPnt.Y(), 0.0);
   myRenderer->DisplayToWorld();
 
   double* const aCoords = myRenderer->GetWorldPoint();
@@ -195,62 +162,55 @@ bool IVtkVTK_View::DisplayToWorld (const gp_XY& theDisplayPnt, gp_XYZ& theWorldP
     return false;
   }
 
-  theWorldPnt = gp_XYZ (aCoords[0] / aCoords[3], 
-    aCoords[1] / aCoords[3], aCoords[2] / aCoords[3]);
+  theWorldPnt = gp_XYZ(aCoords[0] / aCoords[3], aCoords[1] / aCoords[3], aCoords[2] / aCoords[3]);
 
   return true;
 }
 
-//================================================================
-// Function : GetWindowSize
-// Purpose  :
-//================================================================
-void IVtkVTK_View::GetWindowSize (int& theX, int& theY) const
+//=================================================================================================
+
+void IVtkVTK_View::GetWindowSize(int& theX, int& theY) const
 {
   int* aSize = myRenderer->GetRenderWindow()->GetSize();
-  theX = aSize[0];
-  theY = aSize[1];
+  theX       = aSize[0];
+  theY       = aSize[1];
 }
 
-//================================================================
-// Function : GetCamera
-// Purpose  :
-//================================================================
-void IVtkVTK_View::GetCamera (Graphic3d_Mat4d& theProj,
-                              Graphic3d_Mat4d& theOrient,
-                              Standard_Boolean& theIsOrtho) const
+//=================================================================================================
+
+void IVtkVTK_View::GetCamera(Graphic3d_Mat4d&  theProj,
+                             Graphic3d_Mat4d&  theOrient,
+                             Standard_Boolean& theIsOrtho) const
 {
   theIsOrtho = !IsPerspective();
 
   vtkMatrix4x4* aCompositeProj =
-    myRenderer->GetActiveCamera()->
-    GetCompositeProjectionTransformMatrix (myRenderer->GetTiledAspectRatio(),
-                                           0,
-                                           1);
+    myRenderer->GetActiveCamera()->GetCompositeProjectionTransformMatrix(
+      myRenderer->GetTiledAspectRatio(),
+      0,
+      1);
   for (Standard_Integer aRow = 0; aRow < 4; ++aRow)
   {
     for (Standard_Integer aCol = 0; aCol < 4; ++aCol)
     {
-      theProj.SetValue (aRow, aCol, aCompositeProj->GetElement (aRow, aCol));
+      theProj.SetValue(aRow, aCol, aCompositeProj->GetElement(aRow, aCol));
     }
   }
 
   theOrient.InitIdentity();
 }
 
-//================================================================
-// Function : GetViewport
-// Purpose  :
-//================================================================
-void IVtkVTK_View::GetViewport (Standard_Real& theX,
-                                Standard_Real& theY,
-                                Standard_Real& theWidth,
-                                Standard_Real& theHeight) const
+//=================================================================================================
+
+void IVtkVTK_View::GetViewport(Standard_Real& theX,
+                               Standard_Real& theY,
+                               Standard_Real& theWidth,
+                               Standard_Real& theHeight) const
 {
   Standard_Real aViewport[4];
-  myRenderer->GetViewport (aViewport);
-  theX = aViewport[0];
-  theY = aViewport[1];
+  myRenderer->GetViewport(aViewport);
+  theX      = aViewport[0];
+  theY      = aViewport[1];
   theWidth  = aViewport[2];
   theHeight = aViewport[3];
 }

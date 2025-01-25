@@ -17,11 +17,10 @@
 #ifndef _Extrema_ExtAlgo_HeaderFile
 #define _Extrema_ExtAlgo_HeaderFile
 
-
 enum Extrema_ExtAlgo
 {
-Extrema_ExtAlgo_Grad,
-Extrema_ExtAlgo_Tree
+  Extrema_ExtAlgo_Grad,
+  Extrema_ExtAlgo_Tree
 };
 
 #endif // _Extrema_ExtAlgo_HeaderFile

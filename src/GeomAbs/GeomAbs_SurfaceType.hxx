@@ -17,20 +17,19 @@
 #ifndef _GeomAbs_SurfaceType_HeaderFile
 #define _GeomAbs_SurfaceType_HeaderFile
 
-
 enum GeomAbs_SurfaceType
 {
-GeomAbs_Plane,
-GeomAbs_Cylinder,
-GeomAbs_Cone,
-GeomAbs_Sphere,
-GeomAbs_Torus,
-GeomAbs_BezierSurface,
-GeomAbs_BSplineSurface,
-GeomAbs_SurfaceOfRevolution,
-GeomAbs_SurfaceOfExtrusion,
-GeomAbs_OffsetSurface,
-GeomAbs_OtherSurface
+  GeomAbs_Plane,
+  GeomAbs_Cylinder,
+  GeomAbs_Cone,
+  GeomAbs_Sphere,
+  GeomAbs_Torus,
+  GeomAbs_BezierSurface,
+  GeomAbs_BSplineSurface,
+  GeomAbs_SurfaceOfRevolution,
+  GeomAbs_SurfaceOfExtrusion,
+  GeomAbs_OffsetSurface,
+  GeomAbs_OtherSurface
 };
 
 #endif // _GeomAbs_SurfaceType_HeaderFile

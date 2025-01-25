@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : First
-//purpose  : 
+// function : First
+// purpose  :
 //=======================================================================
 
 inline void BRepOffset_Interval::First(const Standard_Real U)
@@ -24,10 +24,9 @@ inline void BRepOffset_Interval::First(const Standard_Real U)
   f = U;
 }
 
-
 //=======================================================================
-//function : Last
-//purpose  : 
+// function : Last
+// purpose  :
 //=======================================================================
 
 inline void BRepOffset_Interval::Last(const Standard_Real U)
@@ -35,10 +34,9 @@ inline void BRepOffset_Interval::Last(const Standard_Real U)
   l = U;
 }
 
-
 //=======================================================================
-//function : Type
-//purpose  : 
+// function : Type
+// purpose  :
 //=======================================================================
 
 inline void BRepOffset_Interval::Type(const ChFiDS_TypeOfConcavity T)
@@ -46,37 +44,32 @@ inline void BRepOffset_Interval::Type(const ChFiDS_TypeOfConcavity T)
   type = T;
 }
 
-
 //=======================================================================
-//function : First
-//purpose  : 
+// function : First
+// purpose  :
 //=======================================================================
 
-inline Standard_Real BRepOffset_Interval::First() const 
+inline Standard_Real BRepOffset_Interval::First() const
 {
   return f;
 }
 
-
 //=======================================================================
-//function : Last
-//purpose  : 
+// function : Last
+// purpose  :
 //=======================================================================
 
-inline Standard_Real BRepOffset_Interval::Last() const 
+inline Standard_Real BRepOffset_Interval::Last() const
 {
   return l;
 }
 
-
 //=======================================================================
-//function : Type
-//purpose  : 
+// function : Type
+// purpose  :
 //=======================================================================
 
-inline ChFiDS_TypeOfConcavity BRepOffset_Interval::Type() const 
+inline ChFiDS_TypeOfConcavity BRepOffset_Interval::Type() const
 {
   return type;
 }
-
-

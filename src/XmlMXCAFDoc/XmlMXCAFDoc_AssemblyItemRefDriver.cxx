@@ -24,31 +24,27 @@ IMPLEMENT_DOMSTRING(Path, "path")
 IMPLEMENT_DOMSTRING(AttrGUID, "guid")
 IMPLEMENT_DOMSTRING(SubshapeIndex, "subshape_index")
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-XmlMXCAFDoc_AssemblyItemRefDriver::XmlMXCAFDoc_AssemblyItemRefDriver(const Handle(Message_Messenger)& theMsgDriver)
-: XmlMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_AssemblyItemRef)->Name())
+//=================================================================================================
+
+XmlMXCAFDoc_AssemblyItemRefDriver::XmlMXCAFDoc_AssemblyItemRefDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : XmlMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_AssemblyItemRef)->Name())
 {
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Handle(TDF_Attribute) XmlMXCAFDoc_AssemblyItemRefDriver::NewEmpty() const
 {
   return new XCAFDoc_AssemblyItemRef();
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-Standard_Boolean XmlMXCAFDoc_AssemblyItemRefDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                          const Handle(TDF_Attribute)& theTarget,
-                                                          XmlObjMgt_RRelocationTable&  /*theRelocTable*/) const
+//=================================================================================================
+
+Standard_Boolean XmlMXCAFDoc_AssemblyItemRefDriver::Paste(
+  const XmlObjMgt_Persistent&  theSource,
+  const Handle(TDF_Attribute)& theTarget,
+  XmlObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
   const XmlObjMgt_Element& anElement = theSource;
 
@@ -84,13 +80,11 @@ Standard_Boolean XmlMXCAFDoc_AssemblyItemRefDriver::Paste(const XmlObjMgt_Persis
   return Standard_True;
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void XmlMXCAFDoc_AssemblyItemRefDriver::Paste(const Handle(TDF_Attribute)& theSource,
                                               XmlObjMgt_Persistent&        theTarget,
-                                              XmlObjMgt_SRelocationTable&  /*theRelocTable*/) const
+                                              XmlObjMgt_SRelocationTable& /*theRelocTable*/) const
 {
   Handle(XCAFDoc_AssemblyItemRef) aThis = Handle(XCAFDoc_AssemblyItemRef)::DownCast(theSource);
 
@@ -99,7 +93,7 @@ void XmlMXCAFDoc_AssemblyItemRefDriver::Paste(const Handle(TDF_Attribute)& theSo
 
   if (aThis->IsGUID())
   {
-    Standard_GUID aGUID = aThis->GetGUID();
+    Standard_GUID      aGUID = aThis->GetGUID();
     Standard_Character aGUIDStr[Standard_GUID_SIZE + 1];
     aGUID.ToCString(aGUIDStr);
     aGUIDStr[Standard_GUID_SIZE] = '\0';
@@ -109,8 +103,7 @@ void XmlMXCAFDoc_AssemblyItemRefDriver::Paste(const Handle(TDF_Attribute)& theSo
   else if (aThis->IsSubshapeIndex())
   {
     TCollection_AsciiString aSubshapeIndexStr(aThis->GetSubshapeIndex());
-    XmlObjMgt_DOMString aSubshapeIndex(aSubshapeIndexStr.ToCString());
+    XmlObjMgt_DOMString     aSubshapeIndex(aSubshapeIndexStr.ToCString());
     theTarget.Element().setAttribute(::SubshapeIndex(), aSubshapeIndex);
   }
-
 }

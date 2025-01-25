@@ -24,7 +24,6 @@
 #include <Standard_Transient.hxx>
 class Vrml_Material;
 
-
 class VrmlConverter_ShadingAspect;
 DEFINE_STANDARD_HANDLE(VrmlConverter_ShadingAspect, Standard_Transient)
 
@@ -34,19 +33,17 @@ class VrmlConverter_ShadingAspect : public Standard_Transient
 {
 
 public:
-
-  
   //! create a default ShadingAspect.
   Standard_EXPORT VrmlConverter_ShadingAspect();
-  
-  Standard_EXPORT void SetFrontMaterial (const Handle(Vrml_Material)& aMaterial);
-  
+
+  Standard_EXPORT void SetFrontMaterial(const Handle(Vrml_Material)& aMaterial);
+
   Standard_EXPORT Handle(Vrml_Material) FrontMaterial() const;
-  
-  Standard_EXPORT void SetShapeHints (const Vrml_ShapeHints& aShapeHints);
-  
+
+  Standard_EXPORT void SetShapeHints(const Vrml_ShapeHints& aShapeHints);
+
   Standard_EXPORT Vrml_ShapeHints ShapeHints() const;
-  
+
   //! defines necessary of  a  calculation  of  normals for  ShadedShape  to  more
   //! accurately  display  curved  surfaces,  pacticularly  when  smoooth  or  phong
   //! shading  is  used  in  VRML  viewer.
@@ -54,44 +51,27 @@ public:
   //! True  -  the normals are calculated.
   //! Warning: If  normals  are  calculated  the  resulting  VRML  file  will
   //! be  substantially  lager.
-  Standard_EXPORT void SetHasNormals (const Standard_Boolean OnOff);
-  
+  Standard_EXPORT void SetHasNormals(const Standard_Boolean OnOff);
+
   //! returns True if the normals are calculating
   Standard_EXPORT Standard_Boolean HasNormals() const;
-  
+
   //! defines necessary of writing  Material from Vrml into  output  OStream.
   //! By default False  -  the material is not writing into OStream,
   //! True  -  the material is writing.
-  Standard_EXPORT void SetHasMaterial (const Standard_Boolean OnOff);
-  
+  Standard_EXPORT void SetHasMaterial(const Standard_Boolean OnOff);
+
   //! returns True if the  materials is  writing into OStream.
   Standard_EXPORT Standard_Boolean HasMaterial() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(VrmlConverter_ShadingAspect,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(VrmlConverter_ShadingAspect, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(Vrml_Material) myFrontMaterial;
-  Vrml_ShapeHints myShapeHints;
-  Standard_Boolean myHasNormals;
-  Standard_Boolean myHasMaterial;
-
-
+  Vrml_ShapeHints       myShapeHints;
+  Standard_Boolean      myHasNormals;
+  Standard_Boolean      myHasMaterial;
 };
-
-
-
-
-
-
 
 #endif // _VrmlConverter_ShadingAspect_HeaderFile

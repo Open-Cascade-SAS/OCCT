@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Geom_Curve.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <Geom_UndefinedValue.hxx>
@@ -23,77 +22,56 @@
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Geom_Curve,Geom_Geometry)
+IMPLEMENT_STANDARD_RTTIEXT(Geom_Curve, Geom_Geometry)
 
-typedef Geom_Curve         Curve;
+typedef Geom_Curve Curve;
 
-//=======================================================================
-//function : Reversed
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(Geom_Curve) Geom_Curve::Reversed () const
+Handle(Geom_Curve) Geom_Curve::Reversed() const
 {
   Handle(Geom_Curve) C = Handle(Geom_Curve)::DownCast(Copy());
   C->Reverse();
   return C;
 }
 
-
-//=======================================================================
-//function : Period
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Real Geom_Curve::Period() const
 {
-  Standard_NoSuchObject_Raise_if
-    ( !IsPeriodic(),"Geom_Curve::Period");
+  Standard_NoSuchObject_Raise_if(!IsPeriodic(), "Geom_Curve::Period");
 
-  return ( LastParameter() - FirstParameter());
+  return (LastParameter() - FirstParameter());
 }
 
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-gp_Pnt Geom_Curve::Value( const Standard_Real U) const 
+gp_Pnt Geom_Curve::Value(const Standard_Real U) const
 {
   gp_Pnt P;
-  D0( U, P);
+  D0(U, P);
   return P;
 }
 
-//=======================================================================
-//function : TransformedParameter
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Real Geom_Curve::TransformedParameter(const Standard_Real U,
-					       const gp_Trsf&) const
+Standard_Real Geom_Curve::TransformedParameter(const Standard_Real U, const gp_Trsf&) const
 {
   return U;
 }
 
-//=======================================================================
-//function : TransformedParameter
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Real Geom_Curve::ParametricTransformation(const gp_Trsf& ) const
+Standard_Real Geom_Curve::ParametricTransformation(const gp_Trsf&) const
 {
   return 1.;
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void Geom_Curve::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+//=================================================================================================
+
+void Geom_Curve::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom_Geometry)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Geom_Geometry)
 }
-

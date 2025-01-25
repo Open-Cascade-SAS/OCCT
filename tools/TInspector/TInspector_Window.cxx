@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/TInspector_Window.hxx>
 
@@ -40,8 +40,8 @@
 #include <QVBoxLayout>
 #include <Standard_WarningsRestore.hxx>
 
-const int TINSPECTOR_DEFAULT_WIDTH = 650;
-const int TINSPECTOR_DEFAULT_HEIGHT = 500;//350;
+const int TINSPECTOR_DEFAULT_WIDTH      = 650;
+const int TINSPECTOR_DEFAULT_HEIGHT     = 500; // 350;
 const int TINSPECTOR_DEFAULT_POSITION_X = 200;
 const int TINSPECTOR_DEFAULT_POSITION_Y = 60;
 
@@ -50,77 +50,78 @@ const int TINSPECTOR_DEFAULT_POSITION_Y = 60;
 // purpose :
 // =======================================================================
 TInspector_Window::TInspector_Window()
-: QObject(), myOpenButton (0)
+    : QObject(),
+      myOpenButton(0)
 {
   myMainWindow = new QMainWindow();
 
-  QWidget* aCentralWidget = new QWidget (myMainWindow);
-  myMainWindow->setCentralWidget (aCentralWidget);
-  QVBoxLayout* aCentralLayout = new QVBoxLayout (aCentralWidget);
-  aCentralLayout->setContentsMargins (0, 0, 0, 0);
-  aCentralLayout->setSpacing (0);
+  QWidget* aCentralWidget = new QWidget(myMainWindow);
+  myMainWindow->setCentralWidget(aCentralWidget);
+  QVBoxLayout* aCentralLayout = new QVBoxLayout(aCentralWidget);
+  aCentralLayout->setContentsMargins(0, 0, 0, 0);
+  aCentralLayout->setSpacing(0);
 
-  myToolsStack = new QStackedWidget (aCentralWidget);
-  myToolsStack->setFrameShape (QFrame::Box);
-  aCentralLayout->addWidget (myToolsStack);
+  myToolsStack = new QStackedWidget(aCentralWidget);
+  myToolsStack->setFrameShape(QFrame::Box);
+  aCentralLayout->addWidget(myToolsStack);
 
-  myEmptyWidget = new QWidget (aCentralWidget);
-  myToolsStack->addWidget (myEmptyWidget);
+  myEmptyWidget = new QWidget(aCentralWidget);
+  myToolsStack->addWidget(myEmptyWidget);
 
-  QWidget* aTopWidget = new QWidget (aCentralWidget);
-  QHBoxLayout* aTopWidgetLayout = new QHBoxLayout (aTopWidget);
-  aTopWidgetLayout->setContentsMargins (0, 0, 0, 0);
-  aTopWidgetLayout->setSpacing (0);
+  QWidget*     aTopWidget       = new QWidget(aCentralWidget);
+  QHBoxLayout* aTopWidgetLayout = new QHBoxLayout(aTopWidget);
+  aTopWidgetLayout->setContentsMargins(0, 0, 0, 0);
+  aTopWidgetLayout->setSpacing(0);
 
-  myButtonWidget = new QWidget (aCentralWidget);
-  myButtonLay = new QHBoxLayout (myButtonWidget);
-  myButtonLay->setContentsMargins (0, 0, 0, 0);
-  myButtonLay->setSpacing (0);
-  myButtonLay->insertStretch (0, 1);
+  myButtonWidget = new QWidget(aCentralWidget);
+  myButtonLay    = new QHBoxLayout(myButtonWidget);
+  myButtonLay->setContentsMargins(0, 0, 0, 0);
+  myButtonLay->setSpacing(0);
+  myButtonLay->insertStretch(0, 1);
 
-  myButtonGroup = new QButtonGroup (aCentralWidget);
-  myButtonGroup->setExclusive (true);
+  myButtonGroup = new QButtonGroup(aCentralWidget);
+  myButtonGroup->setExclusive(true);
 
   myActionsWidget = new QToolButton(aCentralWidget);
   myActionsWidget->setPopupMode(QToolButton::InstantPopup);
-  myActionsWidget->setIcon (QIcon (":plugin_actions.png"));
-  myActionsWidget->setIconSize (QSize (20, 20));
+  myActionsWidget->setIcon(QIcon(":plugin_actions.png"));
+  myActionsWidget->setIconSize(QSize(20, 20));
   QMenu* anActionsMenu = new QMenu(myActionsWidget);
   myActionsWidget->setMenu(anActionsMenu);
-  connect (anActionsMenu, SIGNAL (aboutToShow()), this, SLOT (onShowActionsMenu()));
+  connect(anActionsMenu, SIGNAL(aboutToShow()), this, SLOT(onShowActionsMenu()));
 
   aTopWidgetLayout->addWidget(myButtonWidget, 1);
   aTopWidgetLayout->addWidget(myActionsWidget);
 
-  aCentralLayout->addWidget (aTopWidget);
-  aCentralLayout->addWidget (myToolsStack);
+  aCentralLayout->addWidget(aTopWidget);
+  aCentralLayout->addWidget(myToolsStack);
 
-  myMainWindow->resize (TINSPECTOR_DEFAULT_WIDTH, TINSPECTOR_DEFAULT_HEIGHT);
-  myMainWindow->move (TINSPECTOR_DEFAULT_POSITION_X, TINSPECTOR_DEFAULT_POSITION_Y);
-  myMainWindow->setDockOptions (QMainWindow::VerticalTabs);
+  myMainWindow->resize(TINSPECTOR_DEFAULT_WIDTH, TINSPECTOR_DEFAULT_HEIGHT);
+  myMainWindow->move(TINSPECTOR_DEFAULT_POSITION_X, TINSPECTOR_DEFAULT_POSITION_Y);
+  myMainWindow->setDockOptions(QMainWindow::VerticalTabs);
 
-  myParameters = new TInspector_PluginParameters (this);
+  myParameters = new TInspector_PluginParameters(this);
 
   myDefaultDirectory = defaultTemporaryDirectory();
-  myParameters->SetTemporaryDirectory (myDefaultDirectory);
+  myParameters->SetTemporaryDirectory(myDefaultDirectory);
 
   applyPreferences();
 
-  myShortcut = new TInspector_Shortcut (myMainWindow, this);
+  myShortcut = new TInspector_Shortcut(myMainWindow, this);
 }
 
 // =======================================================================
 // function : RegisterPlugin
 // purpose :
 // =======================================================================
-void TInspector_Window::RegisterPlugin (const TCollection_AsciiString& thePluginName)
+void TInspector_Window::RegisterPlugin(const TCollection_AsciiString& thePluginName)
 {
   TInspector_ToolInfo anInfo;
-  int aToolId;
-  if (findPlugin (thePluginName, anInfo, aToolId))
+  int                 aToolId;
+  if (findPlugin(thePluginName, anInfo, aToolId))
     return;
 
-  myToolNames.append (TInspector_ToolInfo (thePluginName));
+  myToolNames.append(TInspector_ToolInfo(thePluginName));
 }
 
 // =======================================================================
@@ -132,7 +133,7 @@ NCollection_List<TCollection_AsciiString> TInspector_Window::RegisteredPlugins()
   NCollection_List<TCollection_AsciiString> aPlugins;
 
   for (int aToolId = 0, aSize = myToolNames.size(); aToolId < aSize; aToolId++)
-    aPlugins.Append (myToolNames[aToolId].myName);
+    aPlugins.Append(myToolNames[aToolId].myName);
 
   return aPlugins;
 }
@@ -141,40 +142,41 @@ NCollection_List<TCollection_AsciiString> TInspector_Window::RegisteredPlugins()
 // function : Init
 // purpose :
 // =======================================================================
-void TInspector_Window::Init (const TCollection_AsciiString& thePluginName,
-                              const NCollection_List<Handle(Standard_Transient)>& theParameters,
-                              const Standard_Boolean theAppend)
+void TInspector_Window::Init(const TCollection_AsciiString&                      thePluginName,
+                             const NCollection_List<Handle(Standard_Transient)>& theParameters,
+                             const Standard_Boolean                              theAppend)
 {
   if (thePluginName.IsEmpty())
   {
     // Init all plugins by the given parameters
     for (int aToolId = 0, aSize = myToolNames.size(); aToolId < aSize; aToolId++)
-      Init (myToolNames[aToolId].myName, theParameters, theAppend);
+      Init(myToolNames[aToolId].myName, theParameters, theAppend);
 
     // temporary activation of the first tool
     if (!myToolNames.isEmpty())
-      ActivateTool (myToolNames[0].myName);
+      ActivateTool(myToolNames[0].myName);
     return;
   }
 
   if (theAppend)
   {
     NCollection_List<Handle(Standard_Transient)> aParameters;
-    if (myParameters->FindParameters (thePluginName))
-      aParameters = myParameters->Parameters (thePluginName);
+    if (myParameters->FindParameters(thePluginName))
+      aParameters = myParameters->Parameters(thePluginName);
 
-    for (NCollection_List<Handle(Standard_Transient)>::Iterator anIterator (theParameters);
-      anIterator.More(); anIterator.Next())
-      aParameters.Append (anIterator.Value());
+    for (NCollection_List<Handle(Standard_Transient)>::Iterator anIterator(theParameters);
+         anIterator.More();
+         anIterator.Next())
+      aParameters.Append(anIterator.Value());
 
-    myParameters->SetParameters (thePluginName, aParameters, Standard_False);
+    myParameters->SetParameters(thePluginName, aParameters, Standard_False);
   }
   else
-    myParameters->SetParameters (thePluginName, theParameters, Standard_False);
+    myParameters->SetParameters(thePluginName, theParameters, Standard_False);
 
   TInspector_ToolInfo anInfo;
-  int aToolId;
-  if (!findPlugin (thePluginName, anInfo, aToolId))
+  int                 aToolId;
+  if (!findPlugin(thePluginName, anInfo, aToolId))
     return;
 
   if (anInfo.myButton)
@@ -185,11 +187,11 @@ void TInspector_Window::Init (const TCollection_AsciiString& thePluginName,
     aButtonName = aButtonName.mid(2);
 
   QPushButton* aButton = new QPushButton(aButtonName, myButtonWidget);
-  aButton->setCheckable (true);
-  connect (aButton, SIGNAL (clicked (bool)), this, SLOT (onButtonClicked()));
-  myButtonLay->insertWidget (myButtonLay->count()-1, aButton);
-  myButtonGroup->addButton (aButton);
-  anInfo.myButton = aButton;
+  aButton->setCheckable(true);
+  connect(aButton, SIGNAL(clicked(bool)), this, SLOT(onButtonClicked()));
+  myButtonLay->insertWidget(myButtonLay->count() - 1, aButton);
+  myButtonGroup->addButton(aButton);
+  anInfo.myButton      = aButton;
   myToolNames[aToolId] = anInfo;
 }
 
@@ -197,7 +199,7 @@ void TInspector_Window::Init (const TCollection_AsciiString& thePluginName,
 // function : ActivateTool
 // purpose :
 // =======================================================================
-void TInspector_Window::ActivateTool (const TCollection_AsciiString& thePluginName)
+void TInspector_Window::ActivateTool(const TCollection_AsciiString& thePluginName)
 {
   int aToolIndex = -1;
   for (int aToolId = 0, aSize = myToolNames.size(); aToolId < aSize; aToolId++)
@@ -211,32 +213,32 @@ void TInspector_Window::ActivateTool (const TCollection_AsciiString& thePluginNa
   if (aToolIndex < 0)
     return;
 
-  TInspector_ToolInfo anInfo = myToolNames[aToolIndex];
-  bool isPluginLoaded = false;
+  TInspector_ToolInfo anInfo         = myToolNames[aToolIndex];
+  bool                isPluginLoaded = false;
   if (!anInfo.myWidget)
   {
-    if (!LoadPlugin (thePluginName, anInfo))
+    if (!LoadPlugin(thePluginName, anInfo))
     {
-      anInfo.myButton->setEnabled (false);
+      anInfo.myButton->setEnabled(false);
       return;
     }
     isPluginLoaded = true;
-    myToolsStack->addWidget (anInfo.myWidget);
+    myToolsStack->addWidget(anInfo.myWidget);
     myToolNames[aToolIndex] = anInfo;
   }
 
   QWidget* aWidget = anInfo.myWidget;
-  myToolsStack->setCurrentWidget (aWidget);
+  myToolsStack->setCurrentWidget(aWidget);
   if (myOpenButton)
-    myOpenButton->setObjectName (thePluginName.ToCString());
+    myOpenButton->setObjectName(thePluginName.ToCString());
 
   anInfo.myCommunicator->UpdateContent();
   if (isPluginLoaded)
   {
     // apply preferences
     TInspectorAPI_PreferencesDataMap aPreferences;
-    myParameters->GetPreferences (thePluginName, aPreferences);
-    anInfo.myCommunicator->SetPreferences (aPreferences);
+    myParameters->GetPreferences(thePluginName, aPreferences);
+    anInfo.myCommunicator->SetPreferences(aPreferences);
   }
   onCommuncatorNameChanged();
 }
@@ -245,13 +247,13 @@ void TInspector_Window::ActivateTool (const TCollection_AsciiString& thePluginNa
 // function : SetSelected
 // purpose :
 // =======================================================================
-void TInspector_Window::SetSelected (const NCollection_List<TCollection_AsciiString>& theItemNames)
+void TInspector_Window::SetSelected(const NCollection_List<TCollection_AsciiString>& theItemNames)
 {
   TInspector_ToolInfo anInfo;
-  if (!activeToolInfo (anInfo))
+  if (!activeToolInfo(anInfo))
     return;
 
-  myParameters->SetSelectedNames (anInfo.myName, theItemNames);
+  myParameters->SetSelectedNames(anInfo.myName, theItemNames);
 
   TInspectorAPI_Communicator* aCommunicator = anInfo.myCommunicator;
   if (aCommunicator)
@@ -264,13 +266,13 @@ void TInspector_Window::SetSelected (const NCollection_List<TCollection_AsciiStr
 // function : SetSelected
 // purpose :
 // =======================================================================
-void TInspector_Window::SetSelected (const NCollection_List<Handle(Standard_Transient)>& theObjects)
+void TInspector_Window::SetSelected(const NCollection_List<Handle(Standard_Transient)>& theObjects)
 {
   TInspector_ToolInfo anInfo;
-  if (!activeToolInfo (anInfo))
+  if (!activeToolInfo(anInfo))
     return;
 
-  myParameters->SetSelected (anInfo.myName, theObjects);
+  myParameters->SetSelected(anInfo.myName, theObjects);
 
   TInspectorAPI_Communicator* aCommunicator = anInfo.myCommunicator;
   if (aCommunicator)
@@ -283,34 +285,34 @@ void TInspector_Window::SetSelected (const NCollection_List<Handle(Standard_Tran
 // function : SetOpenButton
 // purpose :
 // =======================================================================
-void TInspector_Window::SetOpenButton (QPushButton* theButton)
+void TInspector_Window::SetOpenButton(QPushButton* theButton)
 {
   myOpenButton = theButton;
   TInspector_ToolInfo anInfo;
-  if (activeToolInfo (anInfo))
-    myOpenButton->setObjectName (anInfo.myName.ToCString());
-  myButtonLay->insertWidget (0, theButton);
+  if (activeToolInfo(anInfo))
+    myOpenButton->setObjectName(anInfo.myName.ToCString());
+  myButtonLay->insertWidget(0, theButton);
 }
 
 // =======================================================================
 // function : OpenFile
 // purpose :
 // =======================================================================
-void TInspector_Window::OpenFile (const TCollection_AsciiString& thePluginName,
-                                  const TCollection_AsciiString& theFileName)
+void TInspector_Window::OpenFile(const TCollection_AsciiString& thePluginName,
+                                 const TCollection_AsciiString& theFileName)
 {
   if (thePluginName.IsEmpty())
   {
     // Apply file name to all plugins
     for (int aToolId = 0, aSize = myToolNames.size(); aToolId < aSize; aToolId++)
-      OpenFile (myToolNames[aToolId].myName, theFileName);
+      OpenFile(myToolNames[aToolId].myName, theFileName);
     return;
   }
 
-  myParameters->AddFileName (thePluginName, theFileName);
+  myParameters->AddFileName(thePluginName, theFileName);
 
   TInspector_ToolInfo anInfo;
-  if (!activeToolInfo (anInfo) || anInfo.myName != thePluginName)
+  if (!activeToolInfo(anInfo) || anInfo.myName != thePluginName)
     return;
 
   TInspectorAPI_Communicator* aCommunicator = anInfo.myCommunicator;
@@ -325,7 +327,7 @@ void TInspector_Window::OpenFile (const TCollection_AsciiString& thePluginName,
 void TInspector_Window::UpdateContent()
 {
   TInspector_ToolInfo anInfo;
-  if (activeToolInfo (anInfo) && anInfo.myCommunicator)
+  if (activeToolInfo(anInfo) && anInfo.myCommunicator)
     anInfo.myCommunicator->UpdateContent();
 }
 
@@ -333,26 +335,31 @@ void TInspector_Window::UpdateContent()
 // function : LoadPlugin
 // purpose :
 // =======================================================================
-bool TInspector_Window::LoadPlugin (const TCollection_AsciiString& thePluginName, TInspector_ToolInfo& theInfo)
+bool TInspector_Window::LoadPlugin(const TCollection_AsciiString& thePluginName,
+                                   TInspector_ToolInfo&           theInfo)
 {
   bool aLoaded = false;
 
-  QApplication::setOverrideCursor (Qt::WaitCursor);
-  TInspectorAPI_Communicator* aCommunicator = TInspectorAPI_Communicator::LoadPluginLibrary (thePluginName);
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  TInspectorAPI_Communicator* aCommunicator =
+    TInspectorAPI_Communicator::LoadPluginLibrary(thePluginName);
 
   if (aCommunicator)
   {
-    aCommunicator->SetParameters (myParameters);
-    QWidget* aParentWidget = new QWidget (myMainWindow);
-    QVBoxLayout* aLayout = new QVBoxLayout (aParentWidget);
-    aLayout->setContentsMargins (0, 0, 0, 0);
-    aLayout->setSpacing (0);
-    aParentWidget->setLayout (aLayout);
-    aCommunicator->SetParent (aParentWidget);
-    theInfo.myWidget = aParentWidget;
+    aCommunicator->SetParameters(myParameters);
+    QWidget*     aParentWidget = new QWidget(myMainWindow);
+    QVBoxLayout* aLayout       = new QVBoxLayout(aParentWidget);
+    aLayout->setContentsMargins(0, 0, 0, 0);
+    aLayout->setSpacing(0);
+    aParentWidget->setLayout(aLayout);
+    aCommunicator->SetParent(aParentWidget);
+    theInfo.myWidget       = aParentWidget;
     theInfo.myCommunicator = aCommunicator;
 #if QT_VERSION >= 0x050000
-    connect (aParentWidget, SIGNAL (objectNameChanged (const QString&)), this, SLOT (onCommuncatorNameChanged()));
+    connect(aParentWidget,
+            SIGNAL(objectNameChanged(const QString&)),
+            this,
+            SLOT(onCommuncatorNameChanged()));
 #endif
     aLoaded = true;
   }
@@ -364,21 +371,23 @@ bool TInspector_Window::LoadPlugin (const TCollection_AsciiString& thePluginName
 // function : GetPreferences
 // purpose :
 // =======================================================================
-void TInspector_Window::GetPreferences (TInspectorAPI_PreferencesDataMap& theItem)
+void TInspector_Window::GetPreferences(TInspectorAPI_PreferencesDataMap& theItem)
 {
-  theItem.Bind ("geometry", TreeModel_Tools::ToString (myMainWindow->saveGeometry()).toStdString().c_str());
+  theItem.Bind("geometry",
+               TreeModel_Tools::ToString(myMainWindow->saveGeometry()).toStdString().c_str());
 }
 
 // =======================================================================
 // function : SetPreferences
 // purpose :
 // =======================================================================
-void TInspector_Window::SetPreferences (const TInspectorAPI_PreferencesDataMap& theItem)
+void TInspector_Window::SetPreferences(const TInspectorAPI_PreferencesDataMap& theItem)
 {
-  for (TInspectorAPI_IteratorOfPreferencesDataMap anItemIt (theItem); anItemIt.More(); anItemIt.Next())
+  for (TInspectorAPI_IteratorOfPreferencesDataMap anItemIt(theItem); anItemIt.More();
+       anItemIt.Next())
   {
-    if (anItemIt.Key().IsEqual ("geometry"))
-      myMainWindow->restoreGeometry (TreeModel_Tools::ToByteArray (anItemIt.Value().ToCString()));
+    if (anItemIt.Key().IsEqual("geometry"))
+      myMainWindow->restoreGeometry(TreeModel_Tools::ToByteArray(anItemIt.Value().ToCString()));
   }
 }
 
@@ -386,7 +395,7 @@ void TInspector_Window::SetPreferences (const TInspectorAPI_PreferencesDataMap& 
 // function : Dump
 // purpose :
 // =======================================================================
-void TInspector_Window::Dump (Standard_OStream& theStream) const
+void TInspector_Window::Dump(Standard_OStream& theStream) const
 {
   TInspector_ToolInfo anInfo;
   activeToolInfo(anInfo);
@@ -401,10 +410,11 @@ void TInspector_Window::Dump (Standard_OStream& theStream) const
 // =======================================================================
 void TInspector_Window::OnStorePreferences()
 {
-  Handle(TInspector_PluginParameters) aParameters = Handle(TInspector_PluginParameters)::DownCast (myParameters);
+  Handle(TInspector_PluginParameters) aParameters =
+    Handle(TInspector_PluginParameters)::DownCast(myParameters);
   TInspectorAPI_PreferencesDataMap aPreferences;
-  GetPreferences (aPreferences);
-  aParameters->SetPreferences ("Desktop", aPreferences);
+  GetPreferences(aPreferences);
+  aParameters->SetPreferences("Desktop", aPreferences);
 
   TInspector_ToolInfo anInfo;
   for (int aToolId = 0, aSize = myToolNames.size(); aToolId < aSize; aToolId++)
@@ -413,9 +423,9 @@ void TInspector_Window::OnStorePreferences()
     if (!anInfo.myCommunicator)
       continue;
 
-    aParameters->GetPreferences (anInfo.myName, aPreferences);
-    anInfo.myCommunicator->GetPreferences (aPreferences);
-    myParameters->SetPreferences (anInfo.myName, aPreferences);
+    aParameters->GetPreferences(anInfo.myName, aPreferences);
+    anInfo.myCommunicator->GetPreferences(aPreferences);
+    myParameters->SetPreferences(anInfo.myName, aPreferences);
   }
 
   // store preferences parameters into a file
@@ -428,7 +438,8 @@ void TInspector_Window::OnStorePreferences()
 // =======================================================================
 void TInspector_Window::OnRemovePreferences()
 {
-  Handle(TInspector_PluginParameters) aParameters = Handle(TInspector_PluginParameters)::DownCast (myParameters);
+  Handle(TInspector_PluginParameters) aParameters =
+    Handle(TInspector_PluginParameters)::DownCast(myParameters);
 
   // remove preferences file
   aParameters->RemovePreferences();
@@ -440,7 +451,7 @@ void TInspector_Window::OnRemovePreferences()
     anInfo = myToolNames[aToolId];
     if (!anInfo.myCommunicator)
       continue;
-    anInfo.myCommunicator->SetPreferences (TInspectorAPI_PreferencesDataMap());
+    anInfo.myCommunicator->SetPreferences(TInspectorAPI_PreferencesDataMap());
   }
 }
 
@@ -455,11 +466,11 @@ void TInspector_Window::onButtonClicked()
   TCollection_AsciiString aPluginName = aButton->text().toStdString().c_str();
 
   TInspector_ToolInfo anInfo;
-  int aToolId;
-  if (!findPlugin (aPluginName, anInfo, aToolId))
-    aPluginName = TCollection_AsciiString ("TK") + aPluginName;
+  int                 aToolId;
+  if (!findPlugin(aPluginName, anInfo, aToolId))
+    aPluginName = TCollection_AsciiString("TK") + aPluginName;
 
-  ActivateTool (aPluginName);
+  ActivateTool(aPluginName);
 }
 
 // =======================================================================
@@ -477,12 +488,16 @@ void TInspector_Window::onShowActionsMenu()
   anInfo.myCommunicator->FillActionsMenu(aMenu);
 
   aMenu->addSeparator();
-  aMenu->addAction (ViewControl_Tools::CreateAction (tr ("Store Preferences"),
-                    SLOT (OnStorePreferences()), myMainWindow, this));
-  QAction* anAction = ViewControl_Tools::CreateAction (tr ("Remove Preferences"),
-                    SLOT (OnRemovePreferences()), myMainWindow, this);
-  anAction->setToolTip ("Default state will be restored after restarting the application");
-  aMenu->addAction (anAction);
+  aMenu->addAction(ViewControl_Tools::CreateAction(tr("Store Preferences"),
+                                                   SLOT(OnStorePreferences()),
+                                                   myMainWindow,
+                                                   this));
+  QAction* anAction = ViewControl_Tools::CreateAction(tr("Remove Preferences"),
+                                                      SLOT(OnRemovePreferences()),
+                                                      myMainWindow,
+                                                      this);
+  anAction->setToolTip("Default state will be restored after restarting the application");
+  aMenu->addAction(anAction);
 }
 
 // =======================================================================
@@ -493,9 +508,9 @@ void TInspector_Window::onCommuncatorNameChanged()
 {
 #if QT_VERSION >= 0x050000
   TInspector_ToolInfo anInfo;
-  if (!activeToolInfo (anInfo))
+  if (!activeToolInfo(anInfo))
     return;
-  myMainWindow->setWindowTitle (anInfo.myWidget->objectName());
+  myMainWindow->setWindowTitle(anInfo.myWidget->objectName());
 #endif
 }
 
@@ -503,7 +518,7 @@ void TInspector_Window::onCommuncatorNameChanged()
 // function : activeToolInfo
 // purpose :
 // =======================================================================
-bool TInspector_Window::activeToolInfo (TInspector_Window::TInspector_ToolInfo& theToolInfo) const
+bool TInspector_Window::activeToolInfo(TInspector_Window::TInspector_ToolInfo& theToolInfo) const
 {
   QWidget* anActiveWidget = myToolsStack->currentWidget();
   if (anActiveWidget == myEmptyWidget)
@@ -524,8 +539,9 @@ bool TInspector_Window::activeToolInfo (TInspector_Window::TInspector_ToolInfo& 
 // function : findPlugin
 // purpose :
 // =======================================================================
-bool TInspector_Window::findPlugin (const TCollection_AsciiString& thePluginName, TInspector_ToolInfo& theToolInfo,
-                                    int& theToolId)
+bool TInspector_Window::findPlugin(const TCollection_AsciiString& thePluginName,
+                                   TInspector_ToolInfo&           theToolInfo,
+                                   int&                           theToolId)
 {
   for (int aToolId = 0, aSize = myToolNames.size(); aToolId < aSize; aToolId++)
   {
@@ -533,7 +549,7 @@ bool TInspector_Window::findPlugin (const TCollection_AsciiString& thePluginName
     if (anInfo.myName != thePluginName)
       continue;
     theToolInfo = anInfo;
-    theToolId = aToolId;
+    theToolId   = aToolId;
     return true;
   }
 
@@ -547,8 +563,8 @@ bool TInspector_Window::findPlugin (const TCollection_AsciiString& thePluginName
 void TInspector_Window::applyPreferences()
 {
   TInspectorAPI_PreferencesDataMap aPreferences;
-  myParameters->GetPreferences ("Desktop", aPreferences);
-  SetPreferences (aPreferences);
+  myParameters->GetPreferences("Desktop", aPreferences);
+  SetPreferences(aPreferences);
 }
 
 // =======================================================================
@@ -560,32 +576,32 @@ TCollection_AsciiString TInspector_Window::defaultTemporaryDirectory() const
   // main window creation
   TCollection_AsciiString aTmpDir;
 #ifdef _WIN32
-  OSD_Environment anEnvironment ("TEMP");
+  OSD_Environment anEnvironment("TEMP");
   aTmpDir = anEnvironment.Value();
-  if (aTmpDir.IsEmpty() )
+  if (aTmpDir.IsEmpty())
   {
-    anEnvironment.SetName ("TMP");
+    anEnvironment.SetName("TMP");
     aTmpDir = anEnvironment.Value();
     if (aTmpDir.IsEmpty())
       aTmpDir = "C:\\";
   }
-  if (!aTmpDir.EndsWith ("\\"))
+  if (!aTmpDir.EndsWith("\\"))
     aTmpDir += "\\";
-  OSD_Path aTmpPath (aTmpDir);
+  OSD_Path      aTmpPath(aTmpDir);
   OSD_Directory aTmpDirectory;
 #else
   OSD_Directory aTmpDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path aTmpPath;
-  aTmpDirectory.Path (aTmpPath);
+  OSD_Path      aTmpPath;
+  aTmpDirectory.Path(aTmpPath);
 #endif
-  aTmpPath.DownTrek ("TInspector");
-  aTmpDirectory.SetPath (aTmpPath);
+  aTmpPath.DownTrek("TInspector");
+  aTmpDirectory.SetPath(aTmpPath);
   if (!aTmpDirectory.Exists())
-    aTmpDirectory.Build (OSD_Protection());
+    aTmpDirectory.Build(OSD_Protection());
 
-  aTmpDirectory.Path (aTmpPath);
+  aTmpDirectory.Path(aTmpPath);
   TCollection_AsciiString aTmpDirectoryName;
-  aTmpPath.SystemName (aTmpDirectoryName);
+  aTmpPath.SystemName(aTmpDirectoryName);
 
   return aTmpDir;
 }

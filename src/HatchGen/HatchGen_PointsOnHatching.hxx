@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<HatchGen_PointOnHatching> HatchGen_PointsOnHatching;
 
-
 #endif

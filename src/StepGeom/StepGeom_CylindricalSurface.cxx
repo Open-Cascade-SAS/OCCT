@@ -11,33 +11,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_CylindricalSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CylindricalSurface,StepGeom_ElementarySurface)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CylindricalSurface, StepGeom_ElementarySurface)
 
-StepGeom_CylindricalSurface::StepGeom_CylindricalSurface ()  {}
+StepGeom_CylindricalSurface::StepGeom_CylindricalSurface() {}
 
-void StepGeom_CylindricalSurface::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_Axis2Placement3d)& aPosition,
-	const Standard_Real aRadius)
+void StepGeom_CylindricalSurface::Init(const Handle(TCollection_HAsciiString)&  aName,
+                                       const Handle(StepGeom_Axis2Placement3d)& aPosition,
+                                       const Standard_Real                      aRadius)
 {
-	// --- classe own fields ---
-	radius = aRadius;
-	// --- classe inherited fields ---
-	StepGeom_ElementarySurface::Init(aName, aPosition);
+  // --- classe own fields ---
+  radius = aRadius;
+  // --- classe inherited fields ---
+  StepGeom_ElementarySurface::Init(aName, aPosition);
 }
-
 
 void StepGeom_CylindricalSurface::SetRadius(const Standard_Real aRadius)
 {
-	radius = aRadius;
+  radius = aRadius;
 }
 
 Standard_Real StepGeom_CylindricalSurface::Radius() const
 {
-	return radius;
+  return radius;
 }

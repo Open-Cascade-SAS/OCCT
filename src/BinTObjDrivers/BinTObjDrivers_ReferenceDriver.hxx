@@ -15,52 +15,46 @@
 
 // The original implementation Copyright: (C) RINA S.p.A
 
-
 #ifndef BinTObjDrivers_ReferenceDriver_HeaderFile
 #define BinTObjDrivers_ReferenceDriver_HeaderFile
 
 #include <BinMDF_ADriver.hxx>
 
-class BinTObjDrivers_ReferenceDriver : public BinMDF_ADriver 
+class BinTObjDrivers_ReferenceDriver : public BinMDF_ADriver
 {
 
- public:
-
-  Standard_EXPORT BinTObjDrivers_ReferenceDriver
-                         (const Handle(Message_Messenger)& theMessageDriver);
+public:
+  Standard_EXPORT BinTObjDrivers_ReferenceDriver(const Handle(Message_Messenger)& theMessageDriver);
   // constructor
 
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
   // Creates a new attribute
 
-  Standard_EXPORT Standard_Boolean Paste
-                         (const BinObjMgt_Persistent&  Source,
-                          const Handle(TDF_Attribute)& Target,
-                          BinObjMgt_RRelocationTable&  RelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean
+    Paste(const BinObjMgt_Persistent&  Source,
+          const Handle(TDF_Attribute)& Target,
+          BinObjMgt_RRelocationTable&  RelocTable) const Standard_OVERRIDE;
   // Translate the contents of <aSource> and put it
   // into <aTarget>, using the relocation table
   // <aRelocTable> to keep the sharings.
 
-  Standard_EXPORT void Paste
-                         (const Handle(TDF_Attribute)& Source,
-                          BinObjMgt_Persistent&        Target,
-                          BinObjMgt_SRelocationTable&  RelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const Handle(TDF_Attribute)& Source,
+                             BinObjMgt_Persistent&        Target,
+                             BinObjMgt_SRelocationTable&  RelocTable) const Standard_OVERRIDE;
   // Translate the contents of <aSource> and put it
   // into <aTarget>, using the relocation table
   // <aRelocTable> to keep the sharings.
-  // Store master and referred labels as entry, the other model referred 
+  // Store master and referred labels as entry, the other model referred
   // as entry in model-container
-  // The reference pointing nowhere is not stored 
+  // The reference pointing nowhere is not stored
 
- public:
+public:
   // CASCADE RTTI
-  DEFINE_STANDARD_RTTIEXT(BinTObjDrivers_ReferenceDriver,BinMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(BinTObjDrivers_ReferenceDriver, BinMDF_ADriver)
 };
 
 // Define handle class
-DEFINE_STANDARD_HANDLE(BinTObjDrivers_ReferenceDriver,BinMDF_ADriver)
-
-
+DEFINE_STANDARD_HANDLE(BinTObjDrivers_ReferenceDriver, BinMDF_ADriver)
 
 #endif
 

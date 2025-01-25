@@ -20,23 +20,23 @@
 #include <TDF_RelocationTable.hxx>
 
 //=======================================================================
-//function : GetID
-//purpose  : Returns the ID of the triangulation attribute.
+// function : GetID
+// purpose  : Returns the ID of the triangulation attribute.
 //=======================================================================
 const Standard_GUID& TDataXtd_Triangulation::GetID()
 {
-  static Standard_GUID TDataXtd_TriangulationID ("27AE2C44-60B0-41AE-AC18-BA3FDA538D03");
-  return TDataXtd_TriangulationID; 
+  static Standard_GUID TDataXtd_TriangulationID("27AE2C44-60B0-41AE-AC18-BA3FDA538D03");
+  return TDataXtd_TriangulationID;
 }
 
 //=======================================================================
-//function : Set
-//purpose  : Finds or creates a triangulation attribute.
+// function : Set
+// purpose  : Finds or creates a triangulation attribute.
 //=======================================================================
 Handle(TDataXtd_Triangulation) TDataXtd_Triangulation::Set(const TDF_Label& theLabel)
 {
   Handle(TDataXtd_Triangulation) A;
-  if (!theLabel.FindAttribute (TDataXtd_Triangulation::GetID(), A))
+  if (!theLabel.FindAttribute(TDataXtd_Triangulation::GetID(), A))
   {
     A = new TDataXtd_Triangulation;
     theLabel.AddAttribute(A);
@@ -45,11 +45,13 @@ Handle(TDataXtd_Triangulation) TDataXtd_Triangulation::Set(const TDF_Label& theL
 }
 
 //=======================================================================
-//function : Set
-//purpose  : Finds or creates a triangulation attribute.
+// function : Set
+// purpose  : Finds or creates a triangulation attribute.
 //           Initializes the attribute by a Poly_Triangulation object.
 //=======================================================================
-Handle(TDataXtd_Triangulation) TDataXtd_Triangulation::Set(const TDF_Label& theLabel, const Handle(Poly_Triangulation)& theMesh)
+Handle(TDataXtd_Triangulation) TDataXtd_Triangulation::Set(
+  const TDF_Label&                  theLabel,
+  const Handle(Poly_Triangulation)& theMesh)
 {
   Handle(TDataXtd_Triangulation) M = TDataXtd_Triangulation::Set(theLabel);
   M->Set(theMesh);
@@ -57,20 +59,17 @@ Handle(TDataXtd_Triangulation) TDataXtd_Triangulation::Set(const TDF_Label& theL
 }
 
 //=======================================================================
-//function : TDataXtd_Triangulation
-//purpose  : A constructor.
-//           Don't use it directly, 
+// function : TDataXtd_Triangulation
+// purpose  : A constructor.
+//           Don't use it directly,
 //           use please the static method Set(),
 //           which returns the attribute attached to a label.
 //=======================================================================
-TDataXtd_Triangulation::TDataXtd_Triangulation()
-{
-
-}
+TDataXtd_Triangulation::TDataXtd_Triangulation() {}
 
 //=======================================================================
-//function : TDataXtd_Triangulation
-//purpose  : Sets the triangulation.
+// function : TDataXtd_Triangulation
+// purpose  : Sets the triangulation.
 //=======================================================================
 void TDataXtd_Triangulation::Set(const Handle(Poly_Triangulation)& theTriangulation)
 {
@@ -79,8 +78,8 @@ void TDataXtd_Triangulation::Set(const Handle(Poly_Triangulation)& theTriangulat
 }
 
 //=======================================================================
-//function : TDataXtd_Triangulation
-//purpose  : Returns the underlying mesh.
+// function : TDataXtd_Triangulation
+// purpose  : Returns the underlying mesh.
 //=======================================================================
 const Handle(Poly_Triangulation)& TDataXtd_Triangulation::Get() const
 {
@@ -94,8 +93,8 @@ const Handle(Poly_Triangulation)& TDataXtd_Triangulation::Get() const
 // The most of the methods are considered as "inline" by the compiler in release mode.
 
 //=======================================================================
-//function : Deflection
-//purpose  : Returns the deflection of this triangulation.
+// function : Deflection
+// purpose  : Returns the deflection of this triangulation.
 //=======================================================================
 Standard_Real TDataXtd_Triangulation::Deflection() const
 {
@@ -103,19 +102,19 @@ Standard_Real TDataXtd_Triangulation::Deflection() const
 }
 
 //=======================================================================
-//function : Deflection
-//purpose  : Sets the deflection of this triangulation to theDeflection.
+// function : Deflection
+// purpose  : Sets the deflection of this triangulation to theDeflection.
 //           See more on deflection in Polygon2D
 //=======================================================================
-void TDataXtd_Triangulation::Deflection (const Standard_Real theDeflection)
+void TDataXtd_Triangulation::Deflection(const Standard_Real theDeflection)
 {
   Backup();
   myTriangulation->Deflection(theDeflection);
 }
 
 //=======================================================================
-//function : RemoveUVNodes
-//purpose  : Deallocates the UV nodes.
+// function : RemoveUVNodes
+// purpose  : Deallocates the UV nodes.
 //=======================================================================
 void TDataXtd_Triangulation::RemoveUVNodes()
 {
@@ -124,8 +123,8 @@ void TDataXtd_Triangulation::RemoveUVNodes()
 }
 
 //=======================================================================
-//function : NbNodes
-//purpose  : return the number of nodes for this triangulation.
+// function : NbNodes
+// purpose  : return the number of nodes for this triangulation.
 //=======================================================================
 Standard_Integer TDataXtd_Triangulation::NbNodes() const
 {
@@ -133,8 +132,8 @@ Standard_Integer TDataXtd_Triangulation::NbNodes() const
 }
 
 //=======================================================================
-//function : NbTriangles
-//purpose  : return the number of triangles for this triangulation.
+// function : NbTriangles
+// purpose  : return the number of triangles for this triangulation.
 //=======================================================================
 Standard_Integer TDataXtd_Triangulation::NbTriangles() const
 {
@@ -142,8 +141,8 @@ Standard_Integer TDataXtd_Triangulation::NbTriangles() const
 }
 
 //=======================================================================
-//function : HasUVNodes
-//purpose  : return Standard_True if 2D nodes are associated with 3D nodes for this triangulation.
+// function : HasUVNodes
+// purpose  : return Standard_True if 2D nodes are associated with 3D nodes for this triangulation.
 //=======================================================================
 Standard_Boolean TDataXtd_Triangulation::HasUVNodes() const
 {
@@ -151,86 +150,92 @@ Standard_Boolean TDataXtd_Triangulation::HasUVNodes() const
 }
 
 //=======================================================================
-//function : Node
-//purpose  : return node at the given index.
-//           Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbNodes.
+// function : Node
+// purpose  : return node at the given index.
+//           Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than
+//           NbNodes.
 //=======================================================================
-gp_Pnt TDataXtd_Triangulation::Node (const Standard_Integer theIndex) const
+gp_Pnt TDataXtd_Triangulation::Node(const Standard_Integer theIndex) const
 {
   return myTriangulation->Node(theIndex);
 }
 
 //=======================================================================
-//function : SetNode
-//purpose  : The method differs from Poly_Triangulation
+// function : SetNode
+// purpose  : The method differs from Poly_Triangulation
 //           Sets a node at the given index.
-//           Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbNodes.
+//           Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than
+//           NbNodes.
 //=======================================================================
-void TDataXtd_Triangulation::SetNode (const Standard_Integer theIndex, const gp_Pnt& theNode)
+void TDataXtd_Triangulation::SetNode(const Standard_Integer theIndex, const gp_Pnt& theNode)
 {
   Backup();
-  myTriangulation->SetNode (theIndex, theNode);
+  myTriangulation->SetNode(theIndex, theNode);
 }
 
 //=======================================================================
-//function : UVNode
-//purpose  : return UVNode at the given index.
-//           Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbNodes.
+// function : UVNode
+// purpose  : return UVNode at the given index.
+//           Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than
+//           NbNodes.
 //=======================================================================
-gp_Pnt2d TDataXtd_Triangulation::UVNode (const Standard_Integer theIndex) const
+gp_Pnt2d TDataXtd_Triangulation::UVNode(const Standard_Integer theIndex) const
 {
   return myTriangulation->UVNode(theIndex);
 }
 
 //=======================================================================
-//function : SetUVNode
-//purpose  : The method differs from Poly_Triangulation
+// function : SetUVNode
+// purpose  : The method differs from Poly_Triangulation
 //           Sets a UVNode at the given index.
-//           Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbNodes.
+//           Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than
+//           NbNodes.
 //=======================================================================
-void TDataXtd_Triangulation::SetUVNode (const Standard_Integer theIndex, const gp_Pnt2d& theUVNode)
+void TDataXtd_Triangulation::SetUVNode(const Standard_Integer theIndex, const gp_Pnt2d& theUVNode)
 {
   Backup();
-  myTriangulation->SetUVNode (theIndex, theUVNode);
+  myTriangulation->SetUVNode(theIndex, theUVNode);
 }
 
 //=======================================================================
-//function : Triangle
-//purpose  : return triangle at the given index.
-//           Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbTriangles.
+// function : Triangle
+// purpose  : return triangle at the given index.
+//           Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than
+//           NbTriangles.
 //=======================================================================
-Poly_Triangle TDataXtd_Triangulation::Triangle (const Standard_Integer theIndex) const
+Poly_Triangle TDataXtd_Triangulation::Triangle(const Standard_Integer theIndex) const
 {
   return myTriangulation->Triangle(theIndex);
 }
 
 //=======================================================================
-//function : SetTriangle
-//purpose  : The method differs from Poly_Triangulation
+// function : SetTriangle
+// purpose  : The method differs from Poly_Triangulation
 //           Sets a triangle at the given index.
-//           Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbTriangles.
+//           Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than
+//           NbTriangles.
 //=======================================================================
-void TDataXtd_Triangulation::SetTriangle (const Standard_Integer theIndex, const Poly_Triangle& theTriangle)
+void TDataXtd_Triangulation::SetTriangle(const Standard_Integer theIndex,
+                                         const Poly_Triangle&   theTriangle)
 {
   Backup();
-  myTriangulation->SetTriangle (theIndex, theTriangle);
+  myTriangulation->SetTriangle(theIndex, theTriangle);
 }
 
 //=======================================================================
-//function : SetNormal
-//purpose  : Changes normal at the given index.
+// function : SetNormal
+// purpose  : Changes normal at the given index.
 //           Raises Standard_OutOfRange exception.
 //=======================================================================
-void TDataXtd_Triangulation::SetNormal (const Standard_Integer theIndex,
-                                        const gp_Dir&          theNormal)
+void TDataXtd_Triangulation::SetNormal(const Standard_Integer theIndex, const gp_Dir& theNormal)
 {
   Backup();
-  myTriangulation->SetNormal (theIndex, theNormal);
+  myTriangulation->SetNormal(theIndex, theNormal);
 }
 
 //=======================================================================
-//function : HasNormals
-//purpose  : Returns Standard_True if nodal normals are defined.
+// function : HasNormals
+// purpose  : Returns Standard_True if nodal normals are defined.
 //=======================================================================
 Standard_Boolean TDataXtd_Triangulation::HasNormals() const
 {
@@ -238,37 +243,31 @@ Standard_Boolean TDataXtd_Triangulation::HasNormals() const
 }
 
 //=======================================================================
-//function : Normal
-//purpose  : return normal at the given index.
+// function : Normal
+// purpose  : return normal at the given index.
 //           Raises Standard_OutOfRange exception.
 //=======================================================================
-gp_Dir TDataXtd_Triangulation::Normal (const Standard_Integer theIndex) const
+gp_Dir TDataXtd_Triangulation::Normal(const Standard_Integer theIndex) const
 {
-  return myTriangulation->Normal (theIndex);
+  return myTriangulation->Normal(theIndex);
 }
 
-//=======================================================================
-//function : ID
-//purpose  : 
-//=======================================================================
-const Standard_GUID& TDataXtd_Triangulation::ID () const
+//=================================================================================================
+
+const Standard_GUID& TDataXtd_Triangulation::ID() const
 {
   return GetID();
 }
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
-Handle(TDF_Attribute) TDataXtd_Triangulation::NewEmpty () const
-{  
-  return new TDataXtd_Triangulation(); 
+//=================================================================================================
+
+Handle(TDF_Attribute) TDataXtd_Triangulation::NewEmpty() const
+{
+  return new TDataXtd_Triangulation();
 }
 
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void TDataXtd_Triangulation::Restore(const Handle(TDF_Attribute)& theAttribute)
 {
   myTriangulation.Nullify();
@@ -281,30 +280,26 @@ void TDataXtd_Triangulation::Restore(const Handle(TDF_Attribute)& theAttribute)
   }
 }
 
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-void TDataXtd_Triangulation::Paste (const Handle(TDF_Attribute)& theIntoAttribute,
-                                    const Handle(TDF_RelocationTable)& ) const
+//=================================================================================================
+
+void TDataXtd_Triangulation::Paste(const Handle(TDF_Attribute)& theIntoAttribute,
+                                   const Handle(TDF_RelocationTable)&) const
 {
   Handle(TDataXtd_Triangulation) M = Handle(TDataXtd_Triangulation)::DownCast(theIntoAttribute);
   M->myTriangulation.Nullify();
   if (!myTriangulation.IsNull())
   {
-      Handle(Poly_Triangulation) T = myTriangulation->Copy();
-      if (!T.IsNull())
-        M->myTriangulation = T;
+    Handle(Poly_Triangulation) T = myTriangulation->Copy();
+    if (!T.IsNull())
+      M->myTriangulation = T;
   }
 }
 
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-Standard_OStream& TDataXtd_Triangulation::Dump (Standard_OStream& anOS) const
+//=================================================================================================
+
+Standard_OStream& TDataXtd_Triangulation::Dump(Standard_OStream& anOS) const
 {
   anOS << "Triangulation";
-  //TODO: Make a good dump.
+  // TODO: Make a good dump.
   return anOS;
 }

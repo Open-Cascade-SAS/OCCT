@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_EntityIterator.hxx>
 #include "RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp.pxx"
 #include <StepData_StepReaderData.hxx>
@@ -21,55 +20,50 @@
 #include <StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
 
-//=======================================================================
-//function : RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp
-//purpose  : 
-//=======================================================================
-RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp::RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp()
+//=================================================================================================
+
+RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp::
+  RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp()
 {
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
-
-void RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp::ReadStep
-  (const Handle(StepData_StepReaderData)& data,
-   const Standard_Integer num0, Handle(Interface_Check)& ach,
-   const Handle(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp)& ent) const
+void RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp::ReadStep(
+  const Handle(StepData_StepReaderData)&                                 data,
+  const Standard_Integer                                                 num0,
+  Handle(Interface_Check)&                                               ach,
+  const Handle(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp)& ent) const
 {
   Standard_Integer num = 0;
-  data->NamedForComplex("SHAPE_ASPECT","SHPASP", num0, num, ach);
-  if (!data->CheckNbParams(num, 4, ach, "shape_aspect")) return;
+  data->NamedForComplex("SHAPE_ASPECT", "SHPASP", num0, num, ach);
+  if (!data->CheckNbParams(num, 4, ach, "shape_aspect"))
+    return;
 
   Handle(TCollection_HAsciiString) aName;
-  data->ReadString (num, 1, "name", ach, aName);
+  data->ReadString(num, 1, "name", ach, aName);
 
   Handle(TCollection_HAsciiString) aDescription;
-  if (data->IsParamDefined (num, 2)) {
-    data->ReadString (num, 2, "description", ach, aDescription);
+  if (data->IsParamDefined(num, 2))
+  {
+    data->ReadString(num, 2, "description", ach, aDescription);
   }
   Handle(StepRepr_ProductDefinitionShape) aOfShape;
-  data->ReadEntity(num, 3,"of_shape", ach, STANDARD_TYPE(StepRepr_ProductDefinitionShape), aOfShape);
+  data
+    ->ReadEntity(num, 3, "of_shape", ach, STANDARD_TYPE(StepRepr_ProductDefinitionShape), aOfShape);
 
   StepData_Logical aProductDefinitional;
-  data->ReadLogical (num,4,"product_definitional",ach,aProductDefinitional);
+  data->ReadLogical(num, 4, "product_definitional", ach, aProductDefinitional);
 
   // Initialize the entity
   ent->Init(aName, aDescription, aOfShape, aProductDefinitional);
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
-
-void RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp::WriteStep
-  (StepData_StepWriter& SW,
-   const Handle(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp)& ent) const
+void RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp::WriteStep(
+  StepData_StepWriter&                                                   SW,
+  const Handle(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp)& ent) const
 {
   SW.StartEntity("COMPOSITE_GROUP_SHAPE_ASPECT");
   SW.StartEntity("COMPOSITE_SHAPE_ASPECT");
@@ -81,15 +75,11 @@ void RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp::WriteStep
   SW.SendLogical(ent->ProductDefinitional());
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
-
-void RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp::Share
-  (const Handle(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp)& ent,
-   Interface_EntityIterator& iter) const
+void RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp::Share(
+  const Handle(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp)& ent,
+  Interface_EntityIterator&                                              iter) const
 {
   iter.GetOneItem(ent->OfShape());
 }

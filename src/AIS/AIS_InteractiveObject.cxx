@@ -27,59 +27,50 @@
 #include <Prs3d_TextAspect.hxx>
 #include <PrsMgr_PresentationManager.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(AIS_InteractiveObject,SelectMgr_SelectableObject)
+IMPLEMENT_STANDARD_RTTIEXT(AIS_InteractiveObject, SelectMgr_SelectableObject)
 
-//=======================================================================
-//function : AIS_InteractiveObject
-//purpose  : 
-//=======================================================================
-AIS_InteractiveObject::AIS_InteractiveObject (const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d)
-: SelectMgr_SelectableObject (aTypeOfPresentation3d),
-  myCTXPtr (NULL)
+//=================================================================================================
+
+AIS_InteractiveObject::AIS_InteractiveObject(
+  const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d)
+    : SelectMgr_SelectableObject(aTypeOfPresentation3d),
+      myCTXPtr(NULL)
 {
   //
 }
 
-//=======================================================================
-//function : Redisplay
-//purpose  :
-//=======================================================================
-void AIS_InteractiveObject::Redisplay (const Standard_Boolean AllModes)
+//=================================================================================================
+
+void AIS_InteractiveObject::Redisplay(const Standard_Boolean AllModes)
 {
   if (myCTXPtr == NULL)
     return;
 
-  myCTXPtr->Redisplay (this, Standard_False, AllModes);
+  myCTXPtr->Redisplay(this, Standard_False, AllModes);
 }
 
-//=======================================================================
-//function : ProcessDragging
-//purpose  :
-//=======================================================================
-Standard_Boolean AIS_InteractiveObject::ProcessDragging (const Handle(AIS_InteractiveContext)&,
-                                                         const Handle(V3d_View)&,
-                                                         const Handle(SelectMgr_EntityOwner)&,
-                                                         const Graphic3d_Vec2i&,
-                                                         const Graphic3d_Vec2i&,
-                                                         const AIS_DragAction)
+//=================================================================================================
+
+Standard_Boolean AIS_InteractiveObject::ProcessDragging(const Handle(AIS_InteractiveContext)&,
+                                                        const Handle(V3d_View)&,
+                                                        const Handle(SelectMgr_EntityOwner)&,
+                                                        const Graphic3d_Vec2i&,
+                                                        const Graphic3d_Vec2i&,
+                                                        const AIS_DragAction)
 {
   return Standard_False;
 }
 
-//=======================================================================
-//function : 
-//purpose  : 
-//=======================================================================
-Handle(AIS_InteractiveContext) AIS_InteractiveObject::GetContext() const 
+//=================================================================================================
+
+Handle(AIS_InteractiveContext) AIS_InteractiveObject::GetContext() const
 {
   return myCTXPtr;
 }
 
-//=======================================================================
-//function : SetContext
-//purpose  :
-//=======================================================================
-void AIS_InteractiveObject::SetContext (const Handle(AIS_InteractiveContext)& theCtx)
+//=================================================================================================
+
+void AIS_InteractiveObject::SetContext(const Handle(AIS_InteractiveContext)& theCtx)
 {
   if (myCTXPtr == theCtx.get())
   {
@@ -89,33 +80,27 @@ void AIS_InteractiveObject::SetContext (const Handle(AIS_InteractiveContext)& th
   myCTXPtr = theCtx.get();
   if (!theCtx.IsNull())
   {
-    myDrawer->Link (theCtx->DefaultDrawer());
+    myDrawer->Link(theCtx->DefaultDrawer());
   }
 }
 
-//=======================================================================
-//function : SetDisplayStatus
-//purpose  :
-//=======================================================================
-void AIS_InteractiveObject::SetDisplayStatus (PrsMgr_DisplayStatus theStatus)
+//=================================================================================================
+
+void AIS_InteractiveObject::SetDisplayStatus(PrsMgr_DisplayStatus theStatus)
 {
   myDisplayStatus = theStatus;
 }
 
-//=======================================================================
-//function : HasPresentation
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean AIS_InteractiveObject::HasPresentation() const
 {
   return HasInteractiveContext()
-      && myCTXPtr->MainPrsMgr()->HasPresentation (this, myDrawer->DisplayMode());
+         && myCTXPtr->MainPrsMgr()->HasPresentation(this, myDrawer->DisplayMode());
 }
 
-//=======================================================================
-//function : Presentation
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Handle(Prs3d_Presentation) AIS_InteractiveObject::Presentation() const
 {
   if (!HasInteractiveContext())
@@ -123,14 +108,13 @@ Handle(Prs3d_Presentation) AIS_InteractiveObject::Presentation() const
     return Handle(Prs3d_Presentation)();
   }
 
-  Handle(PrsMgr_Presentation) aPrs = myCTXPtr->MainPrsMgr()->Presentation (this, myDrawer->DisplayMode(), false);
+  Handle(PrsMgr_Presentation) aPrs =
+    myCTXPtr->MainPrsMgr()->Presentation(this, myDrawer->DisplayMode(), false);
   return aPrs;
 }
 
-//=======================================================================
-//function : SetAspect 
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void AIS_InteractiveObject::SetAspect(const Handle(Prs3d_BasicAspect)& theAspect)
 {
 
@@ -147,31 +131,29 @@ void AIS_InteractiveObject::SetAspect(const Handle(Prs3d_BasicAspect)& theAspect
   const Handle(Graphic3d_Group)& aGroup = aPrs->Groups().Last();
   if (Handle(Prs3d_ShadingAspect) aShadingAspect = Handle(Prs3d_ShadingAspect)::DownCast(theAspect))
   {
-    aGroup->SetGroupPrimitivesAspect (aShadingAspect->Aspect());
+    aGroup->SetGroupPrimitivesAspect(aShadingAspect->Aspect());
   }
   else if (Handle(Prs3d_LineAspect) aLineAspect = Handle(Prs3d_LineAspect)::DownCast(theAspect))
   {
-    aGroup->SetGroupPrimitivesAspect (aLineAspect->Aspect());
+    aGroup->SetGroupPrimitivesAspect(aLineAspect->Aspect());
   }
   else if (Handle(Prs3d_PointAspect) aPointAspect = Handle(Prs3d_PointAspect)::DownCast(theAspect))
   {
-    aGroup->SetGroupPrimitivesAspect (aPointAspect->Aspect());
+    aGroup->SetGroupPrimitivesAspect(aPointAspect->Aspect());
   }
   else if (Handle(Prs3d_TextAspect) aTextAspect = Handle(Prs3d_TextAspect)::DownCast(theAspect))
   {
-    aGroup->SetGroupPrimitivesAspect (aTextAspect->Aspect());
+    aGroup->SetGroupPrimitivesAspect(aTextAspect->Aspect());
   }
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void AIS_InteractiveObject::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+//=================================================================================================
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, SelectMgr_SelectableObject)
-  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myCTXPtr)
-  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myOwner)
+void AIS_InteractiveObject::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, SelectMgr_SelectableObject)
+  OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, myCTXPtr)
+  OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, myOwner)
 }

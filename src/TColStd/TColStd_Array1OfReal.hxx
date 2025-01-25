@@ -19,5 +19,4 @@
 
 typedef NCollection_Array1<Standard_Real> TColStd_Array1OfReal;
 
-
 #endif

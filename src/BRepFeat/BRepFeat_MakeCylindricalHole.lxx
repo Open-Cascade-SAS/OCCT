@@ -16,50 +16,48 @@
 
 // Modified by jag, Tue May 30 09:47:02 1995
 
+//=======================================================================
+// function : BRepFeat_MakeCylindricalHole
+// purpose  :
+//=======================================================================
+
+inline BRepFeat_MakeCylindricalHole::BRepFeat_MakeCylindricalHole()
+    : myAxDef(Standard_False),
+      myStatus(BRepFeat_NoError),
+      myIsBlind(Standard_False),
+      myValidate(Standard_False)
+{
+}
 
 //=======================================================================
-//function : BRepFeat_MakeCylindricalHole
-//purpose  : 
-//=======================================================================
-
-inline BRepFeat_MakeCylindricalHole::BRepFeat_MakeCylindricalHole ():
-   myAxDef(Standard_False),
-   myStatus(BRepFeat_NoError),
-   myIsBlind(Standard_False),
-   myValidate(Standard_False)
-{}
-
-//=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
 inline void BRepFeat_MakeCylindricalHole::Init(const gp_Ax1& Axis)
 {
-  myAxis = Axis;
+  myAxis  = Axis;
   myAxDef = Standard_True;
 }
 
-
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-inline void BRepFeat_MakeCylindricalHole::Init(const TopoDS_Shape& S,
-                                               const gp_Ax1& Axis)
+inline void BRepFeat_MakeCylindricalHole::Init(const TopoDS_Shape& S, const gp_Ax1& Axis)
 {
   BRepFeat_Builder::Init(S);
-  myAxis = Axis;
+  myAxis  = Axis;
   myAxDef = Standard_True;
 }
 
 //=======================================================================
-//function : Status
-//purpose  : 
+// function : Status
+// purpose  :
 //=======================================================================
 
-inline BRepFeat_Status BRepFeat_MakeCylindricalHole::Status () const
+inline BRepFeat_Status BRepFeat_MakeCylindricalHole::Status() const
 {
   return myStatus;
 }

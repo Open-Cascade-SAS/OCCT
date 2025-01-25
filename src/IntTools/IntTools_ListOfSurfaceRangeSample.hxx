@@ -20,7 +20,7 @@
 #include <NCollection_List.hxx>
 
 typedef NCollection_List<IntTools_SurfaceRangeSample> IntTools_ListOfSurfaceRangeSample;
-typedef NCollection_List<IntTools_SurfaceRangeSample>::Iterator IntTools_ListIteratorOfListOfSurfaceRangeSample;
-
+typedef NCollection_List<IntTools_SurfaceRangeSample>::Iterator
+  IntTools_ListIteratorOfListOfSurfaceRangeSample;
 
 #endif

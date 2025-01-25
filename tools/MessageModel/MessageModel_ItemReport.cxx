@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/MessageModel_ItemReport.hxx>
 
@@ -34,9 +34,9 @@
 // function : initValue
 // purpose :
 // =======================================================================
-QVariant MessageModel_ItemReport::initValue (const int theRole) const
+QVariant MessageModel_ItemReport::initValue(const int theRole) const
 {
-  QVariant aParentValue = MessageModel_ItemBase::initValue (theRole);
+  QVariant aParentValue = MessageModel_ItemBase::initValue(theRole);
   if (aParentValue.isValid())
     return aParentValue;
 
@@ -51,10 +51,11 @@ QVariant MessageModel_ItemReport::initValue (const int theRole) const
 
     return QVariant();
   }
-  if (theRole == Qt::ToolTipRole && !myDescription.IsEmpty() && Column() == 0) // display the exported file name in tool tip
+  if (theRole == Qt::ToolTipRole && !myDescription.IsEmpty()
+      && Column() == 0) // display the exported file name in tool tip
   {
     OSD_Path aPath(myDescription);
-    return QString ("%1%2").arg (aPath.Name().ToCString()).arg (aPath.Extension().ToCString());
+    return QString("%1%2").arg(aPath.Name().ToCString()).arg(aPath.Extension().ToCString());
   }
 
   if (theRole != Qt::DisplayRole)
@@ -64,13 +65,16 @@ QVariant MessageModel_ItemReport::initValue (const int theRole) const
     return aReport->DynamicType()->Name();
 
   Message_MetricType aMetricType;
-  int aPosition;
-  if (MessageModel_TreeModel::IsMetricColumn (Column(), aMetricType, aPosition) &&
-      (aMetricType == Message_MetricType_ProcessCPUUserTime || aMetricType == Message_MetricType_ProcessCPUSystemTime ||
-       aMetricType == Message_MetricType_WallClock))
+  int                aPosition;
+  if (MessageModel_TreeModel::IsMetricColumn(Column(), aMetricType, aPosition)
+      && (aMetricType == Message_MetricType_ProcessCPUUserTime
+          || aMetricType == Message_MetricType_ProcessCPUSystemTime
+          || aMetricType == Message_MetricType_WallClock))
   {
-    if (aPosition == 0) return CumulativeMetric (aReport, aMetricType);
-    else if (aPosition == 1) return "100";
+    if (aPosition == 0)
+      return CumulativeMetric(aReport, aMetricType);
+    else if (aPosition == 1)
+      return "100";
   }
   return QVariant();
 }
@@ -88,11 +92,11 @@ int MessageModel_ItemReport::initRowCount() const
   MessageModel_ItemReport* aCurrentItem = (MessageModel_ItemReport*)this;
   for (int aGravityId = Message_Trace; aGravityId <= Message_Fail; aGravityId++)
   {
-    const Message_ListOfAlert& anAlerts = aReport->GetAlerts ((Message_Gravity)aGravityId);
+    const Message_ListOfAlert& anAlerts = aReport->GetAlerts((Message_Gravity)aGravityId);
     for (Message_ListOfAlert::Iterator anIt(anAlerts); anIt.More(); anIt.Next())
     {
       Message_ListOfAlert aCurAlerts;
-      aCurAlerts.Append (anIt.Value());
+      aCurAlerts.Append(anIt.Value());
       aCurrentItem->myChildAlerts.Bind(myChildAlerts.Size(), aCurAlerts);
     }
   }
@@ -103,9 +107,9 @@ int MessageModel_ItemReport::initRowCount() const
 // function : createChild
 // purpose :
 // =======================================================================
-TreeModel_ItemBasePtr MessageModel_ItemReport::createChild (int theRow, int theColumn)
+TreeModel_ItemBasePtr MessageModel_ItemReport::createChild(int theRow, int theColumn)
 {
-  return MessageModel_ItemAlert::CreateItem (currentItem(), theRow, theColumn);
+  return MessageModel_ItemAlert::CreateItem(currentItem(), theRow, theColumn);
 }
 
 // =======================================================================
@@ -114,8 +118,8 @@ TreeModel_ItemBasePtr MessageModel_ItemReport::createChild (int theRow, int theC
 // =======================================================================
 void MessageModel_ItemReport::Init()
 {
-  MessageModel_ItemRootPtr aRootItem = itemDynamicCast<MessageModel_ItemRoot> (Parent());
-  myReport = aRootItem ? aRootItem->GetReport (Row(), myDescription) : Handle(Message_Report)();
+  MessageModel_ItemRootPtr aRootItem = itemDynamicCast<MessageModel_ItemRoot>(Parent());
+  myReport = aRootItem ? aRootItem->GetReport(Row(), myDescription) : Handle(Message_Report)();
 
   MessageModel_ItemBase::Init();
 }
@@ -156,7 +160,8 @@ void MessageModel_ItemReport::initItem() const
 // function : FindReportItem
 // purpose :
 // =======================================================================
-MessageModel_ItemReportPtr MessageModel_ItemReport::FindReportItem (const TreeModel_ItemBasePtr& theItem)
+MessageModel_ItemReportPtr MessageModel_ItemReport::FindReportItem(
+  const TreeModel_ItemBasePtr& theItem)
 {
   TreeModel_ItemBasePtr anItem = theItem;
   while (anItem)
@@ -173,7 +178,7 @@ MessageModel_ItemReportPtr MessageModel_ItemReport::FindReportItem (const TreeMo
 // function : FindReport
 // purpose :
 // =======================================================================
-Handle(Message_Report) MessageModel_ItemReport::FindReport (const MessageModel_ItemBasePtr& theItem)
+Handle(Message_Report) MessageModel_ItemReport::FindReport(const MessageModel_ItemBasePtr& theItem)
 {
   Handle(Message_Report) aReport;
 
@@ -194,39 +199,45 @@ Handle(Message_Report) MessageModel_ItemReport::FindReport (const MessageModel_I
 // function : CumulativeMetric
 // purpose :
 // =======================================================================
-Standard_Real MessageModel_ItemReport::CumulativeMetric (const Handle(Message_Report)& theReport, const Message_MetricType theMetricType)
+Standard_Real MessageModel_ItemReport::CumulativeMetric(const Handle(Message_Report)& theReport,
+                                                        const Message_MetricType      theMetricType)
 {
-  if (!theReport->ActiveMetrics().Contains (theMetricType))
+  if (!theReport->ActiveMetrics().Contains(theMetricType))
     return 0;
 
   Standard_Real aMetric = 0;
   for (int iGravity = Message_Trace; iGravity <= Message_Fail; ++iGravity)
   {
-    const Message_ListOfAlert& anAlerts = theReport->GetAlerts ((Message_Gravity)iGravity);
-    Handle(Message_AttributeMeter) aFirstAttribute/*, aLastAttribute*/;
-    for (Message_ListOfAlert::Iterator anAlertsIterator (anAlerts); anAlertsIterator.More(); anAlertsIterator.Next())
+    const Message_ListOfAlert&     anAlerts = theReport->GetAlerts((Message_Gravity)iGravity);
+    Handle(Message_AttributeMeter) aFirstAttribute /*, aLastAttribute*/;
+    for (Message_ListOfAlert::Iterator anAlertsIterator(anAlerts); anAlertsIterator.More();
+         anAlertsIterator.Next())
     {
-      Handle(Message_AlertExtended) anAlert = Handle(Message_AlertExtended)::DownCast (anAlertsIterator.Value());
+      Handle(Message_AlertExtended) anAlert =
+        Handle(Message_AlertExtended)::DownCast(anAlertsIterator.Value());
       if (anAlert.IsNull())
         continue;
-      Handle(Message_AttributeMeter) anAttribute = Handle(Message_AttributeMeter)::DownCast (anAlert->Attribute());
-      if (anAttribute.IsNull() || !anAttribute->HasMetric (theMetricType) || !anAttribute->IsMetricValid (theMetricType))
+      Handle(Message_AttributeMeter) anAttribute =
+        Handle(Message_AttributeMeter)::DownCast(anAlert->Attribute());
+      if (anAttribute.IsNull() || !anAttribute->HasMetric(theMetricType)
+          || !anAttribute->IsMetricValid(theMetricType))
         continue;
 
-      //if (aFirstAttribute.IsNull())
-      //  aFirstAttribute = anAttribute;
-      //else
+      // if (aFirstAttribute.IsNull())
+      //   aFirstAttribute = anAttribute;
+      // else
       //{
-        //aLastAttribute = anAttribute;
+      // aLastAttribute = anAttribute;
       //}
-      aMetric += anAttribute->StopValue (theMetricType) - anAttribute->StartValue (theMetricType);
+      aMetric += anAttribute->StopValue(theMetricType) - anAttribute->StartValue(theMetricType);
     }
-    //if (aFirstAttribute.IsNull())
-    //  continue;
-    //if (aLastAttribute.IsNull())
-    //  aLastAttribute = aFirstAttribute;
+    // if (aFirstAttribute.IsNull())
+    //   continue;
+    // if (aLastAttribute.IsNull())
+    //   aLastAttribute = aFirstAttribute;
 
-    //aMetric += aLastAttribute->StopValue (theMetricType) - aFirstAttribute->StartValue (theMetricType);
+    // aMetric += aLastAttribute->StopValue (theMetricType) - aFirstAttribute->StartValue
+    // (theMetricType);
   }
   return aMetric;
 }

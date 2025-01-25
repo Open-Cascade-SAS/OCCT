@@ -17,27 +17,21 @@
 
 #include <StepElement_UniformSurfaceSection.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepElement_UniformSurfaceSection,StepElement_SurfaceSection)
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_UniformSurfaceSection, StepElement_SurfaceSection)
 
-//=======================================================================
-//function : StepElement_UniformSurfaceSection
-//purpose  : 
-//=======================================================================
-StepElement_UniformSurfaceSection::StepElement_UniformSurfaceSection ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepElement_UniformSurfaceSection::StepElement_UniformSurfaceSection() {}
 
-void StepElement_UniformSurfaceSection::Init (const StepElement_MeasureOrUnspecifiedValue &aSurfaceSection_Offset,
-                                              const StepElement_MeasureOrUnspecifiedValue &aSurfaceSection_NonStructuralMass,
-                                              const StepElement_MeasureOrUnspecifiedValue &aSurfaceSection_NonStructuralMassOffset,
-                                              const Standard_Real aThickness,
-                                              const StepElement_MeasureOrUnspecifiedValue &aBendingThickness,
-                                              const StepElement_MeasureOrUnspecifiedValue &aShearThickness)
+//=================================================================================================
+
+void StepElement_UniformSurfaceSection::Init(
+  const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_Offset,
+  const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_NonStructuralMass,
+  const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_NonStructuralMassOffset,
+  const Standard_Real                          aThickness,
+  const StepElement_MeasureOrUnspecifiedValue& aBendingThickness,
+  const StepElement_MeasureOrUnspecifiedValue& aShearThickness)
 {
   StepElement_SurfaceSection::Init(aSurfaceSection_Offset,
                                    aSurfaceSection_NonStructuralMass,
@@ -50,62 +44,46 @@ void StepElement_UniformSurfaceSection::Init (const StepElement_MeasureOrUnspeci
   theShearThickness = aShearThickness;
 }
 
-//=======================================================================
-//function : Thickness
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Real StepElement_UniformSurfaceSection::Thickness () const
+Standard_Real StepElement_UniformSurfaceSection::Thickness() const
 {
   return theThickness;
 }
 
-//=======================================================================
-//function : SetThickness
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepElement_UniformSurfaceSection::SetThickness (const Standard_Real aThickness)
+void StepElement_UniformSurfaceSection::SetThickness(const Standard_Real aThickness)
 {
   theThickness = aThickness;
 }
 
-//=======================================================================
-//function : BendingThickness
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepElement_MeasureOrUnspecifiedValue StepElement_UniformSurfaceSection::BendingThickness () const
+StepElement_MeasureOrUnspecifiedValue StepElement_UniformSurfaceSection::BendingThickness() const
 {
   return theBendingThickness;
 }
 
-//=======================================================================
-//function : SetBendingThickness
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepElement_UniformSurfaceSection::SetBendingThickness (const StepElement_MeasureOrUnspecifiedValue &aBendingThickness)
+void StepElement_UniformSurfaceSection::SetBendingThickness(
+  const StepElement_MeasureOrUnspecifiedValue& aBendingThickness)
 {
   theBendingThickness = aBendingThickness;
 }
 
-//=======================================================================
-//function : ShearThickness
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepElement_MeasureOrUnspecifiedValue StepElement_UniformSurfaceSection::ShearThickness () const
+StepElement_MeasureOrUnspecifiedValue StepElement_UniformSurfaceSection::ShearThickness() const
 {
   return theShearThickness;
 }
 
-//=======================================================================
-//function : SetShearThickness
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepElement_UniformSurfaceSection::SetShearThickness (const StepElement_MeasureOrUnspecifiedValue &aShearThickness)
+void StepElement_UniformSurfaceSection::SetShearThickness(
+  const StepElement_MeasureOrUnspecifiedValue& aShearThickness)
 {
   theShearThickness = aShearThickness;
 }

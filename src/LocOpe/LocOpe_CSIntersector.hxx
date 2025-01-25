@@ -28,47 +28,45 @@
 #include <TopAbs_Orientation.hxx>
 class LocOpe_PntFace;
 
-
 //! This class provides the intersection between a set
 //! of axis or a circle and the faces of a shape.  The
 //! intersection  points  are   sorted  in  increasing
 //! parameter along each axis or circle.
-class LocOpe_CSIntersector 
+class LocOpe_CSIntersector
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor.
-    LocOpe_CSIntersector();
-  
+  LocOpe_CSIntersector();
+
   //! Creates  and performs the intersection     between
   //! <Ax1> and <S>.
-    LocOpe_CSIntersector(const TopoDS_Shape& S);
-  
+  LocOpe_CSIntersector(const TopoDS_Shape& S);
+
   //! Performs the intersection between <Ax1 and <S>.
-  Standard_EXPORT void Init (const TopoDS_Shape& S);
-  
-  Standard_EXPORT void Perform (const LocOpe_SequenceOfLin& Slin);
-  
-  Standard_EXPORT void Perform (const LocOpe_SequenceOfCirc& Scir);
-  
-  Standard_EXPORT void Perform (const TColGeom_SequenceOfCurve& Scur);
-  
+  Standard_EXPORT void Init(const TopoDS_Shape& S);
+
+  Standard_EXPORT void Perform(const LocOpe_SequenceOfLin& Slin);
+
+  Standard_EXPORT void Perform(const LocOpe_SequenceOfCirc& Scir);
+
+  Standard_EXPORT void Perform(const TColGeom_SequenceOfCurve& Scur);
+
   //! Returns <Standard_True>  if the  intersection  has
   //! been done.
-    Standard_Boolean IsDone() const;
-  
+  Standard_Boolean IsDone() const;
+
   //! Returns  the number of   intersection point on the
   //! element of range <I>.
-  Standard_EXPORT Standard_Integer NbPoints (const Standard_Integer I) const;
-  
+  Standard_EXPORT Standard_Integer NbPoints(const Standard_Integer I) const;
+
   //! Returns the intersection point of range <Index> on
   //! element of range   <I>. The points   are sorted in
   //! increasing order of parameter along the axis.
-  Standard_EXPORT const LocOpe_PntFace& Point (const Standard_Integer I, const Standard_Integer Index) const;
-  
+  Standard_EXPORT const LocOpe_PntFace& Point(const Standard_Integer I,
+                                              const Standard_Integer Index) const;
+
   //! On  the element of range   <I>, searches the first
   //! intersection   point  located after  the parameter
   //! <From>,  which orientation is not TopAbs_EXTERNAL.
@@ -80,8 +78,13 @@ public:
   //! determine if 2 parameters are equal.
   //!
   //! Otherwise, returns <Standard_False>.
-  Standard_EXPORT Standard_Boolean LocalizeAfter (const Standard_Integer I, const Standard_Real From, const Standard_Real Tol, TopAbs_Orientation& Or, Standard_Integer& IndFrom, Standard_Integer& IndTo) const;
-  
+  Standard_EXPORT Standard_Boolean LocalizeAfter(const Standard_Integer I,
+                                                 const Standard_Real    From,
+                                                 const Standard_Real    Tol,
+                                                 TopAbs_Orientation&    Or,
+                                                 Standard_Integer&      IndFrom,
+                                                 Standard_Integer&      IndTo) const;
+
   //! On the element  of range  <I>, searches the  first
   //! intersection point   located before  the parameter
   //! <From>,  which orientation is not TopAbs_EXTERNAL.
@@ -93,8 +96,13 @@ public:
   //! determine if 2 parameters are equal.
   //!
   //! Otherwise, returns <Standard_False>.
-  Standard_EXPORT Standard_Boolean LocalizeBefore (const Standard_Integer I, const Standard_Real From, const Standard_Real Tol, TopAbs_Orientation& Or, Standard_Integer& IndFrom, Standard_Integer& IndTo) const;
-  
+  Standard_EXPORT Standard_Boolean LocalizeBefore(const Standard_Integer I,
+                                                  const Standard_Real    From,
+                                                  const Standard_Real    Tol,
+                                                  TopAbs_Orientation&    Or,
+                                                  Standard_Integer&      IndFrom,
+                                                  Standard_Integer&      IndTo) const;
+
   //! On the  element of  range <I>, searches  the first
   //! intersection      point  located after the   index
   //! <FromInd> ( >=  FromInd + 1), which orientation is
@@ -107,8 +115,13 @@ public:
   //! are equal.
   //!
   //! Otherwise, returns <Standard_False>.
-  Standard_EXPORT Standard_Boolean LocalizeAfter (const Standard_Integer I, const Standard_Integer FromInd, const Standard_Real Tol, TopAbs_Orientation& Or, Standard_Integer& IndFrom, Standard_Integer& IndTo) const;
-  
+  Standard_EXPORT Standard_Boolean LocalizeAfter(const Standard_Integer I,
+                                                 const Standard_Integer FromInd,
+                                                 const Standard_Real    Tol,
+                                                 TopAbs_Orientation&    Or,
+                                                 Standard_Integer&      IndFrom,
+                                                 Standard_Integer&      IndTo) const;
+
   //! On  the element of  range  <I>, searches the first
   //! intersection  point    located  before  the  index
   //! <FromInd>  (  <= FromInd -1), which orientation is
@@ -121,40 +134,25 @@ public:
   //! are equal.
   //!
   //! Otherwise, returns <Standard_False>.
-  Standard_EXPORT Standard_Boolean LocalizeBefore (const Standard_Integer I, const Standard_Integer FromInd, const Standard_Real Tol, TopAbs_Orientation& Or, Standard_Integer& IndFrom, Standard_Integer& IndTo) const;
-  
+  Standard_EXPORT Standard_Boolean LocalizeBefore(const Standard_Integer I,
+                                                  const Standard_Integer FromInd,
+                                                  const Standard_Real    Tol,
+                                                  TopAbs_Orientation&    Or,
+                                                  Standard_Integer&      IndFrom,
+                                                  Standard_Integer&      IndTo) const;
+
   Standard_EXPORT void Destroy();
-~LocOpe_CSIntersector()
-{
-  Destroy();
-}
 
-
-
+  ~LocOpe_CSIntersector() { Destroy(); }
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Boolean myDone;
-  TopoDS_Shape myShape;
+  TopoDS_Shape     myShape;
   Standard_Address myPoints;
   Standard_Integer myNbelem;
-
-
 };
 
-
 #include <LocOpe_CSIntersector.lxx>
-
-
-
-
 
 #endif // _LocOpe_CSIntersector_HeaderFile

@@ -27,32 +27,29 @@
 
 #include "TObj_TObj_msg.pxx"
 
-IMPLEMENT_STANDARD_RTTIEXT(TObj_Application,TDocStd_Application)
+IMPLEMENT_STANDARD_RTTIEXT(TObj_Application, TDocStd_Application)
 
-//=======================================================================
-//function : GetInstance
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Handle(TObj_Application) TObj_Application::GetInstance()
 {
   static Handle(TObj_Application) THE_TOBJ_APP(new TObj_Application);
   return THE_TOBJ_APP;
 }
 
-//=======================================================================
-//function : TObj_Application
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TObj_Application::TObj_Application () : myIsError(Standard_False)
+TObj_Application::TObj_Application()
+    : myIsError(Standard_False)
 {
-  if (!Message_MsgFile::HasMsg ("TObj_Appl_SUnknownFailure"))
+  if (!Message_MsgFile::HasMsg("TObj_Appl_SUnknownFailure"))
   {
     // load messages into global map on first instantiation
-    Message_MsgFile::LoadFromString (TObj_TObj_msg, sizeof(TObj_TObj_msg) - 1);
-    if (!Message_MsgFile::HasMsg ("TObj_Appl_SUnknownFailure"))
+    Message_MsgFile::LoadFromString(TObj_TObj_msg, sizeof(TObj_TObj_msg) - 1);
+    if (!Message_MsgFile::HasMsg("TObj_Appl_SUnknownFailure"))
     {
-      throw Standard_ProgramError("Critical Error - message resources for TObj_Application are invalid or undefined!");
+      throw Standard_ProgramError(
+        "Critical Error - message resources for TObj_Application are invalid or undefined!");
     }
   }
 
@@ -60,10 +57,7 @@ TObj_Application::TObj_Application () : myIsError(Standard_False)
   myIsVerbose = Standard_False;
 }
 
-//=======================================================================
-//function : ResourcesName
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_CString TObj_Application::ResourcesName()
 {
@@ -71,18 +65,17 @@ Standard_CString TObj_Application::ResourcesName()
 }
 
 //=======================================================================
-//function : SaveDocument
-//purpose  : Saving the OCAF document
+// function : SaveDocument
+// purpose  : Saving the OCAF document
 //=======================================================================
 
-Standard_Boolean TObj_Application::SaveDocument
-                        (const Handle(TDocStd_Document)&   theSourceDoc,
-                         const TCollection_ExtendedString& theTargetFile)
+Standard_Boolean TObj_Application::SaveDocument(const Handle(TDocStd_Document)&   theSourceDoc,
+                                                const TCollection_ExtendedString& theTargetFile)
 {
-  const PCDM_StoreStatus aStatus = SaveAs (theSourceDoc, theTargetFile);
-  myIsError = (aStatus != PCDM_SS_OK);
+  const PCDM_StoreStatus aStatus = SaveAs(theSourceDoc, theTargetFile);
+  myIsError                      = (aStatus != PCDM_SS_OK);
   if (myIsError)
-    SetError (aStatus, theTargetFile);
+    SetError(aStatus, theTargetFile);
 
   // Release free memory
   Standard::Purge();
@@ -90,18 +83,17 @@ Standard_Boolean TObj_Application::SaveDocument
 }
 
 //=======================================================================
-//function : SaveDocument
-//purpose  : Saving the OCAF document to a stream
+// function : SaveDocument
+// purpose  : Saving the OCAF document to a stream
 //=======================================================================
 
-Standard_Boolean TObj_Application::SaveDocument
-                        (const Handle(TDocStd_Document)& theSourceDoc,
-                         Standard_OStream&               theOStream)
+Standard_Boolean TObj_Application::SaveDocument(const Handle(TDocStd_Document)& theSourceDoc,
+                                                Standard_OStream&               theOStream)
 {
-  const PCDM_StoreStatus aStatus = SaveAs (theSourceDoc, theOStream);
-  myIsError = (aStatus != PCDM_SS_OK);
+  const PCDM_StoreStatus aStatus = SaveAs(theSourceDoc, theOStream);
+  myIsError                      = (aStatus != PCDM_SS_OK);
   if (myIsError)
-    SetError (aStatus, "");
+    SetError(aStatus, "");
 
   // Release free memory
   Standard::Purge();
@@ -109,62 +101,30 @@ Standard_Boolean TObj_Application::SaveDocument
 }
 
 //=======================================================================
-//function : LoadDocument
-//purpose  : Loading the OCAF document
+// function : LoadDocument
+// purpose  : Loading the OCAF document
 //=======================================================================
 
-Standard_Boolean TObj_Application::LoadDocument
-                        (const TCollection_ExtendedString& theSourceFile,
-                         Handle(TDocStd_Document)&         theTargetDoc)
+Standard_Boolean TObj_Application::LoadDocument(const TCollection_ExtendedString& theSourceFile,
+                                                Handle(TDocStd_Document)&         theTargetDoc)
 {
   PCDM_ReaderStatus aStatus = PCDM_RS_ReaderException;
   {
     try
     {
-      aStatus = Open (theSourceFile, theTargetDoc);
+      aStatus = Open(theSourceFile, theTargetDoc);
     }
-    catch (Standard_Failure const& anException) {
-#ifdef OCCT_DEBUG
-      ErrorMessage (Message_Msg("TObj_Appl_Exception") << 
-                    anException.GetMessageString());
-#endif
-      (void) anException;
-    }
-  }
-  myIsError = (aStatus != PCDM_RS_OK);
-  if (myIsError)
-    SetError (aStatus, theSourceFile);
-
-  // Release free memory
-  Standard::Purge();
-  return myIsError ? Standard_False : Standard_True;
-}
-
-//=======================================================================
-//function : LoadDocument
-//purpose  : Loading the OCAF document from a stream
-//=======================================================================
-
-Standard_Boolean TObj_Application::LoadDocument
-                        (Standard_IStream&         theIStream,
-                         Handle(TDocStd_Document)& theTargetDoc)
-{
-  PCDM_ReaderStatus aStatus = PCDM_RS_ReaderException;
-  {
-    try
+    catch (Standard_Failure const& anException)
     {
-      aStatus = Open (theIStream, theTargetDoc);
-    }
-    catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
       ErrorMessage(Message_Msg("TObj_Appl_Exception") << anException.GetMessageString());
 #endif
-      (void) anException;
+      (void)anException;
     }
   }
   myIsError = (aStatus != PCDM_RS_OK);
   if (myIsError)
-    SetError (aStatus, "");
+    SetError(aStatus, theSourceFile);
 
   // Release free memory
   Standard::Purge();
@@ -172,50 +132,73 @@ Standard_Boolean TObj_Application::LoadDocument
 }
 
 //=======================================================================
-//function : CreateNewDocument
-//purpose  : 
+// function : LoadDocument
+// purpose  : Loading the OCAF document from a stream
 //=======================================================================
 
-Standard_Boolean TObj_Application::CreateNewDocument
-                        (Handle(TDocStd_Document)&         theDoc,
-                         const TCollection_ExtendedString& theFormat)
+Standard_Boolean TObj_Application::LoadDocument(Standard_IStream&         theIStream,
+                                                Handle(TDocStd_Document)& theTargetDoc)
+{
+  PCDM_ReaderStatus aStatus = PCDM_RS_ReaderException;
+  {
+    try
+    {
+      aStatus = Open(theIStream, theTargetDoc);
+    }
+    catch (Standard_Failure const& anException)
+    {
+#ifdef OCCT_DEBUG
+      ErrorMessage(Message_Msg("TObj_Appl_Exception") << anException.GetMessageString());
+#endif
+      (void)anException;
+    }
+  }
+  myIsError = (aStatus != PCDM_RS_OK);
+  if (myIsError)
+    SetError(aStatus, "");
+
+  // Release free memory
+  Standard::Purge();
+  return myIsError ? Standard_False : Standard_True;
+}
+
+//=================================================================================================
+
+Standard_Boolean TObj_Application::CreateNewDocument(Handle(TDocStd_Document)&         theDoc,
+                                                     const TCollection_ExtendedString& theFormat)
 {
   myIsError = Standard_False;
 
   // Create the Document
-  NewDocument (theFormat, theDoc);
+  NewDocument(theFormat, theDoc);
 
   return myIsError ? Standard_False : Standard_True;
 }
 
-//=======================================================================
-//function : ErrorMessage
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TObj_Application::ErrorMessage (const TCollection_ExtendedString &theMsg,
-					 const Message_Gravity theLevel)
+void TObj_Application::ErrorMessage(const TCollection_ExtendedString& theMsg,
+                                    const Message_Gravity             theLevel)
 {
-  myMessenger->Send ( theMsg, theLevel );
+  myMessenger->Send(theMsg, theLevel);
+}
+
+//=================================================================================================
+
+void TObj_Application::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDocStd_Application)
 }
 
 //=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void TObj_Application::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDocStd_Application)
-}
-
-//=======================================================================
-//function : SetError
-//purpose  : Sets an error occurred on storage of a document.
+// function : SetError
+// purpose  : Sets an error occurred on storage of a document.
 //=======================================================================
 
-void TObj_Application::SetError (const PCDM_StoreStatus theStatus, const TCollection_ExtendedString& theInfo)
+void TObj_Application::SetError(const PCDM_StoreStatus            theStatus,
+                                const TCollection_ExtendedString& theInfo)
 {
   switch (theStatus)
   {
@@ -244,11 +227,12 @@ void TObj_Application::SetError (const PCDM_StoreStatus theStatus, const TCollec
 }
 
 //=======================================================================
-//function : SetError
-//purpose  : Sets an error occurred on reading of a document.
+// function : SetError
+// purpose  : Sets an error occurred on reading of a document.
 //=======================================================================
 
-void TObj_Application::SetError(const PCDM_ReaderStatus theStatus, const TCollection_ExtendedString& theInfo)
+void TObj_Application::SetError(const PCDM_ReaderStatus           theStatus,
+                                const TCollection_ExtendedString& theInfo)
 {
   switch (theStatus)
   {

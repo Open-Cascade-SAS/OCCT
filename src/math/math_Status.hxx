@@ -17,14 +17,13 @@
 #ifndef _math_Status_HeaderFile
 #define _math_Status_HeaderFile
 
-
 enum math_Status
 {
-math_OK,
-math_TooManyIterations,
-math_FunctionError,
-math_DirectionSearchError,
-math_NotBracketed
+  math_OK,
+  math_TooManyIterations,
+  math_FunctionError,
+  math_DirectionSearchError,
+  math_NotBracketed
 };
 
 #endif // _math_Status_HeaderFile

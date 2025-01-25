@@ -10,7 +10,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef _BOPAlgo_ToolsProvider_HeaderFile
 #define _BOPAlgo_ToolsProvider_HeaderFile
@@ -25,7 +25,6 @@
 class BOPAlgo_ToolsProvider : public BOPAlgo_Builder
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
@@ -43,13 +42,9 @@ public:
   Standard_EXPORT virtual void SetTools(const TopTools_ListOfShape& theShapes);
 
   //! Returns the Tool arguments of the operation
-  const TopTools_ListOfShape& Tools() const
-  {
-    return myTools;
-  }
+  const TopTools_ListOfShape& Tools() const { return myTools; }
 
 protected:
-
   TopTools_ListOfShape myTools;
   TopTools_MapOfShape  myMapTools;
 };

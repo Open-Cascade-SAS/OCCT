@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef ShapeView_Communicator_H
 #define ShapeView_Communicator_H
@@ -24,9 +24,12 @@
 class ShapeView_Communicator : public TInspectorAPI_Communicator
 {
 public:
-
   //! Constructor
-  ShapeView_Communicator() : TInspectorAPI_Communicator(), myWindow (new ShapeView_Window (0)) {}
+  ShapeView_Communicator()
+      : TInspectorAPI_Communicator(),
+        myWindow(new ShapeView_Window(0))
+  {
+  }
 
   //! Destructor
   virtual ~ShapeView_Communicator() { myWindow->RemoveAllShapes(); }
@@ -34,32 +37,41 @@ public:
   //! Provides the container with a parent where this container should be inserted.
   //! If Qt implementation, it should be QWidget with QLayout set inside
   //! \param theParent a parent class
-  virtual void SetParent (void* theParent) Standard_OVERRIDE { myWindow->SetParent (theParent); }
+  virtual void SetParent(void* theParent) Standard_OVERRIDE { myWindow->SetParent(theParent); }
 
-  //! Sets parameters container, it should be used when the plugin is initialized or in update content
-  //! \param theParameters a parameters container
-  virtual void SetParameters (const Handle(TInspectorAPI_PluginParameters)& theParameters) Standard_OVERRIDE
-  { myWindow->SetParameters (theParameters); }
+  //! Sets parameters container, it should be used when the plugin is initialized or in update
+  //! content \param theParameters a parameters container
+  virtual void SetParameters(const Handle(TInspectorAPI_PluginParameters)& theParameters)
+    Standard_OVERRIDE
+  {
+    myWindow->SetParameters(theParameters);
+  }
 
   //! Provides container for actions available in inspector on general level
   //! \param theMenu if Qt implementation, it is QMenu object
-  virtual void FillActionsMenu(void* theMenu) Standard_OVERRIDE { myWindow->FillActionsMenu (theMenu); }
+  virtual void FillActionsMenu(void* theMenu) Standard_OVERRIDE
+  {
+    myWindow->FillActionsMenu(theMenu);
+  }
 
   //! Returns plugin preferences, empty implementation by default
   //! \param theItem container of preference elements
-  virtual void GetPreferences (TInspectorAPI_PreferencesDataMap& theItem) Standard_OVERRIDE
-  { myWindow->GetPreferences (theItem); }
+  virtual void GetPreferences(TInspectorAPI_PreferencesDataMap& theItem) Standard_OVERRIDE
+  {
+    myWindow->GetPreferences(theItem);
+  }
 
   //! Stores plugin preferences, empty implementation by default
   //! \param theItem container of preference elements
-  virtual void SetPreferences (const TInspectorAPI_PreferencesDataMap& theItem) Standard_OVERRIDE
-  { myWindow->SetPreferences (theItem); }
+  virtual void SetPreferences(const TInspectorAPI_PreferencesDataMap& theItem) Standard_OVERRIDE
+  {
+    myWindow->SetPreferences(theItem);
+  }
 
   //! Calls update of the plugin's content
   virtual void UpdateContent() Standard_OVERRIDE { myWindow->UpdateContent(); }
 
 private:
-
   ShapeView_Window* myWindow; //!< current window
 };
 

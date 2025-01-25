@@ -20,11 +20,9 @@
 #include <IntCurveSurface_ThePolyhedronOfHInter.hxx>
 #include <Bnd_Box.hxx>
 #include <gp_Pnt.hxx>
- 
 
 #define ThePolyhedron IntCurveSurface_ThePolyhedronOfHInter
 #define ThePolyhedron_hxx <IntCurveSurface_ThePolyhedronOfHInter.hxx>
 #define IntCurveSurface_PolyhedronTool IntCurveSurface_ThePolyhedronToolOfHInter
 #define IntCurveSurface_PolyhedronTool_hxx <IntCurveSurface_ThePolyhedronToolOfHInter.hxx>
 #include "../IntCurveSurface/IntCurveSurface_PolyhedronTool.gxx"
-

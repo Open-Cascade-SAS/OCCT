@@ -23,22 +23,18 @@
 
 class IGESAppli_Protocol;
 
-
 //! This package represents collection of miscellaneous
 //! entities from IGES
-class IGESAppli 
+class IGESAppli
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Prepares dynamic data (Protocol, Modules) for this package
   Standard_EXPORT static void Init();
-  
+
   //! Returns the Protocol for this Package
   Standard_EXPORT static Handle(IGESAppli_Protocol) Protocol();
-
 };
 
 #endif // _IGESAppli_HeaderFile

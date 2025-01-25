@@ -36,7 +36,6 @@ class Geom_Line;
 class Geom_Parabola;
 class Geom_OffsetCurve;
 
-
 //! This class implements the transfer of the Curve Entity from Geom
 //! To IGES. These can be :
 //! Curve
@@ -51,67 +50,70 @@ class Geom_OffsetCurve;
 //! * Line
 //! * Parabola
 //! . OffsetCurve
-class GeomToIGES_GeomCurve  : public GeomToIGES_GeomEntity
+class GeomToIGES_GeomCurve : public GeomToIGES_GeomEntity
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT GeomToIGES_GeomCurve();
-  
+
   //! Creates a tool GeomCurve ready to run and sets its
   //! fields as GE's.
   Standard_EXPORT GeomToIGES_GeomCurve(const GeomToIGES_GeomEntity& GE);
-  
+
   //! Transfert  a  GeometryEntity which  answer True  to  the
   //! member : BRepToIGES::IsGeomCurve(Geometry).  If this
   //! Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve (const Handle(Geom_Curve)& start, const Standard_Real Udeb, const Standard_Real Ufin);
-  
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve (const Handle(Geom_BoundedCurve)& start, const Standard_Real Udeb, const Standard_Real Ufin);
-  
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve (const Handle(Geom_BSplineCurve)& start, const Standard_Real Udeb, const Standard_Real Ufin);
-  
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve (const Handle(Geom_BezierCurve)& start, const Standard_Real Udeb, const Standard_Real Ufin);
-  
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve (const Handle(Geom_TrimmedCurve)& start, const Standard_Real Udeb, const Standard_Real Ufin);
-  
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve (const Handle(Geom_Conic)& start, const Standard_Real Udeb, const Standard_Real Ufin);
-  
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve (const Handle(Geom_Circle)& start, const Standard_Real Udeb, const Standard_Real Ufin);
-  
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve (const Handle(Geom_Ellipse)& start, const Standard_Real Udeb, const Standard_Real Ufin);
-  
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve (const Handle(Geom_Hyperbola)& start, const Standard_Real Udeb, const Standard_Real Ufin);
-  
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve (const Handle(Geom_Line)& start, const Standard_Real Udeb, const Standard_Real Ufin);
-  
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve (const Handle(Geom_Parabola)& start, const Standard_Real Udeb, const Standard_Real Ufin);
-  
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve (const Handle(Geom_OffsetCurve)& start, const Standard_Real Udeb, const Standard_Real Ufin);
+  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_Curve)& start,
+                                                            const Standard_Real       Udeb,
+                                                            const Standard_Real       Ufin);
 
+  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_BoundedCurve)& start,
+                                                            const Standard_Real              Udeb,
+                                                            const Standard_Real              Ufin);
 
+  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_BSplineCurve)& start,
+                                                            const Standard_Real              Udeb,
+                                                            const Standard_Real              Ufin);
 
+  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_BezierCurve)& start,
+                                                            const Standard_Real             Udeb,
+                                                            const Standard_Real             Ufin);
+
+  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_TrimmedCurve)& start,
+                                                            const Standard_Real              Udeb,
+                                                            const Standard_Real              Ufin);
+
+  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_Conic)& start,
+                                                            const Standard_Real       Udeb,
+                                                            const Standard_Real       Ufin);
+
+  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_Circle)& start,
+                                                            const Standard_Real        Udeb,
+                                                            const Standard_Real        Ufin);
+
+  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_Ellipse)& start,
+                                                            const Standard_Real         Udeb,
+                                                            const Standard_Real         Ufin);
+
+  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_Hyperbola)& start,
+                                                            const Standard_Real           Udeb,
+                                                            const Standard_Real           Ufin);
+
+  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_Line)& start,
+                                                            const Standard_Real      Udeb,
+                                                            const Standard_Real      Ufin);
+
+  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_Parabola)& start,
+                                                            const Standard_Real          Udeb,
+                                                            const Standard_Real          Ufin);
+
+  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_OffsetCurve)& start,
+                                                            const Standard_Real             Udeb,
+                                                            const Standard_Real             Ufin);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeomToIGES_GeomCurve_HeaderFile

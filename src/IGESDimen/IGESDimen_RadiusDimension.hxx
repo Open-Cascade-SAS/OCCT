@@ -28,7 +28,6 @@ class IGESDimen_LeaderArrow;
 class gp_Pnt2d;
 class gp_Pnt;
 
-
 class IGESDimen_RadiusDimension;
 DEFINE_STANDARD_HANDLE(IGESDimen_RadiusDimension, IGESData_IGESEntity)
 
@@ -42,60 +41,44 @@ class IGESDimen_RadiusDimension : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESDimen_RadiusDimension();
-  
-  Standard_EXPORT void Init (const Handle(IGESDimen_GeneralNote)& aNote, const Handle(IGESDimen_LeaderArrow)& anArrow, const gp_XY& arcCenter, const Handle(IGESDimen_LeaderArrow)& anotherArrow);
-  
+
+  Standard_EXPORT void Init(const Handle(IGESDimen_GeneralNote)& aNote,
+                            const Handle(IGESDimen_LeaderArrow)& anArrow,
+                            const gp_XY&                         arcCenter,
+                            const Handle(IGESDimen_LeaderArrow)& anotherArrow);
+
   //! Allows to change Form Number
   //! (1 admits null arrow)
-  Standard_EXPORT void InitForm (const Standard_Integer form);
-  
+  Standard_EXPORT void InitForm(const Standard_Integer form);
+
   //! returns the General Note entity
   Standard_EXPORT Handle(IGESDimen_GeneralNote) Note() const;
-  
+
   //! returns the Leader Arrow entity
   Standard_EXPORT Handle(IGESDimen_LeaderArrow) Leader() const;
-  
+
   //! returns the coordinates of the Arc Center
   Standard_EXPORT gp_Pnt2d Center() const;
-  
+
   //! returns the coordinates of the Arc Center after Transformation
   //! (Z coord taken from ZDepth of Leader Entity)
   Standard_EXPORT gp_Pnt TransformedCenter() const;
-  
+
   //! returns True if form is 1, False if 0
   Standard_EXPORT Standard_Boolean HasLeader2() const;
-  
+
   //! returns Null handle if Form is 0
   Standard_EXPORT Handle(IGESDimen_LeaderArrow) Leader2() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESDimen_RadiusDimension,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_RadiusDimension, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(IGESDimen_GeneralNote) theNote;
   Handle(IGESDimen_LeaderArrow) theLeaderArrow;
-  gp_XY theCenter;
+  gp_XY                         theCenter;
   Handle(IGESDimen_LeaderArrow) theLeader2;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESDimen_RadiusDimension_HeaderFile

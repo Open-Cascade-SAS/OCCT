@@ -32,65 +32,50 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Adaptor2d_OffsetCurve, Adaptor2d_Curve2d)
 
-//=======================================================================
-//function : Adaptor2d_OffsetCurve
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Adaptor2d_OffsetCurve::Adaptor2d_OffsetCurve()
-: myOffset(0.0),
-  myFirst (0.0),
-  myLast  (0.0)
+    : myOffset(0.0),
+      myFirst(0.0),
+      myLast(0.0)
 {
 }
 
-//=======================================================================
-//function : Adaptor2d_OffsetCurve
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Adaptor2d_OffsetCurve::Adaptor2d_OffsetCurve(const Handle(Adaptor2d_Curve2d)& theCurve)
-: myCurve (theCurve),
-  myOffset(0.0),
-  myFirst (0.0),
-  myLast  (0.0)
+    : myCurve(theCurve),
+      myOffset(0.0),
+      myFirst(0.0),
+      myLast(0.0)
 {
 }
 
-//=======================================================================
-//function : Adaptor2d_OffsetCurve
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Adaptor2d_OffsetCurve::Adaptor2d_OffsetCurve
-  (const Handle(Adaptor2d_Curve2d)& theCurve, const Standard_Real theOffset)
-: myCurve (theCurve),
-  myOffset(theOffset),
-  myFirst (theCurve->FirstParameter()),
-  myLast  (theCurve->LastParameter())
+Adaptor2d_OffsetCurve::Adaptor2d_OffsetCurve(const Handle(Adaptor2d_Curve2d)& theCurve,
+                                             const Standard_Real              theOffset)
+    : myCurve(theCurve),
+      myOffset(theOffset),
+      myFirst(theCurve->FirstParameter()),
+      myLast(theCurve->LastParameter())
 {
 }
 
-//=======================================================================
-//function : Adaptor2d_OffsetCurve
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Adaptor2d_OffsetCurve::Adaptor2d_OffsetCurve(
-                              const Handle(Adaptor2d_Curve2d)& theCurve,
-                              const Standard_Real theOffset,
-                              const Standard_Real theWFirst,
-                              const Standard_Real theWLast )
-: myCurve (theCurve),
-  myOffset(theOffset),
-  myFirst (theWFirst),
-  myLast  (theWLast)
+Adaptor2d_OffsetCurve::Adaptor2d_OffsetCurve(const Handle(Adaptor2d_Curve2d)& theCurve,
+                                             const Standard_Real              theOffset,
+                                             const Standard_Real              theWFirst,
+                                             const Standard_Real              theWLast)
+    : myCurve(theCurve),
+      myOffset(theOffset),
+      myFirst(theWFirst),
+      myLast(theWLast)
 {
 }
 
-//=======================================================================
-//function : ShallowCopy
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(Adaptor2d_Curve2d) Adaptor2d_OffsetCurve::ShallowCopy() const
 {
@@ -98,7 +83,7 @@ Handle(Adaptor2d_Curve2d) Adaptor2d_OffsetCurve::ShallowCopy() const
 
   if (!myCurve.IsNull())
   {
-    aCopy->myCurve  = myCurve->ShallowCopy();
+    aCopy->myCurve = myCurve->ShallowCopy();
   }
   aCopy->myOffset = myOffset;
   aCopy->myFirst  = myFirst;
@@ -106,522 +91,477 @@ Handle(Adaptor2d_Curve2d) Adaptor2d_OffsetCurve::ShallowCopy() const
 
   return aCopy;
 }
-//=======================================================================
-//function : Load
-//purpose  : 
-//=======================================================================
 
-void Adaptor2d_OffsetCurve::Load(const Handle(Adaptor2d_Curve2d)& C ) 
+//=================================================================================================
+
+void Adaptor2d_OffsetCurve::Load(const Handle(Adaptor2d_Curve2d)& C)
 {
-  myCurve = C;
+  myCurve  = C;
   myOffset = 0.;
 }
 
-//=======================================================================
-//function : Load
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void Adaptor2d_OffsetCurve::Load( const Standard_Real Offset)
+void Adaptor2d_OffsetCurve::Load(const Standard_Real Offset)
 {
   myOffset = Offset;
-  myFirst = myCurve->FirstParameter();
-  myLast = myCurve->LastParameter();
+  myFirst  = myCurve->FirstParameter();
+  myLast   = myCurve->LastParameter();
 }
 
-//=======================================================================
-//function : Load
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void Adaptor2d_OffsetCurve::Load(const Standard_Real Offset,
                                  const Standard_Real WFirst,
-                                 const Standard_Real WLast) 
+                                 const Standard_Real WLast)
 {
   myOffset = Offset;
-  myFirst = WFirst;
-  myLast = WLast;
+  myFirst  = WFirst;
+  myLast   = WLast;
 }
 
-//=======================================================================
-//function : Continuity
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 GeomAbs_Shape Adaptor2d_OffsetCurve::Continuity() const
 {
-  switch (myCurve->Continuity()) {
-  case GeomAbs_CN: return GeomAbs_CN;
-  case GeomAbs_C3: return GeomAbs_C2;
-  case GeomAbs_C2: return GeomAbs_G2;
-  case GeomAbs_G2: return GeomAbs_C1;
-  case GeomAbs_C1: return GeomAbs_G1;
-  case GeomAbs_G1: return GeomAbs_C0;
-  case GeomAbs_C0:
-// No Continuity !!
-    throw Standard_TypeMismatch("Adaptor2d_OffsetCurve::IntervalContinuity");
-    break;
+  switch (myCurve->Continuity())
+  {
+    case GeomAbs_CN:
+      return GeomAbs_CN;
+    case GeomAbs_C3:
+      return GeomAbs_C2;
+    case GeomAbs_C2:
+      return GeomAbs_G2;
+    case GeomAbs_G2:
+      return GeomAbs_C1;
+    case GeomAbs_C1:
+      return GeomAbs_G1;
+    case GeomAbs_G1:
+      return GeomAbs_C0;
+    case GeomAbs_C0:
+      // No Continuity !!
+      throw Standard_TypeMismatch("Adaptor2d_OffsetCurve::IntervalContinuity");
+      break;
   }
 
-  //portage WNT
+  // portage WNT
   return GeomAbs_C0;
 }
 
-//=======================================================================
-//function : NbIntervals
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer Adaptor2d_OffsetCurve::NbIntervals(const GeomAbs_Shape S) const
 {
   GeomAbs_Shape Sh;
-  if ( S >= GeomAbs_C2)  Sh = GeomAbs_CN;
-  else 
+  if (S >= GeomAbs_C2)
+    Sh = GeomAbs_CN;
+  else
     Sh = (GeomAbs_Shape)((Standard_Integer)S + 2);
 
   Standard_Integer nbInter = myCurve->NbIntervals(Sh);
 
-  if(nbInter == 1) return nbInter;
+  if (nbInter == 1)
+    return nbInter;
 
-  TColStd_Array1OfReal T(1,nbInter+1);
+  TColStd_Array1OfReal T(1, nbInter + 1);
 
-  myCurve->Intervals(T,Sh);
+  myCurve->Intervals(T, Sh);
 
   Standard_Integer first = 1;
-  while (T(first) <= myFirst) first++;
-  Standard_Integer last = nbInter+1;
-  while (T(last) >= myLast) last--;
+  while (T(first) <= myFirst)
+    first++;
+  Standard_Integer last = nbInter + 1;
+  while (T(last) >= myLast)
+    last--;
   return (last - first + 2);
 }
 
-//=======================================================================
-//function : Intervals
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void Adaptor2d_OffsetCurve::Intervals(TColStd_Array1OfReal& TI, 
-				      const GeomAbs_Shape S) const 
+void Adaptor2d_OffsetCurve::Intervals(TColStd_Array1OfReal& TI, const GeomAbs_Shape S) const
 {
   GeomAbs_Shape Sh;
-  if ( S >= GeomAbs_C2)  Sh = GeomAbs_CN;
-  else 
+  if (S >= GeomAbs_C2)
+    Sh = GeomAbs_CN;
+  else
     Sh = (GeomAbs_Shape)((Standard_Integer)S + 2);
 
   Standard_Integer nbInter = myCurve->NbIntervals(Sh);
 
-
-  if(nbInter == 1) {
-    TI(TI.Lower()) = myFirst ;
-    TI(TI.Lower() + 1) = myLast ;
+  if (nbInter == 1)
+  {
+    TI(TI.Lower())     = myFirst;
+    TI(TI.Lower() + 1) = myLast;
     return;
   }
 
-  TColStd_Array1OfReal T(1,nbInter+1);
-  myCurve->Intervals(T,Sh);
+  TColStd_Array1OfReal T(1, nbInter + 1);
+  myCurve->Intervals(T, Sh);
 
   Standard_Integer first = 1;
-  while (T(first) <= myFirst) first++;
-  Standard_Integer last = nbInter+1;
-  while (T(last) >= myLast) last--;
+  while (T(first) <= myFirst)
+    first++;
+  Standard_Integer last = nbInter + 1;
+  while (T(last) >= myLast)
+    last--;
 
   Standard_Integer i = TI.Lower(), j;
-  for (j = first-1; j <= last+1; j++) {
+  for (j = first - 1; j <= last + 1; j++)
+  {
     TI(i) = T(j);
     i++;
   }
 
-  TI(TI.Lower()) = myFirst ;
-  TI(TI.Lower() + last-first + 2) = myLast ; 
-
+  TI(TI.Lower())                    = myFirst;
+  TI(TI.Lower() + last - first + 2) = myLast;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Trim
-//purpose  : 
-//=======================================================================
-
-Handle(Adaptor2d_Curve2d) Adaptor2d_OffsetCurve::Trim
-(const Standard_Real First, 
- const Standard_Real Last,
- const Standard_Real) const 
+Handle(Adaptor2d_Curve2d) Adaptor2d_OffsetCurve::Trim(const Standard_Real First,
+                                                      const Standard_Real Last,
+                                                      const Standard_Real) const
 {
   Handle(Adaptor2d_OffsetCurve) HO = new Adaptor2d_OffsetCurve(*this);
-  HO->Load(myOffset,First,Last);
+  HO->Load(myOffset, First, Last);
   return HO;
 }
 
-
-//=======================================================================
-//function : IsClosed
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean Adaptor2d_OffsetCurve::IsClosed() const
 {
-  if ( myOffset == 0.) {
+  if (myOffset == 0.)
+  {
     return myCurve->IsClosed();
   }
-  else {
+  else
+  {
     if (myCurve->Continuity() == GeomAbs_C0)
       return Standard_False;
-    else {
-      if ( myCurve->IsClosed()) {
-	gp_Vec2d Dummy[2];
-	gp_Pnt2d P;
-	myCurve->D1
-	  (myCurve->FirstParameter(),P,Dummy[0]);
-	myCurve->D1
-	  (myCurve->LastParameter(),P,Dummy[1]);
-	if (Dummy[0].IsParallel(Dummy[1],Precision::Angular()) && 
-            !(Dummy[0].IsOpposite(Dummy[1],Precision::Angular())))
-	  return Standard_True;
-	else
-	  return Standard_False;
+    else
+    {
+      if (myCurve->IsClosed())
+      {
+        gp_Vec2d Dummy[2];
+        gp_Pnt2d P;
+        myCurve->D1(myCurve->FirstParameter(), P, Dummy[0]);
+        myCurve->D1(myCurve->LastParameter(), P, Dummy[1]);
+        if (Dummy[0].IsParallel(Dummy[1], Precision::Angular())
+            && !(Dummy[0].IsOpposite(Dummy[1], Precision::Angular())))
+          return Standard_True;
+        else
+          return Standard_False;
       }
       else
-	return Standard_False;
+        return Standard_False;
     }
   }
 }
 
-//=======================================================================
-//function : IsPeriodic
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean Adaptor2d_OffsetCurve::IsPeriodic() const
 {
   return myCurve->IsPeriodic();
 }
 
-//=======================================================================
-//function : Period
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Real Adaptor2d_OffsetCurve::Period() const
 {
   return myCurve->Period();
 }
 
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 gp_Pnt2d Adaptor2d_OffsetCurve::Value(const Standard_Real U) const
 {
-  if ( myOffset != 0.) {
+  if (myOffset != 0.)
+  {
     gp_Pnt2d aP;
     gp_Vec2d aV;
     myCurve->D1(U, aP, aV);
     Geom2dEvaluator::CalculateD0(aP, aV, myOffset);
     return aP;
   }
-  else {
+  else
+  {
     return myCurve->Value(U);
   }
 }
 
-//=======================================================================
-//function : D0
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void Adaptor2d_OffsetCurve::D0(const Standard_Real U, gp_Pnt2d& P) const
 {
-  P = Value( U);
+  P = Value(U);
 }
 
-//=======================================================================
-//function : D1
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void Adaptor2d_OffsetCurve::D1
-(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V) const
+void Adaptor2d_OffsetCurve::D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V) const
 {
-  if (myOffset != 0.) {
+  if (myOffset != 0.)
+  {
     gp_Vec2d aV2;
     myCurve->D2(U, P, V, aV2);
-    Geom2dEvaluator::CalculateD1( P, V, aV2, myOffset);
+    Geom2dEvaluator::CalculateD1(P, V, aV2, myOffset);
   }
-  else {
+  else
+  {
     myCurve->D1(U, P, V);
   }
 }
 
-//=======================================================================
-//function : D2
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void Adaptor2d_OffsetCurve::D2
-(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const
+void Adaptor2d_OffsetCurve::D2(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const
 {
-  if (myOffset != 0.) {
+  if (myOffset != 0.)
+  {
     gp_Vec2d aV3;
     myCurve->D3(U, P, V1, V2, aV3);
     Geom2dEvaluator::CalculateD2(P, V1, V2, aV3, Standard_False, myOffset);
   }
-  else {
+  else
+  {
     myCurve->D2(U, P, V1, V2);
   }
 }
 
-//=======================================================================
-//function : D3
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void Adaptor2d_OffsetCurve::D3
-  (const Standard_Real U, 
-   gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3) const
+void Adaptor2d_OffsetCurve::D3(const Standard_Real U,
+                               gp_Pnt2d&           P,
+                               gp_Vec2d&           V1,
+                               gp_Vec2d&           V2,
+                               gp_Vec2d&           V3) const
 {
-  if (myOffset != 0.) {
+  if (myOffset != 0.)
+  {
     gp_Vec2d aV4 = myCurve->DN(U, 4);
     myCurve->D3(U, P, V1, V2, V3);
     Geom2dEvaluator::CalculateD3(P, V1, V2, V3, aV4, Standard_False, myOffset);
   }
-  else {
+  else
+  {
     myCurve->D3(U, P, V1, V2, V3);
   }
 }
 
-//=======================================================================
-//function : DN
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-gp_Vec2d Adaptor2d_OffsetCurve::DN
-  (const Standard_Real , const Standard_Integer ) const
+gp_Vec2d Adaptor2d_OffsetCurve::DN(const Standard_Real, const Standard_Integer) const
 {
   throw Standard_NotImplemented("Adaptor2d_OffsetCurve::DN");
 }
 
-
-//=======================================================================
-//function : Resolution
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Real Adaptor2d_OffsetCurve::Resolution(const Standard_Real R3d) const
 {
   return Precision::PConfusion(R3d);
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : GetType
-//purpose  : 
-//=======================================================================
+GeomAbs_CurveType Adaptor2d_OffsetCurve::GetType() const
+{
 
-GeomAbs_CurveType Adaptor2d_OffsetCurve::GetType() const {
-
-  if ( myOffset == 0.) {
+  if (myOffset == 0.)
+  {
     return myCurve->GetType();
   }
-  else {
-    switch (myCurve->GetType()) {
-      
-    case GeomAbs_Line:
-      return GeomAbs_Line;
-      
-    case GeomAbs_Circle:
-      return GeomAbs_Circle;
-      
-    default:
-      return GeomAbs_OffsetCurve;
-      
+  else
+  {
+    switch (myCurve->GetType())
+    {
+
+      case GeomAbs_Line:
+        return GeomAbs_Line;
+
+      case GeomAbs_Circle:
+        return GeomAbs_Circle;
+
+      default:
+        return GeomAbs_OffsetCurve;
     }
   }
 }
 
-//=======================================================================
-//function : Line
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 gp_Lin2d Adaptor2d_OffsetCurve::Line() const
 {
-  if ( GetType() == GeomAbs_Line) {
+  if (GetType() == GeomAbs_Line)
+  {
     gp_Pnt2d P;
     gp_Vec2d V;
-    D1(0,P,V);
-    return gp_Lin2d(P,V);
+    D1(0, P, V);
+    return gp_Lin2d(P, V);
   }
-  else {
+  else
+  {
     throw Standard_NoSuchObject("Adaptor2d_OffsetCurve::Line");
   }
 }
 
-
-//=======================================================================
-//function : Circle
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 gp_Circ2d Adaptor2d_OffsetCurve::Circle() const
 {
-  if ( GetType() == GeomAbs_Circle) {
-    if (myOffset == 0.) {
+  if (GetType() == GeomAbs_Circle)
+  {
+    if (myOffset == 0.)
+    {
       return myCurve->Circle();
     }
-    else {
-      gp_Circ2d C1( myCurve->Circle());
+    else
+    {
+      gp_Circ2d     C1(myCurve->Circle());
       Standard_Real radius = C1.Radius();
-      gp_Ax22d axes( C1.Axis());
-      gp_Dir2d Xd = axes.XDirection();
-      gp_Dir2d Yd = axes.YDirection();
-      Standard_Real Crossed = Xd.X()*Yd.Y()-Xd.Y()*Yd.X();
-      Standard_Real Signe = ( Crossed > 0.) ? 1. : -1.;
+      gp_Ax22d      axes(C1.Axis());
+      gp_Dir2d      Xd      = axes.XDirection();
+      gp_Dir2d      Yd      = axes.YDirection();
+      Standard_Real Crossed = Xd.X() * Yd.Y() - Xd.Y() * Yd.X();
+      Standard_Real Signe   = (Crossed > 0.) ? 1. : -1.;
 
-      radius += Signe*myOffset;
-      if ( radius > 0.) {
-	return gp_Circ2d( axes,radius);
+      radius += Signe * myOffset;
+      if (radius > 0.)
+      {
+        return gp_Circ2d(axes, radius);
       }
-      else if ( radius < 0.) {
-	radius = - radius;
-	axes.SetXDirection( (axes.XDirection()).Reversed());
-	return gp_Circ2d( axes,radius); 
+      else if (radius < 0.)
+      {
+        radius = -radius;
+        axes.SetXDirection((axes.XDirection()).Reversed());
+        return gp_Circ2d(axes, radius);
       }
-      else {     // Cercle de rayon Nul
-	throw Standard_NoSuchObject("Adaptor2d_OffsetCurve::Circle");
+      else
+      { // Cercle de rayon Nul
+        throw Standard_NoSuchObject("Adaptor2d_OffsetCurve::Circle");
       }
     }
   }
-  else {
+  else
+  {
     throw Standard_NoSuchObject("Adaptor2d_OffsetCurve::Circle");
   }
 }
 
-//=======================================================================
-//function : Ellipse
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 gp_Elips2d Adaptor2d_OffsetCurve::Ellipse() const
 {
-  if (myCurve->GetType() == GeomAbs_Ellipse && myOffset == 0.) {
+  if (myCurve->GetType() == GeomAbs_Ellipse && myOffset == 0.)
+  {
     return myCurve->Ellipse();
   }
-  else {
+  else
+  {
     throw Standard_NoSuchObject("Adaptor2d_OffsetCurve:Ellipse");
   }
 }
 
-//=======================================================================
-//function : Hyperbola
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 gp_Hypr2d Adaptor2d_OffsetCurve::Hyperbola() const
 {
-  if (myCurve->GetType()==GeomAbs_Hyperbola && myOffset==0.) {
+  if (myCurve->GetType() == GeomAbs_Hyperbola && myOffset == 0.)
+  {
     return myCurve->Hyperbola();
   }
-  else {
+  else
+  {
     throw Standard_NoSuchObject("Adaptor2d_OffsetCurve:Hyperbola");
   }
 }
 
-//=======================================================================
-//function : Parabola
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 gp_Parab2d Adaptor2d_OffsetCurve::Parabola() const
 {
-  if (myCurve->GetType() == GeomAbs_Parabola && myOffset == 0.) {
+  if (myCurve->GetType() == GeomAbs_Parabola && myOffset == 0.)
+  {
     return myCurve->Parabola();
   }
-  else {
+  else
+  {
     throw Standard_NoSuchObject("Adaptor2d_OffsetCurve:Parabola");
   }
 }
-//=======================================================================
-//function : Degree
-//purpose  : 
-//=======================================================================
 
-Standard_Integer  Adaptor2d_OffsetCurve::Degree() const
+//=================================================================================================
+
+Standard_Integer Adaptor2d_OffsetCurve::Degree() const
 {
   GeomAbs_CurveType type = myCurve->GetType();
-  if (   (type==GeomAbs_BezierCurve || type==GeomAbs_BSplineCurve) 
-      && myOffset == 0.) {
+  if ((type == GeomAbs_BezierCurve || type == GeomAbs_BSplineCurve) && myOffset == 0.)
+  {
     return myCurve->Degree();
   }
-  else {
+  else
+  {
     throw Standard_NoSuchObject("Adaptor2d_OffsetCurve::Degree");
   }
 }
-//=======================================================================
-//function : IsRational
-//purpose  : 
-//=======================================================================
 
-Standard_Boolean  Adaptor2d_OffsetCurve::IsRational() const
+//=================================================================================================
+
+Standard_Boolean Adaptor2d_OffsetCurve::IsRational() const
 {
-  if ( myOffset == 0.) {
+  if (myOffset == 0.)
+  {
     return myCurve->IsRational();
   }
   return Standard_False;
 }
-//=======================================================================
-//function : NbPoles
-//purpose  : 
-//=======================================================================
 
-Standard_Integer  Adaptor2d_OffsetCurve::NbPoles() const
+//=================================================================================================
+
+Standard_Integer Adaptor2d_OffsetCurve::NbPoles() const
 {
   GeomAbs_CurveType type = myCurve->GetType();
-  if (   (type==GeomAbs_BezierCurve || type==GeomAbs_BSplineCurve) 
-      && myOffset == 0.) {
+  if ((type == GeomAbs_BezierCurve || type == GeomAbs_BSplineCurve) && myOffset == 0.)
+  {
     return myCurve->NbPoles();
   }
-  else {
+  else
+  {
     throw Standard_NoSuchObject("Adaptor2d_OffsetCurve::NbPoles");
   }
 }
 
-//=======================================================================
-//function : NbKnots
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer  Adaptor2d_OffsetCurve::NbKnots() const
+Standard_Integer Adaptor2d_OffsetCurve::NbKnots() const
 {
-  if( myOffset == 0.) {
+  if (myOffset == 0.)
+  {
     return myCurve->NbKnots();
   }
-  else {
+  else
+  {
     throw Standard_NoSuchObject("Adaptor2d_OffsetCurve::NbKnots");
   }
 }
 
-//=======================================================================
-//function : Bezier
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(Geom2d_BezierCurve) Adaptor2d_OffsetCurve::Bezier() const 
+Handle(Geom2d_BezierCurve) Adaptor2d_OffsetCurve::Bezier() const
 {
-  Standard_NoSuchObject_Raise_if (myOffset != 0.0e0 || GetType() != GeomAbs_BezierCurve,
-                                  "Adaptor2d_OffsetCurve::Bezier() - wrong curve type");
-   return myCurve->Bezier();
+  Standard_NoSuchObject_Raise_if(myOffset != 0.0e0 || GetType() != GeomAbs_BezierCurve,
+                                 "Adaptor2d_OffsetCurve::Bezier() - wrong curve type");
+  return myCurve->Bezier();
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : BSpline
-//purpose  : 
-//=======================================================================
-
-Handle(Geom2d_BSplineCurve) Adaptor2d_OffsetCurve::BSpline() const 
+Handle(Geom2d_BSplineCurve) Adaptor2d_OffsetCurve::BSpline() const
 {
-  Standard_NoSuchObject_Raise_if (myOffset != 0.0e0 || GetType() != GeomAbs_BSplineCurve,
-                                  "Adaptor2d_OffsetCurve::BSpline() - wrong curve type");
+  Standard_NoSuchObject_Raise_if(myOffset != 0.0e0 || GetType() != GeomAbs_BSplineCurve,
+                                 "Adaptor2d_OffsetCurve::BSpline() - wrong curve type");
   return myCurve->BSpline();
 }
 
@@ -634,21 +574,19 @@ static Standard_Integer nbPoints(const Handle(Adaptor2d_Curve2d)& theCurve)
   {
     nbs = Max(nbs, 3 + theCurve->NbPoles());
   }
-  else if (theCurve->GetType() == GeomAbs_BSplineCurve) {
+  else if (theCurve->GetType() == GeomAbs_BSplineCurve)
+  {
     nbs = Max(nbs, theCurve->NbKnots() * theCurve->Degree());
   }
 
   if (nbs > 300)
     nbs = 300;
   return nbs;
-
 }
-//=======================================================================
-//function : NbSamples
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
 
 Standard_Integer Adaptor2d_OffsetCurve::NbSamples() const
 {
-  return  nbPoints(myCurve);
+  return nbPoints(myCurve);
 }

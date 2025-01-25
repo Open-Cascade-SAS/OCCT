@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:16 2020 
+// Created on : Sat May 02 12:41:16 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -18,10 +18,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_SlidingCurvePair, StepKinematics_PlanarCurvePair)
 
-//=======================================================================
-//function : StepKinematics_SlidingCurvePair
-//purpose  :
-//=======================================================================
-StepKinematics_SlidingCurvePair::StepKinematics_SlidingCurvePair ()
-{
-}
+//=================================================================================================
+
+StepKinematics_SlidingCurvePair::StepKinematics_SlidingCurvePair() {}

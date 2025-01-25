@@ -12,7 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRep_Tool.hxx>
 #include <BRepCheck.hxx>
 #include <BRepCheck_ListOfStatus.hxx>
@@ -33,227 +32,227 @@
 #include <TopoDS_Solid.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Solid,BRepCheck_Result)
+IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Solid, BRepCheck_Result)
 
 //
 class BRepCheck_HSC;
 DEFINE_STANDARD_HANDLE(BRepCheck_HSC, Standard_Transient)
-//=======================================================================
-//class    : BRepCheck_HSC
-//purpose  :
-//=======================================================================
-class BRepCheck_HSC : public Standard_Transient {
- public: 
-  //
-  Standard_EXPORT
-    BRepCheck_HSC(){
-    };
-  //
-  Standard_EXPORT
-    virtual ~BRepCheck_HSC(){
-  };
-  //
-  Standard_EXPORT
-    BRepClass3d_SolidClassifier& SolidClassifier(){
-      return mySC;
-    };
-  //
-  DEFINE_STANDARD_RTTI_INLINE(BRepCheck_HSC,Standard_Transient);
 
- protected:
+//=================================================================================================
+
+class BRepCheck_HSC : public Standard_Transient
+{
+public:
+  //
+  Standard_EXPORT BRepCheck_HSC() {};
+  //
+  Standard_EXPORT virtual ~BRepCheck_HSC(){};
+
+  //
+  Standard_EXPORT BRepClass3d_SolidClassifier& SolidClassifier() { return mySC; };
+
+  //
+  DEFINE_STANDARD_RTTI_INLINE(BRepCheck_HSC, Standard_Transient);
+
+protected:
   BRepClass3d_SolidClassifier mySC;
 };
 
 //
-//=======================================================================
-//class    : BRepCheck_ToolSolid
-//purpose  : 
-//=======================================================================
-class BRepCheck_ToolSolid  {
+//=================================================================================================
 
- public:
+class BRepCheck_ToolSolid
+{
+
+public:
   DEFINE_STANDARD_ALLOC
 
-  BRepCheck_ToolSolid() {
-    myIsHole=Standard_False;
-    myPntTol=Precision::Confusion();
-    myPnt.SetCoord(-1.,-1.,-1.);
+  BRepCheck_ToolSolid()
+  {
+    myIsHole = Standard_False;
+    myPntTol = Precision::Confusion();
+    myPnt.SetCoord(-1., -1., -1.);
   };
-   
-  virtual ~BRepCheck_ToolSolid() {
-  };
-  // 
-  void SetSolid(const TopoDS_Solid& aZ) {
-    mySolid=aZ;
-  };
+
+  virtual ~BRepCheck_ToolSolid() {};
+
   //
-  const TopoDS_Solid& Solid()const {
-    return mySolid;
-  };
+  void SetSolid(const TopoDS_Solid& aZ) { mySolid = aZ; };
+
   //
-  Standard_Boolean IsHole() const {
-    return myIsHole;
-  };
+  const TopoDS_Solid& Solid() const { return mySolid; };
+
   //
-  const gp_Pnt& InnerPoint() {
-    return myPnt;
-  }
+  Standard_Boolean IsHole() const { return myIsHole; };
+
   //
-  Standard_Real CheckTol() const {
-    return myPntTol;
-  };
+  const gp_Pnt& InnerPoint() { return myPnt; }
+
+  //
+  Standard_Real CheckTol() const { return myPntTol; };
+
   //
   // IsOut
-  Standard_Boolean IsOut(BRepCheck_ToolSolid& aOther)  {
+  Standard_Boolean IsOut(BRepCheck_ToolSolid& aOther)
+  {
     Standard_Boolean bFlag;
-    TopAbs_State aState;
+    TopAbs_State     aState;
     //
-    BRepClass3d_SolidClassifier& aSC=myHSC->SolidClassifier();
+    BRepClass3d_SolidClassifier& aSC = myHSC->SolidClassifier();
     //
     aSC.Perform(aOther.InnerPoint(), aOther.CheckTol());
-    aState=aSC.State();
-    bFlag=(aState==TopAbs_OUT);
+    aState = aSC.State();
+    bFlag  = (aState == TopAbs_OUT);
     //
     return bFlag;
   };
+
   //
   // Init
-  void Init() {
-    Standard_Real aT, aT1, aT2, aPAR_T;
+  void Init()
+  {
+    Standard_Real   aT, aT1, aT2, aPAR_T;
     TopExp_Explorer aExp;
     //
     // 0.myHSC
-    myHSC=new BRepCheck_HSC();
+    myHSC = new BRepCheck_HSC();
     //
-    BRepClass3d_SolidClassifier& aSC=myHSC->SolidClassifier();
+    BRepClass3d_SolidClassifier& aSC = myHSC->SolidClassifier();
     // 1. Load
     aSC.Load(mySolid);
     //
     // 2. myIsHole
     aSC.PerformInfinitePoint(::RealSmall());
-    myIsHole=(aSC.State()==TopAbs_IN);
-    // 
+    myIsHole = (aSC.State() == TopAbs_IN);
+    //
     // 3. myPnt
-    aPAR_T=0.43213918; // 10*e^(-PI)
+    aPAR_T = 0.43213918; // 10*e^(-PI)
     aExp.Init(mySolid, TopAbs_EDGE);
-    for (; aExp.More();  aExp.Next()) {
-      const TopoDS_Edge& aE=*((TopoDS_Edge*)&aExp.Current());
-      if (!BRep_Tool::Degenerated(aE)) {
-        Handle(Geom_Curve) aC3D=BRep_Tool::Curve(aE, aT1, aT2);
-        aT=(1.-aPAR_T)*aT1 + aPAR_T*aT2;
-        myPnt=aC3D->Value(aT);
-        myPntTol = BRep_Tool::Tolerance(aE);
+    for (; aExp.More(); aExp.Next())
+    {
+      const TopoDS_Edge& aE = *((TopoDS_Edge*)&aExp.Current());
+      if (!BRep_Tool::Degenerated(aE))
+      {
+        Handle(Geom_Curve) aC3D = BRep_Tool::Curve(aE, aT1, aT2);
+        aT                      = (1. - aPAR_T) * aT1 + aPAR_T * aT2;
+        myPnt                   = aC3D->Value(aT);
+        myPntTol                = BRep_Tool::Tolerance(aE);
         break;
       }
     }
   };
+
   //
- protected:
-  Standard_Boolean myIsHole;
-  gp_Pnt myPnt; 
-  Standard_Real myPntTol;
-  TopoDS_Solid mySolid;
+protected:
+  Standard_Boolean      myIsHole;
+  gp_Pnt                myPnt;
+  Standard_Real         myPntTol;
+  TopoDS_Solid          mySolid;
   Handle(BRepCheck_HSC) myHSC;
 };
+
 //
-typedef NCollection_Vector<BRepCheck_ToolSolid>
-  BRepCheck_VectorOfToolSolid;
+typedef NCollection_Vector<BRepCheck_ToolSolid> BRepCheck_VectorOfToolSolid;
+
 //
 
-//=======================================================================
-//function : BRepCheck_Solid
-//purpose  : 
-//=======================================================================
-BRepCheck_Solid::BRepCheck_Solid (const TopoDS_Solid& S)
+//=================================================================================================
+
+BRepCheck_Solid::BRepCheck_Solid(const TopoDS_Solid& S)
 {
   Init(S);
 }
-//=======================================================================
-//function : Blind
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
 void BRepCheck_Solid::Blind()
 {
-  if (!myBlind) {
+  if (!myBlind)
+  {
     // nothing more than in the minimum
     myBlind = Standard_True;
   }
 }
-//=======================================================================
-//function : InContext
-//purpose  : 
-//=======================================================================
-void BRepCheck_Solid::InContext(const TopoDS_Shape& )
-{
-}
-//=======================================================================
-//function : Minimum
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
+void BRepCheck_Solid::InContext(const TopoDS_Shape&) {}
+
+//=================================================================================================
+
 void BRepCheck_Solid::Minimum()
 {
-  if (myMin) {
+  if (myMin)
+  {
     return;
   }
   myMin = Standard_True;
   //
-  Standard_Boolean bFound, bIsHole, bFlag;
-  Standard_Integer i, j, aNbVTS, aNbVTS1, iCntSh, iCntShInt;
-  TopoDS_Solid aZ;
-  TopoDS_Iterator aIt, aItF;
-  TopoDS_Builder aBB;
-  TopExp_Explorer aExp;
-  TopTools_MapOfShape aMSS;
-  TopAbs_Orientation aOr; 
+  Standard_Boolean            bFound, bIsHole, bFlag;
+  Standard_Integer            i, j, aNbVTS, aNbVTS1, iCntSh, iCntShInt;
+  TopoDS_Solid                aZ;
+  TopoDS_Iterator             aIt, aItF;
+  TopoDS_Builder              aBB;
+  TopExp_Explorer             aExp;
+  TopTools_MapOfShape         aMSS;
+  TopAbs_Orientation          aOr;
   BRepCheck_VectorOfToolSolid aVTS;
 
   Handle(BRepCheck_HListOfStatus) aNewList = new BRepCheck_HListOfStatus();
-  BRepCheck_ListOfStatus& aLST = **myMap.Bound (myShape, aNewList);
+  BRepCheck_ListOfStatus&         aLST     = **myMap.Bound(myShape, aNewList);
   aLST.Append(BRepCheck_NoError);
   //
   //-------------------------------------------------
   // 1. InvalidImbricationOfShells
-  bFound=Standard_False;
+  bFound = Standard_False;
   aExp.Init(myShape, TopAbs_FACE);
-  for (; !bFound && aExp.More(); aExp.Next()) {
-    const TopoDS_Shape& aF=aExp.Current();
-    if (!aMSS.Add(aF)) {
-      BRepCheck::Add (aLST, BRepCheck_InvalidImbricationOfShells);
-      bFound=!bFound;
+  for (; !bFound && aExp.More(); aExp.Next())
+  {
+    const TopoDS_Shape& aF = aExp.Current();
+    if (!aMSS.Add(aF))
+    {
+      BRepCheck::Add(aLST, BRepCheck_InvalidImbricationOfShells);
+      bFound = !bFound;
     }
-  } 
+  }
   //
   //-------------------------------------------------
-  // 2. 
+  // 2.
   //    - Too many growths,
   //    - There is smt of the solid that is out of solid
-  iCntSh=0;
-  iCntShInt=0;
+  iCntSh    = 0;
+  iCntShInt = 0;
   aIt.Initialize(myShape);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aSx=aIt.Value();
+  for (; aIt.More(); aIt.Next())
+  {
+    const TopoDS_Shape& aSx = aIt.Value();
     //
-    if (aSx.ShapeType()!=TopAbs_SHELL) {
-      aOr=aSx.Orientation();
-      if (aOr!=TopAbs_INTERNAL) {
-        BRepCheck::Add (aLST, BRepCheck_BadOrientationOfSubshape);
-      } 
+    if (aSx.ShapeType() != TopAbs_SHELL)
+    {
+      aOr = aSx.Orientation();
+      if (aOr != TopAbs_INTERNAL)
+      {
+        BRepCheck::Add(aLST, BRepCheck_BadOrientationOfSubshape);
+      }
       continue;
     }
     //
-    const TopoDS_Shell& aSh=*((TopoDS_Shell*)&aSx);
+    const TopoDS_Shell& aSh = *((TopoDS_Shell*)&aSx);
     //
     // Skip internal shells
-    bFound=Standard_False;
+    bFound = Standard_False;
     aItF.Initialize(aSh);
-    for (; !bFound && aItF.More(); aItF.Next()) {
-      const TopoDS_Shape& aF=aItF.Value();
-      aOr=aF.Orientation();
-      if (aOr==TopAbs_INTERNAL) {
-        bFound=!bFound;
+    for (; !bFound && aItF.More(); aItF.Next())
+    {
+      const TopoDS_Shape& aF = aItF.Value();
+      aOr                    = aF.Orientation();
+      if (aOr == TopAbs_INTERNAL)
+      {
+        bFound = !bFound;
       }
     }
-    if (bFound) {
+    if (bFound)
+    {
       ++iCntShInt;
       continue;
     }
@@ -261,7 +260,8 @@ void BRepCheck_Solid::Minimum()
     ++iCntSh;
     //
     // Skip not closed shells
-    if (!BRep_Tool::IsClosed(aSh)) {
+    if (!BRep_Tool::IsClosed(aSh))
+    {
       continue;
     }
     //
@@ -272,50 +272,58 @@ void BRepCheck_Solid::Minimum()
     //
     aTS.SetSolid(aZ);
     aVTS.Append(aTS);
-  }//for (; aIt.More(); aIt.Next()) {
+  } // for (; aIt.More(); aIt.Next()) {
   //
-  if (!iCntSh && iCntShInt) {
+  if (!iCntSh && iCntShInt)
+  {
     // all shells in the solid are internal
-    BRepCheck::Add (aLST, BRepCheck_BadOrientationOfSubshape);
+    BRepCheck::Add(aLST, BRepCheck_BadOrientationOfSubshape);
   }
   //
-  aNbVTS=aVTS.Size();
-  if (aNbVTS<2) {
+  aNbVTS = aVTS.Size();
+  if (aNbVTS < 2)
+  {
     return;
   }
   //
-  aNbVTS1=0;
-  for (i=0; i<aNbVTS; ++i) {
-    BRepCheck_ToolSolid& aTS=aVTS(i);
+  aNbVTS1 = 0;
+  for (i = 0; i < aNbVTS; ++i)
+  {
+    BRepCheck_ToolSolid& aTS = aVTS(i);
     //
     aTS.Init();
-    bIsHole=aTS.IsHole();
-    if (!bIsHole) {
+    bIsHole = aTS.IsHole();
+    if (!bIsHole)
+    {
       ++aNbVTS1;
-      if (aNbVTS1>1) {
+      if (aNbVTS1 > 1)
+      {
         // Too many growths
-        BRepCheck::Add (aLST, BRepCheck_EnclosedRegion);
+        BRepCheck::Add(aLST, BRepCheck_EnclosedRegion);
         break;
       }
     }
   }
   //
-  bFound=Standard_False;
-  aNbVTS1=aNbVTS-1;
-  for (i=0; !bFound && i<aNbVTS1; ++i) {
-    BRepCheck_ToolSolid& aTSi=aVTS(i);
+  bFound  = Standard_False;
+  aNbVTS1 = aNbVTS - 1;
+  for (i = 0; !bFound && i < aNbVTS1; ++i)
+  {
+    BRepCheck_ToolSolid& aTSi = aVTS(i);
     //
-    for (j=i+1; !bFound && j<aNbVTS; ++j) {
-      BRepCheck_ToolSolid& aTSj=aVTS(j);
+    for (j = i + 1; !bFound && j < aNbVTS; ++j)
+    {
+      BRepCheck_ToolSolid& aTSj = aVTS(j);
       //
-      bFlag=aTSi.IsOut(aTSj);
-      if (bFlag) {
+      bFlag = aTSi.IsOut(aTSj);
+      if (bFlag)
+      {
         // smt of solid is out of solid
-        BRepCheck::Add (aLST, BRepCheck_SubshapeNotInShape);
-        bFound=!bFound;
+        BRepCheck::Add(aLST, BRepCheck_SubshapeNotInShape);
+        bFound = !bFound;
       }
     }
   }
   //
-  //myMin = Standard_True;
+  // myMin = Standard_True;
 }

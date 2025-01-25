@@ -27,7 +27,6 @@
 class TCollection_HAsciiString;
 class Standard_Transient;
 
-
 class IGESDefs_GenericData;
 DEFINE_STANDARD_HANDLE(IGESDefs_GenericData, IGESData_IGESEntity)
 
@@ -43,81 +42,66 @@ class IGESDefs_GenericData : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESDefs_GenericData();
-  
+
   //! This method is used to set the fields of the class
   //! GenericData
   //! - nbPropVal : Number of property values
   //! - aName     : Property Name
   //! - allTypes  : Property Types
   //! - allValues : Property Values
-  Standard_EXPORT void Init (const Standard_Integer nbPropVal, const Handle(TCollection_HAsciiString)& aName, const Handle(TColStd_HArray1OfInteger)& allTypes, const Handle(TColStd_HArray1OfTransient)& allValues);
-  
+  Standard_EXPORT void Init(const Standard_Integer                    nbPropVal,
+                            const Handle(TCollection_HAsciiString)&   aName,
+                            const Handle(TColStd_HArray1OfInteger)&   allTypes,
+                            const Handle(TColStd_HArray1OfTransient)& allValues);
+
   //! returns the number of property values
   Standard_EXPORT Standard_Integer NbPropertyValues() const;
-  
+
   //! returns property name
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
-  
+
   //! returns the number of TYPE/VALUE pairs
   Standard_EXPORT Standard_Integer NbTypeValuePairs() const;
-  
+
   //! returns the Index'th property value data type
   //! raises exception if Index <= 0 or Index > NbTypeValuePairs()
-  Standard_EXPORT Standard_Integer Type (const Standard_Integer Index) const;
-  
+  Standard_EXPORT Standard_Integer Type(const Standard_Integer Index) const;
+
   //! HArray1OfInteger (length 1), HArray1OfReal (length 1) for
   //! Integer, Real, Boolean (= Integer 0/1),
   //! HAsciiString for String (the value itself),
   //! IGESEntity for Entity (the value itself)
-  Standard_EXPORT Handle(Standard_Transient) Value (const Standard_Integer Index) const;
-  
+  Standard_EXPORT Handle(Standard_Transient) Value(const Standard_Integer Index) const;
+
   //! Returns Attribute Value <AttrNum, rank ValueNum> as an Integer
   //! Error if Index out of Range, or not an Integer
-  Standard_EXPORT Standard_Integer ValueAsInteger (const Standard_Integer ValueNum) const;
-  
+  Standard_EXPORT Standard_Integer ValueAsInteger(const Standard_Integer ValueNum) const;
+
   //! Returns Attribute Value <AttrNum, rank ValueNum> as a Real
   //! Error if Index out of Range, or not a Real
-  Standard_EXPORT Standard_Real ValueAsReal (const Standard_Integer ValueNum) const;
-  
+  Standard_EXPORT Standard_Real ValueAsReal(const Standard_Integer ValueNum) const;
+
   //! Returns Attribute Value <AttrNum, rank ValueNum> as an Integer
-  Standard_EXPORT Handle(TCollection_HAsciiString) ValueAsString (const Standard_Integer ValueNum) const;
-  
+  Standard_EXPORT Handle(TCollection_HAsciiString) ValueAsString(
+    const Standard_Integer ValueNum) const;
+
   //! Returns Attribute Value <AttrNum, rank ValueNum> as an Entity
   //! Error if Index out of Range, or not a Entity
-  Standard_EXPORT Handle(IGESData_IGESEntity) ValueAsEntity (const Standard_Integer ValueNum) const;
-  
+  Standard_EXPORT Handle(IGESData_IGESEntity) ValueAsEntity(const Standard_Integer ValueNum) const;
+
   //! Returns Attribute Value <AttrNum, rank ValueNum> as a Boolean
   //! Error if Index out of Range, or not a Logical
-  Standard_EXPORT Standard_Boolean ValueAsLogical (const Standard_Integer ValueNum) const;
+  Standard_EXPORT Standard_Boolean ValueAsLogical(const Standard_Integer ValueNum) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESDefs_GenericData,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDefs_GenericData, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-  Standard_Integer theNbPropertyValues;
-  Handle(TCollection_HAsciiString) theName;
-  Handle(TColStd_HArray1OfInteger) theTypes;
+  Standard_Integer                   theNbPropertyValues;
+  Handle(TCollection_HAsciiString)   theName;
+  Handle(TColStd_HArray1OfInteger)   theTypes;
   Handle(TColStd_HArray1OfTransient) theValues;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESDefs_GenericData_HeaderFile

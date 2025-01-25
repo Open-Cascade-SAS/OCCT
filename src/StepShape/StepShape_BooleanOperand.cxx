@@ -11,55 +11,52 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepShape_BooleanOperand.hxx>
 #include <StepShape_BooleanResult.hxx>
 #include <StepShape_CsgPrimitive.hxx>
 #include <StepShape_HalfSpaceSolid.hxx>
 #include <StepShape_SolidModel.hxx>
 
-StepShape_BooleanOperand::StepShape_BooleanOperand () {  }
+StepShape_BooleanOperand::StepShape_BooleanOperand() {}
 
-Handle(StepShape_SolidModel) StepShape_BooleanOperand::SolidModel () const
+Handle(StepShape_SolidModel) StepShape_BooleanOperand::SolidModel() const
 {
   return theSolidModel;
 }
 
-void StepShape_BooleanOperand::SetSolidModel
-(const Handle(StepShape_SolidModel)& aSolidModel) 
+void StepShape_BooleanOperand::SetSolidModel(const Handle(StepShape_SolidModel)& aSolidModel)
 {
   theSolidModel = aSolidModel;
 }
 
-Handle(StepShape_HalfSpaceSolid) StepShape_BooleanOperand::HalfSpaceSolid () const
+Handle(StepShape_HalfSpaceSolid) StepShape_BooleanOperand::HalfSpaceSolid() const
 {
   return theHalfSpaceSolid;
 }
 
-void StepShape_BooleanOperand::SetHalfSpaceSolid
-(const Handle(StepShape_HalfSpaceSolid)& aHalfSpaceSolid)
+void StepShape_BooleanOperand::SetHalfSpaceSolid(
+  const Handle(StepShape_HalfSpaceSolid)& aHalfSpaceSolid)
 {
   theHalfSpaceSolid = aHalfSpaceSolid;
 }
 
-StepShape_CsgPrimitive StepShape_BooleanOperand::CsgPrimitive () const
+StepShape_CsgPrimitive StepShape_BooleanOperand::CsgPrimitive() const
 {
   return theCsgPrimitive;
 }
 
-void StepShape_BooleanOperand::SetCsgPrimitive
-(const StepShape_CsgPrimitive& aCsgPrimitive)
+void StepShape_BooleanOperand::SetCsgPrimitive(const StepShape_CsgPrimitive& aCsgPrimitive)
 {
   theCsgPrimitive = aCsgPrimitive;
 }
 
-Handle(StepShape_BooleanResult) StepShape_BooleanOperand::BooleanResult () const
+Handle(StepShape_BooleanResult) StepShape_BooleanOperand::BooleanResult() const
 {
   return theBooleanResult;
 }
 
-void StepShape_BooleanOperand::SetBooleanResult
-(const Handle(StepShape_BooleanResult)& aBooleanResult)
+void StepShape_BooleanOperand::SetBooleanResult(
+  const Handle(StepShape_BooleanResult)& aBooleanResult)
 {
   theBooleanResult = aBooleanResult;
 }

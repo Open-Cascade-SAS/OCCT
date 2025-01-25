@@ -31,7 +31,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_TextureRoot, Standard_Transient)
 
 namespace
 {
-  static volatile Standard_Integer THE_TEXTURE_COUNTER = 0;
+static volatile Standard_Integer THE_TEXTURE_COUNTER = 0;
 }
 
 // =======================================================================
@@ -40,16 +40,16 @@ namespace
 // =======================================================================
 TCollection_AsciiString Graphic3d_TextureRoot::TexturesFolder()
 {
-  static Standard_Boolean IsDefined = Standard_False;
+  static Standard_Boolean        IsDefined = Standard_False;
   static TCollection_AsciiString VarName;
   if (!IsDefined)
   {
     IsDefined = Standard_True;
-    OSD_Environment aTexDirEnv ("CSF_MDTVTexturesDirectory");
+    OSD_Environment aTexDirEnv("CSF_MDTVTexturesDirectory");
     VarName = aTexDirEnv.Value();
     if (VarName.IsEmpty())
     {
-      OSD_Environment aCasRootEnv ("CASROOT");
+      OSD_Environment aCasRootEnv("CASROOT");
       VarName = aCasRootEnv.Value();
       if (!VarName.IsEmpty())
       {
@@ -60,21 +60,22 @@ TCollection_AsciiString Graphic3d_TextureRoot::TexturesFolder()
     if (VarName.IsEmpty())
     {
 #ifdef OCCT_DEBUG
-      std::cerr << "Both environment variables CSF_MDTVTexturesDirectory and CASROOT are undefined!\n"
-                << "At least one should be defined to use standard Textures.\n";
+      std::cerr
+        << "Both environment variables CSF_MDTVTexturesDirectory and CASROOT are undefined!\n"
+        << "At least one should be defined to use standard Textures.\n";
 #endif
       throw Standard_Failure("CSF_MDTVTexturesDirectory and CASROOT are undefined");
     }
 
-    const OSD_Path aDirPath (VarName);
-    OSD_Directory aDir (aDirPath);
+    const OSD_Path                aDirPath(VarName);
+    OSD_Directory                 aDir(aDirPath);
     const TCollection_AsciiString aTexture = VarName + "/2d_MatraDatavision.rgb";
-    OSD_File aTextureFile (aTexture);
+    OSD_File                      aTextureFile(aTexture);
     if (!aDir.Exists() || !aTextureFile.Exists())
     {
 #ifdef OCCT_DEBUG
       std::cerr << " CSF_MDTVTexturesDirectory or CASROOT not correctly set\n";
-      std::cerr << " not all files are found in : "<< VarName.ToCString() << std::endl;
+      std::cerr << " not all files are found in : " << VarName.ToCString() << std::endl;
 #endif
       throw Standard_Failure("CSF_MDTVTexturesDirectory or CASROOT not correctly set");
     }
@@ -86,15 +87,15 @@ TCollection_AsciiString Graphic3d_TextureRoot::TexturesFolder()
 // function : Graphic3d_TextureRoot
 // purpose  :
 // =======================================================================
-Graphic3d_TextureRoot::Graphic3d_TextureRoot (const TCollection_AsciiString& theFileName,
-                                              const Graphic3d_TypeOfTexture  theType)
-: myParams   (new Graphic3d_TextureParams()),
-  myPath     (theFileName),
-  myRevision (0),
-  myType     (theType == Graphic3d_TOT_2D_MIPMAP ? Graphic3d_TypeOfTexture_2D : theType),
-  myIsColorMap (true),
-  myIsTopDown  (true),
-  myHasMipmaps (theType == Graphic3d_TOT_2D_MIPMAP)
+Graphic3d_TextureRoot::Graphic3d_TextureRoot(const TCollection_AsciiString& theFileName,
+                                             const Graphic3d_TypeOfTexture  theType)
+    : myParams(new Graphic3d_TextureParams()),
+      myPath(theFileName),
+      myRevision(0),
+      myType(theType == Graphic3d_TOT_2D_MIPMAP ? Graphic3d_TypeOfTexture_2D : theType),
+      myIsColorMap(true),
+      myIsTopDown(true),
+      myHasMipmaps(theType == Graphic3d_TOT_2D_MIPMAP)
 {
   generateId();
 }
@@ -103,15 +104,15 @@ Graphic3d_TextureRoot::Graphic3d_TextureRoot (const TCollection_AsciiString& the
 // function : Graphic3d_TextureRoot
 // purpose  :
 // =======================================================================
-Graphic3d_TextureRoot::Graphic3d_TextureRoot (const Handle(Image_PixMap)&   thePixMap,
-                                              const Graphic3d_TypeOfTexture theType)
-: myParams   (new Graphic3d_TextureParams()),
-  myPixMap   (thePixMap),
-  myRevision (0),
-  myType     (theType == Graphic3d_TOT_2D_MIPMAP ? Graphic3d_TypeOfTexture_2D : theType),
-  myIsColorMap (true),
-  myIsTopDown  (true),
-  myHasMipmaps (theType == Graphic3d_TOT_2D_MIPMAP)
+Graphic3d_TextureRoot::Graphic3d_TextureRoot(const Handle(Image_PixMap)&   thePixMap,
+                                             const Graphic3d_TypeOfTexture theType)
+    : myParams(new Graphic3d_TextureParams()),
+      myPixMap(thePixMap),
+      myRevision(0),
+      myType(theType == Graphic3d_TOT_2D_MIPMAP ? Graphic3d_TypeOfTexture_2D : theType),
+      myIsColorMap(true),
+      myIsTopDown(true),
+      myHasMipmaps(theType == Graphic3d_TOT_2D_MIPMAP)
 {
   generateId();
 }
@@ -131,15 +132,16 @@ Graphic3d_TextureRoot::~Graphic3d_TextureRoot()
 // =======================================================================
 void Graphic3d_TextureRoot::generateId()
 {
-  myTexId = TCollection_AsciiString ("Graphic3d_TextureRoot_")
-          + TCollection_AsciiString (Standard_Atomic_Increment (&THE_TEXTURE_COUNTER));
+  myTexId = TCollection_AsciiString("Graphic3d_TextureRoot_")
+            + TCollection_AsciiString(Standard_Atomic_Increment(&THE_TEXTURE_COUNTER));
 }
 
 // =======================================================================
 // function : GetCompressedImage
 // purpose  :
 // =======================================================================
-Handle(Image_CompressedPixMap) Graphic3d_TextureRoot::GetCompressedImage (const Handle(Image_SupportedFormats)& theSupported)
+Handle(Image_CompressedPixMap) Graphic3d_TextureRoot::GetCompressedImage(
+  const Handle(Image_SupportedFormats)& theSupported)
 {
   if (!myPixMap.IsNull())
   {
@@ -148,7 +150,7 @@ Handle(Image_CompressedPixMap) Graphic3d_TextureRoot::GetCompressedImage (const 
 
   // Case 2: texture source is specified as path
   TCollection_AsciiString aFilePath;
-  myPath.SystemName (aFilePath);
+  myPath.SystemName(aFilePath);
   if (aFilePath.IsEmpty())
   {
     return Handle(Image_CompressedPixMap)();
@@ -156,13 +158,13 @@ Handle(Image_CompressedPixMap) Graphic3d_TextureRoot::GetCompressedImage (const 
 
   TCollection_AsciiString aFilePathLower = aFilePath;
   aFilePathLower.LowerCase();
-  if (!aFilePathLower.EndsWith (".dds"))
+  if (!aFilePathLower.EndsWith(".dds"))
   {
     // do not waste time on file system access in case of wrong file extension
     return Handle(Image_CompressedPixMap)();
   }
 
-  if (Handle(Image_CompressedPixMap) anImage = Image_DDSParser::Load (theSupported, aFilePath, 0))
+  if (Handle(Image_CompressedPixMap) anImage = Image_DDSParser::Load(theSupported, aFilePath, 0))
   {
     myIsTopDown = anImage->IsTopDown();
     return anImage;
@@ -174,7 +176,8 @@ Handle(Image_CompressedPixMap) Graphic3d_TextureRoot::GetCompressedImage (const 
 // function : GetImage
 // purpose  :
 // =======================================================================
-Handle(Image_PixMap) Graphic3d_TextureRoot::GetImage (const Handle(Image_SupportedFormats)& theSupported)
+Handle(Image_PixMap) Graphic3d_TextureRoot::GetImage(
+  const Handle(Image_SupportedFormats)& theSupported)
 {
   if (Handle(Image_PixMap) anOldImage = GetImage())
   {
@@ -191,17 +194,17 @@ Handle(Image_PixMap) Graphic3d_TextureRoot::GetImage (const Handle(Image_Support
 
   // Case 2: texture source is specified as path
   TCollection_AsciiString aFilePath;
-  myPath.SystemName (aFilePath);
+  myPath.SystemName(aFilePath);
   if (aFilePath.IsEmpty())
   {
     return Handle(Image_PixMap)();
   }
 
   Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap();
-  if (anImage->Load (aFilePath))
+  if (anImage->Load(aFilePath))
   {
     myIsTopDown = anImage->IsTopDown();
-    convertToCompatible (theSupported, anImage);
+    convertToCompatible(theSupported, anImage);
     return anImage;
   }
 
@@ -212,12 +215,10 @@ Handle(Image_PixMap) Graphic3d_TextureRoot::GetImage (const Handle(Image_Support
 // function : convertToCompatible
 // purpose  :
 // =======================================================================
-void Graphic3d_TextureRoot::convertToCompatible (const Handle(Image_SupportedFormats)& theSupported,
-                                                 const Handle(Image_PixMap)& theImage)
+void Graphic3d_TextureRoot::convertToCompatible(const Handle(Image_SupportedFormats)& theSupported,
+                                                const Handle(Image_PixMap)&           theImage)
 {
-  if (theImage.IsNull()
-   || theSupported.IsNull()
-   || theSupported->IsSupported (theImage->Format()))
+  if (theImage.IsNull() || theSupported.IsNull() || theSupported->IsSupported(theImage->Format()))
   {
     return;
   }
@@ -226,13 +227,14 @@ void Graphic3d_TextureRoot::convertToCompatible (const Handle(Image_SupportedFor
   {
     // BGR formats are unsupported in OpenGL ES, only RGB
     case Image_Format_BGR:
-      Image_PixMap::SwapRgbaBgra (*theImage);
-      theImage->SetFormat (Image_Format_RGB);
+      Image_PixMap::SwapRgbaBgra(*theImage);
+      theImage->SetFormat(Image_Format_RGB);
       break;
     case Image_Format_BGRA:
     case Image_Format_BGR32:
-      Image_PixMap::SwapRgbaBgra (*theImage);
-      theImage->SetFormat (theImage->Format() == Image_Format_BGR32 ? Image_Format_RGB32 : Image_Format_RGBA);
+      Image_PixMap::SwapRgbaBgra(*theImage);
+      theImage->SetFormat(theImage->Format() == Image_Format_BGR32 ? Image_Format_RGB32
+                                                                   : Image_Format_RGBA);
       break;
     default:
       break;
@@ -252,6 +254,6 @@ Standard_Boolean Graphic3d_TextureRoot::IsDone() const
   }
 
   // Case 2: texture source is specified as path
-  OSD_File aTextureFile (myPath);
+  OSD_File aTextureFile(myPath);
   return aTextureFile.Exists();
 }

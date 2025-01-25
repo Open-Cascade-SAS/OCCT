@@ -24,7 +24,6 @@
 #include <IGESData_IGESEntity.hxx>
 class IGESGeom_TransformationMatrix;
 
-
 class IGESDraw_Planar;
 DEFINE_STANDARD_HANDLE(IGESDraw_Planar, IGESData_IGESEntity)
 
@@ -37,60 +36,43 @@ class IGESDraw_Planar : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESDraw_Planar();
-  
+
   //! This method is used to set the fields of the class Planar
   //! - nbMats                : Number of Transformation matrices
   //! - aTransformationMatrix : Pointer to the Transformation matrix
   //! - allEntities           : Pointers to the entities specified
-  Standard_EXPORT void Init (const Standard_Integer nbMats, const Handle(IGESGeom_TransformationMatrix)& aTransformationMatrix, const Handle(IGESData_HArray1OfIGESEntity)& allEntities);
-  
+  Standard_EXPORT void Init(const Standard_Integer                       nbMats,
+                            const Handle(IGESGeom_TransformationMatrix)& aTransformationMatrix,
+                            const Handle(IGESData_HArray1OfIGESEntity)&  allEntities);
+
   //! returns the number of Transformation matrices in <me>
   Standard_EXPORT Standard_Integer NbMatrices() const;
-  
+
   //! returns the number of Entities in the plane pointed to by this
   //! associativity
   Standard_EXPORT Standard_Integer NbEntities() const;
-  
+
   //! returns True if TransformationMatrix is Identity Matrix,
   //! i.e:- No Matrix defined.
   Standard_EXPORT Standard_Boolean IsIdentityMatrix() const;
-  
+
   //! returns the Transformation matrix moving data from the XY plane
   //! into space or zero
   Standard_EXPORT Handle(IGESGeom_TransformationMatrix) TransformMatrix() const;
-  
+
   //! returns the Entity on the specified plane, indicated by EntityIndex
   //! raises an exception if EntityIndex <= 0 or
   //! EntityIndex > NbEntities()
-  Standard_EXPORT Handle(IGESData_IGESEntity) Entity (const Standard_Integer EntityIndex) const;
+  Standard_EXPORT Handle(IGESData_IGESEntity) Entity(const Standard_Integer EntityIndex) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESDraw_Planar,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDraw_Planar, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-  Standard_Integer theNbMatrices;
+  Standard_Integer                      theNbMatrices;
   Handle(IGESGeom_TransformationMatrix) theTransformationMatrix;
-  Handle(IGESData_HArray1OfIGESEntity) theEntities;
-
-
+  Handle(IGESData_HArray1OfIGESEntity)  theEntities;
 };
-
-
-
-
-
-
 
 #endif // _IGESDraw_Planar_HeaderFile

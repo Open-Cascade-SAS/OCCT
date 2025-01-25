@@ -32,16 +32,22 @@ class BinMDataXtd_TriangulationDriver : public BinMDF_ADriver
 {
 
 public:
-
-  Standard_EXPORT BinMDataXtd_TriangulationDriver(const Handle(Message_Messenger)& theMessageDriver);
+  Standard_EXPORT BinMDataXtd_TriangulationDriver(
+    const Handle(Message_Messenger)& theMessageDriver);
 
   Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Boolean Paste (const BinObjMgt_Persistent& Source, const Handle(TDF_Attribute)& Target, BinObjMgt_RRelocationTable& RelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Paste(const BinObjMgt_Persistent&  Source,
+                                                 const Handle(TDF_Attribute)& Target,
+                                                 BinObjMgt_RRelocationTable&  RelocTable) const
+    Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Paste (const Handle(TDF_Attribute)& Source, BinObjMgt_Persistent& Target, BinObjMgt_SRelocationTable& RelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)& Source,
+                                     BinObjMgt_Persistent&        Target,
+                                     BinObjMgt_SRelocationTable&  RelocTable) const
+    Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(BinMDataXtd_TriangulationDriver,BinMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(BinMDataXtd_TriangulationDriver, BinMDF_ADriver)
 };
 
 #endif // _BinMDataXtd_TriangulationDriver_HeaderFile

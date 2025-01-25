@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_OStream.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
@@ -24,24 +23,24 @@
 #include <Standard_GUID.hxx>
 
 //=======================================================================
-//function : GetID
-//purpose  : Static method to get an ID
+// function : GetID
+// purpose  : Static method to get an ID
 //=======================================================================
-const Standard_GUID& TFunction_Logbook::GetID() 
-{  
+const Standard_GUID& TFunction_Logbook::GetID()
+{
   static Standard_GUID TFunction_LogbookID("CF519724-5CA4-4B90-835F-8919BE1DDE4B");
-  return TFunction_LogbookID; 
+  return TFunction_LogbookID;
 }
 
 //=======================================================================
-//function : Set
-//purpose  : Finds or creates a Scope attribute
+// function : Set
+// purpose  : Finds or creates a Scope attribute
 //=======================================================================
 
 Handle(TFunction_Logbook) TFunction_Logbook::Set(const TDF_Label& Access)
 {
   Handle(TFunction_Logbook) S;
-  if (!Access.Root().FindAttribute(TFunction_Logbook::GetID(), S)) 
+  if (!Access.Root().FindAttribute(TFunction_Logbook::GetID(), S))
   {
     S = new TFunction_Logbook();
     Access.Root().AddAttribute(S);
@@ -50,25 +49,27 @@ Handle(TFunction_Logbook) TFunction_Logbook::Set(const TDF_Label& Access)
 }
 
 //=======================================================================
-//function : ID
-//purpose  : Returns GUID of the function
+// function : ID
+// purpose  : Returns GUID of the function
 //=======================================================================
 
 const Standard_GUID& TFunction_Logbook::ID() const
-{ 
-  return GetID(); 
+{
+  return GetID();
 }
 
 //=======================================================================
-//function : TFunction_Logbook
-//purpose  : A Logbook creation
+// function : TFunction_Logbook
+// purpose  : A Logbook creation
 //=======================================================================
-TFunction_Logbook::TFunction_Logbook():isDone(Standard_False)
-{}
+TFunction_Logbook::TFunction_Logbook()
+    : isDone(Standard_False)
+{
+}
 
 //=======================================================================
-//function : Clear
-//purpose  : Clears the valid and modified labels
+// function : Clear
+// purpose  : Clears the valid and modified labels
 //=======================================================================
 
 void TFunction_Logbook::Clear()
@@ -83,21 +84,21 @@ void TFunction_Logbook::Clear()
 }
 
 //=======================================================================
-//function : IsEmpty
-//purpose  : Returns Standard_True if the nothing is recorded in the logbook
+// function : IsEmpty
+// purpose  : Returns Standard_True if the nothing is recorded in the logbook
 //=======================================================================
 
-Standard_Boolean TFunction_Logbook::IsEmpty () const
+Standard_Boolean TFunction_Logbook::IsEmpty() const
 {
   return (myTouched.IsEmpty() && myImpacted.IsEmpty() && myValid.IsEmpty());
 }
 
 //=======================================================================
-//function : IsModified
-//purpose  : Returns Standard_True if the label is modified
+// function : IsModified
+// purpose  : Returns Standard_True if the label is modified
 //=======================================================================
 
-Standard_Boolean TFunction_Logbook::IsModified(const TDF_Label& L,
+Standard_Boolean TFunction_Logbook::IsModified(const TDF_Label&       L,
                                                const Standard_Boolean WithChildren) const
 {
   if (myTouched.Contains(L))
@@ -118,13 +119,9 @@ Standard_Boolean TFunction_Logbook::IsModified(const TDF_Label& L,
   return Standard_False;
 }
 
-//=======================================================================
-//function : SetValid
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TFunction_Logbook::SetValid(const TDF_Label& L,
-                                 const Standard_Boolean WithChildren)
+void TFunction_Logbook::SetValid(const TDF_Label& L, const Standard_Boolean WithChildren)
 {
   Backup();
   myValid.Add(L);
@@ -149,13 +146,9 @@ void TFunction_Logbook::SetValid(const TDF_LabelMap& Ls)
   }
 }
 
-//=======================================================================
-//function : SetImpacted
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TFunction_Logbook::SetImpacted(const TDF_Label& L,
-                                    const Standard_Boolean WithChildren)
+void TFunction_Logbook::SetImpacted(const TDF_Label& L, const Standard_Boolean WithChildren)
 {
   Backup();
   myImpacted.Add(L);
@@ -166,12 +159,12 @@ void TFunction_Logbook::SetImpacted(const TDF_Label& L,
     {
       myImpacted.Add(itr.Value());
     }
-  }  
+  }
 }
 
 //=======================================================================
-//function : GetValid
-//purpose  : Returns valid labels.
+// function : GetValid
+// purpose  : Returns valid labels.
 //=======================================================================
 
 void TFunction_Logbook::GetValid(TDF_LabelMap& Ls) const
@@ -186,11 +179,11 @@ void TFunction_Logbook::GetValid(TDF_LabelMap& Ls) const
 }
 
 //=======================================================================
-//function : Restore
-//purpose  : Undos (and redos) the attribute.
+// function : Restore
+// purpose  : Undos (and redos) the attribute.
 //=======================================================================
 
-void TFunction_Logbook::Restore(const Handle(TDF_Attribute)& other) 
+void TFunction_Logbook::Restore(const Handle(TDF_Attribute)& other)
 {
   Handle(TFunction_Logbook) logbook = Handle(TFunction_Logbook)::DownCast(other);
 
@@ -216,15 +209,15 @@ void TFunction_Logbook::Restore(const Handle(TDF_Attribute)& other)
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : Method for Copy mechanism
+// function : Paste
+// purpose  : Method for Copy mechanism
 //=======================================================================
 
-void TFunction_Logbook::Paste(const Handle(TDF_Attribute)& into,
+void TFunction_Logbook::Paste(const Handle(TDF_Attribute)&       into,
                               const Handle(TDF_RelocationTable)& RT) const
 {
   Handle(TFunction_Logbook) logbook = Handle(TFunction_Logbook)::DownCast(into);
-  
+
   // Status.
   logbook->isDone = isDone;
 
@@ -278,8 +271,8 @@ void TFunction_Logbook::Paste(const Handle(TDF_Attribute)& into,
 }
 
 //=======================================================================
-//function : NewEmpty
-//purpose  : Returns new empty graph node attribute
+// function : NewEmpty
+// purpose  : Returns new empty graph node attribute
 //=======================================================================
 
 Handle(TDF_Attribute) TFunction_Logbook::NewEmpty() const
@@ -288,34 +281,34 @@ Handle(TDF_Attribute) TFunction_Logbook::NewEmpty() const
 }
 
 //=======================================================================
-//function : Dump
-//purpose  : Dump of modifications
+// function : Dump
+// purpose  : Dump of modifications
 //=======================================================================
 
 Standard_OStream& TFunction_Logbook::Dump(Standard_OStream& stream) const
 {
   TDF_MapIteratorOfLabelMap itr;
-  TCollection_AsciiString as;
-  
-  stream<<"Done = "<<isDone<<std::endl;
-  stream<<"Touched labels: "<<std::endl;
+  TCollection_AsciiString   as;
+
+  stream << "Done = " << isDone << std::endl;
+  stream << "Touched labels: " << std::endl;
   for (itr.Initialize(myTouched); itr.More(); itr.Next())
   {
     TDF_Tool::Entry(itr.Key(), as);
-    stream<<as<<std::endl;
+    stream << as << std::endl;
   }
-  stream<<"Impacted labels: "<<std::endl;
+  stream << "Impacted labels: " << std::endl;
   for (itr.Initialize(myImpacted); itr.More(); itr.Next())
   {
     TDF_Tool::Entry(itr.Key(), as);
-    stream<<as<<std::endl;
-  }  
-  stream<<"Valid labels: "<<std::endl;
+    stream << as << std::endl;
+  }
+  stream << "Valid labels: " << std::endl;
   for (itr.Initialize(myValid); itr.More(); itr.Next())
   {
     TDF_Tool::Entry(itr.Key(), as);
-    stream<<as<<std::endl;
-  }  
+    stream << as << std::endl;
+  }
 
   return stream;
 }

@@ -23,7 +23,8 @@ enum Quantity_TypeOfColor
   //! Normalized linear RGB (red, green, blue) values within range [0..1] for each component
   Quantity_TOC_RGB,
 
-  //! Normalized non-linear gamma-shifted RGB (red, green, blue) values within range [0..1] for each component
+  //! Normalized non-linear gamma-shifted RGB (red, green, blue) values within range [0..1] for each
+  //! component
   Quantity_TOC_sRGB,
 
   //! Hue + light + saturation components, where:
@@ -34,7 +35,7 @@ enum Quantity_TypeOfColor
   Quantity_TOC_HLS,
 
   //! CIE L*a*b* color space, constructed to be perceptually uniform for human eye.
-  //! The values are assumed to be with respect to D65 2&deg; white point. 
+  //! The values are assumed to be with respect to D65 2&deg; white point.
   //!
   //! The color is defined by:
   //! - L: lightness in range [0, 100] (from black to white)
@@ -54,7 +55,7 @@ enum Quantity_TypeOfColor
   //! - h: hue angle, in range [0., 360.]
   //!
   //! The hue values of standard colors are approximately:
-  //! - red at 40, 
+  //! - red at 40,
   //! - yellow at 103,
   //! - green at 136,
   //! - cyan at 196,

@@ -28,36 +28,40 @@
 // intended for use from debugger prompt (Command Window in Visual Studio)
 
 //! Dump content of the geometric object to cout
-const char* GeomTools_Dump (void* theHandlePtr)
+const char* GeomTools_Dump(void* theHandlePtr)
 {
   if (theHandlePtr == 0)
   {
     return "Error: argument is null";
   }
-  try {
+  try
+  {
     OCC_CATCH_SIGNALS
     const Handle(Standard_Transient)& aHandle = *(Handle(Standard_Transient)*)theHandlePtr;
 
     Handle(Geom_Surface) GS = Handle(Geom_Surface)::DownCast(aHandle);
-    if (!GS.IsNull()) {
+    if (!GS.IsNull())
+    {
       std::cout << "\n\n";
-      GeomTools_SurfaceSet::PrintSurface (GS,std::cout);
+      GeomTools_SurfaceSet::PrintSurface(GS, std::cout);
       std::cout << std::endl;
       return "Found Geom_Surface, see dump in std::cout";
     }
 
     Handle(Geom_Curve) GC = Handle(Geom_Curve)::DownCast(aHandle);
-    if (!GC.IsNull()) {
+    if (!GC.IsNull())
+    {
       std::cout << "\n\n";
-      GeomTools_CurveSet::PrintCurve(GC,std::cout);
+      GeomTools_CurveSet::PrintCurve(GC, std::cout);
       std::cout << std::endl;
       return "Found Geom_Curve, see dump in std::cout";
     }
 
     Handle(Geom2d_Curve) GC2d = Handle(Geom2d_Curve)::DownCast(aHandle);
-    if (!GC2d.IsNull()) {
+    if (!GC2d.IsNull())
+    {
       std::cout << "\n\n";
-      GeomTools_Curve2dSet::PrintCurve2d(GC2d,std::cout);
+      GeomTools_Curve2dSet::PrintCurve2d(GC2d, std::cout);
       std::cout << std::endl;
       return "Found Geom2d_Curve, see dump in std::cout";
     }
@@ -70,15 +74,15 @@ const char* GeomTools_Dump (void* theHandlePtr)
   }
 }
 
-// MSVC debugger cannot deal correctly with functions whose argunments 
+// MSVC debugger cannot deal correctly with functions whose argunments
 // have non-standard types. Here we define alternative to the above functions
 // with good types with the hope that GDB on Linux or other debugger could
 // work with them (DBX could, on SUN Solaris).
 #ifndef _MSC_VER
 
-const char* GeomTools_Dump (const Handle(Standard_Transient)& theGeom)
+const char* GeomTools_Dump(const Handle(Standard_Transient)& theGeom)
 {
-  return GeomTools_Dump ((void*)&theGeom);
+  return GeomTools_Dump((void*)&theGeom);
 }
 
 #endif

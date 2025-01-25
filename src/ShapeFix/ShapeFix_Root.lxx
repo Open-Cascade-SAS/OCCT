@@ -14,8 +14,8 @@
 #include <Precision.hxx>
 
 //=======================================================================
-//function : Context
-//purpose  : 
+// function : Context
+// purpose  :
 //=======================================================================
 
 inline Handle(ShapeBuild_ReShape) ShapeFix_Root::Context() const
@@ -24,8 +24,8 @@ inline Handle(ShapeBuild_ReShape) ShapeFix_Root::Context() const
 }
 
 //=======================================================================
-//function : MsgRegistrator
-//purpose  : 
+// function : MsgRegistrator
+// purpose  :
 //=======================================================================
 
 inline Handle(ShapeExtend_BasicMsgRegistrator) ShapeFix_Root::MsgRegistrator() const
@@ -34,8 +34,8 @@ inline Handle(ShapeExtend_BasicMsgRegistrator) ShapeFix_Root::MsgRegistrator() c
 }
 
 //=======================================================================
-//function : Precision
-//purpose  : 
+// function : Precision
+// purpose  :
 //=======================================================================
 
 inline Standard_Real ShapeFix_Root::Precision() const
@@ -44,8 +44,8 @@ inline Standard_Real ShapeFix_Root::Precision() const
 }
 
 //=======================================================================
-//function : MinTolerance
-//purpose  : 
+// function : MinTolerance
+// purpose  :
 //=======================================================================
 
 inline Standard_Real ShapeFix_Root::MinTolerance() const
@@ -54,8 +54,8 @@ inline Standard_Real ShapeFix_Root::MinTolerance() const
 }
 
 //=======================================================================
-//function : MaxTolerance
-//purpose  : 
+// function : MaxTolerance
+// purpose  :
 //=======================================================================
 
 inline Standard_Real ShapeFix_Root::MaxTolerance() const
@@ -64,80 +64,75 @@ inline Standard_Real ShapeFix_Root::MaxTolerance() const
 }
 
 //=======================================================================
-//function : LimitTolerance
-//purpose  : 
+// function : LimitTolerance
+// purpose  :
 //=======================================================================
 
 inline Standard_Real ShapeFix_Root::LimitTolerance(const Standard_Real toler) const
 {
-  //only maximal restriction implemented.
-  return Min(myMaxTol,toler);
+  // only maximal restriction implemented.
+  return Min(myMaxTol, toler);
 }
 
 //=======================================================================
-//function : SendMsg
-//purpose  : 
+// function : SendMsg
+// purpose  :
 //=======================================================================
 
-inline  void ShapeFix_Root::SendMsg(const Message_Msg& message,const Message_Gravity gravity) const
+inline void ShapeFix_Root::SendMsg(const Message_Msg& message, const Message_Gravity gravity) const
 {
-  SendMsg (myShape, message, gravity);
+  SendMsg(myShape, message, gravity);
 }
 
- 
 //=======================================================================
-//function : SendWarning
-//purpose  : 
+// function : SendWarning
+// purpose  :
 //=======================================================================
 
-inline  void ShapeFix_Root::SendWarning(const TopoDS_Shape& shape,const Message_Msg& message) const
+inline void ShapeFix_Root::SendWarning(const TopoDS_Shape& shape, const Message_Msg& message) const
 {
-  SendMsg (shape, message, Message_Warning);
+  SendMsg(shape, message, Message_Warning);
 }
 
- 
 //=======================================================================
-//function : SendWarning
-//purpose  : 
+// function : SendWarning
+// purpose  :
 //=======================================================================
 
-inline  void ShapeFix_Root::SendWarning(const Message_Msg& message) const
+inline void ShapeFix_Root::SendWarning(const Message_Msg& message) const
 {
-  SendWarning (myShape, message);
+  SendWarning(myShape, message);
 }
 
- 
 //=======================================================================
-//function : SendFail
-//purpose  : 
+// function : SendFail
+// purpose  :
 //=======================================================================
 
-inline  void ShapeFix_Root::SendFail(const TopoDS_Shape& shape,const Message_Msg& message) const
+inline void ShapeFix_Root::SendFail(const TopoDS_Shape& shape, const Message_Msg& message) const
 {
-  SendMsg (shape, message, Message_Fail);
+  SendMsg(shape, message, Message_Fail);
 }
 
- 
 //=======================================================================
-//function : SendFail
-//purpose  : 
+// function : SendFail
+// purpose  :
 //=======================================================================
 
-inline  void ShapeFix_Root::SendFail(const Message_Msg& message) const
+inline void ShapeFix_Root::SendFail(const Message_Msg& message) const
 {
-  SendFail (myShape, message);
+  SendFail(myShape, message);
 }
 
- 
 //=======================================================================
-//function : NeedFix
-//purpose  : Function used to define if the fixing method needs to be called
-//           according to its specific flag if it is set, or 
-//           to some additional criteria (if Flag is default) 
+// function : NeedFix
+// purpose  : Function used to define if the fixing method needs to be called
+//           according to its specific flag if it is set, or
+//           to some additional criteria (if Flag is default)
 //=======================================================================
 
-inline Standard_Boolean ShapeFix_Root::NeedFix (const Standard_Integer Flag, 
-						const Standard_Boolean need)
+inline Standard_Boolean ShapeFix_Root::NeedFix(const Standard_Integer Flag,
+                                               const Standard_Boolean need)
 {
-  return Flag <0 ? need : ( Flag >0 );
+  return Flag < 0 ? need : (Flag > 0);
 }

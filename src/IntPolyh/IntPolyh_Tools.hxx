@@ -23,38 +23,35 @@
 class IntPolyh_Tools
 {
 public:
-
   //! Checks if the surface can be enlarged in U or V direction.
   Standard_EXPORT static void IsEnlargePossible(const Handle(Adaptor3d_Surface)& theSurf,
-                                                Standard_Boolean& theUEnlarge,
-                                                Standard_Boolean& theVEnlarge);
+                                                Standard_Boolean&                theUEnlarge,
+                                                Standard_Boolean&                theVEnlarge);
 
-  //! Makes the sampling of the given surface <theSurf> 
+  //! Makes the sampling of the given surface <theSurf>
   //! making the net of <theNbSU> x <theNbSV> sampling points.
   //! The flag <theEnlargeZone> controls the enlargement of the
   //! sampling zone on the surface.
   //! The parameters of the sampling points are stored into
   //! <theUPars> and <theVPars> arrays.
   Standard_EXPORT static void MakeSampling(const Handle(Adaptor3d_Surface)& theSurf,
-                                           const Standard_Integer theNbSU,
-                                           const Standard_Integer theNbSV,
-                                           const Standard_Boolean theEnlargeZone,
-                                           TColStd_Array1OfReal& theUPars,
-                                           TColStd_Array1OfReal& theVPars);
+                                           const Standard_Integer           theNbSU,
+                                           const Standard_Integer           theNbSV,
+                                           const Standard_Boolean           theEnlargeZone,
+                                           TColStd_Array1OfReal&            theUPars,
+                                           TColStd_Array1OfReal&            theVPars);
 
   //! Computes the deflection tolerance on the surface for the given sampling.
   Standard_EXPORT static Standard_Real ComputeDeflection(const Handle(Adaptor3d_Surface)& theSurf,
-                                                         const TColStd_Array1OfReal& theUPars,
-                                                         const TColStd_Array1OfReal& theVPars);
+                                                         const TColStd_Array1OfReal&      theUPars,
+                                                         const TColStd_Array1OfReal&      theVPars);
 
   //! Fills the array <thePoints> with the points (triangulation nodes) on the surface
   //! and normal directions of the surface in these points.
   Standard_EXPORT static void FillArrayOfPointNormal(const Handle(Adaptor3d_Surface)& theSurf,
-                                                     const TColStd_Array1OfReal& theUPars,
-                                                     const TColStd_Array1OfReal& theVPars,
-                                                     IntPolyh_ArrayOfPointNormal& thePoints);
-
-
+                                                     const TColStd_Array1OfReal&      theUPars,
+                                                     const TColStd_Array1OfReal&      theVPars,
+                                                     IntPolyh_ArrayOfPointNormal&     thePoints);
 };
 
 #endif // _IntPolyh_Tools_HeaderFile

@@ -28,19 +28,17 @@ class TDataStd_HDataMapOfStringHArray1OfReal : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringHArray1OfReal, Standard_Transient)
 public:
-
   Standard_EXPORT TDataStd_HDataMapOfStringHArray1OfReal(const Standard_Integer NbBuckets = 1);
 
-  Standard_EXPORT TDataStd_HDataMapOfStringHArray1OfReal(const TDataStd_DataMapOfStringHArray1OfReal& theOther);
+  Standard_EXPORT TDataStd_HDataMapOfStringHArray1OfReal(
+    const TDataStd_DataMapOfStringHArray1OfReal& theOther);
 
   const TDataStd_DataMapOfStringHArray1OfReal& Map() const { return myMap; }
 
   TDataStd_DataMapOfStringHArray1OfReal& ChangeMap() { return myMap; }
 
 private:
-
   TDataStd_DataMapOfStringHArray1OfReal myMap;
-
 };
 
 DEFINE_STANDARD_HANDLE(TDataStd_HDataMapOfStringHArray1OfReal, Standard_Transient)

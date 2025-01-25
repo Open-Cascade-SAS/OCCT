@@ -14,199 +14,211 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline IntPatch_Point::IntPatch_Point ()
- : para(0.0), tol(0.0), tgt(Standard_False), mult(Standard_False),
-   onS1(Standard_False), vtxonS1(Standard_False), prm1(0.0),
-   onS2(Standard_False), vtxonS2(Standard_False), prm2(0.0)
+inline IntPatch_Point::IntPatch_Point()
+    : para(0.0),
+      tol(0.0),
+      tgt(Standard_False),
+      mult(Standard_False),
+      onS1(Standard_False),
+      vtxonS1(Standard_False),
+      prm1(0.0),
+      onS2(Standard_False),
+      vtxonS2(Standard_False),
+      prm2(0.0)
 {
 }
 
-
-inline void IntPatch_Point::SetValue (const gp_Pnt& Pt)
+inline void IntPatch_Point::SetValue(const gp_Pnt& Pt)
 {
   pt.SetValue(Pt);
 }
 
 //=======================================================================
 ////function : SetValue
-//purpose  : 
+// purpose  :
 //=======================================================================
 inline void IntPatch_Point::SetValue(const IntSurf_PntOn2S& thePOn2S)
 {
   pt = thePOn2S;
 }
 
-inline void IntPatch_Point::SetTolerance (const Standard_Real Tol)
+inline void IntPatch_Point::SetTolerance(const Standard_Real Tol)
 {
   tol = Tol;
 }
 
-
-inline void IntPatch_Point::SetParameters (const Standard_Real U1,
-                                           const Standard_Real V1,
-                                           const Standard_Real U2,
-                                           const Standard_Real V2)
+inline void IntPatch_Point::SetParameters(const Standard_Real U1,
+                                          const Standard_Real V1,
+                                          const Standard_Real U2,
+                                          const Standard_Real V2)
 {
-  pt.SetValue(U1,V1,U2,V2);
+  pt.SetValue(U1, V1, U2, V2);
 }
 
-
-inline void IntPatch_Point::SetParameter (const Standard_Real Para)
+inline void IntPatch_Point::SetParameter(const Standard_Real Para)
 {
   para = Para;
 }
 
-
-inline void IntPatch_Point::SetMultiple (const Standard_Boolean IsMult)
+inline void IntPatch_Point::SetMultiple(const Standard_Boolean IsMult)
 {
   mult = IsMult;
 }
 
-
-inline const gp_Pnt& IntPatch_Point::Value () const
+inline const gp_Pnt& IntPatch_Point::Value() const
 {
   return pt.Value();
 }
 
-
-inline Standard_Real IntPatch_Point::Tolerance () const
+inline Standard_Real IntPatch_Point::Tolerance() const
 {
   return tol;
 }
 
-
-inline Standard_Real IntPatch_Point::ParameterOnLine () const
+inline Standard_Real IntPatch_Point::ParameterOnLine() const
 {
   return para;
 }
 
-
-inline Standard_Boolean IntPatch_Point::IsTangencyPoint () const
+inline Standard_Boolean IntPatch_Point::IsTangencyPoint() const
 {
   return tgt;
 }
 
-
-inline void IntPatch_Point::ParametersOnS1 (Standard_Real& U1, Standard_Real& V1) const
+inline void IntPatch_Point::ParametersOnS1(Standard_Real& U1, Standard_Real& V1) const
 {
-  pt.ParametersOnS1(U1,V1);
+  pt.ParametersOnS1(U1, V1);
 }
 
-
-inline void IntPatch_Point::ParametersOnS2 (Standard_Real& U2, Standard_Real& V2) const
+inline void IntPatch_Point::ParametersOnS2(Standard_Real& U2, Standard_Real& V2) const
 {
-  pt.ParametersOnS2(U2,V2);
+  pt.ParametersOnS2(U2, V2);
 }
 
-
-inline Standard_Boolean IntPatch_Point::IsMultiple () const
+inline Standard_Boolean IntPatch_Point::IsMultiple() const
 {
   return mult;
 }
 
-
-inline Standard_Boolean IntPatch_Point::IsOnDomS1 () const
+inline Standard_Boolean IntPatch_Point::IsOnDomS1() const
 {
   return onS1;
 }
 
-
-inline Standard_Boolean IntPatch_Point::IsVertexOnS1 () const
+inline Standard_Boolean IntPatch_Point::IsVertexOnS1() const
 {
   return vtxonS1;
 }
 
-
-inline const Handle(Adaptor3d_HVertex)& IntPatch_Point::VertexOnS1 () const
+inline const Handle(Adaptor3d_HVertex)& IntPatch_Point::VertexOnS1() const
 {
-  if (!vtxonS1) {throw Standard_DomainError();}
+  if (!vtxonS1)
+  {
+    throw Standard_DomainError();
+  }
   return vS1;
 }
 
-
-inline const Handle(Adaptor2d_Curve2d)& IntPatch_Point::ArcOnS1 () const
+inline const Handle(Adaptor2d_Curve2d)& IntPatch_Point::ArcOnS1() const
 {
-  if (!onS1) {throw Standard_DomainError();}
+  if (!onS1)
+  {
+    throw Standard_DomainError();
+  }
   return arcS1;
 }
 
-
-inline const IntSurf_Transition& IntPatch_Point::TransitionLineArc1 () const
+inline const IntSurf_Transition& IntPatch_Point::TransitionLineArc1() const
 {
-  if (!onS1) {throw Standard_DomainError();}
+  if (!onS1)
+  {
+    throw Standard_DomainError();
+  }
   return traline1;
 }
 
-
-inline const IntSurf_Transition& IntPatch_Point::TransitionOnS1 () const
+inline const IntSurf_Transition& IntPatch_Point::TransitionOnS1() const
 {
-  if (!onS1) {throw Standard_DomainError();}
+  if (!onS1)
+  {
+    throw Standard_DomainError();
+  }
   return tra1;
 }
 
-
-inline Standard_Real IntPatch_Point::ParameterOnArc1 () const
+inline Standard_Real IntPatch_Point::ParameterOnArc1() const
 {
-  if (!onS1) {throw Standard_DomainError();}
+  if (!onS1)
+  {
+    throw Standard_DomainError();
+  }
   return prm1;
 }
 
-
-inline Standard_Boolean IntPatch_Point::IsOnDomS2 () const
+inline Standard_Boolean IntPatch_Point::IsOnDomS2() const
 {
   return onS2;
 }
 
-
-inline Standard_Boolean IntPatch_Point::IsVertexOnS2 () const
+inline Standard_Boolean IntPatch_Point::IsVertexOnS2() const
 {
   return vtxonS2;
 }
 
-
-inline const Handle(Adaptor3d_HVertex)& IntPatch_Point::VertexOnS2 () const
+inline const Handle(Adaptor3d_HVertex)& IntPatch_Point::VertexOnS2() const
 {
-  if (!vtxonS2) {throw Standard_DomainError();}
+  if (!vtxonS2)
+  {
+    throw Standard_DomainError();
+  }
   return vS2;
 }
 
-
-inline const Handle(Adaptor2d_Curve2d)& IntPatch_Point::ArcOnS2 () const
+inline const Handle(Adaptor2d_Curve2d)& IntPatch_Point::ArcOnS2() const
 {
-  if (!onS2) {throw Standard_DomainError();}
+  if (!onS2)
+  {
+    throw Standard_DomainError();
+  }
   return arcS2;
 }
 
-
-inline const IntSurf_Transition& IntPatch_Point::TransitionLineArc2 () const
+inline const IntSurf_Transition& IntPatch_Point::TransitionLineArc2() const
 {
-  if (!onS2) {throw Standard_DomainError();}
+  if (!onS2)
+  {
+    throw Standard_DomainError();
+  }
   return traline2;
 }
 
-
-inline const IntSurf_Transition& IntPatch_Point::TransitionOnS2 () const
+inline const IntSurf_Transition& IntPatch_Point::TransitionOnS2() const
 {
-  if (!onS2) {throw Standard_DomainError();}
+  if (!onS2)
+  {
+    throw Standard_DomainError();
+  }
   return tra2;
 }
 
-
-inline Standard_Real IntPatch_Point::ParameterOnArc2 () const
+inline Standard_Real IntPatch_Point::ParameterOnArc2() const
 {
-  if (!onS2) {throw Standard_DomainError();}
+  if (!onS2)
+  {
+    throw Standard_DomainError();
+  }
   return prm2;
 }
-
 
 inline const IntSurf_PntOn2S& IntPatch_Point::PntOn2S() const
 {
   return pt;
 }
 
-
-inline void IntPatch_Point::Parameters(Standard_Real& U1, Standard_Real& V1,
-				       Standard_Real& U2, Standard_Real& V2) const
+inline void IntPatch_Point::Parameters(Standard_Real& U1,
+                                       Standard_Real& V1,
+                                       Standard_Real& U2,
+                                       Standard_Real& V2) const
 {
-  pt.Parameters(U1,V1,U2,V2);
+  pt.Parameters(U1, V1, U2, V2);
 }

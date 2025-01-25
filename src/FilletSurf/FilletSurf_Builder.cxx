@@ -27,289 +27,305 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 
-//=======================================================================
-//function : FilletSurf_Builder
-//purpose  : 
-//=======================================================================
-FilletSurf_Builder::FilletSurf_Builder(const TopoDS_Shape& S, 
-	                               const TopTools_ListOfShape& E, 
-				       const Standard_Real R,			       
-				       const Standard_Real Ta,
-                                       const Standard_Real Tapp3d,
-                                       const Standard_Real Tapp2d ):
-                                       myIntBuild(S,ChFi3d_Polynomial,Ta,Tapp3d,Tapp2d)
+//=================================================================================================
+
+FilletSurf_Builder::FilletSurf_Builder(const TopoDS_Shape&         S,
+                                       const TopTools_ListOfShape& E,
+                                       const Standard_Real         R,
+                                       const Standard_Real         Ta,
+                                       const Standard_Real         Tapp3d,
+                                       const Standard_Real         Tapp2d)
+    : myIntBuild(S, ChFi3d_Polynomial, Ta, Tapp3d, Tapp2d)
 {
-  myisdone=FilletSurf_IsOk;
+  myisdone      = FilletSurf_IsOk;
   myerrorstatus = FilletSurf_EmptyList;
-  int add =myIntBuild.Add(E,R);
-  if (add!=0) { 
-    myisdone=FilletSurf_IsNotOk;  
-    if     (add==1)  myerrorstatus=FilletSurf_EmptyList;
-    else if(add==2)  myerrorstatus=FilletSurf_EdgeNotG1;              
-    else if(add==3)  myerrorstatus=FilletSurf_FacesNotG1;
-    else if(add==4)  myerrorstatus=FilletSurf_EdgeNotOnShape;
-    else if(add==5)  myerrorstatus=FilletSurf_NotSharpEdge;
+  int add       = myIntBuild.Add(E, R);
+  if (add != 0)
+  {
+    myisdone = FilletSurf_IsNotOk;
+    if (add == 1)
+      myerrorstatus = FilletSurf_EmptyList;
+    else if (add == 2)
+      myerrorstatus = FilletSurf_EdgeNotG1;
+    else if (add == 3)
+      myerrorstatus = FilletSurf_FacesNotG1;
+    else if (add == 4)
+      myerrorstatus = FilletSurf_EdgeNotOnShape;
+    else if (add == 5)
+      myerrorstatus = FilletSurf_NotSharpEdge;
   }
 }
+
 //========================================================
 //
 //============================================================
 
 void FilletSurf_Builder::Perform()
 {
-  if (myisdone==FilletSurf_IsOk) {
+  if (myisdone == FilletSurf_IsOk)
+  {
     myIntBuild.Perform();
-    if (myIntBuild.Done()) myisdone=FilletSurf_IsOk;
-    else if (myIntBuild.NbSurface()!=0) {
-      myisdone=FilletSurf_IsPartial;
-      myerrorstatus=FilletSurf_PbFilletCompute; 
+    if (myIntBuild.Done())
+      myisdone = FilletSurf_IsOk;
+    else if (myIntBuild.NbSurface() != 0)
+    {
+      myisdone      = FilletSurf_IsPartial;
+      myerrorstatus = FilletSurf_PbFilletCompute;
     }
-    else { 
-      myisdone=FilletSurf_IsNotOk;
-      myerrorstatus=FilletSurf_PbFilletCompute; 
+    else
+    {
+      myisdone      = FilletSurf_IsNotOk;
+      myerrorstatus = FilletSurf_PbFilletCompute;
     }
-  }  
+  }
 }
 
 //=======================================================================
-//function : IsDone 
-//purpose  :  gives the status of the computation of the fillet 
+// function : IsDone
+// purpose  :  gives the status of the computation of the fillet
 //=======================================================================
-FilletSurf_StatusDone FilletSurf_Builder::IsDone() const 
+FilletSurf_StatusDone FilletSurf_Builder::IsDone() const
 {
- return myisdone;
+  return myisdone;
 }
 
 //=======================================================================
-//function : ErrorTypeStatus
-//purpose  :  gives the status  of the error 
+// function : ErrorTypeStatus
+// purpose  :  gives the status  of the error
 //=======================================================================
-FilletSurf_ErrorTypeStatus FilletSurf_Builder::StatusError() const 
+FilletSurf_ErrorTypeStatus FilletSurf_Builder::StatusError() const
 {
- return  myerrorstatus;
+  return myerrorstatus;
 }
 
-
 //=======================================================================
-//function : NbSurface
-//purpose  :  gives the number of NUBS surfaces  of the Fillet
+// function : NbSurface
+// purpose  :  gives the number of NUBS surfaces  of the Fillet
 //=======================================================================
 
-Standard_Integer FilletSurf_Builder::NbSurface() const 
+Standard_Integer FilletSurf_Builder::NbSurface() const
 {
-  if (IsDone()!=FilletSurf_IsNotOk)  return myIntBuild.NbSurface();
+  if (IsDone() != FilletSurf_IsNotOk)
+    return myIntBuild.NbSurface();
   throw StdFail_NotDone("FilletSurf_Builder::NbSurface");
 }
 
 //=======================================================================
-//function : SurfaceFillet
-//purpose  : gives the NUBS surface of index Index
+// function : SurfaceFillet
+// purpose  : gives the NUBS surface of index Index
 //=======================================================================
 
-const Handle(Geom_Surface)& FilletSurf_Builder::SurfaceFillet(const Standard_Integer Index) const 
+const Handle(Geom_Surface)& FilletSurf_Builder::SurfaceFillet(const Standard_Integer Index) const
 {
-  if ( (Index<1)||(Index>NbSurface())) throw Standard_OutOfRange("FilletSurf_Builder::SurfaceFillet");
-  return myIntBuild.SurfaceFillet(Index); 
+  if ((Index < 1) || (Index > NbSurface()))
+    throw Standard_OutOfRange("FilletSurf_Builder::SurfaceFillet");
+  return myIntBuild.SurfaceFillet(Index);
 }
 
 //=======================================================================
-//function : TolApp3d
-//purpose  :  gives the 3d tolerance reached during approximation 
+// function : TolApp3d
+// purpose  :  gives the 3d tolerance reached during approximation
 //=======================================================================
-Standard_Real  FilletSurf_Builder::TolApp3d(const Standard_Integer Index) const 
+Standard_Real FilletSurf_Builder::TolApp3d(const Standard_Integer Index) const
 {
-  if ( (Index<1)||(Index>NbSurface())) 
+  if ((Index < 1) || (Index > NbSurface()))
     throw Standard_OutOfRange("FilletSurf_Builder::TolApp3d");
   return myIntBuild.TolApp3d(Index);
 }
 
 //=======================================================================
-//function : SupportFace1 
-//purpose  : gives the first support  face relative to SurfaceFillet(Index)
+// function : SupportFace1
+// purpose  : gives the first support  face relative to SurfaceFillet(Index)
 //=======================================================================
 const TopoDS_Face& FilletSurf_Builder::SupportFace1(const Standard_Integer Index) const
 {
-  if ( (Index<1)||(Index>NbSurface())) 
+  if ((Index < 1) || (Index > NbSurface()))
     throw Standard_OutOfRange("FilletSurf_Builder::SupportFace1");
-  return myIntBuild.SupportFace1(Index); 
+  return myIntBuild.SupportFace1(Index);
 }
 
 //=======================================================================
-//function : SupportFace2
-//purpose  : gives the second support face relative to SurfaceFillet(Index)
+// function : SupportFace2
+// purpose  : gives the second support face relative to SurfaceFillet(Index)
 //=======================================================================
-const TopoDS_Face& FilletSurf_Builder::SupportFace2(const Standard_Integer Index) const 
+const TopoDS_Face& FilletSurf_Builder::SupportFace2(const Standard_Integer Index) const
 {
- if ( (Index<1)||(Index>NbSurface())) 
-   throw Standard_OutOfRange("FilletSurf_Builder::SupportFace2");
- return myIntBuild.SupportFace2(Index);
-  
+  if ((Index < 1) || (Index > NbSurface()))
+    throw Standard_OutOfRange("FilletSurf_Builder::SupportFace2");
+  return myIntBuild.SupportFace2(Index);
 }
 
 //===============================================================================
-//function : CurveOnFace1 
-//purpose  :  gives  the 3d curve  of SurfaceFillet(Index)  on SupportFace1(Index)
+// function : CurveOnFace1
+// purpose  :  gives  the 3d curve  of SurfaceFillet(Index)  on SupportFace1(Index)
 //===============================================================================
-const Handle(Geom_Curve)& FilletSurf_Builder::CurveOnFace1(const Standard_Integer Index) const 
+const Handle(Geom_Curve)& FilletSurf_Builder::CurveOnFace1(const Standard_Integer Index) const
 {
-  if ( (Index<1)||(Index>NbSurface())) 
+  if ((Index < 1) || (Index > NbSurface()))
     throw Standard_OutOfRange("FilletSurf_Builder::CurveOnFace1");
   return myIntBuild.CurveOnFace1(Index);
 }
 
 //=======================================================================
-//function : CurveOnFace2
-//purpose  : gives the 3d  curve of  SurfaceFillet(Index) on SupportFace2(Index
+// function : CurveOnFace2
+// purpose  : gives the 3d  curve of  SurfaceFillet(Index) on SupportFace2(Index
 //=======================================================================
-const Handle(Geom_Curve)& FilletSurf_Builder::CurveOnFace2(const Standard_Integer Index) const 
-{ 
-  if ( (Index<1)||(Index>NbSurface())) 
+const Handle(Geom_Curve)& FilletSurf_Builder::CurveOnFace2(const Standard_Integer Index) const
+{
+  if ((Index < 1) || (Index > NbSurface()))
     throw Standard_OutOfRange("FilletSurf_Builder::CurveOnFace2");
   return myIntBuild.CurveOnFace2(Index);
 }
 
 //=======================================================================
-//function : PCurveOnFace1
-//purpose  : gives the  PCurve associated to CurveOnFace1(Index)  on the support face
+// function : PCurveOnFace1
+// purpose  : gives the  PCurve associated to CurveOnFace1(Index)  on the support face
 //=======================================================================
-const Handle(Geom2d_Curve)& FilletSurf_Builder::PCurveOnFace1(const Standard_Integer Index) const 
-{ 
-  if ( (Index<1)||(Index>NbSurface())) 
-    throw Standard_OutOfRange( "FilletSurf_Builder::PCurveOnFace1");
+const Handle(Geom2d_Curve)& FilletSurf_Builder::PCurveOnFace1(const Standard_Integer Index) const
+{
+  if ((Index < 1) || (Index > NbSurface()))
+    throw Standard_OutOfRange("FilletSurf_Builder::PCurveOnFace1");
   return myIntBuild.PCurveOnFace1(Index);
 }
 
 //=======================================================================
-//function : PCurve1OnFillet
-//purpose  : gives the PCurve associated to CurveOnFace1(Index) on the Fillet
+// function : PCurve1OnFillet
+// purpose  : gives the PCurve associated to CurveOnFace1(Index) on the Fillet
 //=======================================================================
-const Handle(Geom2d_Curve)& FilletSurf_Builder::PCurve1OnFillet(const Standard_Integer Index) const 
-{ 
-  if ( (Index<1)||(Index>NbSurface())) 
+const Handle(Geom2d_Curve)& FilletSurf_Builder::PCurve1OnFillet(const Standard_Integer Index) const
+{
+  if ((Index < 1) || (Index > NbSurface()))
     throw Standard_OutOfRange("FilletSurf_Builder::PCurve1OnFillet");
   return myIntBuild.PCurve1OnFillet(Index);
 }
 
 //=======================================================================
-//function : PCurveOnFace2
-//purpose  : gives the  PCurve associated to CurveOnFace2(Index)  on the support face
+// function : PCurveOnFace2
+// purpose  : gives the  PCurve associated to CurveOnFace2(Index)  on the support face
 //=======================================================================
-const Handle(Geom2d_Curve)& FilletSurf_Builder::PCurveOnFace2(const Standard_Integer Index) const 
+const Handle(Geom2d_Curve)& FilletSurf_Builder::PCurveOnFace2(const Standard_Integer Index) const
 {
-  if ( (Index<1)||(Index>NbSurface())) 
+  if ((Index < 1) || (Index > NbSurface()))
     throw Standard_OutOfRange("FilletSurf_Builder::PCurveOnFace2");
   return myIntBuild.PCurveOnFace2(Index);
 }
 
 //=======================================================================
-//function : PCurve2OnFillet
-//purpose  : gives the PCurve associated to CurveOnFace2(Index) on the Fillet
+// function : PCurve2OnFillet
+// purpose  : gives the PCurve associated to CurveOnFace2(Index) on the Fillet
 //=======================================================================
-const Handle(Geom2d_Curve)& FilletSurf_Builder::PCurve2OnFillet(const Standard_Integer Index) const 
+const Handle(Geom2d_Curve)& FilletSurf_Builder::PCurve2OnFillet(const Standard_Integer Index) const
 {
-  if ( (Index<1)||(Index>NbSurface())) 
+  if ((Index < 1) || (Index > NbSurface()))
     throw Standard_OutOfRange("FilletSurf_Builder::PCurve2OnFillet");
   return myIntBuild.PCurve2OnFillet(Index);
 }
 
 //=======================================================================
-//function : FirstParameter 
-//purpose  : gives the parameter of the fillet  on the first edge
+// function : FirstParameter
+// purpose  : gives the parameter of the fillet  on the first edge
 //=======================================================================
 Standard_Real FilletSurf_Builder::FirstParameter() const
 {
-  if (IsDone()==FilletSurf_IsNotOk) 
+  if (IsDone() == FilletSurf_IsNotOk)
     throw StdFail_NotDone("FilletSurf_Builder::FirstParameter");
   return myIntBuild.FirstParameter();
 }
 
 //=======================================================================
-//function : LastParameter
-//purpose  :  gives the parameter of the fillet  on the last edge
+// function : LastParameter
+// purpose  :  gives the parameter of the fillet  on the last edge
 //=======================================================================
 Standard_Real FilletSurf_Builder::LastParameter() const
 {
-  if (IsDone()==FilletSurf_IsNotOk) 
+  if (IsDone() == FilletSurf_IsNotOk)
     throw StdFail_NotDone("FilletSurf_Builder::LastParameter");
   return myIntBuild.LastParameter();
 }
 
 //=======================================================================
-//function : StatusStartSection
-//purpose  :  returns: 
+// function : StatusStartSection
+// purpose  :  returns:
 //            twoExtremityonEdge: each extremity of  start section of the Fillet is
-//                                on the edge of  the corresponding support face.  
-//            OneExtremityOnEdge: only one  of  the extremities of  start section  of the  Fillet 
-//                                is on the  edge of the corresponding support face.  
-//            NoExtremityOnEdge:  any extremity of  the start section  of the fillet is  on  
+//                                on the edge of  the corresponding support face.
+//            OneExtremityOnEdge: only one  of  the extremities of  start section  of the  Fillet
+//                                is on the  edge of the corresponding support face.
+//            NoExtremityOnEdge:  any extremity of  the start section  of the fillet is  on
 //                                the edge  of   the  corresponding support face.
 //=======================================================================
-FilletSurf_StatusType  FilletSurf_Builder::StartSectionStatus() const 
+FilletSurf_StatusType FilletSurf_Builder::StartSectionStatus() const
 {
-  if (IsDone()==FilletSurf_IsNotOk)
-    throw StdFail_NotDone("FilletSurf_Builder::StartSectionStatus" );
-  return  myIntBuild.StartSectionStatus();
-}
-
-//=======================================================================
-//function : StatusEndSection
-//purpose  :  returns: 
-//       twoExtremityonEdge: each extremity of  end section of the Fillet is
-//                        on the edge of  the corresponding support face.  
-//       OneExtremityOnEdge:  only one  of  the extremities of  end  section  of the  Fillet 
-//                           is on the  edge of the corresponding support face.  
-//       NoExtremityOnEdge:  any extremity of  the end  section  of the fillet is  on  
-//                           the edge  of   the  corresponding support face. 
-//=======================================================================
-FilletSurf_StatusType  FilletSurf_Builder::EndSectionStatus() const 
-{
-  if (IsDone()==FilletSurf_IsNotOk) 
+  if (IsDone() == FilletSurf_IsNotOk)
     throw StdFail_NotDone("FilletSurf_Builder::StartSectionStatus");
-  return  myIntBuild.EndSectionStatus(); 
+  return myIntBuild.StartSectionStatus();
 }
 
 //=======================================================================
-//function : Simulate 
-//purpose  :  computes only the sections used in the computation of the fillet
+// function : StatusEndSection
+// purpose  :  returns:
+//       twoExtremityonEdge: each extremity of  end section of the Fillet is
+//                        on the edge of  the corresponding support face.
+//       OneExtremityOnEdge:  only one  of  the extremities of  end  section  of the  Fillet
+//                           is on the  edge of the corresponding support face.
+//       NoExtremityOnEdge:  any extremity of  the end  section  of the fillet is  on
+//                           the edge  of   the  corresponding support face.
+//=======================================================================
+FilletSurf_StatusType FilletSurf_Builder::EndSectionStatus() const
+{
+  if (IsDone() == FilletSurf_IsNotOk)
+    throw StdFail_NotDone("FilletSurf_Builder::StartSectionStatus");
+  return myIntBuild.EndSectionStatus();
+}
+
+//=======================================================================
+// function : Simulate
+// purpose  :  computes only the sections used in the computation of the fillet
 //=======================================================================
 void FilletSurf_Builder::Simulate()
 {
-  if (myisdone==FilletSurf_IsOk) {
+  if (myisdone == FilletSurf_IsOk)
+  {
     myIntBuild.Simulate();
-    
-    if (myIntBuild.Done()) myisdone=FilletSurf_IsOk;
-    else { myisdone=FilletSurf_IsNotOk;
-	   myerrorstatus=FilletSurf_PbFilletCompute;}
+
+    if (myIntBuild.Done())
+      myisdone = FilletSurf_IsOk;
+    else
+    {
+      myisdone      = FilletSurf_IsNotOk;
+      myerrorstatus = FilletSurf_PbFilletCompute;
+    }
   }
-} 
+}
 
 //=======================================================================
-//function : NbSection 
-//purpose  :  gives the number of sections relative to SurfaceFillet(IndexSurf) 
+// function : NbSection
+// purpose  :  gives the number of sections relative to SurfaceFillet(IndexSurf)
 //=======================================================================
-Standard_Integer FilletSurf_Builder::NbSection(const Standard_Integer IndexSurf) const 
+Standard_Integer FilletSurf_Builder::NbSection(const Standard_Integer IndexSurf) const
 {
-  if (IsDone()==FilletSurf_IsNotOk) 
+  if (IsDone() == FilletSurf_IsNotOk)
     throw StdFail_NotDone("FilletSurf_Builder::NbSection)");
-  else if ( (IndexSurf<1)||(IndexSurf>NbSurface())) throw Standard_OutOfRange("FilletSurf_Builder::NbSection");
+  else if ((IndexSurf < 1) || (IndexSurf > NbSurface()))
+    throw Standard_OutOfRange("FilletSurf_Builder::NbSection");
   return myIntBuild.NbSection(IndexSurf);
 }
 
 //=======================================================================
-//function : Section 
-//purpose  :  gives the   arc of circle corresponding    to section number 
-// IndexSec  of  SurfaceFillet(IndexSurf)  (The   basis curve  of the 
+// function : Section
+// purpose  :  gives the   arc of circle corresponding    to section number
+// IndexSec  of  SurfaceFillet(IndexSurf)  (The   basis curve  of the
 // trimmed curve is a Geom_Circle)
 //=======================================================================
-void FilletSurf_Builder::Section(const Standard_Integer IndexSurf,
-				 const Standard_Integer IndexSec,
-				 Handle(Geom_TrimmedCurve)& Circ) const 
+void FilletSurf_Builder::Section(const Standard_Integer     IndexSurf,
+                                 const Standard_Integer     IndexSec,
+                                 Handle(Geom_TrimmedCurve)& Circ) const
 {
-  if ((IndexSurf<1)||(IndexSurf>NbSurface())) 
+  if ((IndexSurf < 1) || (IndexSurf > NbSurface()))
     throw Standard_OutOfRange("FilletSurf_Builder::Section NbSurface");
 
-  else if ((IndexSec<1)||(IndexSec>NbSection(IndexSurf))) 
+  else if ((IndexSec < 1) || (IndexSec > NbSection(IndexSurf)))
     throw Standard_OutOfRange("FilletSurf_Builder::Section NbSection");
 
-  else myIntBuild.Section(IndexSurf, IndexSec,Circ);
+  else
+    myIntBuild.Section(IndexSurf, IndexSec, Circ);
 }

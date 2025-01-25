@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef ShapeView_Tools_H
 #define ShapeView_Tools_H
@@ -38,14 +38,13 @@
 class ShapeView_Tools
 {
 public:
-
-  //! Checks whether it is possible to explode the shape. The search is recursive until all types are collected.
-  //! \param[in] theShape  source shape object
-  //! \param[out] theExplodeTypes  container of possible shape types to be exploded
-  //! \return true if explode is finished, all types are collected.
-  Standard_EXPORT static Standard_Boolean IsPossibleToExplode(const TopoDS_Shape& theShape,
+  //! Checks whether it is possible to explode the shape. The search is recursive until all types
+  //! are collected. \param[in] theShape  source shape object \param[out] theExplodeTypes  container
+  //! of possible shape types to be exploded \return true if explode is finished, all types are
+  //! collected.
+  Standard_EXPORT static Standard_Boolean IsPossibleToExplode(
+    const TopoDS_Shape&                 theShape,
     NCollection_List<TopAbs_ShapeEnum>& theExplodeTypes);
-
 };
 
 #endif

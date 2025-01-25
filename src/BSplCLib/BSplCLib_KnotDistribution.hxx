@@ -24,8 +24,8 @@
 //! <NonUniform>
 enum BSplCLib_KnotDistribution
 {
-BSplCLib_NonUniform,
-BSplCLib_Uniform
+  BSplCLib_NonUniform,
+  BSplCLib_Uniform
 };
 
 #endif // _BSplCLib_KnotDistribution_HeaderFile

@@ -24,40 +24,20 @@
 #include <TopAbs_State.hxx>
 class TopOpeBRepBuild_Loop;
 
-
 //! classify loops in order to build Areas
-class TopOpeBRepBuild_LoopClassifier 
+class TopOpeBRepBuild_LoopClassifier
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT virtual ~TopOpeBRepBuild_LoopClassifier();
-  
+
   //! Returns the state of loop <L1> compared with loop <L2>.
-  Standard_EXPORT virtual TopAbs_State Compare (const Handle(TopOpeBRepBuild_Loop)& L1, const Handle(TopOpeBRepBuild_Loop)& L2) = 0;
-
-
-
+  Standard_EXPORT virtual TopAbs_State Compare(const Handle(TopOpeBRepBuild_Loop)& L1,
+                                               const Handle(TopOpeBRepBuild_Loop)& L2) = 0;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepBuild_LoopClassifier_HeaderFile

@@ -22,17 +22,17 @@
 IMPLEMENT_STANDARD_RTTIEXT(StdStorage_HeaderData, Standard_Transient)
 
 StdStorage_HeaderData::StdStorage_HeaderData()
-  : myNBObj(0), myErrorStatus(Storage_VSOk)
+    : myNBObj(0),
+      myErrorStatus(Storage_VSOk)
 {
 }
 
 Standard_Boolean StdStorage_HeaderData::Read(const Handle(Storage_BaseDriver)& theDriver)
 {
   // Check driver open mode
-  if (theDriver->OpenMode() != Storage_VSRead
-    && theDriver->OpenMode() != Storage_VSReadWrite)
+  if (theDriver->OpenMode() != Storage_VSRead && theDriver->OpenMode() != Storage_VSReadWrite)
   {
-    myErrorStatus = Storage_VSModeError;
+    myErrorStatus    = Storage_VSModeError;
     myErrorStatusExt = "OpenMode";
     return Standard_False;
   }
@@ -48,18 +48,25 @@ Standard_Boolean StdStorage_HeaderData::Read(const Handle(Storage_BaseDriver)& t
   try
   {
     OCC_CATCH_SIGNALS
-    theDriver->ReadInfo(myNBObj, myStorageVersion, myDate, mySchemaName, mySchemaVersion,
-                        myApplicationName, myApplicationVersion, myDataType, myUserInfo);
+    theDriver->ReadInfo(myNBObj,
+                        myStorageVersion,
+                        myDate,
+                        mySchemaName,
+                        mySchemaVersion,
+                        myApplicationName,
+                        myApplicationVersion,
+                        myDataType,
+                        myUserInfo);
   }
   catch (Storage_StreamTypeMismatchError const&)
   {
-    myErrorStatus = Storage_VSTypeMismatch;
+    myErrorStatus    = Storage_VSTypeMismatch;
     myErrorStatusExt = "ReadInfo";
     return Standard_False;
   }
   catch (Storage_StreamExtCharParityError const&)
   {
-    myErrorStatus = Storage_VSExtCharParityError;
+    myErrorStatus    = Storage_VSExtCharParityError;
     myErrorStatusExt = "ReadInfo";
     return Standard_False;
   }
@@ -86,13 +93,13 @@ Standard_Boolean StdStorage_HeaderData::Read(const Handle(Storage_BaseDriver)& t
   }
   catch (Storage_StreamTypeMismatchError const&)
   {
-    myErrorStatus = Storage_VSTypeMismatch;
+    myErrorStatus    = Storage_VSTypeMismatch;
     myErrorStatusExt = "ReadComment";
     return Standard_False;
   }
   catch (Storage_StreamExtCharParityError const&)
   {
-    myErrorStatus = Storage_VSExtCharParityError;
+    myErrorStatus    = Storage_VSExtCharParityError;
     myErrorStatusExt = "ReadComment";
     return Standard_False;
   }
@@ -110,10 +117,9 @@ Standard_Boolean StdStorage_HeaderData::Read(const Handle(Storage_BaseDriver)& t
 Standard_Boolean StdStorage_HeaderData::Write(const Handle(Storage_BaseDriver)& theDriver)
 {
   // Check driver open mode
-  if (theDriver->OpenMode() != Storage_VSWrite
-    && theDriver->OpenMode() != Storage_VSReadWrite)
+  if (theDriver->OpenMode() != Storage_VSWrite && theDriver->OpenMode() != Storage_VSReadWrite)
   {
-    myErrorStatus = Storage_VSModeError;
+    myErrorStatus    = Storage_VSModeError;
     myErrorStatusExt = "OpenMode";
     return Standard_False;
   }
@@ -129,18 +135,25 @@ Standard_Boolean StdStorage_HeaderData::Write(const Handle(Storage_BaseDriver)& 
   try
   {
     OCC_CATCH_SIGNALS
-    theDriver->WriteInfo(myNBObj, myStorageVersion, myDate, mySchemaName, mySchemaVersion,
-                        myApplicationName, myApplicationVersion, myDataType, myUserInfo);
+    theDriver->WriteInfo(myNBObj,
+                         myStorageVersion,
+                         myDate,
+                         mySchemaName,
+                         mySchemaVersion,
+                         myApplicationName,
+                         myApplicationVersion,
+                         myDataType,
+                         myUserInfo);
   }
   catch (Storage_StreamTypeMismatchError const&)
   {
-    myErrorStatus = Storage_VSTypeMismatch;
+    myErrorStatus    = Storage_VSTypeMismatch;
     myErrorStatusExt = "WriteInfo";
     return Standard_False;
   }
   catch (Storage_StreamExtCharParityError const&)
   {
-    myErrorStatus = Storage_VSExtCharParityError;
+    myErrorStatus    = Storage_VSExtCharParityError;
     myErrorStatusExt = "WriteInfo";
     return Standard_False;
   }
@@ -167,13 +180,13 @@ Standard_Boolean StdStorage_HeaderData::Write(const Handle(Storage_BaseDriver)& 
   }
   catch (Storage_StreamTypeMismatchError const&)
   {
-    myErrorStatus = Storage_VSTypeMismatch;
+    myErrorStatus    = Storage_VSTypeMismatch;
     myErrorStatusExt = "WriteComment";
     return Standard_False;
   }
   catch (Storage_StreamExtCharParityError const&)
   {
-    myErrorStatus = Storage_VSExtCharParityError;
+    myErrorStatus    = Storage_VSExtCharParityError;
     myErrorStatusExt = "WriteComment";
     return Standard_False;
   }

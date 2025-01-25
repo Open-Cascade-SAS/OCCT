@@ -20,140 +20,180 @@ inline void Blend_Point::SetParameter(const Standard_Real Param)
   prm = Param;
 }
 
-inline const gp_Pnt& Blend_Point::PointOnS1 () const
+inline const gp_Pnt& Blend_Point::PointOnS1() const
 {
   return pt1;
 }
 
-inline const gp_Pnt& Blend_Point::PointOnS2 () const
+inline const gp_Pnt& Blend_Point::PointOnS2() const
 {
   return pt2;
 }
 
-inline Standard_Real Blend_Point::Parameter () const
+inline Standard_Real Blend_Point::Parameter() const
 {
   return prm;
 }
 
-inline void Blend_Point::ParametersOnS1 (Standard_Real& U1,
-					 Standard_Real& V1) const
+inline void Blend_Point::ParametersOnS1(Standard_Real& U1, Standard_Real& V1) const
 {
-  if (!hass1) {throw Standard_DomainError();}
+  if (!hass1)
+  {
+    throw Standard_DomainError();
+  }
   U1 = u1;
   V1 = v1;
 }
 
-inline void Blend_Point::ParametersOnS2 (Standard_Real& U2,
-					 Standard_Real& V2) const
+inline void Blend_Point::ParametersOnS2(Standard_Real& U2, Standard_Real& V2) const
 {
-  if (!hass2) {throw Standard_DomainError();}
+  if (!hass2)
+  {
+    throw Standard_DomainError();
+  }
   U2 = u2;
   V2 = v2;
 }
 
-inline Standard_Boolean Blend_Point::IsTangencyPoint () const
+inline Standard_Boolean Blend_Point::IsTangencyPoint() const
 {
   return istgt;
 }
 
-
-inline const gp_Vec& Blend_Point::TangentOnS1 () const
+inline const gp_Vec& Blend_Point::TangentOnS1() const
 {
-  if (istgt) {throw Standard_DomainError();}
+  if (istgt)
+  {
+    throw Standard_DomainError();
+  }
   return tg1;
 }
 
-inline const gp_Vec& Blend_Point::TangentOnS2 () const
+inline const gp_Vec& Blend_Point::TangentOnS2() const
 {
-  if (istgt) {throw Standard_DomainError();}
+  if (istgt)
+  {
+    throw Standard_DomainError();
+  }
   return tg2;
 }
 
-inline gp_Vec2d Blend_Point::Tangent2dOnS1 () const
+inline gp_Vec2d Blend_Point::Tangent2dOnS1() const
 {
-  if (istgt || !hass1) {throw Standard_DomainError();}
-  return gp_Vec2d(utg12d,vtg12d);
+  if (istgt || !hass1)
+  {
+    throw Standard_DomainError();
+  }
+  return gp_Vec2d(utg12d, vtg12d);
 }
 
-inline gp_Vec2d Blend_Point::Tangent2dOnS2 () const
+inline gp_Vec2d Blend_Point::Tangent2dOnS2() const
 {
-  if (istgt || !hass2) {throw Standard_DomainError();}
-  return gp_Vec2d(utg22d,vtg22d);
+  if (istgt || !hass2)
+  {
+    throw Standard_DomainError();
+  }
+  return gp_Vec2d(utg22d, vtg22d);
 }
 
-inline const gp_Pnt& Blend_Point::PointOnS () const
+inline const gp_Pnt& Blend_Point::PointOnS() const
 {
   return pt1;
 }
 
-inline const gp_Pnt& Blend_Point::PointOnC () const
+inline const gp_Pnt& Blend_Point::PointOnC() const
 {
   return pt2;
 }
 
-inline void Blend_Point::ParametersOnS (Standard_Real& U1,
-					Standard_Real& V1) const
+inline void Blend_Point::ParametersOnS(Standard_Real& U1, Standard_Real& V1) const
 {
-  if (!hass1) {throw Standard_DomainError();}
+  if (!hass1)
+  {
+    throw Standard_DomainError();
+  }
   U1 = u1;
   V1 = v1;
 }
 
-inline Standard_Real Blend_Point::ParameterOnC () const
+inline Standard_Real Blend_Point::ParameterOnC() const
 {
-  if (!hasc2) {throw Standard_DomainError();}
+  if (!hasc2)
+  {
+    throw Standard_DomainError();
+  }
   return pc2;
 }
 
-inline const gp_Vec& Blend_Point::TangentOnS () const
+inline const gp_Vec& Blend_Point::TangentOnS() const
 {
-  if (istgt || !hass1) {throw Standard_DomainError();}
+  if (istgt || !hass1)
+  {
+    throw Standard_DomainError();
+  }
   return tg1;
 }
 
-inline const gp_Vec& Blend_Point::TangentOnC () const
+inline const gp_Vec& Blend_Point::TangentOnC() const
 {
-  if (istgt) {throw Standard_DomainError();}
+  if (istgt)
+  {
+    throw Standard_DomainError();
+  }
   return tg2;
 }
 
-inline gp_Vec2d Blend_Point::Tangent2d () const
+inline gp_Vec2d Blend_Point::Tangent2d() const
 {
-  if (istgt || !hass1) {throw Standard_DomainError();}
-  return gp_Vec2d(utg12d,vtg12d);
+  if (istgt || !hass1)
+  {
+    throw Standard_DomainError();
+  }
+  return gp_Vec2d(utg12d, vtg12d);
 }
 
-
-inline const gp_Pnt& Blend_Point::PointOnC1 () const
+inline const gp_Pnt& Blend_Point::PointOnC1() const
 {
   return pt1;
 }
 
-inline const gp_Pnt& Blend_Point::PointOnC2 () const
+inline const gp_Pnt& Blend_Point::PointOnC2() const
 {
   return pt2;
 }
 
-inline Standard_Real Blend_Point::ParameterOnC1 () const
+inline Standard_Real Blend_Point::ParameterOnC1() const
 {
-  if (!hasc1) {throw Standard_DomainError();}
+  if (!hasc1)
+  {
+    throw Standard_DomainError();
+  }
   return pc1;
 }
 
-inline Standard_Real Blend_Point::ParameterOnC2 () const
+inline Standard_Real Blend_Point::ParameterOnC2() const
 {
-  if (!hasc2) {throw Standard_DomainError();}
+  if (!hasc2)
+  {
+    throw Standard_DomainError();
+  }
   return pc2;
 }
 
-inline const gp_Vec& Blend_Point::TangentOnC1 () const
+inline const gp_Vec& Blend_Point::TangentOnC1() const
 {
-  if (istgt || !hass1) {throw Standard_DomainError();}
+  if (istgt || !hass1)
+  {
+    throw Standard_DomainError();
+  }
   return tg1;
 }
 
-inline const gp_Vec& Blend_Point::TangentOnC2 () const
+inline const gp_Vec& Blend_Point::TangentOnC2() const
 {
-  if (istgt) {throw Standard_DomainError();}
+  if (istgt)
+  {
+    throw Standard_DomainError();
+  }
   return tg2;
 }

@@ -28,7 +28,10 @@ public:
   DEFINE_STANDARD_ALLOC
 public:
   //! Empty constructor.
-  OpenGl_AspectsTextureSet() : myIsTextureReady (Standard_False) {}
+  OpenGl_AspectsTextureSet()
+      : myIsTextureReady(Standard_False)
+  {
+  }
 
   //! Return TRUE if resource is up-to-date.
   bool IsReady() const { return myIsTextureReady; }
@@ -37,41 +40,36 @@ public:
   void Invalidate() { myIsTextureReady = false; }
 
   //! Return textures array.
-  const Handle(OpenGl_TextureSet)& TextureSet (const Handle(OpenGl_Context)& theCtx,
-                                               const Handle(Graphic3d_Aspects)& theAspect,
-                                               const Handle(OpenGl_PointSprite)& theSprite,
-                                               const Handle(OpenGl_PointSprite)& theSpriteA,
-                                               bool theToHighlight)
+  const Handle(OpenGl_TextureSet)& TextureSet(const Handle(OpenGl_Context)&     theCtx,
+                                              const Handle(Graphic3d_Aspects)&  theAspect,
+                                              const Handle(OpenGl_PointSprite)& theSprite,
+                                              const Handle(OpenGl_PointSprite)& theSpriteA,
+                                              bool                              theToHighlight)
   {
     if (!myIsTextureReady)
     {
-      build (theCtx, theAspect, theSprite, theSpriteA);
+      build(theCtx, theAspect, theSprite, theSpriteA);
       myIsTextureReady = true;
     }
-    return theToHighlight && !myTextures[1].IsNull()
-         ? myTextures[1]
-         : myTextures[0];
+    return theToHighlight && !myTextures[1].IsNull() ? myTextures[1] : myTextures[0];
   }
 
   //! Update texture resource up-to-date state.
-  Standard_EXPORT void UpdateRediness (const Handle(Graphic3d_Aspects)& theAspect);
+  Standard_EXPORT void UpdateRediness(const Handle(Graphic3d_Aspects)& theAspect);
 
   //! Release texture resource.
-  Standard_EXPORT void Release (OpenGl_Context* theCtx);
+  Standard_EXPORT void Release(OpenGl_Context* theCtx);
 
 private:
-
   //! Build texture resource.
-  Standard_EXPORT void build (const Handle(OpenGl_Context)& theCtx,
-                              const Handle(Graphic3d_Aspects)& theAspect,
-                              const Handle(OpenGl_PointSprite)& theSprite,
-                              const Handle(OpenGl_PointSprite)& theSpriteA);
+  Standard_EXPORT void build(const Handle(OpenGl_Context)&     theCtx,
+                             const Handle(Graphic3d_Aspects)&  theAspect,
+                             const Handle(OpenGl_PointSprite)& theSprite,
+                             const Handle(OpenGl_PointSprite)& theSpriteA);
 
 private:
-
   Handle(OpenGl_TextureSet) myTextures[2];
   Standard_Boolean          myIsTextureReady;
-
 };
 
 #endif // _OpenGl_AspectsTextureSet_Header

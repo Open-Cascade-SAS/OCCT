@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<TopTools_SequenceOfShape> BRepOffsetAPI_SequenceOfSequenceOfShape;
 
-
 #endif

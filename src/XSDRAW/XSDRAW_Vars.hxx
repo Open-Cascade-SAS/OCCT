@@ -30,7 +30,6 @@ class gp_Pnt;
 class gp_Pnt2d;
 class TopoDS_Shape;
 
-
 class XSDRAW_Vars;
 DEFINE_STANDARD_HANDLE(XSDRAW_Vars, XSControl_Vars)
 
@@ -39,53 +38,44 @@ class XSDRAW_Vars : public XSControl_Vars
 {
 
 public:
-
-  
   Standard_EXPORT XSDRAW_Vars();
-  
-  Standard_EXPORT virtual void Set (const Standard_CString name, const Handle(Standard_Transient)& val) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Handle(Geom_Geometry) GetGeom (Standard_CString& name) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Handle(Geom2d_Curve) GetCurve2d (Standard_CString& name) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Handle(Geom_Curve) GetCurve (Standard_CString& name) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Handle(Geom_Surface) GetSurface (Standard_CString& name) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void SetPoint (const Standard_CString name, const gp_Pnt& val) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void SetPoint2d (const Standard_CString name, const gp_Pnt2d& val) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_Boolean GetPoint (Standard_CString& name, gp_Pnt& pnt) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_Boolean GetPoint2d (Standard_CString& name, gp_Pnt2d& pnt) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void SetShape (const Standard_CString name, const TopoDS_Shape& val) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual TopoDS_Shape GetShape (Standard_CString& name) const Standard_OVERRIDE;
 
+  Standard_EXPORT virtual void Set(const Standard_CString            name,
+                                   const Handle(Standard_Transient)& val) Standard_OVERRIDE;
 
+  Standard_EXPORT virtual Handle(Geom_Geometry) GetGeom(Standard_CString& name) const
+    Standard_OVERRIDE;
 
+  Standard_EXPORT virtual Handle(Geom2d_Curve) GetCurve2d(Standard_CString& name) const
+    Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(XSDRAW_Vars,XSControl_Vars)
+  Standard_EXPORT virtual Handle(Geom_Curve) GetCurve(Standard_CString& name) const
+    Standard_OVERRIDE;
+
+  Standard_EXPORT virtual Handle(Geom_Surface) GetSurface(Standard_CString& name) const
+    Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void SetPoint(const Standard_CString name,
+                                        const gp_Pnt&          val) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void SetPoint2d(const Standard_CString name,
+                                          const gp_Pnt2d&        val) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual Standard_Boolean GetPoint(Standard_CString& name,
+                                                    gp_Pnt&           pnt) const Standard_OVERRIDE;
+
+  Standard_EXPORT virtual Standard_Boolean GetPoint2d(Standard_CString& name,
+                                                      gp_Pnt2d& pnt) const Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void SetShape(const Standard_CString name,
+                                        const TopoDS_Shape&    val) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual TopoDS_Shape GetShape(Standard_CString& name) const Standard_OVERRIDE;
+
+  DEFINE_STANDARD_RTTIEXT(XSDRAW_Vars, XSControl_Vars)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _XSDRAW_Vars_HeaderFile

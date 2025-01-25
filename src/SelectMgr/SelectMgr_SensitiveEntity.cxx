@@ -15,17 +15,17 @@
 
 #include <SelectMgr_SensitiveEntity.hxx>
 
-
-IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SensitiveEntity,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SensitiveEntity, Standard_Transient)
 
 //=======================================================================
 // function : SelectMgr_SensitiveEntity
 // purpose  : Creates new inactive for selection object with base entity
 //            theEntity
 //=======================================================================
-SelectMgr_SensitiveEntity::SelectMgr_SensitiveEntity (const Handle(Select3D_SensitiveEntity)& theEntity)
-: mySensitive (theEntity),
-  myIsActiveForSelection (Standard_False)
+SelectMgr_SensitiveEntity::SelectMgr_SensitiveEntity(
+  const Handle(Select3D_SensitiveEntity)& theEntity)
+    : mySensitive(theEntity),
+      myIsActiveForSelection(Standard_False)
 {
   //
 }
@@ -44,10 +44,11 @@ void SelectMgr_SensitiveEntity::Clear()
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void SelectMgr_SensitiveEntity::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void SelectMgr_SensitiveEntity::DumpJson(Standard_OStream& theOStream,
+                                         Standard_Integer  theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, mySensitive.get())
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsActiveForSelection)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, mySensitive.get())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myIsActiveForSelection)
 }

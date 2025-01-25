@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -32,22 +32,22 @@ class RWStepVisual_RWTessellatedShapeRepresentation
 {
 
 public:
-
   DEFINE_STANDARD_ALLOC
 
   Standard_HIDDEN RWStepVisual_RWTessellatedShapeRepresentation();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& theData,
-                                const Standard_Integer theNum,
-                                Handle(Interface_Check)& theCheck,
-                                const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt) const;
+  Standard_HIDDEN void ReadStep(
+    const Handle(StepData_StepReaderData)&                   theData,
+    const Standard_Integer                                   theNum,
+    Handle(Interface_Check)&                                 theCheck,
+    const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter& theSW,
-                                 const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt) const;
+  Standard_HIDDEN void WriteStep(
+    StepData_StepWriter&                                     theSW,
+    const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt) const;
 
   Standard_HIDDEN void Share(const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt,
                              Interface_EntityIterator& theIter) const;
-
 };
 
 #endif // _RWStepVisual_RWTessellatedShapeRepresentation_HeaderFile_

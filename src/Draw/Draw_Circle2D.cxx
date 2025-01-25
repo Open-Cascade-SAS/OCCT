@@ -14,33 +14,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Draw_Circle2D.hxx>
 #include <Draw_Color.hxx>
 #include <Draw_Display.hxx>
 #include <gp_Circ2d.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Draw_Circle2D,Draw_Drawable2D)
+IMPLEMENT_STANDARD_RTTIEXT(Draw_Circle2D, Draw_Drawable2D)
 
-//=======================================================================
-//function : Draw_Circle2D
-//purpose  : 
-//=======================================================================
-Draw_Circle2D::Draw_Circle2D(const gp_Circ2d& C,
-			     const Standard_Real A1, const Standard_Real A2,
-			     const Draw_Color& col) :
-       myCirc(C), myA1(A1), myA2(A2), myColor(col)
+//=================================================================================================
+
+Draw_Circle2D::Draw_Circle2D(const gp_Circ2d&    C,
+                             const Standard_Real A1,
+                             const Standard_Real A2,
+                             const Draw_Color&   col)
+    : myCirc(C),
+      myA1(A1),
+      myA2(A2),
+      myColor(col)
 {
 }
 
-//=======================================================================
-//function : DrawOn
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void Draw_Circle2D::DrawOn(Draw_Display& d) const
 {
   d.SetColor(myColor);
-  d.Draw(myCirc,myA1,myA2);
+  d.Draw(myCirc, myA1, myA2);
 }

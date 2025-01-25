@@ -14,42 +14,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepTools_CopyModification.hxx>
 
-//=======================================================================
-//function : BRepBuilderAPI_Copy
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-BRepBuilderAPI_Copy::BRepBuilderAPI_Copy ()
+BRepBuilderAPI_Copy::BRepBuilderAPI_Copy()
 {
   myModification = new BRepTools_CopyModification(Standard_True, Standard_False);
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : BRepBuilderAPI_Copy
-//purpose  : 
-//=======================================================================
-
-BRepBuilderAPI_Copy::BRepBuilderAPI_Copy(const TopoDS_Shape& S, const Standard_Boolean copyGeom, const Standard_Boolean copyMesh)
+BRepBuilderAPI_Copy::BRepBuilderAPI_Copy(const TopoDS_Shape&    S,
+                                         const Standard_Boolean copyGeom,
+                                         const Standard_Boolean copyMesh)
 {
   myModification = new BRepTools_CopyModification(copyGeom, copyMesh);
   DoModif(S);
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
-
-void BRepBuilderAPI_Copy::Perform(const TopoDS_Shape& S, const Standard_Boolean copyGeom, const Standard_Boolean copyMesh)
+void BRepBuilderAPI_Copy::Perform(const TopoDS_Shape&    S,
+                                  const Standard_Boolean copyGeom,
+                                  const Standard_Boolean copyMesh)
 {
   myModification = new BRepTools_CopyModification(copyGeom, copyMesh);
   NotDone(); // on force la copie si on vient deja d`en faire une
   DoModif(S);
 }
-

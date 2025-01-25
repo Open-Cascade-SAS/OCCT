@@ -21,8 +21,9 @@
 #include <MAT2d_Connexion.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,Handle(MAT2d_Connexion)> MAT2d_DataMapOfIntegerConnexion;
-typedef NCollection_DataMap<Standard_Integer,Handle(MAT2d_Connexion)>::Iterator MAT2d_DataMapIteratorOfDataMapOfIntegerConnexion;
-
+typedef NCollection_DataMap<Standard_Integer, Handle(MAT2d_Connexion)>
+  MAT2d_DataMapOfIntegerConnexion;
+typedef NCollection_DataMap<Standard_Integer, Handle(MAT2d_Connexion)>::Iterator
+  MAT2d_DataMapIteratorOfDataMapOfIntegerConnexion;
 
 #endif

@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:16 2020 
+// Created on : Sat May 02 12:41:16 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -18,63 +18,51 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_RollingSurfacePairValue, StepKinematics_PairValue)
 
-//=======================================================================
-//function : StepKinematics_RollingSurfacePairValue
-//purpose  :
-//=======================================================================
-StepKinematics_RollingSurfacePairValue::StepKinematics_RollingSurfacePairValue ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_RollingSurfacePairValue::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                                   const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                                                   const Handle(StepGeom_PointOnSurface)& theActualPointOnSurface,
-                                                   const Standard_Real theActualRotation)
+StepKinematics_RollingSurfacePairValue::StepKinematics_RollingSurfacePairValue() {}
+
+//=================================================================================================
+
+void StepKinematics_RollingSurfacePairValue::Init(
+  const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
+  const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
+  const Handle(StepGeom_PointOnSurface)&      theActualPointOnSurface,
+  const Standard_Real                         theActualRotation)
 {
-  StepKinematics_PairValue::Init(theRepresentationItem_Name,
-                                 thePairValue_AppliesToPair);
+  StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
   myActualPointOnSurface = theActualPointOnSurface;
 
   myActualRotation = theActualRotation;
 }
 
-//=======================================================================
-//function : ActualPointOnSurface
-//purpose  :
-//=======================================================================
-Handle(StepGeom_PointOnSurface) StepKinematics_RollingSurfacePairValue::ActualPointOnSurface () const
+//=================================================================================================
+
+Handle(StepGeom_PointOnSurface) StepKinematics_RollingSurfacePairValue::ActualPointOnSurface() const
 {
   return myActualPointOnSurface;
 }
 
-//=======================================================================
-//function : SetActualPointOnSurface
-//purpose  :
-//=======================================================================
-void StepKinematics_RollingSurfacePairValue::SetActualPointOnSurface (const Handle(StepGeom_PointOnSurface)& theActualPointOnSurface)
+//=================================================================================================
+
+void StepKinematics_RollingSurfacePairValue::SetActualPointOnSurface(
+  const Handle(StepGeom_PointOnSurface)& theActualPointOnSurface)
 {
   myActualPointOnSurface = theActualPointOnSurface;
 }
 
-//=======================================================================
-//function : ActualRotation
-//purpose  :
-//=======================================================================
-Standard_Real StepKinematics_RollingSurfacePairValue::ActualRotation () const
+//=================================================================================================
+
+Standard_Real StepKinematics_RollingSurfacePairValue::ActualRotation() const
 {
   return myActualRotation;
 }
 
-//=======================================================================
-//function : SetActualRotation
-//purpose  :
-//=======================================================================
-void StepKinematics_RollingSurfacePairValue::SetActualRotation (const Standard_Real theActualRotation)
+//=================================================================================================
+
+void StepKinematics_RollingSurfacePairValue::SetActualRotation(
+  const Standard_Real theActualRotation)
 {
   myActualRotation = theActualRotation;
 }

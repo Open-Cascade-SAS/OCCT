@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(V3d_PositionLight, Graphic3d_CLight)
 // function : V3d_PositionLight
 // purpose  :
 // =======================================================================
-V3d_PositionLight::V3d_PositionLight (Graphic3d_TypeOfLightSource theType)
-: Graphic3d_CLight (theType)
+V3d_PositionLight::V3d_PositionLight(Graphic3d_TypeOfLightSource theType)
+    : Graphic3d_CLight(theType)
 {
 }

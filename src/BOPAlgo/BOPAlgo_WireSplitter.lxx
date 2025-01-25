@@ -18,92 +18,80 @@
 #include <TopoDS_Edge.hxx>
 
 //=======================================================================
-//function : BOPAlgo_EdgeInfo
-//purpose  : 
+// function : BOPAlgo_EdgeInfo
+// purpose  :
 //=======================================================================
-class BOPAlgo_EdgeInfo {
- public:
+class BOPAlgo_EdgeInfo
+{
+public:
   //
-  BOPAlgo_EdgeInfo() : 
-    myPassed(Standard_False),
-    myInFlag(Standard_False),
-    myIsInside (Standard_False),
-    myAngle (-1.)
-  {
-  };
+  BOPAlgo_EdgeInfo()
+      : myPassed(Standard_False),
+        myInFlag(Standard_False),
+        myIsInside(Standard_False),
+        myAngle(-1.) {};
+
   //
-  void SetEdge(const TopoDS_Edge& theE) {
-    myEdge=theE;
-  };
+  void SetEdge(const TopoDS_Edge& theE) { myEdge = theE; };
+
   //
-  const TopoDS_Edge& Edge() const{
-    return myEdge;
-  };
+  const TopoDS_Edge& Edge() const { return myEdge; };
+
   //
-  void SetPassed(const Standard_Boolean theFlag) {
-    myPassed=theFlag;
-  };
+  void SetPassed(const Standard_Boolean theFlag) { myPassed = theFlag; };
+
   //
-  Standard_Boolean Passed()const {
-    return myPassed;
-  };
+  Standard_Boolean Passed() const { return myPassed; };
+
   //
-  void SetInFlag(const Standard_Boolean theFlag) {
-    myInFlag=theFlag;
-  };
+  void SetInFlag(const Standard_Boolean theFlag) { myInFlag = theFlag; };
+
   //
-  Standard_Boolean IsIn()const {
-    return myInFlag;
-  };
+  Standard_Boolean IsIn() const { return myInFlag; };
+
   //
-  void SetAngle(const Standard_Real theAngle) {
-    myAngle=theAngle;
-  };
+  void SetAngle(const Standard_Real theAngle) { myAngle = theAngle; };
+
   //
-  Standard_Real Angle()const {
-    return myAngle;
-  };
+  Standard_Real Angle() const { return myAngle; };
+
   //
-  Standard_Boolean IsInside() const {
-    return myIsInside;
-  };
+  Standard_Boolean IsInside() const { return myIsInside; };
+
   //
-  void SetIsInside (const Standard_Boolean theIsInside) {
-    myIsInside = theIsInside;
-  };
+  void SetIsInside(const Standard_Boolean theIsInside) { myIsInside = theIsInside; };
+
   //
- protected:
-  TopoDS_Edge myEdge;
+protected:
+  TopoDS_Edge      myEdge;
   Standard_Boolean myPassed;
   Standard_Boolean myInFlag;
   Standard_Boolean myIsInside;
-  Standard_Real myAngle;
+  Standard_Real    myAngle;
 };
 
-
-#include <NCollection_List.hxx> 
-typedef NCollection_List<BOPAlgo_EdgeInfo> BOPAlgo_ListOfEdgeInfo; 
-typedef BOPAlgo_ListOfEdgeInfo::Iterator BOPAlgo_ListIteratorOfListOfEdgeInfo;  
+#include <NCollection_List.hxx>
+typedef NCollection_List<BOPAlgo_EdgeInfo> BOPAlgo_ListOfEdgeInfo;
+typedef BOPAlgo_ListOfEdgeInfo::Iterator   BOPAlgo_ListIteratorOfListOfEdgeInfo;
 
 #include <NCollection_IndexedDataMap.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 
-typedef NCollection_IndexedDataMap<TopoDS_Shape, \
-  BOPAlgo_ListOfEdgeInfo, \
-  TopTools_ShapeMapHasher> BOPAlgo_IndexedDataMapOfShapeListOfEdgeInfo; 
+typedef NCollection_IndexedDataMap<TopoDS_Shape, BOPAlgo_ListOfEdgeInfo, TopTools_ShapeMapHasher>
+  BOPAlgo_IndexedDataMapOfShapeListOfEdgeInfo;
 
 //=======================================================================
-//function : MakeWire
-//purpose  : 
+// function : MakeWire
+// purpose  :
 //=======================================================================
-  inline void BOPAlgo_WireSplitter::MakeWire(TopTools_ListOfShape& aLE, 
-                                             TopoDS_Wire& aWire)
+inline void BOPAlgo_WireSplitter::MakeWire(TopTools_ListOfShape& aLE, TopoDS_Wire& aWire)
 {
   BRep_Builder aBB;
   aBB.MakeWire(aWire);
   //
   TopTools_ListIteratorOfListOfShape aIt(aLE);
-  for (; aIt.More(); aIt.Next()){
+  for (; aIt.More(); aIt.Next())
+  {
     aBB.Add(aWire, aIt.Value());
   }
   aWire.Closed(BRep_Tool::IsClosed(aWire));

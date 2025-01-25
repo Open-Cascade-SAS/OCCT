@@ -14,86 +14,95 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Adaptor3d_Surface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepTopAdaptor_Tool.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <TopoDS_Face.hxx>
 
-BRepTopAdaptor_Tool::BRepTopAdaptor_Tool() { 
+BRepTopAdaptor_Tool::BRepTopAdaptor_Tool()
+{
   myTopolTool = new BRepTopAdaptor_TopolTool();
 
-  myloaded=Standard_False;
+  myloaded = Standard_False;
 }
 
-BRepTopAdaptor_Tool::BRepTopAdaptor_Tool(const TopoDS_Face& F,
-                                         const Standard_Real /*Tol2d*/) { 
+BRepTopAdaptor_Tool::BRepTopAdaptor_Tool(const TopoDS_Face& F, const Standard_Real /*Tol2d*/)
+{
   myTopolTool = new BRepTopAdaptor_TopolTool();
 
   Handle(BRepAdaptor_Surface) surface = new BRepAdaptor_Surface();
-  surface->Initialize(F,Standard_True);
+  surface->Initialize(F, Standard_True);
   const Handle(Adaptor3d_Surface)& aSurf = surface; // to avoid ambiguity
   myTopolTool->Initialize(aSurf);
   myHSurface = surface;
-  myloaded=Standard_True;
+  myloaded   = Standard_True;
 }
 
 BRepTopAdaptor_Tool::BRepTopAdaptor_Tool(const Handle(Adaptor3d_Surface)& surface,
                                          const Standard_Real /*Tol2d*/)
-{ 
+{
   myTopolTool = new BRepTopAdaptor_TopolTool();
   myTopolTool->Initialize(surface);
   myHSurface = surface;
-  myloaded=Standard_True;
+  myloaded   = Standard_True;
 }
 
-void BRepTopAdaptor_Tool::Init(const TopoDS_Face& F,
-                               const Standard_Real /*Tol2d*/) 
-{ 
+void BRepTopAdaptor_Tool::Init(const TopoDS_Face& F, const Standard_Real /*Tol2d*/)
+{
   Handle(BRepAdaptor_Surface) surface = new BRepAdaptor_Surface();
   surface->Initialize(F);
   const Handle(Adaptor3d_Surface)& aSurf = surface; // to avoid ambiguity
   myTopolTool->Initialize(aSurf);
   myHSurface = surface;
-  myloaded=Standard_True;
+  myloaded   = Standard_True;
 }
 
 void BRepTopAdaptor_Tool::Init(const Handle(Adaptor3d_Surface)& surface,
-                               const Standard_Real /*Tol2d*/) 
-{ 
+                               const Standard_Real /*Tol2d*/)
+{
   myTopolTool->Initialize(surface);
   myHSurface = surface;
-  myloaded=Standard_True;
+  myloaded   = Standard_True;
 }
 
-Handle(BRepTopAdaptor_TopolTool) BRepTopAdaptor_Tool::GetTopolTool() { 
-  if(myloaded) { 
-    return(myTopolTool);
+Handle(BRepTopAdaptor_TopolTool) BRepTopAdaptor_Tool::GetTopolTool()
+{
+  if (myloaded)
+  {
+    return (myTopolTool);
   }
-  else { 
+  else
+  {
 #ifdef OCCT_DEBUG
-    std::cout<<"\n*** Error ds Handle(BRepTopAdaptor_TopolTool) BRepTopAdaptor_Tool::GetTopolTool()\n"<<std::endl;
+    std::cout
+      << "\n*** Error ds Handle(BRepTopAdaptor_TopolTool) BRepTopAdaptor_Tool::GetTopolTool()\n"
+      << std::endl;
 #endif
-    return(myTopolTool);
+    return (myTopolTool);
   }
 }
 
-Handle(Adaptor3d_Surface)  BRepTopAdaptor_Tool::GetSurface() { 
-  if(myloaded) { 
-    return(myHSurface);
+Handle(Adaptor3d_Surface) BRepTopAdaptor_Tool::GetSurface()
+{
+  if (myloaded)
+  {
+    return (myHSurface);
   }
-  else { 
+  else
+  {
 #ifdef OCCT_DEBUG
-    std::cout<<"\n*** Error ds Handle(BRepTopAdaptor_TopolTool) BRepTopAdaptor_Tool::GetSurface()\n"<<std::endl;
+    std::cout
+      << "\n*** Error ds Handle(BRepTopAdaptor_TopolTool) BRepTopAdaptor_Tool::GetSurface()\n"
+      << std::endl;
 #endif
-    return(myHSurface);
+    return (myHSurface);
   }
 }
 
-void BRepTopAdaptor_Tool::SetTopolTool(const Handle(BRepTopAdaptor_TopolTool)& TT) { 
-  myTopolTool=TT;
+void BRepTopAdaptor_Tool::SetTopolTool(const Handle(BRepTopAdaptor_TopolTool)& TT)
+{
+  myTopolTool = TT;
 }
 
 void BRepTopAdaptor_Tool::Destroy() {}
-

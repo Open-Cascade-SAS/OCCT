@@ -28,21 +28,25 @@ class StepAP242_ItemIdentifiedRepresentationUsage;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write Module for ItemIdentifiedRepresentationUsage
-class RWStepAP242_RWItemIdentifiedRepresentationUsage 
+class RWStepAP242_RWItemIdentifiedRepresentationUsage
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_HIDDEN RWStepAP242_RWItemIdentifiedRepresentationUsage();
-  
-  Standard_HIDDEN   void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepAP242_ItemIdentifiedRepresentationUsage)& ent)  const;
-  
-  Standard_HIDDEN   void WriteStep (StepData_StepWriter& SW, const Handle(StepAP242_ItemIdentifiedRepresentationUsage)& ent)  const;
-  
-  Standard_HIDDEN   void Share (const Handle(StepAP242_ItemIdentifiedRepresentationUsage)& ent, Interface_EntityIterator& iter)  const;
+
+  Standard_HIDDEN void ReadStep(
+    const Handle(StepData_StepReaderData)&                     data,
+    const Standard_Integer                                     num,
+    Handle(Interface_Check)&                                   ach,
+    const Handle(StepAP242_ItemIdentifiedRepresentationUsage)& ent) const;
+
+  Standard_HIDDEN void WriteStep(
+    StepData_StepWriter&                                       SW,
+    const Handle(StepAP242_ItemIdentifiedRepresentationUsage)& ent) const;
+
+  Standard_HIDDEN void Share(const Handle(StepAP242_ItemIdentifiedRepresentationUsage)& ent,
+                             Interface_EntityIterator&                                  iter) const;
 };
 #endif // _RWStepAP242_RWItemIdentifiedRepresentationUsage_HeaderFile

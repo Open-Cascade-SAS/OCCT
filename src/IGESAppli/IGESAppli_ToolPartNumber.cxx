@@ -30,21 +30,20 @@
 #include <Interface_ShareTool.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESAppli_ToolPartNumber::IGESAppli_ToolPartNumber ()    {  }
+IGESAppli_ToolPartNumber::IGESAppli_ToolPartNumber() {}
 
-
-void  IGESAppli_ToolPartNumber::ReadOwnParams
-  (const Handle(IGESAppli_PartNumber)& ent,
-   const Handle(IGESData_IGESReaderData)& /* IR */,  IGESData_ParamReader& PR) const
+void IGESAppli_ToolPartNumber::ReadOwnParams(const Handle(IGESAppli_PartNumber)& ent,
+                                             const Handle(IGESData_IGESReaderData)& /* IR */,
+                                             IGESData_ParamReader& PR) const
 {
-  //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Standard_Integer tempNbPropertyValues;
+  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  Standard_Integer                 tempNbPropertyValues;
   Handle(TCollection_HAsciiString) tempGenericNumber;
   Handle(TCollection_HAsciiString) tempMilitaryNumber;
   Handle(TCollection_HAsciiString) tempVendorNumber;
   Handle(TCollection_HAsciiString) tempInternalNumber;
 
-  //szv#4:S4163:12Mar99 `st=` not needed
+  // szv#4:S4163:12Mar99 `st=` not needed
   if (PR.DefinedElseSkip())
     PR.ReadInteger(PR.Current(), "Number of property values", tempNbPropertyValues);
   else
@@ -54,13 +53,16 @@ void  IGESAppli_ToolPartNumber::ReadOwnParams
   PR.ReadText(PR.Current(), "Military Number or Name", tempMilitaryNumber);
   PR.ReadText(PR.Current(), "Vendor Number or Name", tempVendorNumber);
   PR.ReadText(PR.Current(), "Internal Number or Name", tempInternalNumber);
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
-  ent->Init(tempNbPropertyValues, tempGenericNumber,
-	    tempMilitaryNumber, tempVendorNumber, tempInternalNumber);
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
+  ent->Init(tempNbPropertyValues,
+            tempGenericNumber,
+            tempMilitaryNumber,
+            tempVendorNumber,
+            tempInternalNumber);
 }
 
-void  IGESAppli_ToolPartNumber::WriteOwnParams
-  (const Handle(IGESAppli_PartNumber)& ent, IGESData_IGESWriter& IW) const
+void IGESAppli_ToolPartNumber::WriteOwnParams(const Handle(IGESAppli_PartNumber)& ent,
+                                              IGESData_IGESWriter&                IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->GenericNumber());
@@ -69,40 +71,45 @@ void  IGESAppli_ToolPartNumber::WriteOwnParams
   IW.Send(ent->InternalNumber());
 }
 
-void  IGESAppli_ToolPartNumber::OwnShared
-  (const Handle(IGESAppli_PartNumber)& /* ent */, Interface_EntityIterator& /* iter */) const
+void IGESAppli_ToolPartNumber::OwnShared(const Handle(IGESAppli_PartNumber)& /* ent */,
+                                         Interface_EntityIterator& /* iter */) const
 {
 }
 
-void  IGESAppli_ToolPartNumber::OwnCopy
-  (const Handle(IGESAppli_PartNumber)& another,
-   const Handle(IGESAppli_PartNumber)& ent, Interface_CopyTool& /* TC */) const
+void IGESAppli_ToolPartNumber::OwnCopy(const Handle(IGESAppli_PartNumber)& another,
+                                       const Handle(IGESAppli_PartNumber)& ent,
+                                       Interface_CopyTool& /* TC */) const
 {
-  Standard_Integer tempNbPropertyValues = another->NbPropertyValues();
-  Handle(TCollection_HAsciiString) tempGenericNumber  =
+  Standard_Integer                 tempNbPropertyValues = another->NbPropertyValues();
+  Handle(TCollection_HAsciiString) tempGenericNumber =
     new TCollection_HAsciiString(another->GenericNumber());
   Handle(TCollection_HAsciiString) tempMilitaryNumber =
     new TCollection_HAsciiString(another->MilitaryNumber());
-  Handle(TCollection_HAsciiString) tempVendorNumber   =
+  Handle(TCollection_HAsciiString) tempVendorNumber =
     new TCollection_HAsciiString(another->VendorNumber());
   Handle(TCollection_HAsciiString) tempInternalNumber =
     new TCollection_HAsciiString(another->InternalNumber());
-  ent->Init(tempNbPropertyValues, tempGenericNumber, tempMilitaryNumber,
-	    tempVendorNumber,     tempInternalNumber);
+  ent->Init(tempNbPropertyValues,
+            tempGenericNumber,
+            tempMilitaryNumber,
+            tempVendorNumber,
+            tempInternalNumber);
 }
 
-Standard_Boolean  IGESAppli_ToolPartNumber::OwnCorrect
-  (const Handle(IGESAppli_PartNumber)& ent) const
+Standard_Boolean IGESAppli_ToolPartNumber::OwnCorrect(const Handle(IGESAppli_PartNumber)& ent) const
 {
   Standard_Boolean res = (ent->NbPropertyValues() != 4);
-  if (res) ent->Init
-    (4,ent->GenericNumber(),ent->MilitaryNumber(),ent->VendorNumber(),
-     ent->InternalNumber());    // nbpropertyvalues= 4
+  if (res)
+    ent->Init(4,
+              ent->GenericNumber(),
+              ent->MilitaryNumber(),
+              ent->VendorNumber(),
+              ent->InternalNumber()); // nbpropertyvalues= 4
   return res;
 }
 
-IGESData_DirChecker  IGESAppli_ToolPartNumber::DirChecker
-  (const Handle(IGESAppli_PartNumber)& /* ent */ ) const
+IGESData_DirChecker IGESAppli_ToolPartNumber::DirChecker(
+  const Handle(IGESAppli_PartNumber)& /* ent */) const
 {
   IGESData_DirChecker DC(406, 9);
   DC.Structure(IGESData_DefVoid);
@@ -116,31 +123,32 @@ IGESData_DirChecker  IGESAppli_ToolPartNumber::DirChecker
   return DC;
 }
 
-void  IGESAppli_ToolPartNumber::OwnCheck
-  (const Handle(IGESAppli_PartNumber)& ent,
-   const Interface_ShareTool& , Handle(Interface_Check)& ach) const
+void IGESAppli_ToolPartNumber::OwnCheck(const Handle(IGESAppli_PartNumber)& ent,
+                                        const Interface_ShareTool&,
+                                        Handle(Interface_Check)& ach) const
 {
   if (ent->NbPropertyValues() != 4)
     ach->AddFail("Number of property values != 4");
 }
 
-void  IGESAppli_ToolPartNumber::OwnDump
-  (const Handle(IGESAppli_PartNumber)& ent, const IGESData_IGESDumper& /* dumper */,
-   Standard_OStream& S, const Standard_Integer /* level */) const
+void IGESAppli_ToolPartNumber::OwnDump(const Handle(IGESAppli_PartNumber)& ent,
+                                       const IGESData_IGESDumper& /* dumper */,
+                                       Standard_OStream& S,
+                                       const Standard_Integer /* level */) const
 {
-  //Standard_Integer sublevel = (level > 4) ? 1 : 0; //szv#4:S4163:12Mar99 unused
+  // Standard_Integer sublevel = (level > 4) ? 1 : 0; //szv#4:S4163:12Mar99 unused
   S << "IGESAppli_PartNumber\n";
   S << "Number of property values : " << ent->NbPropertyValues() << "\n";
   S << "Generic  Number or Name : ";
-  IGESData_DumpString(S,ent->GenericNumber());
+  IGESData_DumpString(S, ent->GenericNumber());
   S << "\n";
   S << "Military Number or Name : ";
-  IGESData_DumpString(S,ent->MilitaryNumber());
+  IGESData_DumpString(S, ent->MilitaryNumber());
   S << "\n";
   S << "Vendor   Number or Name : ";
-  IGESData_DumpString(S,ent->VendorNumber());
+  IGESData_DumpString(S, ent->VendorNumber());
   S << "\n";
   S << "Internal Number or Name : ";
-  IGESData_DumpString(S,ent->InternalNumber());
+  IGESData_DumpString(S, ent->InternalNumber());
   S << std::endl;
 }

@@ -20,7 +20,7 @@
 #include <TransferBRep_SequenceOfTransferResultInfo.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(TransferBRep_HSequenceOfTransferResultInfo, TransferBRep_SequenceOfTransferResultInfo)
-
+DEFINE_HSEQUENCE(TransferBRep_HSequenceOfTransferResultInfo,
+                 TransferBRep_SequenceOfTransferResultInfo)
 
 #endif

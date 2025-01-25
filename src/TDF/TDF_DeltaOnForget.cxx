@@ -15,35 +15,29 @@
 
 //      	---------------------
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Nov  3 1997	Creation
 
 #include <TDF_DeltaOnForget.hxx>
 #include <TDF_Label.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDF_DeltaOnForget,TDF_AttributeDelta)
+IMPLEMENT_STANDARD_RTTIEXT(TDF_DeltaOnForget, TDF_AttributeDelta)
 
-//=======================================================================
-//function : TDF_DeltaOnForget
-//purpose  : 
-//=======================================================================
-TDF_DeltaOnForget::TDF_DeltaOnForget
-(const Handle(TDF_Attribute)& anAtt)
-: TDF_AttributeDelta(anAtt)
-{}
+//=================================================================================================
 
+TDF_DeltaOnForget::TDF_DeltaOnForget(const Handle(TDF_Attribute)& anAtt)
+    : TDF_AttributeDelta(anAtt)
+{
+}
 
-//=======================================================================
-//function : Apply
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TDF_DeltaOnForget::Apply() 
+void TDF_DeltaOnForget::Apply()
 {
   // Undo = Resume.
   Label().ResumeAttribute(Attribute());
   Attribute()->mySavedTransaction = 0;
 #ifdef OCCT_DEBUG
-  std::cout<<"Resume attribute"<<std::endl;
+  std::cout << "Resume attribute" << std::endl;
 #endif
 }

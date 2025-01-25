@@ -13,18 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _XCAFDimTolObjects_DatumModifWithValue_HeaderFile
 #define _XCAFDimTolObjects_DatumModifWithValue_HeaderFile
 
 //! Defines modifirs
 enum XCAFDimTolObjects_DatumModifWithValue
 {
-XCAFDimTolObjects_DatumModifWithValue_None,
-XCAFDimTolObjects_DatumModifWithValue_CircularOrCylindrical,
-XCAFDimTolObjects_DatumModifWithValue_Distance,
-XCAFDimTolObjects_DatumModifWithValue_Projected,
-XCAFDimTolObjects_DatumModifWithValue_Spherical
+  XCAFDimTolObjects_DatumModifWithValue_None,
+  XCAFDimTolObjects_DatumModifWithValue_CircularOrCylindrical,
+  XCAFDimTolObjects_DatumModifWithValue_Distance,
+  XCAFDimTolObjects_DatumModifWithValue_Projected,
+  XCAFDimTolObjects_DatumModifWithValue_Spherical
 };
 
 #endif // _XCAFDimTolObjects_DatumModifWithValue_HeaderFile

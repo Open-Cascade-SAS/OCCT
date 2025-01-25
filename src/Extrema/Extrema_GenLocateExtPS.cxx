@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Extrema_GenLocateExtPS.hxx>
 
 #include <Extrema_FuncPSNorm.hxx>
@@ -27,19 +26,18 @@
 #include <math_FRPR.hxx>
 #include <StdFail_NotDone.hxx>
 
-static void CorrectTol(const Standard_Real theU0, const Standard_Real theV0,
-  math_Vector& theTol)
+static void CorrectTol(const Standard_Real theU0, const Standard_Real theV0, math_Vector& theTol)
 {
-  //Correct tolerance for large values of UV parameters
-  constexpr Standard_Real aTolRef = Precision::PConfusion();
-  Standard_Real anEpsRef = Epsilon(1.);
-  Standard_Real epsu = Epsilon(theU0);
-  const Standard_Real tolog10 = 0.43429;
+  // Correct tolerance for large values of UV parameters
+  constexpr Standard_Real aTolRef  = Precision::PConfusion();
+  Standard_Real           anEpsRef = Epsilon(1.);
+  Standard_Real           epsu     = Epsilon(theU0);
+  const Standard_Real     tolog10  = 0.43429;
   if (epsu > anEpsRef)
   {
     Standard_Integer n = RealToInt(tolog10 * Log(epsu / anEpsRef) + 1) + 1;
     Standard_Integer i;
-    Standard_Real tol = aTolRef;
+    Standard_Real    tol = aTolRef;
     for (i = 1; i <= n; ++i)
     {
       tol *= 10.;
@@ -51,7 +49,7 @@ static void CorrectTol(const Standard_Real theU0, const Standard_Real theV0,
   {
     Standard_Integer n = RealToInt(tolog10 * Log(epsv / anEpsRef) + 1) + 1;
     Standard_Integer i;
-    Standard_Real tol = aTolRef;
+    Standard_Real    tol = aTolRef;
     for (i = 1; i <= n; ++i)
     {
       tol *= 10.;
@@ -59,19 +57,21 @@ static void CorrectTol(const Standard_Real theU0, const Standard_Real theV0,
     theTol(2) = Max(theTol(2), tol);
   }
 }
-//=======================================================================
-//function : IsMinDist
-//purpose  : 
-//=======================================================================
 
-Standard_Boolean Extrema_GenLocateExtPS::IsMinDist(const gp_Pnt& theP, const Adaptor3d_Surface& theS,
-  const Standard_Real theU0, const Standard_Real theV0)
+//=================================================================================================
+
+Standard_Boolean Extrema_GenLocateExtPS::IsMinDist(const gp_Pnt&            theP,
+                                                   const Adaptor3d_Surface& theS,
+                                                   const Standard_Real      theU0,
+                                                   const Standard_Real      theV0)
 {
-  Standard_Real du = Max(theS.UResolution(10.*Precision::Confusion()), 10.*Precision::PConfusion());
-  Standard_Real dv = Max(theS.VResolution(10.*Precision::Confusion()), 10.*Precision::PConfusion());
-  Standard_Real u, v;
-  gp_Pnt aP0 = theS.Value(theU0, theV0);
-  Standard_Real d0 = theP.SquareDistance(aP0);
+  Standard_Real du =
+    Max(theS.UResolution(10. * Precision::Confusion()), 10. * Precision::PConfusion());
+  Standard_Real dv =
+    Max(theS.VResolution(10. * Precision::Confusion()), 10. * Precision::PConfusion());
+  Standard_Real    u, v;
+  gp_Pnt           aP0 = theS.Value(theU0, theV0);
+  Standard_Real    d0  = theP.SquareDistance(aP0);
   Standard_Integer iu, iv;
   for (iu = -1; iu <= 1; ++iu)
   {
@@ -99,27 +99,25 @@ Standard_Boolean Extrema_GenLocateExtPS::IsMinDist(const gp_Pnt& theP, const Ada
   }
   return Standard_True;
 }
-//=======================================================================
-//function : Extrema_GenLocateExtPS
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
 Extrema_GenLocateExtPS::Extrema_GenLocateExtPS(const Adaptor3d_Surface& theS,
-                                               const Standard_Real theTolU,
-                                               const Standard_Real theTolV)
-: mySurf(theS),
-  myTolU(theTolU), myTolV(theTolV),
-  myDone(Standard_False),
-  mySqDist(-1.0)
+                                               const Standard_Real      theTolU,
+                                               const Standard_Real      theTolV)
+    : mySurf(theS),
+      myTolU(theTolU),
+      myTolV(theTolV),
+      myDone(Standard_False),
+      mySqDist(-1.0)
 {
 }
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
-void Extrema_GenLocateExtPS::Perform(const gp_Pnt& theP,
-                                     const Standard_Real theU0,
-                                     const Standard_Real theV0,
+//=================================================================================================
+
+void Extrema_GenLocateExtPS::Perform(const gp_Pnt&          theP,
+                                     const Standard_Real    theU0,
+                                     const Standard_Real    theV0,
                                      const Standard_Boolean isDistanceCriteria)
 {
   myDone = Standard_False;
@@ -145,7 +143,7 @@ void Extrema_GenLocateExtPS::Perform(const gp_Pnt& theP,
   {
     // Distance criteria.
     Standard_Real aRelTol = 1.e-8;
-    math_Vector aResPnt(1, 2);  
+    math_Vector   aResPnt(1, 2);
 
     Extrema_FuncPSDist F(mySurf, theP);
 
@@ -154,17 +152,17 @@ void Extrema_GenLocateExtPS::Perform(const gp_Pnt& theP,
 
     if (!aSolver.IsDone())
     {
-      //Try another method
+      // Try another method
       math_FRPR aSolver1(F, aRelTol);
       aSolver1.Perform(F, aStart);
-      if(!aSolver1.IsDone())
+      if (!aSolver1.IsDone())
         return;
       aSolver1.Location(aResPnt);
       mySqDist = aSolver1.Minimum();
     }
     else
     {
-      aSolver.Location(aResPnt);    
+      aSolver.Location(aResPnt);
       mySqDist = aSolver.Minimum();
     }
 
@@ -183,8 +181,8 @@ void Extrema_GenLocateExtPS::Perform(const gp_Pnt& theP,
       CorrectTol(theU0, theV0, aTol);
     }
 
-    Standard_Boolean isCorrectTol = (Abs(aTol(1) - myTolU) > Precision::PConfusion() ||
-      Abs(aTol(2) - myTolV) > Precision::PConfusion());
+    Standard_Boolean isCorrectTol = (Abs(aTol(1) - myTolU) > Precision::PConfusion()
+                                     || Abs(aTol(2) - myTolV) > Precision::PConfusion());
 
     math_FunctionSetRoot aSR(F, aTol);
     aSR.Perform(F, aStart, aBoundInf, aBoundSup);
@@ -203,49 +201,48 @@ void Extrema_GenLocateExtPS::Perform(const gp_Pnt& theP,
         return;
       }
     }
-    
+
     Standard_Real aNbExt = F.NbExt();
-    mySqDist = F.SquareDistance(1);
-    myPoint = F.Point(1);
+    mySqDist             = F.SquareDistance(1);
+    myPoint              = F.Point(1);
     Standard_Integer i;
     for (i = 2; i <= aNbExt; ++i)
     {
       if (F.SquareDistance(i) < mySqDist)
       {
         mySqDist = F.SquareDistance(i);
-        myPoint = F.Point(i);
+        myPoint  = F.Point(i);
       }
     }
     myDone = Standard_True;
   }
-
 }
 
-//=======================================================================
-//function : IsDone
-//purpose  : 
-//=======================================================================
-Standard_Boolean Extrema_GenLocateExtPS::IsDone () const
+//=================================================================================================
+
+Standard_Boolean Extrema_GenLocateExtPS::IsDone() const
 {
   return myDone;
 }
 
-//=======================================================================
-//function : SquareDistance
-//purpose  : 
-//=======================================================================
-Standard_Real Extrema_GenLocateExtPS::SquareDistance () const
+//=================================================================================================
+
+Standard_Real Extrema_GenLocateExtPS::SquareDistance() const
 {
-  if (!IsDone()) { throw StdFail_NotDone(); }
+  if (!IsDone())
+  {
+    throw StdFail_NotDone();
+  }
   return mySqDist;
 }
 
-//=======================================================================
-//function : Point
-//purpose  : 
-//=======================================================================
-const Extrema_POnSurf& Extrema_GenLocateExtPS::Point () const
+//=================================================================================================
+
+const Extrema_POnSurf& Extrema_GenLocateExtPS::Point() const
 {
-  if (!IsDone()) { throw StdFail_NotDone(); }
+  if (!IsDone())
+  {
+    throw StdFail_NotDone();
+  }
   return myPoint;
 }

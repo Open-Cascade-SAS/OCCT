@@ -18,45 +18,34 @@
 #include <StepShape_FaceBasedSurfaceModel.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_FaceBasedSurfaceModel,StepGeom_GeometricRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_FaceBasedSurfaceModel, StepGeom_GeometricRepresentationItem)
 
-//=======================================================================
-//function : StepShape_FaceBasedSurfaceModel
-//purpose  : 
-//=======================================================================
-StepShape_FaceBasedSurfaceModel::StepShape_FaceBasedSurfaceModel ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepShape_FaceBasedSurfaceModel::StepShape_FaceBasedSurfaceModel() {}
 
-void StepShape_FaceBasedSurfaceModel::Init (const Handle(TCollection_HAsciiString) &aRepresentationItem_Name,
-                                            const Handle(StepShape_HArray1OfConnectedFaceSet) &aFbsmFaces)
+//=================================================================================================
+
+void StepShape_FaceBasedSurfaceModel::Init(
+  const Handle(TCollection_HAsciiString)&            aRepresentationItem_Name,
+  const Handle(StepShape_HArray1OfConnectedFaceSet)& aFbsmFaces)
 {
   StepGeom_GeometricRepresentationItem::Init(aRepresentationItem_Name);
 
   theFbsmFaces = aFbsmFaces;
 }
 
-//=======================================================================
-//function : FbsmFaces
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepShape_HArray1OfConnectedFaceSet) StepShape_FaceBasedSurfaceModel::FbsmFaces () const
+Handle(StepShape_HArray1OfConnectedFaceSet) StepShape_FaceBasedSurfaceModel::FbsmFaces() const
 {
   return theFbsmFaces;
 }
 
-//=======================================================================
-//function : SetFbsmFaces
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepShape_FaceBasedSurfaceModel::SetFbsmFaces (const Handle(StepShape_HArray1OfConnectedFaceSet) &aFbsmFaces)
+void StepShape_FaceBasedSurfaceModel::SetFbsmFaces(
+  const Handle(StepShape_HArray1OfConnectedFaceSet)& aFbsmFaces)
 {
   theFbsmFaces = aFbsmFaces;
 }

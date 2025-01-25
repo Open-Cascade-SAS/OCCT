@@ -91,14 +91,18 @@ public:
                                                        Standard_Real&         Psol,
                                                        math_Vector&           ParSol);
 
-  Standard_EXPORT Standard_Boolean Continu(Blend_Function& F, Blend_FuncInv& FInv, const Standard_Real P);
+  Standard_EXPORT Standard_Boolean Continu(Blend_Function&     F,
+                                           Blend_FuncInv&      FInv,
+                                           const Standard_Real P);
 
   Standard_EXPORT Standard_Boolean Continu(Blend_Function&        F,
                                            Blend_FuncInv&         FInv,
                                            const Standard_Real    P,
                                            const Standard_Boolean OnS1);
 
-  Standard_EXPORT Standard_Boolean Complete(Blend_Function& F, Blend_FuncInv& FInv, const Standard_Real Pmin);
+  Standard_EXPORT Standard_Boolean Complete(Blend_Function&     F,
+                                            Blend_FuncInv&      FInv,
+                                            const Standard_Real Pmin);
 
   Standard_EXPORT void ClassificationOnS1(const Standard_Boolean C);
 
@@ -124,7 +128,9 @@ public:
   }
 
 private:
-  Standard_EXPORT void InternalPerform(Blend_Function& F, Blend_FuncInv& FInv, const Standard_Real Bound);
+  Standard_EXPORT void InternalPerform(Blend_Function&     F,
+                                       Blend_FuncInv&      FInv,
+                                       const Standard_Real Bound);
 
   Standard_EXPORT Standard_Boolean CorrectExtremityOnOneRst(const Standard_Integer IndexOfRst,
                                                             const Standard_Real    theU,
@@ -169,7 +175,8 @@ private:
                                              const Standard_Boolean           OnFirst,
                                              const Handle(Adaptor3d_HVertex)& Vtx);
 
-  Standard_EXPORT Blend_Status CheckDeflection(const Standard_Boolean OnFirst, const Blend_Point& CurPoint);
+  Standard_EXPORT Blend_Status CheckDeflection(const Standard_Boolean OnFirst,
+                                               const Blend_Point&     CurPoint);
 
   Standard_EXPORT Blend_Status TestArret(Blend_Function&        F,
                                          const Blend_Status     State,

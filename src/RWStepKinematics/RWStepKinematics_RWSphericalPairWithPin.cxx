@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:16 2020 
+// Created on : Sat May 02 12:41:16 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -25,155 +25,201 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepKinematics_KinematicJoint.hxx>
 
-//=======================================================================
-//function : RWStepKinematics_RWSphericalPairWithPin
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 RWStepKinematics_RWSphericalPairWithPin::RWStepKinematics_RWSphericalPairWithPin() {}
 
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  :
-//=======================================================================
-void RWStepKinematics_RWSphericalPairWithPin::ReadStep (const Handle(StepData_StepReaderData)& theData,
-                                                        const Standard_Integer theNum,
-                                                        Handle(Interface_Check)& theArch,
-                                                        const Handle(StepKinematics_SphericalPairWithPin)& theEnt) const
+void RWStepKinematics_RWSphericalPairWithPin::ReadStep(
+  const Handle(StepData_StepReaderData)&             theData,
+  const Standard_Integer                             theNum,
+  Handle(Interface_Check)&                           theArch,
+  const Handle(StepKinematics_SphericalPairWithPin)& theEnt) const
 {
   // Check number of parameters
-  if ( ! theData->CheckNbParams(theNum,12,theArch,"spherical_pair_with_pin") ) return;
+  if (!theData->CheckNbParams(theNum, 12, theArch, "spherical_pair_with_pin"))
+    return;
 
   // Inherited fields of RepresentationItem
 
   Handle(TCollection_HAsciiString) aRepresentationItem_Name;
-  theData->ReadString (theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
+  theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of ItemDefinedTransformation
 
   Handle(TCollection_HAsciiString) aItemDefinedTransformation_Name;
-  theData->ReadString (theNum, 2, "item_defined_transformation.name", theArch, aItemDefinedTransformation_Name);
+  theData->ReadString(theNum,
+                      2,
+                      "item_defined_transformation.name",
+                      theArch,
+                      aItemDefinedTransformation_Name);
 
   Handle(TCollection_HAsciiString) aItemDefinedTransformation_Description;
-  Standard_Boolean hasItemDefinedTransformation_Description = Standard_True;
-  if ( theData->IsParamDefined (theNum,3) ) {
-    theData->ReadString (theNum, 3, "item_defined_transformation.description", theArch, aItemDefinedTransformation_Description);
+  Standard_Boolean                 hasItemDefinedTransformation_Description = Standard_True;
+  if (theData->IsParamDefined(theNum, 3))
+  {
+    theData->ReadString(theNum,
+                        3,
+                        "item_defined_transformation.description",
+                        theArch,
+                        aItemDefinedTransformation_Description);
   }
-  else {
+  else
+  {
     hasItemDefinedTransformation_Description = Standard_False;
     aItemDefinedTransformation_Description.Nullify();
   }
 
   Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem1;
-  theData->ReadEntity (theNum, 4, "item_defined_transformation.transform_item1", theArch, STANDARD_TYPE(StepRepr_RepresentationItem), aItemDefinedTransformation_TransformItem1);
+  theData->ReadEntity(theNum,
+                      4,
+                      "item_defined_transformation.transform_item1",
+                      theArch,
+                      STANDARD_TYPE(StepRepr_RepresentationItem),
+                      aItemDefinedTransformation_TransformItem1);
 
   Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem2;
-  theData->ReadEntity (theNum, 5, "item_defined_transformation.transform_item2", theArch, STANDARD_TYPE(StepRepr_RepresentationItem), aItemDefinedTransformation_TransformItem2);
+  theData->ReadEntity(theNum,
+                      5,
+                      "item_defined_transformation.transform_item2",
+                      theArch,
+                      STANDARD_TYPE(StepRepr_RepresentationItem),
+                      aItemDefinedTransformation_TransformItem2);
 
   // Inherited fields of KinematicPair
 
   Handle(StepKinematics_KinematicJoint) aKinematicPair_Joint;
-  theData->ReadEntity (theNum, 6, "kinematic_pair.joint", theArch, STANDARD_TYPE(StepKinematics_KinematicJoint), aKinematicPair_Joint);
+  theData->ReadEntity(theNum,
+                      6,
+                      "kinematic_pair.joint",
+                      theArch,
+                      STANDARD_TYPE(StepKinematics_KinematicJoint),
+                      aKinematicPair_Joint);
 
   // Inherited fields of LowOrderKinematicPair
 
   Standard_Boolean aLowOrderKinematicPair_TX;
-  theData->ReadBoolean (theNum, 7, "low_order_kinematic_pair.t_x", theArch, aLowOrderKinematicPair_TX);
+  theData->ReadBoolean(theNum,
+                       7,
+                       "low_order_kinematic_pair.t_x",
+                       theArch,
+                       aLowOrderKinematicPair_TX);
 
   Standard_Boolean aLowOrderKinematicPair_TY;
-  theData->ReadBoolean (theNum, 8, "low_order_kinematic_pair.t_y", theArch, aLowOrderKinematicPair_TY);
+  theData->ReadBoolean(theNum,
+                       8,
+                       "low_order_kinematic_pair.t_y",
+                       theArch,
+                       aLowOrderKinematicPair_TY);
 
   Standard_Boolean aLowOrderKinematicPair_TZ;
-  theData->ReadBoolean (theNum, 9, "low_order_kinematic_pair.t_z", theArch, aLowOrderKinematicPair_TZ);
+  theData->ReadBoolean(theNum,
+                       9,
+                       "low_order_kinematic_pair.t_z",
+                       theArch,
+                       aLowOrderKinematicPair_TZ);
 
   Standard_Boolean aLowOrderKinematicPair_RX;
-  theData->ReadBoolean (theNum, 10, "low_order_kinematic_pair.r_x", theArch, aLowOrderKinematicPair_RX);
+  theData->ReadBoolean(theNum,
+                       10,
+                       "low_order_kinematic_pair.r_x",
+                       theArch,
+                       aLowOrderKinematicPair_RX);
 
   Standard_Boolean aLowOrderKinematicPair_RY;
-  theData->ReadBoolean (theNum, 11, "low_order_kinematic_pair.r_y", theArch, aLowOrderKinematicPair_RY);
+  theData->ReadBoolean(theNum,
+                       11,
+                       "low_order_kinematic_pair.r_y",
+                       theArch,
+                       aLowOrderKinematicPair_RY);
 
   Standard_Boolean aLowOrderKinematicPair_RZ;
-  theData->ReadBoolean (theNum, 12, "low_order_kinematic_pair.r_z", theArch, aLowOrderKinematicPair_RZ);
+  theData->ReadBoolean(theNum,
+                       12,
+                       "low_order_kinematic_pair.r_z",
+                       theArch,
+                       aLowOrderKinematicPair_RZ);
 
   // Initialize entity
   theEnt->Init(aRepresentationItem_Name,
-            aItemDefinedTransformation_Name,
-            hasItemDefinedTransformation_Description,
-            aItemDefinedTransformation_Description,
-            aItemDefinedTransformation_TransformItem1,
-            aItemDefinedTransformation_TransformItem2,
-            aKinematicPair_Joint,
-            aLowOrderKinematicPair_TX,
-            aLowOrderKinematicPair_TY,
-            aLowOrderKinematicPair_TZ,
-            aLowOrderKinematicPair_RX,
-            aLowOrderKinematicPair_RY,
-            aLowOrderKinematicPair_RZ);
+               aItemDefinedTransformation_Name,
+               hasItemDefinedTransformation_Description,
+               aItemDefinedTransformation_Description,
+               aItemDefinedTransformation_TransformItem1,
+               aItemDefinedTransformation_TransformItem2,
+               aKinematicPair_Joint,
+               aLowOrderKinematicPair_TX,
+               aLowOrderKinematicPair_TY,
+               aLowOrderKinematicPair_TZ,
+               aLowOrderKinematicPair_RX,
+               aLowOrderKinematicPair_RY,
+               aLowOrderKinematicPair_RZ);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  :
-//=======================================================================
-void RWStepKinematics_RWSphericalPairWithPin::WriteStep (StepData_StepWriter& theSW,
-                                                         const Handle(StepKinematics_SphericalPairWithPin)& theEnt) const
+//=================================================================================================
+
+void RWStepKinematics_RWSphericalPairWithPin::WriteStep(
+  StepData_StepWriter&                               theSW,
+  const Handle(StepKinematics_SphericalPairWithPin)& theEnt) const
 {
 
   // Own fields of RepresentationItem
 
-  theSW.Send (theEnt->Name());
+  theSW.Send(theEnt->Name());
 
   // Inherited fields of ItemDefinedTransformation
 
-  theSW.Send (theEnt->ItemDefinedTransformation()->Name());
+  theSW.Send(theEnt->ItemDefinedTransformation()->Name());
 
-  if ( theEnt->ItemDefinedTransformation()->HasDescription() ) {
-    theSW.Send (theEnt->ItemDefinedTransformation()->Description());
+  if (theEnt->ItemDefinedTransformation()->HasDescription())
+  {
+    theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
-  else theSW.SendUndef();
+  else
+    theSW.SendUndef();
 
-  theSW.Send (theEnt->ItemDefinedTransformation()->TransformItem1());
+  theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 
-  theSW.Send (theEnt->ItemDefinedTransformation()->TransformItem2());
+  theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem2());
 
   // Own fields of KinematicPair
 
-  theSW.Send (theEnt->Joint());
+  theSW.Send(theEnt->Joint());
 
   // Own fields of LowOrderKinematicPair
 
-  theSW.SendBoolean (theEnt->TX());
+  theSW.SendBoolean(theEnt->TX());
 
-  theSW.SendBoolean (theEnt->TY());
+  theSW.SendBoolean(theEnt->TY());
 
-  theSW.SendBoolean (theEnt->TZ());
+  theSW.SendBoolean(theEnt->TZ());
 
-  theSW.SendBoolean (theEnt->RX());
+  theSW.SendBoolean(theEnt->RX());
 
-  theSW.SendBoolean (theEnt->RY());
+  theSW.SendBoolean(theEnt->RY());
 
-  theSW.SendBoolean (theEnt->RZ());
+  theSW.SendBoolean(theEnt->RZ());
 }
 
-//=======================================================================
-//function : Share
-//purpose  :
-//=======================================================================
-void RWStepKinematics_RWSphericalPairWithPin::Share (const Handle(StepKinematics_SphericalPairWithPin)& theEnt,
-                                                     Interface_EntityIterator& iter) const
+//=================================================================================================
+
+void RWStepKinematics_RWSphericalPairWithPin::Share(
+  const Handle(StepKinematics_SphericalPairWithPin)& theEnt,
+  Interface_EntityIterator&                          iter) const
 {
 
   // Inherited fields of RepresentationItem
 
   // Inherited fields of ItemDefinedTransformation
 
-  iter.AddItem (theEnt->ItemDefinedTransformation()->TransformItem1());
+  iter.AddItem(theEnt->ItemDefinedTransformation()->TransformItem1());
 
-  iter.AddItem (theEnt->ItemDefinedTransformation()->TransformItem2());
+  iter.AddItem(theEnt->ItemDefinedTransformation()->TransformItem2());
 
   // Inherited fields of KinematicPair
 
-  iter.AddItem (theEnt->StepKinematics_KinematicPair::Joint());
+  iter.AddItem(theEnt->StepKinematics_KinematicPair::Joint());
 
   // Inherited fields of LowOrderKinematicPair
 }

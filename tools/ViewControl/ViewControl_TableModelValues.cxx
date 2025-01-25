@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/ViewControl_TableModelValues.hxx>
 
@@ -25,7 +25,7 @@
 // purpose :
 // =======================================================================
 
-int ViewControl_TableModelValues::ColumnCount (const QModelIndex&) const
+int ViewControl_TableModelValues::ColumnCount(const QModelIndex&) const
 {
   if (!Properties().IsNull())
     return Properties()->ColumnCount();
@@ -33,13 +33,12 @@ int ViewControl_TableModelValues::ColumnCount (const QModelIndex&) const
   return 0;
 }
 
-
 // =======================================================================
 // function : RowCount
 // purpose :
 // =======================================================================
 
-int ViewControl_TableModelValues::RowCount (const QModelIndex&) const
+int ViewControl_TableModelValues::RowCount(const QModelIndex&) const
 {
   return !Properties().IsNull() ? Properties()->RowCount() : 0;
 }
@@ -49,11 +48,13 @@ int ViewControl_TableModelValues::RowCount (const QModelIndex&) const
 // purpose :
 // =======================================================================
 
-QVariant ViewControl_TableModelValues::Data (const int theRow, const int theColumn, int theRole) const
+QVariant ViewControl_TableModelValues::Data(const int theRow,
+                                            const int theColumn,
+                                            int       theRole) const
 {
   if (!Properties().IsNull())
   {
-    QVariant aValue = Properties()->Data (theRow, theColumn, theRole);
+    QVariant aValue = Properties()->Data(theRow, theColumn, theRole);
     if (aValue.isValid())
       return aValue;
   }
@@ -61,16 +62,17 @@ QVariant ViewControl_TableModelValues::Data (const int theRow, const int theColu
   if (theRole == Qt::TextAlignmentRole) // for multi-lines text, align it to the top
     return Qt::AlignTop;
 
-  if ((theRole == Qt::FontRole || theRole == Qt::ForegroundRole) && isItalicHeader (theRow, theColumn))
+  if ((theRole == Qt::FontRole || theRole == Qt::ForegroundRole)
+      && isItalicHeader(theRow, theColumn))
   {
     if (theRole == Qt::FontRole)
     {
       QFont aFont = qApp->font();
-      aFont.setItalic (true);
+      aFont.setItalic(true);
       return aFont;
     }
     else
-      return QColor (Qt::darkGray).darker (150);
+      return QColor(Qt::darkGray).darker(150);
   }
   return QVariant();
 }
@@ -80,10 +82,13 @@ QVariant ViewControl_TableModelValues::Data (const int theRow, const int theColu
 // purpose :
 // =======================================================================
 
-bool ViewControl_TableModelValues::SetData (const int theRow, const int theColumn, const QVariant& theValue, int)
+bool ViewControl_TableModelValues::SetData(const int       theRow,
+                                           const int       theColumn,
+                                           const QVariant& theValue,
+                                           int)
 {
   if (!Properties().IsNull())
-    return Properties()->SetData (theRow, theColumn, theValue);
+    return Properties()->SetData(theRow, theColumn, theValue);
 
   return false;
 }
@@ -93,13 +98,16 @@ bool ViewControl_TableModelValues::SetData (const int theRow, const int theColum
 // purpose :
 // =======================================================================
 
-QVariant ViewControl_TableModelValues::HeaderData (int theSection, Qt::Orientation theOrientation, int theRole) const
+QVariant ViewControl_TableModelValues::HeaderData(int             theSection,
+                                                  Qt::Orientation theOrientation,
+                                                  int             theRole) const
 {
   if (theRole == Qt::DisplayRole)
-    return myHeaderValues.contains (theOrientation) ? myHeaderValues[theOrientation][theSection].GetName()
-                                                    : QString::number (theSection + 1);
+    return myHeaderValues.contains(theOrientation)
+             ? myHeaderValues[theOrientation][theSection].GetName()
+             : QString::number(theSection + 1);
   else if (theRole == Qt::ForegroundRole)
-    return QColor (Qt::darkGray);
+    return QColor(Qt::darkGray);
 
   return QVariant();
 }
@@ -108,11 +116,12 @@ QVariant ViewControl_TableModelValues::HeaderData (int theSection, Qt::Orientati
 // function : EditType
 // purpose :
 // =======================================================================
-ViewControl_EditType ViewControl_TableModelValues::EditType (const int theRow, const int theColumn) const
+ViewControl_EditType ViewControl_TableModelValues::EditType(const int theRow,
+                                                            const int theColumn) const
 {
   if (!Properties().IsNull())
   {
-    return Properties()->EditType (theRow, theColumn);
+    return Properties()->EditType(theRow, theColumn);
   }
   return ViewControl_EditType_None;
 }
@@ -121,11 +130,11 @@ ViewControl_EditType ViewControl_TableModelValues::EditType (const int theRow, c
 // function : isItalicHeader
 // purpose :
 // =======================================================================
-Qt::ItemFlags ViewControl_TableModelValues::Flags (const QModelIndex& theIndex) const
+Qt::ItemFlags ViewControl_TableModelValues::Flags(const QModelIndex& theIndex) const
 {
   if (!Properties().IsNull())
   {
-    return Properties()->TableFlags (theIndex.row(), theIndex.column());
+    return Properties()->TableFlags(theIndex.row(), theIndex.column());
   }
   return theIndex.isValid() ? Qt::ItemIsEnabled | Qt::ItemIsSelectable : Qt::NoItemFlags;
 }
@@ -134,10 +143,10 @@ Qt::ItemFlags ViewControl_TableModelValues::Flags (const QModelIndex& theIndex) 
 // function : isItalicHeader
 // purpose :
 // =======================================================================
-bool ViewControl_TableModelValues::isItalicHeader (const int theRow, const int theColumn) const
+bool ViewControl_TableModelValues::isItalicHeader(const int theRow, const int theColumn) const
 {
   Qt::Orientation anOrientation = myOrientation == Qt::Vertical ? Qt::Horizontal : Qt::Vertical;
-  int aCell = anOrientation == Qt::Horizontal ? theColumn : theRow;
+  int             aCell         = anOrientation == Qt::Horizontal ? theColumn : theRow;
 
-  return HeaderItem (anOrientation, aCell).IsItalic();
+  return HeaderItem(anOrientation, aCell).IsItalic();
 }

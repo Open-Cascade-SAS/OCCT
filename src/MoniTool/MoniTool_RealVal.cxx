@@ -11,14 +11,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <MoniTool_RealVal.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(MoniTool_RealVal,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(MoniTool_RealVal, Standard_Transient)
 
-MoniTool_RealVal::MoniTool_RealVal  (const Standard_Real val)    {  theval = val;  }
+MoniTool_RealVal::MoniTool_RealVal(const Standard_Real val)
+{
+  theval = val;
+}
 
-Standard_Real  MoniTool_RealVal::Value () const  {  return theval;  }
+Standard_Real MoniTool_RealVal::Value() const
+{
+  return theval;
+}
 
-Standard_Real&  MoniTool_RealVal::CValue ()  {  return theval;  }
+Standard_Real& MoniTool_RealVal::CValue()
+{
+  return theval;
+}

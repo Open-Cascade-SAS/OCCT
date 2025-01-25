@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(IGESSolid_HArray1OfFace, IGESSolid_Array1OfFace)
 
-
 #endif

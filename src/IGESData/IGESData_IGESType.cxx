@@ -11,20 +11,37 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IGESData_IGESType.hxx>
 
-IGESData_IGESType::IGESData_IGESType ()  {  thetype = 0; theform = 0;  }
+IGESData_IGESType::IGESData_IGESType()
+{
+  thetype = 0;
+  theform = 0;
+}
 
-   IGESData_IGESType::IGESData_IGESType
-      (const Standard_Integer atype, const Standard_Integer aform)
-      {  thetype = atype; theform = aform;  }
+IGESData_IGESType::IGESData_IGESType(const Standard_Integer atype, const Standard_Integer aform)
+{
+  thetype = atype;
+  theform = aform;
+}
 
-    Standard_Integer IGESData_IGESType::Type () const    {  return thetype;  }
+Standard_Integer IGESData_IGESType::Type() const
+{
+  return thetype;
+}
 
-    Standard_Integer IGESData_IGESType::Form () const    {  return theform;  }
+Standard_Integer IGESData_IGESType::Form() const
+{
+  return theform;
+}
 
-    Standard_Boolean IGESData_IGESType::IsEqual (const IGESData_IGESType& other) const
-      {  return (thetype == other.Type() && theform == other.Form());  }
+Standard_Boolean IGESData_IGESType::IsEqual(const IGESData_IGESType& other) const
+{
+  return (thetype == other.Type() && theform == other.Form());
+}
 
-    void IGESData_IGESType::Nullify ()      {  thetype = 0; theform = 0;  }
+void IGESData_IGESType::Nullify()
+{
+  thetype = 0;
+  theform = 0;
+}

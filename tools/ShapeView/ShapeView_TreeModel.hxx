@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef ShapeView_TreeModel_H
 #define ShapeView_TreeModel_H
@@ -33,16 +33,15 @@ class ShapeView_TreeModel;
 class ShapeView_TreeModel : public TreeModel_ModelBase
 {
 public:
-
   //! Constructor
-  Standard_EXPORT ShapeView_TreeModel (QObject* theParent);
+  Standard_EXPORT ShapeView_TreeModel(QObject* theParent);
 
   //! Destructor
   virtual ~ShapeView_TreeModel() {}
 
   //! Adds shape, append it to the model root item
   //! \param theShape a shape instance
-  Standard_EXPORT void AddShape (const TopoDS_Shape& theShape);
+  Standard_EXPORT void AddShape(const TopoDS_Shape& theShape);
 
   //! Removes all shapes in the model root item
   Standard_EXPORT void RemoveAllShapes();
@@ -50,13 +49,13 @@ public:
   //! Returns model index of the shape.
   //! \param theShape a shape object
   //! \return the model index
-  QModelIndex FindIndex (const TopoDS_Shape& theShape) const;
+  QModelIndex FindIndex(const TopoDS_Shape& theShape) const;
 
 protected:
   //! Creates root item
   //! \param theColumnId index of a column
-  Standard_EXPORT virtual TreeModel_ItemBasePtr createRootItem (const int theColumnId) Standard_OVERRIDE;
-
+  Standard_EXPORT virtual TreeModel_ItemBasePtr createRootItem(const int theColumnId)
+    Standard_OVERRIDE;
 };
 
 #endif

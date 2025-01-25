@@ -23,48 +23,27 @@
 #include <Standard_Transient.hxx>
 class StepVisual_CurveStyle;
 
-
 class StepVisual_SurfaceStyleBoundary;
 DEFINE_STANDARD_HANDLE(StepVisual_SurfaceStyleBoundary, Standard_Transient)
-
 
 class StepVisual_SurfaceStyleBoundary : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a SurfaceStyleBoundary
   Standard_EXPORT StepVisual_SurfaceStyleBoundary();
-  
-  Standard_EXPORT void Init (const Handle(StepVisual_CurveStyle)& aStyleOfBoundary);
-  
-  Standard_EXPORT void SetStyleOfBoundary (const Handle(StepVisual_CurveStyle)& aStyleOfBoundary);
-  
+
+  Standard_EXPORT void Init(const Handle(StepVisual_CurveStyle)& aStyleOfBoundary);
+
+  Standard_EXPORT void SetStyleOfBoundary(const Handle(StepVisual_CurveStyle)& aStyleOfBoundary);
+
   Standard_EXPORT Handle(StepVisual_CurveStyle) StyleOfBoundary() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleBoundary,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleBoundary, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepVisual_CurveStyle) styleOfBoundary;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_SurfaceStyleBoundary_HeaderFile

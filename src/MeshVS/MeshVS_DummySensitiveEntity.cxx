@@ -17,69 +17,54 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_DummySensitiveEntity, Select3D_SensitiveEntity)
 
-//================================================================
-// Function : Constructor MeshVS_DummySensitiveEntity
-// Purpose  :
-//================================================================
-MeshVS_DummySensitiveEntity::MeshVS_DummySensitiveEntity (const Handle(SelectMgr_EntityOwner)& theOwnerId)
-: Select3D_SensitiveEntity (theOwnerId)
-{}
+//=================================================================================================
 
-//================================================================
-// Function : NbSubElements
-// Purpose  :
-//================================================================
+MeshVS_DummySensitiveEntity::MeshVS_DummySensitiveEntity(
+  const Handle(SelectMgr_EntityOwner)& theOwnerId)
+    : Select3D_SensitiveEntity(theOwnerId)
+{
+}
+
+//=================================================================================================
+
 Standard_Integer MeshVS_DummySensitiveEntity::NbSubElements() const
 {
   return -1;
 }
 
-//================================================================
-// Function : Matches
-// Purpose  :
-//================================================================
-Standard_Boolean MeshVS_DummySensitiveEntity::Matches (SelectBasics_SelectingVolumeManager& /*theMgr*/,
-                                                       SelectBasics_PickResult& /*thePickResult*/)
+//=================================================================================================
+
+Standard_Boolean MeshVS_DummySensitiveEntity::Matches(
+  SelectBasics_SelectingVolumeManager& /*theMgr*/,
+  SelectBasics_PickResult& /*thePickResult*/)
 {
   return Standard_False;
 }
 
-//================================================================
-// Function : BoundingBox
-// Purpose  :
-//================================================================
+//=================================================================================================
+
 Select3D_BndBox3d MeshVS_DummySensitiveEntity::BoundingBox()
 {
   return Select3D_BndBox3d();
 }
 
-//================================================================
-// Function : ElementsNb
-// Purpose  :
-//================================================================
-void MeshVS_DummySensitiveEntity::BVH()
-{}
+//=================================================================================================
 
-//================================================================
-// Function : Clear
-// Purpose  :
-//================================================================
-void MeshVS_DummySensitiveEntity::Clear()
-{}
+void MeshVS_DummySensitiveEntity::BVH() {}
 
-//=======================================================================
-//function : HasInitLocation
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
+void MeshVS_DummySensitiveEntity::Clear() {}
+
+//=================================================================================================
+
 Standard_Boolean MeshVS_DummySensitiveEntity::HasInitLocation() const
 {
   return Standard_False;
 }
 
-//=======================================================================
-//function : InvInitLocation
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 gp_GTrsf MeshVS_DummySensitiveEntity::InvInitLocation() const
 {
   return gp_GTrsf();

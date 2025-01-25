@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _StdLPersistent_NamedData_HeaderFile
 #define _StdLPersistent_NamedData_HeaderFile
 
@@ -30,19 +29,24 @@ class StdLPersistent_NamedData : public StdObjMgt_Attribute<TDataStd_NamedData>
   public:
     typedef typename HValuesArray::ValueType ValueType;
 
-    inline void Read (StdObjMgt_ReadData& theReadData)
-      { theReadData >> myKeys >> myValues; }
-    inline void Write (StdObjMgt_WriteData& theWriteData) const
-      { theWriteData << myKeys << myValues; }
+    inline void Read(StdObjMgt_ReadData& theReadData) { theReadData >> myKeys >> myValues; }
 
-    inline operator bool() const
-      { return !myKeys.IsNull(); }
+    inline void Write(StdObjMgt_WriteData& theWriteData) const
+    {
+      theWriteData << myKeys << myValues;
+    }
 
-    const TCollection_ExtendedString& Key (Standard_Integer theIndex) const
-      { return myKeys->Array()->Value(theIndex)->ExtString()->String(); }
+    inline operator bool() const { return !myKeys.IsNull(); }
 
-    ValueType Value (Standard_Integer theIndex) const
-      { return myValues ? myValues->Array()->Value(theIndex) : 0; }
+    const TCollection_ExtendedString& Key(Standard_Integer theIndex) const
+    {
+      return myKeys->Array()->Value(theIndex)->ExtString()->String();
+    }
+
+    ValueType Value(Standard_Integer theIndex) const
+    {
+      return myValues ? myValues->Array()->Value(theIndex) : 0;
+    }
 
   private:
     Handle(StdLPersistent_HArray1::Persistent) myKeys;
@@ -51,19 +55,19 @@ class StdLPersistent_NamedData : public StdObjMgt_Attribute<TDataStd_NamedData>
 
 public:
   //! Read persistent data from a file.
-  inline void Read (StdObjMgt_ReadData& theReadData)
+  inline void Read(StdObjMgt_ReadData& theReadData)
   {
     theReadData >> myDimensions;
-    myInts      .Read (theReadData);
-    myReals     .Read (theReadData);
-    myStrings   .Read (theReadData);
-    myBytes     .Read (theReadData);
-    myIntArrays .Read (theReadData);
-    myRealArrays.Read (theReadData);
+    myInts.Read(theReadData);
+    myReals.Read(theReadData);
+    myStrings.Read(theReadData);
+    myBytes.Read(theReadData);
+    myIntArrays.Read(theReadData);
+    myRealArrays.Read(theReadData);
   }
 
   //! Write persistent data to a file.
-  inline void Write (StdObjMgt_WriteData& theWriteData) const
+  inline void Write(StdObjMgt_WriteData& theWriteData) const
   {
     theWriteData << myDimensions;
     myInts.Write(theWriteData);
@@ -81,11 +85,11 @@ public:
   Standard_CString PName() const { return "PDataStd_NamedData"; }
 
   //! Import transient attribute from the persistent data.
-  void Import (const Handle(TDataStd_NamedData)& theAttribute) const;
+  void Import(const Handle(TDataStd_NamedData)& theAttribute) const;
 
 private:
-  inline Standard_Integer lower (Standard_Integer theIndex) const;
-  inline Standard_Integer upper (Standard_Integer theIndex) const;
+  inline Standard_Integer lower(Standard_Integer theIndex) const;
+  inline Standard_Integer upper(Standard_Integer theIndex) const;
 
 private:
   Handle(StdLPersistent_HArray2::Integer)      myDimensions;

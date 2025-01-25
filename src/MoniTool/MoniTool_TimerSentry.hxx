@@ -23,57 +23,36 @@
 #include <Standard_CString.hxx>
 class MoniTool_Timer;
 
-
 //! A tool to facilitate using MoniTool_Timer functionality
 //! by automatically ensuring consistency of start/stop actions
 //!
 //! When instance of TimerSentry is created, a timer
 //! with corresponding name is started
 //! When instance is deleted, timer stops
-class MoniTool_TimerSentry 
+class MoniTool_TimerSentry
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructor creates an instance and runs the corresponding timer
-    MoniTool_TimerSentry(const Standard_CString cname);
-  
+  MoniTool_TimerSentry(const Standard_CString cname);
+
   //! Constructor creates an instance and runs the corresponding timer
-    MoniTool_TimerSentry(const Handle(MoniTool_Timer)& timer);
-  
+  MoniTool_TimerSentry(const Handle(MoniTool_Timer)& timer);
+
   //! Destructor stops the associated timer
-    ~MoniTool_TimerSentry ();
-  
-    Handle(MoniTool_Timer) Timer() const;
-  
+  ~MoniTool_TimerSentry();
+
+  Handle(MoniTool_Timer) Timer() const;
+
   //! Manually stops the timer
-    void Stop();
-
-
-
+  void Stop();
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(MoniTool_Timer) myTimer;
-
-
 };
 
-
 #include <MoniTool_TimerSentry.lxx>
-
-
-
-
 
 #endif // _MoniTool_TimerSentry_HeaderFile

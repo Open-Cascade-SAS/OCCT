@@ -33,11 +33,11 @@ ViewerTest_ContinuousRedrawer& ViewerTest_ContinuousRedrawer::Instance()
 // purpose  :
 // =======================================================================
 ViewerTest_ContinuousRedrawer::ViewerTest_ContinuousRedrawer()
-: myThread (doThreadWrapper),
-  myWakeEvent (false),
-  myTargetFps (0.0),
-  myToStop (false),
-  myToPause (false)
+    : myThread(doThreadWrapper),
+      myWakeEvent(false),
+      myTargetFps(0.0),
+      myToStop(false),
+      myToPause(false)
 {
   //
 }
@@ -55,28 +55,27 @@ ViewerTest_ContinuousRedrawer::~ViewerTest_ContinuousRedrawer()
 // function : Start
 // purpose  :
 // =======================================================================
-void ViewerTest_ContinuousRedrawer::Start (const Handle(V3d_View)& theView,
-                                           Standard_Real theTargetFps)
+void ViewerTest_ContinuousRedrawer::Start(const Handle(V3d_View)& theView,
+                                          Standard_Real           theTargetFps)
 {
-  if (myView != theView
-   || myTargetFps != theTargetFps)
+  if (myView != theView || myTargetFps != theTargetFps)
   {
     Stop();
-    myView = theView;
+    myView      = theView;
     myTargetFps = theTargetFps;
   }
 
   if (myThread.GetId() == 0)
   {
-    myToStop = false;
+    myToStop  = false;
     myToPause = false;
-    myThread.Run (this);
+    myThread.Run(this);
   }
   else
   {
     {
-      Standard_Mutex::Sentry aLock (myMutex);
-      myToStop = false;
+      Standard_Mutex::Sentry aLock(myMutex);
+      myToStop  = false;
       myToPause = false;
     }
     myWakeEvent.Set();
@@ -87,17 +86,16 @@ void ViewerTest_ContinuousRedrawer::Start (const Handle(V3d_View)& theView,
 // function : Stop
 // purpose  :
 // =======================================================================
-void ViewerTest_ContinuousRedrawer::Stop (const Handle(V3d_View)& theView)
+void ViewerTest_ContinuousRedrawer::Stop(const Handle(V3d_View)& theView)
 {
-  if (!theView.IsNull()
-    && myView != theView)
+  if (!theView.IsNull() && myView != theView)
   {
     return;
   }
 
   {
-    Standard_Mutex::Sentry aLock (myMutex);
-    myToStop = true;
+    Standard_Mutex::Sentry aLock(myMutex);
+    myToStop  = true;
     myToPause = false;
   }
   myWakeEvent.Set();
@@ -114,7 +112,7 @@ void ViewerTest_ContinuousRedrawer::Pause()
 {
   if (!myToPause)
   {
-    Standard_Mutex::Sentry aLock (myMutex);
+    Standard_Mutex::Sentry aLock(myMutex);
     myToPause = true;
   }
 }
@@ -126,15 +124,15 @@ void ViewerTest_ContinuousRedrawer::Pause()
 void ViewerTest_ContinuousRedrawer::doThreadLoop()
 {
   Handle(Aspect_DisplayConnection) aDisp = new Aspect_DisplayConnection();
-  OSD_Timer aTimer;
+  OSD_Timer                        aTimer;
   aTimer.Start();
-  Standard_Real aTimeOld = 0.0;
+  Standard_Real       aTimeOld   = 0.0;
   const Standard_Real aTargetDur = myTargetFps > 0.0 ? 1.0 / myTargetFps : -1.0;
   for (;;)
   {
     bool toPause = false;
     {
-      Standard_Mutex::Sentry aLock (myMutex);
+      Standard_Mutex::Sentry aLock(myMutex);
       if (myToStop)
       {
         return;
@@ -154,16 +152,16 @@ void ViewerTest_ContinuousRedrawer::doThreadLoop()
       if (aDuration >= aTargetDur)
       {
         myView->Invalidate();
-        myView->Window()->InvalidateContent (aDisp);
+        myView->Window()->InvalidateContent(aDisp);
         aTimeOld = aTimeNew;
       }
     }
     else
     {
       myView->Invalidate();
-      myView->Window()->InvalidateContent (aDisp);
+      myView->Window()->InvalidateContent(aDisp);
     }
 
-    OSD::MilliSecSleep (1);
+    OSD::MilliSecSleep(1);
   }
 }

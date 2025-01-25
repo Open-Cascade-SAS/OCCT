@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<TFunction_DataMapOfGUIDDriver> TFunction_Array1OfDataMapOfGUIDDriver;
 
-
 #endif

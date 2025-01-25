@@ -15,6 +15,10 @@
 
 #include <StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp,StepRepr_CompShAspAndDatumFeatAndShAsp)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp,
+                           StepRepr_CompShAspAndDatumFeatAndShAsp)
 
-StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp::StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp ()    {  }
+StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp::
+  StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp()
+{
+}

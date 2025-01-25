@@ -26,48 +26,28 @@ class StepGeom_Curve;
 class Geom_Curve;
 class Geom2d_Curve;
 
-
 //! This class implements the mapping between classes
 //! Curve from Geom and the class Curve from StepGeom which
 //! describes a Curve from prostep. As Curve is an
 //! abstract curve this class an access to the sub-class required.
-class GeomToStep_MakeCurve  : public GeomToStep_Root
+class GeomToStep_MakeCurve : public GeomToStep_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT GeomToStep_MakeCurve(const Handle(Geom_Curve)& C,
-                                       const StepData_Factors& theLocalFactors = StepData_Factors());
-  
-  Standard_EXPORT GeomToStep_MakeCurve(const Handle(Geom2d_Curve)& C,
-                                       const StepData_Factors& theLocalFactors = StepData_Factors());
-  
+  Standard_EXPORT GeomToStep_MakeCurve(
+    const Handle(Geom_Curve)& C,
+    const StepData_Factors&   theLocalFactors = StepData_Factors());
+
+  Standard_EXPORT GeomToStep_MakeCurve(
+    const Handle(Geom2d_Curve)& C,
+    const StepData_Factors&     theLocalFactors = StepData_Factors());
+
   Standard_EXPORT const Handle(StepGeom_Curve)& Value() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(StepGeom_Curve) theCurve;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeomToStep_MakeCurve_HeaderFile

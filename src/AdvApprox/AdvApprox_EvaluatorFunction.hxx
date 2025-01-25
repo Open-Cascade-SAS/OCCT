@@ -24,40 +24,40 @@
 
 //! Interface for a class implementing a function to be approximated
 //! by AdvApprox_ApproxAFunction
-class AdvApprox_EvaluatorFunction 
+class AdvApprox_EvaluatorFunction
 {
- public:
-  
+public:
   //! Empty constructor
-  AdvApprox_EvaluatorFunction () {}
-  
+  AdvApprox_EvaluatorFunction() {}
+
   //! Destructor should be declared as virtual
-  virtual ~AdvApprox_EvaluatorFunction () {}
-  
+  virtual ~AdvApprox_EvaluatorFunction() {}
+
   //! Function evaluation method to be defined by descendant
-  virtual void Evaluate (Standard_Integer *Dimension,
-		         Standard_Real     StartEnd[2],
-                         Standard_Real    *Parameter,
-                         Standard_Integer *DerivativeRequest,
-                         Standard_Real    *Result, // [Dimension]
-                         Standard_Integer *ErrorCode) = 0;
+  virtual void Evaluate(Standard_Integer* Dimension,
+                        Standard_Real     StartEnd[2],
+                        Standard_Real*    Parameter,
+                        Standard_Integer* DerivativeRequest,
+                        Standard_Real*    Result, // [Dimension]
+                        Standard_Integer* ErrorCode) = 0;
 
   //! Shortcut for function-call style usage
-  void operator () (Standard_Integer *Dimension,
-                    Standard_Real     StartEnd[2],
-                    Standard_Real    *Parameter,
-                    Standard_Integer *DerivativeRequest,
-                    Standard_Real    *Result, // [Dimension]
-                    Standard_Integer *ErrorCode)
-  { Evaluate (Dimension, StartEnd, Parameter, DerivativeRequest, Result, ErrorCode); }
-  
- private:
+  void operator()(Standard_Integer* Dimension,
+                  Standard_Real     StartEnd[2],
+                  Standard_Real*    Parameter,
+                  Standard_Integer* DerivativeRequest,
+                  Standard_Real*    Result, // [Dimension]
+                  Standard_Integer* ErrorCode)
+  {
+    Evaluate(Dimension, StartEnd, Parameter, DerivativeRequest, Result, ErrorCode);
+  }
 
+private:
   //! Copy constructor is declared private to forbid copying
-  AdvApprox_EvaluatorFunction (const AdvApprox_EvaluatorFunction&) {}
+  AdvApprox_EvaluatorFunction(const AdvApprox_EvaluatorFunction&) {}
 
   //! Assignment operator is declared private to forbid copying
-  void operator = (const AdvApprox_EvaluatorFunction&) {}
+  void operator=(const AdvApprox_EvaluatorFunction&) {}
 };
 
 #endif

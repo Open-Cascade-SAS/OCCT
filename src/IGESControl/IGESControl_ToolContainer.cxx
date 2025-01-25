@@ -13,26 +13,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IGESControl_IGESBoundary.hxx>
 #include <IGESControl_ToolContainer.hxx>
 #include <IGESToBRep_IGESBoundary.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESControl_ToolContainer,IGESToBRep_ToolContainer)
+IMPLEMENT_STANDARD_RTTIEXT(IGESControl_ToolContainer, IGESToBRep_ToolContainer)
 
-//=======================================================================
-//function : IGESControl_ToolContainer
-//purpose  : 
-//=======================================================================
-IGESControl_ToolContainer::IGESControl_ToolContainer():IGESToBRep_ToolContainer()
+//=================================================================================================
+
+IGESControl_ToolContainer::IGESControl_ToolContainer()
+    : IGESToBRep_ToolContainer()
 {
 }
 
-//=======================================================================
-//function : IGESBoundary
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(IGESToBRep_IGESBoundary) IGESControl_ToolContainer::IGESBoundary() const
 {

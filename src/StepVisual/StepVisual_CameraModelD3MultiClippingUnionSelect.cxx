@@ -18,21 +18,23 @@
 #include <StepGeom_Plane.hxx>
 #include <StepVisual_CameraModelD3MultiClippingIntersection.hxx>
 
-//=======================================================================
-//function : StepVisual_CameraModelD3MultiClippingUnionSelect
-//purpose  : 
-//=======================================================================
-StepVisual_CameraModelD3MultiClippingUnionSelect::StepVisual_CameraModelD3MultiClippingUnionSelect () {  }
+//=================================================================================================
 
-//=======================================================================
-//function : CaseNum
-//purpose  : 
-//=======================================================================
-Standard_Integer StepVisual_CameraModelD3MultiClippingUnionSelect::CaseNum(const Handle(Standard_Transient)& ent) const
+StepVisual_CameraModelD3MultiClippingUnionSelect::StepVisual_CameraModelD3MultiClippingUnionSelect()
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepGeom_Plane))) return 1;
-  if (ent->IsInstance(STANDARD_TYPE(StepVisual_CameraModelD3MultiClippingIntersection))) return 2;
+}
+
+//=================================================================================================
+
+Standard_Integer StepVisual_CameraModelD3MultiClippingUnionSelect::CaseNum(
+  const Handle(Standard_Transient)& ent) const
+{
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepGeom_Plane)))
+    return 1;
+  if (ent->IsInstance(STANDARD_TYPE(StepVisual_CameraModelD3MultiClippingIntersection)))
+    return 2;
   return 0;
 }
 
@@ -41,7 +43,8 @@ Handle(StepGeom_Plane) StepVisual_CameraModelD3MultiClippingUnionSelect::Plane()
   return GetCasted(StepGeom_Plane, Value());
 }
 
-Handle(StepVisual_CameraModelD3MultiClippingIntersection) StepVisual_CameraModelD3MultiClippingUnionSelect::CameraModelD3MultiClippingIntersection() const
+Handle(StepVisual_CameraModelD3MultiClippingIntersection)
+  StepVisual_CameraModelD3MultiClippingUnionSelect::CameraModelD3MultiClippingIntersection() const
 {
   return GetCasted(StepVisual_CameraModelD3MultiClippingIntersection, Value());
 }

@@ -25,16 +25,15 @@ class Express_Field : public Standard_Transient
 {
 
 public:
+  //! Create object and initialize it
+  Standard_EXPORT Express_Field(const Standard_CString      theName,
+                                const Handle(Express_Type)& theType,
+                                const Standard_Boolean      theOpt);
 
   //! Create object and initialize it
-  Standard_EXPORT Express_Field (const Standard_CString theName,
-                                 const Handle(Express_Type)& theType,
-                                 const Standard_Boolean theOpt);
-
-  //! Create object and initialize it
-  Standard_EXPORT Express_Field (const Handle(TCollection_HAsciiString)& theName,
-                                 const Handle(Express_Type)& theType,
-                                 const Standard_Boolean theOpt);
+  Standard_EXPORT Express_Field(const Handle(TCollection_HAsciiString)& theName,
+                                const Handle(Express_Type)&             theType,
+                                const Standard_Boolean                  theOpt);
 
   //! Returns field name
   Standard_EXPORT const TCollection_AsciiString& Name() const;
@@ -51,13 +50,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(Express_Field, Standard_Transient)
 
 protected:
-
 private:
-
   Handle(TCollection_HAsciiString) myName;
-  Handle(Express_Type) myType;
-  Standard_Boolean myOpt;
-
+  Handle(Express_Type)             myType;
+  Standard_Boolean                 myOpt;
 };
 
 #endif // _Express_Field_HeaderFile

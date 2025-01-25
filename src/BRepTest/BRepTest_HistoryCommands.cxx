@@ -26,55 +26,69 @@
 #include <TopoDS.hxx>
 
 static Standard_Integer SetFillHistory(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer SaveHistory   (Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer Modified      (Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer Generated     (Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer IsDeleted     (Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer SaveHistory(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer Modified(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer Generated(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer IsDeleted(Draw_Interpretor&, Standard_Integer, const char**);
 
-//=======================================================================
-//function : HistoryCommands
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BRepTest::HistoryCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean isDone = Standard_False;
-  if (isDone) return;
+  if (isDone)
+    return;
   isDone = Standard_True;
   // Chapter's name
   const char* group = "History commands";
 
   // Commands
-  theCommands.Add("setfillhistory" , "Controls the history collection by the algorithms and its saving into the session after algorithm is done.\n"
+  theCommands.Add("setfillhistory",
+                  "Controls the history collection by the algorithms and its saving into the "
+                  "session after algorithm is done.\n"
                   "\t\tUsage: setfillhistory [flag]\n"
                   "\t\tw/o arguments prints the current state of the option;\n"
                   "\t\tflag == 0 - history will not be collected and saved;\n"
                   "\t\tflag != 0 - history will be collected and saved into the session (default).",
-                  __FILE__, SetFillHistory , group);
+                  __FILE__,
+                  SetFillHistory,
+                  group);
 
-  theCommands.Add("savehistory" , "savehistory name\n"
-                  "\t\tSaves the history from the session into a drawable object with the name <name>.",
-                  __FILE__, SaveHistory , group);
+  theCommands.Add(
+    "savehistory",
+    "savehistory name\n"
+    "\t\tSaves the history from the session into a drawable object with the name <name>.",
+    __FILE__,
+    SaveHistory,
+    group);
 
-  theCommands.Add("modified" , "modified modified_shapes history shape\n"
+  theCommands.Add("modified",
+                  "modified modified_shapes history shape\n"
                   "\t\tReturns the shapes Modified from the given shape in the given history",
-                  __FILE__, Modified , group);
+                  __FILE__,
+                  Modified,
+                  group);
 
-  theCommands.Add("generated", "generated generated_shapes history shape\n"
+  theCommands.Add("generated",
+                  "generated generated_shapes history shape\n"
                   "\t\tReturns the shapes Generated from the given shape in the given history",
-                  __FILE__, Generated, group);
+                  __FILE__,
+                  Generated,
+                  group);
 
-  theCommands.Add("isdeleted", "isdeleted history shape\n"
+  theCommands.Add("isdeleted",
+                  "isdeleted history shape\n"
                   "\t\tChecks if the given shape has been deleted in the given history",
-                  __FILE__, IsDeleted, group);
+                  __FILE__,
+                  IsDeleted,
+                  group);
 }
 
-//=======================================================================
-//function : SetFillHistory
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer SetFillHistory(Draw_Interpretor& theDI,
-                                Standard_Integer theArgc,
-                                const char** theArgv)
+                                Standard_Integer  theArgc,
+                                const char**      theArgv)
 {
   if (theArgc > 2)
   {
@@ -84,8 +98,8 @@ Standard_Integer SetFillHistory(Draw_Interpretor& theDI,
 
   if (theArgc == 1)
   {
-    theDI << "Filling of the history is " <<
-      (BRepTest_Objects::IsHistoryNeeded() ? "enabled." : "disabled.");
+    theDI << "Filling of the history is "
+          << (BRepTest_Objects::IsHistoryNeeded() ? "enabled." : "disabled.");
   }
   else
   {
@@ -95,13 +109,11 @@ Standard_Integer SetFillHistory(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : SaveHistory
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer SaveHistory(Draw_Interpretor& theDI,
-                             Standard_Integer theArgc,
-                             const char** theArgv)
+                             Standard_Integer  theArgc,
+                             const char**      theArgv)
 {
   if (theArgc != 2)
   {
@@ -124,12 +136,9 @@ Standard_Integer SaveHistory(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : GetHistory
-//purpose  : 
-//=======================================================================
-static Handle(BRepTools_History) GetHistory(Draw_Interpretor& theDI,
-                                            Standard_CString theName)
+//=================================================================================================
+
+static Handle(BRepTools_History) GetHistory(Draw_Interpretor& theDI, Standard_CString theName)
 {
   Handle(BRepTest_DrawableHistory) aHistory =
     Handle(BRepTest_DrawableHistory)::DownCast(Draw::Get(theName));
@@ -143,12 +152,9 @@ static Handle(BRepTools_History) GetHistory(Draw_Interpretor& theDI,
   return aHistory->History();
 }
 
-//=======================================================================
-//function : GetShape
-//purpose  : 
-//=======================================================================
-static TopoDS_Shape GetShape(Draw_Interpretor& theDI,
-                             Standard_CString theName)
+//=================================================================================================
+
+static TopoDS_Shape GetShape(Draw_Interpretor& theDI, Standard_CString theName)
 {
   TopoDS_Shape aS = DBRep::Get(theName);
 
@@ -166,10 +172,8 @@ static TopoDS_Shape GetShape(Draw_Interpretor& theDI,
   return aS;
 }
 
-//=======================================================================
-//function : MakeCompound
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 static TopoDS_Shape MakeCompound(const TopTools_ListOfShape& theLS)
 {
   TopoDS_Shape aC;
@@ -185,13 +189,9 @@ static TopoDS_Shape MakeCompound(const TopTools_ListOfShape& theLS)
   return aC;
 }
 
-//=======================================================================
-//function : Modified
-//purpose  : 
-//=======================================================================
-Standard_Integer Modified(Draw_Interpretor& theDI,
-                          Standard_Integer theArgc,
-                          const char** theArgv)
+//=================================================================================================
+
+Standard_Integer Modified(Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
 {
   if (theArgc != 4)
   {
@@ -220,13 +220,9 @@ Standard_Integer Modified(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : Generated
-//purpose  : 
-//=======================================================================
-Standard_Integer Generated(Draw_Interpretor& theDI,
-                           Standard_Integer theArgc,
-                           const char** theArgv)
+//=================================================================================================
+
+Standard_Integer Generated(Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
 {
   if (theArgc != 4)
   {
@@ -255,13 +251,9 @@ Standard_Integer Generated(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : IsDeleted
-//purpose  : 
-//=======================================================================
-Standard_Integer IsDeleted(Draw_Interpretor& theDI,
-                           Standard_Integer theArgc,
-                           const char** theArgv)
+//=================================================================================================
+
+Standard_Integer IsDeleted(Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
 {
   if (theArgc != 3)
   {

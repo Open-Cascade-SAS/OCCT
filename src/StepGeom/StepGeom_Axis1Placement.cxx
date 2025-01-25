@@ -11,48 +11,45 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepGeom_Axis1Placement.hxx>
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_Direction.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Axis1Placement,StepGeom_Placement)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Axis1Placement, StepGeom_Placement)
 
-StepGeom_Axis1Placement::StepGeom_Axis1Placement ()  {}
+StepGeom_Axis1Placement::StepGeom_Axis1Placement() {}
 
-void StepGeom_Axis1Placement::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_CartesianPoint)& aLocation,
-	const Standard_Boolean hasAaxis,
-	const Handle(StepGeom_Direction)& aAxis)
+void StepGeom_Axis1Placement::Init(const Handle(TCollection_HAsciiString)& aName,
+                                   const Handle(StepGeom_CartesianPoint)&  aLocation,
+                                   const Standard_Boolean                  hasAaxis,
+                                   const Handle(StepGeom_Direction)&       aAxis)
 {
-	// --- classe own fields ---
-	hasAxis = hasAaxis;
-	axis = aAxis;
-	// --- classe inherited fields ---
-	StepGeom_Placement::Init(aName, aLocation);
+  // --- classe own fields ---
+  hasAxis = hasAaxis;
+  axis    = aAxis;
+  // --- classe inherited fields ---
+  StepGeom_Placement::Init(aName, aLocation);
 }
-
 
 void StepGeom_Axis1Placement::SetAxis(const Handle(StepGeom_Direction)& aAxis)
 {
-	axis = aAxis;
-	hasAxis = Standard_True;
+  axis    = aAxis;
+  hasAxis = Standard_True;
 }
 
 void StepGeom_Axis1Placement::UnSetAxis()
 {
-	hasAxis = Standard_False;
-	axis.Nullify();
+  hasAxis = Standard_False;
+  axis.Nullify();
 }
 
 Handle(StepGeom_Direction) StepGeom_Axis1Placement::Axis() const
 {
-	return axis;
+  return axis;
 }
 
 Standard_Boolean StepGeom_Axis1Placement::HasAxis() const
 {
-	return hasAxis;
+  return hasAxis;
 }

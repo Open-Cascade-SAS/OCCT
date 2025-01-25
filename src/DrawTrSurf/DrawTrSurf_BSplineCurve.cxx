@@ -27,8 +27,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_BSplineCurve, DrawTrSurf_Curve)
 
-DrawTrSurf_BSplineCurve::DrawTrSurf_BSplineCurve (const Handle(Geom_BSplineCurve)& C)
-: DrawTrSurf_Curve (C, Draw_vert, 16, 0.05, 1)
+DrawTrSurf_BSplineCurve::DrawTrSurf_BSplineCurve(const Handle(Geom_BSplineCurve)& C)
+    : DrawTrSurf_Curve(C, Draw_vert, 16, 0.05, 1)
 {
 
   drawKnots = Standard_True;
@@ -39,13 +39,18 @@ DrawTrSurf_BSplineCurve::DrawTrSurf_BSplineCurve (const Handle(Geom_BSplineCurve
   polesLook = Draw_rouge;
 }
 
-DrawTrSurf_BSplineCurve::DrawTrSurf_BSplineCurve (const Handle(Geom_BSplineCurve)& C, const Draw_Color& CurvColor,
-                                                  const Draw_Color& PolesColor, const Draw_Color& KnotsColor,
-                                                  const Draw_MarkerShape KnotsShape, const Standard_Integer KnotsSize,
-                                                  const Standard_Boolean ShowPoles, const Standard_Boolean ShowKnots,
-                                                  const Standard_Integer Discret, const Standard_Real Deflection,
-                                                  const Standard_Integer DrawMode)
-: DrawTrSurf_Curve (C, CurvColor, Discret, Deflection, DrawMode)
+DrawTrSurf_BSplineCurve::DrawTrSurf_BSplineCurve(const Handle(Geom_BSplineCurve)& C,
+                                                 const Draw_Color&                CurvColor,
+                                                 const Draw_Color&                PolesColor,
+                                                 const Draw_Color&                KnotsColor,
+                                                 const Draw_MarkerShape           KnotsShape,
+                                                 const Standard_Integer           KnotsSize,
+                                                 const Standard_Boolean           ShowPoles,
+                                                 const Standard_Boolean           ShowKnots,
+                                                 const Standard_Integer           Discret,
+                                                 const Standard_Real              Deflection,
+                                                 const Standard_Integer           DrawMode)
+    : DrawTrSurf_Curve(C, CurvColor, Discret, Deflection, DrawMode)
 {
   drawKnots = ShowKnots;
   knotsForm = KnotsShape;
@@ -55,15 +60,15 @@ DrawTrSurf_BSplineCurve::DrawTrSurf_BSplineCurve (const Handle(Geom_BSplineCurve
   polesLook = PolesColor;
 }
 
-void DrawTrSurf_BSplineCurve::DrawOn (Draw_Display& dis) const
+void DrawTrSurf_BSplineCurve::DrawOn(Draw_Display& dis) const
 {
   Handle(Geom_BSplineCurve) C = Handle(Geom_BSplineCurve)::DownCast(curv);
   if (drawPoles)
   {
     Standard_Integer NbPoles = C->NbPoles();
     dis.SetColor(polesLook);
-    TColgp_Array1OfPnt CPoles (1, NbPoles);
-    C->Poles (CPoles);
+    TColgp_Array1OfPnt CPoles(1, NbPoles);
+    C->Poles(CPoles);
     dis.MoveTo(CPoles(1));
     for (Standard_Integer i = 2; i <= NbPoles; i++)
     {
@@ -74,34 +79,34 @@ void DrawTrSurf_BSplineCurve::DrawOn (Draw_Display& dis) const
       dis.DrawTo(CPoles(1));
     }
   }
-  
-  DrawTrSurf_Curve::DrawOn (dis);
+
+  DrawTrSurf_Curve::DrawOn(dis);
   if (drawKnots)
   {
-    Standard_Integer NbKnots = C->NbKnots();
-    TColStd_Array1OfReal CKnots (1, NbKnots);
-    C->Knots (CKnots); 
+    Standard_Integer     NbKnots = C->NbKnots();
+    TColStd_Array1OfReal CKnots(1, NbKnots);
+    C->Knots(CKnots);
     dis.SetColor(knotsLook);
     Standard_Integer first = C->FirstUKnotIndex();
     Standard_Integer last  = C->LastUKnotIndex();
     for (Standard_Integer i = first; i <= last; i++)
     {
-      dis.DrawMarker (C->Value (CKnots (i)), knotsForm, knotsDim);
+      dis.DrawMarker(C->Value(CKnots(i)), knotsForm, knotsDim);
     }
   }
 }
 
-void DrawTrSurf_BSplineCurve::DrawOn (Draw_Display& dis,
-                                      const Standard_Boolean ShowPoles,
-                                      const Standard_Boolean ShowKnots) const
+void DrawTrSurf_BSplineCurve::DrawOn(Draw_Display&          dis,
+                                     const Standard_Boolean ShowPoles,
+                                     const Standard_Boolean ShowKnots) const
 {
   Handle(Geom_BSplineCurve) C = Handle(Geom_BSplineCurve)::DownCast(curv);
   if (drawPoles && ShowPoles)
   {
     Standard_Integer NbPoles = C->NbPoles();
     dis.SetColor(polesLook);
-    TColgp_Array1OfPnt CPoles (1, NbPoles);
-    C->Poles (CPoles);
+    TColgp_Array1OfPnt CPoles(1, NbPoles);
+    C->Poles(CPoles);
     dis.MoveTo(CPoles(1));
     for (Standard_Integer i = 2; i <= NbPoles; i++)
     {
@@ -113,39 +118,39 @@ void DrawTrSurf_BSplineCurve::DrawOn (Draw_Display& dis,
 
   if (drawKnots && ShowKnots)
   {
-    Standard_Integer NbKnots = C->NbKnots();
-    TColStd_Array1OfReal CKnots (1, NbKnots);
-    C->Knots (CKnots); 
+    Standard_Integer     NbKnots = C->NbKnots();
+    TColStd_Array1OfReal CKnots(1, NbKnots);
+    C->Knots(CKnots);
     dis.SetColor(knotsLook);
     for (Standard_Integer i = 1; i <= NbKnots; i++)
     {
-      dis.DrawMarker (C->Value (CKnots (i)), knotsForm, knotsDim);
+      dis.DrawMarker(C->Value(CKnots(i)), knotsForm, knotsDim);
     }
   }
 }
 
-void DrawTrSurf_BSplineCurve::DrawOn (Draw_Display& dis, 
-                                      const Standard_Real    U1,
-                                      const Standard_Real    U2,
-                                      const Standard_Integer Pindex,
-                                      const Standard_Boolean ShowPoles,
-                                      const Standard_Boolean ShowKnots) const
+void DrawTrSurf_BSplineCurve::DrawOn(Draw_Display&          dis,
+                                     const Standard_Real    U1,
+                                     const Standard_Real    U2,
+                                     const Standard_Integer Pindex,
+                                     const Standard_Boolean ShowPoles,
+                                     const Standard_Boolean ShowKnots) const
 {
-  Handle(Geom_BSplineCurve) C = Handle(Geom_BSplineCurve)::DownCast(curv);
-  Standard_Real Eps1 = Abs(Epsilon (U1));
-  Standard_Real Eps2 = Abs(Epsilon (U2));
-  Standard_Integer I1, J1, I2, J2;
-  C->LocateU (U1, Eps1, I1, J1);
-  C->LocateU (U2, Eps2, I2, J2);
-  Standard_Integer ka  = C->FirstUKnotIndex ();
-  Standard_Integer kb  = C->LastUKnotIndex ();
+  Handle(Geom_BSplineCurve) C    = Handle(Geom_BSplineCurve)::DownCast(curv);
+  Standard_Real             Eps1 = Abs(Epsilon(U1));
+  Standard_Real             Eps2 = Abs(Epsilon(U2));
+  Standard_Integer          I1, J1, I2, J2;
+  C->LocateU(U1, Eps1, I1, J1);
+  C->LocateU(U2, Eps2, I2, J2);
+  Standard_Integer ka = C->FirstUKnotIndex();
+  Standard_Integer kb = C->LastUKnotIndex();
 
   if (drawPoles && ShowPoles)
   {
     Standard_Integer NbPoles = C->NbPoles();
     dis.SetColor(polesLook);
-    TColgp_Array1OfPnt CPoles (1, NbPoles);
-    C->Poles (CPoles);
+    TColgp_Array1OfPnt CPoles(1, NbPoles);
+    C->Poles(CPoles);
     if (Pindex == 0)
     {
       dis.MoveTo(CPoles(1));
@@ -157,18 +162,18 @@ void DrawTrSurf_BSplineCurve::DrawOn (Draw_Display& dis,
     else if (Pindex == 1)
     {
       dis.MoveTo(CPoles(1));
-      dis.DrawTo(CPoles(2));        
+      dis.DrawTo(CPoles(2));
     }
     else if (Pindex == NbPoles)
     {
-      dis.MoveTo(CPoles(NbPoles-1));
+      dis.MoveTo(CPoles(NbPoles - 1));
       dis.DrawTo(CPoles(NbPoles));
     }
     else
     {
-      dis.MoveTo(CPoles(Pindex-1));
+      dis.MoveTo(CPoles(Pindex - 1));
       dis.DrawTo(CPoles(Pindex));
-      dis.DrawTo(CPoles(Pindex+1));
+      dis.DrawTo(CPoles(Pindex + 1));
     }
   }
 
@@ -183,94 +188,105 @@ void DrawTrSurf_BSplineCurve::DrawOn (Draw_Display& dis,
   {
     Standard_Integer NbPoints;
     Standard_Integer Discret = GetDiscretisation();
-    Standard_Real Ustart = C->Knot (ka);
-    Standard_Real Uend   = C->Knot (kb);
-    Standard_Real Du, U, Ua, Ub, Uk1, Uk2;
+    Standard_Real    Ustart  = C->Knot(ka);
+    Standard_Real    Uend    = C->Knot(kb);
+    Standard_Real    Du, U, Ua, Ub, Uk1, Uk2;
 
-    if (I1 > ka)  { ka = I1;  Uk1 = U1; }
+    if (I1 > ka)
+    {
+      ka  = I1;
+      Uk1 = U1;
+    }
     else
     {
-      U = U1;
-      NbPoints = (Standard_Integer) Abs (Discret * (U1 - Ustart) / (Ustart - Uend));
-      NbPoints = Max (NbPoints, 30);
-      Du = (Ustart - U1) / NbPoints;
-      dis.MoveTo(C->Value (U));
-      for (Standard_Integer i = 1; i <= NbPoints - 2; i++) {
-          U+= Du;
-          dis.DrawTo(C->Value (U));
+      U        = U1;
+      NbPoints = (Standard_Integer)Abs(Discret * (U1 - Ustart) / (Ustart - Uend));
+      NbPoints = Max(NbPoints, 30);
+      Du       = (Ustart - U1) / NbPoints;
+      dis.MoveTo(C->Value(U));
+      for (Standard_Integer i = 1; i <= NbPoints - 2; i++)
+      {
+        U += Du;
+        dis.DrawTo(C->Value(U));
       }
-      dis.DrawTo(C->Value (Ustart));
+      dis.DrawTo(C->Value(Ustart));
       Uk1 = Ustart;
     }
 
-    if (J2 < kb)  { kb = J2;  Uk2 = U2; }
+    if (J2 < kb)
+    {
+      kb  = J2;
+      Uk2 = U2;
+    }
     else
     {
-      Uk2 = Uend;
-      U   = Uend;
-      NbPoints = (Standard_Integer) Abs (Discret * (U2 - Uend) / (Ustart - Uend));
-      NbPoints = Max (NbPoints, 30);
-      Du = (U2 - Uend) / NbPoints;
-      dis.MoveTo(C->Value (U));
+      Uk2      = Uend;
+      U        = Uend;
+      NbPoints = (Standard_Integer)Abs(Discret * (U2 - Uend) / (Ustart - Uend));
+      NbPoints = Max(NbPoints, 30);
+      Du       = (U2 - Uend) / NbPoints;
+      dis.MoveTo(C->Value(U));
       for (Standard_Integer i = 1; i <= NbPoints - 2; i++)
       {
-        U+= Du;
-        dis.DrawTo(C->Value (U));
+        U += Du;
+        dis.DrawTo(C->Value(U));
       }
-      dis.DrawTo(C->Value (U2));
+      dis.DrawTo(C->Value(U2));
     }
-
 
     for (Standard_Integer k = ka; k < kb; k++)
     {
       if (k == ka)
       {
         Ua = Uk1;
-        Ub = C->Knot (k+1);
+        Ub = C->Knot(k + 1);
       }
-      else if (k == kb-1)
+      else if (k == kb - 1)
       {
-        Ua = C->Knot (k);
+        Ua = C->Knot(k);
         Ub = Uk2;
       }
       else
       {
-        Ua = C->Knot (k);
-        Ub = C->Knot (k+1);
+        Ua = C->Knot(k);
+        Ub = C->Knot(k + 1);
       }
-      U  = Ua;
-      NbPoints = (Standard_Integer) Abs (Discret * (Ua - Ub) / (Ustart - Uend));
-      NbPoints = Max (NbPoints, 30);
-      Du = (Ub - Ua) / NbPoints;
-      dis.MoveTo(C->Value (U));
+      U        = Ua;
+      NbPoints = (Standard_Integer)Abs(Discret * (Ua - Ub) / (Ustart - Uend));
+      NbPoints = Max(NbPoints, 30);
+      Du       = (Ub - Ua) / NbPoints;
+      dis.MoveTo(C->Value(U));
       for (Standard_Integer i = 1; i <= NbPoints - 2; i++)
       {
-        U+= Du;
-        dis.DrawTo(C->Value (U));
+        U += Du;
+        dis.DrawTo(C->Value(U));
       }
-      dis.DrawTo(C->Value (Ub));
+      dis.DrawTo(C->Value(Ub));
     }
   }
 
   if (drawKnots && ShowKnots)
   {
-    Standard_Integer NbKnots = C->NbKnots();
-    TColStd_Array1OfReal CKnots (1, NbKnots);
-    C->Knots (CKnots); 
+    Standard_Integer     NbKnots = C->NbKnots();
+    TColStd_Array1OfReal CKnots(1, NbKnots);
+    C->Knots(CKnots);
     dis.SetColor(knotsLook);
     for (Standard_Integer i = J1; i <= I2; i++)
     {
-      dis.DrawMarker (C->Value (CKnots (i)), knotsForm, knotsDim);
+      dis.DrawMarker(C->Value(CKnots(i)), knotsForm, knotsDim);
     }
   }
 }
 
-void DrawTrSurf_BSplineCurve::FindPole (const Standard_Real X, const Standard_Real Y, const Draw_Display& D, const Standard_Real XPrec,
-                                        Standard_Integer& Index) const
+void DrawTrSurf_BSplineCurve::FindPole(const Standard_Real X,
+                                       const Standard_Real Y,
+                                       const Draw_Display& D,
+                                       const Standard_Real XPrec,
+                                       Standard_Integer&   Index) const
 {
-  Handle(Geom_BSplineCurve) bc = Handle(Geom_BSplineCurve)::DownCast(curv);
-  Standard_Real Prec = XPrec / D.Zoom();
-  gp_Pnt2d p1(X/D.Zoom(),Y/D.Zoom());
+  Handle(Geom_BSplineCurve) bc   = Handle(Geom_BSplineCurve)::DownCast(curv);
+  Standard_Real             Prec = XPrec / D.Zoom();
+  gp_Pnt2d                  p1(X / D.Zoom(), Y / D.Zoom());
   Index++;
   Standard_Integer NbPoles = bc->NbPoles();
   while (Index <= NbPoles)
@@ -284,11 +300,14 @@ void DrawTrSurf_BSplineCurve::FindPole (const Standard_Real X, const Standard_Re
   Index = 0;
 }
 
-void DrawTrSurf_BSplineCurve::FindKnot (const Standard_Real X, const Standard_Real Y, const Draw_Display& D, const Standard_Real Prec,
-                                        Standard_Integer& Index) const
+void DrawTrSurf_BSplineCurve::FindKnot(const Standard_Real X,
+                                       const Standard_Real Y,
+                                       const Draw_Display& D,
+                                       const Standard_Real Prec,
+                                       Standard_Integer&   Index) const
 {
   Handle(Geom_BSplineCurve) bc = Handle(Geom_BSplineCurve)::DownCast(curv);
-  gp_Pnt2d p1(X,Y);
+  gp_Pnt2d                  p1(X, Y);
   Index++;
   Standard_Integer NbKnots = bc->NbKnots();
   while (Index <= NbKnots)
@@ -302,33 +321,43 @@ void DrawTrSurf_BSplineCurve::FindKnot (const Standard_Real X, const Standard_Re
   Index = 0;
 }
 
-//=======================================================================
-//function : Copy
-//purpose  :
-//=======================================================================
-Handle(Draw_Drawable3D) DrawTrSurf_BSplineCurve::Copy() const 
+//=================================================================================================
+
+Handle(Draw_Drawable3D) DrawTrSurf_BSplineCurve::Copy() const
 {
-  Handle(DrawTrSurf_BSplineCurve) DC = new DrawTrSurf_BSplineCurve
-    (Handle(Geom_BSplineCurve)::DownCast(curv->Copy()),
-     look,polesLook,knotsLook,knotsForm,knotsDim,
-     drawPoles,drawKnots,
-     GetDiscretisation(),GetDeflection(),GetDrawMode());
+  Handle(DrawTrSurf_BSplineCurve) DC =
+    new DrawTrSurf_BSplineCurve(Handle(Geom_BSplineCurve)::DownCast(curv->Copy()),
+                                look,
+                                polesLook,
+                                knotsLook,
+                                knotsForm,
+                                knotsDim,
+                                drawPoles,
+                                drawKnots,
+                                GetDiscretisation(),
+                                GetDeflection(),
+                                GetDrawMode());
 
   return DC;
 }
 
-//=======================================================================
-//function : Restore
-//purpose  :
-//=======================================================================
-Handle(Draw_Drawable3D) DrawTrSurf_BSplineCurve::Restore (std::istream& theStream)
+//=================================================================================================
+
+Handle(Draw_Drawable3D) DrawTrSurf_BSplineCurve::Restore(std::istream& theStream)
 {
-  const DrawTrSurf_Params& aParams = DrawTrSurf::Parameters();
-  Handle(Geom_BSplineCurve) aGeomCurve = Handle(Geom_BSplineCurve)::DownCast (GeomTools_CurveSet::ReadCurve (theStream));
-  Handle(DrawTrSurf_BSplineCurve) aDrawCurve = new DrawTrSurf_BSplineCurve (aGeomCurve,
-                                                                            aParams.CurvColor, aParams.PolesColor, aParams.KnotsColor,
-                                                                            aParams.KnotsMarker, aParams.KnotsSize,
-                                                                            aParams.IsShowPoles, aParams.IsShowKnots,
-                                                                            aParams.Discret, aParams.Deflection, aParams.DrawMode);
+  const DrawTrSurf_Params&  aParams = DrawTrSurf::Parameters();
+  Handle(Geom_BSplineCurve) aGeomCurve =
+    Handle(Geom_BSplineCurve)::DownCast(GeomTools_CurveSet::ReadCurve(theStream));
+  Handle(DrawTrSurf_BSplineCurve) aDrawCurve = new DrawTrSurf_BSplineCurve(aGeomCurve,
+                                                                           aParams.CurvColor,
+                                                                           aParams.PolesColor,
+                                                                           aParams.KnotsColor,
+                                                                           aParams.KnotsMarker,
+                                                                           aParams.KnotsSize,
+                                                                           aParams.IsShowPoles,
+                                                                           aParams.IsShowKnots,
+                                                                           aParams.Discret,
+                                                                           aParams.Deflection,
+                                                                           aParams.DrawMode);
   return aDrawCurve;
 }

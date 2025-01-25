@@ -29,7 +29,6 @@
 
 class gp_Vec;
 
-
 //! This  class  is  used  to  interpolate a  BsplineCurve
 //! passing   through  an  array  of  points,  with  a  C2
 //! Continuity if tangency is not requested at the point.
@@ -48,13 +47,11 @@ class gp_Vec;
 //! -   defining the constraints of the BSpline curve,
 //! -   implementing the interpolation algorithm, and
 //! -   consulting the results.
-class GeomAPI_Interpolate 
+class GeomAPI_Interpolate
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Initializes an algorithm for constructing a
   //! constrained BSpline curve passing through the points of the table   Points.
   //! Tangential vectors can then be assigned, using the function Load.
@@ -91,8 +88,10 @@ public:
   //! -   conditions relating to the respective
   //! number of elements in the parallel tables
   //! Points and Parameters are not respected.
-  Standard_EXPORT GeomAPI_Interpolate(const Handle(TColgp_HArray1OfPnt)& Points, const Standard_Boolean PeriodicFlag, const Standard_Real Tolerance);
-  
+  Standard_EXPORT GeomAPI_Interpolate(const Handle(TColgp_HArray1OfPnt)& Points,
+                                      const Standard_Boolean             PeriodicFlag,
+                                      const Standard_Real                Tolerance);
+
   //! Initializes an algorithm for constructing a
   //! constrained BSpline curve passing through the points of the table
   //! Points, where the parameters of each of its
@@ -131,16 +130,21 @@ public:
   //! -   conditions relating to the respective
   //! number of elements in the parallel tables
   //! Points and Parameters are not respected.
-  Standard_EXPORT GeomAPI_Interpolate(const Handle(TColgp_HArray1OfPnt)& Points, const Handle(TColStd_HArray1OfReal)& Parameters, const Standard_Boolean PeriodicFlag, const Standard_Real Tolerance);
-  
+  Standard_EXPORT GeomAPI_Interpolate(const Handle(TColgp_HArray1OfPnt)&   Points,
+                                      const Handle(TColStd_HArray1OfReal)& Parameters,
+                                      const Standard_Boolean               PeriodicFlag,
+                                      const Standard_Real                  Tolerance);
+
   //! Assigns this constrained BSpline curve to be
   //! tangential to vectors InitialTangent and FinalTangent
   //! at its first and last points respectively (i.e.
   //! the first and last points of the table of
   //! points through which the curve passes, as
   //! defined at the time of initialization).
-  Standard_EXPORT void Load (const gp_Vec& InitialTangent, const gp_Vec& FinalTangent, const Standard_Boolean Scale = Standard_True);
-  
+  Standard_EXPORT void Load(const gp_Vec&          InitialTangent,
+                            const gp_Vec&          FinalTangent,
+                            const Standard_Boolean Scale = Standard_True);
+
   //! Assigns this constrained BSpline curve to be
   //! tangential to vectors defined in the table Tangents,
   //! which is parallel to the table of points
@@ -150,62 +154,45 @@ public:
   //! the flag given in the parallel table
   //! TangentFlags is true: only these vectors
   //! are set as tangency constraints.
-  Standard_EXPORT void Load (const TColgp_Array1OfVec& Tangents, const Handle(TColStd_HArray1OfBoolean)& TangentFlags, const Standard_Boolean Scale = Standard_True);
-  
+  Standard_EXPORT void Load(const TColgp_Array1OfVec&               Tangents,
+                            const Handle(TColStd_HArray1OfBoolean)& TangentFlags,
+                            const Standard_Boolean                  Scale = Standard_True);
+
   //! Clears all tangency constraints on this
   //! constrained BSpline curve (as initialized by the function Load).
   Standard_EXPORT void ClearTangents();
-  
+
   //! Computes the constrained BSpline curve.
   //! Use the function IsDone to verify that the
   //! computation is successful, and then the function Curve to obtain the result.
   Standard_EXPORT void Perform();
-  
+
   //! Returns the computed BSpline curve.
   //! Raises StdFail_NotDone if the interpolation fails.
   Standard_EXPORT const Handle(Geom_BSplineCurve)& Curve() const;
-Standard_EXPORT operator Handle(Geom_BSplineCurve)() const;
-  
+  Standard_EXPORT                                  operator Handle(Geom_BSplineCurve)() const;
+
   //! Returns true if the constrained BSpline curve is successfully constructed.
   //! Note: in this case, the result is given by the function Curve.
   Standard_EXPORT Standard_Boolean IsDone() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-  
   //! Interpolates in a non periodic fashion
   Standard_EXPORT void PerformNonPeriodic();
-  
+
   //! Interpolates in a C1 periodic fashion
   Standard_EXPORT void PerformPeriodic();
 
-
-  Standard_Real myTolerance;
-  Handle(TColgp_HArray1OfPnt) myPoints;
-  Standard_Boolean myIsDone;
-  Handle(Geom_BSplineCurve) myCurve;
-  Handle(TColgp_HArray1OfVec) myTangents;
+  Standard_Real                    myTolerance;
+  Handle(TColgp_HArray1OfPnt)      myPoints;
+  Standard_Boolean                 myIsDone;
+  Handle(Geom_BSplineCurve)        myCurve;
+  Handle(TColgp_HArray1OfVec)      myTangents;
   Handle(TColStd_HArray1OfBoolean) myTangentFlags;
-  Handle(TColStd_HArray1OfReal) myParameters;
-  Standard_Boolean myPeriodic;
-  Standard_Boolean myTangentRequest;
-
-
+  Handle(TColStd_HArray1OfReal)    myParameters;
+  Standard_Boolean                 myPeriodic;
+  Standard_Boolean                 myTangentRequest;
 };
-
-
-
-
-
-
 
 #endif // _GeomAPI_Interpolate_HeaderFile

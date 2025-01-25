@@ -15,7 +15,7 @@
 
 //      	-----------------------
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Nov 20 1997	Creation
 
 #include <TDF_ChildIDIterator.hxx>
@@ -23,79 +23,60 @@
 #include <TDF_Label.hxx>
 #include <TDF_LabelNode.hxx>
 
-#define ChildIDIterator_FindNext \
-{ while( myItr.More() &&  !myItr.Value().FindAttribute(myID,myAtt)) myItr.Next(); }
+#define ChildIDIterator_FindNext                                                                   \
+  {                                                                                                \
+    while (myItr.More() && !myItr.Value().FindAttribute(myID, myAtt))                              \
+      myItr.Next();                                                                                \
+  }
 
+//=================================================================================================
 
+TDF_ChildIDIterator::TDF_ChildIDIterator() {}
 
-//=======================================================================
-//function : TDF_ChildIDIterator
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TDF_ChildIDIterator::TDF_ChildIDIterator()
-{}
+TDF_ChildIDIterator::TDF_ChildIDIterator(const TDF_Label&       aLabel,
+                                         const Standard_GUID&   anID,
+                                         const Standard_Boolean allLevels)
+    : myID(anID),
+      myItr(aLabel, allLevels)
+{
+  ChildIDIterator_FindNext;
+}
 
+//=================================================================================================
 
-//=======================================================================
-//function : TDF_ChildIDIterator
-//purpose  : 
-//=======================================================================
-
-TDF_ChildIDIterator::TDF_ChildIDIterator
-(const TDF_Label& aLabel,
- const Standard_GUID& anID,
- const Standard_Boolean allLevels)
-: myID(anID),
-  myItr(aLabel,allLevels)
-{ ChildIDIterator_FindNext; }
-
-
-//=======================================================================
-//function : Initialize
-//purpose  : 
-//=======================================================================
-
-void TDF_ChildIDIterator::Initialize
-(const TDF_Label& aLabel,
- const Standard_GUID& anID,
- const Standard_Boolean allLevels)
+void TDF_ChildIDIterator::Initialize(const TDF_Label&       aLabel,
+                                     const Standard_GUID&   anID,
+                                     const Standard_Boolean allLevels)
 {
   myID = anID;
-  myItr.Initialize(aLabel,allLevels);
+  myItr.Initialize(aLabel, allLevels);
   myAtt.Nullify();
   ChildIDIterator_FindNext;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Next
-//purpose  : 
-//=======================================================================
-
-void TDF_ChildIDIterator::Next() 
+void TDF_ChildIDIterator::Next()
 {
   myAtt.Nullify();
-  if (myItr.More()) {
+  if (myItr.More())
+  {
     myItr.Next();
     ChildIDIterator_FindNext;
   }
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : NextBrother
-//purpose  : 
-//=======================================================================
-
-void TDF_ChildIDIterator::NextBrother() 
+void TDF_ChildIDIterator::NextBrother()
 {
   myAtt.Nullify();
-  if (myItr.More()) {
+  if (myItr.More())
+  {
     myItr.NextBrother();
-    while (myItr.More() && !myItr.Value().FindAttribute(myID,myAtt))
+    while (myItr.More() && !myItr.Value().FindAttribute(myID, myAtt))
       myItr.NextBrother();
   }
 }
-
-

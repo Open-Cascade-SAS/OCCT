@@ -38,12 +38,11 @@ class TDataStd_IntPackedMap : public TDF_Attribute
   friend class TDataStd_DeltaOnModificationOfIntPackedMap;
   DEFINE_STANDARD_RTTIEXT(TDataStd_IntPackedMap, TDF_Attribute)
 public:
-
   //! class methods
   //! =============
   //! Returns the GUID of the attribute.
   Standard_EXPORT static const Standard_GUID& GetID();
-  
+
   //! Finds or creates an integer map attribute on the given label.
   //! If <isDelta> == False, DefaultDeltaOnModification is used.
   //! If <isDelta> == True, DeltaOnModification of the current attribute is used.
@@ -51,25 +50,27 @@ public:
   //! attribute returned.
   //! Attribute methods
   //! ===================
-  Standard_EXPORT static Handle(TDataStd_IntPackedMap) Set (const TDF_Label& label, const Standard_Boolean isDelta = Standard_False);
-  
+  Standard_EXPORT static Handle(TDataStd_IntPackedMap) Set(
+    const TDF_Label&       label,
+    const Standard_Boolean isDelta = Standard_False);
+
   Standard_EXPORT TDataStd_IntPackedMap();
-  
-  Standard_EXPORT Standard_Boolean ChangeMap (const Handle(TColStd_HPackedMapOfInteger)& theMap);
 
-  Standard_EXPORT Standard_Boolean ChangeMap (const TColStd_PackedMapOfInteger& theMap);
+  Standard_EXPORT Standard_Boolean ChangeMap(const Handle(TColStd_HPackedMapOfInteger)& theMap);
 
-  const TColStd_PackedMapOfInteger& GetMap() const { return  myMap->Map(); }
+  Standard_EXPORT Standard_Boolean ChangeMap(const TColStd_PackedMapOfInteger& theMap);
+
+  const TColStd_PackedMapOfInteger& GetMap() const { return myMap->Map(); }
 
   const Handle(TColStd_HPackedMapOfInteger)& GetHMap() const { return myMap; }
 
   Standard_EXPORT Standard_Boolean Clear();
-  
-  Standard_EXPORT Standard_Boolean Add (const Standard_Integer theKey);
-  
-  Standard_EXPORT Standard_Boolean Remove (const Standard_Integer theKey);
-  
-  Standard_EXPORT Standard_Boolean Contains (const Standard_Integer theKey) const;
+
+  Standard_EXPORT Standard_Boolean Add(const Standard_Integer theKey);
+
+  Standard_EXPORT Standard_Boolean Remove(const Standard_Integer theKey);
+
+  Standard_EXPORT Standard_Boolean Contains(const Standard_Integer theKey) const;
 
   Standard_Integer Extent() const { return myMap->Map().Extent(); }
 
@@ -78,34 +79,34 @@ public:
   Standard_Boolean GetDelta() const { return myIsDelta; }
 
   //! for  internal  use  only!
-  void SetDelta (const Standard_Boolean isDelta) { myIsDelta = isDelta; }
+  void SetDelta(const Standard_Boolean isDelta) { myIsDelta = isDelta; }
 
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Restore (const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
-  
+
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
+
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& into, const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_OStream& Dump (Standard_OStream& anOS) const Standard_OVERRIDE;
-  
+
+  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       into,
+                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+
   //! Makes a DeltaOnModification between <me> and
   //! <anOldAttribute>.
-  Standard_EXPORT virtual Handle(TDF_DeltaOnModification) DeltaOnModification (const Handle(TDF_Attribute)& anOldAttribute) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Handle(TDF_DeltaOnModification) DeltaOnModification(
+    const Handle(TDF_Attribute)& anOldAttribute) const Standard_OVERRIDE;
+
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 private:
-
   void RemoveMap() { myMap.Nullify(); }
 
 private:
-
   Handle(TColStd_HPackedMapOfInteger) myMap;
-  Standard_Boolean myIsDelta;
-
+  Standard_Boolean                    myIsDelta;
 };
 
 #endif // _TDataStd_IntPackedMap_HeaderFile

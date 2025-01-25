@@ -23,21 +23,24 @@
 #include <GeomInt_ResConstraintOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
 #include <GeomInt_ParFunctionOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
 #include <math_MultipleVarFunctionWithGradient.hxx>
- 
 
 #define MultiLine GeomInt_TheMultiLineOfWLApprox
 #define MultiLine_hxx <GeomInt_TheMultiLineOfWLApprox.hxx>
 #define ToolLine GeomInt_TheMultiLineToolOfWLApprox
 #define ToolLine_hxx <GeomInt_TheMultiLineToolOfWLApprox.hxx>
-#define AppParCurves_ParLeastSquare GeomInt_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfWLApprox
-#define AppParCurves_ParLeastSquare_hxx <GeomInt_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
+#define AppParCurves_ParLeastSquare                                                                \
+  GeomInt_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfWLApprox
+#define AppParCurves_ParLeastSquare_hxx                                                            \
+  <GeomInt_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
 #define AppParCurves_ResConstraint GeomInt_ResConstraintOfMyGradientOfTheComputeLineBezierOfWLApprox
-#define AppParCurves_ResConstraint_hxx <GeomInt_ResConstraintOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
+#define AppParCurves_ResConstraint_hxx                                                             \
+  <GeomInt_ResConstraintOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
 #define AppParCurves_ParFunction GeomInt_ParFunctionOfMyGradientOfTheComputeLineBezierOfWLApprox
-#define AppParCurves_ParFunction_hxx <GeomInt_ParFunctionOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
+#define AppParCurves_ParFunction_hxx                                                               \
+  <GeomInt_ParFunctionOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
 #define AppParCurves_Gradient_BFGS GeomInt_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfWLApprox
-#define AppParCurves_Gradient_BFGS_hxx <GeomInt_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
+#define AppParCurves_Gradient_BFGS_hxx                                                             \
+  <GeomInt_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
 #define AppParCurves_Gradient GeomInt_MyGradientOfTheComputeLineBezierOfWLApprox
 #define AppParCurves_Gradient_hxx <GeomInt_MyGradientOfTheComputeLineBezierOfWLApprox.hxx>
 #include "../AppParCurves/AppParCurves_Gradient_BFGS.gxx"
-

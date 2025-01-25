@@ -24,44 +24,25 @@
 #include <Standard_Real.hxx>
 #include <math_FunctionSample.hxx>
 
-
-class GeomLib_LogSample  : public math_FunctionSample
+class GeomLib_LogSample : public math_FunctionSample
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT GeomLib_LogSample(const Standard_Real A, const Standard_Real B, const Standard_Integer N);
-  
+  Standard_EXPORT GeomLib_LogSample(const Standard_Real    A,
+                                    const Standard_Real    B,
+                                    const Standard_Integer N);
+
   //! Returns the value of parameter of the point of
   //! range Index : A + ((Index-1)/(NbPoints-1))*B.
   //! An exception is raised if Index<=0 or Index>NbPoints.
-  Standard_EXPORT virtual Standard_Real GetParameter (const Standard_Integer Index) const Standard_OVERRIDE;
-
-
-
+  Standard_EXPORT virtual Standard_Real GetParameter(const Standard_Integer Index) const
+    Standard_OVERRIDE;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Real myF;
   Standard_Real myexp;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeomLib_LogSample_HeaderFile

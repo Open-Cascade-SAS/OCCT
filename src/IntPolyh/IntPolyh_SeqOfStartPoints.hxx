@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<IntPolyh_StartPoint> IntPolyh_SeqOfStartPoints;
 
-
 #endif

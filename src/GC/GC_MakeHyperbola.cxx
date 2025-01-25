@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GC_MakeHyperbola.hxx>
 #include <gce_MakeHypr.hxx>
 #include <Geom_Hyperbola.hxx>
@@ -25,34 +24,37 @@
 
 GC_MakeHyperbola::GC_MakeHyperbola(const gp_Hypr& H)
 {
-  TheError = gce_Done;
+  TheError     = gce_Done;
   TheHyperbola = new Geom_Hyperbola(H);
 }
 
-GC_MakeHyperbola::GC_MakeHyperbola(const gp_Ax2&       A2         ,
-				     const Standard_Real MajorRadius,
-				     const Standard_Real MinorRadius)
+GC_MakeHyperbola::GC_MakeHyperbola(const gp_Ax2&       A2,
+                                   const Standard_Real MajorRadius,
+                                   const Standard_Real MinorRadius)
 {
-  if (MajorRadius < 0. || MinorRadius < 0.0) { TheError = gce_NegativeRadius; }
-  else {
-    TheError = gce_Done;
-    TheHyperbola = new Geom_Hyperbola(gp_Hypr(A2,MajorRadius,MinorRadius));
+  if (MajorRadius < 0. || MinorRadius < 0.0)
+  {
+    TheError = gce_NegativeRadius;
+  }
+  else
+  {
+    TheError     = gce_Done;
+    TheHyperbola = new Geom_Hyperbola(gp_Hypr(A2, MajorRadius, MinorRadius));
   }
 }
 
-GC_MakeHyperbola::GC_MakeHyperbola(const gp_Pnt& S1     ,
-				     const gp_Pnt& S2     ,
-				     const gp_Pnt& Center ) {
-  gce_MakeHypr H = gce_MakeHypr(S1,S2,Center);
-  TheError = H.Status();
-  if (TheError == gce_Done) {
+GC_MakeHyperbola::GC_MakeHyperbola(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Center)
+{
+  gce_MakeHypr H = gce_MakeHypr(S1, S2, Center);
+  TheError       = H.Status();
+  if (TheError == gce_Done)
+  {
     TheHyperbola = new Geom_Hyperbola(H.Value());
   }
 }
 
 const Handle(Geom_Hyperbola)& GC_MakeHyperbola::Value() const
-{ 
-  StdFail_NotDone_Raise_if (TheError != gce_Done,
-                            "GC_MakeHyperbola::Value() - no result");
+{
+  StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeHyperbola::Value() - no result");
   return TheHyperbola;
 }

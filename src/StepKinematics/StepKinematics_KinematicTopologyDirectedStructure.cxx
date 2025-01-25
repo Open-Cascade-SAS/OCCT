@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -16,24 +16,23 @@
 
 #include <StepKinematics_KinematicTopologyDirectedStructure.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicTopologyDirectedStructure, StepRepr_Representation)
+IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicTopologyDirectedStructure,
+                           StepRepr_Representation)
 
-//=======================================================================
-//function : StepKinematics_KinematicTopologyDirectedStructure
-//purpose  :
-//=======================================================================
-StepKinematics_KinematicTopologyDirectedStructure::StepKinematics_KinematicTopologyDirectedStructure ()
+//=================================================================================================
+
+StepKinematics_KinematicTopologyDirectedStructure::
+  StepKinematics_KinematicTopologyDirectedStructure()
 {
 }
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_KinematicTopologyDirectedStructure::Init (const Handle(TCollection_HAsciiString)& theRepresentation_Name,
-                                                              const Handle(StepRepr_HArray1OfRepresentationItem)& theRepresentation_Items,
-                                                              const Handle(StepRepr_RepresentationContext)& theRepresentation_ContextOfItems,
-                                                              const Handle(StepKinematics_KinematicTopologyStructure)& theParent)
+//=================================================================================================
+
+void StepKinematics_KinematicTopologyDirectedStructure::Init(
+  const Handle(TCollection_HAsciiString)&                  theRepresentation_Name,
+  const Handle(StepRepr_HArray1OfRepresentationItem)&      theRepresentation_Items,
+  const Handle(StepRepr_RepresentationContext)&            theRepresentation_ContextOfItems,
+  const Handle(StepKinematics_KinematicTopologyStructure)& theParent)
 {
   StepRepr_Representation::Init(theRepresentation_Name,
                                 theRepresentation_Items,
@@ -42,20 +41,18 @@ void StepKinematics_KinematicTopologyDirectedStructure::Init (const Handle(TColl
   myParent = theParent;
 }
 
-//=======================================================================
-//function : Parent
-//purpose  :
-//=======================================================================
-Handle(StepKinematics_KinematicTopologyStructure) StepKinematics_KinematicTopologyDirectedStructure::Parent () const
+//=================================================================================================
+
+Handle(StepKinematics_KinematicTopologyStructure)
+  StepKinematics_KinematicTopologyDirectedStructure::Parent() const
 {
   return myParent;
 }
 
-//=======================================================================
-//function : SetParent
-//purpose  :
-//=======================================================================
-void StepKinematics_KinematicTopologyDirectedStructure::SetParent (const Handle(StepKinematics_KinematicTopologyStructure)& theParent)
+//=================================================================================================
+
+void StepKinematics_KinematicTopologyDirectedStructure::SetParent(
+  const Handle(StepKinematics_KinematicTopologyStructure)& theParent)
 {
   myParent = theParent;
 }

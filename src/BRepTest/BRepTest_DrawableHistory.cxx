@@ -17,27 +17,19 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepTest_DrawableHistory, Draw_Drawable3D)
 
-//=======================================================================
-//function : DrawOn
-//purpose  : 
-//=======================================================================
-void BRepTest_DrawableHistory::DrawOn(Draw_Display&) const
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-void BRepTest_DrawableHistory:: Dump(Standard_OStream& theS) const
+void BRepTest_DrawableHistory::DrawOn(Draw_Display&) const {}
+
+//=================================================================================================
+
+void BRepTest_DrawableHistory::Dump(Standard_OStream& theS) const
 {
   myHistory->Dump(theS);
 }
 
-//=======================================================================
-//function : Whatis
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BRepTest_DrawableHistory::Whatis(Draw_Interpretor& theDI) const
 {
   theDI << "history";

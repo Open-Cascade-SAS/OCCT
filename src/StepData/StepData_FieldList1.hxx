@@ -24,41 +24,28 @@
 #include <StepData_FieldList.hxx>
 #include <Standard_Integer.hxx>
 
-
 //! Describes a list of ONE field
-class StepData_FieldList1  : public StepData_FieldList
+class StepData_FieldList1 : public StepData_FieldList
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates a FieldList of 1 Field
   Standard_EXPORT StepData_FieldList1();
-  
+
   //! Returns the count of fields. Here, returns 1
   Standard_EXPORT virtual Standard_Integer NbFields() const Standard_OVERRIDE;
-  
+
   //! Returns the field n0 <num> between 1 and NbFields (read only)
-  Standard_EXPORT virtual const StepData_Field& Field (const Standard_Integer num) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual const StepData_Field& Field(const Standard_Integer num) const
+    Standard_OVERRIDE;
+
   //! Returns the field n0 <num> between 1 and NbFields, in order to
   //! modify its content
-  Standard_EXPORT virtual StepData_Field& CField (const Standard_Integer num) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual StepData_Field& CField(const Standard_Integer num) Standard_OVERRIDE;
+
 private:
-
-
-
   StepData_Field thefield;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepData_FieldList1_HeaderFile

@@ -42,8 +42,9 @@
 //! The performance improvement in gluing mode is achieved by excluding
 //! the most time consuming computations according to the given Gluing parameter:<br>
 //! 1. Computation of FACE/FACE intersections for partial coincidence;<br>
-//! 2. And computation of VERTEX/FACE, EDGE/FACE and FACE/FACE intersections for full coincidence.<br>
-//! 
+//! 2. And computation of VERTEX/FACE, EDGE/FACE and FACE/FACE intersections for full
+//! coincidence.<br>
+//!
 //! By setting the Gluing option for the operation user should guarantee
 //! that the arguments are really coinciding. The algorithms do not check this itself.
 //! Setting inappropriate option for the operation is likely to lead to incorrect result.<br>

@@ -23,7 +23,6 @@
 #include <StepBasic_ActionAssignment.hxx>
 class StepBasic_Action;
 
-
 class StepAP203_Change;
 DEFINE_STANDARD_HANDLE(StepAP203_Change, StepBasic_ActionAssignment)
 
@@ -32,42 +31,24 @@ class StepAP203_Change : public StepBasic_ActionAssignment
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepAP203_Change();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(StepBasic_Action)& aActionAssignment_AssignedAction, const Handle(StepAP203_HArray1OfWorkItem)& aItems);
-  
+  Standard_EXPORT void Init(const Handle(StepBasic_Action)& aActionAssignment_AssignedAction,
+                            const Handle(StepAP203_HArray1OfWorkItem)& aItems);
+
   //! Returns field Items
   Standard_EXPORT Handle(StepAP203_HArray1OfWorkItem) Items() const;
-  
+
   //! Set field Items
-  Standard_EXPORT void SetItems (const Handle(StepAP203_HArray1OfWorkItem)& Items);
+  Standard_EXPORT void SetItems(const Handle(StepAP203_HArray1OfWorkItem)& Items);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepAP203_Change,StepBasic_ActionAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP203_Change, StepBasic_ActionAssignment)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepAP203_HArray1OfWorkItem) theItems;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepAP203_Change_HeaderFile

@@ -27,7 +27,6 @@ class Media_CodecContext : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Media_CodecContext, Standard_Transient)
 public:
-
   //! Constructor.
   Standard_EXPORT Media_CodecContext();
 
@@ -43,10 +42,11 @@ public:
   //! @param theNbThreads amount of threads to use for AVMEDIA_TYPE_VIDEO stream;
   //!                     -1 means OSD_Parallel::NbLogicalProcessors(),
   //!                      0 means auto by FFmpeg itself
-  //!                     >0 means specified number of threads (decoder should support multi-threading to take effect)
-  Standard_EXPORT bool Init (const AVStream& theStream,
-                             double thePtsStartBase,
-                             int    theNbThreads = -1);
+  //!                     >0 means specified number of threads (decoder should support
+  //!                     multi-threading to take effect)
+  Standard_EXPORT bool Init(const AVStream& theStream,
+                            double          thePtsStartBase,
+                            int             theNbThreads = -1);
 
   //! Open codec.
   //! @param theStream stream to open
@@ -54,12 +54,13 @@ public:
   //! @param theNbThreads amount of threads to use for AVMEDIA_TYPE_VIDEO stream;
   //!                     -1 means OSD_Parallel::NbLogicalProcessors(),
   //!                      0 means auto by FFmpeg itself
-  //!                     >0 means specified number of threads (decoder should support multi-threading to take effect)
+  //!                     >0 means specified number of threads (decoder should support
+  //!                     multi-threading to take effect)
   //! @param theCodecId codec (AVCodecID) to open
-  Standard_EXPORT bool Init (const AVStream& theStream,
-                             double thePtsStartBase,
-                             int    theNbThreads,
-                             int    theCodecId);
+  Standard_EXPORT bool Init(const AVStream& theStream,
+                            double          thePtsStartBase,
+                            int             theNbThreads,
+                            int             theCodecId);
 
   //! Close input.
   Standard_EXPORT void Close();
@@ -77,16 +78,15 @@ public:
   Standard_EXPORT void Flush();
 
   //! Return true if packet belongs to this stream.
-  Standard_EXPORT bool CanProcessPacket (const Handle(Media_Packet)& thePacket) const;
+  Standard_EXPORT bool CanProcessPacket(const Handle(Media_Packet)& thePacket) const;
 
   //! avcodec_send_packet() wrapper.
-  Standard_EXPORT bool SendPacket (const Handle(Media_Packet)& thePacket);
+  Standard_EXPORT bool SendPacket(const Handle(Media_Packet)& thePacket);
 
   //! avcodec_receive_frame() wrapper.
-  Standard_EXPORT bool ReceiveFrame (const Handle(Media_Frame)& theFrame);
+  Standard_EXPORT bool ReceiveFrame(const Handle(Media_Frame)& theFrame);
 
 protected:
-
   AVCodecContext* myCodecCtx;         //!< codec context
   AVCodec*        myCodec;            //!< opened codec
   double          myPtsStartBase;     //!< starting PTS in context
@@ -94,7 +94,6 @@ protected:
   double          myTimeBase;         //!< stream timebase
   int             myStreamIndex;      //!< stream index
   float           myPixelAspectRatio; //!< pixel aspect ratio
-
 };
 
 #endif // _Media_CodecContext_HeaderFile

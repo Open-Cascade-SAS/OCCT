@@ -19,43 +19,30 @@
 #include <StepBasic_ContractType.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ContractType,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ContractType, Standard_Transient)
 
-//=======================================================================
-//function : StepBasic_ContractType
-//purpose  : 
-//=======================================================================
-StepBasic_ContractType::StepBasic_ContractType ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepBasic_ContractType::StepBasic_ContractType() {}
 
-void StepBasic_ContractType::Init (const Handle(TCollection_HAsciiString) &aDescription)
+//=================================================================================================
+
+void StepBasic_ContractType::Init(const Handle(TCollection_HAsciiString)& aDescription)
 {
 
   theDescription = aDescription;
 }
 
-//=======================================================================
-//function : Description
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ContractType::Description () const
+Handle(TCollection_HAsciiString) StepBasic_ContractType::Description() const
 {
   return theDescription;
 }
 
-//=======================================================================
-//function : SetDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ContractType::SetDescription (const Handle(TCollection_HAsciiString) &aDescription)
+void StepBasic_ContractType::SetDescription(const Handle(TCollection_HAsciiString)& aDescription)
 {
   theDescription = aDescription;
 }

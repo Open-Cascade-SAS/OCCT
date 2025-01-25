@@ -12,13 +12,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Storage_InternalData.hxx>
 #include <Storage_Schema.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Storage_InternalData,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Storage_InternalData, Standard_Transient)
 
-Storage_InternalData::Storage_InternalData() : myObjId(1), myTypeId(1)
+Storage_InternalData::Storage_InternalData()
+    : myObjId(1),
+      myTypeId(1)
 {
 }
 
@@ -30,4 +31,3 @@ void Storage_InternalData::Clear()
   myPtoA.Clear();
   myTypeBinding.Clear();
 }
-

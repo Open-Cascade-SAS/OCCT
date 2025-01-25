@@ -25,15 +25,14 @@
 class IMeshTools_ShapeExplorer : public IMeshData_Shape
 {
 public:
-
   //! Constructor.
-  Standard_EXPORT IMeshTools_ShapeExplorer (const TopoDS_Shape& theShape);
+  Standard_EXPORT IMeshTools_ShapeExplorer(const TopoDS_Shape& theShape);
 
   //! Destructor.
   Standard_EXPORT virtual ~IMeshTools_ShapeExplorer();
 
   //! Starts exploring of a shape.
-  Standard_EXPORT virtual void Accept (const Handle (IMeshTools_ShapeVisitor)& theVisitor);
+  Standard_EXPORT virtual void Accept(const Handle(IMeshTools_ShapeVisitor)& theVisitor);
 
   DEFINE_STANDARD_RTTIEXT(IMeshTools_ShapeExplorer, IMeshData_Shape)
 };

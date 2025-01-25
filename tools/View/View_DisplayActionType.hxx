@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef View_DisplayActionType_H
 #define View_DisplayActionType_H
@@ -19,11 +19,11 @@
 //! \enum View_DisplayActionType
 enum View_DisplayActionType
 {
-  View_DisplayActionType_NoneId, //!< No action activated
-  View_DisplayActionType_DisplayId, //!< Display action
+  View_DisplayActionType_NoneId,      //!< No action activated
+  View_DisplayActionType_DisplayId,   //!< Display action
   View_DisplayActionType_RedisplayId, //!< Redisplay action
-  View_DisplayActionType_EraseId, //!< Erase action
-  View_DisplayActionType_RemoveId //!< Remove action
+  View_DisplayActionType_EraseId,     //!< Erase action
+  View_DisplayActionType_RemoveId     //!< Remove action
 };
 
 #endif

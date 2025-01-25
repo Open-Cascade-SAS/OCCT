@@ -42,15 +42,11 @@ class AppParCurves_MultiCurve;
 class AppParCurves_MultiBSpCurve;
 class math_Matrix;
 
-
-
-class AppDef_ParLeastSquareOfMyGradientOfCompute 
+class AppDef_ParLeastSquareOfMyGradientOfCompute
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! given a MultiLine, this algorithm computes the least
   //! square resolution using the Householder-QR method.
   //! If the first and/or the last point is a constraint
@@ -67,11 +63,24 @@ public:
   //! and is also the same for each MultiLine point because
   //! they are approximated in parallel(so with the same
   //! parameter, only the vector B changes).
-  Standard_EXPORT AppDef_ParLeastSquareOfMyGradientOfCompute(const AppDef_MultiLine& SSP, const Standard_Integer FirstPoint, const Standard_Integer LastPoint, const AppParCurves_Constraint FirstCons, const AppParCurves_Constraint LastCons, const math_Vector& Parameters, const Standard_Integer NbPol);
-  
+  Standard_EXPORT AppDef_ParLeastSquareOfMyGradientOfCompute(
+    const AppDef_MultiLine&       SSP,
+    const Standard_Integer        FirstPoint,
+    const Standard_Integer        LastPoint,
+    const AppParCurves_Constraint FirstCons,
+    const AppParCurves_Constraint LastCons,
+    const math_Vector&            Parameters,
+    const Standard_Integer        NbPol);
+
   //! Initializes the fields of the object.
-  Standard_EXPORT AppDef_ParLeastSquareOfMyGradientOfCompute(const AppDef_MultiLine& SSP, const Standard_Integer FirstPoint, const Standard_Integer LastPoint, const AppParCurves_Constraint FirstCons, const AppParCurves_Constraint LastCons, const Standard_Integer NbPol);
-  
+  Standard_EXPORT AppDef_ParLeastSquareOfMyGradientOfCompute(
+    const AppDef_MultiLine&       SSP,
+    const Standard_Integer        FirstPoint,
+    const Standard_Integer        LastPoint,
+    const AppParCurves_Constraint FirstCons,
+    const AppParCurves_Constraint LastCons,
+    const Standard_Integer        NbPol);
+
   //! given a MultiLine, this algorithm computes the least
   //! square resolution using the Householder-QR method.
   //! If the first and/or the last point is a constraint
@@ -87,171 +96,192 @@ public:
   //! and is also the same for each MultiLine point because
   //! they are approximated in parallel(so with the same
   //! parameter, only the vector B changes).
-  Standard_EXPORT AppDef_ParLeastSquareOfMyGradientOfCompute(const AppDef_MultiLine& SSP, const TColStd_Array1OfReal& Knots, const TColStd_Array1OfInteger& Mults, const Standard_Integer FirstPoint, const Standard_Integer LastPoint, const AppParCurves_Constraint FirstCons, const AppParCurves_Constraint LastCons, const math_Vector& Parameters, const Standard_Integer NbPol);
-  
+  Standard_EXPORT AppDef_ParLeastSquareOfMyGradientOfCompute(
+    const AppDef_MultiLine&        SSP,
+    const TColStd_Array1OfReal&    Knots,
+    const TColStd_Array1OfInteger& Mults,
+    const Standard_Integer         FirstPoint,
+    const Standard_Integer         LastPoint,
+    const AppParCurves_Constraint  FirstCons,
+    const AppParCurves_Constraint  LastCons,
+    const math_Vector&             Parameters,
+    const Standard_Integer         NbPol);
+
   //! Initializes the fields of the object.
-  Standard_EXPORT AppDef_ParLeastSquareOfMyGradientOfCompute(const AppDef_MultiLine& SSP, const TColStd_Array1OfReal& Knots, const TColStd_Array1OfInteger& Mults, const Standard_Integer FirstPoint, const Standard_Integer LastPoint, const AppParCurves_Constraint FirstCons, const AppParCurves_Constraint LastCons, const Standard_Integer NbPol);
-  
+  Standard_EXPORT AppDef_ParLeastSquareOfMyGradientOfCompute(
+    const AppDef_MultiLine&        SSP,
+    const TColStd_Array1OfReal&    Knots,
+    const TColStd_Array1OfInteger& Mults,
+    const Standard_Integer         FirstPoint,
+    const Standard_Integer         LastPoint,
+    const AppParCurves_Constraint  FirstCons,
+    const AppParCurves_Constraint  LastCons,
+    const Standard_Integer         NbPol);
+
   //! Is used after having initialized the fields.
   //! The case "CurvaturePoint" is not treated in this method.
-  Standard_EXPORT void Perform (const math_Vector& Parameters);
-  
+  Standard_EXPORT void Perform(const math_Vector& Parameters);
+
   //! Is used after having initialized the fields.
-  Standard_EXPORT void Perform (const math_Vector& Parameters, const Standard_Real l1, const Standard_Real l2);
-  
+  Standard_EXPORT void Perform(const math_Vector&  Parameters,
+                               const Standard_Real l1,
+                               const Standard_Real l2);
+
   //! Is used after having initialized the fields.
   //! <V1t> is the tangent vector at the first point.
   //! <V2t> is the tangent vector at the last point.
-  Standard_EXPORT void Perform (const math_Vector& Parameters, const math_Vector& V1t, const math_Vector& V2t, const Standard_Real l1, const Standard_Real l2);
-  
+  Standard_EXPORT void Perform(const math_Vector&  Parameters,
+                               const math_Vector&  V1t,
+                               const math_Vector&  V2t,
+                               const Standard_Real l1,
+                               const Standard_Real l2);
+
   //! Is used after having initialized the fields.
   //! <V1t> is the tangent vector at the first point.
   //! <V2t> is the tangent vector at the last point.
   //! <V1c> is the tangent vector at the first point.
   //! <V2c> is the tangent vector at the last point.
-  Standard_EXPORT void Perform (const math_Vector& Parameters, const math_Vector& V1t, const math_Vector& V2t, const math_Vector& V1c, const math_Vector& V2c, const Standard_Real l1, const Standard_Real l2);
-  
+  Standard_EXPORT void Perform(const math_Vector&  Parameters,
+                               const math_Vector&  V1t,
+                               const math_Vector&  V2t,
+                               const math_Vector&  V1c,
+                               const math_Vector&  V2c,
+                               const Standard_Real l1,
+                               const Standard_Real l2);
+
   //! returns True if all has been correctly done.
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
+
   //! returns the result of the approximation, i.e. all the
   //! Curves.
   //! An exception is raised if NotDone.
   Standard_EXPORT AppParCurves_MultiCurve BezierValue();
-  
+
   //! returns the result of the approximation, i.e. all the
   //! Curves.
   //! An exception is raised if NotDone.
   Standard_EXPORT const AppParCurves_MultiBSpCurve& BSplineValue();
-  
+
   //! returns the function matrix used to approximate the
   //! set.
   Standard_EXPORT const math_Matrix& FunctionMatrix() const;
-  
+
   //! returns the derivative function matrix used
   //! to approximate the set.
   Standard_EXPORT const math_Matrix& DerivativeFunctionMatrix() const;
-  
+
   //! returns the maximum errors between the MultiLine
   //! and the approximation curves. F is the sum of the square
   //! distances. Grad is the derivative vector of the
   //! function F.
-  Standard_EXPORT void ErrorGradient (math_Vector& Grad, Standard_Real& F, Standard_Real& MaxE3d, Standard_Real& MaxE2d);
-  
+  Standard_EXPORT void ErrorGradient(math_Vector&   Grad,
+                                     Standard_Real& F,
+                                     Standard_Real& MaxE3d,
+                                     Standard_Real& MaxE2d);
+
   //! returns the distances between the points of the
   //! multiline and the approximation curves.
   Standard_EXPORT const math_Matrix& Distance();
-  
+
   //! returns the maximum errors between the MultiLine
   //! and the approximation curves. F is the sum of the square
   //! distances.
-  Standard_EXPORT void Error (Standard_Real& F, Standard_Real& MaxE3d, Standard_Real& MaxE2d);
-  
+  Standard_EXPORT void Error(Standard_Real& F, Standard_Real& MaxE3d, Standard_Real& MaxE2d);
+
   //! returns the value (P2 - P1)/ V1 if the first point
   //! was a tangency point.
   Standard_EXPORT Standard_Real FirstLambda() const;
-  
+
   //! returns the value (PN - PN-1)/ VN if the last point
   //! was a tangency point.
   Standard_EXPORT Standard_Real LastLambda() const;
-  
+
   //! returns the matrix of points value.
   Standard_EXPORT const math_Matrix& Points() const;
-  
+
   //! returns the matrix of resulting control points value.
   Standard_EXPORT const math_Matrix& Poles() const;
-  
+
   //! Returns the indexes of the first non null values of
   //! A and DA.
   //! The values are non null from Index(ieme point) +1
   //! to Index(ieme point) + degree +1.
   Standard_EXPORT const math_IntegerVector& KIndex() const;
 
-
-
-
 protected:
-
-  
   //! is used by the constructors above.
-  Standard_EXPORT void Init (const AppDef_MultiLine& SSP, const Standard_Integer FirstPoint, const Standard_Integer LastPoint);
-  
+  Standard_EXPORT void Init(const AppDef_MultiLine& SSP,
+                            const Standard_Integer  FirstPoint,
+                            const Standard_Integer  LastPoint);
+
   //! returns the number of second member columns.
   //! Is used internally to initialize the fields.
-  Standard_EXPORT Standard_Integer NbBColumns (const AppDef_MultiLine& SSP) const;
-  
+  Standard_EXPORT Standard_Integer NbBColumns(const AppDef_MultiLine& SSP) const;
+
   //! returns the first point being fitted.
-  Standard_EXPORT Standard_Integer TheFirstPoint (const AppParCurves_Constraint FirstCons, const Standard_Integer FirstPoint) const;
-  
+  Standard_EXPORT Standard_Integer TheFirstPoint(const AppParCurves_Constraint FirstCons,
+                                                 const Standard_Integer        FirstPoint) const;
+
   //! returns the last point being fitted.
-  Standard_EXPORT Standard_Integer TheLastPoint (const AppParCurves_Constraint LastCons, const Standard_Integer LastPoint) const;
-  
+  Standard_EXPORT Standard_Integer TheLastPoint(const AppParCurves_Constraint LastCons,
+                                                const Standard_Integer        LastPoint) const;
+
   //! Affects the fields in the case of a constraint point.
-  Standard_EXPORT void Affect (const AppDef_MultiLine& SSP, const Standard_Integer Index, AppParCurves_Constraint& Cons, math_Vector& Vt, math_Vector& Vc);
-  
-  Standard_EXPORT void ComputeFunction (const math_Vector& Parameters);
-  
-  Standard_EXPORT void SearchIndex (math_IntegerVector& Index);
-  
-  //! computes internal matrixes for the resolution
-  Standard_EXPORT void MakeTAA (math_Vector& TheA, math_Vector& TheB);
-  
-  //! computes internal matrixes for the resolution
-  Standard_EXPORT void MakeTAA (math_Vector& TheA);
-  
-  //! computes internal matrixes for the resolution
-  Standard_EXPORT void MakeTAA (math_Vector& TheA, math_Matrix& TheB);
+  Standard_EXPORT void Affect(const AppDef_MultiLine&  SSP,
+                              const Standard_Integer   Index,
+                              AppParCurves_Constraint& Cons,
+                              math_Vector&             Vt,
+                              math_Vector&             Vc);
 
+  Standard_EXPORT void ComputeFunction(const math_Vector& Parameters);
 
+  Standard_EXPORT void SearchIndex(math_IntegerVector& Index);
 
+  //! computes internal matrixes for the resolution
+  Standard_EXPORT void MakeTAA(math_Vector& TheA, math_Vector& TheB);
+
+  //! computes internal matrixes for the resolution
+  Standard_EXPORT void MakeTAA(math_Vector& TheA);
+
+  //! computes internal matrixes for the resolution
+  Standard_EXPORT void MakeTAA(math_Vector& TheA, math_Matrix& TheB);
 
 private:
-
-
-
-  AppParCurves_Constraint FirstConstraint;
-  AppParCurves_Constraint LastConstraint;
-  AppParCurves_MultiBSpCurve SCU;
-  Handle(TColStd_HArray1OfReal) myknots;
+  AppParCurves_Constraint          FirstConstraint;
+  AppParCurves_Constraint          LastConstraint;
+  AppParCurves_MultiBSpCurve       SCU;
+  Handle(TColStd_HArray1OfReal)    myknots;
   Handle(TColStd_HArray1OfInteger) mymults;
-  math_Matrix mypoles;
-  math_Matrix A;
-  math_Matrix DA;
-  math_Matrix B2;
-  math_Matrix mypoints;
-  math_Vector Vflatknots;
-  math_Vector Vec1t;
-  math_Vector Vec1c;
-  math_Vector Vec2t;
-  math_Vector Vec2c;
-  math_Matrix theError;
-  math_IntegerVector myindex;
-  Standard_Real lambda1;
-  Standard_Real lambda2;
-  Standard_Integer FirstP;
-  Standard_Integer LastP;
-  Standard_Integer Nlignes;
-  Standard_Integer Ninc;
-  Standard_Integer NA;
-  Standard_Integer myfirstp;
-  Standard_Integer mylastp;
-  Standard_Integer resinit;
-  Standard_Integer resfin;
-  Standard_Integer nbP2d;
-  Standard_Integer nbP;
-  Standard_Integer nbpoles;
-  Standard_Integer deg;
-  Standard_Boolean done;
-  Standard_Boolean iscalculated;
-  Standard_Boolean isready;
-
-
+  math_Matrix                      mypoles;
+  math_Matrix                      A;
+  math_Matrix                      DA;
+  math_Matrix                      B2;
+  math_Matrix                      mypoints;
+  math_Vector                      Vflatknots;
+  math_Vector                      Vec1t;
+  math_Vector                      Vec1c;
+  math_Vector                      Vec2t;
+  math_Vector                      Vec2c;
+  math_Matrix                      theError;
+  math_IntegerVector               myindex;
+  Standard_Real                    lambda1;
+  Standard_Real                    lambda2;
+  Standard_Integer                 FirstP;
+  Standard_Integer                 LastP;
+  Standard_Integer                 Nlignes;
+  Standard_Integer                 Ninc;
+  Standard_Integer                 NA;
+  Standard_Integer                 myfirstp;
+  Standard_Integer                 mylastp;
+  Standard_Integer                 resinit;
+  Standard_Integer                 resfin;
+  Standard_Integer                 nbP2d;
+  Standard_Integer                 nbP;
+  Standard_Integer                 nbpoles;
+  Standard_Integer                 deg;
+  Standard_Boolean                 done;
+  Standard_Boolean                 iscalculated;
+  Standard_Boolean                 isready;
 };
-
-
-
-
-
-
 
 #endif // _AppDef_ParLeastSquareOfMyGradientOfCompute_HeaderFile

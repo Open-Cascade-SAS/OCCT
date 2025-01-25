@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef DDF_ListIteratorOfTransactionStack_HeaderFile
 #define DDF_ListIteratorOfTransactionStack_HeaderFile
 

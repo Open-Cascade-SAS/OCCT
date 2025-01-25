@@ -19,48 +19,49 @@ namespace MurmurHash
 {
 namespace MurmurHashUtils
 {
-  inline uint64_t shift_mix(uint64_t theV)
-  {
-    return theV ^ (theV >> 47);
-  }
-
-  // Loads n bytes, where 1 <= n < 8.
-  inline uint64_t load_bytes(const char* thePnt, int theNb)
-  {
-    uint64_t aRes = 0;
-    --theNb;
-    do
-      aRes = (aRes << 8) + static_cast<unsigned char>(thePnt[theNb]);
-    while (--theNb >= 0);
-    return aRes;
-  }
-  template <typename T>
-  inline T unaligned_load(const char* thePnt)
-  {
-    T aRes;
-    memcpy(&aRes, thePnt, sizeof(aRes));
-    return aRes;
-  }
+inline uint64_t shift_mix(uint64_t theV)
+{
+  return theV ^ (theV >> 47);
 }
 
+// Loads n bytes, where 1 <= n < 8.
+inline uint64_t load_bytes(const char* thePnt, int theNb)
+{
+  uint64_t aRes = 0;
+  --theNb;
+  do
+    aRes = (aRes << 8) + static_cast<unsigned char>(thePnt[theNb]);
+  while (--theNb >= 0);
+  return aRes;
+}
+
+template <typename T>
+inline T unaligned_load(const char* thePnt)
+{
+  T aRes;
+  memcpy(&aRes, thePnt, sizeof(aRes));
+  return aRes;
+}
+} // namespace MurmurHashUtils
+
 //=======================================================================
-//function : MurmurHash64A
-//purpose  :
+// function : MurmurHash64A
+// purpose  :
 //=======================================================================
 inline uint64_t MurmurHash64A(const void* theKey, int theLen, uint64_t theSeed)
 {
-  static constexpr uint64_t aMul = (((uint64_t)0xc6a4a793UL) << 32UL)
-                                     + (uint64_t)0x5bd1e995UL;
-  const char* const aBuf = static_cast<const char*>(theKey);
+  static constexpr uint64_t aMul = (((uint64_t)0xc6a4a793UL) << 32UL) + (uint64_t)0x5bd1e995UL;
+  const char* const         aBuf = static_cast<const char*>(theKey);
 
   // Remove the bytes not divisible by the sizeof(uint64_t).  This
   // allows the main loop to process the data as 64-bit integers.
-  const uint64_t aLenAligned = theLen & ~(uint64_t)0x7;
-  const char* const anEnd = aBuf + aLenAligned;
-  uint64_t aHash = theSeed ^ (theLen * aMul);
+  const uint64_t    aLenAligned = theLen & ~(uint64_t)0x7;
+  const char* const anEnd       = aBuf + aLenAligned;
+  uint64_t          aHash       = theSeed ^ (theLen * aMul);
   for (const char* aPnt = aBuf; aPnt != anEnd; aPnt += 8)
   {
-    const uint64_t aData = MurmurHashUtils::shift_mix(MurmurHashUtils::unaligned_load<uint64_t>(aPnt) * aMul) * aMul;
+    const uint64_t aData =
+      MurmurHashUtils::shift_mix(MurmurHashUtils::unaligned_load<uint64_t>(aPnt) * aMul) * aMul;
     aHash ^= aData;
     aHash *= aMul;
   }
@@ -76,14 +77,14 @@ inline uint64_t MurmurHash64A(const void* theKey, int theLen, uint64_t theSeed)
 }
 
 //=======================================================================
-//function : MurmurHash2A
-//purpose  :
+// function : MurmurHash2A
+// purpose  :
 //=======================================================================
 inline uint32_t MurmurHash2A(const void* theKey, int theLen, uint32_t theSeed)
 {
-  const uint32_t aMul = 0x5bd1e995;
-  uint32_t aHash = theSeed ^ theLen;
-  const char* aBuf = static_cast<const char*>(theKey);
+  const uint32_t aMul  = 0x5bd1e995;
+  uint32_t       aHash = theSeed ^ theLen;
+  const char*    aBuf  = static_cast<const char*>(theKey);
 
   // Mix 4 bytes at a time into the hash.
   while (theLen >= 4)
@@ -102,18 +103,18 @@ inline uint32_t MurmurHash2A(const void* theKey, int theLen, uint32_t theSeed)
   // Handle the last few bytes of the input array.
   switch (theLen)
   {
-  case 3:
-    aKey = static_cast<unsigned char>(aBuf[2]);
-    aHash ^= aKey << 16;
-    Standard_FALLTHROUGH
-  case 2:
-    aKey = static_cast<unsigned char>(aBuf[1]);
-    aHash ^= aKey << 8;
-    Standard_FALLTHROUGH
-  case 1:
-    aKey = static_cast<unsigned char>(aBuf[0]);
-    aHash ^= aKey;
-    aHash *= aMul;
+    case 3:
+      aKey = static_cast<unsigned char>(aBuf[2]);
+      aHash ^= aKey << 16;
+      Standard_FALLTHROUGH
+    case 2:
+      aKey = static_cast<unsigned char>(aBuf[1]);
+      aHash ^= aKey << 8;
+      Standard_FALLTHROUGH
+    case 1:
+      aKey = static_cast<unsigned char>(aBuf[0]);
+      aHash ^= aKey;
+      aHash *= aMul;
   };
 
   // Do a few final mixes of the hash.
@@ -122,13 +123,13 @@ inline uint32_t MurmurHash2A(const void* theKey, int theLen, uint32_t theSeed)
   aHash ^= aHash >> 15;
   return aHash;
 }
-} // MurmurHash
+} // namespace MurmurHash
 
 namespace FNVHash
 {
 //=======================================================================
-//function : FNVHash1A
-//purpose  :
+// function : FNVHash1A
+// purpose  :
 //=======================================================================
 inline uint32_t FNVHash1A(const void* theKey, int theLen, uint32_t theSeed)
 {
@@ -142,8 +143,8 @@ inline uint32_t FNVHash1A(const void* theKey, int theLen, uint32_t theSeed)
 }
 
 //=======================================================================
-//function : FNVHash64A
-//purpose  :
+// function : FNVHash64A
+// purpose  :
 //=======================================================================
 inline uint64_t FNVHash64A(const void* theKey, int theLen, uint64_t theSeed)
 {
@@ -155,5 +156,5 @@ inline uint64_t FNVHash64A(const void* theKey, int theLen, uint64_t theSeed)
   }
   return theSeed;
 }
-} // FNVHash
-} // opencascade
+} // namespace FNVHash
+} // namespace opencascade

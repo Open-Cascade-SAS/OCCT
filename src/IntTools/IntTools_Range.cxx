@@ -13,62 +13,56 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IntTools_Range.hxx>
 
-//=======================================================================
-//function : IntTools_Range::IntTools_Range
-//purpose  : 
-//=======================================================================
-IntTools_Range::IntTools_Range():myFirst(0.), myLast(0.) {}
+//=================================================================================================
 
-//=======================================================================
-//function : IntTools_Range::IntTools_Range
-//purpose  : 
-//=======================================================================
-  IntTools_Range::IntTools_Range(const Standard_Real aFirst,const Standard_Real aLast)
+IntTools_Range::IntTools_Range()
+    : myFirst(0.),
+      myLast(0.)
 {
-  myFirst=aFirst;
-  myLast=aLast;
 }
-//=======================================================================
-//function : SetFirst
-//purpose  : 
-//=======================================================================
-  void IntTools_Range::SetFirst(const Standard_Real aFirst) 
+
+//=================================================================================================
+
+IntTools_Range::IntTools_Range(const Standard_Real aFirst, const Standard_Real aLast)
 {
-  myFirst=aFirst;
+  myFirst = aFirst;
+  myLast  = aLast;
 }
-//=======================================================================
-//function : SetLast
-//purpose  : 
-//=======================================================================
-  void IntTools_Range::SetLast(const Standard_Real aLast) 
+
+//=================================================================================================
+
+void IntTools_Range::SetFirst(const Standard_Real aFirst)
 {
-  myLast=aLast;
+  myFirst = aFirst;
 }
-//=======================================================================
-//function : First
-//purpose  : 
-//=======================================================================
-  Standard_Real IntTools_Range::First() const
+
+//=================================================================================================
+
+void IntTools_Range::SetLast(const Standard_Real aLast)
+{
+  myLast = aLast;
+}
+
+//=================================================================================================
+
+Standard_Real IntTools_Range::First() const
 {
   return myFirst;
 }
-//=======================================================================
-//function : Last
-//purpose  : 
-//=======================================================================
-  Standard_Real IntTools_Range::Last() const
+
+//=================================================================================================
+
+Standard_Real IntTools_Range::Last() const
 {
   return myLast;
 }
-//=======================================================================
-//function : Range
-//purpose  : 
-//=======================================================================
-  void IntTools_Range::Range(Standard_Real& aFirst,Standard_Real& aLast) const
+
+//=================================================================================================
+
+void IntTools_Range::Range(Standard_Real& aFirst, Standard_Real& aLast) const
 {
-  aFirst=myFirst;
-  aLast =myLast;
+  aFirst = myFirst;
+  aLast  = myLast;
 }

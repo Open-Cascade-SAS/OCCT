@@ -14,12 +14,13 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : SetSharedLocations
-//purpose  : 
+// function : SetSharedLocations
+// purpose  :
 //=======================================================================
-inline void XmlMXCAFDoc_LocationDriver::SetSharedLocations(const TopTools_LocationSetPtr& theLocations)
-{ 
-  if( myLocations != theLocations )
+inline void XmlMXCAFDoc_LocationDriver::SetSharedLocations(
+  const TopTools_LocationSetPtr& theLocations)
+{
+  if (myLocations != theLocations)
   {
     myLocations = theLocations;
   }

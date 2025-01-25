@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/ViewControl_Tools.hxx>
 
@@ -31,10 +31,13 @@
 // function : CreateAction
 // purpose :
 // =======================================================================
-QAction* ViewControl_Tools::CreateAction (const QString& theText, const char* theSlot, QObject* theParent, QObject* theContext)
+QAction* ViewControl_Tools::CreateAction(const QString& theText,
+                                         const char*    theSlot,
+                                         QObject*       theParent,
+                                         QObject*       theContext)
 {
-  QAction* anAction = new QAction (theText, theParent);
-  QObject::connect (anAction, SIGNAL (triggered (bool)), theContext, theSlot);
+  QAction* anAction = new QAction(theText, theParent);
+  QObject::connect(anAction, SIGNAL(triggered(bool)), theContext, theSlot);
   return anAction;
 }
 
@@ -42,46 +45,50 @@ QAction* ViewControl_Tools::CreateAction (const QString& theText, const char* th
 // function : SetWhiteBackground
 // purpose :
 // =======================================================================
-void ViewControl_Tools::SetWhiteBackground (QWidget* theControl)
+void ViewControl_Tools::SetWhiteBackground(QWidget* theControl)
 {
   QPalette aPalette = theControl->palette();
-  aPalette.setColor (QPalette::All, QPalette::Foreground, Qt::white);
-  theControl->setPalette (aPalette);
+  aPalette.setColor(QPalette::All, QPalette::Foreground, Qt::white);
+  theControl->setPalette(aPalette);
 }
 
 // =======================================================================
 // function : SetDefaultHeaderSections
 // purpose :
 // =======================================================================
-void ViewControl_Tools::SetDefaultHeaderSections(QTableView* theTableView, const Qt::Orientation theOrientation)
+void ViewControl_Tools::SetDefaultHeaderSections(QTableView*           theTableView,
+                                                 const Qt::Orientation theOrientation)
 {
-  ViewControl_TableModel * aTableModel = dynamic_cast<ViewControl_TableModel*> (theTableView->model());
+  ViewControl_TableModel* aTableModel =
+    dynamic_cast<ViewControl_TableModel*>(theTableView->model());
   ViewControl_TableModelValues* aModelValues = aTableModel->ModelValues();
   if (!aModelValues)
     return;
 
   int aSectionSize;
-  if (aModelValues->DefaultSectionSize (Qt::Horizontal, aSectionSize) )
-    theTableView->horizontalHeader()->setDefaultSectionSize (aSectionSize);
-  else {
+  if (aModelValues->DefaultSectionSize(Qt::Horizontal, aSectionSize))
+    theTableView->horizontalHeader()->setDefaultSectionSize(aSectionSize);
+  else
+  {
     bool isStretchLastSection = true;
-    for (int aColumnId = 0, aNbColumns = aTableModel->columnCount(); aColumnId < aNbColumns; aColumnId++)
+    for (int aColumnId = 0, aNbColumns = aTableModel->columnCount(); aColumnId < aNbColumns;
+         aColumnId++)
     {
-      TreeModel_HeaderSection aSection = aModelValues->HeaderItem (theOrientation, aColumnId);
+      TreeModel_HeaderSection aSection = aModelValues->HeaderItem(theOrientation, aColumnId);
       if (aSection.IsEmpty())
         continue;
 
       int aColumnWidth = aSection.GetWidth();
       if (aColumnWidth > 0)
       {
-        theTableView->setColumnWidth (aColumnId, aColumnWidth);
+        theTableView->setColumnWidth(aColumnId, aColumnWidth);
         if (aColumnId == aNbColumns - 1)
           isStretchLastSection = false;
       }
-      theTableView->setColumnHidden (aColumnId, aSection.IsHidden());
+      theTableView->setColumnHidden(aColumnId, aSection.IsHidden());
     }
     if (isStretchLastSection != theTableView->horizontalHeader()->stretchLastSection())
-      theTableView->horizontalHeader()->setStretchLastSection (isStretchLastSection);
+      theTableView->horizontalHeader()->setStretchLastSection(isStretchLastSection);
   }
 }
 
@@ -89,12 +96,14 @@ void ViewControl_Tools::SetDefaultHeaderSections(QTableView* theTableView, const
 // function : CreateTableModelValues
 // purpose :
 // =======================================================================
-ViewControl_TableModelValues* ViewControl_Tools::CreateTableModelValues (QItemSelectionModel* theSelectionModel)
+ViewControl_TableModelValues* ViewControl_Tools::CreateTableModelValues(
+  QItemSelectionModel* theSelectionModel)
 {
   ViewControl_TableModelValues* aTableValues = 0;
 
-  QModelIndex anIndex = TreeModel_ModelBase::SingleSelected (theSelectionModel->selectedIndexes(), 0);
-  TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (anIndex);
+  QModelIndex anIndex =
+    TreeModel_ModelBase::SingleSelected(theSelectionModel->selectedIndexes(), 0);
+  TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex(anIndex);
   if (!anItemBase)
     return aTableValues;
 
@@ -103,7 +112,7 @@ ViewControl_TableModelValues* ViewControl_Tools::CreateTableModelValues (QItemSe
     return aTableValues;
 
   aTableValues = new ViewControl_TableModelValues();
-  aTableValues->SetProperties (anItemProperties);
+  aTableValues->SetProperties(anItemProperties);
   return aTableValues;
 }
 
@@ -111,34 +120,34 @@ ViewControl_TableModelValues* ViewControl_Tools::CreateTableModelValues (QItemSe
 // function : ToVariant
 // purpose :
 // =======================================================================
-QVariant ViewControl_Tools::ToVariant (const Standard_ShortReal theValue)
+QVariant ViewControl_Tools::ToVariant(const Standard_ShortReal theValue)
 {
-  return QVariant (QLocale().toString (theValue));
+  return QVariant(QLocale().toString(theValue));
 }
 
 // =======================================================================
 // function : ToVariant
 // purpose :
 // =======================================================================
-QVariant ViewControl_Tools::ToVariant (const Standard_Real theValue)
+QVariant ViewControl_Tools::ToVariant(const Standard_Real theValue)
 {
-  return QVariant (QLocale().toString (theValue));
+  return QVariant(QLocale().toString(theValue));
 }
 
 // =======================================================================
 // function : ToRealValue
 // purpose :
 // =======================================================================
-Standard_ShortReal ViewControl_Tools::ToShortRealValue (const QVariant& theValue)
+Standard_ShortReal ViewControl_Tools::ToShortRealValue(const QVariant& theValue)
 {
-  return QLocale().toFloat (theValue.toString());
+  return QLocale().toFloat(theValue.toString());
 }
 
 // =======================================================================
 // function : ToRealValue
 // purpose :
 // =======================================================================
-Standard_Real ViewControl_Tools::ToRealValue (const QVariant& theValue)
+Standard_Real ViewControl_Tools::ToRealValue(const QVariant& theValue)
 {
-  return QLocale().toDouble (theValue.toString());
+  return QLocale().toDouble(theValue.toString());
 }

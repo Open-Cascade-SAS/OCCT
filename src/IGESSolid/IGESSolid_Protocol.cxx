@@ -43,8 +43,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Protocol, IGESData_Protocol)
 
-IGESSolid_Protocol::IGESSolid_Protocol()
-{}
+IGESSolid_Protocol::IGESSolid_Protocol() {}
 
 Standard_Integer IGESSolid_Protocol::NbResources() const
 {

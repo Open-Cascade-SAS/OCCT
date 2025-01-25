@@ -29,45 +29,35 @@ class StepShape_Edge;
 class StepShape_EdgeLoop;
 class Geom_Curve;
 
-
 //! This class contains some algorithmic services
 //! specific to the mapping STEP to CAS.CADE
-class StepToTopoDS_GeometricTool 
+class StepToTopoDS_GeometricTool
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT static Standard_Integer PCurve (const Handle(StepGeom_SurfaceCurve)& SC, const Handle(StepGeom_Surface)& S, Handle(StepGeom_Pcurve)& PC, const Standard_Integer last = 0);
-  
-  Standard_EXPORT static Standard_Boolean IsSeamCurve (const Handle(StepGeom_SurfaceCurve)& SC, const Handle(StepGeom_Surface)& S, const Handle(StepShape_Edge)& E, const Handle(StepShape_EdgeLoop)& EL);
-  
-  Standard_EXPORT static Standard_Boolean IsLikeSeam (const Handle(StepGeom_SurfaceCurve)& SC, const Handle(StepGeom_Surface)& S, const Handle(StepShape_Edge)& E, const Handle(StepShape_EdgeLoop)& EL);
-  
-  Standard_EXPORT static Standard_Boolean UpdateParam3d (const Handle(Geom_Curve)& C, Standard_Real& w1, Standard_Real& w2, const Standard_Real preci);
+  Standard_EXPORT static Standard_Integer PCurve(const Handle(StepGeom_SurfaceCurve)& SC,
+                                                 const Handle(StepGeom_Surface)&      S,
+                                                 Handle(StepGeom_Pcurve)&             PC,
+                                                 const Standard_Integer               last = 0);
 
+  Standard_EXPORT static Standard_Boolean IsSeamCurve(const Handle(StepGeom_SurfaceCurve)& SC,
+                                                      const Handle(StepGeom_Surface)&      S,
+                                                      const Handle(StepShape_Edge)&        E,
+                                                      const Handle(StepShape_EdgeLoop)&    EL);
 
+  Standard_EXPORT static Standard_Boolean IsLikeSeam(const Handle(StepGeom_SurfaceCurve)& SC,
+                                                     const Handle(StepGeom_Surface)&      S,
+                                                     const Handle(StepShape_Edge)&        E,
+                                                     const Handle(StepShape_EdgeLoop)&    EL);
 
+  Standard_EXPORT static Standard_Boolean UpdateParam3d(const Handle(Geom_Curve)& C,
+                                                        Standard_Real&            w1,
+                                                        Standard_Real&            w2,
+                                                        const Standard_Real       preci);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepToTopoDS_GeometricTool_HeaderFile

@@ -19,9 +19,10 @@
 //! Definition of shader programs source code dump levels.
 enum OpenGl_ShaderProgramDumpLevel
 {
-  OpenGl_ShaderProgramDumpLevel_Off,  //!< Disable shader programs source code dump.
-  OpenGl_ShaderProgramDumpLevel_Short, //!< Shader programs source code dump in short format (except common declarations).
-  OpenGl_ShaderProgramDumpLevel_Full //!< Shader programs source code dump in full format.
+  OpenGl_ShaderProgramDumpLevel_Off,   //!< Disable shader programs source code dump.
+  OpenGl_ShaderProgramDumpLevel_Short, //!< Shader programs source code dump in short format (except
+                                       //!< common declarations).
+  OpenGl_ShaderProgramDumpLevel_Full   //!< Shader programs source code dump in full format.
 };
 
 #endif // _OpenGl_ShaderProgramDumpLevel_H__

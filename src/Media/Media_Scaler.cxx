@@ -20,14 +20,14 @@
 #include <Media_Scaler.hxx>
 
 #ifdef HAVE_FFMPEG
-#include <Standard_WarningsDisable.hxx>
+  #include <Standard_WarningsDisable.hxx>
 extern "C"
 {
   #include <libavcodec/avcodec.h>
   #include <libavutil/imgutils.h>
   #include <libswscale/swscale.h>
 };
-#include <Standard_WarningsRestore.hxx>
+  #include <Standard_WarningsRestore.hxx>
 #endif
 
 IMPLEMENT_STANDARD_RTTIEXT(Media_Scaler, Standard_Transient)
@@ -37,9 +37,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Media_Scaler, Standard_Transient)
 // purpose  :
 // =======================================================================
 Media_Scaler::Media_Scaler()
-: mySwsContext (NULL),
-  mySrcFormat (0),
-  myResFormat (0)
+    : mySwsContext(NULL),
+      mySrcFormat(0),
+      myResFormat(0)
 {
 #ifdef HAVE_FFMPEG
   mySrcFormat = AV_PIX_FMT_NONE;
@@ -64,9 +64,9 @@ void Media_Scaler::Release()
 {
   if (mySwsContext != NULL)
   {
-  #ifdef HAVE_FFMPEG
-    sws_freeContext (mySwsContext);
-  #endif
+#ifdef HAVE_FFMPEG
+    sws_freeContext(mySwsContext);
+#endif
     mySwsContext = NULL;
   }
 }
@@ -75,26 +75,20 @@ void Media_Scaler::Release()
 // function : Convert
 // purpose  :
 // =======================================================================
-bool Media_Scaler::Init (const Graphic3d_Vec2i& theSrcDims,
-                         int theSrcFormat,
-                         const Graphic3d_Vec2i& theResDims,
-                         int theResFormat)
+bool Media_Scaler::Init(const Graphic3d_Vec2i& theSrcDims,
+                        int                    theSrcFormat,
+                        const Graphic3d_Vec2i& theResDims,
+                        int                    theResFormat)
 {
 #ifdef HAVE_FFMPEG
-  if (theSrcDims.x() < 1
-   || theSrcDims.y() < 1
-   || theResDims.x() < 1
-   || theResDims.y() < 1
-   || theSrcFormat == AV_PIX_FMT_NONE
-   || theResFormat == AV_PIX_FMT_NONE)
+  if (theSrcDims.x() < 1 || theSrcDims.y() < 1 || theResDims.x() < 1 || theResDims.y() < 1
+      || theSrcFormat == AV_PIX_FMT_NONE || theResFormat == AV_PIX_FMT_NONE)
   {
     Release();
     return false;
   }
-  else if (mySrcDims   == theSrcDims
-        && myResDims   == theResDims
-        && mySrcFormat == theSrcFormat
-        && myResFormat == theResFormat)
+  else if (mySrcDims == theSrcDims && myResDims == theResDims && mySrcFormat == theSrcFormat
+           && myResFormat == theResFormat)
   {
     return mySwsContext != NULL;
   }
@@ -104,15 +98,22 @@ bool Media_Scaler::Init (const Graphic3d_Vec2i& theSrcDims,
   myResDims    = theResDims;
   mySrcFormat  = theSrcFormat;
   myResFormat  = theResFormat;
-  mySwsContext = sws_getContext (theSrcDims.x(), theSrcDims.y(), (AVPixelFormat )theSrcFormat,
-                                 theResDims.x(), theResDims.y(), (AVPixelFormat )theResFormat,
-                                 SWS_BICUBIC, NULL, NULL, NULL);
+  mySwsContext = sws_getContext(theSrcDims.x(),
+                                theSrcDims.y(),
+                                (AVPixelFormat)theSrcFormat,
+                                theResDims.x(),
+                                theResDims.y(),
+                                (AVPixelFormat)theResFormat,
+                                SWS_BICUBIC,
+                                NULL,
+                                NULL,
+                                NULL);
   return mySwsContext != NULL;
 #else
-  (void )theSrcDims;
-  (void )theSrcFormat;
-  (void )theResDims;
-  (void )theResFormat;
+  (void)theSrcDims;
+  (void)theSrcFormat;
+  (void)theResDims;
+  (void)theResFormat;
   return false;
 #endif
 }
@@ -121,29 +122,27 @@ bool Media_Scaler::Init (const Graphic3d_Vec2i& theSrcDims,
 // function : Convert
 // purpose  :
 // =======================================================================
-bool Media_Scaler::Convert (const Handle(Media_Frame)& theSrc,
-                            const Handle(Media_Frame)& theRes)
+bool Media_Scaler::Convert(const Handle(Media_Frame)& theSrc, const Handle(Media_Frame)& theRes)
 {
-  if (theSrc.IsNull()
-   || theSrc->IsEmpty()
-   || theRes.IsNull()
-   || theRes->IsEmpty()
-   || theSrc == theRes)
+  if (theSrc.IsNull() || theSrc->IsEmpty() || theRes.IsNull() || theRes->IsEmpty()
+      || theSrc == theRes)
   {
     return false;
   }
 
-  if (!Init (theSrc->Size(), theSrc->Format(),
-             theRes->Size(), theRes->Format()))
+  if (!Init(theSrc->Size(), theSrc->Format(), theRes->Size(), theRes->Format()))
   {
     return false;
   }
 
 #ifdef HAVE_FFMPEG
-  sws_scale (mySwsContext,
-             theSrc->Frame()->data, theSrc->Frame()->linesize,
-             0, theSrc->SizeY(),
-             theRes->ChangeFrame()->data, theRes->Frame()->linesize);
+  sws_scale(mySwsContext,
+            theSrc->Frame()->data,
+            theSrc->Frame()->linesize,
+            0,
+            theSrc->SizeY(),
+            theRes->ChangeFrame()->data,
+            theRes->Frame()->linesize);
   return true;
 #else
   return false;

@@ -27,57 +27,40 @@
 class TCollection_HAsciiString;
 class StepGeom_CompositeCurveSegment;
 
-
 class StepGeom_CompositeCurve;
 DEFINE_STANDARD_HANDLE(StepGeom_CompositeCurve, StepGeom_BoundedCurve)
-
 
 class StepGeom_CompositeCurve : public StepGeom_BoundedCurve
 {
 
 public:
-
-  
   //! Returns a CompositeCurve
   Standard_EXPORT StepGeom_CompositeCurve();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_HArray1OfCompositeCurveSegment)& aSegments, const StepData_Logical aSelfIntersect);
-  
-  Standard_EXPORT void SetSegments (const Handle(StepGeom_HArray1OfCompositeCurveSegment)& aSegments);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&                aName,
+                            const Handle(StepGeom_HArray1OfCompositeCurveSegment)& aSegments,
+                            const StepData_Logical                                 aSelfIntersect);
+
+  Standard_EXPORT void SetSegments(
+    const Handle(StepGeom_HArray1OfCompositeCurveSegment)& aSegments);
+
   Standard_EXPORT Handle(StepGeom_HArray1OfCompositeCurveSegment) Segments() const;
-  
-  Standard_EXPORT Handle(StepGeom_CompositeCurveSegment) SegmentsValue (const Standard_Integer num) const;
-  
+
+  Standard_EXPORT Handle(StepGeom_CompositeCurveSegment) SegmentsValue(
+    const Standard_Integer num) const;
+
   Standard_EXPORT Standard_Integer NbSegments() const;
-  
-  Standard_EXPORT void SetSelfIntersect (const StepData_Logical aSelfIntersect);
-  
+
+  Standard_EXPORT void SetSelfIntersect(const StepData_Logical aSelfIntersect);
+
   Standard_EXPORT StepData_Logical SelfIntersect() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_CompositeCurve,StepGeom_BoundedCurve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_CompositeCurve, StepGeom_BoundedCurve)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepGeom_HArray1OfCompositeCurveSegment) segments;
-  StepData_Logical selfIntersect;
-
-
+  StepData_Logical                                selfIntersect;
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_CompositeCurve_HeaderFile

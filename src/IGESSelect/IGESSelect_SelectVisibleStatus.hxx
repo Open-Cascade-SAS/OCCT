@@ -26,7 +26,6 @@ class Standard_Transient;
 class Interface_InterfaceModel;
 class TCollection_AsciiString;
 
-
 class IGESSelect_SelectVisibleStatus;
 DEFINE_STANDARD_HANDLE(IGESSelect_SelectVisibleStatus, IFSelect_SelectExtract)
 
@@ -37,38 +36,22 @@ class IGESSelect_SelectVisibleStatus : public IFSelect_SelectExtract
 {
 
 public:
-
-  
   //! Creates a SelectVisibleStatus
   Standard_EXPORT IGESSelect_SelectVisibleStatus();
-  
+
   //! Returns True if <ent> is an IGES Entity with Blank Status = 0
-  Standard_EXPORT Standard_Boolean Sort (const Standard_Integer rank, const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Boolean
+    Sort(const Standard_Integer                  rank,
+         const Handle(Standard_Transient)&       ent,
+         const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+
   //! Returns the Selection criterium : "IGES Entity, Status Visible"
   Standard_EXPORT TCollection_AsciiString ExtractLabel() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectVisibleStatus,IFSelect_SelectExtract)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectVisibleStatus, IFSelect_SelectExtract)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESSelect_SelectVisibleStatus_HeaderFile

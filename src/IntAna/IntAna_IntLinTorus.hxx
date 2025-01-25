@@ -25,68 +25,47 @@
 class gp_Lin;
 class gp_Torus;
 
-
 //! Intersection between a line and a torus.
-class IntAna_IntLinTorus 
+class IntAna_IntLinTorus
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT IntAna_IntLinTorus();
-  
+
   //! Creates the intersection between a line and a torus.
   Standard_EXPORT IntAna_IntLinTorus(const gp_Lin& L, const gp_Torus& T);
-  
+
   //! Intersects a line and a torus.
-  Standard_EXPORT void Perform (const gp_Lin& L, const gp_Torus& T);
-  
+  Standard_EXPORT void Perform(const gp_Lin& L, const gp_Torus& T);
+
   //! Returns True if the computation was successful.
-    Standard_Boolean IsDone() const;
-  
+  Standard_Boolean IsDone() const;
+
   //! Returns the number of intersection points.
-    Standard_Integer NbPoints() const;
-  
+  Standard_Integer NbPoints() const;
+
   //! Returns the intersection point of range Index.
-    const gp_Pnt& Value (const Standard_Integer Index) const;
-  
+  const gp_Pnt& Value(const Standard_Integer Index) const;
+
   //! Returns the parameter on the line of the intersection
   //! point of range Index.
-    Standard_Real ParamOnLine (const Standard_Integer Index) const;
-  
+  Standard_Real ParamOnLine(const Standard_Integer Index) const;
+
   //! Returns the parameters on the torus of the intersection
   //! point of range Index.
-    void ParamOnTorus (const Standard_Integer Index, Standard_Real& FI, Standard_Real& THETA) const;
-
-
-
+  void ParamOnTorus(const Standard_Integer Index, Standard_Real& FI, Standard_Real& THETA) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Boolean done;
   Standard_Integer nbpt;
-  gp_Pnt thePoint[4];
-  Standard_Real theParam[4];
-  Standard_Real theFi[4];
-  Standard_Real theTheta[4];
-
-
+  gp_Pnt           thePoint[4];
+  Standard_Real    theParam[4];
+  Standard_Real    theFi[4];
+  Standard_Real    theTheta[4];
 };
 
-
 #include <IntAna_IntLinTorus.lxx>
-
-
-
-
 
 #endif // _IntAna_IntLinTorus_HeaderFile

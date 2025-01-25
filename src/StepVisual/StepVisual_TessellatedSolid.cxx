@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -18,25 +18,20 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedSolid, StepVisual_TessellatedItem)
 
-//=======================================================================
-//function : StepVisual_TessellatedSolid
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepVisual_TessellatedSolid::StepVisual_TessellatedSolid ()
+StepVisual_TessellatedSolid::StepVisual_TessellatedSolid()
 {
   myHasGeometricLink = Standard_False;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedSolid::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                        const Handle(StepVisual_HArray1OfTessellatedStructuredItem)& theItems,
-                                        const Standard_Boolean theHasGeometricLink,
-                                        const Handle(StepShape_ManifoldSolidBrep)& theGeometricLink)
+void StepVisual_TessellatedSolid::Init(
+  const Handle(TCollection_HAsciiString)&                      theRepresentationItem_Name,
+  const Handle(StepVisual_HArray1OfTessellatedStructuredItem)& theItems,
+  const Standard_Boolean                                       theHasGeometricLink,
+  const Handle(StepShape_ManifoldSolidBrep)&                   theGeometricLink)
 {
   StepVisual_TessellatedItem::Init(theRepresentationItem_Name);
 
@@ -53,31 +48,22 @@ void StepVisual_TessellatedSolid::Init (const Handle(TCollection_HAsciiString)& 
   }
 }
 
-//=======================================================================
-//function : Items
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepVisual_HArray1OfTessellatedStructuredItem) StepVisual_TessellatedSolid::Items () const
+Handle(StepVisual_HArray1OfTessellatedStructuredItem) StepVisual_TessellatedSolid::Items() const
 {
   return myItems;
 }
 
-//=======================================================================
-//function : SetItems
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedSolid::SetItems(const Handle(StepVisual_HArray1OfTessellatedStructuredItem)& theItems)
+void StepVisual_TessellatedSolid::SetItems(
+  const Handle(StepVisual_HArray1OfTessellatedStructuredItem)& theItems)
 {
   myItems = theItems;
 }
 
-
-//=======================================================================
-//function : NbItems
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer StepVisual_TessellatedSolid::NbItems() const
 {
@@ -88,43 +74,32 @@ Standard_Integer StepVisual_TessellatedSolid::NbItems() const
   return myItems->Length();
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : ItemsValue
-//purpose  : 
-//=======================================================================
-
-Handle(StepVisual_TessellatedStructuredItem) StepVisual_TessellatedSolid::ItemsValue(const Standard_Integer theNum) const
+Handle(StepVisual_TessellatedStructuredItem) StepVisual_TessellatedSolid::ItemsValue(
+  const Standard_Integer theNum) const
 {
   return myItems->Value(theNum);
 }
 
-//=======================================================================
-//function : GeometricLink
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepShape_ManifoldSolidBrep) StepVisual_TessellatedSolid::GeometricLink () const
+Handle(StepShape_ManifoldSolidBrep) StepVisual_TessellatedSolid::GeometricLink() const
 {
   return myGeometricLink;
 }
 
-//=======================================================================
-//function : SetGeometricLink
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedSolid::SetGeometricLink(const Handle(StepShape_ManifoldSolidBrep)& theGeometricLink)
+void StepVisual_TessellatedSolid::SetGeometricLink(
+  const Handle(StepShape_ManifoldSolidBrep)& theGeometricLink)
 {
   myGeometricLink = theGeometricLink;
 }
 
-//=======================================================================
-//function : HasGeometricLink
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean StepVisual_TessellatedSolid::HasGeometricLink () const
+Standard_Boolean StepVisual_TessellatedSolid::HasGeometricLink() const
 {
   return myHasGeometricLink;
 }

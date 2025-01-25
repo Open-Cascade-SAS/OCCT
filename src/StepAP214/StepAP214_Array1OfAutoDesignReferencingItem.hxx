@@ -20,7 +20,7 @@
 #include <StepAP214_AutoDesignReferencingItem.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<StepAP214_AutoDesignReferencingItem> StepAP214_Array1OfAutoDesignReferencingItem;
-
+typedef NCollection_Array1<StepAP214_AutoDesignReferencingItem>
+  StepAP214_Array1OfAutoDesignReferencingItem;
 
 #endif

@@ -21,7 +21,6 @@
 
 #include <IGESData_IGESEntity.hxx>
 
-
 class IGESSolid_SolidInstance;
 DEFINE_STANDARD_HANDLE(IGESSolid_SolidInstance, IGESData_IGESEntity)
 
@@ -36,47 +35,28 @@ class IGESSolid_SolidInstance : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESSolid_SolidInstance();
-  
+
   //! This method is used to set the fields of the class
   //! SolidInstance
   //! - anEntity : the entity corresponding to the solid
-  Standard_EXPORT void Init (const Handle(IGESData_IGESEntity)& anEntity);
-  
+  Standard_EXPORT void Init(const Handle(IGESData_IGESEntity)& anEntity);
+
   //! Tells if a SolidInstance is for a BREP
   //! Default is False
   Standard_EXPORT Standard_Boolean IsBrep() const;
-  
+
   //! Sets or unsets the Brep status (FormNumber = 1 else 0)
-  Standard_EXPORT void SetBrep (const Standard_Boolean brep);
-  
+  Standard_EXPORT void SetBrep(const Standard_Boolean brep);
+
   //! returns the solid entity
   Standard_EXPORT Handle(IGESData_IGESEntity) Entity() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSolid_SolidInstance,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_SolidInstance, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(IGESData_IGESEntity) theEntity;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESSolid_SolidInstance_HeaderFile

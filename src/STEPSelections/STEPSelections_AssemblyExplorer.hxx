@@ -32,58 +32,38 @@ class STEPSelections_AssemblyComponent;
 class Standard_Transient;
 class StepRepr_NextAssemblyUsageOccurrence;
 
-
-
-class STEPSelections_AssemblyExplorer 
+class STEPSelections_AssemblyExplorer
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT STEPSelections_AssemblyExplorer(const Interface_Graph& G);
-  
-  Standard_EXPORT void Init (const Interface_Graph& G);
-  
-  Standard_EXPORT void Dump (Standard_OStream& os) const;
-  
-  Standard_EXPORT Handle(StepShape_ShapeDefinitionRepresentation) FindSDRWithProduct (const Handle(StepBasic_ProductDefinition)& product) const;
-  
-  Standard_EXPORT void FillListWithGraph (const Handle(STEPSelections_AssemblyComponent)& cmp);
-  
-  Standard_EXPORT Handle(Standard_Transient) FindItemWithNAUO (const Handle(StepRepr_NextAssemblyUsageOccurrence)& nauo) const;
-  
+
+  Standard_EXPORT void Init(const Interface_Graph& G);
+
+  Standard_EXPORT void Dump(Standard_OStream& os) const;
+
+  Standard_EXPORT Handle(StepShape_ShapeDefinitionRepresentation) FindSDRWithProduct(
+    const Handle(StepBasic_ProductDefinition)& product) const;
+
+  Standard_EXPORT void FillListWithGraph(const Handle(STEPSelections_AssemblyComponent)& cmp);
+
+  Standard_EXPORT Handle(Standard_Transient) FindItemWithNAUO(
+    const Handle(StepRepr_NextAssemblyUsageOccurrence)& nauo) const;
+
   //! Returns the number of root assemblies;
-    Standard_Integer NbAssemblies() const;
-  
+  Standard_Integer NbAssemblies() const;
+
   //! Returns root of assenbly by its rank;
-    Handle(STEPSelections_AssemblyComponent) Root (const Standard_Integer rank = 1) const;
-
-
-
+  Handle(STEPSelections_AssemblyComponent) Root(const Standard_Integer rank = 1) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   STEPSelections_SequenceOfAssemblyComponent myRoots;
-  Interface_Graph myGraph;
+  Interface_Graph                            myGraph;
   TColStd_IndexedDataMapOfTransientTransient myMap;
-
-
 };
 
-
 #include <STEPSelections_AssemblyExplorer.lxx>
-
-
-
-
 
 #endif // _STEPSelections_AssemblyExplorer_HeaderFile

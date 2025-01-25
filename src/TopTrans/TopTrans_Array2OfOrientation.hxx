@@ -22,5 +22,4 @@
 
 typedef NCollection_Array2<TopAbs_Orientation> TopTrans_Array2OfOrientation;
 
-
 #endif

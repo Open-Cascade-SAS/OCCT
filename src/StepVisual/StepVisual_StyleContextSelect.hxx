@@ -28,55 +28,32 @@ class StepRepr_Representation;
 class StepRepr_RepresentationItem;
 class StepVisual_PresentationSet;
 
-
-
-class StepVisual_StyleContextSelect  : public StepData_SelectType
+class StepVisual_StyleContextSelect : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a StyleContextSelect SelectType
   Standard_EXPORT StepVisual_StyleContextSelect();
-  
+
   //! Recognizes a StyleContextSelect Kind Entity that is :
   //! 1 -> Representation
   //! 2 -> RepresentationItem
   //! 3 -> PresentationSet
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a Representation (Null if another type)
   Standard_EXPORT Handle(StepRepr_Representation) Representation() const;
-  
+
   //! returns Value as a RepresentationItem (Null if another type)
   Standard_EXPORT Handle(StepRepr_RepresentationItem) RepresentationItem() const;
-  
+
   //! returns Value as a PresentationSet (Null if another type)
   Standard_EXPORT Handle(StepVisual_PresentationSet) PresentationSet() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_StyleContextSelect_HeaderFile

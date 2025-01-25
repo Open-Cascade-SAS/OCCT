@@ -20,7 +20,7 @@
 #include <ShapeAnalysis_FreeBoundData.hxx>
 #include <NCollection_Sequence.hxx>
 
-typedef NCollection_Sequence<Handle(ShapeAnalysis_FreeBoundData)> ShapeAnalysis_SequenceOfFreeBounds;
-
+typedef NCollection_Sequence<Handle(ShapeAnalysis_FreeBoundData)>
+  ShapeAnalysis_SequenceOfFreeBounds;
 
 #endif

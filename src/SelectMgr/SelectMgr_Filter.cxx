@@ -14,12 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Filter.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_Filter,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_Filter, Standard_Transient)
 
-Standard_Boolean SelectMgr_Filter::ActsOn(const TopAbs_ShapeEnum /*aStandardMode*/) const 
-{return Standard_False;}
+Standard_Boolean SelectMgr_Filter::ActsOn(const TopAbs_ShapeEnum /*aStandardMode*/) const
+{
+  return Standard_False;
+}

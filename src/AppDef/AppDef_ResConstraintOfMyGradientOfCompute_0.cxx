@@ -21,7 +21,6 @@
 #include <AppDef_MyLineTool.hxx>
 #include <AppParCurves_MultiCurve.hxx>
 #include <math_Matrix.hxx>
- 
 
 #define MultiLine AppDef_MultiLine
 #define MultiLine_hxx <AppDef_MultiLine.hxx>
@@ -30,4 +29,3 @@
 #define AppParCurves_ResolConstraint AppDef_ResConstraintOfMyGradientOfCompute
 #define AppParCurves_ResolConstraint_hxx <AppDef_ResConstraintOfMyGradientOfCompute.hxx>
 #include "../AppParCurves/AppParCurves_ResolConstraint.gxx"
-

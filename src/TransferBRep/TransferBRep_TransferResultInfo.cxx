@@ -14,28 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <TransferBRep_TransferResultInfo.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TransferBRep_TransferResultInfo,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(TransferBRep_TransferResultInfo, Standard_Transient)
 
-//=======================================================================
-//function : TransferBRep_TransferResultInfo
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 TransferBRep_TransferResultInfo::TransferBRep_TransferResultInfo()
 {
   Clear();
 }
 
-//=======================================================================
-//function : Clear
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- void TransferBRep_TransferResultInfo::Clear ()
+void TransferBRep_TransferResultInfo::Clear()
 {
-    myNR = myNRW = myNRF = myNRWF =
-    myR  = myRW  = myRF  = myRWF  = 0;
+  myNR = myNRW = myNRF = myNRWF = myR = myRW = myRF = myRWF = 0;
 }

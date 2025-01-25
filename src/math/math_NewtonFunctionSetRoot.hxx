@@ -27,144 +27,127 @@
 #include <Standard_OStream.hxx>
 class math_FunctionSetWithDerivatives;
 
-
-
 //! This class computes the root of a set of N functions of N variables,
 //! knowing an initial guess at the solution and using the
 //! Newton Raphson algorithm. Knowledge of all the partial
 //! derivatives (Jacobian) is required.
-class math_NewtonFunctionSetRoot 
+class math_NewtonFunctionSetRoot
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! Initialize correctly all the fields of this class.
   //! The range (1, F.NbVariables()) must be especially respected for
   //! all vectors and matrix declarations.
-  Standard_EXPORT math_NewtonFunctionSetRoot(math_FunctionSetWithDerivatives& theFunction, const math_Vector& theXTolerance, const Standard_Real theFTolerance, const Standard_Integer tehNbIterations = 100);
-  
+  Standard_EXPORT math_NewtonFunctionSetRoot(math_FunctionSetWithDerivatives& theFunction,
+                                             const math_Vector&               theXTolerance,
+                                             const Standard_Real              theFTolerance,
+                                             const Standard_Integer tehNbIterations = 100);
 
   //! This constructor should be used in a sub-class to initialize
   //! correctly all the fields of this class.
   //! The range (1, F.NbVariables()) must be especially respected for
   //! all vectors and matrix declarations.
   //! The method SetTolerance must be called before performing the algorithm.
-  Standard_EXPORT math_NewtonFunctionSetRoot(math_FunctionSetWithDerivatives& theFunction, const Standard_Real theFTolerance, const Standard_Integer theNbIterations = 100);
-  
+  Standard_EXPORT math_NewtonFunctionSetRoot(math_FunctionSetWithDerivatives& theFunction,
+                                             const Standard_Real              theFTolerance,
+                                             const Standard_Integer theNbIterations = 100);
+
   //! Destructor
   Standard_EXPORT virtual ~math_NewtonFunctionSetRoot();
-  
+
   //! Initializes the tolerance values for the unknowns.
-  Standard_EXPORT void SetTolerance (const math_Vector& XTol);
-  
+  Standard_EXPORT void SetTolerance(const math_Vector& XTol);
 
   //! The Newton method is done to improve the root of the function
   //! from the initial guess point. The solution is found when:
   //! abs(Xj - Xj-1)(i) <= XTol(i) and abs(Fi) <= FTol for all i;
-  Standard_EXPORT void Perform (math_FunctionSetWithDerivatives& theFunction, const math_Vector& theStartingPoint);
-  
+  Standard_EXPORT void Perform(math_FunctionSetWithDerivatives& theFunction,
+                               const math_Vector&               theStartingPoint);
 
   //! The Newton method is done to improve the root of the function
   //! from the initial guess point. Bounds may be given, to constrain the solution.
   //! The solution is found when:
   //! abs(Xj - Xj-1)(i) <= XTol(i) and abs(Fi) <= FTol for all i;
-  Standard_EXPORT void Perform (math_FunctionSetWithDerivatives& theFunction, const math_Vector& theStartingPoint, const math_Vector& theInfBound, const math_Vector& theSupBound);
-  
+  Standard_EXPORT void Perform(math_FunctionSetWithDerivatives& theFunction,
+                               const math_Vector&               theStartingPoint,
+                               const math_Vector&               theInfBound,
+                               const math_Vector&               theSupBound);
 
   //! This method is called at the end of each iteration to check if the
   //! solution is found.
   //! Vectors DeltaX, Fvalues and Jacobian Matrix are consistent with the
   //! possible solution Vector Sol and can be inspected to decide whether
   //! the solution is reached or not.
-    virtual Standard_Boolean IsSolutionReached (math_FunctionSetWithDerivatives& F);
-  
+  virtual Standard_Boolean IsSolutionReached(math_FunctionSetWithDerivatives& F);
+
   //! Returns true if the computations are successful, otherwise returns false.
-    Standard_Boolean IsDone() const;
-  
+  Standard_Boolean IsDone() const;
+
   //! Returns the value of the root of function F.
   //! Exceptions
   //! StdFail_NotDone if the algorithm fails (and IsDone returns false).
-    const math_Vector& Root() const;
-  
+  const math_Vector& Root() const;
+
   //! outputs the root vector in Root.
   //! Exception NotDone is raised if the root was not found.
   //! Exception DimensionError is raised if the range of Root is
   //! not equal to the range of the StartingPoint.
-    void Root (math_Vector& Root) const;
-  
+  void Root(math_Vector& Root) const;
+
   //! Outputs the state number associated with the solution
   //! vector root.
-    Standard_Integer StateNumber() const;
-  
+  Standard_Integer StateNumber() const;
+
   //! Returns the matrix value of the derivative at the root.
   //! Exception NotDone is raised if the root was not found.
-    const math_Matrix& Derivative() const;
-  
+  const math_Matrix& Derivative() const;
+
   //! Outputs the matrix value of the derivative at the root in
   //! Der.
   //! Exception NotDone is raised if the root was not found.
   //! Exception DimensionError is raised if the range of Der is
   //! not equal to the range of the StartingPoint.
-    void Derivative (math_Matrix& Der) const;
-  
+  void Derivative(math_Matrix& Der) const;
+
   //! Returns the vector value of the error done on the
   //! functions at the root.
   //! Exception NotDone is raised if the root was not found.
-    const math_Vector& FunctionSetErrors() const;
-  
+  const math_Vector& FunctionSetErrors() const;
+
   //! Outputs the vector value of the error done on the
   //! functions at the root in Err.
   //! Exception NotDone is raised if the root was not found.
   //! Exception DimensionError is raised if the range of Err is
   //! not equal to the range of the StartingPoint.
-    void FunctionSetErrors (math_Vector& Err) const;
-  
+  void FunctionSetErrors(math_Vector& Err) const;
+
   //! Returns the number of iterations really done
   //! during the computation of the Root.
   //! Exception NotDone is raised if the root was not found.
-    Standard_Integer NbIterations() const;
-  
+  Standard_Integer NbIterations() const;
+
   //! Prints information on the current state of the object.
   //! Is used to redefine the operator <<.
-  Standard_EXPORT void Dump (Standard_OStream& o) const;
-
-
-
+  Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 protected:
-
-
-
-  math_Vector TolX;
-  Standard_Real TolF;
+  math_Vector        TolX;
+  Standard_Real      TolF;
   math_IntegerVector Indx;
-  math_Vector Scratch;
-  math_Vector Sol;
-  math_Vector DeltaX;
-  math_Vector FValues;
-  math_Matrix Jacobian;
-
+  math_Vector        Scratch;
+  math_Vector        Sol;
+  math_Vector        DeltaX;
+  math_Vector        FValues;
+  math_Matrix        Jacobian;
 
 private:
-
-
-
   Standard_Boolean Done;
   Standard_Integer State;
   Standard_Integer Iter;
   Standard_Integer Itermax;
-
-
 };
 
-
 #include <math_NewtonFunctionSetRoot.lxx>
-
-
-
-
 
 #endif // _math_NewtonFunctionSetRoot_HeaderFile

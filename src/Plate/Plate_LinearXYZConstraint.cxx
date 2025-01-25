@@ -14,49 +14,54 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Plate_LinearXYZConstraint.hxx>
 #include <Plate_PinpointConstraint.hxx>
 #include <Standard_DimensionMismatch.hxx>
 
 Plate_LinearXYZConstraint::Plate_LinearXYZConstraint() {}
 
-Plate_LinearXYZConstraint::Plate_LinearXYZConstraint(const Plate_Array1OfPinpointConstraint& thePPC,const TColStd_Array1OfReal& theCoeff)
+Plate_LinearXYZConstraint::Plate_LinearXYZConstraint(const Plate_Array1OfPinpointConstraint& thePPC,
+                                                     const TColStd_Array1OfReal& theCoeff)
 {
-  if(theCoeff.Length()!= thePPC.Length()) throw Standard_DimensionMismatch();
-  myPPC = new Plate_HArray1OfPinpointConstraint(1, thePPC.Length());
-  myCoef = new TColStd_HArray2OfReal(1,1,1, theCoeff.Length());
-  
+  if (theCoeff.Length() != thePPC.Length())
+    throw Standard_DimensionMismatch();
+  myPPC  = new Plate_HArray1OfPinpointConstraint(1, thePPC.Length());
+  myCoef = new TColStd_HArray2OfReal(1, 1, 1, theCoeff.Length());
+
   myPPC->ChangeArray1() = thePPC;
-  for(Standard_Integer i = 1; i<= theCoeff.Length(); i++)
-    myCoef->ChangeValue(1,i) = theCoeff(i+ theCoeff.Lower()-1);
+  for (Standard_Integer i = 1; i <= theCoeff.Length(); i++)
+    myCoef->ChangeValue(1, i) = theCoeff(i + theCoeff.Lower() - 1);
 }
 
-Plate_LinearXYZConstraint::Plate_LinearXYZConstraint(const Plate_Array1OfPinpointConstraint& thePPC,const TColStd_Array2OfReal& theCoeff)
+Plate_LinearXYZConstraint::Plate_LinearXYZConstraint(const Plate_Array1OfPinpointConstraint& thePPC,
+                                                     const TColStd_Array2OfReal& theCoeff)
 {
-  if(theCoeff.RowLength()!= thePPC.Length()) throw Standard_DimensionMismatch();
-  myPPC = new Plate_HArray1OfPinpointConstraint(1, thePPC.Length());
-  myCoef = new TColStd_HArray2OfReal(1, theCoeff.ColLength(),1, theCoeff.RowLength());
-  
-  myPPC->ChangeArray1() = thePPC;
+  if (theCoeff.RowLength() != thePPC.Length())
+    throw Standard_DimensionMismatch();
+  myPPC  = new Plate_HArray1OfPinpointConstraint(1, thePPC.Length());
+  myCoef = new TColStd_HArray2OfReal(1, theCoeff.ColLength(), 1, theCoeff.RowLength());
+
+  myPPC->ChangeArray1()  = thePPC;
   myCoef->ChangeArray2() = theCoeff;
 }
 
-
-Plate_LinearXYZConstraint::Plate_LinearXYZConstraint(const Standard_Integer ColLen,const Standard_Integer RowLen)
+Plate_LinearXYZConstraint::Plate_LinearXYZConstraint(const Standard_Integer ColLen,
+                                                     const Standard_Integer RowLen)
 {
-  myPPC = new Plate_HArray1OfPinpointConstraint(1,RowLen);
-  myCoef = new TColStd_HArray2OfReal(1,ColLen,1,RowLen);
+  myPPC  = new Plate_HArray1OfPinpointConstraint(1, RowLen);
+  myCoef = new TColStd_HArray2OfReal(1, ColLen, 1, RowLen);
   myCoef->Init(0.0);
 }
 
-void Plate_LinearXYZConstraint::SetPPC(const Standard_Integer Index,const Plate_PinpointConstraint& Value) 
+void Plate_LinearXYZConstraint::SetPPC(const Standard_Integer          Index,
+                                       const Plate_PinpointConstraint& Value)
 {
   myPPC->ChangeValue(Index) = Value;
 }
 
-void Plate_LinearXYZConstraint::SetCoeff(const Standard_Integer Row,const Standard_Integer Col,const Standard_Real Value) 
+void Plate_LinearXYZConstraint::SetCoeff(const Standard_Integer Row,
+                                         const Standard_Integer Col,
+                                         const Standard_Real    Value)
 {
-  myCoef->ChangeValue(Row,Col) = Value;
+  myCoef->ChangeValue(Row, Col) = Value;
 }
-

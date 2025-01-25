@@ -19,47 +19,34 @@
 #include <StepShape_DimensionalSizeWithPath.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_DimensionalSizeWithPath,StepShape_DimensionalSize)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_DimensionalSizeWithPath, StepShape_DimensionalSize)
 
-//=======================================================================
-//function : StepShape_DimensionalSizeWithPath
-//purpose  : 
-//=======================================================================
-StepShape_DimensionalSizeWithPath::StepShape_DimensionalSizeWithPath ()
+//=================================================================================================
+
+StepShape_DimensionalSizeWithPath::StepShape_DimensionalSizeWithPath() {}
+
+//=================================================================================================
+
+void StepShape_DimensionalSizeWithPath::Init(
+  const Handle(StepRepr_ShapeAspect)&     aDimensionalSize_AppliesTo,
+  const Handle(TCollection_HAsciiString)& aDimensionalSize_Name,
+  const Handle(StepRepr_ShapeAspect)&     aPath)
 {
-}
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void StepShape_DimensionalSizeWithPath::Init (const Handle(StepRepr_ShapeAspect) &aDimensionalSize_AppliesTo,
-                                              const Handle(TCollection_HAsciiString) &aDimensionalSize_Name,
-                                              const Handle(StepRepr_ShapeAspect) &aPath)
-{
-  StepShape_DimensionalSize::Init(aDimensionalSize_AppliesTo,
-                                  aDimensionalSize_Name);
+  StepShape_DimensionalSize::Init(aDimensionalSize_AppliesTo, aDimensionalSize_Name);
 
   thePath = aPath;
 }
 
-//=======================================================================
-//function : Path
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepRepr_ShapeAspect) StepShape_DimensionalSizeWithPath::Path () const
+Handle(StepRepr_ShapeAspect) StepShape_DimensionalSizeWithPath::Path() const
 {
   return thePath;
 }
 
-//=======================================================================
-//function : SetPath
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepShape_DimensionalSizeWithPath::SetPath (const Handle(StepRepr_ShapeAspect) &aPath)
+void StepShape_DimensionalSizeWithPath::SetPath(const Handle(StepRepr_ShapeAspect)& aPath)
 {
   thePath = aPath;
 }

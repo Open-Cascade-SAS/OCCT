@@ -24,24 +24,22 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 
-
 //! This abstract class describes the virtual functions
 //! associated with a Function of a single variable.
-class math_Function 
+class math_Function
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Virtual destructor, for safe inheritance
-  virtual ~math_Function () {}
-  
+  virtual ~math_Function() {}
+
   //! Computes the value of the function <F> for a given value of
   //! variable <X>.
   //! returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Value (const Standard_Real X, Standard_Real& F) = 0;
-  
+  Standard_EXPORT virtual Standard_Boolean Value(const Standard_Real X, Standard_Real& F) = 0;
+
   //! returns the state of the function corresponding to the
   //! latest call of any methods associated with the function.
   //! This function is called by each of the algorithms

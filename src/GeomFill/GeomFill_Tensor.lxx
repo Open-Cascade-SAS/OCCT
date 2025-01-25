@@ -14,16 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline const Standard_Real& GeomFill_Tensor::Value(const Standard_Integer Row, 
-						    const Standard_Integer Col, 
-						    const Standard_Integer Mat) const
+inline const Standard_Real& GeomFill_Tensor::Value(const Standard_Integer Row,
+                                                   const Standard_Integer Col,
+                                                   const Standard_Integer Mat) const
 {
-  return Tab(Mat+nbmat*(Col-1)+nbmtcl*(Row-1)); 
+  return Tab(Mat + nbmat * (Col - 1) + nbmtcl * (Row - 1));
 }
 
-inline Standard_Real& GeomFill_Tensor::ChangeValue(const Standard_Integer Row, 
-					      const Standard_Integer Col, 
-					      const Standard_Integer Mat)
+inline Standard_Real& GeomFill_Tensor::ChangeValue(const Standard_Integer Row,
+                                                   const Standard_Integer Col,
+                                                   const Standard_Integer Mat)
 {
-  return Tab(Mat+nbmat*(Col-1)+nbmtcl*(Row-1)); 
+  return Tab(Mat + nbmat * (Col - 1) + nbmtcl * (Row - 1));
 }

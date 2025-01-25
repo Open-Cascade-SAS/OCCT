@@ -11,56 +11,53 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepGeom_Axis1Placement.hxx>
 #include <StepShape_Torus.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_Torus,StepGeom_GeometricRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_Torus, StepGeom_GeometricRepresentationItem)
 
-StepShape_Torus::StepShape_Torus ()  {}
+StepShape_Torus::StepShape_Torus() {}
 
-void StepShape_Torus::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_Axis1Placement)& aPosition,
-	const Standard_Real aMajorRadius,
-	const Standard_Real aMinorRadius)
+void StepShape_Torus::Init(const Handle(TCollection_HAsciiString)& aName,
+                           const Handle(StepGeom_Axis1Placement)&  aPosition,
+                           const Standard_Real                     aMajorRadius,
+                           const Standard_Real                     aMinorRadius)
 {
-	// --- classe own fields ---
-	position = aPosition;
-	majorRadius = aMajorRadius;
-	minorRadius = aMinorRadius;
-	// --- classe inherited fields ---
-	StepRepr_RepresentationItem::Init(aName);
+  // --- classe own fields ---
+  position    = aPosition;
+  majorRadius = aMajorRadius;
+  minorRadius = aMinorRadius;
+  // --- classe inherited fields ---
+  StepRepr_RepresentationItem::Init(aName);
 }
-
 
 void StepShape_Torus::SetPosition(const Handle(StepGeom_Axis1Placement)& aPosition)
 {
-	position = aPosition;
+  position = aPosition;
 }
 
 Handle(StepGeom_Axis1Placement) StepShape_Torus::Position() const
 {
-	return position;
+  return position;
 }
 
 void StepShape_Torus::SetMajorRadius(const Standard_Real aMajorRadius)
 {
-	majorRadius = aMajorRadius;
+  majorRadius = aMajorRadius;
 }
 
 Standard_Real StepShape_Torus::MajorRadius() const
 {
-	return majorRadius;
+  return majorRadius;
 }
 
 void StepShape_Torus::SetMinorRadius(const Standard_Real aMinorRadius)
 {
-	minorRadius = aMinorRadius;
+  minorRadius = aMinorRadius;
 }
 
 Standard_Real StepShape_Torus::MinorRadius() const
 {
-	return minorRadius;
+  return minorRadius;
 }

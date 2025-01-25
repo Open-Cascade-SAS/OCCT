@@ -27,7 +27,6 @@ class TCollection_AsciiString;
 class Interface_Graph;
 class IFGraph_SubPartsIterator;
 
-
 class IFSelect_DispPerFiles;
 DEFINE_STANDARD_HANDLE(IFSelect_DispPerFiles, IFSelect_Dispatch)
 
@@ -42,55 +41,39 @@ class IFSelect_DispPerFiles : public IFSelect_Dispatch
 {
 
 public:
-
-  
   //! Creates a DispPerFiles with no Count (default value 1 file)
   Standard_EXPORT IFSelect_DispPerFiles();
-  
+
   //! Returns the Count Parameter used for splitting
   Standard_EXPORT Handle(IFSelect_IntParam) Count() const;
-  
+
   //! Sets a new Parameter for Count
-  Standard_EXPORT void SetCount (const Handle(IFSelect_IntParam)& count);
-  
+  Standard_EXPORT void SetCount(const Handle(IFSelect_IntParam)& count);
+
   //! Returns the effective value of the count parameter
   //! (if Count Parameter not Set or value not positive, returns 1)
   Standard_EXPORT Standard_Integer CountValue() const;
-  
+
   //! Returns as Label, "Maximum <count> Files"
   Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
-  
+
   //! Returns True, maximum count is given as CountValue
-  Standard_EXPORT virtual Standard_Boolean LimitedMax (const Standard_Integer nbent, Standard_Integer& max) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean LimitedMax(const Standard_Integer nbent,
+                                                      Standard_Integer&      max) const
+    Standard_OVERRIDE;
 
   //! Computes the list of produced Packets. It defines Packets in
   //! order to have <Count> Packets, except if the input count of
   //! Entities is lower. Entities are given by RootResult from the
   //! Final Selection.
-  Standard_EXPORT void Packets (const Interface_Graph& G, IFGraph_SubPartsIterator& packs) const Standard_OVERRIDE;
+  Standard_EXPORT void Packets(const Interface_Graph&    G,
+                               IFGraph_SubPartsIterator& packs) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IFSelect_DispPerFiles,IFSelect_Dispatch)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_DispPerFiles, IFSelect_Dispatch)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(IFSelect_IntParam) thecount;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_DispPerFiles_HeaderFile

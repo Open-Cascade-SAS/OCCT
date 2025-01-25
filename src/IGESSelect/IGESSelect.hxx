@@ -25,21 +25,18 @@
 class IGESData_IGESEntity;
 class Interface_Graph;
 
-
 //! This package defines the library of the most used tools for
 //! IGES Files : Selections & Modifiers specific to the IGES norm,
 //! and the most needed converters
-class IGESSelect 
+class IGESSelect
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Simply gives a prompt for a conversational action on standard
   //! input/output. Returns the status of a
   Standard_EXPORT static void Run();
-  
+
   //! Gives a quick analysis of an IGES Entity in the context of a
   //! model (i.e. a File) described by a Graph.
   //! Returned values are :
@@ -49,8 +46,10 @@ public:
   //! giving a case
   //! (normally, types of <ent> and <sup> should suffice to
   //! known the case)
-  Standard_EXPORT static Standard_Integer WhatIges (const Handle(IGESData_IGESEntity)& ent, const Interface_Graph& G, Handle(IGESData_IGESEntity)& sup, Standard_Integer& index);
-
+  Standard_EXPORT static Standard_Integer WhatIges(const Handle(IGESData_IGESEntity)& ent,
+                                                   const Interface_Graph&             G,
+                                                   Handle(IGESData_IGESEntity)&       sup,
+                                                   Standard_Integer&                  index);
 };
 
 #endif // _IGESSelect_HeaderFile

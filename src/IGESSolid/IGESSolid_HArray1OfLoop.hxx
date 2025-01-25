@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(IGESSolid_HArray1OfLoop, IGESSolid_Array1OfLoop)
 
-
 #endif

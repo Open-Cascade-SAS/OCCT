@@ -18,30 +18,30 @@
 #include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepDimTol_GeometricToleranceTarget.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithMaximumTolerance,StepDimTol_GeometricToleranceWithModifiers)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithMaximumTolerance,
+                           StepDimTol_GeometricToleranceWithModifiers)
 
-//=======================================================================
-//function : StepDimTol_GeometricToleranceWithModifiers
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepDimTol_GeometricToleranceWithMaximumTolerance::StepDimTol_GeometricToleranceWithMaximumTolerance ()
+StepDimTol_GeometricToleranceWithMaximumTolerance::
+  StepDimTol_GeometricToleranceWithMaximumTolerance()
 {
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepDimTol_GeometricToleranceWithMaximumTolerance::
-  Init (const Handle(TCollection_HAsciiString) &theName,
-        const Handle(TCollection_HAsciiString) &theDescription,
-        const Handle(StepBasic_MeasureWithUnit) &theMagnitude,
-        const StepDimTol_GeometricToleranceTarget &theTolerancedShapeAspect,
-        const Handle(StepDimTol_HArray1OfGeometricToleranceModifier) &theModifiers,
-        const Handle(StepBasic_LengthMeasureWithUnit) &theMaximumUpperTolerance)
+void StepDimTol_GeometricToleranceWithMaximumTolerance::Init(
+  const Handle(TCollection_HAsciiString)&                       theName,
+  const Handle(TCollection_HAsciiString)&                       theDescription,
+  const Handle(StepBasic_MeasureWithUnit)&                      theMagnitude,
+  const StepDimTol_GeometricToleranceTarget&                    theTolerancedShapeAspect,
+  const Handle(StepDimTol_HArray1OfGeometricToleranceModifier)& theModifiers,
+  const Handle(StepBasic_LengthMeasureWithUnit)&                theMaximumUpperTolerance)
 {
-  StepDimTol_GeometricToleranceWithModifiers::Init(theName, theDescription, theMagnitude, theTolerancedShapeAspect, theModifiers);
+  StepDimTol_GeometricToleranceWithModifiers::Init(theName,
+                                                   theDescription,
+                                                   theMagnitude,
+                                                   theTolerancedShapeAspect,
+                                                   theModifiers);
   myMaximumUpperTolerance = theMaximumUpperTolerance;
 }

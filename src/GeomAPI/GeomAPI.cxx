@@ -31,43 +31,34 @@
 #include <ProjLib_ProjectedCurve.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 
-//=======================================================================
-//function : To2d
-//purpose  : 
-//=======================================================================
-Handle(Geom2d_Curve) GeomAPI::To2d(const Handle(Geom_Curve)& C,
-				   const gp_Pln& P)
+//=================================================================================================
+
+Handle(Geom2d_Curve) GeomAPI::To2d(const Handle(Geom_Curve)& C, const gp_Pln& P)
 {
-  Handle(Geom2d_Curve) result;
-  Handle(GeomAdaptor_Curve) HC = new GeomAdaptor_Curve(C);
-  Handle(Geom_Plane) Plane = new Geom_Plane(P);
-  Handle(GeomAdaptor_Surface) HS = new GeomAdaptor_Surface(Plane);
+  Handle(Geom2d_Curve)        result;
+  Handle(GeomAdaptor_Curve)   HC    = new GeomAdaptor_Curve(C);
+  Handle(Geom_Plane)          Plane = new Geom_Plane(P);
+  Handle(GeomAdaptor_Surface) HS    = new GeomAdaptor_Surface(Plane);
 
-  ProjLib_ProjectedCurve Proj(HS,HC);
+  ProjLib_ProjectedCurve Proj(HS, HC);
 
-  if (Proj.GetType() != GeomAbs_OffsetCurve && 
-      Proj.GetType() != GeomAbs_OtherCurve) {
+  if (Proj.GetType() != GeomAbs_OffsetCurve && Proj.GetType() != GeomAbs_OtherCurve)
+  {
     result = Geom2dAdaptor::MakeCurve(Proj);
   }
-  
+
   return result;
 }
 
+//=================================================================================================
 
-
-//=======================================================================
-//function : To3d
-//purpose  : 
-//=======================================================================
-
-Handle(Geom_Curve) GeomAPI::To3d(const Handle(Geom2d_Curve)& C,
-				 const gp_Pln& P)
+Handle(Geom_Curve) GeomAPI::To3d(const Handle(Geom2d_Curve)& C, const gp_Pln& P)
 {
-  Handle(Geom2dAdaptor_Curve) AHC  = new Geom2dAdaptor_Curve(C);
+  Handle(Geom2dAdaptor_Curve) AHC = new Geom2dAdaptor_Curve(C);
 
-  Handle(Geom_Plane) ThePlane = new Geom_Plane(P);
-  Handle(GeomAdaptor_Surface) AHS = new GeomAdaptor_Surface(ThePlane);
+  Handle(Geom_Plane)          ThePlane = new Geom_Plane(P);
+  Handle(GeomAdaptor_Surface) AHS      = new GeomAdaptor_Surface(ThePlane);
 
-  Adaptor3d_CurveOnSurface COS(AHC,AHS);
+  Adaptor3d_CurveOnSurface COS(AHC, AHS);
   return GeomAdaptor::MakeCurve(COS);
 }

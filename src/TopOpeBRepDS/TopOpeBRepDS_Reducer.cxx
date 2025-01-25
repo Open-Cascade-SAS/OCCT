@@ -12,40 +12,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopOpeBRepDS_EIR.hxx>
 #include <TopOpeBRepDS_EXPORT.hxx>
 #include <TopOpeBRepDS_FIR.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Reducer.hxx>
 
-//=======================================================================
-//function : TopOpeBRepDS_Reducer
-//purpose  : 
-//=======================================================================
-TopOpeBRepDS_Reducer::TopOpeBRepDS_Reducer
-(const Handle(TopOpeBRepDS_HDataStructure)& HDS) : myHDS(HDS)
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : ProcessEdgeInterferences
-//purpose  : 
-//=======================================================================
+TopOpeBRepDS_Reducer::TopOpeBRepDS_Reducer(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+    : myHDS(HDS)
+{
+}
+
+//=================================================================================================
+
 void TopOpeBRepDS_Reducer::ProcessEdgeInterferences()
 {
   TopOpeBRepDS_EIR eir(myHDS);
   eir.ProcessEdgeInterferences();
 }
 
-//=======================================================================
-//function : ProcessFaceInterferences
-//purpose  : 
-//=======================================================================
-void TopOpeBRepDS_Reducer::ProcessFaceInterferences
-(const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& M)
+//=================================================================================================
+
+void TopOpeBRepDS_Reducer::ProcessFaceInterferences(
+  const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& M)
 {
-  //modified by NIZHNY-MZV  Tue Nov 16 16:12:15 1999
-  //FUN_ds_FEIGb1TO0(myHDS,M); //xpu250199
+  // modified by NIZHNY-MZV  Tue Nov 16 16:12:15 1999
+  // FUN_ds_FEIGb1TO0(myHDS,M); //xpu250199
 
   TopOpeBRepDS_FIR fir(myHDS);
   fir.ProcessFaceInterferences(M);

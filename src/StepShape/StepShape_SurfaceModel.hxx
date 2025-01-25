@@ -26,48 +26,25 @@
 class Standard_Transient;
 class StepShape_ShellBasedSurfaceModel;
 
-
-
-class StepShape_SurfaceModel  : public StepData_SelectType
+class StepShape_SurfaceModel : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a SurfaceModel SelectType
   Standard_EXPORT StepShape_SurfaceModel();
-  
+
   //! Recognizes a SurfaceModel Kind Entity that is :
   //! 1 -> ShellBasedSurfaceModel
   //! 2 -> FaceBasedSurfaceModel
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a ShellBasedSurfaceModel (Null if another type)
   Standard_EXPORT Handle(StepShape_ShellBasedSurfaceModel) ShellBasedSurfaceModel() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_SurfaceModel_HeaderFile

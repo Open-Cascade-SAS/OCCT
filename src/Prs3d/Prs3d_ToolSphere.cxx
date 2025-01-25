@@ -19,56 +19,44 @@
 #include <Poly_Array1OfTriangle.hxx>
 #include <Prs3d_ToolQuadric.hxx>
 
-//=======================================================================
-//function : Constructor
-//purpose  :
-//=======================================================================
-Prs3d_ToolSphere::Prs3d_ToolSphere (const Standard_Real    theRadius,
-                                    const Standard_Integer theNbSlices,
-                                    const Standard_Integer theNbStacks)
-: myRadius (theRadius)
+//=================================================================================================
+
+Prs3d_ToolSphere::Prs3d_ToolSphere(const Standard_Real    theRadius,
+                                   const Standard_Integer theNbSlices,
+                                   const Standard_Integer theNbStacks)
+    : myRadius(theRadius)
 {
   mySlicesNb = theNbSlices;
   myStacksNb = theNbStacks;
 }
 
-//=======================================================================
-//function : Vertex
-//purpose  :
-//=======================================================================
-gp_Pnt Prs3d_ToolSphere::Vertex (const Standard_Real theU, const Standard_Real theV) const
+//=================================================================================================
+
+gp_Pnt Prs3d_ToolSphere::Vertex(const Standard_Real theU, const Standard_Real theV) const
 {
   const Standard_Real aU = theU * M_PI * 2.0;
   const Standard_Real aV = theV * M_PI;
-  return gp_Pnt (myRadius * Cos (aU) * Sin (aV),
-                -myRadius * Sin (aU) * Sin (aV),
-                 myRadius * Cos (aV));
+  return gp_Pnt(myRadius * Cos(aU) * Sin(aV), -myRadius * Sin(aU) * Sin(aV), myRadius * Cos(aV));
 }
 
-//=======================================================================
-//function : Normal
-//purpose  :
-//=======================================================================
-gp_Dir Prs3d_ToolSphere::Normal (const Standard_Real theU, const Standard_Real theV) const
+//=================================================================================================
+
+gp_Dir Prs3d_ToolSphere::Normal(const Standard_Real theU, const Standard_Real theV) const
 {
   const Standard_Real aU = theU * M_PI * 2.0;
   const Standard_Real aV = theV * M_PI;
-  return gp_Dir (Cos (aU) * Sin (aV),
-                -Sin (aU) * Sin (aV),
-                 Cos (aV));
+  return gp_Dir(Cos(aU) * Sin(aV), -Sin(aU) * Sin(aV), Cos(aV));
 }
 
-//=======================================================================
-//function : Create
-//purpose  :
-//=======================================================================
-Handle(Graphic3d_ArrayOfTriangles) Prs3d_ToolSphere::Create (const Standard_Real    theRadius,
-                                                             const Standard_Integer theNbSlices,
-                                                             const Standard_Integer theNbStacks,
-                                                             const gp_Trsf&         theTrsf)
+//=================================================================================================
+
+Handle(Graphic3d_ArrayOfTriangles) Prs3d_ToolSphere::Create(const Standard_Real    theRadius,
+                                                            const Standard_Integer theNbSlices,
+                                                            const Standard_Integer theNbStacks,
+                                                            const gp_Trsf&         theTrsf)
 {
   Handle(Graphic3d_ArrayOfTriangles) anArray;
-  Prs3d_ToolSphere aTool (theRadius, theNbSlices, theNbStacks);
-  aTool.FillArray (anArray, theTrsf);
+  Prs3d_ToolSphere                   aTool(theRadius, theNbSlices, theNbStacks);
+  aTool.FillArray(anArray, theTrsf);
   return anArray;
 }

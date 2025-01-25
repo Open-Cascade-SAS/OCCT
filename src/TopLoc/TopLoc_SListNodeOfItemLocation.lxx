@@ -14,8 +14,11 @@
 
 #include <TopLoc_ItemLocation.hxx>
 
-inline TopLoc_SListNodeOfItemLocation::TopLoc_SListNodeOfItemLocation(const TopLoc_ItemLocation& I, const TopLoc_SListOfItemLocation& T) 
-: myTail(T),myValue(I) 
+inline TopLoc_SListNodeOfItemLocation::TopLoc_SListNodeOfItemLocation(
+  const TopLoc_ItemLocation&        I,
+  const TopLoc_SListOfItemLocation& T)
+    : myTail(T),
+      myValue(I)
 {
 }
 
@@ -28,4 +31,3 @@ inline TopLoc_ItemLocation& TopLoc_SListNodeOfItemLocation::Value() const
 {
   return (TopLoc_ItemLocation&)myValue;
 }
-

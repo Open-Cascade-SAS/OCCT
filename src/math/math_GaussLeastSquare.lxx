@@ -12,11 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline Standard_Boolean math_GaussLeastSquare::IsDone() const { return Done; }
+inline Standard_Boolean math_GaussLeastSquare::IsDone() const
+{
+  return Done;
+}
 
-
-inline Standard_OStream& operator<<(Standard_OStream& o,
-				    const math_GaussLeastSquare& G)
+inline Standard_OStream& operator<<(Standard_OStream& o, const math_GaussLeastSquare& G)
 {
   G.Dump(o);
   return o;

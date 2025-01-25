@@ -17,20 +17,19 @@
 #ifndef _Interface_ParamType_HeaderFile
 #define _Interface_ParamType_HeaderFile
 
-
 enum Interface_ParamType
 {
-Interface_ParamMisc,
-Interface_ParamInteger,
-Interface_ParamReal,
-Interface_ParamIdent,
-Interface_ParamVoid,
-Interface_ParamText,
-Interface_ParamEnum,
-Interface_ParamLogical,
-Interface_ParamSub,
-Interface_ParamHexa,
-Interface_ParamBinary
+  Interface_ParamMisc,
+  Interface_ParamInteger,
+  Interface_ParamReal,
+  Interface_ParamIdent,
+  Interface_ParamVoid,
+  Interface_ParamText,
+  Interface_ParamEnum,
+  Interface_ParamLogical,
+  Interface_ParamSub,
+  Interface_ParamHexa,
+  Interface_ParamBinary
 };
 
 #endif // _Interface_ParamType_HeaderFile

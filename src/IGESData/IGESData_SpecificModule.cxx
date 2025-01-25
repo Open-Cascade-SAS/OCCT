@@ -11,13 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IGESData_IGESDumper.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_SpecificModule.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESData_SpecificModule,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_SpecificModule, Standard_Transient)
 
-Standard_Boolean  IGESData_SpecificModule::OwnCorrect
-  (const Standard_Integer , const Handle(IGESData_IGESEntity)& ) const
-{  return Standard_False;  }    // par defaut, ne fait rien
+Standard_Boolean IGESData_SpecificModule::OwnCorrect(const Standard_Integer,
+                                                     const Handle(IGESData_IGESEntity)&) const
+{
+  return Standard_False;
+} // par defaut, ne fait rien

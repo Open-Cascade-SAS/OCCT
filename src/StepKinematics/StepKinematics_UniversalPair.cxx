@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:16 2020 
+// Created on : Sat May 02 12:41:16 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -18,34 +18,31 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_UniversalPair, StepKinematics_LowOrderKinematicPair)
 
-//=======================================================================
-//function : StepKinematics_UniversalPair
-//purpose  :
-//=======================================================================
-StepKinematics_UniversalPair::StepKinematics_UniversalPair ()
+//=================================================================================================
+
+StepKinematics_UniversalPair::StepKinematics_UniversalPair()
 {
   defInputSkewAngle = Standard_False;
 }
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_UniversalPair::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                         const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Name,
-                                         const Standard_Boolean hasItemDefinedTransformation_Description,
-                                         const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Description,
-                                         const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem1,
-                                         const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem2,
-                                         const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-                                         const Standard_Boolean theLowOrderKinematicPair_TX,
-                                         const Standard_Boolean theLowOrderKinematicPair_TY,
-                                         const Standard_Boolean theLowOrderKinematicPair_TZ,
-                                         const Standard_Boolean theLowOrderKinematicPair_RX,
-                                         const Standard_Boolean theLowOrderKinematicPair_RY,
-                                         const Standard_Boolean theLowOrderKinematicPair_RZ,
-                                         const Standard_Boolean hasInputSkewAngle,
-                                         const Standard_Real theInputSkewAngle)
+//=================================================================================================
+
+void StepKinematics_UniversalPair::Init(
+  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
+  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
+  const Standard_Boolean                       hasItemDefinedTransformation_Description,
+  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
+  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
+  const Standard_Boolean                       theLowOrderKinematicPair_TX,
+  const Standard_Boolean                       theLowOrderKinematicPair_TY,
+  const Standard_Boolean                       theLowOrderKinematicPair_TZ,
+  const Standard_Boolean                       theLowOrderKinematicPair_RX,
+  const Standard_Boolean                       theLowOrderKinematicPair_RY,
+  const Standard_Boolean                       theLowOrderKinematicPair_RZ,
+  const Standard_Boolean                       hasInputSkewAngle,
+  const Standard_Real                          theInputSkewAngle)
 {
   StepKinematics_LowOrderKinematicPair::Init(theRepresentationItem_Name,
                                              theItemDefinedTransformation_Name,
@@ -62,35 +59,31 @@ void StepKinematics_UniversalPair::Init (const Handle(TCollection_HAsciiString)&
                                              theLowOrderKinematicPair_RZ);
 
   defInputSkewAngle = hasInputSkewAngle;
-  if (defInputSkewAngle) {
+  if (defInputSkewAngle)
+  {
     myInputSkewAngle = theInputSkewAngle;
   }
-  else myInputSkewAngle = 0;
+  else
+    myInputSkewAngle = 0;
 }
 
-//=======================================================================
-//function : InputSkewAngle
-//purpose  :
-//=======================================================================
-Standard_Real StepKinematics_UniversalPair::InputSkewAngle () const
+//=================================================================================================
+
+Standard_Real StepKinematics_UniversalPair::InputSkewAngle() const
 {
   return myInputSkewAngle;
 }
 
-//=======================================================================
-//function : SetInputSkewAngle
-//purpose  :
-//=======================================================================
-void StepKinematics_UniversalPair::SetInputSkewAngle (const Standard_Real theInputSkewAngle)
+//=================================================================================================
+
+void StepKinematics_UniversalPair::SetInputSkewAngle(const Standard_Real theInputSkewAngle)
 {
   myInputSkewAngle = theInputSkewAngle;
 }
 
-//=======================================================================
-//function : HasInputSkewAngle
-//purpose  :
-//=======================================================================
-Standard_Boolean StepKinematics_UniversalPair::HasInputSkewAngle () const
+//=================================================================================================
+
+Standard_Boolean StepKinematics_UniversalPair::HasInputSkewAngle() const
 {
   return defInputSkewAngle;
 }

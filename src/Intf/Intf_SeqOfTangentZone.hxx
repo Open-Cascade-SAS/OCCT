@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Intf_TangentZone> Intf_SeqOfTangentZone;
 
-
 #endif

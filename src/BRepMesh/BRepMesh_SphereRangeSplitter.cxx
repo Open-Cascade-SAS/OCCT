@@ -16,22 +16,20 @@
 #include <BRepMesh_SphereRangeSplitter.hxx>
 #include <GCPnts_TangentialDeflection.hxx>
 
-//=======================================================================
-// Function: GenerateSurfaceNodes
-// Purpose : 
-//=======================================================================
+//=================================================================================================
+
 Handle(IMeshData::ListOfPnt2d) BRepMesh_SphereRangeSplitter::GenerateSurfaceNodes(
   const IMeshTools_Parameters& theParameters) const
 {
   // Calculate parameters for iteration in V direction
-  Standard_Real aStep = 0.7 * GCPnts_TangentialDeflection::ArcAngularStep(
-    GetDFace()->GetSurface()->Sphere().Radius(), GetDFace()->GetDeflection(),
-    theParameters.Angle, theParameters.MinSize);
+  Standard_Real aStep =
+    0.7
+    * GCPnts_TangentialDeflection::ArcAngularStep(GetDFace()->GetSurface()->Sphere().Radius(),
+                                                  GetDFace()->GetDeflection(),
+                                                  theParameters.Angle,
+                                                  theParameters.MinSize);
 
-  const std::pair<Standard_Real, Standard_Real>* aRange[2] = {
-    &GetRangeV(),
-    &GetRangeU()
-  };
+  const std::pair<Standard_Real, Standard_Real>* aRange[2] = {&GetRangeV(), &GetRangeU()};
 
   std::pair<Standard_Real, Standard_Real> aStepAndOffset[2];
   computeStep(*aRange[0], aStep, aStepAndOffset[0]);
@@ -42,13 +40,13 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_SphereRangeSplitter::GenerateSurfaceNode
   Handle(IMeshData::ListOfPnt2d) aNodes = new IMeshData::ListOfPnt2d(aTmpAlloc);
 
   const Standard_Real aHalfDu = aStepAndOffset[1].first * 0.5;
-  Standard_Boolean Shift = Standard_False;
-  Standard_Real aPasV = aRange[0]->first + aStepAndOffset[0].first;
+  Standard_Boolean    Shift   = Standard_False;
+  Standard_Real       aPasV   = aRange[0]->first + aStepAndOffset[0].first;
   for (; aPasV < aStepAndOffset[0].second; aPasV += aStepAndOffset[0].first)
   {
-    Shift = !Shift;
-    const Standard_Real d = (Shift) ? aHalfDu : 0.;
-    Standard_Real aPasU = aRange[1]->first + d;
+    Shift                     = !Shift;
+    const Standard_Real d     = (Shift) ? aHalfDu : 0.;
+    Standard_Real       aPasU = aRange[1]->first + d;
     for (; aPasU < aStepAndOffset[1].second; aPasU += aStepAndOffset[1].first)
     {
       aNodes->Append(gp_Pnt2d(aPasU, aPasV));

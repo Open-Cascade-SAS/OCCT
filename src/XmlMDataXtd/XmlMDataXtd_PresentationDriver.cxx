@@ -22,60 +22,55 @@
 #include <TDataXtd_Presentation.hxx>
 #include <Quantity_Color.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XmlMDataXtd_PresentationDriver,XmlMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataXtd_PresentationDriver, XmlMDF_ADriver)
 
-IMPLEMENT_DOMSTRING (GuidString,        "guid")
-IMPLEMENT_DOMSTRING (IsDisplayedString, "isdisplayed")
-IMPLEMENT_DOMSTRING (ColorString,       "color")
-IMPLEMENT_DOMSTRING (MaterialString,    "material")
-IMPLEMENT_DOMSTRING (TransparencyString,"transparency")
-IMPLEMENT_DOMSTRING (WidthString,       "width")
-IMPLEMENT_DOMSTRING (ModeString,        "mode")
+IMPLEMENT_DOMSTRING(GuidString, "guid")
+IMPLEMENT_DOMSTRING(IsDisplayedString, "isdisplayed")
+IMPLEMENT_DOMSTRING(ColorString, "color")
+IMPLEMENT_DOMSTRING(MaterialString, "material")
+IMPLEMENT_DOMSTRING(TransparencyString, "transparency")
+IMPLEMENT_DOMSTRING(WidthString, "width")
+IMPLEMENT_DOMSTRING(ModeString, "mode")
 
-IMPLEMENT_DOMSTRING (DisplayedString,   "true")
+IMPLEMENT_DOMSTRING(DisplayedString, "true")
 
-//=======================================================================
-//function : XmlMDataXtd_PresentationDriver
-//purpose  : Constructor
-//=======================================================================
-XmlMDataXtd_PresentationDriver::XmlMDataXtd_PresentationDriver
-  (const Handle(Message_Messenger)& theMsgDriver)
-  : XmlMDF_ADriver (theMsgDriver, NULL)
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+XmlMDataXtd_PresentationDriver::XmlMDataXtd_PresentationDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : XmlMDF_ADriver(theMsgDriver, NULL)
+{
+}
+
+//=================================================================================================
+
 Handle(TDF_Attribute) XmlMDataXtd_PresentationDriver::NewEmpty() const
 {
   return (new TDataXtd_Presentation());
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMDataXtd_PresentationDriver::Paste
-  (const XmlObjMgt_Persistent&  theSource,
-  const Handle(TDF_Attribute)& theTarget,
-  XmlObjMgt_RRelocationTable&  ) const
+Standard_Boolean XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                       const Handle(TDF_Attribute)& theTarget,
+                                                       XmlObjMgt_RRelocationTable&) const
 {
   TCollection_ExtendedString aMessageString;
-  XmlObjMgt_DOMString aDOMStr;
+  XmlObjMgt_DOMString        aDOMStr;
 
-  Handle(TDataXtd_Presentation) aTPrs =
-    Handle(TDataXtd_Presentation)::DownCast(theTarget);
-  const XmlObjMgt_Element& anElem = theSource;
+  Handle(TDataXtd_Presentation) aTPrs  = Handle(TDataXtd_Presentation)::DownCast(theTarget);
+  const XmlObjMgt_Element&      anElem = theSource;
 
-  //convert attribute value into GUID
+  // convert attribute value into GUID
   aDOMStr = anElem.getAttribute(::GuidString());
   if (aDOMStr == NULL)
   {
     myMessageDriver->Send("Cannot retrieve guid string from attribute", Message_Fail);
     return Standard_False;
   }
-  Standard_CString aGuidStr = (Standard_CString) aDOMStr.GetString();
+  Standard_CString aGuidStr = (Standard_CString)aDOMStr.GetString();
   aTPrs->SetDriverGUID(aGuidStr);
 
   // is displayed
@@ -90,13 +85,14 @@ Standard_Boolean XmlMDataXtd_PresentationDriver::Paste
   {
     if (!aDOMStr.GetInteger(anIValue))
     {
-      aMessageString = TCollection_ExtendedString
-        ("Cannot retrieve Integer value from \"") + aDOMStr + "\"";
-      myMessageDriver->Send (aMessageString, Message_Fail);
+      aMessageString =
+        TCollection_ExtendedString("Cannot retrieve Integer value from \"") + aDOMStr + "\"";
+      myMessageDriver->Send(aMessageString, Message_Fail);
       return Standard_False;
     }
 
-    const Quantity_NameOfColor aNameOfColor = TDataXtd_Presentation::getColorNameFromOldEnum (anIValue);
+    const Quantity_NameOfColor aNameOfColor =
+      TDataXtd_Presentation::getColorNameFromOldEnum(anIValue);
     aTPrs->SetColor(aNameOfColor);
   }
   else
@@ -110,9 +106,9 @@ Standard_Boolean XmlMDataXtd_PresentationDriver::Paste
   {
     if (!aDOMStr.GetInteger(anIValue))
     {
-      aMessageString = TCollection_ExtendedString
-        ("Cannot retrieve Integer value from \"") + aDOMStr + "\"";
-      myMessageDriver->Send (aMessageString, Message_Fail);
+      aMessageString =
+        TCollection_ExtendedString("Cannot retrieve Integer value from \"") + aDOMStr + "\"";
+      myMessageDriver->Send(aMessageString, Message_Fail);
       return Standard_False;
     }
     aTPrs->SetMaterialIndex(anIValue);
@@ -130,9 +126,9 @@ Standard_Boolean XmlMDataXtd_PresentationDriver::Paste
   {
     if (!XmlObjMgt::GetReal(aDOMStr, aValue))
     {
-      aMessageString = TCollection_ExtendedString
-        ("Cannot retrieve Real value from \"") + aDOMStr + "\"";
-      myMessageDriver->Send (aMessageString, Message_Fail);
+      aMessageString =
+        TCollection_ExtendedString("Cannot retrieve Real value from \"") + aDOMStr + "\"";
+      myMessageDriver->Send(aMessageString, Message_Fail);
       return Standard_False;
     }
     aTPrs->SetTransparency(aValue);
@@ -148,9 +144,9 @@ Standard_Boolean XmlMDataXtd_PresentationDriver::Paste
   {
     if (!XmlObjMgt::GetReal(aDOMStr, aValue))
     {
-      aMessageString = TCollection_ExtendedString
-        ("Cannot retrieve Real value from \"") + aDOMStr + "\"";
-      myMessageDriver->Send (aMessageString, Message_Fail);
+      aMessageString =
+        TCollection_ExtendedString("Cannot retrieve Real value from \"") + aDOMStr + "\"";
+      myMessageDriver->Send(aMessageString, Message_Fail);
       return Standard_False;
     }
     aTPrs->SetWidth(aValue);
@@ -166,9 +162,9 @@ Standard_Boolean XmlMDataXtd_PresentationDriver::Paste
   {
     if (!aDOMStr.GetInteger(anIValue))
     {
-      aMessageString = TCollection_ExtendedString
-        ("Cannot retrieve Integer value from \"") + aDOMStr + "\"";
-      myMessageDriver->Send (aMessageString, Message_Fail);
+      aMessageString =
+        TCollection_ExtendedString("Cannot retrieve Integer value from \"") + aDOMStr + "\"";
+      myMessageDriver->Send(aMessageString, Message_Fail);
       return Standard_False;
     }
     aTPrs->SetMode(anIValue);
@@ -182,23 +178,22 @@ Standard_Boolean XmlMDataXtd_PresentationDriver::Paste
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMDataXtd_PresentationDriver::Paste
-                                  (const Handle(TDF_Attribute)& theSource,
-                                   XmlObjMgt_Persistent&        theTarget,
-                                   XmlObjMgt_SRelocationTable&) const
+void XmlMDataXtd_PresentationDriver::Paste(const Handle(TDF_Attribute)& theSource,
+                                           XmlObjMgt_Persistent&        theTarget,
+                                           XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TDataXtd_Presentation) aTPrs =
-    Handle(TDataXtd_Presentation)::DownCast(theSource);
-  if (aTPrs.IsNull()) return;
+  Handle(TDataXtd_Presentation) aTPrs = Handle(TDataXtd_Presentation)::DownCast(theSource);
+  if (aTPrs.IsNull())
+    return;
 
-  //convert GUID into attribute value
-  Standard_Character aGuidStr [40];
+  // convert GUID into attribute value
+  Standard_Character  aGuidStr[40];
   Standard_PCharacter pGuidStr;
-  pGuidStr=aGuidStr;
-  aTPrs->GetDriverGUID().ToCString (pGuidStr);
+  pGuidStr = aGuidStr;
+  aTPrs->GetDriverGUID().ToCString(pGuidStr);
   theTarget.Element().setAttribute(::GuidString(), aGuidStr);
 
   // is displayed
@@ -210,7 +205,7 @@ void XmlMDataXtd_PresentationDriver::Paste
   // color
   if (aTPrs->HasOwnColor())
   {
-    aNb = TDataXtd_Presentation::getOldColorNameFromNewEnum (aTPrs->Color());
+    aNb = TDataXtd_Presentation::getOldColorNameFromNewEnum(aTPrs->Color());
     theTarget.Element().setAttribute(::ColorString(), aNb);
   }
 
@@ -224,14 +219,14 @@ void XmlMDataXtd_PresentationDriver::Paste
   // transparency
   if (aTPrs->HasOwnTransparency())
   {
-    TCollection_AsciiString aRNbStr (aTPrs->Transparency());
+    TCollection_AsciiString aRNbStr(aTPrs->Transparency());
     theTarget.Element().setAttribute(::TransparencyString(), aRNbStr.ToCString());
   }
 
   // width
   if (aTPrs->HasOwnWidth())
   {
-    TCollection_AsciiString aRNbStr (aTPrs->Width());
+    TCollection_AsciiString aRNbStr(aTPrs->Width());
     theTarget.Element().setAttribute(::WidthString(), aRNbStr.ToCString());
   }
 

@@ -15,6 +15,7 @@
 
 #include <StepAP242_GeometricItemSpecificUsage.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepAP242_GeometricItemSpecificUsage,StepAP242_ItemIdentifiedRepresentationUsage)
+IMPLEMENT_STANDARD_RTTIEXT(StepAP242_GeometricItemSpecificUsage,
+                           StepAP242_ItemIdentifiedRepresentationUsage)
 
-StepAP242_GeometricItemSpecificUsage::StepAP242_GeometricItemSpecificUsage ()    {  }
+StepAP242_GeometricItemSpecificUsage::StepAP242_GeometricItemSpecificUsage() {}

@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef BRepMAT2d_DataMapIteratorOfDataMapOfShapeSequenceOfBasicElt_HeaderFile
 #define BRepMAT2d_DataMapIteratorOfDataMapOfShapeSequenceOfBasicElt_HeaderFile
 

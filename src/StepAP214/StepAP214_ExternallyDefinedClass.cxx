@@ -21,50 +21,37 @@
 #include <StepBasic_SourceItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepAP214_ExternallyDefinedClass,StepAP214_Class)
+IMPLEMENT_STANDARD_RTTIEXT(StepAP214_ExternallyDefinedClass, StepAP214_Class)
 
-//=======================================================================
-//function : StepAP214_ExternallyDefinedClass
-//purpose  : 
-//=======================================================================
-StepAP214_ExternallyDefinedClass::StepAP214_ExternallyDefinedClass ()
+//=================================================================================================
+
+StepAP214_ExternallyDefinedClass::StepAP214_ExternallyDefinedClass() {}
+
+//=================================================================================================
+
+void StepAP214_ExternallyDefinedClass::Init(
+  const Handle(TCollection_HAsciiString)& aGroup_Name,
+  const Standard_Boolean                  hasGroup_Description,
+  const Handle(TCollection_HAsciiString)& aGroup_Description,
+  const StepBasic_SourceItem&             aExternallyDefinedItem_ItemId,
+  const Handle(StepBasic_ExternalSource)& aExternallyDefinedItem_Source)
 {
+  StepAP214_Class::Init(aGroup_Name, hasGroup_Description, aGroup_Description);
+  theExternallyDefinedItem->Init(aExternallyDefinedItem_ItemId, aExternallyDefinedItem_Source);
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepAP214_ExternallyDefinedClass::Init (const Handle(TCollection_HAsciiString) &aGroup_Name,
-                                             const Standard_Boolean hasGroup_Description,
-                                             const Handle(TCollection_HAsciiString) &aGroup_Description,
-                                             const StepBasic_SourceItem &aExternallyDefinedItem_ItemId,
-                                             const Handle(StepBasic_ExternalSource) &aExternallyDefinedItem_Source)
-{
-  StepAP214_Class::Init(aGroup_Name,
-                        hasGroup_Description,
-                        aGroup_Description);
-  theExternallyDefinedItem->Init(aExternallyDefinedItem_ItemId,
-                                 aExternallyDefinedItem_Source);
-}
-
-//=======================================================================
-//function : ExternallyDefinedItem
-//purpose  : 
-//=======================================================================
-
-Handle(StepBasic_ExternallyDefinedItem) StepAP214_ExternallyDefinedClass::ExternallyDefinedItem () const
+Handle(StepBasic_ExternallyDefinedItem) StepAP214_ExternallyDefinedClass::ExternallyDefinedItem()
+  const
 {
   return theExternallyDefinedItem;
 }
 
-//=======================================================================
-//function : SetExternallyDefinedItem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepAP214_ExternallyDefinedClass::SetExternallyDefinedItem (const Handle(StepBasic_ExternallyDefinedItem) &aExternallyDefinedItem)
+void StepAP214_ExternallyDefinedClass::SetExternallyDefinedItem(
+  const Handle(StepBasic_ExternallyDefinedItem)& aExternallyDefinedItem)
 {
   theExternallyDefinedItem = aExternallyDefinedItem;
 }

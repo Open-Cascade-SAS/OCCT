@@ -24,23 +24,23 @@
 #include <math_NewtonMinimum.hxx>
 class math_MultipleVarFunctionWithHessian;
 
-
 //! Algorithme of Optimization used to make "FairCurve"
-class FairCurve_Newton  : public math_NewtonMinimum
+class FairCurve_Newton : public math_NewtonMinimum
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! The tolerance  required on  the  solution is given  by Tolerance.
   //! Iteration are  stopped if (!WithSingularity)  and H(F(Xi)) is not definite
   //! positive  (if the smaller eigenvalue of H < Convexity)
   //! or IsConverged() returns True for 2 successives Iterations.
   //! Warning: This constructor do not computation
-  Standard_EXPORT FairCurve_Newton(const math_MultipleVarFunctionWithHessian& theFunction, const Standard_Real theSpatialTolerance = 1.0e-7, const Standard_Real theCriteriumTolerance = 1.0e-7, const Standard_Integer theNbIterations = 40, const Standard_Real theConvexity = 1.0e-6, const Standard_Boolean theWithSingularity = Standard_True);
-  
+  Standard_EXPORT FairCurve_Newton(const math_MultipleVarFunctionWithHessian& theFunction,
+                                   const Standard_Real    theSpatialTolerance   = 1.0e-7,
+                                   const Standard_Real    theCriteriumTolerance = 1.0e-7,
+                                   const Standard_Integer theNbIterations       = 40,
+                                   const Standard_Real    theConvexity          = 1.0e-6,
+                                   const Standard_Boolean theWithSingularity    = Standard_True);
 
   //! This method is  called    at the end  of   each
   //! iteration to  check the convergence :
@@ -50,28 +50,9 @@ public:
   //! It can be redefined in a sub-class to implement a specific test.
   Standard_EXPORT virtual Standard_Boolean IsConverged() const Standard_OVERRIDE;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Real mySpTol;
-
-
 };
-
-
-
-
-
-
 
 #endif // _FairCurve_Newton_HeaderFile

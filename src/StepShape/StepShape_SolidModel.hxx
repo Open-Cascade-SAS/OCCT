@@ -22,41 +22,20 @@
 
 #include <StepGeom_GeometricRepresentationItem.hxx>
 
-
 class StepShape_SolidModel;
 DEFINE_STANDARD_HANDLE(StepShape_SolidModel, StepGeom_GeometricRepresentationItem)
-
 
 class StepShape_SolidModel : public StepGeom_GeometricRepresentationItem
 {
 
 public:
-
-  
   //! Returns a SolidModel
   Standard_EXPORT StepShape_SolidModel();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_SolidModel,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_SolidModel, StepGeom_GeometricRepresentationItem)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_SolidModel_HeaderFile

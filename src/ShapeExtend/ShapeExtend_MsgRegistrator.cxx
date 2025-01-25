@@ -13,72 +13,69 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Message_Msg.hxx>
 #include <ShapeExtend_MsgRegistrator.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ShapeExtend_MsgRegistrator,ShapeExtend_BasicMsgRegistrator)
+IMPLEMENT_STANDARD_RTTIEXT(ShapeExtend_MsgRegistrator, ShapeExtend_BasicMsgRegistrator)
 
-//=======================================================================
-//function : ShapeExtend_MsgRegistrator
-//purpose  : 
-//=======================================================================
-ShapeExtend_MsgRegistrator::ShapeExtend_MsgRegistrator() : ShapeExtend_BasicMsgRegistrator()
+//=================================================================================================
+
+ShapeExtend_MsgRegistrator::ShapeExtend_MsgRegistrator()
+    : ShapeExtend_BasicMsgRegistrator()
 {
 }
 
-//=======================================================================
-//function : Send
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void ShapeExtend_MsgRegistrator::Send(const Handle(Standard_Transient)& object,
-				      const Message_Msg& message,
-				      const Message_Gravity) 
+                                      const Message_Msg&                message,
+                                      const Message_Gravity)
 {
-  if (object.IsNull()) {
+  if (object.IsNull())
+  {
 #ifdef OCCT_DEBUG
     std::cout << "Warning: ShapeExtend_MsgRegistrator::Send: null object" << std::endl;
 #endif
     return;
   }
-  if (myMapTransient.IsBound (object)) {
-    Message_ListOfMsg& list = myMapTransient.ChangeFind (object);
-    list.Append (message);
+  if (myMapTransient.IsBound(object))
+  {
+    Message_ListOfMsg& list = myMapTransient.ChangeFind(object);
+    list.Append(message);
   }
-  else {
+  else
+  {
     Message_ListOfMsg list;
-    list.Append (message);
-    myMapTransient.Bind (object, list);
+    list.Append(message);
+    myMapTransient.Bind(object, list);
   }
 }
 
-//=======================================================================
-//function : Send
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- void ShapeExtend_MsgRegistrator::Send(const TopoDS_Shape& shape,
-				       const Message_Msg& message,
-				       const Message_Gravity) 
+void ShapeExtend_MsgRegistrator::Send(const TopoDS_Shape& shape,
+                                      const Message_Msg&  message,
+                                      const Message_Gravity)
 {
-  if (shape.IsNull()) {
+  if (shape.IsNull())
+  {
 #ifdef OCCT_DEBUG
     std::cout << "Warning: ShapeExtend_MsgRegistrator::Send: null shape" << std::endl;
 #endif
     return;
   }
-  if (myMapShape.IsBound (shape)) {
-    Message_ListOfMsg& list = myMapShape.ChangeFind (shape);
-    list.Append (message);
+  if (myMapShape.IsBound(shape))
+  {
+    Message_ListOfMsg& list = myMapShape.ChangeFind(shape);
+    list.Append(message);
   }
-  else {
+  else
+  {
     Message_ListOfMsg list;
-    list.Append (message);
-    myMapShape.Bind (shape, list);
+    list.Append(message);
+    myMapShape.Bind(shape, list);
   }
 }
-

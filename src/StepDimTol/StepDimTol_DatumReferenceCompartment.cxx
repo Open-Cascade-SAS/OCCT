@@ -15,13 +15,8 @@
 
 #include <StepDimTol_DatumReferenceCompartment.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_DatumReferenceCompartment,StepDimTol_GeneralDatumReference)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_DatumReferenceCompartment, StepDimTol_GeneralDatumReference)
 
-//=======================================================================
-//function : StepDimTol_DatumReferenceCompartment
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepDimTol_DatumReferenceCompartment::StepDimTol_DatumReferenceCompartment ()
-{
-}
+StepDimTol_DatumReferenceCompartment::StepDimTol_DatumReferenceCompartment() {}

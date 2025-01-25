@@ -21,7 +21,7 @@
 #include <NCollection_List.hxx>
 
 typedef NCollection_List<TopOpeBRepBuild_ListOfLoop> TopOpeBRepBuild_ListOfListOfLoop;
-typedef NCollection_List<TopOpeBRepBuild_ListOfLoop>::Iterator TopOpeBRepBuild_ListIteratorOfListOfListOfLoop;
-
+typedef NCollection_List<TopOpeBRepBuild_ListOfLoop>::Iterator
+  TopOpeBRepBuild_ListIteratorOfListOfListOfLoop;
 
 #endif

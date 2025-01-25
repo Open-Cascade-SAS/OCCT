@@ -21,5 +21,4 @@
 
 typedef NCollection_Sequence<IntTools_Root> IntTools_SequenceOfRoots;
 
-
 #endif

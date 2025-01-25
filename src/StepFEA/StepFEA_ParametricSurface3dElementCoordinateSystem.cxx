@@ -18,24 +18,22 @@
 #include <StepFEA_ParametricSurface3dElementCoordinateSystem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_ParametricSurface3dElementCoordinateSystem,StepFEA_FeaRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_ParametricSurface3dElementCoordinateSystem,
+                           StepFEA_FeaRepresentationItem)
 
-//=======================================================================
-//function : StepFEA_ParametricSurface3dElementCoordinateSystem
-//purpose  : 
-//=======================================================================
-StepFEA_ParametricSurface3dElementCoordinateSystem::StepFEA_ParametricSurface3dElementCoordinateSystem ()
+//=================================================================================================
+
+StepFEA_ParametricSurface3dElementCoordinateSystem::
+  StepFEA_ParametricSurface3dElementCoordinateSystem()
 {
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_ParametricSurface3dElementCoordinateSystem::Init (const Handle(TCollection_HAsciiString) &aRepresentationItem_Name,
-                                                               const Standard_Integer aAxis,
-                                                               const Standard_Real aAngle)
+void StepFEA_ParametricSurface3dElementCoordinateSystem::Init(
+  const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
+  const Standard_Integer                  aAxis,
+  const Standard_Real                     aAngle)
 {
   StepFEA_FeaRepresentationItem::Init(aRepresentationItem_Name);
 
@@ -44,42 +42,30 @@ void StepFEA_ParametricSurface3dElementCoordinateSystem::Init (const Handle(TCol
   theAngle = aAngle;
 }
 
-//=======================================================================
-//function : Axis
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer StepFEA_ParametricSurface3dElementCoordinateSystem::Axis () const
+Standard_Integer StepFEA_ParametricSurface3dElementCoordinateSystem::Axis() const
 {
   return theAxis;
 }
 
-//=======================================================================
-//function : SetAxis
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_ParametricSurface3dElementCoordinateSystem::SetAxis (const Standard_Integer aAxis)
+void StepFEA_ParametricSurface3dElementCoordinateSystem::SetAxis(const Standard_Integer aAxis)
 {
   theAxis = aAxis;
 }
 
-//=======================================================================
-//function : Angle
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Real StepFEA_ParametricSurface3dElementCoordinateSystem::Angle () const
+Standard_Real StepFEA_ParametricSurface3dElementCoordinateSystem::Angle() const
 {
   return theAngle;
 }
 
-//=======================================================================
-//function : SetAngle
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_ParametricSurface3dElementCoordinateSystem::SetAngle (const Standard_Real aAngle)
+void StepFEA_ParametricSurface3dElementCoordinateSystem::SetAngle(const Standard_Real aAngle)
 {
   theAngle = aAngle;
 }

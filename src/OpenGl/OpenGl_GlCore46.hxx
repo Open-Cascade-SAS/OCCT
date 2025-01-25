@@ -23,12 +23,10 @@ private:
   typedef OpenGl_GlCore45 theBaseClass_t;
 
 public: //! @name OpenGL 4.6 additives to 4.5
-
-  using theBaseClass_t::glSpecializeShader;
   using theBaseClass_t::glMultiDrawArraysIndirectCount;
   using theBaseClass_t::glMultiDrawElementsIndirectCount;
   using theBaseClass_t::glPolygonOffsetClamp;
-
+  using theBaseClass_t::glSpecializeShader;
 };
 
 #endif // _OpenGl_GlCore46_Header

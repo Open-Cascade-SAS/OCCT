@@ -21,67 +21,54 @@
 #include <StepData_StepWriter.hxx>
 #include <StepFEA_FeaMassDensity.hxx>
 
-//=======================================================================
-//function : RWStepFEA_RWFeaMassDensity
-//purpose  : 
-//=======================================================================
-RWStepFEA_RWFeaMassDensity::RWStepFEA_RWFeaMassDensity ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
+RWStepFEA_RWFeaMassDensity::RWStepFEA_RWFeaMassDensity() {}
 
-void RWStepFEA_RWFeaMassDensity::ReadStep (const Handle(StepData_StepReaderData)& data,
-                                           const Standard_Integer num,
-                                           Handle(Interface_Check)& ach,
-                                           const Handle(StepFEA_FeaMassDensity) &ent) const
+//=================================================================================================
+
+void RWStepFEA_RWFeaMassDensity::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                          const Standard_Integer                 num,
+                                          Handle(Interface_Check)&               ach,
+                                          const Handle(StepFEA_FeaMassDensity)&  ent) const
 {
   // Check number of parameters
-  if ( ! data->CheckNbParams(num,2,ach,"fea_mass_density") ) return;
+  if (!data->CheckNbParams(num, 2, ach, "fea_mass_density"))
+    return;
 
   // Inherited fields of RepresentationItem
 
   Handle(TCollection_HAsciiString) aRepresentationItem_Name;
-  data->ReadString (num, 1, "representation_item.name", ach, aRepresentationItem_Name);
+  data->ReadString(num, 1, "representation_item.name", ach, aRepresentationItem_Name);
 
   // Own fields of FeaMassDensity
 
   Standard_Real aFeaConstant;
-  data->ReadReal (num, 2, "fea_constant", ach, aFeaConstant);
+  data->ReadReal(num, 2, "fea_constant", ach, aFeaConstant);
 
   // Initialize entity
-  ent->Init(aRepresentationItem_Name,
-            aFeaConstant);
+  ent->Init(aRepresentationItem_Name, aFeaConstant);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepFEA_RWFeaMassDensity::WriteStep (StepData_StepWriter& SW,
-                                            const Handle(StepFEA_FeaMassDensity) &ent) const
+void RWStepFEA_RWFeaMassDensity::WriteStep(StepData_StepWriter&                  SW,
+                                           const Handle(StepFEA_FeaMassDensity)& ent) const
 {
 
   // Inherited fields of RepresentationItem
 
-  SW.Send (ent->StepRepr_RepresentationItem::Name());
+  SW.Send(ent->StepRepr_RepresentationItem::Name());
 
   // Own fields of FeaMassDensity
 
-  SW.Send (ent->FeaConstant());
+  SW.Send(ent->FeaConstant());
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepFEA_RWFeaMassDensity::Share (const Handle(StepFEA_FeaMassDensity) &,
-                                        Interface_EntityIterator&) const
+void RWStepFEA_RWFeaMassDensity::Share(const Handle(StepFEA_FeaMassDensity)&,
+                                       Interface_EntityIterator&) const
 {
   // Inherited fields of RepresentationItem
   // Own fields of FeaMassDensity

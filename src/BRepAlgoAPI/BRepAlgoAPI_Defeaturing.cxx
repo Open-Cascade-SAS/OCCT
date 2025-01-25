@@ -12,13 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRepAlgoAPI_Defeaturing.hxx>
 
-//=======================================================================
-//function : Build
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BRepAlgoAPI_Defeaturing::Build(const Message_ProgressRange& theRange)
 {
   // Set not done state for the operation
@@ -49,55 +46,43 @@ void BRepAlgoAPI_Defeaturing::Build(const Message_ProgressRange& theRange)
   myShape = myFeatureRemovalTool.Shape();
 }
 
-//=======================================================================
-//function : Modified
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Modified(const TopoDS_Shape& theS)
 {
   return myFeatureRemovalTool.Modified(theS);
 }
 
-//=======================================================================
-//function : Generated
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Generated(const TopoDS_Shape& theS)
 {
   return myFeatureRemovalTool.Generated(theS);
 }
 
-//=======================================================================
-//function : IsDeleted
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean BRepAlgoAPI_Defeaturing::IsDeleted(const TopoDS_Shape& theS)
 {
   return myFeatureRemovalTool.IsDeleted(theS);
 }
 
-//=======================================================================
-//function : HasModified
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean BRepAlgoAPI_Defeaturing::HasModified() const
 {
   return myFeatureRemovalTool.HasModified();
 }
 
-//=======================================================================
-//function : HasGenerated
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean BRepAlgoAPI_Defeaturing::HasGenerated() const
 {
   return myFeatureRemovalTool.HasGenerated();
 }
 
-//=======================================================================
-//function : HasDeleted
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean BRepAlgoAPI_Defeaturing::HasDeleted() const
 {
   return myFeatureRemovalTool.HasDeleted();

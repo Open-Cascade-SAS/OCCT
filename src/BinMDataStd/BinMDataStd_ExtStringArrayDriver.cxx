@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMDataStd.hxx>
 #include <BinMDataStd_ExtStringArrayDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
@@ -23,22 +22,17 @@
 #include <TDF_Attribute.hxx>
 #include <TDocStd_FormatVersion.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_ExtStringArrayDriver,BinMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_ExtStringArrayDriver, BinMDF_ADriver)
 
-//=======================================================================
-//function : BinMDataStd_ExtStringArrayDriver
-//purpose  : Constructor
-//=======================================================================
-BinMDataStd_ExtStringArrayDriver::BinMDataStd_ExtStringArrayDriver
-                        (const Handle(Message_Messenger)& theMsgDriver)
-     : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataStd_ExtStringArray)->Name())
+//=================================================================================================
+
+BinMDataStd_ExtStringArrayDriver::BinMDataStd_ExtStringArrayDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDataStd_ExtStringArray)->Name())
 {
 }
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(TDF_Attribute) BinMDataStd_ExtStringArrayDriver::NewEmpty() const
 {
@@ -46,43 +40,46 @@ Handle(TDF_Attribute) BinMDataStd_ExtStringArrayDriver::NewEmpty() const
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMDataStd_ExtStringArrayDriver::Paste
-                                (const BinObjMgt_Persistent&  theSource,
-                                 const Handle(TDF_Attribute)& theTarget,
-                                 BinObjMgt_RRelocationTable&  theRelocTable) const
+Standard_Boolean BinMDataStd_ExtStringArrayDriver::Paste(
+  const BinObjMgt_Persistent&  theSource,
+  const Handle(TDF_Attribute)& theTarget,
+  BinObjMgt_RRelocationTable&  theRelocTable) const
 {
   Standard_Integer aFirstInd, aLastInd;
-  if (! (theSource >> aFirstInd >> aLastInd))
+  if (!(theSource >> aFirstInd >> aLastInd))
     return Standard_False;
   const Standard_Integer aLength = aLastInd - aFirstInd + 1;
   if (aLength <= 0)
     return Standard_False;
 
-  Handle(TDataStd_ExtStringArray) anAtt =
-    Handle(TDataStd_ExtStringArray)::DownCast(theTarget);
+  Handle(TDataStd_ExtStringArray) anAtt = Handle(TDataStd_ExtStringArray)::DownCast(theTarget);
   anAtt->Init(aFirstInd, aLastInd);
   TColStd_Array1OfExtendedString& aTargetArray = anAtt->Array()->ChangeArray1();
-  Standard_Boolean ok = Standard_True;
-  for (Standard_Integer i = aFirstInd; i <= aLastInd; i ++)
+  Standard_Boolean                ok           = Standard_True;
+  for (Standard_Integer i = aFirstInd; i <= aLastInd; i++)
   {
     TCollection_ExtendedString aStr;
-    if ( !(theSource >> aStr) )
+    if (!(theSource >> aStr))
     {
       ok = Standard_False;
       break;
     }
-    aTargetArray.SetValue( i, aStr );
+    aTargetArray.SetValue(i, aStr);
   }
 
-  if(ok) {
+  if (ok)
+  {
     Standard_Boolean aDelta(Standard_False);
-    if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_3) {
+    if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue()
+        >= TDocStd_FormatVersion_VERSION_3)
+    {
       Standard_Byte aDeltaValue;
-      if (! (theSource >> aDeltaValue)) {
+      if (!(theSource >> aDeltaValue))
+      {
         return Standard_False;
       }
       else
@@ -91,32 +88,33 @@ Standard_Boolean BinMDataStd_ExtStringArrayDriver::Paste
     anAtt->SetDelta(aDelta);
   }
 
-  BinMDataStd::SetAttributeID(theSource, anAtt, theRelocTable.GetHeaderData()->StorageVersion().IntegerValue());
+  BinMDataStd::SetAttributeID(theSource,
+                              anAtt,
+                              theRelocTable.GetHeaderData()->StorageVersion().IntegerValue());
   return ok;
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDataStd_ExtStringArrayDriver::Paste
-                                (const Handle(TDF_Attribute)& theSource,
-                                 BinObjMgt_Persistent&        theTarget,
-                                 BinObjMgt_SRelocationTable&  ) const
+void BinMDataStd_ExtStringArrayDriver::Paste(const Handle(TDF_Attribute)& theSource,
+                                             BinObjMgt_Persistent&        theTarget,
+                                             BinObjMgt_SRelocationTable&) const
 {
   const Handle(TDataStd_ExtStringArray) anAtt =
     Handle(TDataStd_ExtStringArray)::DownCast(theSource);
   const TColStd_Array1OfExtendedString& aSourceArray = anAtt->Array()->Array1();
-  const Standard_Integer aFirstInd = aSourceArray.Lower();
-  const Standard_Integer aLastInd  = aSourceArray.Upper();
+  const Standard_Integer                aFirstInd    = aSourceArray.Lower();
+  const Standard_Integer                aLastInd     = aSourceArray.Upper();
   theTarget << aFirstInd << aLastInd;
-  for (Standard_Integer i = aFirstInd; i <= aLastInd; i ++)
-    theTarget << anAtt->Value( i );
+  for (Standard_Integer i = aFirstInd; i <= aLastInd; i++)
+    theTarget << anAtt->Value(i);
 
   theTarget << (Standard_Byte)(anAtt->GetDelta() ? 1 : 0);
 
   // process user defined guid
-  if(anAtt->ID() != TDataStd_ExtStringArray::GetID()) 
+  if (anAtt->ID() != TDataStd_ExtStringArray::GetID())
     theTarget << anAtt->ID();
 }

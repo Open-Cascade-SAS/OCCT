@@ -24,20 +24,17 @@
 #include <Standard_OStream.hxx>
 #include <TopOpeBRep_TypeLineCurve.hxx>
 
-
 //! This package provides  the topological  operations
 //! on the BRep data structure.
-class TopOpeBRep 
+class TopOpeBRep
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Prints the name  of  <TLC>  as  a String  on the
   //! Stream <S> and returns <S>.
-  Standard_EXPORT static Standard_OStream& Print (const TopOpeBRep_TypeLineCurve TLC, Standard_OStream& OS);
-
+  Standard_EXPORT static Standard_OStream& Print(const TopOpeBRep_TypeLineCurve TLC,
+                                                 Standard_OStream&              OS);
 };
 
 #endif // _TopOpeBRep_HeaderFile

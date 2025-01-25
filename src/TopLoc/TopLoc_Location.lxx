@@ -20,8 +20,8 @@
 #include <TopLoc_ItemLocation.hxx>
 
 //=======================================================================
-//function : IsIdentity
-//purpose  : 
+// function : IsIdentity
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean TopLoc_Location::IsIdentity() const
@@ -30,8 +30,8 @@ inline Standard_Boolean TopLoc_Location::IsIdentity() const
 }
 
 //=======================================================================
-//function : Identity
-//purpose  : 
+// function : Identity
+// purpose  :
 //=======================================================================
 
 inline void TopLoc_Location::Identity()
@@ -40,34 +40,33 @@ inline void TopLoc_Location::Identity()
 }
 
 //=======================================================================
-//function : FirstDatum
-//purpose  : 
+// function : FirstDatum
+// purpose  :
 //=======================================================================
 
-inline const Handle(TopLoc_Datum3D)&  TopLoc_Location::FirstDatum()const 
+inline const Handle(TopLoc_Datum3D)& TopLoc_Location::FirstDatum() const
 {
   return myItems.Value().myDatum;
 }
 
 //=======================================================================
-//function : FirstPower
-//purpose  : 
+// function : FirstPower
+// purpose  :
 //=======================================================================
 
- inline Standard_Integer  TopLoc_Location::FirstPower()const 
+inline Standard_Integer TopLoc_Location::FirstPower() const
 {
   return myItems.Value().myPower;
 }
 
-
 //=======================================================================
-//function : NextLocation
-//purpose  : 
+// function : NextLocation
+// purpose  :
 //=======================================================================
 
- inline const TopLoc_Location&  TopLoc_Location::NextLocation()const 
+inline const TopLoc_Location& TopLoc_Location::NextLocation() const
 {
-  return (*(TopLoc_Location*) &(myItems.Tail()));
+  return (*(TopLoc_Location*)&(myItems.Tail()));
 }
 
 //=======================================================================
@@ -81,15 +80,15 @@ inline size_t TopLoc_Location::HashCode() const
   {
     return 0;
   }
-  size_t aHash = opencascade::MurmurHash::optimalSeed<size_t>();
+  size_t                     aHash = opencascade::MurmurHash::optimalSeed<size_t>();
   TopLoc_SListOfItemLocation items = myItems;
-  size_t aCombined[3];
+  size_t                     aCombined[3];
   while (items.More())
   {
     aCombined[0] = std::hash<Handle(TopLoc_Datum3D)>{}(items.Value().myDatum);
     aCombined[1] = opencascade::hash(items.Value().myPower);
     aCombined[2] = aHash;
-    aHash = opencascade::hashBytes(aCombined, sizeof(aCombined));
+    aHash        = opencascade::hashBytes(aCombined, sizeof(aCombined));
     items.Next();
   }
   return aHash;
@@ -106,12 +105,9 @@ inline void ShallowDump(const TopLoc_Location& me, Standard_OStream& S)
 
 namespace std
 {
-  template <>
-  struct hash<TopLoc_Location>
-  {
-    size_t operator()(const TopLoc_Location& theLocation) const
-    {
-      return theLocation.HashCode();
-    }
-  };
-}
+template <>
+struct hash<TopLoc_Location>
+{
+  size_t operator()(const TopLoc_Location& theLocation) const { return theLocation.HashCode(); }
+};
+} // namespace std

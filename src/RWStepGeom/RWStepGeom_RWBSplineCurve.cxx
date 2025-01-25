@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include "RWStepGeom_RWBSplineCurve.pxx"
@@ -31,131 +30,155 @@ static TCollection_AsciiString bscfCircularArc(".CIRCULAR_ARC.");
 static TCollection_AsciiString bscfUnspecified(".UNSPECIFIED.");
 static TCollection_AsciiString bscfHyperbolicArc(".HYPERBOLIC_ARC.");
 
-RWStepGeom_RWBSplineCurve::RWStepGeom_RWBSplineCurve () {}
+RWStepGeom_RWBSplineCurve::RWStepGeom_RWBSplineCurve() {}
 
-void RWStepGeom_RWBSplineCurve::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepGeom_BSplineCurve)& ent) const
+void RWStepGeom_RWBSplineCurve::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                         const Standard_Integer                 num,
+                                         Handle(Interface_Check)&               ach,
+                                         const Handle(StepGeom_BSplineCurve)&   ent) const
 {
 
+  // --- Number of Parameter Control ---
 
-	// --- Number of Parameter Control ---
+  if (!data->CheckNbParams(num, 6, ach, "b_spline_curve"))
+    return;
 
-	if (!data->CheckNbParams(num,6,ach,"b_spline_curve")) return;
+  // --- inherited field : name ---
 
-	// --- inherited field : name ---
+  Handle(TCollection_HAsciiString) aName;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadString(num, 1, "name", ach, aName);
 
-	Handle(TCollection_HAsciiString) aName;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	data->ReadString (num,1,"name",ach,aName);
+  // --- own field : degree ---
 
-	// --- own field : degree ---
+  Standard_Integer aDegree;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  data->ReadInteger(num, 2, "degree", ach, aDegree);
 
-	Standard_Integer aDegree;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
-	data->ReadInteger (num,2,"degree",ach,aDegree);
+  // --- own field : controlPointsList ---
 
-	// --- own field : controlPointsList ---
+  Handle(StepGeom_HArray1OfCartesianPoint) aControlPointsList;
+  Handle(StepGeom_CartesianPoint)          anent3;
+  Standard_Integer                         nsub3;
+  if (data->ReadSubList(num, 3, "control_points_list", ach, nsub3))
+  {
+    Standard_Integer nb3 = data->NbParams(nsub3);
+    aControlPointsList   = new StepGeom_HArray1OfCartesianPoint(1, nb3);
+    for (Standard_Integer i3 = 1; i3 <= nb3; i3++)
+    {
+      // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+      if (data->ReadEntity(nsub3,
+                           i3,
+                           "cartesian_point",
+                           ach,
+                           STANDARD_TYPE(StepGeom_CartesianPoint),
+                           anent3))
+        aControlPointsList->SetValue(i3, anent3);
+    }
+  }
 
-	Handle(StepGeom_HArray1OfCartesianPoint) aControlPointsList;
-	Handle(StepGeom_CartesianPoint) anent3;
-	Standard_Integer nsub3;
-	if (data->ReadSubList (num,3,"control_points_list",ach,nsub3)) {
-	  Standard_Integer nb3 = data->NbParams(nsub3);
-	  aControlPointsList = new StepGeom_HArray1OfCartesianPoint (1, nb3);
-	  for (Standard_Integer i3 = 1; i3 <= nb3; i3 ++) {
-	    //szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
-	    if (data->ReadEntity (nsub3, i3,"cartesian_point", ach,
-				  STANDARD_TYPE(StepGeom_CartesianPoint), anent3))
-	      aControlPointsList->SetValue(i3, anent3);
-	  }
-	}
+  // --- own field : curveForm ---
 
-	// --- own field : curveForm ---
+  StepGeom_BSplineCurveForm aCurveForm = StepGeom_bscfPolylineForm;
+  if (data->ParamType(num, 4) == Interface_ParamEnum)
+  {
+    Standard_CString text = data->ParamCValue(num, 4);
+    if (bscfEllipticArc.IsEqual(text))
+      aCurveForm = StepGeom_bscfEllipticArc;
+    else if (bscfPolylineForm.IsEqual(text))
+      aCurveForm = StepGeom_bscfPolylineForm;
+    else if (bscfParabolicArc.IsEqual(text))
+      aCurveForm = StepGeom_bscfParabolicArc;
+    else if (bscfCircularArc.IsEqual(text))
+      aCurveForm = StepGeom_bscfCircularArc;
+    else if (bscfUnspecified.IsEqual(text))
+      aCurveForm = StepGeom_bscfUnspecified;
+    else if (bscfHyperbolicArc.IsEqual(text))
+      aCurveForm = StepGeom_bscfHyperbolicArc;
+    else
+      ach->AddFail("Enumeration b_spline_curve_form has not an allowed value");
+  }
+  else
+    ach->AddFail("Parameter #4 (curve_form) is not an enumeration");
 
-	StepGeom_BSplineCurveForm aCurveForm = StepGeom_bscfPolylineForm;
-	if (data->ParamType(num,4) == Interface_ParamEnum) {
-	  Standard_CString text = data->ParamCValue(num,4);
-	  if      (bscfEllipticArc.IsEqual(text)) aCurveForm = StepGeom_bscfEllipticArc;
-	  else if (bscfPolylineForm.IsEqual(text)) aCurveForm = StepGeom_bscfPolylineForm;
-	  else if (bscfParabolicArc.IsEqual(text)) aCurveForm = StepGeom_bscfParabolicArc;
-	  else if (bscfCircularArc.IsEqual(text)) aCurveForm = StepGeom_bscfCircularArc;
-	  else if (bscfUnspecified.IsEqual(text)) aCurveForm = StepGeom_bscfUnspecified;
-	  else if (bscfHyperbolicArc.IsEqual(text)) aCurveForm = StepGeom_bscfHyperbolicArc;
-	  else ach->AddFail("Enumeration b_spline_curve_form has not an allowed value");
-	}
-	else ach->AddFail("Parameter #4 (curve_form) is not an enumeration");
+  // --- own field : closedCurve ---
 
-	// --- own field : closedCurve ---
+  StepData_Logical aClosedCurve;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat5 =` not needed
+  data->ReadLogical(num, 5, "closed_curve", ach, aClosedCurve);
 
-	StepData_Logical aClosedCurve;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat5 =` not needed
-	data->ReadLogical (num,5,"closed_curve",ach,aClosedCurve);
+  // --- own field : selfIntersect ---
 
-	// --- own field : selfIntersect ---
+  StepData_Logical aSelfIntersect;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat6 =` not needed
+  data->ReadLogical(num, 6, "self_intersect", ach, aSelfIntersect);
 
-	StepData_Logical aSelfIntersect;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat6 =` not needed
-	data->ReadLogical (num,6,"self_intersect",ach,aSelfIntersect);
+  //--- Initialisation of the read entity ---
 
-	//--- Initialisation of the read entity ---
-
-
-	ent->Init(aName, aDegree, aControlPointsList, aCurveForm, aClosedCurve, aSelfIntersect);
+  ent->Init(aName, aDegree, aControlPointsList, aCurveForm, aClosedCurve, aSelfIntersect);
 }
 
-
-void RWStepGeom_RWBSplineCurve::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepGeom_BSplineCurve)& ent) const
+void RWStepGeom_RWBSplineCurve::WriteStep(StepData_StepWriter&                 SW,
+                                          const Handle(StepGeom_BSplineCurve)& ent) const
 {
 
-	// --- inherited field name ---
+  // --- inherited field name ---
 
-	SW.Send(ent->Name());
+  SW.Send(ent->Name());
 
-	// --- own field : degree ---
+  // --- own field : degree ---
 
-	SW.Send(ent->Degree());
+  SW.Send(ent->Degree());
 
-	// --- own field : controlPointsList ---
+  // --- own field : controlPointsList ---
 
-	SW.OpenSub();
-	for (Standard_Integer i3 = 1;  i3 <= ent->NbControlPointsList();  i3 ++) {
-	  SW.Send(ent->ControlPointsListValue(i3));
-	}
-	SW.CloseSub();
+  SW.OpenSub();
+  for (Standard_Integer i3 = 1; i3 <= ent->NbControlPointsList(); i3++)
+  {
+    SW.Send(ent->ControlPointsListValue(i3));
+  }
+  SW.CloseSub();
 
-	// --- own field : curveForm ---
+  // --- own field : curveForm ---
 
-	switch(ent->CurveForm()) {
-	  case StepGeom_bscfEllipticArc : SW.SendEnum (bscfEllipticArc); break;
-	  case StepGeom_bscfPolylineForm : SW.SendEnum (bscfPolylineForm); break;
-	  case StepGeom_bscfParabolicArc : SW.SendEnum (bscfParabolicArc); break;
-	  case StepGeom_bscfCircularArc : SW.SendEnum (bscfCircularArc); break;
-	  case StepGeom_bscfUnspecified : SW.SendEnum (bscfUnspecified); break;
-	  case StepGeom_bscfHyperbolicArc : SW.SendEnum (bscfHyperbolicArc); break;
-	}
+  switch (ent->CurveForm())
+  {
+    case StepGeom_bscfEllipticArc:
+      SW.SendEnum(bscfEllipticArc);
+      break;
+    case StepGeom_bscfPolylineForm:
+      SW.SendEnum(bscfPolylineForm);
+      break;
+    case StepGeom_bscfParabolicArc:
+      SW.SendEnum(bscfParabolicArc);
+      break;
+    case StepGeom_bscfCircularArc:
+      SW.SendEnum(bscfCircularArc);
+      break;
+    case StepGeom_bscfUnspecified:
+      SW.SendEnum(bscfUnspecified);
+      break;
+    case StepGeom_bscfHyperbolicArc:
+      SW.SendEnum(bscfHyperbolicArc);
+      break;
+  }
 
-	// --- own field : closedCurve ---
+  // --- own field : closedCurve ---
 
-	SW.SendLogical(ent->ClosedCurve());
+  SW.SendLogical(ent->ClosedCurve());
 
-	// --- own field : selfIntersect ---
+  // --- own field : selfIntersect ---
 
-	SW.SendLogical(ent->SelfIntersect());
+  SW.SendLogical(ent->SelfIntersect());
 }
 
-
-void RWStepGeom_RWBSplineCurve::Share(const Handle(StepGeom_BSplineCurve)& ent, Interface_EntityIterator& iter) const
+void RWStepGeom_RWBSplineCurve::Share(const Handle(StepGeom_BSplineCurve)& ent,
+                                      Interface_EntityIterator&            iter) const
 {
 
-	Standard_Integer nbElem1 = ent->NbControlPointsList();
-	for (Standard_Integer is1=1; is1<=nbElem1; is1 ++) {
-	  iter.GetOneItem(ent->ControlPointsListValue(is1));
-	}
-
+  Standard_Integer nbElem1 = ent->NbControlPointsList();
+  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  {
+    iter.GetOneItem(ent->ControlPointsListValue(is1));
+  }
 }
-

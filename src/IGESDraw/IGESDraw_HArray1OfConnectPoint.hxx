@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(IGESDraw_HArray1OfConnectPoint, IGESDraw_Array1OfConnectPoint)
 
-
 #endif

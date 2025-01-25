@@ -14,15 +14,13 @@
 #include <TDataStd_GenericEmpty.hxx>
 #include <Standard_Dump.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDataStd_GenericEmpty,TDF_Attribute)
+IMPLEMENT_STANDARD_RTTIEXT(TDataStd_GenericEmpty, TDF_Attribute)
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void TDataStd_GenericEmpty::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+//=================================================================================================
+
+void TDataStd_GenericEmpty::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDF_Attribute)
 }

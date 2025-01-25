@@ -11,32 +11,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepGeom_Parabola.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Parabola,StepGeom_Conic)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Parabola, StepGeom_Conic)
 
-StepGeom_Parabola::StepGeom_Parabola ()  {}
+StepGeom_Parabola::StepGeom_Parabola() {}
 
-void StepGeom_Parabola::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const StepGeom_Axis2Placement& aPosition,
-	const Standard_Real aFocalDist)
+void StepGeom_Parabola::Init(const Handle(TCollection_HAsciiString)& aName,
+                             const StepGeom_Axis2Placement&          aPosition,
+                             const Standard_Real                     aFocalDist)
 {
-	// --- classe own fields ---
-	focalDist = aFocalDist;
-	// --- classe inherited fields ---
-	StepGeom_Conic::Init(aName, aPosition);
+  // --- classe own fields ---
+  focalDist = aFocalDist;
+  // --- classe inherited fields ---
+  StepGeom_Conic::Init(aName, aPosition);
 }
-
 
 void StepGeom_Parabola::SetFocalDist(const Standard_Real aFocalDist)
 {
-	focalDist = aFocalDist;
+  focalDist = aFocalDist;
 }
 
 Standard_Real StepGeom_Parabola::FocalDist() const
 {
-	return focalDist;
+  return focalDist;
 }

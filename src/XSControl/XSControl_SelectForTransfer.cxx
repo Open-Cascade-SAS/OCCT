@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_InterfaceModel.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
@@ -20,45 +19,52 @@
 #include <XSControl_SelectForTransfer.hxx>
 #include <XSControl_TransferReader.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XSControl_SelectForTransfer,IFSelect_SelectExtract)
+IMPLEMENT_STANDARD_RTTIEXT(XSControl_SelectForTransfer, IFSelect_SelectExtract)
 
-XSControl_SelectForTransfer::XSControl_SelectForTransfer ()    {  }
+XSControl_SelectForTransfer::XSControl_SelectForTransfer() {}
 
-    XSControl_SelectForTransfer::XSControl_SelectForTransfer
-  (const Handle(XSControl_TransferReader)& TR)
-      {  theTR = TR;  }
+XSControl_SelectForTransfer::XSControl_SelectForTransfer(const Handle(XSControl_TransferReader)& TR)
+{
+  theTR = TR;
+}
 
+void XSControl_SelectForTransfer::SetReader(const Handle(XSControl_TransferReader)& TR)
+{
+  theTR = TR;
+}
 
-    void  XSControl_SelectForTransfer::SetReader
-  (const Handle(XSControl_TransferReader)& TR)
-      {  theTR = TR;  }
+void XSControl_SelectForTransfer::SetActor(const Handle(Transfer_ActorOfTransientProcess)& act)
+{
+  theAC = act;
+}
 
-    void  XSControl_SelectForTransfer::SetActor
-  (const Handle(Transfer_ActorOfTransientProcess)& act)
-      {  theAC = act;  }
+Handle(Transfer_ActorOfTransientProcess) XSControl_SelectForTransfer::Actor() const
+{
+  return theAC;
+}
 
-    Handle(Transfer_ActorOfTransientProcess)  XSControl_SelectForTransfer::Actor () const
-      {  return theAC;  }
+Handle(XSControl_TransferReader) XSControl_SelectForTransfer::Reader() const
+{
+  return theTR;
+}
 
-    Handle(XSControl_TransferReader)  XSControl_SelectForTransfer::Reader () const
-      {  return theTR;  }
-
-    Standard_Boolean  XSControl_SelectForTransfer::Sort
-  (const Standard_Integer /*rank*/, const Handle(Standard_Transient)& ent,
-   const Handle(Interface_InterfaceModel)& /*model*/) const
+Standard_Boolean XSControl_SelectForTransfer::Sort(
+  const Standard_Integer /*rank*/,
+  const Handle(Standard_Transient)& ent,
+  const Handle(Interface_InterfaceModel)& /*model*/) const
 {
   Handle(Transfer_ActorOfTransientProcess) act = theAC;
-  if (act.IsNull() && !theTR.IsNull()) act = theTR->Actor();
-// clang-format off
+  if (act.IsNull() && !theTR.IsNull())
+    act = theTR->Actor();
+  // clang-format off
   if (!act.IsNull()) return act->Recognize(ent);//,theTR->TransientProcess());//act->Recognize(ent);
-// clang-format on
+  // clang-format on
   return Standard_False;
 }
 
- 
-    TCollection_AsciiString  XSControl_SelectForTransfer::ExtractLabel () const
+TCollection_AsciiString XSControl_SelectForTransfer::ExtractLabel() const
 {
-  if (!theTR.IsNull()) return TCollection_AsciiString
-    ("Recognized for Transfer (current actor)");
+  if (!theTR.IsNull())
+    return TCollection_AsciiString("Recognized for Transfer (current actor)");
   return TCollection_AsciiString("Recognized for Transfer");
 }

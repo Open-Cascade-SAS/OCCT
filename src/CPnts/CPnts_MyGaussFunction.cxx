@@ -12,29 +12,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <CPnts_MyGaussFunction.hxx>
 
-void CPnts_MyGaussFunction::Init(const CPnts_RealFunction& F,
-				 const Standard_Address D) 
+void CPnts_MyGaussFunction::Init(const CPnts_RealFunction& F, const Standard_Address D)
 {
   myFunction = F;
-  myData = D;
+  myData     = D;
 }
 
-Standard_Boolean CPnts_MyGaussFunction::Value(const Standard_Real X,
-					      Standard_Real& F)
+Standard_Boolean CPnts_MyGaussFunction::Value(const Standard_Real X, Standard_Real& F)
 {
-  F = myFunction(X,myData);
+  F = myFunction(X, myData);
   return Standard_True;
 }
-
-
-
-
-
-
-
-
-
-

@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:16 2020 
+// Created on : Sat May 02 12:41:16 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -16,54 +16,47 @@
 
 #include <StepKinematics_ScrewPair.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_ScrewPair, StepKinematics_LowOrderKinematicPairWithMotionCoupling)
+IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_ScrewPair,
+                           StepKinematics_LowOrderKinematicPairWithMotionCoupling)
 
-//=======================================================================
-//function : StepKinematics_ScrewPair
-//purpose  :
-//=======================================================================
-StepKinematics_ScrewPair::StepKinematics_ScrewPair ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_ScrewPair::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                     const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Name,
-                                     const Standard_Boolean hasItemDefinedTransformation_Description,
-                                     const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Description,
-                                     const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem1,
-                                     const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem2,
-                                     const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-                                     const Standard_Real thePitch)
+StepKinematics_ScrewPair::StepKinematics_ScrewPair() {}
+
+//=================================================================================================
+
+void StepKinematics_ScrewPair::Init(
+  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
+  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
+  const Standard_Boolean                       hasItemDefinedTransformation_Description,
+  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
+  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
+  const Standard_Real                          thePitch)
 {
-  StepKinematics_LowOrderKinematicPairWithMotionCoupling::Init(theRepresentationItem_Name,
-                                                               theItemDefinedTransformation_Name,
-                                                               hasItemDefinedTransformation_Description,
-                                                               theItemDefinedTransformation_Description,
-                                                               theItemDefinedTransformation_TransformItem1,
-                                                               theItemDefinedTransformation_TransformItem2,
-                                                               theKinematicPair_Joint);
+  StepKinematics_LowOrderKinematicPairWithMotionCoupling::Init(
+    theRepresentationItem_Name,
+    theItemDefinedTransformation_Name,
+    hasItemDefinedTransformation_Description,
+    theItemDefinedTransformation_Description,
+    theItemDefinedTransformation_TransformItem1,
+    theItemDefinedTransformation_TransformItem2,
+    theKinematicPair_Joint);
 
   myPitch = thePitch;
 }
 
-//=======================================================================
-//function : Pitch
-//purpose  :
-//=======================================================================
-Standard_Real StepKinematics_ScrewPair::Pitch () const
+//=================================================================================================
+
+Standard_Real StepKinematics_ScrewPair::Pitch() const
 {
   return myPitch;
 }
 
-//=======================================================================
-//function : SetPitch
-//purpose  :
-//=======================================================================
-void StepKinematics_ScrewPair::SetPitch (const Standard_Real thePitch)
+//=================================================================================================
+
+void StepKinematics_ScrewPair::SetPitch(const Standard_Real thePitch)
 {
   myPitch = thePitch;
 }

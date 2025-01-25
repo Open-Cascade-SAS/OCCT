@@ -13,27 +13,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMDF_ADriverTable.hxx>
 #include <BinXCAFDrivers.hxx>
 #include <BinXCAFDrivers_DocumentStorageDriver.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinXCAFDrivers_DocumentStorageDriver,BinDrivers_DocumentStorageDriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinXCAFDrivers_DocumentStorageDriver, BinDrivers_DocumentStorageDriver)
 
-//=======================================================================
-//function : 
-//purpose  :
-//=======================================================================
-BinXCAFDrivers_DocumentStorageDriver::BinXCAFDrivers_DocumentStorageDriver() {
+//=================================================================================================
+
+BinXCAFDrivers_DocumentStorageDriver::BinXCAFDrivers_DocumentStorageDriver() {}
+
+//=================================================================================================
+
+Handle(BinMDF_ADriverTable) BinXCAFDrivers_DocumentStorageDriver::AttributeDrivers(
+  const Handle(Message_Messenger)& theMsgDriver)
+{
+  return BinXCAFDrivers::AttributeDrivers(theMsgDriver);
 }
-
-//=======================================================================
-//function : 
-//purpose  :
-//=======================================================================
-Handle(BinMDF_ADriverTable) BinXCAFDrivers_DocumentStorageDriver::AttributeDrivers(const Handle(Message_Messenger)& theMsgDriver) {
-  return BinXCAFDrivers::AttributeDrivers (theMsgDriver);
-}
-

@@ -27,58 +27,72 @@
 
 #include <Draw_ProgressIndicator.hxx>
 
-static Standard_Integer bcbuild (Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bcaddall (Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bcremoveall (Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bcadd (Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bcremove (Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bcremoveint (Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bcmakecontainers (Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer bcbuild(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer bcaddall(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer bcremoveall(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer bcadd(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer bcremove(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer bcremoveint(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer bcmakecontainers(Draw_Interpretor&, Standard_Integer, const char**);
 
-//=======================================================================
-//function : CellsCommands
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BOPTest::CellsCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
-  if (done) return;
+  if (done)
+    return;
   done = Standard_True;
   // Chapter's name
   const char* g = "BOPTest commands";
   // Commands
-  
-  theCommands.Add("bcbuild", "Cells builder. Use: bcbuild r",
-                  __FILE__, bcbuild, g);
-  theCommands.Add("bcaddall", "Add all parts to result. Use: bcaddall r [-m material [-u]]",
-                  __FILE__, bcaddall, g);
-  theCommands.Add("bcremoveall", "Remove all parts from result. Use: bcremoveall",
-                  __FILE__, bcremoveall, g);
-  theCommands.Add("bcadd", "Add parts to result. Use: bcadd r s1 (0,1) s2 (0,1) ... [-m material [-u]]",
-                  __FILE__, bcadd, g);
-  theCommands.Add("bcremove", "Remove parts from result. Use: bcremove r s1 (0,1) s2 (0,1) ...", 
-                  __FILE__, bcremove, g);
-  theCommands.Add("bcremoveint", "Remove internal boundaries. Use: bcremoveint r",
-                  __FILE__, bcremoveint, g);
-  theCommands.Add("bcmakecontainers", "Make containers from the parts added to result. Use: bcmakecontainers r",
-                  __FILE__, bcmakecontainers, g);
+
+  theCommands.Add("bcbuild", "Cells builder. Use: bcbuild r", __FILE__, bcbuild, g);
+  theCommands.Add("bcaddall",
+                  "Add all parts to result. Use: bcaddall r [-m material [-u]]",
+                  __FILE__,
+                  bcaddall,
+                  g);
+  theCommands.Add("bcremoveall",
+                  "Remove all parts from result. Use: bcremoveall",
+                  __FILE__,
+                  bcremoveall,
+                  g);
+  theCommands.Add("bcadd",
+                  "Add parts to result. Use: bcadd r s1 (0,1) s2 (0,1) ... [-m material [-u]]",
+                  __FILE__,
+                  bcadd,
+                  g);
+  theCommands.Add("bcremove",
+                  "Remove parts from result. Use: bcremove r s1 (0,1) s2 (0,1) ...",
+                  __FILE__,
+                  bcremove,
+                  g);
+  theCommands.Add("bcremoveint",
+                  "Remove internal boundaries. Use: bcremoveint r",
+                  __FILE__,
+                  bcremoveint,
+                  g);
+  theCommands.Add("bcmakecontainers",
+                  "Make containers from the parts added to result. Use: bcmakecontainers r",
+                  __FILE__,
+                  bcmakecontainers,
+                  g);
 }
 
-//=======================================================================
-//function : bcbuild
-//purpose  : 
-//=======================================================================
-Standard_Integer bcbuild(Draw_Interpretor& di,
-                         Standard_Integer n, 
-                         const char** a)
+//=================================================================================================
+
+Standard_Integer bcbuild(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n != 2) {
+  if (n != 2)
+  {
     di << "Cells builder. Use: bcbuild r\n";
     return 1;
   }
   //
   BOPDS_PDS pDS = BOPTest_Objects::PDS();
-  if (!pDS) {
+  if (!pDS)
+  {
     di << " prepare PaveFiller first\n";
     return 1;
   }
@@ -92,23 +106,25 @@ Standard_Integer bcbuild(Draw_Interpretor& di,
   //
   TopTools_ListOfShape& aLSObj = BOPTest_Objects::Shapes();
   aIt.Initialize(aLSObj);
-  for (; aIt.More(); aIt.Next()) {
+  for (; aIt.More(); aIt.Next())
+  {
     const TopoDS_Shape& aS = aIt.Value();
     aCBuilder.AddArgument(aS);
   }
   //
   TopTools_ListOfShape& aLSTool = BOPTest_Objects::Tools();
   aIt.Initialize(aLSTool);
-  for (; aIt.More(); aIt.Next()) {
+  for (; aIt.More(); aIt.Next())
+  {
     const TopoDS_Shape& aS = aIt.Value();
     aCBuilder.AddArgument(aS);
   }
   //
   // set the options to the algorithm
-  Standard_Boolean bRunParallel = BOPTest_Objects::RunParallel();
-  Standard_Real aTol = BOPTest_Objects::FuzzyValue();
+  Standard_Boolean bRunParallel    = BOPTest_Objects::RunParallel();
+  Standard_Real    aTol            = BOPTest_Objects::FuzzyValue();
   Standard_Boolean bNonDestructive = BOPTest_Objects::NonDestructive();
-  BOPAlgo_GlueEnum aGlue = BOPTest_Objects::Glue();
+  BOPAlgo_GlueEnum aGlue           = BOPTest_Objects::Glue();
   //
   aCBuilder.SetRunParallel(bRunParallel);
   aCBuilder.SetFuzzyValue(aTol);
@@ -119,20 +135,22 @@ Standard_Integer bcbuild(Draw_Interpretor& di,
   aCBuilder.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
   Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
-  aCBuilder.PerformWithFiller(aPF, aProgress->Start()); 
+  aCBuilder.PerformWithFiller(aPF, aProgress->Start());
   BOPTest::ReportAlerts(aCBuilder.GetReport());
   // Store the history of the Cells Builder into the session
   if (BRepTest_Objects::IsHistoryNeeded())
     BRepTest_Objects::SetHistory(aCBuilder.Arguments(), aCBuilder);
 
-  if (aCBuilder.HasErrors()) {
+  if (aCBuilder.HasErrors())
+  {
     return 0;
   }
   //
   BOPTest_Objects::SetBuilder(&aCBuilder);
   //
   const TopoDS_Shape& aR = aCBuilder.GetAllParts();
-  if (aR.IsNull()) {
+  if (aR.IsNull())
+  {
     di << "no parts were built\n";
     return 0;
   }
@@ -141,28 +159,28 @@ Standard_Integer bcbuild(Draw_Interpretor& di,
   return 0;
 }
 
-//=======================================================================
-//function : bcaddall
-//purpose  : 
-//=======================================================================
-Standard_Integer bcaddall(Draw_Interpretor& di,
-                          Standard_Integer n,
-                          const char** a)
+//=================================================================================================
+
+Standard_Integer bcaddall(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n < 2 || n > 5) {
+  if (n < 2 || n > 5)
+  {
     di << "Add all parts to result. Use: bcaddall r [-m material [-u]]\n";
     return 1;
   }
   //
   Standard_Integer iMaterial = 0;
-  Standard_Boolean bUpdate = Standard_False;
+  Standard_Boolean bUpdate   = Standard_False;
   //
-  if (n > 3) {
-    if (!strcmp(a[2], "-m")) {
+  if (n > 3)
+  {
+    if (!strcmp(a[2], "-m"))
+    {
       iMaterial = Draw::Atoi(a[3]);
     }
     //
-    if (n == 5) {
+    if (n == 5)
+    {
       bUpdate = !strcmp(a[4], "-u");
     }
   }
@@ -183,15 +201,12 @@ Standard_Integer bcaddall(Draw_Interpretor& di,
   return 0;
 }
 
-//=======================================================================
-//function : bcremoveall
-//purpose  : 
-//=======================================================================
-Standard_Integer bcremoveall(Draw_Interpretor& di,
-                             Standard_Integer n, 
-                             const char**)
+//=================================================================================================
+
+Standard_Integer bcremoveall(Draw_Interpretor& di, Standard_Integer n, const char**)
 {
-  if (n != 1) {
+  if (n != 1)
+  {
     di << "Remove all parts from result. Use: bcremoveall\n";
     return 1;
   }
@@ -207,54 +222,58 @@ Standard_Integer bcremoveall(Draw_Interpretor& di,
   return 0;
 }
 
-//=======================================================================
-//function : bcadd
-//purpose  : 
-//=======================================================================
-Standard_Integer bcadd(Draw_Interpretor& di,
-                       Standard_Integer n, 
-                       const char** a)
+//=================================================================================================
+
+Standard_Integer bcadd(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n < 4) {
+  if (n < 4)
+  {
     di << "Add parts to result. Use: bcadd r s1 (0,1) s2 (0,1) ... [-m material [-u]]\n";
     return 1;
   }
   //
   TopTools_ListOfShape aLSToTake, aLSToAvoid;
-  Standard_Integer i, iMaterial, iTake, n1;
-  Standard_Boolean bUpdate;
+  Standard_Integer     i, iMaterial, iTake, n1;
+  Standard_Boolean     bUpdate;
   //
   iMaterial = 0;
-  bUpdate = Standard_False;
-  n1 = n;
+  bUpdate   = Standard_False;
+  n1        = n;
   //
-  if (!strcmp(a[n-3], "-m")) {
-    iMaterial = Draw::Atoi(a[n-2]);
-    bUpdate = !strcmp(a[n-1], "-u");
-    n1 = n - 3;
+  if (!strcmp(a[n - 3], "-m"))
+  {
+    iMaterial = Draw::Atoi(a[n - 2]);
+    bUpdate   = !strcmp(a[n - 1], "-u");
+    n1        = n - 3;
   }
-  else if (!strcmp(a[n-2], "-m")) {
-    iMaterial = Draw::Atoi(a[n-1]);
-    n1 = n - 2;
+  else if (!strcmp(a[n - 2], "-m"))
+  {
+    iMaterial = Draw::Atoi(a[n - 1]);
+    n1        = n - 2;
   }
   //
-  for (i = 2; i < n1; i += 2) {
+  for (i = 2; i < n1; i += 2)
+  {
     const TopoDS_Shape& aS = DBRep::Get(a[i]);
-    if (aS.IsNull()) {
+    if (aS.IsNull())
+    {
       di << a[i] << " is a null shape\n";
       continue;
     }
-    iTake = Draw::Atoi(a[i+1]);
+    iTake = Draw::Atoi(a[i + 1]);
     //
-    if (iTake) {
+    if (iTake)
+    {
       aLSToTake.Append(aS);
     }
-    else {
+    else
+    {
       aLSToAvoid.Append(aS);
     }
   }
   //
-  if (aLSToTake.IsEmpty()) {
+  if (aLSToTake.IsEmpty())
+  {
     di << "No shapes from which to add the parts\n";
     return 1;
   }
@@ -275,39 +294,41 @@ Standard_Integer bcadd(Draw_Interpretor& di,
   return 0;
 }
 
-//=======================================================================
-//function : bcremove
-//purpose  : 
-//=======================================================================
-Standard_Integer bcremove(Draw_Interpretor& di,
-                          Standard_Integer n, 
-                          const char** a)
+//=================================================================================================
+
+Standard_Integer bcremove(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n < 4 || ((n % 2) != 0)) {
+  if (n < 4 || ((n % 2) != 0))
+  {
     di << "Remove parts from result. Use: bcremove r s1 (0,1) s2 (0,1) ...\n";
     return 1;
   }
   //
   TopTools_ListOfShape aLSToTake, aLSToAvoid;
-  Standard_Integer i, iTake;
+  Standard_Integer     i, iTake;
   //
-  for (i = 2; i < n; i += 2) {
+  for (i = 2; i < n; i += 2)
+  {
     const TopoDS_Shape& aS = DBRep::Get(a[i]);
-    if (aS.IsNull()) {
+    if (aS.IsNull())
+    {
       di << a[i] << " is a null shape\n";
       return 1;
     }
-    iTake = Draw::Atoi(a[i+1]);
+    iTake = Draw::Atoi(a[i + 1]);
     //
-    if (iTake) {
+    if (iTake)
+    {
       aLSToTake.Append(aS);
     }
-    else {
+    else
+    {
       aLSToAvoid.Append(aS);
     }
   }
   //
-  if (aLSToTake.IsEmpty()) {
+  if (aLSToTake.IsEmpty())
+  {
     di << "No shapes from which to remove the parts\n";
     return 1;
   }
@@ -325,15 +346,12 @@ Standard_Integer bcremove(Draw_Interpretor& di,
   return 0;
 }
 
-//=======================================================================
-//function : bcremoveint
-//purpose  : 
-//=======================================================================
-Standard_Integer bcremoveint(Draw_Interpretor& di,
-                             Standard_Integer n, 
-                             const char** a)
+//=================================================================================================
+
+Standard_Integer bcremoveint(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n != 2) {
+  if (n != 2)
+  {
     di << "Remove internal boundaries. Use: bcremoveint r\n";
     return 1;
   }
@@ -354,15 +372,12 @@ Standard_Integer bcremoveint(Draw_Interpretor& di,
   return 0;
 }
 
-//=======================================================================
-//function : bcmakecontainers
-//purpose  : 
-//=======================================================================
-Standard_Integer bcmakecontainers(Draw_Interpretor& di,
-                                  Standard_Integer n, 
-                                  const char** a)
+//=================================================================================================
+
+Standard_Integer bcmakecontainers(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n != 2) {
+  if (n != 2)
+  {
     di << "Make containers from the parts added to result. Use: bcmakecontainers r\n";
     return 1;
   }

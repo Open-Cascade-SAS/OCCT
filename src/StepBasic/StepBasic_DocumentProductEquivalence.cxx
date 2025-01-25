@@ -17,12 +17,9 @@
 
 #include <StepBasic_DocumentProductEquivalence.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentProductEquivalence,StepBasic_DocumentProductAssociation)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentProductEquivalence,
+                           StepBasic_DocumentProductAssociation)
 
-//=======================================================================
-//function : StepBasic_DocumentProductEquivalence
-//purpose  : 
-//=======================================================================
-StepBasic_DocumentProductEquivalence::StepBasic_DocumentProductEquivalence ()
-{
-}
+//=================================================================================================
+
+StepBasic_DocumentProductEquivalence::StepBasic_DocumentProductEquivalence() {}

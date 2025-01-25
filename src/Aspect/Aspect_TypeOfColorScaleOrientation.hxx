@@ -19,10 +19,10 @@
 //! Defines the type of color scale orientation
 enum Aspect_TypeOfColorScaleOrientation
 {
-Aspect_TOCSO_NONE,
-Aspect_TOCSO_LEFT,
-Aspect_TOCSO_RIGHT,
-Aspect_TOCSO_CENTER
+  Aspect_TOCSO_NONE,
+  Aspect_TOCSO_LEFT,
+  Aspect_TOCSO_RIGHT,
+  Aspect_TOCSO_CENTER
 };
 
 #endif // _Aspect_TypeOfColorScaleOrientation_HeaderFile

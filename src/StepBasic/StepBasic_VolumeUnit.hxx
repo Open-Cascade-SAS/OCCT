@@ -22,40 +22,19 @@
 
 #include <StepBasic_NamedUnit.hxx>
 
-
 class StepBasic_VolumeUnit;
 DEFINE_STANDARD_HANDLE(StepBasic_VolumeUnit, StepBasic_NamedUnit)
-
 
 class StepBasic_VolumeUnit : public StepBasic_NamedUnit
 {
 
 public:
-
-  
   Standard_EXPORT StepBasic_VolumeUnit();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_VolumeUnit,StepBasic_NamedUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_VolumeUnit, StepBasic_NamedUnit)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_VolumeUnit_HeaderFile

@@ -30,11 +30,12 @@ PackConstructorInitializers: Never
 PointerAlignment: Left
 ReferenceAlignment: Left
 SeparateDefinitionBlocks: Always
-SortIncludes: true
+SortIncludes: false
 UseTab: Never
 #
 # OCCT specific settings
 StatementMacros:
   - Standard_FALLTHROUGH
+  - Standard_DEPRECATED
 TypenameMacros:
   - Handle

@@ -14,40 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <AdvApp2Var_Criterion.hxx>
 
-AdvApp2Var_Criterion::~AdvApp2Var_Criterion()
-{}
+AdvApp2Var_Criterion::~AdvApp2Var_Criterion() {}
 
-//============================================================================
-//function : MaxValue
-//purpose  :
-//============================================================================
+//=================================================================================================
 
-Standard_Real AdvApp2Var_Criterion::MaxValue() const 
+Standard_Real AdvApp2Var_Criterion::MaxValue() const
 {
-  return myMaxValue; 
+  return myMaxValue;
 }
 
-//============================================================================
-//function : Type
-//purpose  :
-//============================================================================
+//=================================================================================================
 
-AdvApp2Var_CriterionType AdvApp2Var_Criterion::Type() const 
+AdvApp2Var_CriterionType AdvApp2Var_Criterion::Type() const
 {
-  return myType; 
+  return myType;
 }
 
+//=================================================================================================
 
-//============================================================================
-//function : Repartition
-//purpose  :
-//============================================================================
-
-AdvApp2Var_CriterionRepartition AdvApp2Var_Criterion::Repartition() const 
+AdvApp2Var_CriterionRepartition AdvApp2Var_Criterion::Repartition() const
 {
-  return myRepartition; 
+  return myRepartition;
 }
-

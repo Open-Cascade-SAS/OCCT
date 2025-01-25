@@ -29,34 +29,37 @@ class PrsDim_MinRadiusDimension : public PrsDim_EllipseRadiusDimension
 {
   DEFINE_STANDARD_RTTIEXT(PrsDim_MinRadiusDimension, PrsDim_EllipseRadiusDimension)
 public:
-
   //! Max  Ellipse  radius dimension
   //! Shape  can  be  edge  ,  planar  face  or  cylindrical  face
-  Standard_EXPORT PrsDim_MinRadiusDimension(const TopoDS_Shape& aShape, const Standard_Real aVal, const TCollection_ExtendedString& aText);
-  
+  Standard_EXPORT PrsDim_MinRadiusDimension(const TopoDS_Shape&               aShape,
+                                            const Standard_Real               aVal,
+                                            const TCollection_ExtendedString& aText);
+
   //! Max  Ellipse  radius dimension with  position
   //! Shape  can  be  edge  ,  planar  face  or  cylindrical  face
-  Standard_EXPORT PrsDim_MinRadiusDimension(const TopoDS_Shape& aShape, const Standard_Real aVal, const TCollection_ExtendedString& aText, const gp_Pnt& aPosition, const DsgPrs_ArrowSide aSymbolPrs, const Standard_Real anArrowSize = 0.0);
+  Standard_EXPORT PrsDim_MinRadiusDimension(const TopoDS_Shape&               aShape,
+                                            const Standard_Real               aVal,
+                                            const TCollection_ExtendedString& aText,
+                                            const gp_Pnt&                     aPosition,
+                                            const DsgPrs_ArrowSide            aSymbolPrs,
+                                            const Standard_Real               anArrowSize = 0.0);
 
 private:
+  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                       const Handle(Prs3d_Presentation)&         thePrs,
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                        const Handle(Prs3d_Presentation)& thePrs,
-                                        const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
-                                                 const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT void ComputeEllipse(const Handle(Prs3d_Presentation)& aPresentation);
 
-  Standard_EXPORT void ComputeEllipse (const Handle(Prs3d_Presentation)& aPresentation);
-
-  Standard_EXPORT void ComputeArcOfEllipse (const Handle(Prs3d_Presentation)& aPresentation);
+  Standard_EXPORT void ComputeArcOfEllipse(const Handle(Prs3d_Presentation)& aPresentation);
 
 private:
-
   gp_Pnt myApexP;
   gp_Pnt myApexN;
   gp_Pnt myEndOfArrow;
-
 };
 
 #endif // _PrsDim_MinRadiusDimension_HeaderFile

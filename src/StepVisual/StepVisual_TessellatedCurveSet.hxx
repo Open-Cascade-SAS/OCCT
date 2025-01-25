@@ -26,34 +26,32 @@
 #include <StepVisual_CoordinatesList.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
 
-
-typedef NCollection_Vector<Handle(TColStd_HSequenceOfInteger)> StepVisual_VectorOfHSequenceOfInteger;
+typedef NCollection_Vector<Handle(TColStd_HSequenceOfInteger)>
+  StepVisual_VectorOfHSequenceOfInteger;
 
 DEFINE_STANDARD_HANDLE(StepVisual_TessellatedCurveSet, StepVisual_TessellatedItem)
 
-
-class StepVisual_TessellatedCurveSet  : public StepVisual_TessellatedItem
+class StepVisual_TessellatedCurveSet : public StepVisual_TessellatedItem
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-  
+
   //! Returns a DraughtingCalloutElement select type
   Standard_EXPORT StepVisual_TessellatedCurveSet();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theName, const Handle(StepVisual_CoordinatesList)& theCoordList,
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&                          theName,
+    const Handle(StepVisual_CoordinatesList)&                        theCoordList,
     const NCollection_Handle<StepVisual_VectorOfHSequenceOfInteger>& theCurves);
 
   Standard_EXPORT Handle(StepVisual_CoordinatesList) CoordList() const;
   Standard_EXPORT NCollection_Handle<StepVisual_VectorOfHSequenceOfInteger> Curves() const;
-    
 
 private:
-
-  Handle(StepVisual_CoordinatesList) myCoordList;
+  Handle(StepVisual_CoordinatesList)                        myCoordList;
   NCollection_Handle<StepVisual_VectorOfHSequenceOfInteger> myCurves;
 
-public :
-  DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedCurveSet,StepVisual_TessellatedItem)
+public:
+  DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedCurveSet, StepVisual_TessellatedItem)
 };
 #endif // StepVisual_TessellatedCurveSet

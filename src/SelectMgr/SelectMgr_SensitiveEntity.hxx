@@ -25,9 +25,8 @@
 class SelectMgr_SensitiveEntity : public Standard_Transient
 {
 public:
-
   //! Creates new inactive for selection object with base entity theEntity
-  Standard_EXPORT SelectMgr_SensitiveEntity (const Handle(Select3D_SensitiveEntity)& theEntity);
+  Standard_EXPORT SelectMgr_SensitiveEntity(const Handle(Select3D_SensitiveEntity)& theEntity);
 
   ~SelectMgr_SensitiveEntity() {}
 
@@ -48,14 +47,14 @@ public:
   void SetActiveForSelection() const { myIsActiveForSelection = Standard_True; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const;
 
-  DEFINE_STANDARD_RTTIEXT(SelectMgr_SensitiveEntity,Standard_Transient) // Type definition
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_SensitiveEntity, Standard_Transient) // Type definition
 
 private:
-
-  Handle(Select3D_SensitiveEntity) mySensitive;      //!< Related SelectBasics entity
-  mutable Standard_Boolean         myIsActiveForSelection;       //!< Selection activity status
+  Handle(Select3D_SensitiveEntity) mySensitive;            //!< Related SelectBasics entity
+  mutable Standard_Boolean         myIsActiveForSelection; //!< Selection activity status
 };
 
 DEFINE_STANDARD_HANDLE(SelectMgr_SensitiveEntity, Standard_Transient)

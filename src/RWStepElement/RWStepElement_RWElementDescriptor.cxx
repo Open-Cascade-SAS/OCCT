@@ -21,74 +21,76 @@
 #include <StepData_StepWriter.hxx>
 #include <StepElement_ElementDescriptor.hxx>
 
-//=======================================================================
-//function : RWStepElement_RWElementDescriptor
-//purpose  : 
-//=======================================================================
-RWStepElement_RWElementDescriptor::RWStepElement_RWElementDescriptor ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
+RWStepElement_RWElementDescriptor::RWStepElement_RWElementDescriptor() {}
 
-void RWStepElement_RWElementDescriptor::ReadStep (const Handle(StepData_StepReaderData)& data,
-                                                  const Standard_Integer num,
-                                                  Handle(Interface_Check)& ach,
-                                                  const Handle(StepElement_ElementDescriptor) &ent) const
+//=================================================================================================
+
+void RWStepElement_RWElementDescriptor::ReadStep(
+  const Handle(StepData_StepReaderData)&       data,
+  const Standard_Integer                       num,
+  Handle(Interface_Check)&                     ach,
+  const Handle(StepElement_ElementDescriptor)& ent) const
 {
   // Check number of parameters
-  if ( ! data->CheckNbParams(num,2,ach,"element_descriptor") ) return;
+  if (!data->CheckNbParams(num, 2, ach, "element_descriptor"))
+    return;
 
   // Own fields of ElementDescriptor
 
   StepElement_ElementOrder aTopologyOrder = StepElement_Linear;
-  if (data->ParamType (num, 1) == Interface_ParamEnum) {
+  if (data->ParamType(num, 1) == Interface_ParamEnum)
+  {
     Standard_CString text = data->ParamCValue(num, 1);
-    if      (strcmp(text, ".LINEAR.") == 0) aTopologyOrder = StepElement_Linear;
-    else if (strcmp(text, ".QUADRATIC.") == 0) aTopologyOrder = StepElement_Quadratic;
-    else if (strcmp(text, ".CUBIC.") == 0) aTopologyOrder = StepElement_Cubic;
-    else ach->AddFail("Parameter #1 (topology_order) has not allowed value");
+    if (strcmp(text, ".LINEAR.") == 0)
+      aTopologyOrder = StepElement_Linear;
+    else if (strcmp(text, ".QUADRATIC.") == 0)
+      aTopologyOrder = StepElement_Quadratic;
+    else if (strcmp(text, ".CUBIC.") == 0)
+      aTopologyOrder = StepElement_Cubic;
+    else
+      ach->AddFail("Parameter #1 (topology_order) has not allowed value");
   }
-  else ach->AddFail("Parameter #1 (topology_order) is not enumeration");
+  else
+    ach->AddFail("Parameter #1 (topology_order) is not enumeration");
 
   Handle(TCollection_HAsciiString) aDescription;
-  data->ReadString (num, 2, "description", ach, aDescription);
+  data->ReadString(num, 2, "description", ach, aDescription);
 
   // Initialize entity
-  ent->Init(aTopologyOrder,
-            aDescription);
+  ent->Init(aTopologyOrder, aDescription);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepElement_RWElementDescriptor::WriteStep (StepData_StepWriter& SW,
-                                                   const Handle(StepElement_ElementDescriptor) &ent) const
+void RWStepElement_RWElementDescriptor::WriteStep(
+  StepData_StepWriter&                         SW,
+  const Handle(StepElement_ElementDescriptor)& ent) const
 {
 
   // Own fields of ElementDescriptor
 
-  switch (ent->TopologyOrder()) {
-    case StepElement_Linear: SW.SendEnum (".LINEAR."); break;
-    case StepElement_Quadratic: SW.SendEnum (".QUADRATIC."); break;
-    case StepElement_Cubic: SW.SendEnum (".CUBIC."); break;
+  switch (ent->TopologyOrder())
+  {
+    case StepElement_Linear:
+      SW.SendEnum(".LINEAR.");
+      break;
+    case StepElement_Quadratic:
+      SW.SendEnum(".QUADRATIC.");
+      break;
+    case StepElement_Cubic:
+      SW.SendEnum(".CUBIC.");
+      break;
   }
 
-  SW.Send (ent->Description());
+  SW.Send(ent->Description());
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepElement_RWElementDescriptor::Share (const Handle(StepElement_ElementDescriptor)&,
-                                               Interface_EntityIterator&) const
+void RWStepElement_RWElementDescriptor::Share(const Handle(StepElement_ElementDescriptor)&,
+                                              Interface_EntityIterator&) const
 {
   // Own fields of ElementDescriptor
 }

@@ -15,7 +15,7 @@
 
 //      	-------
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Feb 10 1997	Creation
 
 #include <DDF.hxx>
@@ -27,114 +27,95 @@
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
 
-//=======================================================================
-//function : AddLabel
-//purpose  : 
-//=======================================================================
-Standard_Boolean DDF::AddLabel 
+//=================================================================================================
 
-(
- const Handle(TDF_Data)& DF,
- const Standard_CString  Entry,
- TDF_Label&              Label
-) 
+Standard_Boolean DDF::AddLabel
+
+  (const Handle(TDF_Data)& DF, const Standard_CString Entry, TDF_Label& Label)
 {
-  TDF_Tool::Label (DF,Entry,Label,Standard_True);
+  TDF_Tool::Label(DF, Entry, Label, Standard_True);
   return Standard_True;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : FindLabel
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean DDF::FindLabel (const Handle(TDF_Data)& DF,
-				const Standard_CString  Entry,
-				      TDF_Label&        Label,   
+Standard_Boolean DDF::FindLabel(const Handle(TDF_Data)& DF,
+                                const Standard_CString  Entry,
+                                TDF_Label&              Label,
                                 const Standard_Boolean  Complain)
 {
   Label.Nullify();
-  TDF_Tool::Label(DF,Entry,Label,Standard_False);
-  if (Label.IsNull() && Complain) std::cout << "No label for entry " << Entry <<std::endl;
+  TDF_Tool::Label(DF, Entry, Label, Standard_False);
+  if (Label.IsNull() && Complain)
+    std::cout << "No label for entry " << Entry << std::endl;
   return !Label.IsNull();
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : GetDF
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean DDF::GetDF (Standard_CString&       Name,
-			     Handle(TDF_Data)&       DF,
-                             const Standard_Boolean  Complain)
-{ 
-  Handle(Standard_Transient) t = Draw::Get (Name);
-  Handle(DDF_Data) DDF = Handle(DDF_Data)::DownCast (t);
-  //Handle(DDF_Data) DDF = Handle(DDF_Data)::DownCast (Draw::Get(Name, Complain)); 
-  if (!DDF.IsNull()) {
-    DF = DDF->DataFramework(); 
+Standard_Boolean DDF::GetDF(Standard_CString&      Name,
+                            Handle(TDF_Data)&      DF,
+                            const Standard_Boolean Complain)
+{
+  Handle(Standard_Transient) t   = Draw::Get(Name);
+  Handle(DDF_Data)           DDF = Handle(DDF_Data)::DownCast(t);
+  // Handle(DDF_Data) DDF = Handle(DDF_Data)::DownCast (Draw::Get(Name, Complain));
+  if (!DDF.IsNull())
+  {
+    DF = DDF->DataFramework();
     return Standard_True;
-  } 
-  if (Complain) std::cout <<"framework "<<Name<<" not found "<< std::endl; 
+  }
+  if (Complain)
+    std::cout << "framework " << Name << " not found " << std::endl;
   return Standard_False;
 }
 
-
 //=======================================================================
-//function : Find
-//purpose  : Finds an attribute.
+// function : Find
+// purpose  : Finds an attribute.
 //=======================================================================
 
-Standard_Boolean DDF::Find (const Handle(TDF_Data)& DF,
-			    const Standard_CString  Entry,
-			    const Standard_GUID&    ID,
-			    Handle(TDF_Attribute)&  A,
-			    const Standard_Boolean  Complain) 
+Standard_Boolean DDF::Find(const Handle(TDF_Data)& DF,
+                           const Standard_CString  Entry,
+                           const Standard_GUID&    ID,
+                           Handle(TDF_Attribute)&  A,
+                           const Standard_Boolean  Complain)
 {
   TDF_Label L;
-  if (FindLabel(DF,Entry,L,Complain)) {
-    if (L.FindAttribute(ID,A)) return Standard_True;
-    if (Complain) std::cout <<"attribute not found for entry : "<< Entry <<std::endl; 
+  if (FindLabel(DF, Entry, L, Complain))
+  {
+    if (L.FindAttribute(ID, A))
+      return Standard_True;
+    if (Complain)
+      std::cout << "attribute not found for entry : " << Entry << std::endl;
   }
-  return Standard_False;   
+  return Standard_False;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : ReturnLabel
-//purpose  : 
-//=======================================================================
- 
 Draw_Interpretor& DDF::ReturnLabel(Draw_Interpretor& di, const TDF_Label& L)
 {
   TCollection_AsciiString S;
-  TDF_Tool::Entry(L,S);
+  TDF_Tool::Entry(L, S);
   di << S.ToCString();
   return di;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : AllCommands
-//purpose  : 
-//=======================================================================
-
-void DDF::AllCommands(Draw_Interpretor& theCommands) 
+void DDF::AllCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
-  if (done) return;
+  if (done)
+    return;
   done = Standard_True;
 
-  DDF::BasicCommands         (theCommands);
-  DDF::DataCommands          (theCommands);
-  DDF::TransactionCommands   (theCommands);
-  DDF::BrowserCommands       (theCommands);
+  DDF::BasicCommands(theCommands);
+  DDF::DataCommands(theCommands);
+  DDF::TransactionCommands(theCommands);
+  DDF::BrowserCommands(theCommands);
   // define the TCL variable DDF
   const char* com = "set DDF";
   theCommands.Eval(com);
 }
-
-
-

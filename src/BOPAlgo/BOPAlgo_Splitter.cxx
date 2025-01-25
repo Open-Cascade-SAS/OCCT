@@ -12,62 +12,54 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPAlgo_Splitter.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Alerts.hxx>
 
 #include <TopoDS_Iterator.hxx>
 
-//=======================================================================
-//function : 
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 BOPAlgo_Splitter::BOPAlgo_Splitter()
-: BOPAlgo_ToolsProvider()
+    : BOPAlgo_ToolsProvider()
 {
 }
-//=======================================================================
-//function : 
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
 BOPAlgo_Splitter::BOPAlgo_Splitter(const Handle(NCollection_BaseAllocator)& theAllocator)
-: BOPAlgo_ToolsProvider(theAllocator)
+    : BOPAlgo_ToolsProvider(theAllocator)
 {
 }
-//=======================================================================
-//function : ~
-//purpose  : 
-//=======================================================================
-BOPAlgo_Splitter::~BOPAlgo_Splitter()
-{
-}
-//=======================================================================
-// function: CheckData
-// purpose: 
-//=======================================================================
+
+//=================================================================================================
+
+BOPAlgo_Splitter::~BOPAlgo_Splitter() {}
+
+//=================================================================================================
+
 void BOPAlgo_Splitter::CheckData()
 {
-  if (myArguments.IsEmpty() ||
-      (myArguments.Extent() + myTools.Extent()) < 2) {
+  if (myArguments.IsEmpty() || (myArguments.Extent() + myTools.Extent()) < 2)
+  {
     // too few arguments to process
-    AddError (new BOPAlgo_AlertTooFewArguments);
+    AddError(new BOPAlgo_AlertTooFewArguments);
     return;
   }
   //
   CheckFiller();
 }
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BOPAlgo_Splitter::Perform(const Message_ProgressRange& theRange)
 {
   GetReport()->Clear();
   //
-  if (myEntryPoint == 1) {
-    if (myPaveFiller) {
+  if (myEntryPoint == 1)
+  {
+    if (myPaveFiller)
+    {
       delete myPaveFiller;
       myPaveFiller = NULL;
     }
@@ -77,19 +69,21 @@ void BOPAlgo_Splitter::Perform(const Message_ProgressRange& theRange)
   TopTools_ListOfShape aLS;
   //
   TopTools_ListIteratorOfListOfShape aItLS(myArguments);
-  for (; aItLS.More(); aItLS.Next()) {
+  for (; aItLS.More(); aItLS.Next())
+  {
     aLS.Append(aItLS.Value());
   }
   //
   aItLS.Initialize(myTools);
-  for (; aItLS.More(); aItLS.Next()) {
+  for (; aItLS.More(); aItLS.Next())
+  {
     aLS.Append(aItLS.Value());
   }
   //
-  BOPAlgo_PaveFiller *pPF = new BOPAlgo_PaveFiller();
+  BOPAlgo_PaveFiller* pPF = new BOPAlgo_PaveFiller();
   pPF->SetArguments(aLS);
   pPF->SetRunParallel(myRunParallel);
-  
+
   pPF->SetFuzzyValue(myFuzzyValue);
   pPF->SetNonDestructive(myNonDestructive);
   pPF->SetGlue(myGlue);
@@ -102,10 +96,8 @@ void BOPAlgo_Splitter::Perform(const Message_ProgressRange& theRange)
   PerformInternal(*pPF, aPS.Next(1));
 }
 
-//=======================================================================
-//function : BuildResult
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BOPAlgo_Splitter::BuildResult(const TopAbs_ShapeEnum theType)
 {
   BOPAlgo_Builder::BuildResult(theType);

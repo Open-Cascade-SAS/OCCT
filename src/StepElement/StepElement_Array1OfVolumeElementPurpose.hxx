@@ -17,7 +17,7 @@
 #include <StepElement_VolumeElementPurpose.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<StepElement_VolumeElementPurpose> StepElement_Array1OfVolumeElementPurpose;
-
+typedef NCollection_Array1<StepElement_VolumeElementPurpose>
+  StepElement_Array1OfVolumeElementPurpose;
 
 #endif

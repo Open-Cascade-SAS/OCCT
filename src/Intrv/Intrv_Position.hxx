@@ -17,22 +17,21 @@
 #ifndef _Intrv_Position_HeaderFile
 #define _Intrv_Position_HeaderFile
 
-
 enum Intrv_Position
 {
-Intrv_Before,
-Intrv_JustBefore,
-Intrv_OverlappingAtStart,
-Intrv_JustEnclosingAtEnd,
-Intrv_Enclosing,
-Intrv_JustOverlappingAtStart,
-Intrv_Similar,
-Intrv_JustEnclosingAtStart,
-Intrv_Inside,
-Intrv_JustOverlappingAtEnd,
-Intrv_OverlappingAtEnd,
-Intrv_JustAfter,
-Intrv_After
+  Intrv_Before,
+  Intrv_JustBefore,
+  Intrv_OverlappingAtStart,
+  Intrv_JustEnclosingAtEnd,
+  Intrv_Enclosing,
+  Intrv_JustOverlappingAtStart,
+  Intrv_Similar,
+  Intrv_JustEnclosingAtStart,
+  Intrv_Inside,
+  Intrv_JustOverlappingAtEnd,
+  Intrv_OverlappingAtEnd,
+  Intrv_JustAfter,
+  Intrv_After
 };
 
 #endif // _Intrv_Position_HeaderFile

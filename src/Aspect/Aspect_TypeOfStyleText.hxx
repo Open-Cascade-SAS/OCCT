@@ -25,8 +25,8 @@
 //! over the other object according to the priority.
 enum Aspect_TypeOfStyleText
 {
-Aspect_TOST_NORMAL,
-Aspect_TOST_ANNOTATION
+  Aspect_TOST_NORMAL,
+  Aspect_TOST_ANNOTATION
 };
 
 #endif // _Aspect_TypeOfStyleText_HeaderFile

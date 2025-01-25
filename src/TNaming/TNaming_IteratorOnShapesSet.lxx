@@ -17,46 +17,45 @@
 #include <TNaming_ShapesSet.hxx>
 
 //=======================================================================
-//function : 
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
 
-inline  TNaming_IteratorOnShapesSet:: TNaming_IteratorOnShapesSet()
-{}
+inline TNaming_IteratorOnShapesSet::TNaming_IteratorOnShapesSet() {}
 
 //=======================================================================
-//function : 
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
 
-inline  TNaming_IteratorOnShapesSet:: TNaming_IteratorOnShapesSet(const TNaming_ShapesSet& S) 
+inline TNaming_IteratorOnShapesSet::TNaming_IteratorOnShapesSet(const TNaming_ShapesSet& S)
 {
   Init(S);
 }
 
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
-inline void TNaming_IteratorOnShapesSet::Init(const TNaming_ShapesSet& S) 
+inline void TNaming_IteratorOnShapesSet::Init(const TNaming_ShapesSet& S)
 {
   myIt.Initialize(S.Map());
 }
 
 //=======================================================================
-//function : More
-//purpose  : 
+// function : More
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean TNaming_IteratorOnShapesSet::More() const 
+inline Standard_Boolean TNaming_IteratorOnShapesSet::More() const
 {
   return (myIt.More());
 }
 
 //=======================================================================
-//function : Next
-//purpose  : 
+// function : Next
+// purpose  :
 //=======================================================================
 
 inline void TNaming_IteratorOnShapesSet::Next()
@@ -65,8 +64,8 @@ inline void TNaming_IteratorOnShapesSet::Next()
 }
 
 //=======================================================================
-//function : Value
-//purpose  : 
+// function : Value
+// purpose  :
 //=======================================================================
 
 inline const TopoDS_Shape& TNaming_IteratorOnShapesSet::Value() const

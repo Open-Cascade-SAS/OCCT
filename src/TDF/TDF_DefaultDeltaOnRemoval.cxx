@@ -15,30 +15,24 @@
 
 //      	-----------------------------
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Oct 10 1997	Creation
 
 #include <TDF_DefaultDeltaOnRemoval.hxx>
 #include <TDF_Label.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDF_DefaultDeltaOnRemoval,TDF_DeltaOnRemoval)
+IMPLEMENT_STANDARD_RTTIEXT(TDF_DefaultDeltaOnRemoval, TDF_DeltaOnRemoval)
 
-//=======================================================================
-//function : TDF_DefaultDeltaOnRemoval
-//purpose  : 
-//=======================================================================
-TDF_DefaultDeltaOnRemoval::TDF_DefaultDeltaOnRemoval
-(const Handle(TDF_Attribute)& anAttribute)
-: TDF_DeltaOnRemoval(anAttribute)
-{}
+//=================================================================================================
 
+TDF_DefaultDeltaOnRemoval::TDF_DefaultDeltaOnRemoval(const Handle(TDF_Attribute)& anAttribute)
+    : TDF_DeltaOnRemoval(anAttribute)
+{
+}
 
-//=======================================================================
-//function : Apply
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TDF_DefaultDeltaOnRemoval::Apply() 
+void TDF_DefaultDeltaOnRemoval::Apply()
 {
   Label().AddAttribute(Attribute(), Standard_True);
 }

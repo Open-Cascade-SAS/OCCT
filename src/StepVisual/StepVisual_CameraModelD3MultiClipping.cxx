@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepVisual_CameraModelD3MultiClipping.hxx>
 #include <StepVisual_ViewVolume.hxx>
@@ -21,20 +20,16 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CameraModelD3MultiClipping, StepVisual_CameraModelD3)
 
-//=======================================================================
-//function : StepVisual_CameraModelD3MultiClipping
-//purpose  : 
-//=======================================================================
-StepVisual_CameraModelD3MultiClipping::StepVisual_CameraModelD3MultiClipping()  {}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepVisual_CameraModelD3MultiClipping::StepVisual_CameraModelD3MultiClipping() {}
+
+//=================================================================================================
+
 void StepVisual_CameraModelD3MultiClipping::Init(
-  const Handle(TCollection_HAsciiString)& theName,
+  const Handle(TCollection_HAsciiString)&  theName,
   const Handle(StepGeom_Axis2Placement3d)& theViewReferenceSystem,
-  const Handle(StepVisual_ViewVolume)& thePerspectiveOfVolume,
+  const Handle(StepVisual_ViewVolume)&     thePerspectiveOfVolume,
   const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect)& theShapeClipping)
 {
   // Own field

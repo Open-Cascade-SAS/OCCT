@@ -27,7 +27,6 @@
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <ShapeExtend_Status.hxx>
 
-
 class ShapeFix_Wireframe;
 DEFINE_STANDARD_HANDLE(ShapeFix_Wireframe, ShapeFix_Root)
 
@@ -36,31 +35,33 @@ class ShapeFix_Wireframe : public ShapeFix_Root
 {
 
 public:
-
-  
   Standard_EXPORT ShapeFix_Wireframe();
-  
+
   Standard_EXPORT ShapeFix_Wireframe(const TopoDS_Shape& shape);
-  
+
   //! Clears all statuses
   Standard_EXPORT virtual void ClearStatuses();
-  
+
   //! Loads a shape, resets statuses
-  Standard_EXPORT void Load (const TopoDS_Shape& shape);
-  
+  Standard_EXPORT void Load(const TopoDS_Shape& shape);
+
   //! Fixes gaps between ends of curves of adjacent edges
   //! (both 3d and pcurves) in wires
   //! If precision is 0.0, uses Precision::Confusion().
   Standard_EXPORT Standard_Boolean FixWireGaps();
-  
+
   //! Fixes small edges in shape by merging adjacent edges
   //! If precision is 0.0, uses Precision::Confusion().
   Standard_EXPORT Standard_Boolean FixSmallEdges();
-  
+
   //! Auxiliary tool for FixSmallEdges which checks for small edges and fills the maps.
   //! Returns True if at least one small edge has been found.
-  Standard_EXPORT Standard_Boolean CheckSmallEdges (TopTools_MapOfShape& theSmallEdges, TopTools_DataMapOfShapeListOfShape& theEdgeToFaces, TopTools_DataMapOfShapeListOfShape& theFaceWithSmall, TopTools_MapOfShape& theMultyEdges);
-  
+  Standard_EXPORT Standard_Boolean
+    CheckSmallEdges(TopTools_MapOfShape&                theSmallEdges,
+                    TopTools_DataMapOfShapeListOfShape& theEdgeToFaces,
+                    TopTools_DataMapOfShapeListOfShape& theFaceWithSmall,
+                    TopTools_MapOfShape&                theMultyEdges);
+
   //! Auxiliary tool for FixSmallEdges which merges small edges.
   //! If theModeDrop is equal to Standard_True then small edges,
   //! which cannot be connected with adjacent edges are dropped.
@@ -68,60 +69,51 @@ public:
   //! theLimitAngle specifies maximum allowed tangency
   //! discontinuity between adjacent edges.
   //! If theLimitAngle is equal to -1, this angle is not taken into account.
-  Standard_EXPORT Standard_Boolean MergeSmallEdges (TopTools_MapOfShape& theSmallEdges, TopTools_DataMapOfShapeListOfShape& theEdgeToFaces, TopTools_DataMapOfShapeListOfShape& theFaceWithSmall, TopTools_MapOfShape& theMultyEdges, const Standard_Boolean theModeDrop = Standard_False, const Standard_Real theLimitAngle = -1);
-  
+  Standard_EXPORT Standard_Boolean
+    MergeSmallEdges(TopTools_MapOfShape&                theSmallEdges,
+                    TopTools_DataMapOfShapeListOfShape& theEdgeToFaces,
+                    TopTools_DataMapOfShapeListOfShape& theFaceWithSmall,
+                    TopTools_MapOfShape&                theMultyEdges,
+                    const Standard_Boolean              theModeDrop   = Standard_False,
+                    const Standard_Real                 theLimitAngle = -1);
+
   //! Decodes the status of the last FixWireGaps.
   //! OK - No gaps were found
   //! DONE1 - Some gaps in 3D were fixed
   //! DONE2 - Some gaps in 2D were fixed
   //! FAIL1 - Failed to fix some gaps in 3D
   //! FAIL2 - Failed to fix some gaps in 2D
-    Standard_Boolean StatusWireGaps (const ShapeExtend_Status status) const;
-  
+  Standard_Boolean StatusWireGaps(const ShapeExtend_Status status) const;
+
   //! Decodes the status of the last FixSmallEdges.
   //! OK - No small edges were found
   //! DONE1 - Some small edges were fixed
   //! FAIL1 - Failed to fix some small edges
-    Standard_Boolean StatusSmallEdges (const ShapeExtend_Status status) const;
-  
-    TopoDS_Shape Shape();
-  
+  Standard_Boolean StatusSmallEdges(const ShapeExtend_Status status) const;
+
+  TopoDS_Shape Shape();
+
   //! Returns mode managing removing small edges.
-    Standard_Boolean& ModeDropSmallEdges();
-  
+  Standard_Boolean& ModeDropSmallEdges();
+
   //! Set limit angle for merging edges.
-    void SetLimitAngle (const Standard_Real theLimitAngle);
-  
+  void SetLimitAngle(const Standard_Real theLimitAngle);
+
   //! Get limit angle for merging edges.
-    Standard_Real LimitAngle() const;
+  Standard_Real LimitAngle() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(ShapeFix_Wireframe,ShapeFix_Root)
+  DEFINE_STANDARD_RTTIEXT(ShapeFix_Wireframe, ShapeFix_Root)
 
 protected:
-
-
   TopoDS_Shape myShape;
 
-
 private:
-
-
   Standard_Boolean myModeDrop;
-  Standard_Real myLimitAngle;
+  Standard_Real    myLimitAngle;
   Standard_Integer myStatusWireGaps;
   Standard_Integer myStatusSmallEdges;
-
-
 };
 
-
 #include <ShapeFix_Wireframe.lxx>
-
-
-
-
 
 #endif // _ShapeFix_Wireframe_HeaderFile

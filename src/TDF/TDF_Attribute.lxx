@@ -16,46 +16,58 @@
 //      	-----------------
 
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Feb 14 1997	Creation
 
-enum {
+enum
+{
   TDF_AttributeValidMsk     = 1,
   TDF_AttributeBackupMsk    = 2,
   TDF_AttributeForgottenMsk = 4
 };
 
 inline Standard_Integer TDF_Attribute::Transaction() const
-{ return myTransaction; }
+{
+  return myTransaction;
+}
 
 // Validation
 inline void TDF_Attribute::Validate(const Standard_Boolean aStatus)
-{ myFlags = (aStatus) ?
-    (myFlags | TDF_AttributeValidMsk) : (myFlags & ~TDF_AttributeValidMsk); }
+{
+  myFlags = (aStatus) ? (myFlags | TDF_AttributeValidMsk) : (myFlags & ~TDF_AttributeValidMsk);
+}
 
 inline Standard_Boolean TDF_Attribute::IsValid() const
-{ return (myFlags & TDF_AttributeValidMsk) != 0 ; }
+{
+  return (myFlags & TDF_AttributeValidMsk) != 0;
+}
 
 // Backup
 inline void TDF_Attribute::Backup(const Standard_Boolean aStatus)
 {
-  myFlags = (aStatus) ?
-    (myFlags | TDF_AttributeBackupMsk) : (myFlags & ~ TDF_AttributeBackupMsk);
+  myFlags = (aStatus) ? (myFlags | TDF_AttributeBackupMsk) : (myFlags & ~TDF_AttributeBackupMsk);
   Validate(!aStatus);
 }
 
 inline Standard_Boolean TDF_Attribute::IsBackuped() const
-{ return (myFlags & TDF_AttributeBackupMsk) != 0; }
+{
+  return (myFlags & TDF_AttributeBackupMsk) != 0;
+}
 
 // IsNew
 inline Standard_Boolean TDF_Attribute::IsNew() const
-{ return IsValid () && myBackup.IsNull(); }
+{
+  return IsValid() && myBackup.IsNull();
+}
 
 // IsForgotten
 inline Standard_Boolean TDF_Attribute::IsForgotten() const
-{ return (myFlags & TDF_AttributeForgottenMsk) != 0; }
+{
+  return (myFlags & TDF_AttributeForgottenMsk) != 0;
+}
 
 // operator <<
-inline Standard_OStream& operator << (Standard_OStream& anOS,
-                                      const Handle(TDF_Attribute)& anAtt)
-{ return anAtt->Dump(anOS); }
+inline Standard_OStream& operator<<(Standard_OStream& anOS, const Handle(TDF_Attribute)& anAtt)
+{
+  return anAtt->Dump(anOS);
+}

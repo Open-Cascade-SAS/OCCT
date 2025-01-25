@@ -38,15 +38,11 @@ class gp_Pnt2d;
 class gp_Dir2d;
 class Geom2dLProp_Curve2dTool;
 
-
-
-class Geom2dLProp_CLProps2d 
+class Geom2dLProp_CLProps2d
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Initializes the local properties of the curve <C>
   //! The current point and the derivatives are
   //! computed at the same time, which allows an
@@ -56,13 +52,18 @@ public:
   //! only the tangent, N should be equal to 1.
   //! <Resolution> is the linear tolerance (it is used to test
   //! if a vector is null).
-  Standard_EXPORT Geom2dLProp_CLProps2d(const Handle(Geom2d_Curve)& C, const Standard_Integer N, const Standard_Real Resolution);
-  
+  Standard_EXPORT Geom2dLProp_CLProps2d(const Handle(Geom2d_Curve)& C,
+                                        const Standard_Integer      N,
+                                        const Standard_Real         Resolution);
+
   //! Same as previous constructor but here the parameter is
   //! set to the value <U>.
   //! All the computations done will be related to <C> and <U>.
-  Standard_EXPORT Geom2dLProp_CLProps2d(const Handle(Geom2d_Curve)& C, const Standard_Real U, const Standard_Integer N, const Standard_Real Resolution);
-  
+  Standard_EXPORT Geom2dLProp_CLProps2d(const Handle(Geom2d_Curve)& C,
+                                        const Standard_Real         U,
+                                        const Standard_Integer      N,
+                                        const Standard_Real         Resolution);
+
   //! Same as previous constructor but here the parameter is
   //! set to the value <U> and the curve is set
   //! with SetCurve.
@@ -70,79 +71,60 @@ public:
   //! All the computations done will be related to <C> and <U>
   //! when the functions "set" will be done.
   Standard_EXPORT Geom2dLProp_CLProps2d(const Standard_Integer N, const Standard_Real Resolution);
-  
+
   //! Initializes the local properties of the curve
   //! for the parameter value <U>.
-  Standard_EXPORT void SetParameter (const Standard_Real U);
-  
+  Standard_EXPORT void SetParameter(const Standard_Real U);
+
   //! Initializes the local properties of the curve
   //! for the new curve.
-  Standard_EXPORT void SetCurve (const Handle(Geom2d_Curve)& C);
-  
+  Standard_EXPORT void SetCurve(const Handle(Geom2d_Curve)& C);
+
   //! Returns the Point.
   Standard_EXPORT const gp_Pnt2d& Value() const;
-  
+
   //! Returns the first derivative.
   //! The derivative is computed if it has not been yet.
   Standard_EXPORT const gp_Vec2d& D1();
-  
+
   //! Returns the second derivative.
   //! The derivative is computed if it has not been yet.
   Standard_EXPORT const gp_Vec2d& D2();
-  
+
   //! Returns the third derivative.
   //! The derivative is computed if it has not been yet.
   Standard_EXPORT const gp_Vec2d& D3();
-  
+
   //! Returns True if the tangent is defined.
   //! For example, the tangent is not defined if the
   //! three first derivatives are all null.
   Standard_EXPORT Standard_Boolean IsTangentDefined();
-  
+
   //! output  the tangent direction <D>
-  Standard_EXPORT void Tangent (gp_Dir2d& D);
-  
+  Standard_EXPORT void Tangent(gp_Dir2d& D);
+
   //! Returns the curvature.
   Standard_EXPORT Standard_Real Curvature();
-  
+
   //! Returns the normal direction <N>.
-  Standard_EXPORT void Normal (gp_Dir2d& N);
-  
+  Standard_EXPORT void Normal(gp_Dir2d& N);
+
   //! Returns the centre of curvature <P>.
-  Standard_EXPORT void CentreOfCurvature (gp_Pnt2d& P);
-
-
-
+  Standard_EXPORT void CentreOfCurvature(gp_Pnt2d& P);
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(Geom2d_Curve) myCurve;
-  Standard_Real myU;
-  Standard_Integer myDerOrder;
-  Standard_Real myCN;
-  Standard_Real myLinTol;
-  gp_Pnt2d myPnt;
-  gp_Vec2d myDerivArr[3];
-  gp_Dir2d myTangent;
-  Standard_Real myCurvature;
-  LProp_Status myTangentStatus;
-  Standard_Integer mySignificantFirstDerivativeOrder;
-
-
+  Standard_Real        myU;
+  Standard_Integer     myDerOrder;
+  Standard_Real        myCN;
+  Standard_Real        myLinTol;
+  gp_Pnt2d             myPnt;
+  gp_Vec2d             myDerivArr[3];
+  gp_Dir2d             myTangent;
+  Standard_Real        myCurvature;
+  LProp_Status         myTangentStatus;
+  Standard_Integer     mySignificantFirstDerivativeOrder;
 };
-
-
-
-
-
-
 
 #endif // _Geom2dLProp_CLProps2d_HeaderFile

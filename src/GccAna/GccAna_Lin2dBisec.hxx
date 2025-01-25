@@ -27,7 +27,6 @@
 class gp_Lin2d;
 class gp_Pnt2d;
 
-
 //! Describes functions for building bisecting lines between two 2D lines.
 //! A bisecting line between two lines is such that each of its
 //! points is at the same distance from the two lines.
@@ -46,23 +45,21 @@ class gp_Pnt2d;
 //! -   defining the construction of the bisecting lines,
 //! -   implementing the construction algorithm, and
 //! -   consulting the result.
-class GccAna_Lin2dBisec 
+class GccAna_Lin2dBisec
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs bisecting lines between the two lines Lin1 and Lin2.
   Standard_EXPORT GccAna_Lin2dBisec(const gp_Lin2d& Lin1, const gp_Lin2d& Lin2);
-  
+
   //! Returns True when the algorithm succeeded.
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
+
   //! Returns the number of solutions and raise NotDone if
   //! the constructor wasn't called before.
   Standard_EXPORT Standard_Integer NbSolutions() const;
-  
+
   //! Returns the solution number Index .
   //! The first solution is the inside one and the second is the
   //! outside one.
@@ -74,38 +71,33 @@ public:
   //! didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
-  Standard_EXPORT gp_Lin2d ThisSolution (const Standard_Integer Index) const;
-  
+  Standard_EXPORT gp_Lin2d ThisSolution(const Standard_Integer Index) const;
+
   //! Returns information about the intersection point between
   //! the result number Index and the first argument.
   //! Raises NotDone if the construction algorithm  didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
-  Standard_EXPORT void Intersection1 (const Standard_Integer Index, Standard_Real& ParSol, Standard_Real& ParArg, gp_Pnt2d& PntSol) const;
-  
+  Standard_EXPORT void Intersection1(const Standard_Integer Index,
+                                     Standard_Real&         ParSol,
+                                     Standard_Real&         ParArg,
+                                     gp_Pnt2d&              PntSol) const;
+
   //! Returns information about the intersection point between
   //! the result number Index and the second argument.
   //! Raises NotDone if the construction algorithm
   //! didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
-  Standard_EXPORT void Intersection2 (const Standard_Integer Index, Standard_Real& ParSol, Standard_Real& ParArg, gp_Pnt2d& PntSol) const;
-
-
-
+  Standard_EXPORT void Intersection2(const Standard_Integer Index,
+                                     Standard_Real&         ParSol,
+                                     Standard_Real&         ParArg,
+                                     gp_Pnt2d&              PntSol) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Boolean WellDone;
-  Standard_Integer NbrSol;
+  Standard_Boolean     WellDone;
+  Standard_Integer     NbrSol;
   TColgp_Array1OfLin2d linsol;
   TColgp_Array1OfPnt2d pntint1sol;
   TColgp_Array1OfPnt2d pntint2sol;
@@ -113,14 +105,6 @@ private:
   TColStd_Array1OfReal par2sol;
   TColStd_Array1OfReal pararg1;
   TColStd_Array1OfReal pararg2;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GccAna_Lin2dBisec_HeaderFile

@@ -20,8 +20,7 @@
 #include <DBRep_Face.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<Handle(DBRep_Face)> DBRep_ListOfFace;
+typedef NCollection_List<Handle(DBRep_Face)>           DBRep_ListOfFace;
 typedef NCollection_List<Handle(DBRep_Face)>::Iterator DBRep_ListIteratorOfListOfFace;
-
 
 #endif

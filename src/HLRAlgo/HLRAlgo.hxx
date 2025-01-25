@@ -41,34 +41,51 @@
 //! result, whereas, when you use
 //! HLRBRep_PolyAlgo, you reduce computation
 //! time but obtain polygonal segments.
-class HLRAlgo 
+class HLRAlgo
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Iterator  on the  visible or  hidden  parts of  an
   //! EdgeStatus.
-  Standard_EXPORT static void UpdateMinMax (const Standard_Real x, const Standard_Real y, const Standard_Real z, Standard_Real Min[16], Standard_Real Max[16]);
-  
-  Standard_EXPORT static void EnlargeMinMax (const Standard_Real tol, Standard_Real Min[16], Standard_Real Max[16]);
-  
-  Standard_EXPORT static void InitMinMax (const Standard_Real Big, Standard_Real Min[16], Standard_Real Max[16]);
-  
-  Standard_EXPORT static void EncodeMinMax (HLRAlgo_EdgesBlock::MinMaxIndices& Min, HLRAlgo_EdgesBlock::MinMaxIndices& Max, HLRAlgo_EdgesBlock::MinMaxIndices& MinMax);
-  
-  Standard_EXPORT static Standard_Real SizeBox (HLRAlgo_EdgesBlock::MinMaxIndices& Min, HLRAlgo_EdgesBlock::MinMaxIndices& Max);
-  
-  Standard_EXPORT static void DecodeMinMax (const HLRAlgo_EdgesBlock::MinMaxIndices& MinMax, HLRAlgo_EdgesBlock::MinMaxIndices& Min, HLRAlgo_EdgesBlock::MinMaxIndices& Max);
-  
-  static void CopyMinMax (HLRAlgo_EdgesBlock::MinMaxIndices& IMin, HLRAlgo_EdgesBlock::MinMaxIndices& IMax, HLRAlgo_EdgesBlock::MinMaxIndices& OMin, HLRAlgo_EdgesBlock::MinMaxIndices& OMax)
+  Standard_EXPORT static void UpdateMinMax(const Standard_Real x,
+                                           const Standard_Real y,
+                                           const Standard_Real z,
+                                           Standard_Real       Min[16],
+                                           Standard_Real       Max[16]);
+
+  Standard_EXPORT static void EnlargeMinMax(const Standard_Real tol,
+                                            Standard_Real       Min[16],
+                                            Standard_Real       Max[16]);
+
+  Standard_EXPORT static void InitMinMax(const Standard_Real Big,
+                                         Standard_Real       Min[16],
+                                         Standard_Real       Max[16]);
+
+  Standard_EXPORT static void EncodeMinMax(HLRAlgo_EdgesBlock::MinMaxIndices& Min,
+                                           HLRAlgo_EdgesBlock::MinMaxIndices& Max,
+                                           HLRAlgo_EdgesBlock::MinMaxIndices& MinMax);
+
+  Standard_EXPORT static Standard_Real SizeBox(HLRAlgo_EdgesBlock::MinMaxIndices& Min,
+                                               HLRAlgo_EdgesBlock::MinMaxIndices& Max);
+
+  Standard_EXPORT static void DecodeMinMax(const HLRAlgo_EdgesBlock::MinMaxIndices& MinMax,
+                                           HLRAlgo_EdgesBlock::MinMaxIndices&       Min,
+                                           HLRAlgo_EdgesBlock::MinMaxIndices&       Max);
+
+  static void CopyMinMax(HLRAlgo_EdgesBlock::MinMaxIndices& IMin,
+                         HLRAlgo_EdgesBlock::MinMaxIndices& IMax,
+                         HLRAlgo_EdgesBlock::MinMaxIndices& OMin,
+                         HLRAlgo_EdgesBlock::MinMaxIndices& OMax)
   {
     OMin = IMin;
     OMax = IMax;
   }
-  
-  Standard_EXPORT static void AddMinMax (HLRAlgo_EdgesBlock::MinMaxIndices& IMin, HLRAlgo_EdgesBlock::MinMaxIndices& IMax, HLRAlgo_EdgesBlock::MinMaxIndices& OMin, HLRAlgo_EdgesBlock::MinMaxIndices& OMax);
 
+  Standard_EXPORT static void AddMinMax(HLRAlgo_EdgesBlock::MinMaxIndices& IMin,
+                                        HLRAlgo_EdgesBlock::MinMaxIndices& IMax,
+                                        HLRAlgo_EdgesBlock::MinMaxIndices& OMin,
+                                        HLRAlgo_EdgesBlock::MinMaxIndices& OMax);
 };
 
 #endif // _HLRAlgo_HeaderFile

@@ -19,48 +19,34 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepAP214_RepItemGroup,StepBasic_Group)
+IMPLEMENT_STANDARD_RTTIEXT(StepAP214_RepItemGroup, StepBasic_Group)
 
-//=======================================================================
-//function : StepAP214_RepItemGroup
-//purpose  : 
-//=======================================================================
-StepAP214_RepItemGroup::StepAP214_RepItemGroup ()
+//=================================================================================================
+
+StepAP214_RepItemGroup::StepAP214_RepItemGroup() {}
+
+//=================================================================================================
+
+void StepAP214_RepItemGroup::Init(const Handle(TCollection_HAsciiString)& aGroup_Name,
+                                  const Standard_Boolean                  hasGroup_Description,
+                                  const Handle(TCollection_HAsciiString)& aGroup_Description,
+                                  const Handle(TCollection_HAsciiString)& aRepresentationItem_Name)
 {
-}
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void StepAP214_RepItemGroup::Init (const Handle(TCollection_HAsciiString) &aGroup_Name,
-                                   const Standard_Boolean hasGroup_Description,
-                                   const Handle(TCollection_HAsciiString) &aGroup_Description,
-                                   const Handle(TCollection_HAsciiString) &aRepresentationItem_Name)
-{
-  StepBasic_Group::Init(aGroup_Name,
-                        hasGroup_Description,
-                        aGroup_Description);
+  StepBasic_Group::Init(aGroup_Name, hasGroup_Description, aGroup_Description);
   theRepresentationItem->Init(aRepresentationItem_Name);
 }
 
-//=======================================================================
-//function : RepresentationItem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepRepr_RepresentationItem) StepAP214_RepItemGroup::RepresentationItem () const
+Handle(StepRepr_RepresentationItem) StepAP214_RepItemGroup::RepresentationItem() const
 {
   return theRepresentationItem;
 }
 
-//=======================================================================
-//function : SetRepresentationItem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepAP214_RepItemGroup::SetRepresentationItem (const Handle(StepRepr_RepresentationItem) &aRepresentationItem)
+void StepAP214_RepItemGroup::SetRepresentationItem(
+  const Handle(StepRepr_RepresentationItem)& aRepresentationItem)
 {
   theRepresentationItem = aRepresentationItem;
 }

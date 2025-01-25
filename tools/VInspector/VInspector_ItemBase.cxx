@@ -11,8 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
-
+// commercial license or contractual agreement.
 
 #include <inspector/VInspector_ItemBase.hxx>
 #include <inspector/VInspector_ItemContext.hxx>
@@ -33,17 +32,18 @@ void VInspector_ItemBase::Reset()
 // function : initValue
 // purpose :
 // =======================================================================
-QVariant VInspector_ItemBase::initValue (const int theItemRole) const
+QVariant VInspector_ItemBase::initValue(const int theItemRole) const
 {
   if (theItemRole != Qt::DisplayRole && theItemRole != Qt::ToolTipRole)
     return QVariant();
 
   switch (Column())
   {
-    case 3: return Standard_Dump::GetPointerInfo (Object(), true).ToCString();
+    case 3:
+      return Standard_Dump::GetPointerInfo(Object(), true).ToCString();
   }
 
-  return TreeModel_ItemBase::initValue (theItemRole);
+  return TreeModel_ItemBase::initValue(theItemRole);
 }
 
 // =======================================================================
@@ -54,9 +54,9 @@ Handle(AIS_InteractiveContext) VInspector_ItemBase::GetContext() const
 {
   if (!myContext.IsNull())
     return myContext;
-  
+
   Handle(AIS_InteractiveContext) aContext;
-  if (dynamic_cast<const VInspector_ItemContext*> (this))
+  if (dynamic_cast<const VInspector_ItemContext*>(this))
   {
     return Handle(AIS_InteractiveContext)(); // context has not be set yet
   }
@@ -74,7 +74,7 @@ Handle(AIS_InteractiveContext) VInspector_ItemBase::GetContext() const
     }
   }
   if (!aContext.IsNull())
-    const_cast<VInspector_ItemBase*>(this)->SetContext (aContext);
+    const_cast<VInspector_ItemBase*>(this)->SetContext(aContext);
 
   return myContext;
 }
@@ -87,7 +87,7 @@ TopoDS_Shape VInspector_ItemBase::GetPresentationShape() const
 {
   if (Column() != TreeModel_ColumnType_Name)
     return TopoDS_Shape();
-  
+
   initItem();
   return myPresentationShape;
 }

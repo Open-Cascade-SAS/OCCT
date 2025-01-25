@@ -29,96 +29,73 @@
 
 IMPLEMENT_DERIVED_ATTRIBUTE(TDataStd_Relation, TDataStd_Expression)
 
-//=======================================================================
-//function : GetID
-//purpose  : 
-//=======================================================================
-const Standard_GUID& TDataStd_Relation::GetID() 
-{  
+//=================================================================================================
+
+const Standard_GUID& TDataStd_Relation::GetID()
+{
   static Standard_GUID TDataStd_RelationID("ce24146b-8e57-11d1-8953-080009dc4425");
   return TDataStd_RelationID;
 }
 
-//=======================================================================
-//function : Set
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TDataStd_Relation) TDataStd_Relation::Set(const TDF_Label& L) 
-{  
+Handle(TDataStd_Relation) TDataStd_Relation::Set(const TDF_Label& L)
+{
   Handle(TDataStd_Relation) A;
-  if (!L.FindAttribute (TDataStd_Relation::GetID(), A)) {
-    A = new TDataStd_Relation ();
+  if (!L.FindAttribute(TDataStd_Relation::GetID(), A))
+  {
+    A = new TDataStd_Relation();
     L.AddAttribute(A);
   }
   return A;
 }
 
-//=======================================================================
-//function : TDataStd_Relation
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TDataStd_Relation::TDataStd_Relation()
-{
-}
+TDataStd_Relation::TDataStd_Relation() {}
 
-//=======================================================================
-//function : SetRelation
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TDataStd_Relation::SetRelation(const TCollection_ExtendedString& R)
 {
   SetExpression(R);
 }
 
-//=======================================================================
-//function : GetRelation
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 const TCollection_ExtendedString& TDataStd_Relation::GetRelation() const
 {
   return GetExpression();
 }
 
-//=======================================================================
-//function : ID
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 const Standard_GUID& TDataStd_Relation::ID() const
 {
   return GetID();
 }
 
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_OStream& TDataStd_Relation::Dump(Standard_OStream& anOS) const
-{ 
+{
   anOS << "Relation";
   return anOS;
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void TDataStd_Relation::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+//=================================================================================================
+
+void TDataStd_Relation::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDF_Attribute)
 
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, GetRelation())
+  OCCT_DUMP_FIELD_VALUE_STRING(theOStream, GetRelation())
 
-  for (TDF_AttributeList::Iterator aVariableIt (myVariables); aVariableIt.More(); aVariableIt.Next())
+  for (TDF_AttributeList::Iterator aVariableIt(myVariables); aVariableIt.More(); aVariableIt.Next())
   {
     const Handle(TDF_Attribute)& aVariable = aVariableIt.Value();
-    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aVariable.get())
+    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aVariable.get())
   }
 }

@@ -15,7 +15,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPAlgo_Builder.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPTools_AlgoTools.hxx>
@@ -23,12 +22,9 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
-//=======================================================================
-//function : LocGenerated
-//purpose  : 
-//=======================================================================
-const TopTools_ListOfShape& BOPAlgo_Builder::LocGenerated
-  (const TopoDS_Shape& theS)
+//=================================================================================================
+
+const TopTools_ListOfShape& BOPAlgo_Builder::LocGenerated(const TopoDS_Shape& theS)
 {
   // The rules for Generated shapes are these:
   // 1. The EDGE may be generated from the FACES as an intersection edge;
@@ -78,7 +74,7 @@ const TopTools_ListOfShape& BOPAlgo_Builder::LocGenerated
     Standard_Integer aNbLines = !k ? aEEs.Length() : aEFs.Length();
     for (Standard_Integer i = 0; i < aNbLines; ++i)
     {
-      BOPDS_Interf *aInt = !k ? (BOPDS_Interf*)(&aEEs(i)) : (BOPDS_Interf*)(&aEFs(i));
+      BOPDS_Interf* aInt = !k ? (BOPDS_Interf*)(&aEEs(i)) : (BOPDS_Interf*)(&aEFs(i));
       if (!aInt->HasIndexNew())
         // No new vertices created
         continue;
@@ -133,18 +129,16 @@ const TopTools_ListOfShape& BOPAlgo_Builder::LocGenerated
 
   return myHistShapes;
 }
-//=======================================================================
-//function : LocModified
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
 const TopTools_ListOfShape* BOPAlgo_Builder::LocModified(const TopoDS_Shape& theS)
 {
   return myImages.Seek(theS);
 }
-//=======================================================================
-//function : PrepareHistory
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
 void BOPAlgo_Builder::PrepareHistory(const Message_ProgressRange& theRange)
 {
   if (!HasHistory())
@@ -164,7 +158,7 @@ void BOPAlgo_Builder::PrepareHistory(const Message_ProgressRange& theRange)
   //   the generated elements kept in the result shape as Generated from the shape;
   // - Shapes that have no trace in the result shape. Add them as Deleted
   //   during the operation.
-  Standard_Integer aNbS = myDS->NbSourceShapes();
+  Standard_Integer      aNbS = myDS->NbSourceShapes();
   Message_ProgressScope aPS(theRange, "Preparing history information", aNbS);
   for (Standard_Integer i = 0; i < aNbS; ++i, aPS.Next())
   {
@@ -207,7 +201,7 @@ void BOPAlgo_Builder::PrepareHistory(const Message_ProgressRange& theRange)
     }
 
     // Check if the shape has Generated elements
-    const TopTools_ListOfShape& aGenShapes = LocGenerated(aS);
+    const TopTools_ListOfShape&        aGenShapes = LocGenerated(aS);
     TopTools_ListIteratorOfListOfShape aIt(aGenShapes);
     for (; aIt.More(); aIt.Next())
     {

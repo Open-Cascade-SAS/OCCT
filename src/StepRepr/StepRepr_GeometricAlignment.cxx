@@ -15,6 +15,6 @@
 
 #include <StepRepr_GeometricAlignment.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_GeometricAlignment,StepRepr_DerivedShapeAspect)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_GeometricAlignment, StepRepr_DerivedShapeAspect)
 
-StepRepr_GeometricAlignment::StepRepr_GeometricAlignment ()    {  }
+StepRepr_GeometricAlignment::StepRepr_GeometricAlignment() {}

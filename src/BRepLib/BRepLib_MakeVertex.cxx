@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRep_Builder.hxx>
 #include <BRepLib.hxx>
 #include <BRepLib_MakeVertex.hxx>
@@ -22,38 +21,25 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Vertex.hxx>
 
-//=======================================================================
-//function : BRepLib_MakeVertex
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 BRepLib_MakeVertex::BRepLib_MakeVertex(const gp_Pnt& P)
 {
   BRep_Builder B;
-  B.MakeVertex(TopoDS::Vertex(myShape),P,BRepLib::Precision());
+  B.MakeVertex(TopoDS::Vertex(myShape), P, BRepLib::Precision());
   Done();
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Vertex
-//purpose  : 
-//=======================================================================
-
-const TopoDS_Vertex&  BRepLib_MakeVertex::Vertex() 
+const TopoDS_Vertex& BRepLib_MakeVertex::Vertex()
 {
   return TopoDS::Vertex(Shape());
 }
 
-
-//=======================================================================
-//function : operator
-//purpose  : 
-//=======================================================================
-
+//=================================================================================================
 
 BRepLib_MakeVertex::operator TopoDS_Vertex()
 {
   return Vertex();
 }
-
-

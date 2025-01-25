@@ -19,45 +19,36 @@
 #include <StepFEA_FeaAxis2Placement3d.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_AlignedCurve3dElementCoordinateSystem,StepFEA_FeaRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_AlignedCurve3dElementCoordinateSystem,
+                           StepFEA_FeaRepresentationItem)
 
-//=======================================================================
-//function : StepFEA_AlignedCurve3dElementCoordinateSystem
-//purpose  : 
-//=======================================================================
-StepFEA_AlignedCurve3dElementCoordinateSystem::StepFEA_AlignedCurve3dElementCoordinateSystem ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepFEA_AlignedCurve3dElementCoordinateSystem::StepFEA_AlignedCurve3dElementCoordinateSystem() {}
 
-void StepFEA_AlignedCurve3dElementCoordinateSystem::Init (const Handle(TCollection_HAsciiString) &aRepresentationItem_Name,
-                                                          const Handle(StepFEA_FeaAxis2Placement3d) &aCoordinateSystem)
+//=================================================================================================
+
+void StepFEA_AlignedCurve3dElementCoordinateSystem::Init(
+  const Handle(TCollection_HAsciiString)&    aRepresentationItem_Name,
+  const Handle(StepFEA_FeaAxis2Placement3d)& aCoordinateSystem)
 {
   StepFEA_FeaRepresentationItem::Init(aRepresentationItem_Name);
 
   theCoordinateSystem = aCoordinateSystem;
 }
 
-//=======================================================================
-//function : CoordinateSystem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepFEA_FeaAxis2Placement3d) StepFEA_AlignedCurve3dElementCoordinateSystem::CoordinateSystem () const
+Handle(StepFEA_FeaAxis2Placement3d) StepFEA_AlignedCurve3dElementCoordinateSystem::
+  CoordinateSystem() const
 {
   return theCoordinateSystem;
 }
 
-//=======================================================================
-//function : SetCoordinateSystem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_AlignedCurve3dElementCoordinateSystem::SetCoordinateSystem (const Handle(StepFEA_FeaAxis2Placement3d) &aCoordinateSystem)
+void StepFEA_AlignedCurve3dElementCoordinateSystem::SetCoordinateSystem(
+  const Handle(StepFEA_FeaAxis2Placement3d)& aCoordinateSystem)
 {
   theCoordinateSystem = aCoordinateSystem;
 }

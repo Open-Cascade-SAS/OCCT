@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowserPane_TDataStdReferenceList_H
 #define DFBrowserPane_TDataStdReferenceList_H
@@ -25,7 +25,6 @@
 class DFBrowserPane_TDataStdReferenceList : public DFBrowserPane_AttributePane
 {
 public:
-
   //! Constructor
   DFBrowserPane_TDataStdReferenceList() {}
 
@@ -35,16 +34,17 @@ public:
   //! Returns values to fill the table view model
   //! \param theAttribute a current attribute
   //! \param theValues a container of values
-  Standard_EXPORT virtual void GetValues (const Handle(TDF_Attribute)& theAttribute,
-                                          QList<QVariant>& theValues) Standard_OVERRIDE;
+  Standard_EXPORT virtual void GetValues(const Handle(TDF_Attribute)& theAttribute,
+                                         QList<QVariant>&             theValues) Standard_OVERRIDE;
 
   //! Returns container of Label references to the attribute
   //! \param theAttribute a current attribute
   //! \param theRefLabels a container of label references, to be selected in tree view
   //! \param theRefPresentation handle of presentation for the references, to be visualized
-  Standard_EXPORT virtual void GetReferences (const Handle(TDF_Attribute)& theAttribute,
-                                              NCollection_List<TDF_Label>& theRefLabels,
-                                              Handle(Standard_Transient)& theRefPresentation) Standard_OVERRIDE;
+  Standard_EXPORT virtual void GetReferences(const Handle(TDF_Attribute)& theAttribute,
+                                             NCollection_List<TDF_Label>& theRefLabels,
+                                             Handle(Standard_Transient)&  theRefPresentation)
+    Standard_OVERRIDE;
 };
 
 #endif

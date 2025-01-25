@@ -15,40 +15,35 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : BRepFeat_MakeLinearForm
-//purpose  : 
+// function : BRepFeat_MakeLinearForm
+// purpose  :
 //=======================================================================
 
-inline BRepFeat_MakeRevolutionForm::BRepFeat_MakeRevolutionForm ()
-: myHeight1(0.0),
-  myHeight2(0.0),
-  mySliding(Standard_False),
-  myBnd(0.0),
-  myTol(0.0),
-  myAngle1(RealLast()),
-  myAngle2(RealLast())
+inline BRepFeat_MakeRevolutionForm::BRepFeat_MakeRevolutionForm()
+    : myHeight1(0.0),
+      myHeight2(0.0),
+      mySliding(Standard_False),
+      myBnd(0.0),
+      myTol(0.0),
+      myAngle1(RealLast()),
+      myAngle2(RealLast())
 {
 }
 
-
 //=======================================================================
-//function : BRepFeat_MakePrism
-//purpose  : 
+// function : BRepFeat_MakePrism
+// purpose  :
 //=======================================================================
 
-inline BRepFeat_MakeRevolutionForm::BRepFeat_MakeRevolutionForm (const TopoDS_Shape& Sbase,
-							 const TopoDS_Wire& W,
-							 const Handle(Geom_Plane)& P,
-							 const gp_Ax1& Axis,
-							 const Standard_Real H1,
-							 const Standard_Real H2,
-							 const Standard_Integer Fuse,
-							 Standard_Boolean& Sliding)
-					       
+inline BRepFeat_MakeRevolutionForm::BRepFeat_MakeRevolutionForm(const TopoDS_Shape&       Sbase,
+                                                                const TopoDS_Wire&        W,
+                                                                const Handle(Geom_Plane)& P,
+                                                                const gp_Ax1&             Axis,
+                                                                const Standard_Real       H1,
+                                                                const Standard_Real       H2,
+                                                                const Standard_Integer    Fuse,
+                                                                Standard_Boolean&         Sliding)
+
 {
   Init(Sbase, W, P, Axis, H1, H2, Fuse, Sliding);
 }
-
-
-
-

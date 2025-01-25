@@ -16,36 +16,30 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Message_AttributeStream, Message_Attribute)
 
-//=======================================================================
-//function : Constructor
-//purpose  :
-//=======================================================================
-Message_AttributeStream::Message_AttributeStream (const Standard_SStream& theStream,
-                                                  const TCollection_AsciiString& theName)
-: Message_Attribute(theName)
+//=================================================================================================
+
+Message_AttributeStream::Message_AttributeStream(const Standard_SStream&        theStream,
+                                                 const TCollection_AsciiString& theName)
+    : Message_Attribute(theName)
 {
-  SetStream (theStream);
+  SetStream(theStream);
 }
 
-//=======================================================================
-//function : SetStream
-//purpose  :
-//=======================================================================
-void Message_AttributeStream::SetStream (const Standard_SStream& theStream)
+//=================================================================================================
+
+void Message_AttributeStream::SetStream(const Standard_SStream& theStream)
 {
-  myStream.str ("");
+  myStream.str("");
   myStream << theStream.str().c_str();
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  :
-//=======================================================================
-void Message_AttributeStream::DumpJson (Standard_OStream& theOStream,
-                                        Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Message_Attribute)
+//=================================================================================================
 
-  OCCT_DUMP_STREAM_VALUE_DUMPED (theOStream, myStream)
+void Message_AttributeStream::DumpJson(Standard_OStream& theOStream,
+                                       Standard_Integer  theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Message_Attribute)
+
+  OCCT_DUMP_STREAM_VALUE_DUMPED(theOStream, myStream)
 }

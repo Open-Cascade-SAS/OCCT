@@ -14,39 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopOpeBRepBuild_FaceAreaBuilder.hxx>
 #include <TopOpeBRepBuild_LoopClassifier.hxx>
 #include <TopOpeBRepBuild_LoopSet.hxx>
 
-//=======================================================================
-//function : TopOpeBRepBuild_FaceAreaBuilder
-//purpose  : 
-//=======================================================================
-TopOpeBRepBuild_FaceAreaBuilder::TopOpeBRepBuild_FaceAreaBuilder()
+//=================================================================================================
+
+TopOpeBRepBuild_FaceAreaBuilder::TopOpeBRepBuild_FaceAreaBuilder() {}
+
+//=================================================================================================
+
+TopOpeBRepBuild_FaceAreaBuilder::TopOpeBRepBuild_FaceAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
+                                                                 TopOpeBRepBuild_LoopClassifier& LC,
+                                                                 const Standard_Boolean ForceClass)
 {
+  InitFaceAreaBuilder(LS, LC, ForceClass);
 }
 
-//=======================================================================
-//function : TopOpeBRepBuild_FaceAreaBuilder
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TopOpeBRepBuild_FaceAreaBuilder::TopOpeBRepBuild_FaceAreaBuilder
-(TopOpeBRepBuild_LoopSet& LS, TopOpeBRepBuild_LoopClassifier& LC,
- const Standard_Boolean ForceClass)
+void TopOpeBRepBuild_FaceAreaBuilder::InitFaceAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
+                                                          TopOpeBRepBuild_LoopClassifier& LC,
+                                                          const Standard_Boolean ForceClass)
 {
-  InitFaceAreaBuilder(LS,LC,ForceClass);
-}
-
-//=======================================================================
-//function : TopOpeBRepBuild_FaceAreaBuilder
-//purpose  : 
-//=======================================================================
-
-void TopOpeBRepBuild_FaceAreaBuilder::InitFaceAreaBuilder
-(TopOpeBRepBuild_LoopSet& LS, TopOpeBRepBuild_LoopClassifier& LC,
- const Standard_Boolean ForceClass)
-{
-  InitAreaBuilder(LS,LC,ForceClass);
+  InitAreaBuilder(LS, LC, ForceClass);
 }

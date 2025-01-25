@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(Expr_GeneralRelation)> Expr_SequenceOfGeneralRelation;
 
-
 #endif

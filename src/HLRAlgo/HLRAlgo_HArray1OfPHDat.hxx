@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(HLRAlgo_HArray1OfPHDat, HLRAlgo_Array1OfPHDat)
 
-
 #endif

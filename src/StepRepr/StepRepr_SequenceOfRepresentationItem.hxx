@@ -20,7 +20,7 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <NCollection_Sequence.hxx>
 
-typedef NCollection_Sequence<Handle(StepRepr_RepresentationItem)> StepRepr_SequenceOfRepresentationItem;
-
+typedef NCollection_Sequence<Handle(StepRepr_RepresentationItem)>
+  StepRepr_SequenceOfRepresentationItem;
 
 #endif

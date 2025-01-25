@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -18,44 +18,34 @@
 #include <StepGeom_CompositeCurve.hxx>
 #include <StepShape_Path.hxx>
 
-//=======================================================================
-//function : StepVisual_PathOrCompositeCurve
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepVisual_PathOrCompositeCurve::StepVisual_PathOrCompositeCurve ()
+StepVisual_PathOrCompositeCurve::StepVisual_PathOrCompositeCurve() {}
+
+//=================================================================================================
+
+Standard_Integer StepVisual_PathOrCompositeCurve::CaseNum(
+  const Handle(Standard_Transient)& ent) const
 {
-}
-
-//=======================================================================
-//function : CaseNum
-//purpose  : 
-//=======================================================================
-
-Standard_Integer StepVisual_PathOrCompositeCurve::CaseNum (const Handle(Standard_Transient)& ent) const
-{
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepGeom_CompositeCurve))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepShape_Path))) return 2;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepGeom_CompositeCurve)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepShape_Path)))
+    return 2;
   return 0;
 }
 
-//=======================================================================
-//function : CompositeCurve
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepGeom_CompositeCurve) StepVisual_PathOrCompositeCurve::CompositeCurve () const
+Handle(StepGeom_CompositeCurve) StepVisual_PathOrCompositeCurve::CompositeCurve() const
 {
   return Handle(StepGeom_CompositeCurve)::DownCast(Value());
 }
 
-//=======================================================================
-//function : Path
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepShape_Path) StepVisual_PathOrCompositeCurve::Path () const
+Handle(StepShape_Path) StepVisual_PathOrCompositeCurve::Path() const
 {
   return Handle(StepShape_Path)::DownCast(Value());
 }

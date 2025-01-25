@@ -19,44 +19,36 @@
 #include <StepData_StepWriter.hxx>
 #include <StepShape_ValueFormatTypeQualifier.hxx>
 
-//=======================================================================
-//function : RWStepShape_RWValueFormatTypeQualifier
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-RWStepShape_RWValueFormatTypeQualifier::RWStepShape_RWValueFormatTypeQualifier ()
-{
-}
+RWStepShape_RWValueFormatTypeQualifier::RWStepShape_RWValueFormatTypeQualifier() {}
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepShape_RWValueFormatTypeQualifier::ReadStep (const Handle(StepData_StepReaderData)& data,
-                                                       const Standard_Integer num,
-                                                       Handle(Interface_Check)& ach,
-                                                       const Handle(StepShape_ValueFormatTypeQualifier) &ent) const
+void RWStepShape_RWValueFormatTypeQualifier::ReadStep(
+  const Handle(StepData_StepReaderData)&            data,
+  const Standard_Integer                            num,
+  Handle(Interface_Check)&                          ach,
+  const Handle(StepShape_ValueFormatTypeQualifier)& ent) const
 {
   // Check number of parameters
-  if ( ! data->CheckNbParams(num,1,ach,"value_format_type_qualifier") ) return;
+  if (!data->CheckNbParams(num, 1, ach, "value_format_type_qualifier"))
+    return;
 
   // Own fields of ValueFormatTypeQualifier
 
   Handle(TCollection_HAsciiString) aFormatType;
-  data->ReadString (num, 1, "format_type", ach, aFormatType);
+  data->ReadString(num, 1, "format_type", ach, aFormatType);
 
   // Initialize entity
   ent->Init(aFormatType);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepShape_RWValueFormatTypeQualifier::WriteStep (StepData_StepWriter& SW,
-                                                        const Handle(StepShape_ValueFormatTypeQualifier) &ent) const
+void RWStepShape_RWValueFormatTypeQualifier::WriteStep(
+  StepData_StepWriter&                              SW,
+  const Handle(StepShape_ValueFormatTypeQualifier)& ent) const
 {
-  SW.Send (ent->FormatType());
+  SW.Send(ent->FormatType());
 }

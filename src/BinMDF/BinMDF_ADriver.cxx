@@ -13,30 +13,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMDF_ADriver.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMDF_ADriver,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(BinMDF_ADriver, Standard_Transient)
 
-//=======================================================================
-//function : BinMDF_ADriver
-//purpose  : Constructor
-//=======================================================================
-BinMDF_ADriver::BinMDF_ADriver (const Handle(Message_Messenger)& theMsgDriver,
-                                const Standard_CString           theName)
-     : myMessageDriver (theMsgDriver)
+//=================================================================================================
+
+BinMDF_ADriver::BinMDF_ADriver(const Handle(Message_Messenger)& theMsgDriver,
+                               const Standard_CString           theName)
+    : myMessageDriver(theMsgDriver)
 {
   if (theName)
     myTypeName = theName;
 }
 
-//=======================================================================
-//function : SourceType
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-const Handle(Standard_Type)& BinMDF_ADriver::SourceType () const
+const Handle(Standard_Type)& BinMDF_ADriver::SourceType() const
 {
-  return NewEmpty() -> DynamicType();
+  return NewEmpty()->DynamicType();
 }
-

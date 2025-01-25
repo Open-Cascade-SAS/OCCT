@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowser_HighlightDelegate_H
 #define DFBrowser_HighlightDelegate_H
@@ -28,9 +28,11 @@
 class DFBrowser_HighlightDelegate : public QItemDelegate
 {
 public:
-
   //! Constructor
-  DFBrowser_HighlightDelegate (QObject* theParent = 0) : QItemDelegate (theParent) {}
+  DFBrowser_HighlightDelegate(QObject* theParent = 0)
+      : QItemDelegate(theParent)
+  {
+  }
 
   //! Destructor
   virtual ~DFBrowser_HighlightDelegate() {}
@@ -39,7 +41,8 @@ public:
   //! \param thePainter a painter
   //! \param theOption a paint options
   //! \param theIndex a view index
-  Standard_EXPORT virtual void paint (QPainter* thePainter, const QStyleOptionViewItem& theOption,
-                                       const QModelIndex& theIndex) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void paint(QPainter*                   thePainter,
+                                     const QStyleOptionViewItem& theOption,
+                                     const QModelIndex&          theIndex) const Standard_OVERRIDE;
 };
 #endif

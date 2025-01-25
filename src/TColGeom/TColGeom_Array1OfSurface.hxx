@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(Geom_Surface)> TColGeom_Array1OfSurface;
 
-
 #endif

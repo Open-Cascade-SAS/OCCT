@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : SetPlaneMode
-//purpose  : 
+// function : SetPlaneMode
+// purpose  :
 //=======================================================================
 
 inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetPlaneMode(const Standard_Boolean mode)
@@ -25,8 +25,8 @@ inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetPlaneMode(const Standar
 }
 
 //=======================================================================
-//function : GetPlaneMode
-//purpose  : 
+// function : GetPlaneMode
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetPlaneMode() const
@@ -35,8 +35,8 @@ inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetPlaneMode()
 }
 
 //=======================================================================
-//function : SetRevolutionMode
-//purpose  : 
+// function : SetRevolutionMode
+// purpose  :
 //=======================================================================
 
 inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetRevolutionMode(const Standard_Boolean mode)
@@ -45,8 +45,8 @@ inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetRevolutionMode(const St
 }
 
 //=======================================================================
-//function : GetRevolutionMode
-//purpose  : 
+// function : GetRevolutionMode
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetRevolutionMode() const
@@ -55,8 +55,8 @@ inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetRevolutionM
 }
 
 //=======================================================================
-//function : SetExtrusionMode
-//purpose  : 
+// function : SetExtrusionMode
+// purpose  :
 //=======================================================================
 
 inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetExtrusionMode(const Standard_Boolean mode)
@@ -65,8 +65,8 @@ inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetExtrusionMode(const Sta
 }
 
 //=======================================================================
-//function : GetExtrusionMode
-//purpose  : 
+// function : GetExtrusionMode
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetExtrusionMode() const
@@ -75,8 +75,8 @@ inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetExtrusionMo
 }
 
 //=======================================================================
-//function : SetBSplineMode
-//purpose  : 
+// function : SetBSplineMode
+// purpose  :
 //=======================================================================
 
 inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetBSplineMode(const Standard_Boolean mode)
@@ -85,8 +85,8 @@ inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetBSplineMode(const Stand
 }
 
 //=======================================================================
-//function : GetBSplineMode
-//purpose  : 
+// function : GetBSplineMode
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetBSplineMode() const

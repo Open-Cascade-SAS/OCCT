@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY1(Plate_HArray1OfPinpointConstraint, Plate_Array1OfPinpointConstraint)
 
-
 #endif

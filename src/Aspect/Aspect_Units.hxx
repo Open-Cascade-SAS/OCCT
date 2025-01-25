@@ -28,8 +28,8 @@
 
 #define METER *1000.
 #define CENTIMETER *10.
-#define TOCENTIMETER(v) (v)/10.
-#define FROMCENTIMETER(v) (v)*10.
+#define TOCENTIMETER(v) (v) / 10.
+#define FROMCENTIMETER(v) (v) * 10.
 #define MILLIMETER *1.
 #define TOMILLIMETER(v) v
 #define FROMMILLIMETER(v) v

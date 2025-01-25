@@ -22,8 +22,8 @@
 #define No_Standard_OutOfRange
 
 //=======================================================================
-//struct : BSplCLib_BezierArrays 
-//purpose: Auxiliary structure providing standard definitions of bspline 
+// struct : BSplCLib_BezierArrays
+// purpose: Auxiliary structure providing standard definitions of bspline
 //         knots for bezier (using stack allocation)
 //=======================================================================
 
@@ -31,11 +31,12 @@ class BSplCLib_BezierArrays
 {
 public:
   BSplCLib_BezierArrays(Standard_Integer Degree)
-  : aKnots{0., 1.},
-    aMults{Degree + 1, Degree + 1},
-    knots(aKnots[0], 1, 2),
-    mults(aMults[0], 1, 2)
-  {}
+      : aKnots{0., 1.},
+        aMults{Degree + 1, Degree + 1},
+        knots(aKnots[0], 1, 2),
+        mults(aMults[0], 1, 2)
+  {
+  }
 
 private:
   Standard_Real    aKnots[2];
@@ -46,207 +47,180 @@ public:
   TColStd_Array1OfInteger mults;
 };
 
-//=======================================================================
-//function : IncreaseDegree
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void BSplCLib::IncreaseDegree(const Standard_Integer      NewDegree, 
-			      const TColgp_Array1OfPnt&   Poles, 
-			      const TColStd_Array1OfReal* Weights, 
-			      TColgp_Array1OfPnt&         NewPoles, 
-			      TColStd_Array1OfReal*       NewWeights)
+void BSplCLib::IncreaseDegree(const Standard_Integer      NewDegree,
+                              const TColgp_Array1OfPnt&   Poles,
+                              const TColStd_Array1OfReal* Weights,
+                              TColgp_Array1OfPnt&         NewPoles,
+                              TColStd_Array1OfReal*       NewWeights)
 {
-  Standard_Integer deg = Poles.Length() - 1;
+  Standard_Integer      deg = Poles.Length() - 1;
   BSplCLib_BezierArrays bzarr(deg);
-  BSplCLib::IncreaseDegree(deg, NewDegree, 0,
-			   Poles, Weights, bzarr.knots, bzarr.mults,
-			   NewPoles, NewWeights, bzarr.knots, bzarr.mults);
+  BSplCLib::IncreaseDegree(deg,
+                           NewDegree,
+                           0,
+                           Poles,
+                           Weights,
+                           bzarr.knots,
+                           bzarr.mults,
+                           NewPoles,
+                           NewWeights,
+                           bzarr.knots,
+                           bzarr.mults);
 }
 
-//=======================================================================
-//function : IncreaseDegree
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void BSplCLib::IncreaseDegree(const Standard_Integer      NewDegree, 
-			      const TColgp_Array1OfPnt2d& Poles, 
-			      const TColStd_Array1OfReal* Weights, 
-			      TColgp_Array1OfPnt2d&       NewPoles, 
-			      TColStd_Array1OfReal*       NewWeights)
+void BSplCLib::IncreaseDegree(const Standard_Integer      NewDegree,
+                              const TColgp_Array1OfPnt2d& Poles,
+                              const TColStd_Array1OfReal* Weights,
+                              TColgp_Array1OfPnt2d&       NewPoles,
+                              TColStd_Array1OfReal*       NewWeights)
 {
-  Standard_Integer deg = Poles.Length() - 1;
+  Standard_Integer      deg = Poles.Length() - 1;
   BSplCLib_BezierArrays bzarr(deg);
-  BSplCLib::IncreaseDegree(deg, NewDegree, 0,
-			   Poles, Weights, bzarr.knots, bzarr.mults,
-			   NewPoles, NewWeights, bzarr.knots, bzarr.mults);
+  BSplCLib::IncreaseDegree(deg,
+                           NewDegree,
+                           0,
+                           Poles,
+                           Weights,
+                           bzarr.knots,
+                           bzarr.mults,
+                           NewPoles,
+                           NewWeights,
+                           bzarr.knots,
+                           bzarr.mults);
 }
 
-//=======================================================================
-//function : PolesCoefficients
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void BSplCLib::PolesCoefficients(const TColgp_Array1OfPnt&   Poles, 
-				 const TColStd_Array1OfReal* Weights, 
-				 TColgp_Array1OfPnt&         CachePoles, 
-				 TColStd_Array1OfReal*       CacheWeights)
+void BSplCLib::PolesCoefficients(const TColgp_Array1OfPnt&   Poles,
+                                 const TColStd_Array1OfReal* Weights,
+                                 TColgp_Array1OfPnt&         CachePoles,
+                                 TColStd_Array1OfReal*       CacheWeights)
 {
-  Standard_Integer deg  = Poles.Length() - 1;
-  TColStd_Array1OfReal bidflatknots (FlatBezierKnots(deg), 1, 2*(deg+1));
-  BSplCLib::BuildCache(0.,1.,0,deg,bidflatknots,
-		       Poles, Weights, CachePoles,CacheWeights);
+  Standard_Integer     deg = Poles.Length() - 1;
+  TColStd_Array1OfReal bidflatknots(FlatBezierKnots(deg), 1, 2 * (deg + 1));
+  BSplCLib::BuildCache(0., 1., 0, deg, bidflatknots, Poles, Weights, CachePoles, CacheWeights);
 }
 
-//=======================================================================
-//function : PolesCoefficients
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void BSplCLib::PolesCoefficients(const TColgp_Array1OfPnt2d& Poles, 
-				 const TColStd_Array1OfReal* Weights, 
-				 TColgp_Array1OfPnt2d&       CachePoles, 
-				 TColStd_Array1OfReal*       CacheWeights)
+void BSplCLib::PolesCoefficients(const TColgp_Array1OfPnt2d& Poles,
+                                 const TColStd_Array1OfReal* Weights,
+                                 TColgp_Array1OfPnt2d&       CachePoles,
+                                 TColStd_Array1OfReal*       CacheWeights)
 {
-  Standard_Integer deg  = Poles.Length() - 1;
-  TColStd_Array1OfReal bidflatknots (FlatBezierKnots(deg), 1, 2*(deg+1));
-  BSplCLib::BuildCache(0.,1.,0,deg,bidflatknots,
-		       Poles, Weights, CachePoles,CacheWeights);
+  Standard_Integer     deg = Poles.Length() - 1;
+  TColStd_Array1OfReal bidflatknots(FlatBezierKnots(deg), 1, 2 * (deg + 1));
+  BSplCLib::BuildCache(0., 1., 0, deg, bidflatknots, Poles, Weights, CachePoles, CacheWeights);
 }
 
-//=======================================================================
-//function : D0
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::D0(const Standard_Real         U,
-		  const TColgp_Array1OfPnt&   Poles, 
-		  const TColStd_Array1OfReal* Weights,
-		  gp_Pnt&                     P)
+                  const TColgp_Array1OfPnt&   Poles,
+                  const TColStd_Array1OfReal* Weights,
+                  gp_Pnt&                     P)
 {
-  Standard_Integer deg = Poles.Length() - 1;
+  Standard_Integer      deg = Poles.Length() - 1;
   BSplCLib_BezierArrays bzarr(deg);
   BSplCLib::D0(U, 1, deg, 0, Poles, Weights, bzarr.knots, &bzarr.mults, P);
 }
 
-//=======================================================================
-//function : D0
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::D0(const Standard_Real         U,
-		  const TColgp_Array1OfPnt2d& Poles, 
-		  const TColStd_Array1OfReal* Weights,
-		  gp_Pnt2d&                   P)
+                  const TColgp_Array1OfPnt2d& Poles,
+                  const TColStd_Array1OfReal* Weights,
+                  gp_Pnt2d&                   P)
 {
-  Standard_Integer deg = Poles.Length() - 1;
+  Standard_Integer      deg = Poles.Length() - 1;
   BSplCLib_BezierArrays bzarr(deg);
   BSplCLib::D0(U, 1, deg, 0, Poles, Weights, bzarr.knots, &bzarr.mults, P);
 }
 
-//=======================================================================
-//function : D1
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::D1(const Standard_Real         U,
-		  const TColgp_Array1OfPnt&   Poles, 
-		  const TColStd_Array1OfReal* Weights,
-		  gp_Pnt&                     P,
-		  gp_Vec&                     V)
+                  const TColgp_Array1OfPnt&   Poles,
+                  const TColStd_Array1OfReal* Weights,
+                  gp_Pnt&                     P,
+                  gp_Vec&                     V)
 {
-  Standard_Integer deg = Poles.Length() - 1;
+  Standard_Integer      deg = Poles.Length() - 1;
   BSplCLib_BezierArrays bzarr(deg);
   BSplCLib::D1(U, 1, deg, 0, Poles, Weights, bzarr.knots, &bzarr.mults, P, V);
 }
 
-//=======================================================================
-//function : D1
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::D1(const Standard_Real         U,
-		  const TColgp_Array1OfPnt2d& Poles, 
-		  const TColStd_Array1OfReal* Weights,
-		  gp_Pnt2d&                   P,
-		  gp_Vec2d&                   V)
+                  const TColgp_Array1OfPnt2d& Poles,
+                  const TColStd_Array1OfReal* Weights,
+                  gp_Pnt2d&                   P,
+                  gp_Vec2d&                   V)
 {
-  Standard_Integer deg = Poles.Length() - 1;
+  Standard_Integer      deg = Poles.Length() - 1;
   BSplCLib_BezierArrays bzarr(deg);
   BSplCLib::D1(U, 1, deg, 0, Poles, Weights, bzarr.knots, &bzarr.mults, P, V);
 }
 
-
-//=======================================================================
-//function : D2
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::D2(const Standard_Real         U,
-		  const TColgp_Array1OfPnt&   Poles, 
-		  const TColStd_Array1OfReal* Weights,
-		  gp_Pnt&                     P,
-		  gp_Vec&                     V1,
-		  gp_Vec&                     V2)
+                  const TColgp_Array1OfPnt&   Poles,
+                  const TColStd_Array1OfReal* Weights,
+                  gp_Pnt&                     P,
+                  gp_Vec&                     V1,
+                  gp_Vec&                     V2)
 {
-  Standard_Integer deg = Poles.Length() - 1;
+  Standard_Integer      deg = Poles.Length() - 1;
   BSplCLib_BezierArrays bzarr(deg);
   BSplCLib::D2(U, 1, deg, 0, Poles, Weights, bzarr.knots, &bzarr.mults, P, V1, V2);
 }
 
-//=======================================================================
-//function : D2
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::D2(const Standard_Real         U,
-		  const TColgp_Array1OfPnt2d& Poles, 
-		  const TColStd_Array1OfReal* Weights,
-		  gp_Pnt2d&                   P,
-		  gp_Vec2d&                   V1,
-		  gp_Vec2d&                   V2)
+                  const TColgp_Array1OfPnt2d& Poles,
+                  const TColStd_Array1OfReal* Weights,
+                  gp_Pnt2d&                   P,
+                  gp_Vec2d&                   V1,
+                  gp_Vec2d&                   V2)
 {
-  Standard_Integer deg = Poles.Length() - 1;
+  Standard_Integer      deg = Poles.Length() - 1;
   BSplCLib_BezierArrays bzarr(deg);
   BSplCLib::D2(U, 1, deg, 0, Poles, Weights, bzarr.knots, &bzarr.mults, P, V1, V2);
 }
 
-
-//=======================================================================
-//function : D3
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::D3(const Standard_Real         U,
-		  const TColgp_Array1OfPnt&   Poles, 
-		  const TColStd_Array1OfReal* Weights,
-		  gp_Pnt&                     P,
-		  gp_Vec&                     V1,
-		  gp_Vec&                     V2,
-		  gp_Vec&                     V3)
+                  const TColgp_Array1OfPnt&   Poles,
+                  const TColStd_Array1OfReal* Weights,
+                  gp_Pnt&                     P,
+                  gp_Vec&                     V1,
+                  gp_Vec&                     V2,
+                  gp_Vec&                     V3)
 {
-  Standard_Integer deg = Poles.Length() - 1;
+  Standard_Integer      deg = Poles.Length() - 1;
   BSplCLib_BezierArrays bzarr(deg);
-  BSplCLib::D3(U, 1, deg, 0, Poles, Weights, bzarr.knots, &bzarr.mults, 
-	       P, V1, V2, V3);
+  BSplCLib::D3(U, 1, deg, 0, Poles, Weights, bzarr.knots, &bzarr.mults, P, V1, V2, V3);
 }
 
-//=======================================================================
-//function : D3
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::D3(const Standard_Real         U,
-		  const TColgp_Array1OfPnt2d& Poles, 
-		  const TColStd_Array1OfReal* Weights,
-		  gp_Pnt2d&                   P,
-		  gp_Vec2d&                   V1,
-		  gp_Vec2d&                   V2,
-		  gp_Vec2d&                   V3)
+                  const TColgp_Array1OfPnt2d& Poles,
+                  const TColStd_Array1OfReal* Weights,
+                  gp_Pnt2d&                   P,
+                  gp_Vec2d&                   V1,
+                  gp_Vec2d&                   V2,
+                  gp_Vec2d&                   V3)
 {
-  Standard_Integer deg = Poles.Length() - 1;
+  Standard_Integer      deg = Poles.Length() - 1;
   BSplCLib_BezierArrays bzarr(deg);
-  BSplCLib::D3(U, 1, deg, 0, Poles, Weights, bzarr.knots, &bzarr.mults, 
-	       P, V1, V2, V3);
+  BSplCLib::D3(U, 1, deg, 0, Poles, Weights, bzarr.knots, &bzarr.mults, P, V1, V2, V3);
 }
-

@@ -26,7 +26,6 @@ class Draw_Display;
 class TCollection_AsciiString;
 class TDataStd_TreeNode;
 
-
 class DDataStd_TreeBrowser;
 DEFINE_STANDARD_HANDLE(DDataStd_TreeBrowser, Draw_Drawable3D)
 
@@ -36,58 +35,40 @@ class DDataStd_TreeBrowser : public Draw_Drawable3D
 {
 
 public:
-
-  
   Standard_EXPORT DDataStd_TreeBrowser(const TDF_Label& root);
-  
-  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
-  
+
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+
   Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Dump (Standard_OStream& S) const Standard_OVERRIDE;
-  
+
+  Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
+
   //! Specific methods
   //! ================
-  Standard_EXPORT virtual void Whatis (Draw_Interpretor& I) const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Label (const TDF_Label& root);
-  
+  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
+
+  Standard_EXPORT void Label(const TDF_Label& root);
+
   Standard_EXPORT TDF_Label Label() const;
-  
+
   //! Returns   a   string composed with  the   TreeNode  of
   //! <myLabel>.
   Standard_EXPORT TCollection_AsciiString OpenRoot() const;
-  
+
   //! Returns a string composed   with the sub-TreeNodes of
   //! <L>
-  Standard_EXPORT TCollection_AsciiString OpenNode (const TDF_Label& L) const;
+  Standard_EXPORT TCollection_AsciiString OpenNode(const TDF_Label& L) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(DDataStd_TreeBrowser,Draw_Drawable3D)
+  DEFINE_STANDARD_RTTIEXT(DDataStd_TreeBrowser, Draw_Drawable3D)
 
 protected:
-
-
-
-
 private:
-
-  
   //! Returns a string composed with the sub-TreeNodes
   //! of <aTreeNode>. Used to implement other methods.
-  Standard_EXPORT void OpenNode (const Handle(TDataStd_TreeNode)& aTreeNode, TCollection_AsciiString& aList) const;
+  Standard_EXPORT void OpenNode(const Handle(TDataStd_TreeNode)& aTreeNode,
+                                TCollection_AsciiString&         aList) const;
 
   TDF_Label myRoot;
-
-
 };
-
-
-
-
-
-
 
 #endif // _DDataStd_TreeBrowser_HeaderFile

@@ -17,37 +17,53 @@
 #include <StdFail_NotDone.hxx>
 #include <IntPatch_Line.hxx>
 
-inline Standard_Boolean IntPatch_ImpPrmIntersection::IsDone () const
+inline Standard_Boolean IntPatch_ImpPrmIntersection::IsDone() const
 {
   return done;
 }
 
-inline Standard_Boolean IntPatch_ImpPrmIntersection::IsEmpty () const
+inline Standard_Boolean IntPatch_ImpPrmIntersection::IsEmpty() const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return empt;
 }
 
-inline Standard_Integer IntPatch_ImpPrmIntersection::NbPnts () const
+inline Standard_Integer IntPatch_ImpPrmIntersection::NbPnts() const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return spnt.Length();
 }
 
-inline const IntPatch_Point& IntPatch_ImpPrmIntersection::Point (const Standard_Integer Index) const
+inline const IntPatch_Point& IntPatch_ImpPrmIntersection::Point(const Standard_Integer Index) const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return spnt(Index);
 }
 
-inline Standard_Integer IntPatch_ImpPrmIntersection::NbLines () const
+inline Standard_Integer IntPatch_ImpPrmIntersection::NbLines() const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return slin.Length();
 }
 
-inline const Handle(IntPatch_Line)& IntPatch_ImpPrmIntersection::Line (const Standard_Integer Index) const
+inline const Handle(IntPatch_Line)& IntPatch_ImpPrmIntersection::Line(
+  const Standard_Integer Index) const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return slin(Index);
 }

@@ -25,11 +25,11 @@
 //! WOL_USERDEFINED     defined by Users
 enum Aspect_WidthOfLine
 {
-Aspect_WOL_THIN,
-Aspect_WOL_MEDIUM,
-Aspect_WOL_THICK,
-Aspect_WOL_VERYTHICK,
-Aspect_WOL_USERDEFINED
+  Aspect_WOL_THIN,
+  Aspect_WOL_MEDIUM,
+  Aspect_WOL_THICK,
+  Aspect_WOL_VERYTHICK,
+  Aspect_WOL_USERDEFINED
 };
 
 #endif // _Aspect_WidthOfLine_HeaderFile

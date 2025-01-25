@@ -18,35 +18,37 @@
 #include <math_Vector.hxx>
 #include <math_Matrix.hxx>
 
-inline Standard_Boolean math_Jacobi::IsDone() const { return Done; }
+inline Standard_Boolean math_Jacobi::IsDone() const
+{
+  return Done;
+}
 
-inline Standard_OStream& operator<<(Standard_OStream& o,
-				    const math_Jacobi& J) 
+inline Standard_OStream& operator<<(Standard_OStream& o, const math_Jacobi& J)
 {
   J.Dump(o);
   return o;
 }
 
-inline const math_Vector& math_Jacobi::Values () const{
+inline const math_Vector& math_Jacobi::Values() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return EigenValues;
 }
 
-inline  Standard_Real math_Jacobi::Value (const Standard_Integer Num) const{
+inline Standard_Real math_Jacobi::Value(const Standard_Integer Num) const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return EigenValues(Num);
 }
-    
 
-inline const math_Matrix& math_Jacobi::Vectors() const{
+inline const math_Matrix& math_Jacobi::Vectors() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return EigenVectors;
 }
 
-
-inline  void  math_Jacobi::Vector (const Standard_Integer Num, math_Vector& V) const{
+inline void math_Jacobi::Vector(const Standard_Integer Num, math_Vector& V) const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   V = EigenVectors.Col(Num);
 }
-
-

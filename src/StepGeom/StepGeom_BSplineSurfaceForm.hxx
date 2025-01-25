@@ -17,20 +17,19 @@
 #ifndef _StepGeom_BSplineSurfaceForm_HeaderFile
 #define _StepGeom_BSplineSurfaceForm_HeaderFile
 
-
 enum StepGeom_BSplineSurfaceForm
 {
-StepGeom_bssfPlaneSurf,
-StepGeom_bssfCylindricalSurf,
-StepGeom_bssfConicalSurf,
-StepGeom_bssfSphericalSurf,
-StepGeom_bssfToroidalSurf,
-StepGeom_bssfSurfOfRevolution,
-StepGeom_bssfRuledSurf,
-StepGeom_bssfGeneralisedCone,
-StepGeom_bssfQuadricSurf,
-StepGeom_bssfSurfOfLinearExtrusion,
-StepGeom_bssfUnspecified
+  StepGeom_bssfPlaneSurf,
+  StepGeom_bssfCylindricalSurf,
+  StepGeom_bssfConicalSurf,
+  StepGeom_bssfSphericalSurf,
+  StepGeom_bssfToroidalSurf,
+  StepGeom_bssfSurfOfRevolution,
+  StepGeom_bssfRuledSurf,
+  StepGeom_bssfGeneralisedCone,
+  StepGeom_bssfQuadricSurf,
+  StepGeom_bssfSurfOfLinearExtrusion,
+  StepGeom_bssfUnspecified
 };
 
 #endif // _StepGeom_BSplineSurfaceForm_HeaderFile

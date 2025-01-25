@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<StepVisual_InvisibleItem> StepVisual_Array1OfInvisibleItem;
 
-
 #endif

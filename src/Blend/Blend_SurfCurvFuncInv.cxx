@@ -14,16 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Adaptor2d_Curve2d.hxx>
 #include <Blend_SurfCurvFuncInv.hxx>
 
-//=======================================================================
-//function : NbVariables
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer Blend_SurfCurvFuncInv::NbVariables() const
 {
   return 3;
 }
-

@@ -18,23 +18,21 @@
 #include <TNaming_Builder.hxx>
 #include <TNaming_Iterator.hxx>
 
-
 //=======================================================================
-//function : Import
-//purpose  : Import transient attribute from the persistent data
+// function : Import
+// purpose  : Import transient attribute from the persistent data
 //=======================================================================
-void StdPersistent_Naming::NamedShape::Import
-  (const Handle(TNaming_NamedShape)& theAttribute) const
+void StdPersistent_Naming::NamedShape::Import(const Handle(TNaming_NamedShape)& theAttribute) const
 {
-  theAttribute->SetVersion (myVersion);
+  theAttribute->SetVersion(myVersion);
 
   if (myOldShapes.IsNull() || myNewShapes.IsNull())
     return;
 
-  TNaming_Builder aBuilder (theAttribute->Label());
+  TNaming_Builder aBuilder(theAttribute->Label());
 
-  StdPersistent_HArray1OfShape1::Iterator aOldShapesIter (*myOldShapes->Array());
-  StdPersistent_HArray1OfShape1::Iterator aNewShapesIter (*myNewShapes->Array());
+  StdPersistent_HArray1OfShape1::Iterator aOldShapesIter(*myOldShapes->Array());
+  StdPersistent_HArray1OfShape1::Iterator aNewShapesIter(*myNewShapes->Array());
   for (; aNewShapesIter.More(); aOldShapesIter.Next(), aNewShapesIter.Next())
   {
     TopoDS_Shape aOldShape = aOldShapesIter.Value().Import();
@@ -42,54 +40,65 @@ void StdPersistent_Naming::NamedShape::Import
 
     switch (myShapeStatus)
     {
-    case 0: aBuilder.Generated (aNewShape);            break; // PRIMITIVE
-    case 1: aBuilder.Generated (aOldShape, aNewShape); break; // GENERATED
-    case 2: aBuilder.Modify    (aOldShape, aNewShape); break; // MODIFY
-    case 3: aBuilder.Delete    (aOldShape);            break; // DELETE
-    case 4: aBuilder.Select    (aNewShape, aOldShape); break; // SELECTED
-    case 5: aBuilder.Modify    (aOldShape, aNewShape); break; // REPLACE
+      case 0:
+        aBuilder.Generated(aNewShape);
+        break; // PRIMITIVE
+      case 1:
+        aBuilder.Generated(aOldShape, aNewShape);
+        break; // GENERATED
+      case 2:
+        aBuilder.Modify(aOldShape, aNewShape);
+        break; // MODIFY
+      case 3:
+        aBuilder.Delete(aOldShape);
+        break; // DELETE
+      case 4:
+        aBuilder.Select(aNewShape, aOldShape);
+        break; // SELECTED
+      case 5:
+        aBuilder.Modify(aOldShape, aNewShape);
+        break; // REPLACE
     }
   }
 }
 
 //=======================================================================
-//function : Read
-//purpose  : Read persistent data from a file
+// function : Read
+// purpose  : Read persistent data from a file
 //=======================================================================
-void StdPersistent_Naming::Name::Read (StdObjMgt_ReadData& theReadData)
+void StdPersistent_Naming::Name::Read(StdObjMgt_ReadData& theReadData)
 {
   theReadData >> myType >> myShapeType >> myArgs >> myStop >> myIndex;
 }
 
 //=======================================================================
-//function : Write
-//purpose  : Write persistent data to a file
+// function : Write
+// purpose  : Write persistent data to a file
 //=======================================================================
-void StdPersistent_Naming::Name::Write (StdObjMgt_WriteData& theWriteData) const
+void StdPersistent_Naming::Name::Write(StdObjMgt_WriteData& theWriteData) const
 {
   theWriteData << myType << myShapeType << myArgs << myStop << myIndex;
 }
 
 //=======================================================================
-//function : Import
-//purpose  : Import transient object from the persistent data
+// function : Import
+// purpose  : Import transient object from the persistent data
 //=======================================================================
-void StdPersistent_Naming::Name::Import
-  (TNaming_Name& theName, const Handle(TDF_Data)&) const
+void StdPersistent_Naming::Name::Import(TNaming_Name& theName, const Handle(TDF_Data)&) const
 {
-  theName.Type      (static_cast<TNaming_NameType> (myType));
-  theName.ShapeType (static_cast<TopAbs_ShapeEnum> (myShapeType));
+  theName.Type(static_cast<TNaming_NameType>(myType));
+  theName.ShapeType(static_cast<TopAbs_ShapeEnum>(myShapeType));
 
   if (myArgs)
   {
-    StdLPersistent_HArray1OfPersistent::Iterator anIter (*myArgs->Array());
+    StdLPersistent_HArray1OfPersistent::Iterator anIter(*myArgs->Array());
     for (; anIter.More(); anIter.Next())
     {
       const Handle(StdObjMgt_Persistent)& aPersistent = anIter.Value();
       if (aPersistent)
       {
         Handle(TDF_Attribute) anArg = aPersistent->GetAttribute();
-        theName.Append (Handle(TNaming_NamedShape)::DownCast (anArg));
+        theName.Append(Handle(TNaming_NamedShape)::DownCast(anArg));
       }
     }
   }
@@ -97,110 +106,110 @@ void StdPersistent_Naming::Name::Import
   if (myStop)
   {
     Handle(TDF_Attribute) aStop = myStop->GetAttribute();
-    theName.StopNamedShape (Handle(TNaming_NamedShape)::DownCast (aStop));
+    theName.StopNamedShape(Handle(TNaming_NamedShape)::DownCast(aStop));
   }
 
-  theName.Index (myIndex);
+  theName.Index(myIndex);
 }
 
 //=======================================================================
-//function : Read
-//purpose  : Read persistent data from a file
+// function : Read
+// purpose  : Read persistent data from a file
 //=======================================================================
-void StdPersistent_Naming::Name_1::Read (StdObjMgt_ReadData& theReadData)
+void StdPersistent_Naming::Name_1::Read(StdObjMgt_ReadData& theReadData)
 {
-  Name::Read (theReadData);
+  Name::Read(theReadData);
   theReadData >> myContextLabel;
 }
 
 //=======================================================================
-//function : Write
-//purpose  : Write persistent data to a file
+// function : Write
+// purpose  : Write persistent data to a file
 //=======================================================================
-void StdPersistent_Naming::Name_1::Write (StdObjMgt_WriteData& theWriteData) const
+void StdPersistent_Naming::Name_1::Write(StdObjMgt_WriteData& theWriteData) const
 {
-  Name::Write (theWriteData);
+  Name::Write(theWriteData);
   theWriteData << myContextLabel;
 }
 
 //=======================================================================
-//function : Import
-//purpose  : Import transient object from the persistent data
+// function : Import
+// purpose  : Import transient object from the persistent data
 //=======================================================================
-void StdPersistent_Naming::Name_1::Import
-  (TNaming_Name& theName, const Handle(TDF_Data)& theDF) const
+void StdPersistent_Naming::Name_1::Import(TNaming_Name&           theName,
+                                          const Handle(TDF_Data)& theDF) const
 {
-  Name::Import (theName, theDF);
+  Name::Import(theName, theDF);
   if (myContextLabel)
-    theName.ContextLabel (myContextLabel->Label (theDF));
+    theName.ContextLabel(myContextLabel->Label(theDF));
 }
 
 //=======================================================================
-//function : Read
-//purpose  : Read persistent data from a file
+// function : Read
+// purpose  : Read persistent data from a file
 //=======================================================================
-void StdPersistent_Naming::Name_2::Read (StdObjMgt_ReadData& theReadData)
+void StdPersistent_Naming::Name_2::Read(StdObjMgt_ReadData& theReadData)
 {
-  Name_1::Read (theReadData);
+  Name_1::Read(theReadData);
   theReadData >> myOrientation;
 }
 
 //=======================================================================
-//function : Write
-//purpose  : Write persistent data to a file
+// function : Write
+// purpose  : Write persistent data to a file
 //=======================================================================
-void StdPersistent_Naming::Name_2::Write (StdObjMgt_WriteData& theWriteData) const
+void StdPersistent_Naming::Name_2::Write(StdObjMgt_WriteData& theWriteData) const
 {
-  Name_1::Write (theWriteData);
+  Name_1::Write(theWriteData);
   theWriteData << myOrientation;
 }
 
 //=======================================================================
-//function : Import
-//purpose  : Import transient object from the persistent data
+// function : Import
+// purpose  : Import transient object from the persistent data
 //=======================================================================
-void StdPersistent_Naming::Name_2::Import
-  (TNaming_Name& theName, const Handle(TDF_Data)& theDF) const
+void StdPersistent_Naming::Name_2::Import(TNaming_Name&           theName,
+                                          const Handle(TDF_Data)& theDF) const
 {
-  Name_1::Import (theName, theDF);
-  theName.Orientation (static_cast<TopAbs_Orientation> (myOrientation));
+  Name_1::Import(theName, theDF);
+  theName.Orientation(static_cast<TopAbs_Orientation>(myOrientation));
 }
 
 //=======================================================================
-//function : ImportAttribute
-//purpose  : Import transient attribute from the persistent data
+// function : ImportAttribute
+// purpose  : Import transient attribute from the persistent data
 //=======================================================================
 void StdPersistent_Naming::Naming::ImportAttribute()
 {
-  Handle(Name) aName = Handle(Name)::DownCast (myData);
+  Handle(Name) aName = Handle(Name)::DownCast(myData);
   if (aName)
   {
-    aName->Import (myTransient->ChangeName(), myTransient->Label().Data());
+    aName->Import(myTransient->ChangeName(), myTransient->Label().Data());
     myData.Nullify();
   }
 }
 
 //=======================================================================
-//function : ImportAttribute
-//purpose  : Import transient attribute from the persistent data
+// function : ImportAttribute
+// purpose  : Import transient attribute from the persistent data
 //=======================================================================
 void StdPersistent_Naming::Naming_1::ImportAttribute()
 {
   Naming::ImportAttribute();
 
   Handle(TNaming_NamedShape) aNamedShape;
-  if (myTransient->Label().FindAttribute (TNaming_NamedShape::GetID(), aNamedShape)
-   && aNamedShape->Evolution() == TNaming_SELECTED)
+  if (myTransient->Label().FindAttribute(TNaming_NamedShape::GetID(), aNamedShape)
+      && aNamedShape->Evolution() == TNaming_SELECTED)
   {
-    for (TNaming_Iterator anIter (aNamedShape); anIter.More(); anIter.Next())
+    for (TNaming_Iterator anIter(aNamedShape); anIter.More(); anIter.Next())
     {
       const TopoDS_Shape& aOldShape = anIter.OldShape();
       const TopoDS_Shape& aNewShape = anIter.NewShape();
 
-      if (!aOldShape.IsNull() && aOldShape.ShapeType() == TopAbs_VERTEX
-	     && !aNewShape.IsNull() && aNewShape.ShapeType() != TopAbs_VERTEX)
+      if (!aOldShape.IsNull() && aOldShape.ShapeType() == TopAbs_VERTEX && !aNewShape.IsNull()
+          && aNewShape.ShapeType() != TopAbs_VERTEX)
       {
-        myTransient->ChangeName().Orientation (aOldShape.Orientation());
+        myTransient->ChangeName().Orientation(aOldShape.Orientation());
       }
     }
   }

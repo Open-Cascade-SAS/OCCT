@@ -18,26 +18,22 @@
 #include <TObj_ObjectIterator.hxx>
 #include <TObj_Object.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TObj_ObjectIterator, Standard_Transient)
 
-IMPLEMENT_STANDARD_RTTIEXT(TObj_ObjectIterator,Standard_Transient)
+//=================================================================================================
 
-//=======================================================================
-//function : More
-//purpose  : 
-//=======================================================================
-Standard_Boolean TObj_ObjectIterator::More () const
-{ return Standard_False; }
+Standard_Boolean TObj_ObjectIterator::More() const
+{
+  return Standard_False;
+}
 
-//=======================================================================
-//function : Next
-//purpose  : 
-//=======================================================================
-void TObj_ObjectIterator::Next ()
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
-Handle(TObj_Object) TObj_ObjectIterator::Value () const
-{ return 0; }
+void TObj_ObjectIterator::Next() {}
+
+//=================================================================================================
+
+Handle(TObj_Object) TObj_ObjectIterator::Value() const
+{
+  return 0;
+}

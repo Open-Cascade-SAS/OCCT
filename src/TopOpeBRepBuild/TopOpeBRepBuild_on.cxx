@@ -14,25 +14,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopOpeBRepBuild_BuilderON.hxx>
 #include <TopOpeBRepBuild_define.hxx>
 #include <TopOpeBRepBuild_GTopo.hxx>
 #include <TopOpeBRepBuild_WireEdgeSet.hxx>
 #include <TopOpeBRepDS_CurveIterator.hxx>
 
-//Standard_IMPORT extern Standard_Boolean GLOBAL_faces2d;
+// Standard_IMPORT extern Standard_Boolean GLOBAL_faces2d;
 extern Standard_Boolean GLOBAL_faces2d;
 
-//=======================================================================
-//function : GFillONPartsWES
-//purpose  : 
-//=======================================================================
-void TopOpeBRepBuild_Builder::GFillONPartsWES(const TopoDS_Shape& FOR,const TopOpeBRepBuild_GTopo& G,const TopTools_ListOfShape& LSclass,TopOpeBRepBuild_WireEdgeSet& WES)
+//=================================================================================================
+
+void TopOpeBRepBuild_Builder::GFillONPartsWES(const TopoDS_Shape&          FOR,
+                                              const TopOpeBRepBuild_GTopo& G,
+                                              const TopTools_ListOfShape&  LSclass,
+                                              TopOpeBRepBuild_WireEdgeSet& WES)
 {
   TopOpeBRepBuild_BuilderON BON;
   if (GLOBAL_faces2d)
-  BON.Perform2d(this,FOR,(TopOpeBRepBuild_PGTopo)&G,(TopOpeBRepTool_Plos)&LSclass,(TopOpeBRepBuild_PWireEdgeSet)&WES);
-  else 
-  BON.Perform(this,FOR,(TopOpeBRepBuild_PGTopo)&G,(TopOpeBRepTool_Plos)&LSclass,(TopOpeBRepBuild_PWireEdgeSet)&WES);
+    BON.Perform2d(this,
+                  FOR,
+                  (TopOpeBRepBuild_PGTopo)&G,
+                  (TopOpeBRepTool_Plos)&LSclass,
+                  (TopOpeBRepBuild_PWireEdgeSet)&WES);
+  else
+    BON.Perform(this,
+                FOR,
+                (TopOpeBRepBuild_PGTopo)&G,
+                (TopOpeBRepTool_Plos)&LSclass,
+                (TopOpeBRepBuild_PWireEdgeSet)&WES);
 }

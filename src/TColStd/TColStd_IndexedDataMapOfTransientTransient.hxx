@@ -18,7 +18,7 @@
 #include <Standard_Transient.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-typedef NCollection_IndexedDataMap<Handle(Standard_Transient),Handle(Standard_Transient)> TColStd_IndexedDataMapOfTransientTransient;
-
+typedef NCollection_IndexedDataMap<Handle(Standard_Transient), Handle(Standard_Transient)>
+  TColStd_IndexedDataMapOfTransientTransient;
 
 #endif

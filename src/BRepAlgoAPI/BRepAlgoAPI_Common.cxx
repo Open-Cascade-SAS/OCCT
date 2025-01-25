@@ -14,61 +14,47 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BRepAlgoAPI_Common.hxx>
 #include <TopoDS_Shape.hxx>
 
-//=======================================================================
-//function : BRepAlgoAPI_Common
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 BRepAlgoAPI_Common::BRepAlgoAPI_Common()
-:
-  BRepAlgoAPI_BooleanOperation()
+    : BRepAlgoAPI_BooleanOperation()
 {
-  myOperation=BOPAlgo_COMMON;
+  myOperation = BOPAlgo_COMMON;
 }
-//=======================================================================
-//function : BRepAlgoAPI_Common
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
 BRepAlgoAPI_Common::BRepAlgoAPI_Common(const BOPAlgo_PaveFiller& aPF)
-:
-  BRepAlgoAPI_BooleanOperation(aPF)
+    : BRepAlgoAPI_BooleanOperation(aPF)
 {
-  myOperation=BOPAlgo_COMMON;
+  myOperation = BOPAlgo_COMMON;
 }
-//=======================================================================
-//function : ~BRepAlgoAPI_Common
-//purpose  : 
-//=======================================================================
-BRepAlgoAPI_Common::~BRepAlgoAPI_Common()
-{
-}
-//=======================================================================
-//function : BRepAlgoAPI_Common
-//purpose  : 
-//=======================================================================
-BRepAlgoAPI_Common::BRepAlgoAPI_Common(const TopoDS_Shape& S1, 
-                                       const TopoDS_Shape& S2,
+
+//=================================================================================================
+
+BRepAlgoAPI_Common::~BRepAlgoAPI_Common() {}
+
+//=================================================================================================
+
+BRepAlgoAPI_Common::BRepAlgoAPI_Common(const TopoDS_Shape&          S1,
+                                       const TopoDS_Shape&          S2,
                                        const Message_ProgressRange& theRange)
-: BRepAlgoAPI_BooleanOperation(S1, S2, BOPAlgo_COMMON)
-{
-  Build(theRange);
-}
-//=======================================================================
-//function : BRepAlgoAPI_Common
-//purpose  : 
-//=======================================================================
-BRepAlgoAPI_Common::BRepAlgoAPI_Common(const TopoDS_Shape& S1, 
-                                       const TopoDS_Shape& S2,
-                                       const BOPAlgo_PaveFiller& aDSF,
-                                       const Message_ProgressRange& theRange)
-: BRepAlgoAPI_BooleanOperation(S1, S2, aDSF, BOPAlgo_COMMON)
+    : BRepAlgoAPI_BooleanOperation(S1, S2, BOPAlgo_COMMON)
 {
   Build(theRange);
 }
 
+//=================================================================================================
 
-
+BRepAlgoAPI_Common::BRepAlgoAPI_Common(const TopoDS_Shape&          S1,
+                                       const TopoDS_Shape&          S2,
+                                       const BOPAlgo_PaveFiller&    aDSF,
+                                       const Message_ProgressRange& theRange)
+    : BRepAlgoAPI_BooleanOperation(S1, S2, aDSF, BOPAlgo_COMMON)
+{
+  Build(theRange);
+}

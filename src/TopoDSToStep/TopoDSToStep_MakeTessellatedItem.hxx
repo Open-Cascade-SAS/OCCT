@@ -27,44 +27,42 @@ class TopoDS_Shell;
 class Transfer_FinderProcess;
 
 //! This class implements the mapping between
-//! Face, Shell fromTopoDS and TriangulatedFace from StepVisual. 
+//! Face, Shell fromTopoDS and TriangulatedFace from StepVisual.
 class TopoDSToStep_MakeTessellatedItem : public TopoDSToStep_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
 
   Standard_EXPORT TopoDSToStep_MakeTessellatedItem();
 
-  Standard_EXPORT TopoDSToStep_MakeTessellatedItem(const TopoDS_Face& theFace,
-                                                   TopoDSToStep_Tool& theTool,
-                                                   const Handle(Transfer_FinderProcess)& theFP,
-                                                   const Standard_Boolean theToPreferSurfaceSet,
-                                                   const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
-  Standard_EXPORT TopoDSToStep_MakeTessellatedItem(const TopoDS_Shell& theShell,
-                                                   TopoDSToStep_Tool& theTool,
-                                                   const Handle(Transfer_FinderProcess)& theFP,
-                                                   const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT TopoDSToStep_MakeTessellatedItem(
+    const TopoDS_Face&                    theFace,
+    TopoDSToStep_Tool&                    theTool,
+    const Handle(Transfer_FinderProcess)& theFP,
+    const Standard_Boolean                theToPreferSurfaceSet,
+    const Message_ProgressRange&          theProgress = Message_ProgressRange());
 
-  Standard_EXPORT void Init(const TopoDS_Face& theFace,
-                            TopoDSToStep_Tool& theTool,
+  Standard_EXPORT TopoDSToStep_MakeTessellatedItem(
+    const TopoDS_Shell&                   theShell,
+    TopoDSToStep_Tool&                    theTool,
+    const Handle(Transfer_FinderProcess)& theFP,
+    const Message_ProgressRange&          theProgress = Message_ProgressRange());
+
+  Standard_EXPORT void Init(const TopoDS_Face&                    theFace,
+                            TopoDSToStep_Tool&                    theTool,
                             const Handle(Transfer_FinderProcess)& theFP,
-                            const Standard_Boolean theToPreferSurfaceSet,
+                            const Standard_Boolean                theToPreferSurfaceSet,
                             const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
-  Standard_EXPORT void Init(const TopoDS_Shell& theShell,
-                            TopoDSToStep_Tool& theTool,
+
+  Standard_EXPORT void Init(const TopoDS_Shell&                   theShell,
+                            TopoDSToStep_Tool&                    theTool,
                             const Handle(Transfer_FinderProcess)& theFP,
                             const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+
   Standard_EXPORT const Handle(StepVisual_TessellatedItem)& Value() const;
 
 private:
-
   Handle(StepVisual_TessellatedItem) theTessellatedItem;
-
 };
 
 #endif // _TopoDSToStep_MakeTessellatedItem_HeaderFile

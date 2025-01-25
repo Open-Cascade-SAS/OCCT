@@ -21,43 +21,35 @@
 #include <StepBasic_ProductDefinitionFormation.hxx>
 #include <StepRepr_ConfigurationDesignItem.hxx>
 
-//=======================================================================
-//function : StepRepr_ConfigurationDesignItem
-//purpose  : 
-//=======================================================================
-StepRepr_ConfigurationDesignItem::StepRepr_ConfigurationDesignItem ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : CaseNum
-//purpose  : 
-//=======================================================================
+StepRepr_ConfigurationDesignItem::StepRepr_ConfigurationDesignItem() {}
 
-Standard_Integer StepRepr_ConfigurationDesignItem::CaseNum (const Handle(Standard_Transient)& ent) const
+//=================================================================================================
+
+Standard_Integer StepRepr_ConfigurationDesignItem::CaseNum(
+  const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionFormation))) return 2;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionFormation)))
+    return 2;
   return 0;
 }
 
-//=======================================================================
-//function : ProductDefinition
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_ProductDefinition) StepRepr_ConfigurationDesignItem::ProductDefinition () const
+Handle(StepBasic_ProductDefinition) StepRepr_ConfigurationDesignItem::ProductDefinition() const
 {
   return Handle(StepBasic_ProductDefinition)::DownCast(Value());
 }
 
-//=======================================================================
-//function : ProductDefinitionFormation
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_ProductDefinitionFormation) StepRepr_ConfigurationDesignItem::ProductDefinitionFormation () const
+Handle(StepBasic_ProductDefinitionFormation) StepRepr_ConfigurationDesignItem::
+  ProductDefinitionFormation() const
 {
   return Handle(StepBasic_ProductDefinitionFormation)::DownCast(Value());
 }

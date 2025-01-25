@@ -14,24 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TDocStd_Context.hxx>
 
-//=======================================================================
-//function : TDocStd_Context
-//purpose  : 
-//=======================================================================
-TDocStd_Context::TDocStd_Context():modifiedRef(Standard_False){}
+//=================================================================================================
 
-//=======================================================================
-//function : SetModifiedReferences
-//purpose  : 
-//=======================================================================
+TDocStd_Context::TDocStd_Context()
+    : modifiedRef(Standard_False)
+{
+}
 
-void TDocStd_Context::SetModifiedReferences(const Standard_Boolean Mod) {
+//=================================================================================================
+
+void TDocStd_Context::SetModifiedReferences(const Standard_Boolean Mod)
+{
   modifiedRef = Mod;
 }
 
-Standard_Boolean  TDocStd_Context::ModifiedReferences() const {
+Standard_Boolean TDocStd_Context::ModifiedReferences() const
+{
   return modifiedRef;
 }

@@ -21,7 +21,7 @@
 #include <TopoDS_Shape.hxx>
 
 //! Class implements interface representing tool for discrete model building.
-//! 
+//!
 //! The following statuses should be used by default:
 //! Message_Done1 - model has been successfully built.
 //! Message_Fail1 - empty shape.
@@ -29,20 +29,18 @@
 class BRepMesh_ModelBuilder : public IMeshTools_ModelBuilder
 {
 public:
-
   //! Constructor.
-  Standard_EXPORT BRepMesh_ModelBuilder ();
+  Standard_EXPORT BRepMesh_ModelBuilder();
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_ModelBuilder ();
+  Standard_EXPORT virtual ~BRepMesh_ModelBuilder();
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_ModelBuilder, IMeshTools_ModelBuilder)
 
 protected:
-
   //! Creates discrete model for the given shape.
   //! Returns nullptr in case of failure.
-  Standard_EXPORT virtual Handle (IMeshData_Model) performInternal (
+  Standard_EXPORT virtual Handle(IMeshData_Model) performInternal(
     const TopoDS_Shape&          theShape,
     const IMeshTools_Parameters& theParameters) Standard_OVERRIDE;
 };

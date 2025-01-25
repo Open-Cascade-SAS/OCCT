@@ -14,10 +14,9 @@
 #ifndef _StepElement_EnumeratedVolumeElementPurpose_HeaderFile
 #define _StepElement_EnumeratedVolumeElementPurpose_HeaderFile
 
-
 enum StepElement_EnumeratedVolumeElementPurpose
 {
-StepElement_StressDisplacement
+  StepElement_StressDisplacement
 };
 
 #endif // _StepElement_EnumeratedVolumeElementPurpose_HeaderFile

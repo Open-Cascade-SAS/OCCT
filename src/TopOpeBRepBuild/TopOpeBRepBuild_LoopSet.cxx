@@ -14,36 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopOpeBRepBuild_LoopSet.hxx>
 
-//=======================================================================
-//function : TopOpeBRepBuild_LoopSet
-//purpose  : 
-//=======================================================================
-TopOpeBRepBuild_LoopSet::TopOpeBRepBuild_LoopSet() : 
-myLoopIndex(1), myNbLoop(0)
+//=================================================================================================
+
+TopOpeBRepBuild_LoopSet::TopOpeBRepBuild_LoopSet()
+    : myLoopIndex(1),
+      myNbLoop(0)
 {
 }
 
-TopOpeBRepBuild_LoopSet::~TopOpeBRepBuild_LoopSet()
-{}
+TopOpeBRepBuild_LoopSet::~TopOpeBRepBuild_LoopSet() {}
 
-//=======================================================================
-//function : InitLoop
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TopOpeBRepBuild_LoopSet::InitLoop()
 {
   myLoopIterator.Initialize(myListOfLoop);
-  myLoopIndex = 1; myNbLoop = myListOfLoop.Extent();
+  myLoopIndex = 1;
+  myNbLoop    = myListOfLoop.Extent();
 }
 
-//=======================================================================
-//function : MoreLoop
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean TopOpeBRepBuild_LoopSet::MoreLoop() const
 {
@@ -51,10 +43,7 @@ Standard_Boolean TopOpeBRepBuild_LoopSet::MoreLoop() const
   return b;
 }
 
-//=======================================================================
-//function : NextLoop
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TopOpeBRepBuild_LoopSet::NextLoop()
 {
@@ -62,10 +51,7 @@ void TopOpeBRepBuild_LoopSet::NextLoop()
   myLoopIterator.Next();
 }
 
-//=======================================================================
-//function : Loop
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(TopOpeBRepBuild_Loop) TopOpeBRepBuild_LoopSet::Loop() const
 {
@@ -73,11 +59,7 @@ Handle(TopOpeBRepBuild_Loop) TopOpeBRepBuild_LoopSet::Loop() const
   return L;
 }
 
-
-//=======================================================================
-//function : ChangeListOfLoop
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TopOpeBRepBuild_ListOfLoop& TopOpeBRepBuild_LoopSet::ChangeListOfLoop()
 {

@@ -13,34 +13,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <TFunction_Scope.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TFunction_Scope,TDF_Attribute)
+IMPLEMENT_STANDARD_RTTIEXT(TFunction_Scope, TDF_Attribute)
 
 //=======================================================================
-//function : GetID
-//purpose  : Static method to get an ID
+// function : GetID
+// purpose  : Static method to get an ID
 //=======================================================================
-const Standard_GUID&  TFunction_Scope::GetID() 
-{  
+const Standard_GUID& TFunction_Scope::GetID()
+{
   static Standard_GUID TFunction_ScopeID("F2DE4EFF-7FE8-40a3-AAD5-5B6DDEA83469");
-  return TFunction_ScopeID; 
+  return TFunction_ScopeID;
 }
 
 //=======================================================================
-//function : Set
-//purpose  : Finds or creates a Scope attribute
+// function : Set
+// purpose  : Finds or creates a Scope attribute
 //=======================================================================
 
 Handle(TFunction_Scope) TFunction_Scope::Set(const TDF_Label& Access)
 {
   Handle(TFunction_Scope) S;
-  if (!Access.Root().FindAttribute(TFunction_Scope::GetID(), S)) 
+  if (!Access.Root().FindAttribute(TFunction_Scope::GetID(), S))
   {
     S = new TFunction_Scope();
     Access.Root().AddAttribute(S);
@@ -49,28 +48,25 @@ Handle(TFunction_Scope) TFunction_Scope::Set(const TDF_Label& Access)
 }
 
 //=======================================================================
-//function : ID
-//purpose  : Returns GUID of the function
+// function : ID
+// purpose  : Returns GUID of the function
 //=======================================================================
 
 const Standard_GUID& TFunction_Scope::ID() const
-{ 
-  return GetID(); 
-}
-
-//=======================================================================
-//function : TFunction_Scope
-//purpose  : Constructor
-//=======================================================================
-
-TFunction_Scope::TFunction_Scope():myFreeID(1)
 {
+  return GetID();
+}
 
+//=================================================================================================
+
+TFunction_Scope::TFunction_Scope()
+    : myFreeID(1)
+{
 }
 
 //=======================================================================
-//function : AddFunction
-//purpose  : Adds a function to the scope.
+// function : AddFunction
+// purpose  : Adds a function to the scope.
 //=======================================================================
 
 Standard_Boolean TFunction_Scope::AddFunction(const TDF_Label& L)
@@ -85,8 +81,8 @@ Standard_Boolean TFunction_Scope::AddFunction(const TDF_Label& L)
 }
 
 //=======================================================================
-//function : RemoveFunction
-//purpose  : Removes a function from the scope.
+// function : RemoveFunction
+// purpose  : Removes a function from the scope.
 //=======================================================================
 
 Standard_Boolean TFunction_Scope::RemoveFunction(const TDF_Label& L)
@@ -100,8 +96,8 @@ Standard_Boolean TFunction_Scope::RemoveFunction(const TDF_Label& L)
 }
 
 //=======================================================================
-//function : RemoveFunction
-//purpose  : Removes a function from the scope.
+// function : RemoveFunction
+// purpose  : Removes a function from the scope.
 //=======================================================================
 
 Standard_Boolean TFunction_Scope::RemoveFunction(const Standard_Integer ID)
@@ -115,8 +111,8 @@ Standard_Boolean TFunction_Scope::RemoveFunction(const Standard_Integer ID)
 }
 
 //=======================================================================
-//function : RemoveAllFunctions
-//purpose  : Removes a function from the scope.
+// function : RemoveAllFunctions
+// purpose  : Removes a function from the scope.
 //=======================================================================
 
 void TFunction_Scope::RemoveAllFunctions()
@@ -130,8 +126,8 @@ void TFunction_Scope::RemoveAllFunctions()
 }
 
 //=======================================================================
-//function : HasFunction
-//purpose  : Checks presence of a function.
+// function : HasFunction
+// purpose  : Checks presence of a function.
 //=======================================================================
 
 Standard_Boolean TFunction_Scope::HasFunction(const Standard_Integer ID) const
@@ -140,8 +136,8 @@ Standard_Boolean TFunction_Scope::HasFunction(const Standard_Integer ID) const
 }
 
 //=======================================================================
-//function : HasFunction
-//purpose  : Checks presence of a function.
+// function : HasFunction
+// purpose  : Checks presence of a function.
 //=======================================================================
 
 Standard_Boolean TFunction_Scope::HasFunction(const TDF_Label& L) const
@@ -150,8 +146,8 @@ Standard_Boolean TFunction_Scope::HasFunction(const TDF_Label& L) const
 }
 
 //=======================================================================
-//function : GetFunction
-//purpose  : Returns a function.
+// function : GetFunction
+// purpose  : Returns a function.
 //=======================================================================
 
 Standard_Integer TFunction_Scope::GetFunction(const TDF_Label& L) const
@@ -160,8 +156,8 @@ Standard_Integer TFunction_Scope::GetFunction(const TDF_Label& L) const
 }
 
 //=======================================================================
-//function : GetFunction
-//purpose  : Returns a function.
+// function : GetFunction
+// purpose  : Returns a function.
 //=======================================================================
 
 const TDF_Label& TFunction_Scope::GetFunction(const Standard_Integer ID) const
@@ -170,45 +166,42 @@ const TDF_Label& TFunction_Scope::GetFunction(const Standard_Integer ID) const
 }
 
 //=======================================================================
-//function : GetLogbook
-//purpose  : Returns the Logbook.
+// function : GetLogbook
+// purpose  : Returns the Logbook.
 //=======================================================================
 
-Handle(TFunction_Logbook) TFunction_Scope::GetLogbook() const 
+Handle(TFunction_Logbook) TFunction_Scope::GetLogbook() const
 {
   Handle(TFunction_Logbook) logbook;
   FindAttribute(TFunction_Logbook::GetID(), logbook);
   return logbook;
 }
 
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TFunction_Scope::Restore(const Handle(TDF_Attribute)& other) 
+void TFunction_Scope::Restore(const Handle(TDF_Attribute)& other)
 {
   Handle(TFunction_Scope) S = Handle(TFunction_Scope)::DownCast(other);
 
   // Functions
   myFunctions = S->myFunctions; // copying...
-  myFreeID = S->myFreeID;
+  myFreeID    = S->myFreeID;
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : Method for Copy mechanism
+// function : Paste
+// purpose  : Method for Copy mechanism
 //=======================================================================
 
 void TFunction_Scope::Paste(const Handle(TDF_Attribute)& /*into*/,
-			    const Handle(TDF_RelocationTable)& /*RT*/) const
+                            const Handle(TDF_RelocationTable)& /*RT*/) const
 {
   // Do we need to copy a Scope attribute somewhere?
 }
 
 //=======================================================================
-//function : NewEmpty
-//purpose  : Returns new empty graph node attribute
+// function : NewEmpty
+// purpose  : Returns new empty graph node attribute
 //=======================================================================
 
 Handle(TDF_Attribute) TFunction_Scope::NewEmpty() const
@@ -217,19 +210,19 @@ Handle(TDF_Attribute) TFunction_Scope::NewEmpty() const
 }
 
 //=======================================================================
-//function : Dump
-//purpose  : Dump of the scope of functions
+// function : Dump
+// purpose  : Dump of the scope of functions
 //=======================================================================
 
-Standard_OStream& TFunction_Scope::Dump (Standard_OStream& anOS) const
+Standard_OStream& TFunction_Scope::Dump(Standard_OStream& anOS) const
 {
   TDF_Attribute::Dump(anOS);
   return anOS;
 }
 
 //=======================================================================
-//function : GetFunctions
-//purpose  : Returns the scope of functions.
+// function : GetFunctions
+// purpose  : Returns the scope of functions.
 //=======================================================================
 
 const TFunction_DoubleMapOfIntegerLabel& TFunction_Scope::GetFunctions() const
@@ -238,8 +231,8 @@ const TFunction_DoubleMapOfIntegerLabel& TFunction_Scope::GetFunctions() const
 }
 
 //=======================================================================
-//function : ChangeFunctions
-//purpose  : Returns the scope of functions.
+// function : ChangeFunctions
+// purpose  : Returns the scope of functions.
 //=======================================================================
 
 TFunction_DoubleMapOfIntegerLabel& TFunction_Scope::ChangeFunctions()
@@ -248,11 +241,11 @@ TFunction_DoubleMapOfIntegerLabel& TFunction_Scope::ChangeFunctions()
 }
 
 //=======================================================================
-//function : SetFreeID
-//purpose  : Defines a free function ID
+// function : SetFreeID
+// purpose  : Defines a free function ID
 //=======================================================================
 
-void TFunction_Scope::SetFreeID (const Standard_Integer ID)
+void TFunction_Scope::SetFreeID(const Standard_Integer ID)
 {
   if (myFreeID == ID)
     return;
@@ -263,11 +256,11 @@ void TFunction_Scope::SetFreeID (const Standard_Integer ID)
 }
 
 //=======================================================================
-//function : GetFreeID
-//purpose  : Returns a free function ID
+// function : GetFreeID
+// purpose  : Returns a free function ID
 //=======================================================================
 
-Standard_Integer TFunction_Scope::GetFreeID () const
+Standard_Integer TFunction_Scope::GetFreeID() const
 {
   return myFreeID;
 }

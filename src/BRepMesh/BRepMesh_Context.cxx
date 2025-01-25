@@ -28,23 +28,19 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_Context, IMeshTools_Context)
 
-//=======================================================================
-// Function: Constructor
-// Purpose : 
-//=======================================================================
-BRepMesh_Context::BRepMesh_Context (IMeshTools_MeshAlgoType theMeshType)
+//=================================================================================================
+
+BRepMesh_Context::BRepMesh_Context(IMeshTools_MeshAlgoType theMeshType)
 {
   if (theMeshType == IMeshTools_MeshAlgoType_DEFAULT)
   {
-    TCollection_AsciiString aValue = OSD_Environment ("CSF_MeshAlgo").Value();
+    TCollection_AsciiString aValue = OSD_Environment("CSF_MeshAlgo").Value();
     aValue.LowerCase();
-    if (aValue == "watson"
-     || aValue == "0")
+    if (aValue == "watson" || aValue == "0")
     {
       theMeshType = IMeshTools_MeshAlgoType_Watson;
     }
-    else if (aValue == "delabella"
-          || aValue == "1")
+    else if (aValue == "delabella" || aValue == "1")
     {
       theMeshType = IMeshTools_MeshAlgoType_Delabella;
     }
@@ -52,13 +48,14 @@ BRepMesh_Context::BRepMesh_Context (IMeshTools_MeshAlgoType theMeshType)
     {
       if (!aValue.IsEmpty())
       {
-        Message::SendWarning (TCollection_AsciiString("BRepMesh_Context, ignore unknown algorithm '") + aValue + "' specified in CSF_MeshAlgo variable");
+        Message::SendWarning(TCollection_AsciiString("BRepMesh_Context, ignore unknown algorithm '")
+                             + aValue + "' specified in CSF_MeshAlgo variable");
       }
       theMeshType = IMeshTools_MeshAlgoType_Watson;
     }
   }
 
-  Handle (IMeshTools_MeshAlgoFactory) aAlgoFactory;
+  Handle(IMeshTools_MeshAlgoFactory) aAlgoFactory;
   switch (theMeshType)
   {
     case IMeshTools_MeshAlgoType_DEFAULT:
@@ -70,18 +67,14 @@ BRepMesh_Context::BRepMesh_Context (IMeshTools_MeshAlgoType theMeshType)
       break;
   }
 
-  SetModelBuilder (new BRepMesh_ModelBuilder);
-  SetEdgeDiscret  (new BRepMesh_EdgeDiscret);
-  SetModelHealer  (new BRepMesh_ModelHealer);
-  SetPreProcessor (new BRepMesh_ModelPreProcessor);
-  SetFaceDiscret  (new BRepMesh_FaceDiscret (aAlgoFactory));
+  SetModelBuilder(new BRepMesh_ModelBuilder);
+  SetEdgeDiscret(new BRepMesh_EdgeDiscret);
+  SetModelHealer(new BRepMesh_ModelHealer);
+  SetPreProcessor(new BRepMesh_ModelPreProcessor);
+  SetFaceDiscret(new BRepMesh_FaceDiscret(aAlgoFactory));
   SetPostProcessor(new BRepMesh_ModelPostProcessor);
 }
 
-//=======================================================================
-// Function: Destructor
-// Purpose : 
-//=======================================================================
-BRepMesh_Context::~BRepMesh_Context ()
-{
-}
+//=================================================================================================
+
+BRepMesh_Context::~BRepMesh_Context() {}

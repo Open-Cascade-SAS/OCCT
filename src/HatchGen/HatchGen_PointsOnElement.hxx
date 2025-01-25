@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<HatchGen_PointOnElement> HatchGen_PointsOnElement;
 
-
 #endif

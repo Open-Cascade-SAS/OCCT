@@ -21,24 +21,19 @@
 #include <StepRepr_ConfigurationEffectivity.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ConfigurationEffectivity,StepBasic_ProductDefinitionEffectivity)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ConfigurationEffectivity,
+                           StepBasic_ProductDefinitionEffectivity)
 
-//=======================================================================
-//function : StepRepr_ConfigurationEffectivity
-//purpose  : 
-//=======================================================================
-StepRepr_ConfigurationEffectivity::StepRepr_ConfigurationEffectivity ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepRepr_ConfigurationEffectivity::StepRepr_ConfigurationEffectivity() {}
 
-void StepRepr_ConfigurationEffectivity::Init (const Handle(TCollection_HAsciiString) &aEffectivity_Id,
-                                              const Handle(StepBasic_ProductDefinitionRelationship) &aProductDefinitionEffectivity_Usage,
-                                              const Handle(StepRepr_ConfigurationDesign) &aConfiguration)
+//=================================================================================================
+
+void StepRepr_ConfigurationEffectivity::Init(
+  const Handle(TCollection_HAsciiString)&                aEffectivity_Id,
+  const Handle(StepBasic_ProductDefinitionRelationship)& aProductDefinitionEffectivity_Usage,
+  const Handle(StepRepr_ConfigurationDesign)&            aConfiguration)
 {
   StepBasic_ProductDefinitionEffectivity::Init(aEffectivity_Id,
                                                aProductDefinitionEffectivity_Usage);
@@ -46,22 +41,17 @@ void StepRepr_ConfigurationEffectivity::Init (const Handle(TCollection_HAsciiStr
   theConfiguration = aConfiguration;
 }
 
-//=======================================================================
-//function : Configuration
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepRepr_ConfigurationDesign) StepRepr_ConfigurationEffectivity::Configuration () const
+Handle(StepRepr_ConfigurationDesign) StepRepr_ConfigurationEffectivity::Configuration() const
 {
   return theConfiguration;
 }
 
-//=======================================================================
-//function : SetConfiguration
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepRepr_ConfigurationEffectivity::SetConfiguration (const Handle(StepRepr_ConfigurationDesign) &aConfiguration)
+void StepRepr_ConfigurationEffectivity::SetConfiguration(
+  const Handle(StepRepr_ConfigurationDesign)& aConfiguration)
 {
   theConfiguration = aConfiguration;
 }

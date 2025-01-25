@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(IGESGraph_Color)> IGESGraph_Array1OfColor;
 
-
 #endif

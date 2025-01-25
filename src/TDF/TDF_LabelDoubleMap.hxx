@@ -19,8 +19,7 @@
 #include <TDF_Label.hxx>
 #include <NCollection_DoubleMap.hxx>
 
-typedef NCollection_DoubleMap<TDF_Label,TDF_Label> TDF_LabelDoubleMap;
-typedef NCollection_DoubleMap<TDF_Label,TDF_Label>::Iterator TDF_DoubleMapIteratorOfLabelDoubleMap;
-
+typedef NCollection_DoubleMap<TDF_Label, TDF_Label>           TDF_LabelDoubleMap;
+typedef NCollection_DoubleMap<TDF_Label, TDF_Label>::Iterator TDF_DoubleMapIteratorOfLabelDoubleMap;
 
 #endif

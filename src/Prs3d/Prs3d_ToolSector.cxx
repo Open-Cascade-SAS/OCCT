@@ -19,43 +19,35 @@
 #include <Poly_Array1OfTriangle.hxx>
 #include <Prs3d_ToolQuadric.hxx>
 
-//=======================================================================
-//function : Constructor
-//purpose  :
-//=======================================================================
-Prs3d_ToolSector::Prs3d_ToolSector (const Standard_Real    theRadius,
-                                    const Standard_Integer theNbSlices,
-                                    const Standard_Integer theNbStacks)
-: myRadius (theRadius)
+//=================================================================================================
+
+Prs3d_ToolSector::Prs3d_ToolSector(const Standard_Real    theRadius,
+                                   const Standard_Integer theNbSlices,
+                                   const Standard_Integer theNbStacks)
+    : myRadius(theRadius)
 {
   mySlicesNb = theNbSlices;
   myStacksNb = theNbStacks;
 }
 
-//=======================================================================
-//function : Vertex
-//purpose  :
-//=======================================================================
-gp_Pnt Prs3d_ToolSector::Vertex (const Standard_Real theU, const Standard_Real theV) const
+//=================================================================================================
+
+gp_Pnt Prs3d_ToolSector::Vertex(const Standard_Real theU, const Standard_Real theV) const
 {
   const Standard_Real aU      = theU * M_PI / 2.0;
   const Standard_Real aRadius = myRadius * theV;
-  return gp_Pnt (Cos (aU) * aRadius,
-                 Sin (aU) * aRadius,
-                 0.0);
+  return gp_Pnt(Cos(aU) * aRadius, Sin(aU) * aRadius, 0.0);
 }
 
-//=======================================================================
-//function : Create
-//purpose  :
-//=======================================================================
-Handle(Graphic3d_ArrayOfTriangles) Prs3d_ToolSector::Create (const Standard_Real    theRadius,
-                                                             const Standard_Integer theNbSlices,
-                                                             const Standard_Integer theNbStacks,
-                                                             const gp_Trsf&         theTrsf)
+//=================================================================================================
+
+Handle(Graphic3d_ArrayOfTriangles) Prs3d_ToolSector::Create(const Standard_Real    theRadius,
+                                                            const Standard_Integer theNbSlices,
+                                                            const Standard_Integer theNbStacks,
+                                                            const gp_Trsf&         theTrsf)
 {
   Handle(Graphic3d_ArrayOfTriangles) anArray;
-  Prs3d_ToolSector aTool (theRadius, theNbSlices, theNbStacks);
-  aTool.FillArray (anArray, theTrsf);
+  Prs3d_ToolSector                   aTool(theRadius, theNbSlices, theNbStacks);
+  aTool.FillArray(anArray, theTrsf);
   return anArray;
 }

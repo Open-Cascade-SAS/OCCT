@@ -14,82 +14,59 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRep_PointOnCurve.hxx>
 #include <Geom_Curve.hxx>
 #include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRep_PointOnCurve,BRep_PointRepresentation)
+IMPLEMENT_STANDARD_RTTIEXT(BRep_PointOnCurve, BRep_PointRepresentation)
 
-//=======================================================================
-//function : BRep_PointOnCurve
-//purpose  : 
-//=======================================================================
-BRep_PointOnCurve::BRep_PointOnCurve(const Standard_Real P,
-				     const Handle(Geom_Curve)& C, 
-				     const TopLoc_Location& L) :
-       BRep_PointRepresentation(P,L),
-       myCurve(C)
+//=================================================================================================
+
+BRep_PointOnCurve::BRep_PointOnCurve(const Standard_Real       P,
+                                     const Handle(Geom_Curve)& C,
+                                     const TopLoc_Location&    L)
+    : BRep_PointRepresentation(P, L),
+      myCurve(C)
 {
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : IsPointOnCurve
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean  BRep_PointOnCurve::IsPointOnCurve()const 
+Standard_Boolean BRep_PointOnCurve::IsPointOnCurve() const
 {
   return Standard_True;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : IsPointOnCurve
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean  BRep_PointOnCurve::IsPointOnCurve
-  (const Handle(Geom_Curve)& C,
-   const TopLoc_Location& L)const 
+Standard_Boolean BRep_PointOnCurve::IsPointOnCurve(const Handle(Geom_Curve)& C,
+                                                   const TopLoc_Location&    L) const
 {
   return (myCurve == C) && (Location() == L);
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Curve
-//purpose  : 
-//=======================================================================
-
-const Handle(Geom_Curve)&  BRep_PointOnCurve::Curve()const 
+const Handle(Geom_Curve)& BRep_PointOnCurve::Curve() const
 {
   return myCurve;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Curve
-//purpose  : 
-//=======================================================================
-
-void  BRep_PointOnCurve::Curve(const Handle(Geom_Curve)& C)
+void BRep_PointOnCurve::Curve(const Handle(Geom_Curve)& C)
 {
   myCurve = C;
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void BRep_PointOnCurve::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+//=================================================================================================
+
+void BRep_PointOnCurve::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, BRep_PointRepresentation)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, BRep_PointRepresentation)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurve.get())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myCurve.get())
 }
-

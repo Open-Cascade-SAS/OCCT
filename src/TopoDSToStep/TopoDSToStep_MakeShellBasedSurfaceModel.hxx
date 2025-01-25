@@ -31,58 +31,40 @@ class Transfer_FinderProcess;
 class TopoDS_Shell;
 class TopoDS_Solid;
 
-
 //! This class implements the mapping between classes
 //! Face, Shell or Solid from TopoDS and ShellBasedSurfaceModel
 //! from StepShape. All the topology and geometry comprised
 //! into the shape are taken into account and translated.
-class TopoDSToStep_MakeShellBasedSurfaceModel  : public TopoDSToStep_Root
+class TopoDSToStep_MakeShellBasedSurfaceModel : public TopoDSToStep_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT TopoDSToStep_MakeShellBasedSurfaceModel(const TopoDS_Face& F,
-                                                          const Handle(Transfer_FinderProcess)& FP,
-                                                          const StepData_Factors& theLocalFactors = StepData_Factors(),
-                                  const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
-  Standard_EXPORT TopoDSToStep_MakeShellBasedSurfaceModel(const TopoDS_Shell& S,
-                                                          const Handle(Transfer_FinderProcess)& FP,
-                                                          const StepData_Factors& theLocalFactors = StepData_Factors(),
-                                  const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
-  Standard_EXPORT TopoDSToStep_MakeShellBasedSurfaceModel(const TopoDS_Solid& S,
-                                                          const Handle(Transfer_FinderProcess)& FP,
-                                                          const StepData_Factors& theLocalFactors = StepData_Factors(),
-                                  const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+  Standard_EXPORT TopoDSToStep_MakeShellBasedSurfaceModel(
+    const TopoDS_Face&                    F,
+    const Handle(Transfer_FinderProcess)& FP,
+    const StepData_Factors&               theLocalFactors = StepData_Factors(),
+    const Message_ProgressRange&          theProgress     = Message_ProgressRange());
+
+  Standard_EXPORT TopoDSToStep_MakeShellBasedSurfaceModel(
+    const TopoDS_Shell&                   S,
+    const Handle(Transfer_FinderProcess)& FP,
+    const StepData_Factors&               theLocalFactors = StepData_Factors(),
+    const Message_ProgressRange&          theProgress     = Message_ProgressRange());
+
+  Standard_EXPORT TopoDSToStep_MakeShellBasedSurfaceModel(
+    const TopoDS_Solid&                   S,
+    const Handle(Transfer_FinderProcess)& FP,
+    const StepData_Factors&               theLocalFactors = StepData_Factors(),
+    const Message_ProgressRange&          theProgress     = Message_ProgressRange());
+
   Standard_EXPORT const Handle(StepShape_ShellBasedSurfaceModel)& Value() const;
-  Standard_EXPORT const Handle(StepVisual_TessellatedItem)& TessellatedValue() const;
-
-
+  Standard_EXPORT const Handle(StepVisual_TessellatedItem)&       TessellatedValue() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(StepShape_ShellBasedSurfaceModel) theShellBasedSurfaceModel;
-  Handle(StepVisual_TessellatedItem) theTessellatedItem;
-
-
+  Handle(StepVisual_TessellatedItem)       theTessellatedItem;
 };
-
-
-
-
-
-
 
 #endif // _TopoDSToStep_MakeShellBasedSurfaceModel_HeaderFile

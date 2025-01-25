@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRep_Builder.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
 #include <Standard_Failure.hxx>
@@ -24,94 +23,81 @@
 #include <TopoDS_Wire.hxx>
 #include <TopOpeBRepTool_face.hxx>
 
-//=======================================================================
-//function : TopOpeBRepTool_face
-//purpose  : 
-//=======================================================================
-TopOpeBRepTool_face::TopOpeBRepTool_face()
-{
-}
+//=================================================================================================
+
+TopOpeBRepTool_face::TopOpeBRepTool_face() {}
 
 static void FUN_reverse(const TopoDS_Face& f, TopoDS_Face& frev)
 {
-  BRep_Builder B; 
+  BRep_Builder B;
   TopoDS_Shape aLocalShape = f.EmptyCopied();
-  frev = TopoDS::Face(aLocalShape);
-//  frev = TopoDS::Face(f.EmptyCopied());
+  frev                     = TopoDS::Face(aLocalShape);
+  //  frev = TopoDS::Face(f.EmptyCopied());
   TopoDS_Iterator it(f);
-  while (it.More()) {
-    B.Add(frev,it.Value().Reversed());
+  while (it.More())
+  {
+    B.Add(frev, it.Value().Reversed());
     it.Next();
-  }    
+  }
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean TopOpeBRepTool_face::Init(const TopoDS_Wire& W, const TopoDS_Face& Fref)
 {
   myFfinite.Nullify();
   myW = W;
 
-  // fres : 
-//  TopoDS_Face fres;
-//  Handle(Geom_Surface) su = BRep_Tool::Surface(Fref);  
-//  BRep_Builder B; B.MakeFace(fres,su,Precision::Confusion());
+  // fres :
+  //  TopoDS_Face fres;
+  //  Handle(Geom_Surface) su = BRep_Tool::Surface(Fref);
+  //  BRep_Builder B; B.MakeFace(fres,su,Precision::Confusion());
   TopoDS_Shape aLocalShape = Fref.EmptyCopied();
-  TopoDS_Face fres = TopoDS::Face(aLocalShape);
-//  TopoDS_Face fres = TopoDS::Face(Fref.EmptyCopied());
-  BRep_Builder B; B.Add(fres,W);
-  B.NaturalRestriction(fres,Standard_True);
+  TopoDS_Face  fres        = TopoDS::Face(aLocalShape);
+  //  TopoDS_Face fres = TopoDS::Face(Fref.EmptyCopied());
+  BRep_Builder B;
+  B.Add(fres, W);
+  B.NaturalRestriction(fres, Standard_True);
 
   // <myfinite> :
-  BRepTopAdaptor_FClass2d FClass(fres,0.);
-  Standard_Boolean infinite = ( FClass.PerformInfinitePoint() == TopAbs_IN);
-  myfinite = !infinite;
+  BRepTopAdaptor_FClass2d FClass(fres, 0.);
+  Standard_Boolean        infinite = (FClass.PerformInfinitePoint() == TopAbs_IN);
+  myfinite                         = !infinite;
 
-  // <myFfinite> : 
-  if (myfinite) myFfinite = fres;
-  else          FUN_reverse(fres,myFfinite);
+  // <myFfinite> :
+  if (myfinite)
+    myFfinite = fres;
+  else
+    FUN_reverse(fres, myFfinite);
   return Standard_True;
 }
 
-//=======================================================================
-//function : IsDone
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean TopOpeBRepTool_face::IsDone() const
 {
   return (!myFfinite.IsNull());
 }
 
-//=======================================================================
-//function : Finite
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean TopOpeBRepTool_face::Finite() const
 {
-  if (!IsDone()) throw Standard_Failure("TopOpeBRepTool_face NOT DONE");
+  if (!IsDone())
+    throw Standard_Failure("TopOpeBRepTool_face NOT DONE");
   return myfinite;
 }
 
-//=======================================================================
-//function : Ffinite
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 const TopoDS_Face& TopOpeBRepTool_face::Ffinite() const
 {
-  if (!IsDone()) throw Standard_Failure("TopOpeBRepTool_face NOT DONE");
+  if (!IsDone())
+    throw Standard_Failure("TopOpeBRepTool_face NOT DONE");
   return myFfinite;
 }
 
-//=======================================================================
-//function : W
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 const TopoDS_Wire& TopOpeBRepTool_face::W() const
 {
@@ -119,15 +105,15 @@ const TopoDS_Wire& TopOpeBRepTool_face::W() const
 }
 
 //=======================================================================
-//function : TopoDS_Face&
-//purpose  : 
+// function : TopoDS_Face&
+// purpose  :
 //=======================================================================
 
 TopoDS_Face TopOpeBRepTool_face::RealF() const
 {
-  if (myfinite) return myFfinite;
-  TopoDS_Face realf; FUN_reverse(myFfinite,realf);
+  if (myfinite)
+    return myFfinite;
+  TopoDS_Face realf;
+  FUN_reverse(myFfinite, realf);
   return realf;
 }
-
-

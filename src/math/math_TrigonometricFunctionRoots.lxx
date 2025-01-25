@@ -18,29 +18,33 @@
 #include <StdFail_NotDone.hxx>
 #include <Standard_OutOfRange.hxx>
 
-inline Standard_Boolean math_TrigonometricFunctionRoots::InfiniteRoots() const { return InfiniteStatus; }
+inline Standard_Boolean math_TrigonometricFunctionRoots::InfiniteRoots() const
+{
+  return InfiniteStatus;
+}
 
-inline Standard_Boolean math_TrigonometricFunctionRoots::IsDone() const 
-{ return Done; }
+inline Standard_Boolean math_TrigonometricFunctionRoots::IsDone() const
+{
+  return Done;
+}
 
-
-inline Standard_OStream& operator<<(Standard_OStream& o, 
-				    const math_TrigonometricFunctionRoots& T)
+inline Standard_OStream& operator<<(Standard_OStream& o, const math_TrigonometricFunctionRoots& T)
 {
   T.Dump(o);
   return o;
 }
 
-inline Standard_Real math_TrigonometricFunctionRoots::Value(const Standard_Integer Index) const {
+inline Standard_Real math_TrigonometricFunctionRoots::Value(const Standard_Integer Index) const
+{
   StdFail_InfiniteSolutions_Raise_if(InfiniteStatus, " ");
   StdFail_NotDone_Raise_if(!Done, " ");
   Standard_OutOfRange_Raise_if(Index > NbSol, " ");
   return Sol(Index);
 }
 
-inline Standard_Integer math_TrigonometricFunctionRoots::NbSolutions() const {
+inline Standard_Integer math_TrigonometricFunctionRoots::NbSolutions() const
+{
   StdFail_InfiniteSolutions_Raise_if(InfiniteStatus, " ");
   StdFail_NotDone_Raise_if(!Done, " ");
   return NbSol;
 }
-

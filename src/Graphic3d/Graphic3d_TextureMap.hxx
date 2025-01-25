@@ -27,7 +27,6 @@ class Graphic3d_TextureMap : public Graphic3d_TextureRoot
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_TextureMap, Graphic3d_TextureRoot)
 public:
-
   //! enable texture smoothing
   Standard_EXPORT void EnableSmooth();
 
@@ -36,8 +35,8 @@ public:
 
   //! disable texture smoothing
   Standard_EXPORT void DisableSmooth();
-  
-    //! enable texture modulate mode.
+
+  //! enable texture modulate mode.
   //! the image is modulate with the shading of the surface.
   Standard_EXPORT void EnableModulate();
 
@@ -64,14 +63,14 @@ public:
   Standard_EXPORT Graphic3d_LevelOfTextureAnisotropy AnisoFilter() const;
 
   //! @param theLevel level of anisotropy texture filter.
-  Standard_EXPORT void SetAnisoFilter (const Graphic3d_LevelOfTextureAnisotropy theLevel);
+  Standard_EXPORT void SetAnisoFilter(const Graphic3d_LevelOfTextureAnisotropy theLevel);
 
 protected:
+  Standard_EXPORT Graphic3d_TextureMap(const TCollection_AsciiString& theFileName,
+                                       const Graphic3d_TypeOfTexture  theType);
 
-  Standard_EXPORT Graphic3d_TextureMap(const TCollection_AsciiString& theFileName, const Graphic3d_TypeOfTexture theType);
-  
-  Standard_EXPORT Graphic3d_TextureMap(const Handle(Image_PixMap)& thePixMap, const Graphic3d_TypeOfTexture theType);
-
+  Standard_EXPORT Graphic3d_TextureMap(const Handle(Image_PixMap)&   thePixMap,
+                                       const Graphic3d_TypeOfTexture theType);
 };
 
 DEFINE_STANDARD_HANDLE(Graphic3d_TextureMap, Graphic3d_TextureRoot)

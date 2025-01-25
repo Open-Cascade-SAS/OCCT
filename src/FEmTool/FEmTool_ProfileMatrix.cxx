@@ -18,7 +18,6 @@
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
 
-
 #include <FEmTool_ProfileMatrix.hxx>
 #include <gp.hxx>
 #include <Standard_NotImplemented.hxx>
@@ -26,117 +25,117 @@
 #include <Standard_Type.hxx>
 #include <StdFail_NotDone.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(FEmTool_ProfileMatrix,FEmTool_SparseMatrix)
+IMPLEMENT_STANDARD_RTTIEXT(FEmTool_ProfileMatrix, FEmTool_SparseMatrix)
 
-//=======================================================================
-//function : :FEmTool_ProfileMatrix
-//purpose  :
-//=======================================================================
-FEmTool_ProfileMatrix::FEmTool_ProfileMatrix(const TColStd_Array1OfInteger& FirstIndexes) 
-                       : profile(1, 2, 1, FirstIndexes.Length())
+//=================================================================================================
+
+FEmTool_ProfileMatrix::FEmTool_ProfileMatrix(const TColStd_Array1OfInteger& FirstIndexes)
+    : profile(1, 2, 1, FirstIndexes.Length())
 {
   Standard_Integer i, j, k, l;
   profile(1, 1) = 0;
   profile(2, 1) = 1;
-  for(i = 2; i <= FirstIndexes.Length(); i++) {
+  for (i = 2; i <= FirstIndexes.Length(); i++)
+  {
     profile(1, i) = i - FirstIndexes(i);
-    profile(2, i) = profile(2, i-1) + profile(1, i) + 1;
+    profile(2, i) = profile(2, i - 1) + profile(1, i) + 1;
   }
   NextCoeff = new TColStd_HArray1OfInteger(1, profile(2, FirstIndexes.Length()));
- 
-  for(i = 1, k = 1; i <= FirstIndexes.Length(); i++)
-    for(j = FirstIndexes(i); j <= i; j++) {
-      for(l = i+1; l <= FirstIndexes.Length() && j < FirstIndexes(l); l++);
 
-      if(l > FirstIndexes.Length()) NextCoeff->SetValue(k, 0);
-      else NextCoeff->SetValue(k, l);
+  for (i = 1, k = 1; i <= FirstIndexes.Length(); i++)
+    for (j = FirstIndexes(i); j <= i; j++)
+    {
+      for (l = i + 1; l <= FirstIndexes.Length() && j < FirstIndexes(l); l++)
+        ;
+
+      if (l > FirstIndexes.Length())
+        NextCoeff->SetValue(k, 0);
+      else
+        NextCoeff->SetValue(k, l);
       k++;
     }
-  
 
   ProfileMatrix = new TColStd_HArray1OfReal(1, profile(2, FirstIndexes.Length()));
-  SMatrix = new TColStd_HArray1OfReal(1, profile(2, FirstIndexes.Length()));
-  IsDecomp = Standard_False;
+  SMatrix       = new TColStd_HArray1OfReal(1, profile(2, FirstIndexes.Length()));
+  IsDecomp      = Standard_False;
 }
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
- void FEmTool_ProfileMatrix::Init(const Standard_Real Value) 
+void FEmTool_ProfileMatrix::Init(const Standard_Real Value)
 {
   ProfileMatrix->Init(Value);
   IsDecomp = Standard_False;
 }
 
-//=======================================================================
-//function : ChangeValue
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- Standard_Real& FEmTool_ProfileMatrix::ChangeValue(const Standard_Integer I,
-						   const Standard_Integer J)
+Standard_Real& FEmTool_ProfileMatrix::ChangeValue(const Standard_Integer I,
+                                                  const Standard_Integer J)
 {
   Standard_Integer Ind;
-  Ind = I-J;
-  if (Ind < 0) {
+  Ind = I - J;
+  if (Ind < 0)
+  {
     Ind = -Ind;
-    Standard_OutOfRange_Raise_if(Ind>profile(1, J),
-				  "FEmTool_ProfileMatrix::ChangeValue");
+    Standard_OutOfRange_Raise_if(Ind > profile(1, J), "FEmTool_ProfileMatrix::ChangeValue");
     Ind = profile(2, J) - Ind;
   }
-  else {
-    Standard_OutOfRange_Raise_if(Ind>profile(1, I),
-				  "FEmTool_ProfileMatrix::ChangeValue");
-    Ind = profile(2, I)-Ind;
+  else
+  {
+    Standard_OutOfRange_Raise_if(Ind > profile(1, I), "FEmTool_ProfileMatrix::ChangeValue");
+    Ind = profile(2, I) - Ind;
   }
-  return  ProfileMatrix->ChangeValue(Ind);
+  return ProfileMatrix->ChangeValue(Ind);
 }
 
 //=======================================================================
-//function : Decompose
-//purpose  : Choleski's decomposition
+// function : Decompose
+// purpose  : Choleski's decomposition
 //=======================================================================
- Standard_Boolean FEmTool_ProfileMatrix::Decompose() 
+Standard_Boolean FEmTool_ProfileMatrix::Decompose()
 {
   Standard_Integer i, j, k, ik, jk, DiagAddr, CurrAddr, Kmin, Kj;
-  Standard_Real Sum, a, Eps = 1.e-32;
+  Standard_Real    Sum, a, Eps = 1.e-32;
 
   SMatrix->Init(0.);
-  Standard_Real * SMA =  &SMatrix->ChangeValue(1);
+  Standard_Real* SMA = &SMatrix->ChangeValue(1);
   SMA--;
-  const Standard_Real * PM = &ProfileMatrix->Value(1);
+  const Standard_Real* PM = &ProfileMatrix->Value(1);
   PM--;
   IsDecomp = Standard_False;
-  for(j = 1; j <= RowNumber(); j++) {
+  for (j = 1; j <= RowNumber(); j++)
+  {
     DiagAddr = profile(2, j);
-    Kj = j - profile(1, j);
-    Sum = 0;
-    for(k = DiagAddr - profile(1, j); k < DiagAddr; k++)
+    Kj       = j - profile(1, j);
+    Sum      = 0;
+    for (k = DiagAddr - profile(1, j); k < DiagAddr; k++)
       Sum += SMA[k] * SMA[k];
 
     a = PM[DiagAddr] - Sum;
-    if(a < Eps) {
-      return Standard_False;// Matrix is not positive defined
+    if (a < Eps)
+    {
+      return Standard_False; // Matrix is not positive defined
     }
-    a = Sqrt(a);
+    a             = Sqrt(a);
     SMA[DiagAddr] = a;
-  
+
     CurrAddr = DiagAddr;
-    while ((i = NextCoeff->Value(CurrAddr)) > 0) {
+    while ((i = NextCoeff->Value(CurrAddr)) > 0)
+    {
       CurrAddr = profile(2, i) - (i - j);
-    
+
       // Computation of Sum of S  .S  for k = 1,..,j-1
       //                        ik  jk
-      Sum = 0;
+      Sum  = 0;
       Kmin = Max((i - profile(1, i)), Kj);
-      ik = profile(2, i) - i + Kmin;
-      jk = DiagAddr - j + Kmin;
-      for(k = Kmin; k <j; k++,ik++,jk++) {
-	Sum += SMA[ik]*SMA[jk];
-      }  
-      SMA[CurrAddr] = (PM[CurrAddr] - Sum)/a;
+      ik   = profile(2, i) - i + Kmin;
+      jk   = DiagAddr - j + Kmin;
+      for (k = Kmin; k < j; k++, ik++, jk++)
+      {
+        Sum += SMA[ik] * SMA[jk];
+      }
+      SMA[CurrAddr] = (PM[CurrAddr] - Sum) / a;
     }
   }
   IsDecomp = Standard_True;
@@ -144,143 +143,158 @@ FEmTool_ProfileMatrix::FEmTool_ProfileMatrix(const TColStd_Array1OfInteger& Firs
 }
 
 //=======================================================================
-//function : Solve
-//purpose  : Resolution of the system S*t(S)X = B
+// function : Solve
+// purpose  : Resolution of the system S*t(S)X = B
 //=======================================================================
- void FEmTool_ProfileMatrix::Solve(const math_Vector& B,math_Vector& X) const
+void FEmTool_ProfileMatrix::Solve(const math_Vector& B, math_Vector& X) const
 {
-  if (!IsDecomp) throw StdFail_NotDone("Decomposition must be done");
- 
-  Standard_Integer i, j, jj,DiagAddr, CurrAddr;
-  Standard_Real Sum;
+  if (!IsDecomp)
+    throw StdFail_NotDone("Decomposition must be done");
 
-  Standard_Real * x = &X(X.Lower());
+  Standard_Integer i, j, jj, DiagAddr, CurrAddr;
+  Standard_Real    Sum;
+
+  Standard_Real* x = &X(X.Lower());
   x--;
-  const Standard_Real * b = &B(B.Lower());
+  const Standard_Real* b = &B(B.Lower());
   b--;
-  const Standard_Real * SMA = &SMatrix->Value(1);
-  SMA --;
-  const Standard_Integer * NC = &NextCoeff->Value(1);
+  const Standard_Real* SMA = &SMatrix->Value(1);
+  SMA--;
+  const Standard_Integer* NC = &NextCoeff->Value(1);
   NC--;
 
-// Resolution of Sw = B;
-  for(i = 1; i <= RowNumber(); i++) {
+  // Resolution of Sw = B;
+  for (i = 1; i <= RowNumber(); i++)
+  {
     DiagAddr = profile(2, i);
-    Sum = 0;
-    for(j = i - profile(1, i), jj = DiagAddr - (i - j); 
-	j < i; j++, jj++) 
-      Sum += SMA[jj]* x[j];
-    x[i] = (b[i] - Sum)/SMA[DiagAddr];
+    Sum      = 0;
+    for (j = i - profile(1, i), jj = DiagAddr - (i - j); j < i; j++, jj++)
+      Sum += SMA[jj] * x[j];
+    x[i] = (b[i] - Sum) / SMA[DiagAddr];
   }
 
-// Resolution of t(S)X = w;
-  for(i = ColNumber(); i >= 1; i--) {
+  // Resolution of t(S)X = w;
+  for (i = ColNumber(); i >= 1; i--)
+  {
     DiagAddr = profile(2, i);
-    j = NC[DiagAddr];
-    Sum = 0;
-    while(j > 0) {
-      CurrAddr = profile(2, j) - (j-i);
-      Sum += SMA[CurrAddr]*x[j];
+    j        = NC[DiagAddr];
+    Sum      = 0;
+    while (j > 0)
+    {
+      CurrAddr = profile(2, j) - (j - i);
+      Sum += SMA[CurrAddr] * x[j];
       j = NC[CurrAddr];
     }
-   x[i] = (x[i] - Sum)/SMA[DiagAddr]; 
+    x[i] = (x[i] - Sum) / SMA[DiagAddr];
   }
 }
 
- Standard_Boolean FEmTool_ProfileMatrix::Prepare() 
+Standard_Boolean FEmTool_ProfileMatrix::Prepare()
 {
   throw Standard_NotImplemented("FEmTool_ProfileMatrix::Prepare");
 }
 
-// void FEmTool_ProfileMatrix::Solve(const math_Vector& B,const math_Vector& Init,math_Vector& X,math_Vector& Residual,const Standard_Real Tolerance,const Standard_Integer NbIterations) const
- void FEmTool_ProfileMatrix::Solve(const math_Vector& ,const math_Vector& ,math_Vector& ,math_Vector& ,const Standard_Real ,const Standard_Integer ) const
+// void FEmTool_ProfileMatrix::Solve(const math_Vector& B,const math_Vector& Init,math_Vector&
+// X,math_Vector& Residual,const Standard_Real Tolerance,const Standard_Integer NbIterations) const
+void FEmTool_ProfileMatrix::Solve(const math_Vector&,
+                                  const math_Vector&,
+                                  math_Vector&,
+                                  math_Vector&,
+                                  const Standard_Real,
+                                  const Standard_Integer) const
 {
   throw Standard_NotImplemented("FEmTool_ProfileMatrix::Solve");
 }
 
-
 //=======================================================================
-//function : Multiplied
-//purpose  : MX = H*X
+// function : Multiplied
+// purpose  : MX = H*X
 //=======================================================================
- void FEmTool_ProfileMatrix::Multiplied(const math_Vector& X,math_Vector& MX) const
+void FEmTool_ProfileMatrix::Multiplied(const math_Vector& X, math_Vector& MX) const
 {
   Standard_Integer i, j, jj, DiagAddr, CurrAddr;
-  Standard_Real * m = &MX(MX.Lower());
+  Standard_Real*   m = &MX(MX.Lower());
   m--;
-  const Standard_Real * x = &X(X.Lower());
+  const Standard_Real* x = &X(X.Lower());
   x--;
-  const Standard_Real * PM = &ProfileMatrix->Value(1);
+  const Standard_Real* PM = &ProfileMatrix->Value(1);
   PM--;
-  const Standard_Integer * NC = &NextCoeff->Value(1);
+  const Standard_Integer* NC = &NextCoeff->Value(1);
   NC--;
 
-  for(i = 1; i <= RowNumber(); i++) {
+  for (i = 1; i <= RowNumber(); i++)
+  {
     DiagAddr = profile(2, i);
-    m[i] = 0;
-    for(j = i - profile(1, i), jj = DiagAddr - (i - j); 
-	j <= i; j++, jj++)
-      m[i] += PM[jj]*x[j];
+    m[i]     = 0;
+    for (j = i - profile(1, i), jj = DiagAddr - (i - j); j <= i; j++, jj++)
+      m[i] += PM[jj] * x[j];
 
     CurrAddr = DiagAddr;
-    for(j = NC[CurrAddr]; j > 0; j = NC[CurrAddr]) {
-      CurrAddr = profile(2, j) - (j-i);
-      m[i] += PM[CurrAddr]*x[j];
+    for (j = NC[CurrAddr]; j > 0; j = NC[CurrAddr])
+    {
+      CurrAddr = profile(2, j) - (j - i);
+      m[i] += PM[CurrAddr] * x[j];
     }
   }
 }
 
- Standard_Integer FEmTool_ProfileMatrix::RowNumber() const
-{
-  return profile.RowLength();
-} 
-
- Standard_Integer FEmTool_ProfileMatrix::ColNumber() const
+Standard_Integer FEmTool_ProfileMatrix::RowNumber() const
 {
   return profile.RowLength();
 }
 
-Standard_Boolean FEmTool_ProfileMatrix::IsInProfile(const Standard_Integer i, 
-						    const Standard_Integer j) const
+Standard_Integer FEmTool_ProfileMatrix::ColNumber() const
 {
-  if (j <= i) {
-    if ((i - j) <= profile(1, i)) return Standard_True;
-    else return Standard_False;
+  return profile.RowLength();
+}
+
+Standard_Boolean FEmTool_ProfileMatrix::IsInProfile(const Standard_Integer i,
+                                                    const Standard_Integer j) const
+{
+  if (j <= i)
+  {
+    if ((i - j) <= profile(1, i))
+      return Standard_True;
+    else
+      return Standard_False;
   }
-  else if ((j - i) <= profile(1, j)) return Standard_True;
+  else if ((j - i) <= profile(1, j))
+    return Standard_True;
 
   return Standard_False;
 }
 
- void FEmTool_ProfileMatrix::OutM() const
+void FEmTool_ProfileMatrix::OutM() const
 {
   Standard_Integer i, j;
-  std::cout<<"Matrix A"<<std::endl;
-  for(i = 1; i <= RowNumber(); i++) {
-    for(j = 1; j < i - profile(1, i); j++) 
-      std::cout<<"0 ";
+  std::cout << "Matrix A" << std::endl;
+  for (i = 1; i <= RowNumber(); i++)
+  {
+    for (j = 1; j < i - profile(1, i); j++)
+      std::cout << "0 ";
 
-    for(j = profile(2, i) - profile(1, i); j <= profile(2, i); j++) 
-      std::cout<<ProfileMatrix->Value(j)<<" ";
-    std::cout<<std::endl;
+    for (j = profile(2, i) - profile(1, i); j <= profile(2, i); j++)
+      std::cout << ProfileMatrix->Value(j) << " ";
+    std::cout << std::endl;
   }
 
-  std::cout<<"NextCoeff"<<std::endl;
-  for(i = 1; i <= profile(2, RowNumber()); i++)
-    std::cout<<NextCoeff->Value(i)<<" ";
-  std::cout<<std::endl;
+  std::cout << "NextCoeff" << std::endl;
+  for (i = 1; i <= profile(2, RowNumber()); i++)
+    std::cout << NextCoeff->Value(i) << " ";
+  std::cout << std::endl;
 }
 
- void FEmTool_ProfileMatrix::OutS() const
+void FEmTool_ProfileMatrix::OutS() const
 {
   Standard_Integer i, j;
-  std::cout<<"Matrix S"<<std::endl;
-  for(i = 1; i <= RowNumber(); i++) {
-    for(j = 1; j < i - profile(1, i); j++) 
-      std::cout<<"0 ";
+  std::cout << "Matrix S" << std::endl;
+  for (i = 1; i <= RowNumber(); i++)
+  {
+    for (j = 1; j < i - profile(1, i); j++)
+      std::cout << "0 ";
 
-    for(j = profile(2, i) - profile(1, i); j <= profile(2, i); j++) 
-      std::cout<<SMatrix->Value(j)<<" ";
-    std::cout<<std::endl;
+    for (j = profile(2, i) - profile(1, i); j <= profile(2, i); j++)
+      std::cout << SMatrix->Value(j) << " ";
+    std::cout << std::endl;
   }
 }

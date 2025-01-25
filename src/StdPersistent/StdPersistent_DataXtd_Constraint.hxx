@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _StdPersistent_DataXtd_Constraint_HeaderFile
 #define _StdPersistent_DataXtd_Constraint_HeaderFile
 
@@ -20,44 +19,45 @@
 
 #include <TDataXtd_Constraint.hxx>
 
-
-class StdPersistent_DataXtd_Constraint
-  : public StdObjMgt_Attribute<TDataXtd_Constraint>
+class StdPersistent_DataXtd_Constraint : public StdObjMgt_Attribute<TDataXtd_Constraint>
 {
 public:
   //! Read persistent data from a file.
-  inline void Read (StdObjMgt_ReadData& theReadData)
+  inline void Read(StdObjMgt_ReadData& theReadData)
   {
-    theReadData >> myType >> myGeometries >> myValue
-                >> myIsReversed >> myIsInverted >> myIsVerified >> myPlane;
+    theReadData >> myType >> myGeometries >> myValue >> myIsReversed >> myIsInverted >> myIsVerified
+      >> myPlane;
   }
+
   //! Write persistent data to a file.
-  inline void Write (StdObjMgt_WriteData& theWriteData) const
+  inline void Write(StdObjMgt_WriteData& theWriteData) const
   {
-    theWriteData << myType << myGeometries << myValue
-      << myIsReversed << myIsInverted << myIsVerified << myPlane;
+    theWriteData << myType << myGeometries << myValue << myIsReversed << myIsInverted
+                 << myIsVerified << myPlane;
   }
+
   //! Gets persistent child objects
-  inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const 
+  inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
   {
     theChildren.Append(myGeometries);
     theChildren.Append(myValue);
     theChildren.Append(myPlane);
   }
+
   //! Returns persistent type name
   inline Standard_CString PName() const { return "PDataXtd_Constraint"; }
 
   //! Import transient attribute from the persistent data.
-  void Import (const Handle(TDataXtd_Constraint)& theAttribute) const;
+  void Import(const Handle(TDataXtd_Constraint)& theAttribute) const;
 
 private:
-  Standard_Integer              myType;
+  Standard_Integer                           myType;
   Handle(StdLPersistent_HArray1::Persistent) myGeometries;
-  Handle(StdObjMgt_Persistent)  myValue;
-  Standard_Boolean              myIsReversed;
-  Standard_Boolean              myIsInverted;
-  Standard_Boolean              myIsVerified;
-  Handle(StdObjMgt_Persistent)  myPlane;
+  Handle(StdObjMgt_Persistent)               myValue;
+  Standard_Boolean                           myIsReversed;
+  Standard_Boolean                           myIsInverted;
+  Standard_Boolean                           myIsVerified;
+  Handle(StdObjMgt_Persistent)               myPlane;
 };
 
 #endif

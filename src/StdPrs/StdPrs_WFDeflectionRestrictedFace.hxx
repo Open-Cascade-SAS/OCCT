@@ -22,7 +22,6 @@
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_NListOfSequenceOfPnt.hxx>
 
-
 //! A framework to provide display of U and V
 //! isoparameters of faces, while allowing you to impose
 //! a deflection on them.
@@ -31,13 +30,11 @@
 //! V isoparametric curves. The isoparametric curves are
 //! drawn with respect to a maximal chordial deviation.
 //! The presentation includes the restriction curves.
-class StdPrs_WFDeflectionRestrictedFace  : public Prs3d_Root
+class StdPrs_WFDeflectionRestrictedFace : public Prs3d_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Defines a display featuring U and V isoparameters.
   //! Adds the surface aFace to the
   //! StdPrs_WFRestrictedFace algorithm. This face is
@@ -51,8 +48,10 @@ public:
   //! BRepAdaptor_Surface surface created from it.
   //! This is what allows the topological face to be treated
   //! as a geometric surface.
-  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Handle(BRepAdaptor_Surface)& aFace, const Handle(Prs3d_Drawer)& aDrawer);
-  
+  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)&  aPresentation,
+                                  const Handle(BRepAdaptor_Surface)& aFace,
+                                  const Handle(Prs3d_Drawer)&        aDrawer);
+
   //! Defines a display featuring U isoparameters
   //! respectively. Add the surface aFace to the
   //! StdPrs_WFRestrictedFace algorithm. This face
@@ -66,8 +65,10 @@ public:
   //! the BRepAdaptor_Surface surface created from
   //! it. This is what allows the topological face to be
   //! treated as a geometric surface.
-  Standard_EXPORT static void AddUIso (const Handle(Prs3d_Presentation)& aPresentation, const Handle(BRepAdaptor_Surface)& aFace, const Handle(Prs3d_Drawer)& aDrawer);
-  
+  Standard_EXPORT static void AddUIso(const Handle(Prs3d_Presentation)&  aPresentation,
+                                      const Handle(BRepAdaptor_Surface)& aFace,
+                                      const Handle(Prs3d_Drawer)&        aDrawer);
+
   //! Defines a display featuring V isoparameters
   //! respectively. Add the surface aFace to the
   //! StdPrs_WFRestrictedFace algorithm. This face
@@ -81,8 +82,10 @@ public:
   //! the BRepAdaptor_Surface surface created from
   //! it. This is what allows the topological face to be
   //! treated as a geometric surface.
-  Standard_EXPORT static void AddVIso (const Handle(Prs3d_Presentation)& aPresentation, const Handle(BRepAdaptor_Surface)& aFace, const Handle(Prs3d_Drawer)& aDrawer);
-  
+  Standard_EXPORT static void AddVIso(const Handle(Prs3d_Presentation)&  aPresentation,
+                                      const Handle(BRepAdaptor_Surface)& aFace,
+                                      const Handle(Prs3d_Drawer)&        aDrawer);
+
   //! Defines a display of a delection-specified face. The
   //! display will feature U and V isoparameters.
   //! Adds the topology aShape to the
@@ -101,16 +104,48 @@ public:
   //! as a geometric surface.
   //! Curves give a sequence of face curves, it is used if the PrimitiveArray
   //! visualization approach is activated (it is activated by default).
-  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Handle(BRepAdaptor_Surface)& aFace, const Standard_Boolean DrawUIso, const Standard_Boolean DrawVIso, const Standard_Real Deflection, const Standard_Integer NBUiso, const Standard_Integer NBViso, const Handle(Prs3d_Drawer)& aDrawer, Prs3d_NListOfSequenceOfPnt& Curves);
-  
-  Standard_EXPORT static Standard_Boolean Match (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const Handle(BRepAdaptor_Surface)& aFace, const Handle(Prs3d_Drawer)& aDrawer);
-  
-  Standard_EXPORT static Standard_Boolean MatchUIso (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const Handle(BRepAdaptor_Surface)& aFace, const Handle(Prs3d_Drawer)& aDrawer);
-  
-  Standard_EXPORT static Standard_Boolean MatchVIso (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const Handle(BRepAdaptor_Surface)& aFace, const Handle(Prs3d_Drawer)& aDrawer);
-  
-  Standard_EXPORT static Standard_Boolean Match (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const Handle(BRepAdaptor_Surface)& aFace, const Handle(Prs3d_Drawer)& aDrawer, const Standard_Boolean DrawUIso, const Standard_Boolean DrawVIso, const Standard_Real aDeflection, const Standard_Integer NBUiso, const Standard_Integer NBViso);
+  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)&  aPresentation,
+                                  const Handle(BRepAdaptor_Surface)& aFace,
+                                  const Standard_Boolean             DrawUIso,
+                                  const Standard_Boolean             DrawVIso,
+                                  const Standard_Real                Deflection,
+                                  const Standard_Integer             NBUiso,
+                                  const Standard_Integer             NBViso,
+                                  const Handle(Prs3d_Drawer)&        aDrawer,
+                                  Prs3d_NListOfSequenceOfPnt&        Curves);
 
+  Standard_EXPORT static Standard_Boolean Match(const Standard_Real                X,
+                                                const Standard_Real                Y,
+                                                const Standard_Real                Z,
+                                                const Standard_Real                aDistance,
+                                                const Handle(BRepAdaptor_Surface)& aFace,
+                                                const Handle(Prs3d_Drawer)&        aDrawer);
+
+  Standard_EXPORT static Standard_Boolean MatchUIso(const Standard_Real                X,
+                                                    const Standard_Real                Y,
+                                                    const Standard_Real                Z,
+                                                    const Standard_Real                aDistance,
+                                                    const Handle(BRepAdaptor_Surface)& aFace,
+                                                    const Handle(Prs3d_Drawer)&        aDrawer);
+
+  Standard_EXPORT static Standard_Boolean MatchVIso(const Standard_Real                X,
+                                                    const Standard_Real                Y,
+                                                    const Standard_Real                Z,
+                                                    const Standard_Real                aDistance,
+                                                    const Handle(BRepAdaptor_Surface)& aFace,
+                                                    const Handle(Prs3d_Drawer)&        aDrawer);
+
+  Standard_EXPORT static Standard_Boolean Match(const Standard_Real                X,
+                                                const Standard_Real                Y,
+                                                const Standard_Real                Z,
+                                                const Standard_Real                aDistance,
+                                                const Handle(BRepAdaptor_Surface)& aFace,
+                                                const Handle(Prs3d_Drawer)&        aDrawer,
+                                                const Standard_Boolean             DrawUIso,
+                                                const Standard_Boolean             DrawVIso,
+                                                const Standard_Real                aDeflection,
+                                                const Standard_Integer             NBUiso,
+                                                const Standard_Integer             NBViso);
 };
 
 #endif // _StdPrs_WFDeflectionRestrictedFace_HeaderFile

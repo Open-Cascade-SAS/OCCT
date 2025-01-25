@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY2(FEmTool_HAssemblyTable, FEmTool_AssemblyTable)
 
-
 #endif

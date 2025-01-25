@@ -19,71 +19,56 @@
 
 #include <TObj_Model.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TObj_ModelIterator, TObj_ObjectIterator)
 
-IMPLEMENT_STANDARD_RTTIEXT(TObj_ModelIterator,TObj_ObjectIterator)
-
-//=======================================================================
-//function : Constructor
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TObj_ModelIterator::TObj_ModelIterator(const Handle(TObj_Model)& theModel)
 {
   myObject = theModel->GetRoot();
-  if ( ! myObject.IsNull() )
+  if (!myObject.IsNull())
     addIterator(myObject);
 }
 
-//=======================================================================
-//function : addIterator
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TObj_ModelIterator::addIterator(const Handle(TObj_Object)& theObj)
 {
   Handle(TObj_ObjectIterator) anIter = theObj->GetChildren();
-  if (anIter.IsNull() )
+  if (anIter.IsNull())
     return; // object has no children.
   myIterSeq.Append(anIter);
 }
 
-//=======================================================================
-//function : More
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean TObj_ModelIterator::More() const
 {
-  return ! myObject.IsNull();
+  return !myObject.IsNull();
 }
 
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(TObj_Object) TObj_ModelIterator::Value() const
 {
   return myObject;
 }
 
-//=======================================================================
-//function : Next
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TObj_ModelIterator::Next()
 {
   myObject.Nullify();
-  while ( myIterSeq.Length() >0 ) 
+  while (myIterSeq.Length() > 0)
   {
-    if ( myIterSeq.Last()->More() ) 
+    if (myIterSeq.Last()->More())
     {
       myObject = myIterSeq.Last()->Value();
       myIterSeq.Last()->Next();
-      addIterator ( myObject );
+      addIterator(myObject);
       return;
     }
-    else myIterSeq.Remove(myIterSeq.Length());
+    else
+      myIterSeq.Remove(myIterSeq.Length());
   }
 }

@@ -26,7 +26,6 @@
 class TDF_Label;
 class Standard_GUID;
 
-
 class TDataStd_Directory;
 DEFINE_STANDARD_HANDLE(TDataStd_Directory, TDataStd_GenericEmpty)
 
@@ -38,57 +37,42 @@ class TDataStd_Directory : public TDataStd_GenericEmpty
 {
 
 public:
-
-  
   //! class methods
   //! =============
   //! Searches for a directory attribute on the label
   //! current, or on one of the father labels of current.
   //! If a directory attribute is found, true is returned,
   //! and the attribute found is set as D.
-  Standard_EXPORT static Standard_Boolean Find (const TDF_Label& current, Handle(TDataStd_Directory)& D);
-  
+  Standard_EXPORT static Standard_Boolean Find(const TDF_Label&            current,
+                                               Handle(TDataStd_Directory)& D);
+
   //! Creates  an  empty   Directory attribute,  located  at
   //! <label>. Raises if <label> has attribute
-  Standard_EXPORT static Handle(TDataStd_Directory) New (const TDF_Label& label);
-  
+  Standard_EXPORT static Handle(TDataStd_Directory) New(const TDF_Label& label);
+
   //! Creates a new sub-label and sets the
   //! sub-directory dir on that label.
-  Standard_EXPORT static Handle(TDataStd_Directory) AddDirectory (const Handle(TDataStd_Directory)& dir);
-  
+  Standard_EXPORT static Handle(TDataStd_Directory) AddDirectory(
+    const Handle(TDataStd_Directory)& dir);
+
   //! Makes new label and returns it to insert
   //! other object attributes (sketch,part...etc...)
-  Standard_EXPORT static TDF_Label MakeObjectLabel (const Handle(TDataStd_Directory)& dir);
-  
+  Standard_EXPORT static TDF_Label MakeObjectLabel(const Handle(TDataStd_Directory)& dir);
+
   //! Directory methods
   //! ===============
   Standard_EXPORT static const Standard_GUID& GetID();
-  
-  Standard_EXPORT TDataStd_Directory();
-  
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_OStream& Dump (Standard_OStream& anOS) const Standard_OVERRIDE;
-  
 
-  DEFINE_DERIVED_ATTRIBUTE(TDataStd_Directory,TDataStd_GenericEmpty)
+  Standard_EXPORT TDataStd_Directory();
+
+  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+
+  DEFINE_DERIVED_ATTRIBUTE(TDataStd_Directory, TDataStd_GenericEmpty)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _TDataStd_Directory_HeaderFile

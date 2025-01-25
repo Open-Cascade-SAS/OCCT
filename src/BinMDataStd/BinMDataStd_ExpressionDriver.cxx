@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMDataStd_ExpressionDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <Message_Messenger.hxx>
@@ -23,48 +22,44 @@
 #include <TDF_Attribute.hxx>
 #include <TDF_ListIteratorOfAttributeList.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_ExpressionDriver,BinMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_ExpressionDriver, BinMDF_ADriver)
 
-//=======================================================================
-//function : BinMDataStd_ExpressionDriver
-//purpose  : Constructor
-//=======================================================================
-BinMDataStd_ExpressionDriver::BinMDataStd_ExpressionDriver
-                        (const Handle(Message_Messenger)& theMsgDriver)
-      : BinMDF_ADriver (theMsgDriver, NULL)
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+BinMDataStd_ExpressionDriver::BinMDataStd_ExpressionDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : BinMDF_ADriver(theMsgDriver, NULL)
+{
+}
+
+//=================================================================================================
+
 Handle(TDF_Attribute) BinMDataStd_ExpressionDriver::NewEmpty() const
 {
   return (new TDataStd_Expression());
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean BinMDataStd_ExpressionDriver::Paste
-                        (const BinObjMgt_Persistent&  theSource,
-                         const Handle(TDF_Attribute)& theTarget,
-                         BinObjMgt_RRelocationTable&  theRelocTable) const
+Standard_Boolean BinMDataStd_ExpressionDriver::Paste(
+  const BinObjMgt_Persistent&  theSource,
+  const Handle(TDF_Attribute)& theTarget,
+  BinObjMgt_RRelocationTable&  theRelocTable) const
 {
-  Handle(TDataStd_Expression) aC = 
-    Handle(TDataStd_Expression)::DownCast(theTarget);
+  Handle(TDataStd_Expression) aC = Handle(TDataStd_Expression)::DownCast(theTarget);
 
   // variables
   Standard_Integer nbvar;
-  if (! (theSource >> nbvar) || nbvar < 0)
+  if (!(theSource >> nbvar) || nbvar < 0)
     return Standard_False;
   TDF_AttributeList& aList = aC->GetVariables();
   for (; nbvar > 0; nbvar--)
   {
     Handle(TDF_Attribute) aV;
-    Standard_Integer aNb;
-    if (! (theSource >> aNb))
+    Standard_Integer      aNb;
+    if (!(theSource >> aNb))
       return Standard_False;
     if (aNb > 0)
     {
@@ -81,7 +76,7 @@ Standard_Boolean BinMDataStd_ExpressionDriver::Paste
 
   // expression
   TCollection_ExtendedString aString;
-  if (! (theSource >> aString))
+  if (!(theSource >> aString))
     return Standard_False;
   aC->SetExpression(aString);
 
@@ -89,26 +84,24 @@ Standard_Boolean BinMDataStd_ExpressionDriver::Paste
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataStd_ExpressionDriver::Paste
-                        (const Handle(TDF_Attribute)& theSource,
-                         BinObjMgt_Persistent&        theTarget,
-                         BinObjMgt_SRelocationTable&  theRelocTable) const
+void BinMDataStd_ExpressionDriver::Paste(const Handle(TDF_Attribute)& theSource,
+                                         BinObjMgt_Persistent&        theTarget,
+                                         BinObjMgt_SRelocationTable&  theRelocTable) const
 {
-  Handle(TDataStd_Expression) aC =
-    Handle(TDataStd_Expression)::DownCast(theSource);
+  Handle(TDataStd_Expression) aC = Handle(TDataStd_Expression)::DownCast(theSource);
 
   // variables
   const TDF_AttributeList& aList = aC->GetVariables();
-  Standard_Integer nbvar = aList.Extent();
+  Standard_Integer         nbvar = aList.Extent();
   theTarget << nbvar;
   TDF_ListIteratorOfAttributeList it;
   for (it.Initialize(aList); it.More(); it.Next())
   {
     const Handle(TDF_Attribute)& TV = it.Value();
-    Standard_Integer aNb;
+    Standard_Integer             aNb;
     if (!TV.IsNull())
       aNb = theRelocTable.Add(TV);
     else

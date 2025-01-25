@@ -19,30 +19,28 @@ inline Standard_Boolean BRepProj_Projection::IsDone() const
 {
   return myIsDone;
 }
- 
+
 inline TopoDS_Compound BRepProj_Projection::Shape() const
 {
   return myShape;
 }
 
-inline void BRepProj_Projection::Init() 
+inline void BRepProj_Projection::Init()
 {
   myItr = 1;
 }
 
 inline Standard_Boolean BRepProj_Projection::More() const
 {
-  return myItr > 0 && ! mySection.IsNull() && myItr <= mySection->Length();
+  return myItr > 0 && !mySection.IsNull() && myItr <= mySection->Length();
 }
- 
-inline void BRepProj_Projection::Next() 
+
+inline void BRepProj_Projection::Next()
 {
   myItr++;
 }
- 
+
 inline TopoDS_Wire BRepProj_Projection::Current() const
 {
-  return TopoDS::Wire (mySection->Value (myItr));
+  return TopoDS::Wire(mySection->Value(myItr));
 }
- 
-

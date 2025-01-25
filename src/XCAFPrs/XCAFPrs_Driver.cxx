@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <AIS_InteractiveObject.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
@@ -23,33 +22,28 @@
 #include <XCAFPrs_AISObject.hxx>
 #include <XCAFPrs_Driver.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XCAFPrs_Driver,TPrsStd_Driver)
+IMPLEMENT_STANDARD_RTTIEXT(XCAFPrs_Driver, TPrsStd_Driver)
 
-//=======================================================================
-//function : Update
-//purpose  : 
-//=======================================================================
-Standard_Boolean XCAFPrs_Driver::Update (const TDF_Label& L,
-					 Handle(AIS_InteractiveObject)& ais)
+//=================================================================================================
+
+Standard_Boolean XCAFPrs_Driver::Update(const TDF_Label& L, Handle(AIS_InteractiveObject)& ais)
 
 {
-//  std::cout << "XCAFPrs_Driver::Update" << std::endl;
-// WARNING! The label L can be out of any document 
-// (this is a case for reading from the file)
-//  Handle(TDocStd_Document) DOC = TDocStd_Document::Get(L);
+  //  std::cout << "XCAFPrs_Driver::Update" << std::endl;
+  // WARNING! The label L can be out of any document
+  // (this is a case for reading from the file)
+  //  Handle(TDocStd_Document) DOC = TDocStd_Document::Get(L);
 
   XCAFDoc_ShapeTool shapes;
-  if ( ! shapes.IsShape(L) ) return Standard_False;
-  
-  ais = new XCAFPrs_AISObject (L);
-  
+  if (!shapes.IsShape(L))
+    return Standard_False;
+
+  ais = new XCAFPrs_AISObject(L);
+
   return Standard_True;
 }
 
-//=======================================================================
-//function : GetID
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 const Standard_GUID& XCAFPrs_Driver::GetID()
 {

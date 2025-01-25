@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/ShapeView_OpenFileViewModel.hxx>
 
@@ -23,36 +23,38 @@
 #include <Standard_WarningsRestore.hxx>
 
 const int ICON_SIZE = 40;
+
 // =======================================================================
 // function : paint
 // purpose :
 // =======================================================================
-void ShapeView_OpenFileItemDelegate::paint (QPainter* thePainter, const QStyleOptionViewItem& theOption,
-                                              const QModelIndex& theIndex) const
+void ShapeView_OpenFileItemDelegate::paint(QPainter*                   thePainter,
+                                           const QStyleOptionViewItem& theOption,
+                                           const QModelIndex&          theIndex) const
 {
   // highlight cell
   if (theOption.state & QStyle::State_MouseOver)
-    thePainter->fillRect (theOption.rect, myColor);
+    thePainter->fillRect(theOption.rect, myColor);
 
   // action icon for all indices before the last one
-  QIcon anIcon (":/icons/folder_import.png");
-  QSize anIconSize (ICON_SIZE, ICON_SIZE);
-  int aDX = (theOption.rect.width() - anIconSize.width()) / 2;
-  int aMargin = qApp->style()->pixelMetric (QStyle::PM_HeaderMargin);
-  thePainter->drawPixmap (QRect (theOption.rect.left() + aDX,
-                          theOption.rect.top() + aMargin,
-                          anIconSize.width(),
-                          anIconSize.height()),
-                          anIcon.pixmap(anIconSize.width(), anIconSize.height()));
+  QIcon anIcon(":/icons/folder_import.png");
+  QSize anIconSize(ICON_SIZE, ICON_SIZE);
+  int   aDX     = (theOption.rect.width() - anIconSize.width()) / 2;
+  int   aMargin = qApp->style()->pixelMetric(QStyle::PM_HeaderMargin);
+  thePainter->drawPixmap(QRect(theOption.rect.left() + aDX,
+                               theOption.rect.top() + aMargin,
+                               anIconSize.width(),
+                               anIconSize.height()),
+                         anIcon.pixmap(anIconSize.width(), anIconSize.height()));
   // default paint
-  QItemDelegate::paint (thePainter, theOption, theIndex);
+  QItemDelegate::paint(thePainter, theOption, theIndex);
 }
 
 // =======================================================================
 // function : Init
 // purpose :
 // =======================================================================
-void ShapeView_OpenFileViewModel::Init (const QStringList& theValues)
+void ShapeView_OpenFileViewModel::Init(const QStringList& theValues)
 {
   myValues = theValues;
 }
@@ -61,13 +63,16 @@ void ShapeView_OpenFileViewModel::Init (const QStringList& theValues)
 // function : data
 // purpose :
 // =======================================================================
-QVariant ShapeView_OpenFileViewModel::data (const QModelIndex& theIndex, int theRole) const
+QVariant ShapeView_OpenFileViewModel::data(const QModelIndex& theIndex, int theRole) const
 {
   switch (theRole)
   {
-    case Qt::DisplayRole: return QFileInfo (myValues[theIndex.column()]).fileName();
-    case Qt::ToolTipRole: return myValues[theIndex.column()];
-    case Qt::TextAlignmentRole: return QVariant (Qt::AlignBottom | Qt::AlignHCenter);
+    case Qt::DisplayRole:
+      return QFileInfo(myValues[theIndex.column()]).fileName();
+    case Qt::ToolTipRole:
+      return myValues[theIndex.column()];
+    case Qt::TextAlignmentRole:
+      return QVariant(Qt::AlignBottom | Qt::AlignHCenter);
     default:
       break;
   }

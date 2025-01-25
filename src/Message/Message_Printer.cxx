@@ -19,80 +19,67 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Message_Printer,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Message_Printer, Standard_Transient)
 
-//=======================================================================
-//function : Constructor
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Message_Printer::Message_Printer()
-: myTraceLevel (Message_Info)
+    : myTraceLevel(Message_Info)
 {
 }
 
-//=======================================================================
-//function : Send
-//purpose  :
-//=======================================================================
-void Message_Printer::Send (const Standard_CString theString,
-                            const Message_Gravity  theGravity) const
+//=================================================================================================
+
+void Message_Printer::Send(const Standard_CString theString, const Message_Gravity theGravity) const
 {
   if (theGravity >= myTraceLevel)
   {
-    send (TCollection_AsciiString (theString), theGravity);
+    send(TCollection_AsciiString(theString), theGravity);
   }
 }
 
-//=======================================================================
-//function : Send
-//purpose  :
-//=======================================================================
-void Message_Printer::Send (const TCollection_ExtendedString& theString,
-                            const Message_Gravity theGravity) const
+//=================================================================================================
+
+void Message_Printer::Send(const TCollection_ExtendedString& theString,
+                           const Message_Gravity             theGravity) const
 {
   if (theGravity >= myTraceLevel)
   {
-    send (TCollection_AsciiString (theString), theGravity);
+    send(TCollection_AsciiString(theString), theGravity);
   }
 }
 
-//=======================================================================
-//function : Send
-//purpose  :
-//=======================================================================
-void Message_Printer::Send (const TCollection_AsciiString& theString,
-                            const Message_Gravity theGravity) const
+//=================================================================================================
+
+void Message_Printer::Send(const TCollection_AsciiString& theString,
+                           const Message_Gravity          theGravity) const
 {
   if (theGravity >= myTraceLevel)
   {
-    send (theString, theGravity);
+    send(theString, theGravity);
   }
 }
 
-//=======================================================================
-//function : SendStringStream
-//purpose  :
-//=======================================================================
-void Message_Printer::SendStringStream (const Standard_SStream& theStream,
-                                        const Message_Gravity   theGravity) const
+//=================================================================================================
+
+void Message_Printer::SendStringStream(const Standard_SStream& theStream,
+                                       const Message_Gravity   theGravity) const
 {
   if (theGravity >= myTraceLevel)
   {
-    send (theStream.str().c_str(), theGravity);
+    send(theStream.str().c_str(), theGravity);
   }
 }
 
-//=======================================================================
-//function : SendObject
-//purpose  :
-//=======================================================================
-void Message_Printer::SendObject (const Handle(Standard_Transient)& theObject,
-                                  const Message_Gravity          theGravity) const
+//=================================================================================================
+
+void Message_Printer::SendObject(const Handle(Standard_Transient)& theObject,
+                                 const Message_Gravity             theGravity) const
 {
-  if (!theObject.IsNull()
-    && theGravity >= myTraceLevel)
+  if (!theObject.IsNull() && theGravity >= myTraceLevel)
   {
-    send (TCollection_AsciiString (theObject->DynamicType()->Name())
-        + ": " + Standard_Dump::GetPointerInfo (theObject), theGravity);
+    send(TCollection_AsciiString(theObject->DynamicType()->Name()) + ": "
+           + Standard_Dump::GetPointerInfo(theObject),
+         theGravity);
   }
 }

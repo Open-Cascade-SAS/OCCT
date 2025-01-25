@@ -11,25 +11,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepShape_FaceSurface.hxx>
 #include <StepShape_SweptFaceSolid.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_SweptFaceSolid,StepShape_SolidModel)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_SweptFaceSolid, StepShape_SolidModel)
 
-StepShape_SweptFaceSolid::StepShape_SweptFaceSolid ()  {}
+StepShape_SweptFaceSolid::StepShape_SweptFaceSolid() {}
 
-void StepShape_SweptFaceSolid::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepShape_FaceSurface)& aSweptArea)
+void StepShape_SweptFaceSolid::Init(const Handle(TCollection_HAsciiString)& aName,
+                                    const Handle(StepShape_FaceSurface)&    aSweptArea)
 {
   // --- classe own fields ---
   sweptArea = aSweptArea;
   // --- classe inherited fields ---
   StepRepr_RepresentationItem::Init(aName);
 }
-
 
 void StepShape_SweptFaceSolid::SetSweptFace(const Handle(StepShape_FaceSurface)& aSweptArea)
 {

@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -24,23 +24,17 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Standard_Integer.hxx>
 
-//=======================================================================
-//function : RWStepVisual_RWTessellatedPointSet
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 RWStepVisual_RWTessellatedPointSet::RWStepVisual_RWTessellatedPointSet() {}
 
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
-
-void RWStepVisual_RWTessellatedPointSet::ReadStep (const Handle(StepData_StepReaderData)& theData,
-                                                   const Standard_Integer theNum,
-                                                   Handle(Interface_Check)& theCheck,
-                                                   const Handle(StepVisual_TessellatedPointSet)& theEnt) const
+void RWStepVisual_RWTessellatedPointSet::ReadStep(
+  const Handle(StepData_StepReaderData)&        theData,
+  const Standard_Integer                        theNum,
+  Handle(Interface_Check)&                      theCheck,
+  const Handle(StepVisual_TessellatedPointSet)& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theCheck, "tessellated_point_set"))
@@ -56,15 +50,19 @@ void RWStepVisual_RWTessellatedPointSet::ReadStep (const Handle(StepData_StepRea
   // Own fields of TessellatedPointSet
 
   Handle(StepVisual_CoordinatesList) aCoordinates;
-  theData->ReadEntity(theNum, 2, "coordinates", theCheck,
-    STANDARD_TYPE(StepVisual_CoordinatesList), aCoordinates);
+  theData->ReadEntity(theNum,
+                      2,
+                      "coordinates",
+                      theCheck,
+                      STANDARD_TYPE(StepVisual_CoordinatesList),
+                      aCoordinates);
 
   Handle(TColStd_HArray1OfInteger) aPointList;
-  Standard_Integer sub3 = 0;
+  Standard_Integer                 sub3 = 0;
   if (theData->ReadSubList(theNum, 3, "point_list", theCheck, sub3))
   {
-    Standard_Integer nb0 = theData->NbParams(sub3);
-    aPointList = new TColStd_HArray1OfInteger(1, nb0);
+    Standard_Integer nb0  = theData->NbParams(sub3);
+    aPointList            = new TColStd_HArray1OfInteger(1, nb0);
     Standard_Integer num2 = sub3;
     for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
     {
@@ -78,13 +76,11 @@ void RWStepVisual_RWTessellatedPointSet::ReadStep (const Handle(StepData_StepRea
   theEnt->Init(aRepresentationItem_Name, aCoordinates, aPointList);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepVisual_RWTessellatedPointSet::WriteStep (StepData_StepWriter& theSW,
-                                                    const Handle(StepVisual_TessellatedPointSet)& theEnt) const
+void RWStepVisual_RWTessellatedPointSet::WriteStep(
+  StepData_StepWriter&                          theSW,
+  const Handle(StepVisual_TessellatedPointSet)& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -104,13 +100,10 @@ void RWStepVisual_RWTessellatedPointSet::WriteStep (StepData_StepWriter& theSW,
   theSW.CloseSub();
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepVisual_RWTessellatedPointSet::Share (const Handle(StepVisual_TessellatedPointSet)&theEnt,
-                                                Interface_EntityIterator& theIter) const
+void RWStepVisual_RWTessellatedPointSet::Share(const Handle(StepVisual_TessellatedPointSet)& theEnt,
+                                               Interface_EntityIterator& theIter) const
 {
 
   // Inherited fields of RepresentationItem

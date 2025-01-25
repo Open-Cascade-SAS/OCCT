@@ -14,18 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRepTest.hxx>
 #include <DBRep.hxx>
 
-//=======================================================================
-//function : AllCommands
-//purpose  : 
-//=======================================================================
-void  BRepTest::AllCommands(Draw_Interpretor& theCommands)
+//=================================================================================================
+
+void BRepTest::AllCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
-  if (done) return;
+  if (done)
+    return;
   done = Standard_True;
 
   DBRep::BasicCommands(theCommands);
@@ -33,7 +31,7 @@ void  BRepTest::AllCommands(Draw_Interpretor& theCommands)
   BRepTest::CurveCommands(theCommands);
   BRepTest::Fillet2DCommands(theCommands);
   BRepTest::SurfaceCommands(theCommands);
-  BRepTest::FillingCommands(theCommands) ;
+  BRepTest::FillingCommands(theCommands);
   BRepTest::PrimitiveCommands(theCommands);
   BRepTest::SweepCommands(theCommands);
   BRepTest::TopologyCommands(theCommands);
@@ -46,13 +44,11 @@ void  BRepTest::AllCommands(Draw_Interpretor& theCommands)
   BRepTest::OtherCommands(theCommands);
   BRepTest::ExtremaCommands(theCommands);
   BRepTest::CheckCommands(theCommands);
-//  BRepTest::PlacementCommands(theCommands) ;
-  BRepTest::ProjectionCommands(theCommands) ;
+  //  BRepTest::PlacementCommands(theCommands) ;
+  BRepTest::ProjectionCommands(theCommands);
   BRepTest::HistoryCommands(theCommands);
 
   // define the TCL variable Draw_TOPOLOGY
   const char* com = "set Draw_TOPOLOGY 1";
   theCommands.Eval(com);
 }
-
-

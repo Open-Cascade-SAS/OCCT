@@ -24,53 +24,35 @@
 class TCollection_HAsciiString;
 class StepGeom_Axis2Placement3d;
 
-
 class StepGeom_ToroidalSurface;
 DEFINE_STANDARD_HANDLE(StepGeom_ToroidalSurface, StepGeom_ElementarySurface)
-
 
 class StepGeom_ToroidalSurface : public StepGeom_ElementarySurface
 {
 
 public:
-
-  
   //! Returns a ToroidalSurface
   Standard_EXPORT StepGeom_ToroidalSurface();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis2Placement3d)& aPosition, const Standard_Real aMajorRadius, const Standard_Real aMinorRadius);
-  
-  Standard_EXPORT void SetMajorRadius (const Standard_Real aMajorRadius);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&  aName,
+                            const Handle(StepGeom_Axis2Placement3d)& aPosition,
+                            const Standard_Real                      aMajorRadius,
+                            const Standard_Real                      aMinorRadius);
+
+  Standard_EXPORT void SetMajorRadius(const Standard_Real aMajorRadius);
+
   Standard_EXPORT Standard_Real MajorRadius() const;
-  
-  Standard_EXPORT void SetMinorRadius (const Standard_Real aMinorRadius);
-  
+
+  Standard_EXPORT void SetMinorRadius(const Standard_Real aMinorRadius);
+
   Standard_EXPORT Standard_Real MinorRadius() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_ToroidalSurface,StepGeom_ElementarySurface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_ToroidalSurface, StepGeom_ElementarySurface)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Real majorRadius;
   Standard_Real minorRadius;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_ToroidalSurface_HeaderFile

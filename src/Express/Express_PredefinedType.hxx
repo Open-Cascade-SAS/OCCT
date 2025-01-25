@@ -23,19 +23,16 @@ class Express_PredefinedType : public Express_Type
 {
 
 public:
-
   //! Returns True
   Standard_EXPORT virtual Standard_Boolean IsStandard() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Express_PredefinedType, Express_Type)
 
 protected:
-
   //! Empty constructor
   Standard_EXPORT Express_PredefinedType();
 
 private:
-
 };
 
 #endif // _Express_PredefinedType_HeaderFile

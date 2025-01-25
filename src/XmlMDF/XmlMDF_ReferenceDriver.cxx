@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//AGV 150202: Changed prototype XmlObjMgt::SetStringValue()
+// AGV 150202: Changed prototype XmlObjMgt::SetStringValue()
 
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
@@ -23,50 +23,44 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XmlMDF_ReferenceDriver,XmlMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDF_ReferenceDriver, XmlMDF_ADriver)
 
-//=======================================================================
-//function : XmlMDF_ReferenceDriver
-//purpose  : Constructor
-//=======================================================================
-XmlMDF_ReferenceDriver::XmlMDF_ReferenceDriver
-                        (const Handle(Message_Messenger)& theMsgDriver)
-      : XmlMDF_ADriver (theMsgDriver, NULL)
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+XmlMDF_ReferenceDriver::XmlMDF_ReferenceDriver(const Handle(Message_Messenger)& theMsgDriver)
+    : XmlMDF_ADriver(theMsgDriver, NULL)
+{
+}
+
+//=================================================================================================
+
 Handle(TDF_Attribute) XmlMDF_ReferenceDriver::NewEmpty() const
 {
   return (new TDF_Reference());
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMDF_ReferenceDriver::Paste
-                (const XmlObjMgt_Persistent&   theSource,
-                 const Handle(TDF_Attribute)&  theTarget,
-                 XmlObjMgt_RRelocationTable&   ) const
+Standard_Boolean XmlMDF_ReferenceDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                               const Handle(TDF_Attribute)& theTarget,
+                                               XmlObjMgt_RRelocationTable&) const
 {
   XmlObjMgt_DOMString anXPath = XmlObjMgt::GetStringValue(theSource);
 
   if (anXPath == NULL)
   {
-    myMessageDriver->Send ("Cannot retrieve reference string from element", Message_Fail);
+    myMessageDriver->Send("Cannot retrieve reference string from element", Message_Fail);
     return Standard_False;
   }
 
   TCollection_AsciiString anEntry;
-  if (XmlObjMgt::GetTagEntryString (anXPath, anEntry) == Standard_False)
+  if (XmlObjMgt::GetTagEntryString(anXPath, anEntry) == Standard_False)
   {
     TCollection_ExtendedString aMessage =
-      TCollection_ExtendedString ("Cannot retrieve reference from \"")
-        + anXPath + '\"';
-    myMessageDriver->Send (aMessage, Message_Fail);
+      TCollection_ExtendedString("Cannot retrieve reference from \"") + anXPath + '\"';
+    myMessageDriver->Send(aMessage, Message_Fail);
     return Standard_False;
   }
 
@@ -86,8 +80,8 @@ Standard_Boolean XmlMDF_ReferenceDriver::Paste
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //           <label tag='1'>     <This is label entry 0:4:1>
 //           ...
 //           <label tag='8'>     <This is label entry 0:4:1:8>
@@ -95,14 +89,14 @@ Standard_Boolean XmlMDF_ReferenceDriver::Paste
 //           <TDF_Reference id="621"> /document/label/label[@tag="4"]/label[@tag="1"]
 //           </TDF_Reference>    <This is reference to label 0:4:1>
 //=======================================================================
-void XmlMDF_ReferenceDriver::Paste (const Handle(TDF_Attribute)&  theSource,
-                                    XmlObjMgt_Persistent&         theTarget,
-                                    XmlObjMgt_SRelocationTable&   ) const
+void XmlMDF_ReferenceDriver::Paste(const Handle(TDF_Attribute)& theSource,
+                                   XmlObjMgt_Persistent&        theTarget,
+                                   XmlObjMgt_SRelocationTable&) const
 {
   Handle(TDF_Reference) aRef = Handle(TDF_Reference)::DownCast(theSource);
   if (!aRef.IsNull())
   {
-    const TDF_Label& lab = aRef->Label();
+    const TDF_Label& lab    = aRef->Label();
     const TDF_Label& refLab = aRef->Get();
     if (!lab.IsNull() && !refLab.IsNull())
     {
@@ -113,9 +107,9 @@ void XmlMDF_ReferenceDriver::Paste (const Handle(TDF_Attribute)&  theSource,
         TDF_Tool::Entry(refLab, anEntry);
 
         XmlObjMgt_DOMString aDOMString;
-        XmlObjMgt::SetTagEntryString (aDOMString, anEntry);
+        XmlObjMgt::SetTagEntryString(aDOMString, anEntry);
         // No occurrence of '&', '<' and other irregular XML characters
-        XmlObjMgt::SetStringValue (theTarget, aDOMString, Standard_True);
+        XmlObjMgt::SetStringValue(theTarget, aDOMString, Standard_True);
       }
     }
   }

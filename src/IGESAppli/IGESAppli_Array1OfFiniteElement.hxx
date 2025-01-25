@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(IGESAppli_FiniteElement)> IGESAppli_Array1OfFiniteElement;
 
-
 #endif

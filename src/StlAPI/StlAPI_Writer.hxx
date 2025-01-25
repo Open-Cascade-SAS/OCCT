@@ -22,11 +22,11 @@
 class TopoDS_Shape;
 
 //! This class creates and writes
-//! STL files from Open CASCADE shapes. An STL file can be written to an existing STL file or to a new one.
+//! STL files from Open CASCADE shapes. An STL file can be written to an existing STL file or to a
+//! new one.
 class StlAPI_Writer
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Creates a writer object with default parameters: ASCIIMode.
@@ -40,9 +40,10 @@ public:
 
   //! Converts a given shape to STL format and writes it to file with a given filename.
   //! \return the error state.
-  Standard_EXPORT Standard_Boolean Write (const TopoDS_Shape& theShape,
-                                          const Standard_CString theFileName,
-                                          const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT Standard_Boolean
+    Write(const TopoDS_Shape&          theShape,
+          const Standard_CString       theFileName,
+          const Message_ProgressRange& theProgress = Message_ProgressRange());
 
 private:
   Standard_Boolean myASCIIMode;

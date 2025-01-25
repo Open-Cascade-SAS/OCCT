@@ -28,14 +28,14 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESDimen_ToolDimensionTolerance::IGESDimen_ToolDimensionTolerance ()    {  }
+IGESDimen_ToolDimensionTolerance::IGESDimen_ToolDimensionTolerance() {}
 
-
-void  IGESDimen_ToolDimensionTolerance::ReadOwnParams
-  (const Handle(IGESDimen_DimensionTolerance)& ent,
-   const Handle(IGESData_IGESReaderData)& /*IR*/, IGESData_ParamReader& PR) const
+void IGESDimen_ToolDimensionTolerance::ReadOwnParams(
+  const Handle(IGESDimen_DimensionTolerance)& ent,
+  const Handle(IGESData_IGESReaderData)& /*IR*/,
+  IGESData_ParamReader& PR) const
 {
-  //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
   Standard_Integer tempNbProps;
   Standard_Integer tempSecondTolFlag;
   Standard_Integer tempTolTyp;
@@ -47,7 +47,7 @@ void  IGESDimen_ToolDimensionTolerance::ReadOwnParams
   Standard_Integer tempPrecision;
 
   if (PR.DefinedElseSkip())
-// clang-format off
+    // clang-format off
     PR.ReadInteger(PR.Current(), "Number of properties", tempNbProps); //szv#4:S4163:12Mar99 `st=` not needed
   else
     tempNbProps = 8;
@@ -66,17 +66,24 @@ void  IGESDimen_ToolDimensionTolerance::ReadOwnParams
   PR.ReadBoolean(PR.Current(), "Sign Suppression Flag",
 		 tempSignSupFlag); //szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "Fraction Flag", tempFracFlag); //szv#4:S4163:12Mar99 `st=` not needed
-// clang-format on
-  PR.ReadInteger(PR.Current(), "Precision", tempPrecision); //szv#4:S4163:12Mar99 `st=` not needed
+  // clang-format on
+  PR.ReadInteger(PR.Current(), "Precision", tempPrecision); // szv#4:S4163:12Mar99 `st=` not needed
 
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
-  ent->Init
-    (tempNbProps, tempSecondTolFlag, tempTolTyp, tempTolPlaceFlag,
-     tempUpperTol, tempLowerTol, tempSignSupFlag, tempFracFlag, tempPrecision);
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
+  ent->Init(tempNbProps,
+            tempSecondTolFlag,
+            tempTolTyp,
+            tempTolPlaceFlag,
+            tempUpperTol,
+            tempLowerTol,
+            tempSignSupFlag,
+            tempFracFlag,
+            tempPrecision);
 }
 
-void  IGESDimen_ToolDimensionTolerance::WriteOwnParams
-  (const Handle(IGESDimen_DimensionTolerance)& ent, IGESData_IGESWriter& IW) const
+void IGESDimen_ToolDimensionTolerance::WriteOwnParams(
+  const Handle(IGESDimen_DimensionTolerance)& ent,
+  IGESData_IGESWriter&                        IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->SecondaryToleranceFlag());
@@ -89,37 +96,46 @@ void  IGESDimen_ToolDimensionTolerance::WriteOwnParams
   IW.Send(ent->Precision());
 }
 
-void  IGESDimen_ToolDimensionTolerance::OwnShared
-  (const Handle(IGESDimen_DimensionTolerance)& /*ent*/, Interface_EntityIterator& /*iter*/) const
+void IGESDimen_ToolDimensionTolerance::OwnShared(
+  const Handle(IGESDimen_DimensionTolerance)& /*ent*/,
+  Interface_EntityIterator& /*iter*/) const
 {
 }
 
-void  IGESDimen_ToolDimensionTolerance::OwnCopy
-  (const Handle(IGESDimen_DimensionTolerance)& another,
-   const Handle(IGESDimen_DimensionTolerance)& ent, Interface_CopyTool& /*TC*/) const
+void IGESDimen_ToolDimensionTolerance::OwnCopy(const Handle(IGESDimen_DimensionTolerance)& another,
+                                               const Handle(IGESDimen_DimensionTolerance)& ent,
+                                               Interface_CopyTool& /*TC*/) const
 {
-  ent->Init
-    (8,another->SecondaryToleranceFlag(),another->ToleranceType(),
-     another->TolerancePlacementFlag(),
-     another->UpperTolerance(),another->LowerTolerance(),
-     (another->SignSuppressionFlag() ? 1 : 0),
-     another->FractionFlag(),another->Precision());
+  ent->Init(8,
+            another->SecondaryToleranceFlag(),
+            another->ToleranceType(),
+            another->TolerancePlacementFlag(),
+            another->UpperTolerance(),
+            another->LowerTolerance(),
+            (another->SignSuppressionFlag() ? 1 : 0),
+            another->FractionFlag(),
+            another->Precision());
 }
 
-Standard_Boolean  IGESDimen_ToolDimensionTolerance::OwnCorrect
-  (const Handle(IGESDimen_DimensionTolerance)& ent) const
+Standard_Boolean IGESDimen_ToolDimensionTolerance::OwnCorrect(
+  const Handle(IGESDimen_DimensionTolerance)& ent) const
 {
   Standard_Boolean res = (ent->NbPropertyValues() != 8);
-  if (res) ent->Init
-    (8,ent->SecondaryToleranceFlag(),ent->ToleranceType(),
-     ent->TolerancePlacementFlag(),ent->UpperTolerance(),ent->LowerTolerance(),
-     (ent->SignSuppressionFlag() ? 1 : 0),
-     ent->FractionFlag(),ent->Precision());    // nbpropertyvalues=8
+  if (res)
+    ent->Init(8,
+              ent->SecondaryToleranceFlag(),
+              ent->ToleranceType(),
+              ent->TolerancePlacementFlag(),
+              ent->UpperTolerance(),
+              ent->LowerTolerance(),
+              (ent->SignSuppressionFlag() ? 1 : 0),
+              ent->FractionFlag(),
+              ent->Precision()); // nbpropertyvalues=8
   return res;
 }
 
-IGESData_DirChecker  IGESDimen_ToolDimensionTolerance::DirChecker
-  (const Handle(IGESDimen_DimensionTolerance)& /*ent*/) const
+IGESData_DirChecker IGESDimen_ToolDimensionTolerance::DirChecker(
+  const Handle(IGESDimen_DimensionTolerance)& /*ent*/) const
 {
   IGESData_DirChecker DC(406, 29);
   DC.Structure(IGESData_DefVoid);
@@ -134,9 +150,9 @@ IGESData_DirChecker  IGESDimen_ToolDimensionTolerance::DirChecker
   return DC;
 }
 
-void  IGESDimen_ToolDimensionTolerance::OwnCheck
-  (const Handle(IGESDimen_DimensionTolerance)& ent,
-   const Interface_ShareTool& , Handle(Interface_Check)& ach) const
+void IGESDimen_ToolDimensionTolerance::OwnCheck(const Handle(IGESDimen_DimensionTolerance)& ent,
+                                                const Interface_ShareTool&,
+                                                Handle(Interface_Check)& ach) const
 {
   if (ent->NbPropertyValues() != 8)
     ach->AddFail("Number of properties != 8");
@@ -150,9 +166,10 @@ void  IGESDimen_ToolDimensionTolerance::OwnCheck
     ach->AddFail("Fraction Flag != 0-2");
 }
 
-void  IGESDimen_ToolDimensionTolerance::OwnDump
-  (const Handle(IGESDimen_DimensionTolerance)& ent, const IGESData_IGESDumper& /*dumper*/,
-   Standard_OStream& S, const Standard_Integer /*level*/) const
+void IGESDimen_ToolDimensionTolerance::OwnDump(const Handle(IGESDimen_DimensionTolerance)& ent,
+                                               const IGESData_IGESDumper& /*dumper*/,
+                                               Standard_OStream& S,
+                                               const Standard_Integer /*level*/) const
 {
   S << "IGESDimen_DimensionTolerance\n"
     << "Number of property values : " << ent->NbPropertyValues() << "\n"
@@ -161,8 +178,7 @@ void  IGESDimen_ToolDimensionTolerance::OwnDump
     << "Tolerance Placement Flag : " << ent->TolerancePlacementFlag() << "\n"
     << "Upper Tolerance          : " << ent->UpperTolerance() << "\n"
     << "Lower Tolerance          : " << ent->LowerTolerance() << "\n"
-    << "Sign Suppression Flag    : " << ( ent->SignSuppressionFlag() ? "True" : "False" ) << "\n"
+    << "Sign Suppression Flag    : " << (ent->SignSuppressionFlag() ? "True" : "False") << "\n"
     << "Fraction Flag            : " << ent->FractionFlag() << "\n"
     << "Precision                : " << ent->Precision() << std::endl;
 }
-

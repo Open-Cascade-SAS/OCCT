@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef VInspector_ToolActionType_H
 #define VInspector_ToolActionType_H
@@ -19,8 +19,9 @@
 //! \enum VInspector_ToolActionType
 enum VInspector_ToolActionType
 {
-  VInspector_ToolActionType_NoneId, //!< No action activated
-  VInspector_ToolActionType_UpdateId //!< Update content of tree view (content of AIS_InteractiveContext)
+  VInspector_ToolActionType_NoneId,  //!< No action activated
+  VInspector_ToolActionType_UpdateId //!< Update content of tree view (content of
+                                     //!< AIS_InteractiveContext)
 };
 
 #endif

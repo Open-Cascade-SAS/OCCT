@@ -22,36 +22,35 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_ExternalRefFileIndex,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_ExternalRefFileIndex, IGESData_IGESEntity)
 
-IGESBasic_ExternalRefFileIndex::IGESBasic_ExternalRefFileIndex ()    {  }
+IGESBasic_ExternalRefFileIndex::IGESBasic_ExternalRefFileIndex() {}
 
-    void  IGESBasic_ExternalRefFileIndex::Init
-  (const Handle(Interface_HArray1OfHAsciiString)& aNameArray,
-   const Handle(IGESData_HArray1OfIGESEntity)& allEntities)
+void IGESBasic_ExternalRefFileIndex::Init(const Handle(Interface_HArray1OfHAsciiString)& aNameArray,
+                                          const Handle(IGESData_HArray1OfIGESEntity)& allEntities)
 {
-  if (aNameArray->Lower()  != 1 || allEntities->Lower() != 1 ||
-      aNameArray->Length() != allEntities->Length())
+  if (aNameArray->Lower() != 1 || allEntities->Lower() != 1
+      || aNameArray->Length() != allEntities->Length())
     throw Standard_DimensionMismatch("IGESBasic_ExternalRefFileIndex: Init");
 
-  theNames = aNameArray;
+  theNames    = aNameArray;
   theEntities = allEntities;
-  InitTypeAndForm(402,12);
+  InitTypeAndForm(402, 12);
 }
 
-    Standard_Integer  IGESBasic_ExternalRefFileIndex::NbEntries () const
+Standard_Integer IGESBasic_ExternalRefFileIndex::NbEntries() const
 {
   return theNames->Length();
 }
 
-    Handle(TCollection_HAsciiString)  IGESBasic_ExternalRefFileIndex::Name
-  (const Standard_Integer Index) const
+Handle(TCollection_HAsciiString) IGESBasic_ExternalRefFileIndex::Name(
+  const Standard_Integer Index) const
 {
   return theNames->Value(Index);
 }
 
-    Handle(IGESData_IGESEntity)  IGESBasic_ExternalRefFileIndex::Entity
-  (const Standard_Integer Index) const
+Handle(IGESData_IGESEntity) IGESBasic_ExternalRefFileIndex::Entity(
+  const Standard_Integer Index) const
 {
   return theEntities->Value(Index);
 }

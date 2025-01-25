@@ -20,7 +20,7 @@
 #include <TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(TopOpeBRepDS_HArray1OfDataMapOfIntegerListOfInterference, TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference)
-
+DEFINE_HARRAY1(TopOpeBRepDS_HArray1OfDataMapOfIntegerListOfInterference,
+               TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference)
 
 #endif

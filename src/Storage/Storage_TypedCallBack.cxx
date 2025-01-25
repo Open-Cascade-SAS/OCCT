@@ -12,24 +12,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Storage_CallBack.hxx>
 #include <Storage_TypedCallBack.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Storage_TypedCallBack,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Storage_TypedCallBack, Standard_Transient)
 
-Storage_TypedCallBack::Storage_TypedCallBack() : myIndex(0)
+Storage_TypedCallBack::Storage_TypedCallBack()
+    : myIndex(0)
 {
 }
 
-Storage_TypedCallBack::Storage_TypedCallBack(const TCollection_AsciiString& aTypeName,const Handle(Storage_CallBack)& aCallBack) : myIndex(0)
+Storage_TypedCallBack::Storage_TypedCallBack(const TCollection_AsciiString&  aTypeName,
+                                             const Handle(Storage_CallBack)& aCallBack)
+    : myIndex(0)
 {
-  myType = aTypeName;
+  myType     = aTypeName;
   myCallBack = aCallBack;
 }
 
-void Storage_TypedCallBack::SetType(const TCollection_AsciiString& aType) 
+void Storage_TypedCallBack::SetType(const TCollection_AsciiString& aType)
 {
   myType = aType;
 }
@@ -39,7 +41,7 @@ TCollection_AsciiString Storage_TypedCallBack::Type() const
   return myType;
 }
 
-void Storage_TypedCallBack::SetCallBack(const Handle(Storage_CallBack)& aCallBack) 
+void Storage_TypedCallBack::SetCallBack(const Handle(Storage_CallBack)& aCallBack)
 {
   myCallBack = aCallBack;
 }
@@ -51,7 +53,7 @@ Handle(Storage_CallBack) Storage_TypedCallBack::CallBack() const
 
 void Storage_TypedCallBack::SetIndex(const Standard_Integer anIndex)
 {
-  myIndex  = anIndex;
+  myIndex = anIndex;
 }
 
 Standard_Integer Storage_TypedCallBack::Index() const

@@ -22,7 +22,9 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-typedef NCollection_IndexedDataMap<TopoDS_Shape,TopOpeBRepBuild_VertexInfo,TopTools_ShapeMapHasher> TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo;
-
+typedef NCollection_IndexedDataMap<TopoDS_Shape,
+                                   TopOpeBRepBuild_VertexInfo,
+                                   TopTools_ShapeMapHasher>
+  TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo;
 
 #endif

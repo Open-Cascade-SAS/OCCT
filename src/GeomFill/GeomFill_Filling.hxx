@@ -28,51 +28,30 @@
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
-
 //! Root class for Filling;
-class GeomFill_Filling 
+class GeomFill_Filling
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT GeomFill_Filling();
-  
+
   Standard_EXPORT Standard_Integer NbUPoles() const;
-  
+
   Standard_EXPORT Standard_Integer NbVPoles() const;
-  
-  Standard_EXPORT void Poles (TColgp_Array2OfPnt& Poles) const;
-  
+
+  Standard_EXPORT void Poles(TColgp_Array2OfPnt& Poles) const;
+
   Standard_EXPORT Standard_Boolean isRational() const;
-  
-  Standard_EXPORT void Weights (TColStd_Array2OfReal& Weights) const;
 
-
-
+  Standard_EXPORT void Weights(TColStd_Array2OfReal& Weights) const;
 
 protected:
-
-
-
-  Standard_Boolean IsRational;
-  Handle(TColgp_HArray2OfPnt) myPoles;
+  Standard_Boolean              IsRational;
+  Handle(TColgp_HArray2OfPnt)   myPoles;
   Handle(TColStd_HArray2OfReal) myWeights;
 
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeomFill_Filling_HeaderFile

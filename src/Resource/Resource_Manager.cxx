@@ -33,7 +33,7 @@
 #include <algorithm>
 #include <errno.h>
 
-IMPLEMENT_STANDARD_RTTIEXT(Resource_Manager,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Resource_Manager, Standard_Transient)
 
 //! Auxiliary enumeration for function WhatKindOfLine().
 enum Resource_KindOfLine
@@ -45,11 +45,11 @@ enum Resource_KindOfLine
   Resource_KOL_Error
 };
 
-static Resource_KindOfLine WhatKindOfLine(OSD_File& aFile,
-				       TCollection_AsciiString& aToken1,
-				       TCollection_AsciiString& aToken2);
+static Resource_KindOfLine WhatKindOfLine(OSD_File&                aFile,
+                                          TCollection_AsciiString& aToken1,
+                                          TCollection_AsciiString& aToken2);
 
-static Standard_Integer GetLine(OSD_File& aFile,TCollection_AsciiString& aLine);
+static Standard_Integer GetLine(OSD_File& aFile, TCollection_AsciiString& aLine);
 
 static Standard_Boolean Debug;
 
@@ -57,26 +57,26 @@ static Standard_Boolean Debug;
 // function : Resource_Manager
 // purpose  :
 // =======================================================================
-Resource_Manager::Resource_Manager (const TCollection_AsciiString& theName,
-                                    const TCollection_AsciiString& theDefaultsDirectory,
-                                    const TCollection_AsciiString& theUserDefaultsDirectory,
-                                    const Standard_Boolean theIsVerbose)
-: myName (theName),
-  myVerbose (theIsVerbose),
-  myInitialized(Standard_False)
+Resource_Manager::Resource_Manager(const TCollection_AsciiString& theName,
+                                   const TCollection_AsciiString& theDefaultsDirectory,
+                                   const TCollection_AsciiString& theUserDefaultsDirectory,
+                                   const Standard_Boolean         theIsVerbose)
+    : myName(theName),
+      myVerbose(theIsVerbose),
+      myInitialized(Standard_False)
 {
   if (!theDefaultsDirectory.IsEmpty())
   {
-    OSD_Path anOSDPath (theDefaultsDirectory);
+    OSD_Path anOSDPath(theDefaultsDirectory);
     if (!anOSDPath.Name().IsEmpty())
     {
-      anOSDPath.DownTrek (anOSDPath.Name() + anOSDPath.Extension());
+      anOSDPath.DownTrek(anOSDPath.Name() + anOSDPath.Extension());
     }
-    anOSDPath.SetName (theName);
-    anOSDPath.SetExtension ("");
+    anOSDPath.SetName(theName);
+    anOSDPath.SetExtension("");
     TCollection_AsciiString aPath;
-    anOSDPath.SystemName (aPath);
-    Load (aPath, myRefMap);
+    anOSDPath.SystemName(aPath);
+    Load(aPath, myRefMap);
   }
   else if (myVerbose)
   {
@@ -85,16 +85,16 @@ Resource_Manager::Resource_Manager (const TCollection_AsciiString& theName,
 
   if (!theUserDefaultsDirectory.IsEmpty())
   {
-    OSD_Path anOSDPath (theUserDefaultsDirectory);
+    OSD_Path anOSDPath(theUserDefaultsDirectory);
     if (!anOSDPath.Name().IsEmpty())
     {
-      anOSDPath.DownTrek (anOSDPath.Name() + anOSDPath.Extension());
+      anOSDPath.DownTrek(anOSDPath.Name() + anOSDPath.Extension());
     }
-    anOSDPath.SetName (theName);
-    anOSDPath.SetExtension ("");
+    anOSDPath.SetName(theName);
+    anOSDPath.SetExtension("");
     TCollection_AsciiString aPath;
-    anOSDPath.SystemName (aPath);
-    Load (aPath, myRefMap);
+    anOSDPath.SystemName(aPath);
+    Load(aPath, myRefMap);
   }
   else if (myVerbose)
   {
@@ -102,31 +102,35 @@ Resource_Manager::Resource_Manager (const TCollection_AsciiString& theName,
   }
 }
 
-Resource_Manager::Resource_Manager(const Standard_CString aName,
-				   const Standard_Boolean Verbose) : myName(aName), myVerbose(Verbose), myInitialized(Standard_False)
+Resource_Manager::Resource_Manager(const Standard_CString aName, const Standard_Boolean Verbose)
+    : myName(aName),
+      myVerbose(Verbose),
+      myInitialized(Standard_False)
 {
   OSD_Environment envDebug("ResourceDebug");
-  Debug = (!envDebug.Value().IsEmpty()) ;
+  Debug = (!envDebug.Value().IsEmpty());
 
-  TCollection_AsciiString Directory ;
+  TCollection_AsciiString Directory;
 
   OSD_Environment envVerbose("CSF_ResourceVerbose");
   if (!envVerbose.Value().IsEmpty())
     myVerbose = Standard_True;
 
-  TCollection_AsciiString aPath,aUserPath;
-  GetResourcePath(aPath,aName,Standard_False);
-  GetResourcePath(aUserPath,aName,Standard_True);
+  TCollection_AsciiString aPath, aUserPath;
+  GetResourcePath(aPath, aName, Standard_False);
+  GetResourcePath(aUserPath, aName, Standard_True);
 
   if (!aPath.IsEmpty())
-    Load(aPath,myRefMap);
+    Load(aPath, myRefMap);
   else if (myVerbose)
-    std::cout << "Resource Manager Warning: Environment variable \"CSF_" << aName << "Defaults\" not set." << std::endl;
+    std::cout << "Resource Manager Warning: Environment variable \"CSF_" << aName
+              << "Defaults\" not set." << std::endl;
 
   if (!aUserPath.IsEmpty())
-    Load(aUserPath,myRefMap);
+    Load(aUserPath, myRefMap);
   else if (myVerbose)
-    std::cout << "Resource Manager Warning: Environment variable \"CSF_" << aName << "UserDefaults\" not set." << std::endl;
+    std::cout << "Resource Manager Warning: Environment variable \"CSF_" << aName
+              << "UserDefaults\" not set." << std::endl;
 }
 
 // =======================================================================
@@ -134,65 +138,68 @@ Resource_Manager::Resource_Manager(const Standard_CString aName,
 // purpose  :
 // =======================================================================
 Resource_Manager::Resource_Manager()
-  : myName(""), myVerbose(Standard_False)
+    : myName(""),
+      myVerbose(Standard_False)
 {
-
 }
 
 // =======================================================================
 // function : Load
 // purpose  :
 // =======================================================================
-void Resource_Manager::Load(const TCollection_AsciiString& thePath,
+void Resource_Manager::Load(const TCollection_AsciiString&            thePath,
                             Resource_DataMapOfAsciiStringAsciiString& aMap)
 {
-  Resource_KindOfLine aKind;
+  Resource_KindOfLine     aKind;
   TCollection_AsciiString Token1, Token2;
-  OSD_Path Path (thePath);
-  OSD_File File = Path;
+  OSD_Path                Path(thePath);
+  OSD_File                File     = Path;
   TCollection_AsciiString FileName = Path.Name();
-  File.Open(OSD_ReadOnly,OSD_Protection());
-  if (File.Failed()) {
+  File.Open(OSD_ReadOnly, OSD_Protection());
+  if (File.Failed())
+  {
     if (myVerbose)
       std::cout << "Resource Manager Warning: Cannot read file \"" << FileName
-	   << "\". File not found or permission denied." << std::endl;
+                << "\". File not found or permission denied." << std::endl;
     return;
   }
-  myInitialized = Standard_True;
+  myInitialized               = Standard_True;
   Standard_Integer LineNumber = 1;
-  while ((aKind = WhatKindOfLine(File, Token1, Token2)) != Resource_KOL_End) {
-    switch (aKind) {
-    case Resource_KOL_End:
-    case Resource_KOL_Comment:
-    case Resource_KOL_Empty:
-      break ;
-    case Resource_KOL_Resource:
-      if (!aMap.Bind(Token1,Token2))
-        aMap(Token1) = Token2;
-      break;
-    case Resource_KOL_Error:
-      if (myVerbose)
-	std::cout << "Resource Manager: Syntax error at line "
-	  << LineNumber << " in file : " << FileName << std::endl;
-      break;
+  while ((aKind = WhatKindOfLine(File, Token1, Token2)) != Resource_KOL_End)
+  {
+    switch (aKind)
+    {
+      case Resource_KOL_End:
+      case Resource_KOL_Comment:
+      case Resource_KOL_Empty:
+        break;
+      case Resource_KOL_Resource:
+        if (!aMap.Bind(Token1, Token2))
+          aMap(Token1) = Token2;
+        break;
+      case Resource_KOL_Error:
+        if (myVerbose)
+          std::cout << "Resource Manager: Syntax error at line " << LineNumber
+                    << " in file : " << FileName << std::endl;
+        break;
     }
     LineNumber++;
   }
   File.Close();
   if (myVerbose)
     std::cout << "Resource Manager: " << ((&aMap == &myUserMap) ? "User" : "Reference")
-         << " file \"" << FileName << "\" loaded" << std::endl;
+              << " file \"" << FileName << "\" loaded" << std::endl;
 }
 
-static Resource_KindOfLine WhatKindOfLine(OSD_File& aFile,
-				       TCollection_AsciiString& aToken1,
-				       TCollection_AsciiString& aToken2)
+static Resource_KindOfLine WhatKindOfLine(OSD_File&                aFile,
+                                          TCollection_AsciiString& aToken1,
+                                          TCollection_AsciiString& aToken2)
 {
-  TCollection_AsciiString WhiteSpace = " \t" ;
-  Standard_Integer Pos1,Pos2,Pos ;
-  TCollection_AsciiString Line ;
+  TCollection_AsciiString WhiteSpace = " \t";
+  Standard_Integer        Pos1, Pos2, Pos;
+  TCollection_AsciiString Line;
 
-  if (!GetLine(aFile,Line))
+  if (!GetLine(aFile, Line))
     return Resource_KOL_End;
 
   if (Line.Value(1) == '!')
@@ -202,31 +209,35 @@ static Resource_KindOfLine WhatKindOfLine(OSD_File& aFile,
   if (Line.Value(Pos1) == '\n')
     return Resource_KOL_Empty;
 
-  Pos2 = Line.Location(1,':',Pos1,Line.Length());
+  Pos2 = Line.Location(1, ':', Pos1, Line.Length());
   if (!Pos2 || Pos1 == Pos2)
     return Resource_KOL_Error;
 
-  for (Pos = Pos2-1; Line.Value(Pos) == '\t' || Line.Value(Pos) == ' ' ; Pos--);
+  for (Pos = Pos2 - 1; Line.Value(Pos) == '\t' || Line.Value(Pos) == ' '; Pos--)
+    ;
   aToken1 = Line.SubString(Pos1, Pos);
 
   if (Debug)
-    std::cout << "Key = '" << aToken1 << std::flush ;
+    std::cout << "Key = '" << aToken1 << std::flush;
 
-  Pos = Line.FirstLocationNotInSet(WhiteSpace, Pos2+1, Line.Length());
-  if (Pos) {
+  Pos = Line.FirstLocationNotInSet(WhiteSpace, Pos2 + 1, Line.Length());
+  if (Pos)
+  {
     if (Line.Value(Pos) == '\\')
-      switch(Line.Value(Pos+1)) {
-      case '\\' :
-      case ' '  :
-      case '\t' :
-	Pos++;
-	break;
+      switch (Line.Value(Pos + 1))
+      {
+        case '\\':
+        case ' ':
+        case '\t':
+          Pos++;
+          break;
       }
   }
   if (Pos == Line.Length())
     aToken2.Clear();
-  else {
-    Line.Remove(1,Pos-1);
+  else
+  {
+    Line.Remove(1, Pos - 1);
     const Standard_Integer aLineLength = Line.Length();
     if (aLineLength >= 2)
     {
@@ -245,19 +256,23 @@ static Resource_KindOfLine WhatKindOfLine(OSD_File& aFile,
 
 // Retourne 0 (EOF) ou une ligne toujours terminee par <NL>.
 
-static Standard_Integer GetLine(OSD_File& aFile,TCollection_AsciiString& aLine)
+static Standard_Integer GetLine(OSD_File& aFile, TCollection_AsciiString& aLine)
 {
   TCollection_AsciiString Buffer;
-  Standard_Integer BufSize = 10;
-  Standard_Integer Len;
+  Standard_Integer        BufSize = 10;
+  Standard_Integer        Len;
 
   aLine.Clear();
-  do {
-    aFile.ReadLine(Buffer,BufSize,Len);
+  do
+  {
+    aFile.ReadLine(Buffer, BufSize, Len);
     aLine += Buffer;
-    if (aFile.IsAtEnd()) {
-      if (!aLine.Length()) return 0;
-      else aLine += "\n";
+    if (aFile.IsAtEnd())
+    {
+      if (!aLine.Length())
+        return 0;
+      else
+        aLine += "\n";
     }
   } while (aLine.Value(aLine.Length()) != '\n');
 
@@ -265,8 +280,8 @@ static Standard_Integer GetLine(OSD_File& aFile,TCollection_AsciiString& aLine)
 }
 
 //=======================================================================
-//function : Save
-//purpose  : Sort and save the user resources in the user file.
+// function : Save
+// purpose  : Sort and save the user resources in the user file.
 //           Creates the file if it does not exist.
 //=======================================================================
 Standard_Boolean Resource_Manager::Save() const
@@ -276,88 +291,98 @@ Standard_Boolean Resource_Manager::Save() const
   anEnvVar += "UserDefaults";
 
   TCollection_AsciiString dir;
-  OSD_Environment anEnv(anEnvVar);
+  OSD_Environment         anEnv(anEnvVar);
   dir = anEnv.Value();
-  if (dir.IsEmpty()) {
+  if (dir.IsEmpty())
+  {
     if (myVerbose)
-      std::cout << "Resource Manager Warning: environment variable \""
-	   << anEnvVar << "\" not set.  Cannot save resources." << std::endl ;
+      std::cout << "Resource Manager Warning: environment variable \"" << anEnvVar
+                << "\" not set.  Cannot save resources." << std::endl;
     return Standard_False;
   }
 
   TCollection_AsciiString aFilePath(dir);
-  OSD_Path anOSDPath(aFilePath);
-  OSD_Directory Dir = anOSDPath;
-  Standard_Boolean aStatus = Standard_True;
-  if ( !Dir.Exists() ) {
+  OSD_Path                anOSDPath(aFilePath);
+  OSD_Directory           Dir     = anOSDPath;
+  Standard_Boolean        aStatus = Standard_True;
+  if (!Dir.Exists())
+  {
     {
-      try {
+      try
+      {
         OCC_CATCH_SIGNALS
         Dir.Build(OSD_Protection(OSD_RX, OSD_RWXD, OSD_RX, OSD_RX));
       }
-      catch (Standard_Failure const&) {
+      catch (Standard_Failure const&)
+      {
         aStatus = Standard_False;
       }
     }
     aStatus = aStatus && !Dir.Failed();
-    if (!aStatus) {
+    if (!aStatus)
+    {
       if (myVerbose)
         std::cout << "Resource Manager: Error opening or creating directory \"" << aFilePath
-             << "\". Permission denied. Cannot save resources." << std::endl;
+                  << "\". Permission denied. Cannot save resources." << std::endl;
       return Standard_False;
     }
   }
 
   if (!anOSDPath.Name().IsEmpty())
   {
-    anOSDPath.DownTrek (anOSDPath.Name () + anOSDPath.Extension ());
+    anOSDPath.DownTrek(anOSDPath.Name() + anOSDPath.Extension());
   }
   anOSDPath.SetName(myName);
   anOSDPath.SetExtension("");
   anOSDPath.SystemName(aFilePath);
 
-  OSD_File File = anOSDPath;
+  OSD_File       File = anOSDPath;
   OSD_Protection theProt;
   aStatus = Standard_True;
   {
-    try {
+    try
+    {
       OCC_CATCH_SIGNALS
       File.Build(OSD_ReadWrite, theProt);
     }
-    catch (Standard_Failure const&) {
+    catch (Standard_Failure const&)
+    {
       aStatus = Standard_False;
     }
   }
   aStatus = aStatus && !File.Failed();
-  if (!aStatus) {
+  if (!aStatus)
+  {
     if (myVerbose)
       std::cout << "Resource Manager: Error opening or creating file \"" << aFilePath
-           << "\". Permission denied. Cannot save resources." << std::endl;
+                << "\". Permission denied. Cannot save resources." << std::endl;
     return Standard_False;
   }
 
   const Standard_Integer NbKey = myUserMap.Extent();
   if (NbKey)
   {
-    TColStd_Array1OfAsciiString KeyArray(1,NbKey);
+    TColStd_Array1OfAsciiString                               KeyArray(1, NbKey);
     Resource_DataMapIteratorOfDataMapOfAsciiStringAsciiString Iter(myUserMap);
 
     Standard_Integer Index;
-    for ( Index = 1; Iter.More(); Iter.Next())
-      KeyArray(Index++)= Iter.Key();
+    for (Index = 1; Iter.More(); Iter.Next())
+      KeyArray(Index++) = Iter.Key();
 
-  std::sort (KeyArray.begin(), KeyArray.end());
+    std::sort(KeyArray.begin(), KeyArray.end());
 
     TCollection_AsciiString Line, Value;
-    for (Index = 1 ; Index <= NbKey ; Index++) {
+    for (Index = 1; Index <= NbKey; Index++)
+    {
       Value = myUserMap(KeyArray(Index));
       if (!Value.IsEmpty())
-        switch(Value.Value(1)) {
-        case '\\' :
-        case ' ' :
-        case '\t' :
-          Value.Insert(1,'\\');
-          break;
+        switch (Value.Value(1))
+        {
+          case '\\':
+          case ' ':
+          case '\t':
+            Value.Insert(1, '\\');
+            break;
         }
       Line = KeyArray(Index) + ":\t" + Value + "\n";
 
@@ -374,47 +399,49 @@ Standard_Boolean Resource_Manager::Save() const
 }
 
 //=======================================================================
-//function : Integer
-//purpose  : Gets the value of an integer resource
+// function : Integer
+// purpose  : Gets the value of an integer resource
 //=======================================================================
 
 Standard_Integer Resource_Manager::Integer(const Standard_CString aResourceName) const
 {
-  TCollection_AsciiString Result = Value(aResourceName) ;
-  if (!Result.IsIntegerValue()) {
+  TCollection_AsciiString Result = Value(aResourceName);
+  if (!Result.IsIntegerValue())
+  {
     TCollection_AsciiString n("Value of resource `");
-    n+= aResourceName;
-    n+= "` is not an integer";
+    n += aResourceName;
+    n += "` is not an integer";
     throw Standard_TypeMismatch(n.ToCString());
   }
   return Result.IntegerValue();
 }
 
 //=======================================================================
-//function : Real
-//purpose  : Gets the value of a real resource
+// function : Real
+// purpose  : Gets the value of a real resource
 //=======================================================================
 
-Standard_Real Resource_Manager::Real(const Standard_CString  aResourceName) const
+Standard_Real Resource_Manager::Real(const Standard_CString aResourceName) const
 {
-  TCollection_AsciiString Result = Value(aResourceName) ;
-  if (!Result.IsRealValue()) {
+  TCollection_AsciiString Result = Value(aResourceName);
+  if (!Result.IsRealValue())
+  {
     TCollection_AsciiString n("Value of resource `");
-    n+= aResourceName;
-    n+= "` is not a real";
+    n += aResourceName;
+    n += "` is not a real";
     throw Standard_TypeMismatch(n.ToCString());
   }
   return Result.RealValue();
 }
 
 //=======================================================================
-//function : Value
-//purpose  : Gets the value of a CString resource
+// function : Value
+// purpose  : Gets the value of a CString resource
 //=======================================================================
 
 Standard_CString Resource_Manager::Value(const Standard_CString aResource) const
 {
-  TCollection_AsciiString  Resource(aResource);
+  TCollection_AsciiString Resource(aResource);
   if (myUserMap.IsBound(Resource))
     return myUserMap(Resource).ToCString();
   if (myRefMap.IsBound(Resource))
@@ -423,124 +450,119 @@ Standard_CString Resource_Manager::Value(const Standard_CString aResource) const
 }
 
 //=======================================================================
-//function : ExtValue
-//purpose  : Gets the value of a ExtString resource
+// function : ExtValue
+// purpose  : Gets the value of a ExtString resource
 //=======================================================================
 
 Standard_ExtString Resource_Manager::ExtValue(const Standard_CString aResource)
 {
-  TCollection_AsciiString  Resource(aResource);
+  TCollection_AsciiString Resource(aResource);
   if (myExtStrMap.IsBound(Resource))
     return myExtStrMap(Resource).ToExtString();
 
-  TCollection_AsciiString Result = Value(aResource);
+  TCollection_AsciiString    Result = Value(aResource);
   TCollection_ExtendedString ExtResult;
 
-  Resource_Unicode::ConvertFormatToUnicode(Result.ToCString(),ExtResult);
+  Resource_Unicode::ConvertFormatToUnicode(Result.ToCString(), ExtResult);
 
   myExtStrMap.Bind(Resource, ExtResult);
-  return  myExtStrMap(Resource).ToExtString();
+  return myExtStrMap(Resource).ToExtString();
 }
 
 //=======================================================================
-//function : SetResource
-//purpose  : Sets the new value of an integer resource.
+// function : SetResource
+// purpose  : Sets the new value of an integer resource.
 //           If the resource does not exist, it is created.
 //=======================================================================
 void Resource_Manager::SetResource(const Standard_CString aResourceName,
-				   const Standard_Integer aValue)
+                                   const Standard_Integer aValue)
 {
-  SetResource(aResourceName,TCollection_AsciiString(aValue).ToCString());
+  SetResource(aResourceName, TCollection_AsciiString(aValue).ToCString());
 }
 
 //=======================================================================
-//function : SetResource
-//purpose  : Sets the new value of a real resource.
+// function : SetResource
+// purpose  : Sets the new value of a real resource.
 //           If the resource does not exist, it is created.
 //=======================================================================
-void Resource_Manager::SetResource(const Standard_CString aResourceName,
-				   const Standard_Real    aValue)
+void Resource_Manager::SetResource(const Standard_CString aResourceName, const Standard_Real aValue)
 {
-  SetResource(aResourceName,TCollection_AsciiString(aValue).ToCString());
+  SetResource(aResourceName, TCollection_AsciiString(aValue).ToCString());
 }
 
 //=======================================================================
-//function : SetResource
-//purpose  : Sets the new value of ExtString resource.
+// function : SetResource
+// purpose  : Sets the new value of ExtString resource.
 //           If the resource does not exist, it is created.
 //=======================================================================
-void Resource_Manager::SetResource(const Standard_CString aResource,
-				   const Standard_ExtString aValue)
+void Resource_Manager::SetResource(const Standard_CString   aResource,
+                                   const Standard_ExtString aValue)
 {
-  Standard_PCharacter pStr;
-  TCollection_AsciiString Resource = aResource;
+  Standard_PCharacter        pStr;
+  TCollection_AsciiString    Resource = aResource;
   TCollection_ExtendedString ExtValue = aValue;
-  TCollection_AsciiString FormatStr(ExtValue.Length()*3+10, ' ');
+  TCollection_AsciiString    FormatStr(ExtValue.Length() * 3 + 10, ' ');
 
-  if (!myExtStrMap.Bind(Resource,ExtValue)) {
+  if (!myExtStrMap.Bind(Resource, ExtValue))
+  {
     myExtStrMap(Resource) = ExtValue;
   }
   //
-  pStr=(Standard_PCharacter)FormatStr.ToCString();
+  pStr = (Standard_PCharacter)FormatStr.ToCString();
   //
   Resource_Unicode::ConvertUnicodeToFormat(ExtValue,
-					   pStr,//FormatStr.ToCString(),
-					   FormatStr.Length()) ;
-  SetResource(aResource,FormatStr.ToCString());
+                                           pStr, // FormatStr.ToCString(),
+                                           FormatStr.Length());
+  SetResource(aResource, FormatStr.ToCString());
 }
 
 //=======================================================================
-//function : SetResource
-//purpose  : Sets the new value of an enum resource.
+// function : SetResource
+// purpose  : Sets the new value of an enum resource.
 //           If the resource does not exist, it is created.
 //=======================================================================
-void Resource_Manager::SetResource(const Standard_CString aResource,
-				   const Standard_CString aValue)
+void Resource_Manager::SetResource(const Standard_CString aResource, const Standard_CString aValue)
 {
   TCollection_AsciiString Resource = aResource;
-  TCollection_AsciiString Value = aValue;
+  TCollection_AsciiString Value    = aValue;
   if (!myUserMap.Bind(Resource, Value))
     myUserMap(Resource) = Value;
 }
 
 //=======================================================================
-//function : Find
-//purpose  : Tells if a resource exits.
+// function : Find
+// purpose  : Tells if a resource exits.
 //=======================================================================
 Standard_Boolean Resource_Manager::Find(const Standard_CString aResource) const
 {
-  TCollection_AsciiString  Resource(aResource);
+  TCollection_AsciiString Resource(aResource);
   if (myUserMap.IsBound(Resource) || myRefMap.IsBound(Resource))
     return Standard_True;
   return Standard_False;
 }
 
-//=======================================================================
-//function : Find
-//purpose  :
-//=======================================================================
-Standard_Boolean Resource_Manager::Find (const TCollection_AsciiString& theResource,
-                                         TCollection_AsciiString& theValue) const
+//=================================================================================================
+
+Standard_Boolean Resource_Manager::Find(const TCollection_AsciiString& theResource,
+                                        TCollection_AsciiString&       theValue) const
 {
-  return myUserMap.Find (theResource, theValue)
-      || myRefMap .Find (theResource, theValue);
+  return myUserMap.Find(theResource, theValue) || myRefMap.Find(theResource, theValue);
 }
 
-//=======================================================================
-//function : GetResourcePath
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void Resource_Manager::GetResourcePath (TCollection_AsciiString& aPath, const Standard_CString aName, const Standard_Boolean isUserDefaults)
+void Resource_Manager::GetResourcePath(TCollection_AsciiString& aPath,
+                                       const Standard_CString   aName,
+                                       const Standard_Boolean   isUserDefaults)
 {
   aPath.Clear();
 
   TCollection_AsciiString anEnvVar("CSF_");
   anEnvVar += aName;
-  anEnvVar += isUserDefaults?"UserDefaults":"Defaults";
+  anEnvVar += isUserDefaults ? "UserDefaults" : "Defaults";
 
   TCollection_AsciiString dir;
-  OSD_Environment anEnv(anEnvVar);
+  OSD_Environment         anEnv(anEnvVar);
   dir = anEnv.Value();
   if (dir.IsEmpty())
     return;
@@ -551,18 +573,16 @@ void Resource_Manager::GetResourcePath (TCollection_AsciiString& aPath, const St
 
   if (!anOSDPath.Name().IsEmpty())
   {
-    anOSDPath.DownTrek (anOSDPath.Name () + anOSDPath.Extension ());
+    anOSDPath.DownTrek(anOSDPath.Name() + anOSDPath.Extension());
   }
-  anOSDPath.SetName (aName);
-  anOSDPath.SetExtension ("");
+  anOSDPath.SetName(aName);
+  anOSDPath.SetExtension("");
 
   anOSDPath.SystemName(aPath);
 }
 
-//=======================================================================
-// function : GetMap
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 Resource_DataMapOfAsciiStringAsciiString& Resource_Manager::GetMap(Standard_Boolean theRefMap)
 {
   return theRefMap ? myRefMap : myUserMap;

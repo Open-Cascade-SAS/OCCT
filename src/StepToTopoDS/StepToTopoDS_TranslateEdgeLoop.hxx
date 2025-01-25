@@ -31,62 +31,40 @@ class StepGeom_Surface;
 class StepToTopoDS_Tool;
 class StepToTopoDS_NMTool;
 
-
-
-class StepToTopoDS_TranslateEdgeLoop  : public StepToTopoDS_Root
+class StepToTopoDS_TranslateEdgeLoop : public StepToTopoDS_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT StepToTopoDS_TranslateEdgeLoop();
-  
-  Standard_EXPORT StepToTopoDS_TranslateEdgeLoop(const Handle(StepShape_FaceBound)& FB,
-                                                 const TopoDS_Face& F,
-                                                 const Handle(Geom_Surface)& S,
-                                                 const Handle(StepGeom_Surface)& SS,
-                                                 const Standard_Boolean ss,
-                                                 StepToTopoDS_Tool& T,
-                                                 StepToTopoDS_NMTool& NMTool,
-                                                 const StepData_Factors& theLocalFactors = StepData_Factors());
-  
-  Standard_EXPORT void Init (const Handle(StepShape_FaceBound)& FB,
-                             const TopoDS_Face& F,
-                             const Handle(Geom_Surface)& S,
-                             const Handle(StepGeom_Surface)& SS,
-                             const Standard_Boolean ss,
-                             StepToTopoDS_Tool& T,
-                             StepToTopoDS_NMTool& NMTool,
-                             const StepData_Factors& theLocalFactors = StepData_Factors());
-  
+
+  Standard_EXPORT StepToTopoDS_TranslateEdgeLoop(
+    const Handle(StepShape_FaceBound)& FB,
+    const TopoDS_Face&                 F,
+    const Handle(Geom_Surface)&        S,
+    const Handle(StepGeom_Surface)&    SS,
+    const Standard_Boolean             ss,
+    StepToTopoDS_Tool&                 T,
+    StepToTopoDS_NMTool&               NMTool,
+    const StepData_Factors&            theLocalFactors = StepData_Factors());
+
+  Standard_EXPORT void Init(const Handle(StepShape_FaceBound)& FB,
+                            const TopoDS_Face&                 F,
+                            const Handle(Geom_Surface)&        S,
+                            const Handle(StepGeom_Surface)&    SS,
+                            const Standard_Boolean             ss,
+                            StepToTopoDS_Tool&                 T,
+                            StepToTopoDS_NMTool&               NMTool,
+                            const StepData_Factors& theLocalFactors = StepData_Factors());
+
   Standard_EXPORT const TopoDS_Shape& Value() const;
-  
+
   Standard_EXPORT StepToTopoDS_TranslateEdgeLoopError Error() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   StepToTopoDS_TranslateEdgeLoopError myError;
-  TopoDS_Shape myResult;
-
-
+  TopoDS_Shape                        myResult;
 };
-
-
-
-
-
-
 
 #endif // _StepToTopoDS_TranslateEdgeLoop_HeaderFile

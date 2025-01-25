@@ -27,48 +27,31 @@ class StepFEA_FeaMoistureAbsorption;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write tool for FeaMoistureAbsorption
-class RWStepFEA_RWFeaMoistureAbsorption 
+class RWStepFEA_RWFeaMoistureAbsorption
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_HIDDEN RWStepFEA_RWFeaMoistureAbsorption();
-  
+
   //! Reads FeaMoistureAbsorption
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepFEA_FeaMoistureAbsorption)& ent) const;
-  
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&       data,
+                                const Standard_Integer                       num,
+                                Handle(Interface_Check)&                     ach,
+                                const Handle(StepFEA_FeaMoistureAbsorption)& ent) const;
+
   //! Writes FeaMoistureAbsorption
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepFEA_FeaMoistureAbsorption)& ent) const;
-  
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                         SW,
+                                 const Handle(StepFEA_FeaMoistureAbsorption)& ent) const;
+
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepFEA_FeaMoistureAbsorption)& ent, Interface_EntityIterator& iter) const;
-
-
-
+  Standard_HIDDEN void Share(const Handle(StepFEA_FeaMoistureAbsorption)& ent,
+                             Interface_EntityIterator&                    iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepFEA_RWFeaMoistureAbsorption_HeaderFile

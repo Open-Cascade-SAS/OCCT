@@ -21,7 +21,6 @@
 #include <IntCurveSurface_TheHCurveTool.hxx>
 #include <Bnd_Box.hxx>
 #include <gp_Pnt.hxx>
- 
 
 #define TheCurve Handle(Adaptor3d_Curve)
 #define TheCurve_hxx <Adaptor3d_Curve.hxx>
@@ -30,4 +29,3 @@
 #define IntCurveSurface_Polygon IntCurveSurface_ThePolygonOfHInter
 #define IntCurveSurface_Polygon_hxx <IntCurveSurface_ThePolygonOfHInter.hxx>
 #include "../IntCurveSurface/IntCurveSurface_Polygon.gxx"
-

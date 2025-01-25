@@ -18,25 +18,19 @@
 #include <StepElement_Volume3dElementDescriptor.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepElement_Volume3dElementDescriptor,StepElement_ElementDescriptor)
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_Volume3dElementDescriptor, StepElement_ElementDescriptor)
 
-//=======================================================================
-//function : StepElement_Volume3dElementDescriptor
-//purpose  : 
-//=======================================================================
-StepElement_Volume3dElementDescriptor::StepElement_Volume3dElementDescriptor ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepElement_Volume3dElementDescriptor::StepElement_Volume3dElementDescriptor() {}
 
-void StepElement_Volume3dElementDescriptor::Init (const StepElement_ElementOrder aElementDescriptor_TopologyOrder,
-                                                  const Handle(TCollection_HAsciiString) &aElementDescriptor_Description,
-                                                  const Handle(StepElement_HArray1OfVolumeElementPurposeMember) &aPurpose,
-                                                  const StepElement_Volume3dElementShape aShape)
+//=================================================================================================
+
+void StepElement_Volume3dElementDescriptor::Init(
+  const StepElement_ElementOrder                                 aElementDescriptor_TopologyOrder,
+  const Handle(TCollection_HAsciiString)&                        aElementDescriptor_Description,
+  const Handle(StepElement_HArray1OfVolumeElementPurposeMember)& aPurpose,
+  const StepElement_Volume3dElementShape                         aShape)
 {
   StepElement_ElementDescriptor::Init(aElementDescriptor_TopologyOrder,
                                       aElementDescriptor_Description);
@@ -46,42 +40,32 @@ void StepElement_Volume3dElementDescriptor::Init (const StepElement_ElementOrder
   theShape = aShape;
 }
 
-//=======================================================================
-//function : Purpose
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepElement_HArray1OfVolumeElementPurposeMember) StepElement_Volume3dElementDescriptor::Purpose () const
+Handle(StepElement_HArray1OfVolumeElementPurposeMember) StepElement_Volume3dElementDescriptor::
+  Purpose() const
 {
   return thePurpose;
 }
 
-//=======================================================================
-//function : SetPurpose
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepElement_Volume3dElementDescriptor::SetPurpose (const Handle(StepElement_HArray1OfVolumeElementPurposeMember) &aPurpose)
+void StepElement_Volume3dElementDescriptor::SetPurpose(
+  const Handle(StepElement_HArray1OfVolumeElementPurposeMember)& aPurpose)
 {
   thePurpose = aPurpose;
 }
 
-//=======================================================================
-//function : Shape
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepElement_Volume3dElementShape StepElement_Volume3dElementDescriptor::Shape () const
+StepElement_Volume3dElementShape StepElement_Volume3dElementDescriptor::Shape() const
 {
   return theShape;
 }
 
-//=======================================================================
-//function : SetShape
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepElement_Volume3dElementDescriptor::SetShape (const StepElement_Volume3dElementShape aShape)
+void StepElement_Volume3dElementDescriptor::SetShape(const StepElement_Volume3dElementShape aShape)
 {
   theShape = aShape;
 }

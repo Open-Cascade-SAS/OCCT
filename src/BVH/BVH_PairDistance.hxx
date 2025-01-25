@@ -34,55 +34,53 @@ public:
   typedef typename BVH_Tools<NumType, Dimension>::BVH_VecNt BVH_VecNt;
 
 public: //! @name Constructor
-
   //! Constructor
   BVH_PairDistance()
-    : BVH_PairTraverse <NumType, Dimension, BVHSetType, NumType>(),
-      myDistance (std::numeric_limits<NumType>::max()),
-      myIsDone(Standard_False)
+      : BVH_PairTraverse<NumType, Dimension, BVHSetType, NumType>(),
+        myDistance(std::numeric_limits<NumType>::max()),
+        myIsDone(Standard_False)
   {
   }
 
 public: //! @name Compute the distance
-
   //! Computes the distance between two BVH trees
-  NumType ComputeDistance ()
+  NumType ComputeDistance()
   {
     myIsDone = this->Select() > 0;
     return myDistance;
   }
 
 public: //! @name Accessing the results
-
   //! Returns IsDone flag
-  Standard_Boolean IsDone () const { return myIsDone; }
+  Standard_Boolean IsDone() const { return myIsDone; }
 
   //! Returns the computed distance
   NumType Distance() const { return myDistance; }
 
 public: //! @name Definition of the rules for tree descend
-
   //! Compares the two metrics and chooses the best one
-  virtual Standard_Boolean IsMetricBetter (const NumType& theLeft,
-                                           const NumType& theRight) const Standard_OVERRIDE
+  virtual Standard_Boolean IsMetricBetter(const NumType& theLeft,
+                                          const NumType& theRight) const Standard_OVERRIDE
   {
     return theLeft < theRight;
   }
 
   //! Computes the distance between boxes of the nodes
-  virtual Standard_Boolean RejectNode (const BVH_VecNt& theCornerMin1,
-                                       const BVH_VecNt& theCornerMax1,
-                                       const BVH_VecNt& theCornerMin2,
-                                       const BVH_VecNt& theCornerMax2,
-                                       NumType& theMetric) const Standard_OVERRIDE
+  virtual Standard_Boolean RejectNode(const BVH_VecNt& theCornerMin1,
+                                      const BVH_VecNt& theCornerMax1,
+                                      const BVH_VecNt& theCornerMin2,
+                                      const BVH_VecNt& theCornerMax2,
+                                      NumType&         theMetric) const Standard_OVERRIDE
   {
-    theMetric = BVH_Tools<NumType, Dimension>::BoxBoxSquareDistance (theCornerMin1, theCornerMax1,
-                                                                     theCornerMin2, theCornerMax2);
+    theMetric = BVH_Tools<NumType, Dimension>::BoxBoxSquareDistance(theCornerMin1,
+                                                                    theCornerMax1,
+                                                                    theCornerMin2,
+                                                                    theCornerMax2);
     return theMetric > myDistance;
   }
 
   //! Rejects the branch by the metric
-  virtual Standard_Boolean RejectMetric (const NumType& theMetric) const Standard_OVERRIDE
+  virtual Standard_Boolean RejectMetric(const NumType& theMetric) const Standard_OVERRIDE
   {
     return theMetric > myDistance;
   }
@@ -93,11 +91,9 @@ public: //! @name Definition of the rules for tree descend
     return myDistance == static_cast<NumType>(0);
   }
 
-protected: //! @name Fields
-
-  NumType myDistance;      //!< Square distance
-  Standard_Boolean myIsDone; //!< State of the algorithm
-
+protected:                     //! @name Fields
+  NumType          myDistance; //!< Square distance
+  Standard_Boolean myIsDone;   //!< State of the algorithm
 };
 
 #endif // _BVH_Distance_Header

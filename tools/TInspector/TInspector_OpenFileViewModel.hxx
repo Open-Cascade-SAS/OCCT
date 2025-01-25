@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef TInspectorEXE_OpenFileViewModel_H
 #define TInspectorEXE_OpenFileViewModel_H
@@ -28,15 +28,18 @@ class QObject;
 class QPainter;
 
 //! \class TInspectorEXE_OpenFileItemDelegate
-//! Draws large(40x40) icons in cell. The icon background in colored in highlight when mouse is over button
+//! Draws large(40x40) icons in cell. The icon background in colored in highlight when mouse is over
+//! button
 class TInspectorEXE_OpenFileItemDelegate : public QItemDelegate
 {
 
 public:
-
   //! Constructor
-  TInspectorEXE_OpenFileItemDelegate (QObject* theParent, const QColor& theHighlightColor)
-  : QItemDelegate (theParent), myColor(theHighlightColor) {}
+  TInspectorEXE_OpenFileItemDelegate(QObject* theParent, const QColor& theHighlightColor)
+      : QItemDelegate(theParent),
+        myColor(theHighlightColor)
+  {
+  }
 
   //! Destructor
   virtual ~TInspectorEXE_OpenFileItemDelegate() {}
@@ -45,11 +48,11 @@ public:
   //! \param thePainter a painter
   //! \param theOption a paint options
   //! \param theIndex a view index
-  virtual void paint (QPainter* thePainter, const QStyleOptionViewItem& theOption,
-                      const QModelIndex& theIndex) const Standard_OVERRIDE;
+  virtual void paint(QPainter*                   thePainter,
+                     const QStyleOptionViewItem& theOption,
+                     const QModelIndex&          theIndex) const Standard_OVERRIDE;
 
 private:
-
   QColor myColor; //!< highlight color
 };
 
@@ -60,38 +63,44 @@ class TInspector_OpenFileViewModel : public QAbstractTableModel
 {
 
 public:
-
   //! Constructor
-  TInspector_OpenFileViewModel (QObject* theParent = 0) : QAbstractTableModel (theParent) {}
+  TInspector_OpenFileViewModel(QObject* theParent = 0)
+      : QAbstractTableModel(theParent)
+  {
+  }
 
   //! Destructor
   virtual ~TInspector_OpenFileViewModel() {}
 
   //! Store values
   //! \param theValues a container of values to fill model
-  void Init (const QStringList& theValues);
+  void Init(const QStringList& theValues);
 
-  //! Returns content of the model index for the given role, it is obtained from internal container of values
-  //! It returns value only for DisplayRole.
-  //! \param theIndex a model index
-  //! \param theRole a view role
-  //! \return value interpreted depending on the given role
-  virtual QVariant data (const QModelIndex& theIndex, int theRole = Qt::DisplayRole) const Standard_OVERRIDE;
+  //! Returns content of the model index for the given role, it is obtained from internal container
+  //! of values It returns value only for DisplayRole. \param theIndex a model index \param theRole
+  //! a view role \return value interpreted depending on the given role
+  virtual QVariant data(const QModelIndex& theIndex,
+                        int                theRole = Qt::DisplayRole) const Standard_OVERRIDE;
 
   //! Returns number of rows
   //! \param theParent an index of the parent item
   //! \return an integer value
-  virtual int rowCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
-  { (void)theParent; return 1; }
+  virtual int rowCount(const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
+  {
+    (void)theParent;
+    return 1;
+  }
 
   //! Returns number of columns
   //! \param theParent an index of the parent item
   //! \return an integer value
-  virtual int columnCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
-  { (void)theParent; return myValues.size(); }
+  virtual int columnCount(const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
+  {
+    (void)theParent;
+    return myValues.size();
+  }
 
 private:
-
   QStringList myValues; //!< file names
 };
 

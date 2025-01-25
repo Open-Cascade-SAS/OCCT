@@ -25,7 +25,6 @@
 #include <Interface_ParamType.hxx>
 #include <StepData_Logical.hxx>
 
-
 class StepData_SelectMember;
 DEFINE_STANDARD_HANDLE(StepData_SelectMember, Standard_Transient)
 
@@ -49,91 +48,72 @@ class StepData_SelectMember : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT StepData_SelectMember();
-  
+
   //! Tells if a SelectMember has a name. Default is False
   Standard_EXPORT virtual Standard_Boolean HasName() const;
-  
+
   //! Returns the name of a SelectMember. Default is empty
   Standard_EXPORT virtual Standard_CString Name() const;
-  
+
   //! Sets the name of a SelectMember, returns True if done, False
   //! if no name is allowed
   //! Default does nothing and returns False
-  Standard_EXPORT virtual Standard_Boolean SetName (const Standard_CString name);
-  
+  Standard_EXPORT virtual Standard_Boolean SetName(const Standard_CString name);
+
   //! Tells if the name of a SelectMember matches a given one
   //! By default, compares the strings, can be redefined (optimised)
-  Standard_EXPORT virtual Standard_Boolean Matches (const Standard_CString name) const;
-  
+  Standard_EXPORT virtual Standard_Boolean Matches(const Standard_CString name) const;
+
   Standard_EXPORT virtual Standard_Integer Kind() const;
-  
-  Standard_EXPORT virtual void SetKind (const Standard_Integer kind);
-  
+
+  Standard_EXPORT virtual void SetKind(const Standard_Integer kind);
+
   //! Returns the Kind of the SelectMember, under the form of an
   //! enum ParamType
   Standard_EXPORT Interface_ParamType ParamType() const;
-  
+
   //! This internal method gives access to a value implemented by an
   //! Integer (to read it)
   Standard_EXPORT virtual Standard_Integer Int() const;
-  
+
   //! This internal method gives access to a value implemented by an
   //! Integer (to set it)
-  Standard_EXPORT virtual void SetInt (const Standard_Integer val);
-  
+  Standard_EXPORT virtual void SetInt(const Standard_Integer val);
+
   //! Gets the value as an Integer
   Standard_EXPORT Standard_Integer Integer() const;
-  
-  Standard_EXPORT void SetInteger (const Standard_Integer val);
-  
+
+  Standard_EXPORT void SetInteger(const Standard_Integer val);
+
   Standard_EXPORT Standard_Boolean Boolean() const;
-  
-  Standard_EXPORT void SetBoolean (const Standard_Boolean val);
-  
+
+  Standard_EXPORT void SetBoolean(const Standard_Boolean val);
+
   Standard_EXPORT StepData_Logical Logical() const;
-  
-  Standard_EXPORT void SetLogical (const StepData_Logical val);
-  
+
+  Standard_EXPORT void SetLogical(const StepData_Logical val);
+
   Standard_EXPORT virtual Standard_Real Real() const;
-  
-  Standard_EXPORT virtual void SetReal (const Standard_Real val);
-  
+
+  Standard_EXPORT virtual void SetReal(const Standard_Real val);
+
   Standard_EXPORT virtual Standard_CString String() const;
-  
-  Standard_EXPORT virtual void SetString (const Standard_CString val);
-  
+
+  Standard_EXPORT virtual void SetString(const Standard_CString val);
+
   Standard_EXPORT Standard_Integer Enum() const;
-  
+
   Standard_EXPORT virtual Standard_CString EnumText() const;
-  
-  Standard_EXPORT void SetEnum (const Standard_Integer val, const Standard_CString text = "");
-  
-  Standard_EXPORT virtual void SetEnumText (const Standard_Integer val, const Standard_CString text);
 
+  Standard_EXPORT void SetEnum(const Standard_Integer val, const Standard_CString text = "");
 
+  Standard_EXPORT virtual void SetEnumText(const Standard_Integer val, const Standard_CString text);
 
-
-  DEFINE_STANDARD_RTTIEXT(StepData_SelectMember,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepData_SelectMember, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepData_SelectMember_HeaderFile

@@ -16,67 +16,50 @@
 
 #include <Geom_ElementarySurface.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Geom_ElementarySurface,Geom_Surface)
+IMPLEMENT_STANDARD_RTTIEXT(Geom_ElementarySurface, Geom_Surface)
 
-//=======================================================================
-//function : Continuity
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-GeomAbs_Shape Geom_ElementarySurface::Continuity () const
+GeomAbs_Shape Geom_ElementarySurface::Continuity() const
 {
-  return GeomAbs_CN; 
+  return GeomAbs_CN;
 }
 
-//=======================================================================
-//function : IsCNu
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean Geom_ElementarySurface::IsCNu (const Standard_Integer ) const
+Standard_Boolean Geom_ElementarySurface::IsCNu(const Standard_Integer) const
 {
-  return Standard_True; 
+  return Standard_True;
 }
 
-//=======================================================================
-//function : IsCNv
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean Geom_ElementarySurface::IsCNv (const Standard_Integer ) const
+Standard_Boolean Geom_ElementarySurface::IsCNv(const Standard_Integer) const
 {
-  return Standard_True; 
+  return Standard_True;
 }
 
-//=======================================================================
-//function : UReverse
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void Geom_ElementarySurface::UReverse ()
+void Geom_ElementarySurface::UReverse()
 {
   pos.YReverse();
 }
 
-//=======================================================================
-//function : VReverse
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void Geom_ElementarySurface::VReverse ()
+void Geom_ElementarySurface::VReverse()
 {
   pos.ZReverse();
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void Geom_ElementarySurface::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+//=================================================================================================
+
+void Geom_ElementarySurface::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom_Surface)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Geom_Surface)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &pos)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &pos)
 }

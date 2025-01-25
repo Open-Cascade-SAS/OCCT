@@ -23,48 +23,27 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-
 class StepRepr_RepresentationItem;
 DEFINE_STANDARD_HANDLE(StepRepr_RepresentationItem, Standard_Transient)
-
 
 class StepRepr_RepresentationItem : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a RepresentationItem
   Standard_EXPORT StepRepr_RepresentationItem();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName);
-  
-  Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName);
+
+  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepRepr_RepresentationItem,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_RepresentationItem, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TCollection_HAsciiString) name;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepRepr_RepresentationItem_HeaderFile

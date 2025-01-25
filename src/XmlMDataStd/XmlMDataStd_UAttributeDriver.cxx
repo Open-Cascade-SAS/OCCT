@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_UAttribute.hxx>
@@ -21,66 +20,55 @@
 #include <XmlMDataStd_UAttributeDriver.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_UAttributeDriver,XmlMDF_ADriver)
-IMPLEMENT_DOMSTRING (GuidString, "guid")
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_UAttributeDriver, XmlMDF_ADriver)
+IMPLEMENT_DOMSTRING(GuidString, "guid")
 
-//=======================================================================
-//function : XmlMDataStd_UAttributeDriver
-//purpose  : Constructor
-//=======================================================================
+//=================================================================================================
 
-XmlMDataStd_UAttributeDriver::XmlMDataStd_UAttributeDriver
-                        (const Handle(Message_Messenger)& theMsgDriver)
-      : XmlMDF_ADriver (theMsgDriver, NULL)
-{}
+XmlMDataStd_UAttributeDriver::XmlMDataStd_UAttributeDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : XmlMDF_ADriver(theMsgDriver, NULL)
+{
+}
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Handle(TDF_Attribute) XmlMDataStd_UAttributeDriver::NewEmpty() const
 {
   return (new TDataStd_UAttribute());
 }
 
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-Standard_Boolean XmlMDataStd_UAttributeDriver::Paste
-                                (const XmlObjMgt_Persistent&  theSource,
-                                 const Handle(TDF_Attribute)& theTarget,
-                                 XmlObjMgt_RRelocationTable&  ) const
+//=================================================================================================
+
+Standard_Boolean XmlMDataStd_UAttributeDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                     const Handle(TDF_Attribute)& theTarget,
+                                                     XmlObjMgt_RRelocationTable&) const
 {
-  XmlObjMgt_DOMString aGuidDomStr =
-    theSource.Element().getAttribute (::GuidString());
-  Standard_CString aGuidStr = (Standard_CString)aGuidDomStr.GetString();
-  if (aGuidStr[0] == '\0') {
-    myMessageDriver->Send ("error retrieving GUID for type TDataStd_UAttribute", Message_Fail);
+  XmlObjMgt_DOMString aGuidDomStr = theSource.Element().getAttribute(::GuidString());
+  Standard_CString    aGuidStr    = (Standard_CString)aGuidDomStr.GetString();
+  if (aGuidStr[0] == '\0')
+  {
+    myMessageDriver->Send("error retrieving GUID for type TDataStd_UAttribute", Message_Fail);
     return Standard_False;
   }
 
-  Handle(TDataStd_UAttribute)::DownCast (theTarget) -> SetID (aGuidStr);
+  Handle(TDataStd_UAttribute)::DownCast(theTarget)->SetID(aGuidStr);
   return Standard_True;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
 void XmlMDataStd_UAttributeDriver::Paste(const Handle(TDF_Attribute)& theSource,
                                          XmlObjMgt_Persistent&        theTarget,
-                                         XmlObjMgt_SRelocationTable&  ) const
+                                         XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TDataStd_UAttribute) aName =
-    Handle(TDataStd_UAttribute)::DownCast(theSource);
+  Handle(TDataStd_UAttribute) aName = Handle(TDataStd_UAttribute)::DownCast(theSource);
 
-  //convert GUID into attribute value
-  Standard_Character aGuidStr [40];
+  // convert GUID into attribute value
+  Standard_Character  aGuidStr[40];
   Standard_PCharacter pGuidStr;
-  pGuidStr=aGuidStr;
-  aName->ID().ToCString (pGuidStr);
+  pGuidStr = aGuidStr;
+  aName->ID().ToCString(pGuidStr);
 
-  theTarget.Element().setAttribute (::GuidString(), aGuidStr);
+  theTarget.Element().setAttribute(::GuidString(), aGuidStr);
 }

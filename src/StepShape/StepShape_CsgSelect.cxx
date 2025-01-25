@@ -11,26 +11,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepShape_BooleanResult.hxx>
 #include <StepShape_CsgPrimitive.hxx>
 #include <StepShape_CsgSelect.hxx>
 
-StepShape_CsgSelect::StepShape_CsgSelect () {  }
+StepShape_CsgSelect::StepShape_CsgSelect() {}
 
-void StepShape_CsgSelect::SetTypeOfContent(const Standard_Integer aType) 
+void StepShape_CsgSelect::SetTypeOfContent(const Standard_Integer aType)
 {
   theTypeOfContent = aType;
 }
 
-Standard_Integer StepShape_CsgSelect::TypeOfContent() const 
+Standard_Integer StepShape_CsgSelect::TypeOfContent() const
 {
   return theTypeOfContent;
 }
 
-Handle(StepShape_BooleanResult) StepShape_CsgSelect::BooleanResult () const
+Handle(StepShape_BooleanResult) StepShape_CsgSelect::BooleanResult() const
 {
-	return theBooleanResult;
+  return theBooleanResult;
 }
 
 void StepShape_CsgSelect::SetBooleanResult(const Handle(StepShape_BooleanResult)& aBooleanResult)
@@ -39,12 +38,12 @@ void StepShape_CsgSelect::SetBooleanResult(const Handle(StepShape_BooleanResult)
   theTypeOfContent = 1;
 }
 
-StepShape_CsgPrimitive StepShape_CsgSelect::CsgPrimitive () const
+StepShape_CsgPrimitive StepShape_CsgSelect::CsgPrimitive() const
 {
-	return theCsgPrimitive;
+  return theCsgPrimitive;
 }
 
-void StepShape_CsgSelect::SetCsgPrimitive (const StepShape_CsgPrimitive& aCsgPrimitive)
+void StepShape_CsgSelect::SetCsgPrimitive(const StepShape_CsgPrimitive& aCsgPrimitive)
 {
   theCsgPrimitive  = aCsgPrimitive;
   theTypeOfContent = 2;

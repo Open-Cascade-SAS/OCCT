@@ -15,35 +15,31 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : More
-//purpose  : 
+// function : More
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean  BRepSweep_Iterator::More()const 
+inline Standard_Boolean BRepSweep_Iterator::More() const
 {
   return myIterator.More();
 }
 
-
 //=======================================================================
-//function : Value
-//purpose  : 
+// function : Value
+// purpose  :
 //=======================================================================
 
-inline const TopoDS_Shape&  BRepSweep_Iterator::Value()const 
+inline const TopoDS_Shape& BRepSweep_Iterator::Value() const
 {
   return myIterator.Value();
 }
 
-
 //=======================================================================
-//function : Orientation
-//purpose  : 
+// function : Orientation
+// purpose  :
 //=======================================================================
 
-inline TopAbs_Orientation  BRepSweep_Iterator::Orientation()const 
+inline TopAbs_Orientation BRepSweep_Iterator::Orientation() const
 {
   return Value().Orientation();
 }
-
-

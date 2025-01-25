@@ -32,39 +32,45 @@ struct SwsContext;
 // this macro is defined in headers of older versions of libavutil
 // (see definition of macro FF_API_PIX_FMT in version.h)
 #ifdef PixelFormat
-#undef PixelFormat
+  #undef PixelFormat
 #endif
 
 //! Auxiliary structure defining video parameters.
 //! Please refer to FFmpeg documentation for defining text values.
 struct Image_VideoParams
 {
-// clang-format off
+  // clang-format off
   TCollection_AsciiString Format;           //!< [optional]  video format (container), if empty - will be determined from the file name
   TCollection_AsciiString VideoCodec;       //!< [optional]  codec identifier, if empty - default codec from file format will be used
   TCollection_AsciiString PixelFormat;      //!< [optional]  pixel format, if empty - default codec pixel format will be used
-// clang-format on
-  Standard_Integer        Width;            //!< [mandatory] video frame width
-  Standard_Integer        Height;           //!< [mandatory] video frame height
-  Standard_Integer        FpsNum;           //!< [mandatory] framerate numerator
-  Standard_Integer        FpsDen;           //!< [mandatory] framerate denumerator
+  // clang-format on
+  Standard_Integer Width;  //!< [mandatory] video frame width
+  Standard_Integer Height; //!< [mandatory] video frame height
+  Standard_Integer FpsNum; //!< [mandatory] framerate numerator
+  Standard_Integer FpsDen; //!< [mandatory] framerate denumerator
   Resource_DataMapOfAsciiStringAsciiString
-                          VideoCodecParams; //!< map of advanced video codec parameters
+    VideoCodecParams; //!< map of advanced video codec parameters
 
   //! Empty constructor.
-  Image_VideoParams() : Width (0), Height (0), FpsNum (0), FpsDen (1) {}
+  Image_VideoParams()
+      : Width(0),
+        Height(0),
+        FpsNum(0),
+        FpsDen(1)
+  {
+  }
 
   //! Setup playback FPS.
-  void SetFramerate (const Standard_Integer theNumerator,
-                     const Standard_Integer theDenominator)
+  void SetFramerate(const Standard_Integer theNumerator, const Standard_Integer theDenominator)
   {
     FpsNum = theNumerator;
     FpsDen = theDenominator;
   }
 
   //! Setup playback FPS.
-  //! For fixed-fps content, timebase should be 1/framerate and timestamp increments should be identical to 1.
-  void SetFramerate (const Standard_Integer theValue)
+  //! For fixed-fps content, timebase should be 1/framerate and timestamp increments should be
+  //! identical to 1.
+  void SetFramerate(const Standard_Integer theValue)
   {
     FpsNum = theValue;
     FpsDen = 1;
@@ -76,7 +82,6 @@ class Image_VideoRecorder : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Image_VideoRecorder, Standard_Transient)
 public:
-
   //! Empty constructor.
   Standard_EXPORT Image_VideoRecorder();
 
@@ -89,8 +94,8 @@ public:
   //! Open output stream - initialize recorder.
   //! @param[in] theFileName  video filename
   //! @param[in] theParams    video parameters
-  Standard_EXPORT Standard_Boolean Open (const char* theFileName,
-                                         const Image_VideoParams& theParams);
+  Standard_EXPORT Standard_Boolean Open(const char*              theFileName,
+                                        const Image_VideoParams& theParams);
 
   //! Access RGBA frame, should NOT be re-initialized outside.
   //! Note that image is expected to have upper-left origin.
@@ -100,30 +105,25 @@ public:
   int64_t FrameCount() const { return myFrameCount; }
 
   //! Push new frame, should be called after Open().
-  Standard_Boolean PushFrame()
-  {
-    return writeVideoFrame (Standard_False);
-  }
+  Standard_Boolean PushFrame() { return writeVideoFrame(Standard_False); }
 
 protected:
-
   //! Wrapper for av_strerror().
-  Standard_EXPORT TCollection_AsciiString formatAvError (const int theError) const;
+  Standard_EXPORT TCollection_AsciiString formatAvError(const int theError) const;
 
   //! Append video stream.
   //! theParams[in]      video parameters
   //! theDefCodecId[in]  identifier of codec managed by FFmpeg library (AVCodecID enum)
-  Standard_EXPORT Standard_Boolean addVideoStream (const Image_VideoParams& theParams,
-                                                   const Standard_Integer   theDefCodecId);
+  Standard_EXPORT Standard_Boolean addVideoStream(const Image_VideoParams& theParams,
+                                                  const Standard_Integer   theDefCodecId);
 
   //! Open video codec.
-  Standard_EXPORT Standard_Boolean openVideoCodec (const Image_VideoParams& theParams);
+  Standard_EXPORT Standard_Boolean openVideoCodec(const Image_VideoParams& theParams);
 
   //! Write new video frame.
-  Standard_EXPORT Standard_Boolean writeVideoFrame (const Standard_Boolean theToFlush);
+  Standard_EXPORT Standard_Boolean writeVideoFrame(const Standard_Boolean theToFlush);
 
 protected:
-
   //! AVRational alias.
   struct VideoRational
   {
@@ -132,17 +132,15 @@ protected:
   };
 
 protected:
-
   AVFormatContext* myAVContext;   //!< video context
   AVStream*        myVideoStream; //!< video stream
   AVCodec*         myVideoCodec;  //!< video codec
   AVFrame*         myFrame;       //!< frame to record
   SwsContext*      myScaleCtx;    //!< scale context for conversion from RGBA to YUV
 
-  Image_PixMap     myImgSrcRgba;  //!< input RGBA image
-  VideoRational    myFrameRate;   //!< video framerate
-  int64_t          myFrameCount;  //!< current frame index
-
+  Image_PixMap  myImgSrcRgba; //!< input RGBA image
+  VideoRational myFrameRate;  //!< video framerate
+  int64_t       myFrameCount; //!< current frame index
 };
 
 DEFINE_STANDARD_HANDLE(Image_VideoRecorder, Standard_Transient)

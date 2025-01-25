@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(Draw_Drawable3D)> Draw_SequenceOfDrawable3D;
 
-
 #endif

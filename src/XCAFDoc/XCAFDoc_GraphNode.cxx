@@ -23,40 +23,38 @@
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_GraphNode,TDF_Attribute)
+IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_GraphNode, TDF_Attribute)
 
 //     class  methods working on the node:
 //     ===================================
-//=======================================================================
-//function : Find
-//purpose  : 
-//=======================================================================
-Standard_Boolean XCAFDoc_GraphNode::Find(const TDF_Label& L,
-					 Handle(XCAFDoc_GraphNode)& G)
+//=================================================================================================
+
+Standard_Boolean XCAFDoc_GraphNode::Find(const TDF_Label& L, Handle(XCAFDoc_GraphNode)& G)
 {
   return L.FindAttribute(XCAFDoc_GraphNode::GetDefaultGraphID(), G);
 }
 
 //=======================================================================
-//GraphNode : GetDefaultGraphID
-//purpose  : Static method to get the default ID of a GraphNode
+// GraphNode : GetDefaultGraphID
+// purpose  : Static method to get the default ID of a GraphNode
 //=======================================================================
 
-const Standard_GUID&  XCAFDoc_GraphNode::GetDefaultGraphID() 
+const Standard_GUID& XCAFDoc_GraphNode::GetDefaultGraphID()
 {
-  static Standard_GUID XCAFDoc_GraphNodeID ("efd212f5-6dfd-11d4-b9c8-0060b0ee281b");
-  return XCAFDoc_GraphNodeID; 
+  static Standard_GUID XCAFDoc_GraphNodeID("efd212f5-6dfd-11d4-b9c8-0060b0ee281b");
+  return XCAFDoc_GraphNodeID;
 }
 
 //=======================================================================
-//GraphNode : Set
-//purpose  : Finds or creates a GraphNode attribute with default ID
+// GraphNode : Set
+// purpose  : Finds or creates a GraphNode attribute with default ID
 //=======================================================================
 
 Handle(XCAFDoc_GraphNode) XCAFDoc_GraphNode::Set(const TDF_Label& L)
 {
   Handle(XCAFDoc_GraphNode) GN;
-  if (!L.FindAttribute(XCAFDoc_GraphNode::GetDefaultGraphID(), GN)) {
+  if (!L.FindAttribute(XCAFDoc_GraphNode::GetDefaultGraphID(), GN))
+  {
     GN = new XCAFDoc_GraphNode();
     GN->SetGraphID(XCAFDoc_GraphNode::GetDefaultGraphID());
     L.AddAttribute(GN);
@@ -65,55 +63,42 @@ Handle(XCAFDoc_GraphNode) XCAFDoc_GraphNode::Set(const TDF_Label& L)
 }
 
 //=======================================================================
-//function : Set
-//purpose  : Finds or creates a GraphNode  attribute with explicit ID
+// function : Set
+// purpose  : Finds or creates a GraphNode  attribute with explicit ID
 //         : a driver for it
 //=======================================================================
 
-Handle(XCAFDoc_GraphNode) XCAFDoc_GraphNode::Set (const TDF_Label& L, 
-						  const Standard_GUID& explicitID)
+Handle(XCAFDoc_GraphNode) XCAFDoc_GraphNode::Set(const TDF_Label&     L,
+                                                 const Standard_GUID& explicitID)
 {
   Handle(XCAFDoc_GraphNode) GN;
-  if (!L.FindAttribute(explicitID, GN)) {
-    GN = new XCAFDoc_GraphNode ();    
-    GN->SetGraphID( explicitID );
-    L.AddAttribute( GN );
+  if (!L.FindAttribute(explicitID, GN))
+  {
+    GN = new XCAFDoc_GraphNode();
+    GN->SetGraphID(explicitID);
+    L.AddAttribute(GN);
   }
   return GN;
 }
 
-//     Instance methods: 
-//     ================ 
+//     Instance methods:
+//     ================
 
-//=======================================================================
-//function : XCAFDoc_GraphNode
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-XCAFDoc_GraphNode::XCAFDoc_GraphNode () 
-{ 
-}  
+XCAFDoc_GraphNode::XCAFDoc_GraphNode() {}
 
+//=================================================================================================
 
-//=======================================================================
-//function : SetGraphID
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_GraphNode::SetGraphID (const Standard_GUID& explicitID)
+void XCAFDoc_GraphNode::SetGraphID(const Standard_GUID& explicitID)
 {
   Backup();
   myGraphID = explicitID;
 }
 
+//=================================================================================================
 
-
-//=======================================================================
-//function : SetFather
-//purpose  : 
-//=======================================================================
-
-Standard_Integer XCAFDoc_GraphNode::SetFather(const Handle(XCAFDoc_GraphNode)& F) 
+Standard_Integer XCAFDoc_GraphNode::SetFather(const Handle(XCAFDoc_GraphNode)& F)
 {
   Backup();
   Standard_Integer Findex = myFathers.Length();
@@ -121,12 +106,9 @@ Standard_Integer XCAFDoc_GraphNode::SetFather(const Handle(XCAFDoc_GraphNode)& F
   return ++Findex;
 }
 
-//=======================================================================
-//function : SetChild
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer XCAFDoc_GraphNode::SetChild(const Handle(XCAFDoc_GraphNode)& Ch) 
+Standard_Integer XCAFDoc_GraphNode::SetChild(const Handle(XCAFDoc_GraphNode)& Ch)
 {
   Backup();
   Standard_Integer Chindex = myChildren.Length();
@@ -134,131 +116,106 @@ Standard_Integer XCAFDoc_GraphNode::SetChild(const Handle(XCAFDoc_GraphNode)& Ch
   return ++Chindex;
 }
 
-//=======================================================================
-//function : UnSetFather
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void XCAFDoc_GraphNode::UnSetFather(const Handle(XCAFDoc_GraphNode)& F) 
+void XCAFDoc_GraphNode::UnSetFather(const Handle(XCAFDoc_GraphNode)& F)
 {
   Standard_Integer Findex = FatherIndex(F);
   if (Findex != 0)
   {
-    F->UnSetChildlink (this);
-    UnSetFatherlink (F);
+    F->UnSetChildlink(this);
+    UnSetFatherlink(F);
   }
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : UnSetFather
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_GraphNode::UnSetFather(const Standard_Integer Findex) 
+void XCAFDoc_GraphNode::UnSetFather(const Standard_Integer Findex)
 {
   if (Findex != 0)
   {
-    UnSetFather (GetFather (Findex));
+    UnSetFather(GetFather(Findex));
   }
 }
 
-
 //=======================================================================
-//function : UnSetFatherlink
-//purpose  : Remove link finily
+// function : UnSetFatherlink
+// purpose  : Remove link finily
 //=======================================================================
 
-void XCAFDoc_GraphNode::UnSetFatherlink(const Handle(XCAFDoc_GraphNode)& F) 
+void XCAFDoc_GraphNode::UnSetFatherlink(const Handle(XCAFDoc_GraphNode)& F)
 {
   Backup();
-  Standard_Integer Findex = FatherIndex (F);
+  Standard_Integer Findex = FatherIndex(F);
   if (Findex != 0)
   {
-    myFathers.Remove( Findex );
+    myFathers.Remove(Findex);
   }
 }
 
-//=======================================================================
-//function : UnSetChild
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void XCAFDoc_GraphNode::UnSetChild(const Handle(XCAFDoc_GraphNode)& Ch) 
+void XCAFDoc_GraphNode::UnSetChild(const Handle(XCAFDoc_GraphNode)& Ch)
 {
   Standard_Integer Chindex = ChildIndex(Ch);
   if (Chindex != 0)
   {
-    Ch->UnSetFatherlink (this);
-    UnSetChildlink (Ch);
+    Ch->UnSetFatherlink(this);
+    UnSetChildlink(Ch);
   }
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : UnSetChild
-//purpose  : 
-//=======================================================================
-
- void XCAFDoc_GraphNode::UnSetChild(const Standard_Integer Chindex) 
+void XCAFDoc_GraphNode::UnSetChild(const Standard_Integer Chindex)
 {
   if (Chindex != 0)
   {
-    UnSetChild (GetChild (Chindex));
+    UnSetChild(GetChild(Chindex));
   }
 }
 
-
 //=======================================================================
-//function : UnSetChildlink
-//purpose  : Remove link finily
+// function : UnSetChildlink
+// purpose  : Remove link finily
 //=======================================================================
 
-void XCAFDoc_GraphNode::UnSetChildlink(const Handle(XCAFDoc_GraphNode)& Ch) 
+void XCAFDoc_GraphNode::UnSetChildlink(const Handle(XCAFDoc_GraphNode)& Ch)
 {
   Backup();
-  Standard_Integer Chindex = ChildIndex (Ch);
+  Standard_Integer Chindex = ChildIndex(Ch);
   if (Chindex != 0)
   {
-    myChildren.Remove (Chindex);
+    myChildren.Remove(Chindex);
   }
 }
 
-//=======================================================================
-//function : GetFather
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- Handle(XCAFDoc_GraphNode) XCAFDoc_GraphNode::GetFather(const Standard_Integer Findex) const
+Handle(XCAFDoc_GraphNode) XCAFDoc_GraphNode::GetFather(const Standard_Integer Findex) const
 {
   Handle(XCAFDoc_GraphNode) F = myFathers.Value(Findex);
   return F;
 }
 
-//=======================================================================
-//function : GetChild
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- Handle(XCAFDoc_GraphNode) XCAFDoc_GraphNode::GetChild(const Standard_Integer Chindex) const
+Handle(XCAFDoc_GraphNode) XCAFDoc_GraphNode::GetChild(const Standard_Integer Chindex) const
 {
   Handle(XCAFDoc_GraphNode) Ch = myChildren.Value(Chindex);
   return Ch;
 }
 
-//=======================================================================
-//function : FatherIndex
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer XCAFDoc_GraphNode::FatherIndex(const Handle(XCAFDoc_GraphNode)& F) const
 {
   Standard_Integer Findex = 0;
   if (NbFathers() != 0)
   {
-    for (Findex = 1 ; Findex <= NbFathers(); Findex++)
+    for (Findex = 1; Findex <= NbFathers(); Findex++)
     {
-      if (F == myFathers.Value (Findex))
+      if (F == myFathers.Value(Findex))
       {
         return Findex;
       }
@@ -267,19 +224,16 @@ Standard_Integer XCAFDoc_GraphNode::FatherIndex(const Handle(XCAFDoc_GraphNode)&
   return 0;
 }
 
-//=======================================================================
-//function : ChildIndex
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- Standard_Integer XCAFDoc_GraphNode::ChildIndex(const Handle(XCAFDoc_GraphNode)& Ch) const
+Standard_Integer XCAFDoc_GraphNode::ChildIndex(const Handle(XCAFDoc_GraphNode)& Ch) const
 {
   Standard_Integer Chindex;
   if (NbChildren() != 0)
   {
     for (Chindex = 1; Chindex <= NbChildren(); Chindex++)
     {
-      if (Ch == myChildren.Value (Chindex))
+      if (Ch == myChildren.Value(Chindex))
       {
         return Chindex;
       }
@@ -288,90 +242,68 @@ Standard_Integer XCAFDoc_GraphNode::FatherIndex(const Handle(XCAFDoc_GraphNode)&
   return 0;
 }
 
-//=======================================================================
-//function : IsFather
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- Standard_Boolean XCAFDoc_GraphNode::IsFather(const Handle(XCAFDoc_GraphNode)& Ch) const
+Standard_Boolean XCAFDoc_GraphNode::IsFather(const Handle(XCAFDoc_GraphNode)& Ch) const
 {
-  if ( ChildIndex(Ch) ) return Standard_True;
+  if (ChildIndex(Ch))
+    return Standard_True;
   return Standard_False;
 }
 
-//=======================================================================
-//function : IsChild
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- Standard_Boolean XCAFDoc_GraphNode::IsChild(const Handle(XCAFDoc_GraphNode)& F) const
+Standard_Boolean XCAFDoc_GraphNode::IsChild(const Handle(XCAFDoc_GraphNode)& F) const
 {
-  if ( FatherIndex(F) ) return Standard_True;
+  if (FatherIndex(F))
+    return Standard_True;
   return Standard_False;
 }
 
-//=======================================================================
-//function : NbFathers
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- Standard_Integer XCAFDoc_GraphNode::NbFathers() const
+Standard_Integer XCAFDoc_GraphNode::NbFathers() const
 {
   return myFathers.Length();
 }
 
-//=======================================================================
-//function : NbChildren
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- Standard_Integer XCAFDoc_GraphNode::NbChildren() const
+Standard_Integer XCAFDoc_GraphNode::NbChildren() const
 {
   return myChildren.Length();
 }
 
+//     Implementation of Attribute methods:
+//     ===================================
 
-
-//     Implementation of Attribute methods:  
-//     ===================================  
-
-//=======================================================================
-//function : ID
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 const Standard_GUID& XCAFDoc_GraphNode::ID() const
 {
   return myGraphID;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_GraphNode::Restore(const Handle(TDF_Attribute)& other) 
+void XCAFDoc_GraphNode::Restore(const Handle(TDF_Attribute)& other)
 {
-  Handle(XCAFDoc_GraphNode) F =  Handle(XCAFDoc_GraphNode)::DownCast(other);
-  myFathers     = F->myFathers;
-  myChildren    = F->myChildren;
-  myGraphID     = F->myGraphID;
+  Handle(XCAFDoc_GraphNode) F = Handle(XCAFDoc_GraphNode)::DownCast(other);
+  myFathers                   = F->myFathers;
+  myChildren                  = F->myChildren;
+  myGraphID                   = F->myGraphID;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_GraphNode::Paste(const Handle(TDF_Attribute)& into,
-			      const Handle(TDF_RelocationTable)& RT) const
+void XCAFDoc_GraphNode::Paste(const Handle(TDF_Attribute)&       into,
+                              const Handle(TDF_RelocationTable)& RT) const
 {
   Handle(XCAFDoc_GraphNode) intof = Handle(XCAFDoc_GraphNode)::DownCast(into);
   Handle(XCAFDoc_GraphNode) func;
-  Standard_Integer i = 1;
-  for (; i <= NbFathers(); i++) {
+  Standard_Integer          i = 1;
+  for (; i <= NbFathers(); i++)
+  {
     if (!RT->HasRelocation(myFathers(i), func) && RT->AfterRelocate())
     {
       func.Nullify();
@@ -397,11 +329,7 @@ void XCAFDoc_GraphNode::Paste(const Handle(TDF_Attribute)& into,
   intof->SetGraphID(myGraphID);
 }
 
-
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(TDF_Attribute) XCAFDoc_GraphNode::NewEmpty() const
 {
@@ -410,97 +338,94 @@ Handle(TDF_Attribute) XCAFDoc_GraphNode::NewEmpty() const
   return G;
 }
 
-
-//=======================================================================
-//function : References
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void XCAFDoc_GraphNode::References(const Handle(TDF_DataSet)& aDataSet) const
 {
-  Standard_Integer i;
+  Standard_Integer          i;
   Handle(XCAFDoc_GraphNode) fct;
-  for ( i = 1; i <= NbChildren(); i++ ) {
+  for (i = 1; i <= NbChildren(); i++)
+  {
     fct = myChildren(i);
-    if (!fct.IsNull()) {
+    if (!fct.IsNull())
+    {
       aDataSet->AddAttribute(fct);
     }
   }
-  for ( i = 1; i <= NbFathers(); i++ ) {
+  for (i = 1; i <= NbFathers(); i++)
+  {
     fct = myFathers(i);
-    if ( !fct.IsNull()) {
+    if (!fct.IsNull())
+    {
       aDataSet->AddAttribute(fct);
     }
   }
- 
 }
 
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_OStream& XCAFDoc_GraphNode::Dump (Standard_OStream& anOS) const
+Standard_OStream& XCAFDoc_GraphNode::Dump(Standard_OStream& anOS) const
 {
-  TDF_Attribute::Dump (anOS);
+  TDF_Attribute::Dump(anOS);
   Standard_Integer i = 1;
-  if ( myFathers.Length()!= 0 ) {
-    anOS<<"  Fathers=";
-    for (; i <= NbFathers(); i++) {
-      if ( !myFathers(i)->Label().IsNull() ) 
-	myFathers(i)->Label().EntryDump(anOS);
-      anOS<<std::endl;
+  if (myFathers.Length() != 0)
+  {
+    anOS << "  Fathers=";
+    for (; i <= NbFathers(); i++)
+    {
+      if (!myFathers(i)->Label().IsNull())
+        myFathers(i)->Label().EntryDump(anOS);
+      anOS << std::endl;
     }
   }
   i = 1;
-  if ( myChildren.Length()!= 0 ) {
-    anOS<<"  Children=";
-    for (; i <= NbChildren(); i++) {
-      if ( !myChildren(i)->Label().IsNull() )
-	myChildren(i)->Label().EntryDump(anOS);
-      anOS<<std::endl;
+  if (myChildren.Length() != 0)
+  {
+    anOS << "  Children=";
+    for (; i <= NbChildren(); i++)
+    {
+      if (!myChildren(i)->Label().IsNull())
+        myChildren(i)->Label().EntryDump(anOS);
+      anOS << std::endl;
     }
   }
-//  anOS<<std::endl;
+  //  anOS<<std::endl;
   return anOS;
 }
 
-//=======================================================================
-//function : BeforeForget
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void XCAFDoc_GraphNode::BeforeForget()
 {
-  while (myFathers.Length () > 0)
+  while (myFathers.Length() > 0)
   {
-    UnSetFather (1);
+    UnSetFather(1);
   }
-  while (myChildren.Length () > 0)
+  while (myChildren.Length() > 0)
   {
-    UnSetChild (1);
+    UnSetChild(1);
   }
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void XCAFDoc_GraphNode::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+//=================================================================================================
+
+void XCAFDoc_GraphNode::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDF_Attribute)
 
-  for (XCAFDoc_GraphNodeSequence::Iterator anIteratorFather (myFathers); anIteratorFather.More(); anIteratorFather.Next())
+  for (XCAFDoc_GraphNodeSequence::Iterator anIteratorFather(myFathers); anIteratorFather.More();
+       anIteratorFather.Next())
   {
     const Handle(XCAFDoc_GraphNode)& aFather = anIteratorFather.Value();
-    OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, aFather)
+    OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, aFather)
   }
-  
-  for (XCAFDoc_GraphNodeSequence::Iterator anIteratorChild (myChildren); anIteratorChild.More(); anIteratorChild.Next())
+
+  for (XCAFDoc_GraphNodeSequence::Iterator anIteratorChild(myChildren); anIteratorChild.More();
+       anIteratorChild.Next())
   {
     const Handle(XCAFDoc_GraphNode)& aChild = anIteratorChild.Value();
-    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aChild.get())
+    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aChild.get())
   }
 }

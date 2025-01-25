@@ -11,26 +11,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_RatioUnit.hxx>
 #include <StepBasic_SiUnitAndRatioUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndRatioUnit,StepBasic_SiUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndRatioUnit, StepBasic_SiUnit)
 
-StepBasic_SiUnitAndRatioUnit::StepBasic_SiUnitAndRatioUnit ()
-{
-}
+StepBasic_SiUnitAndRatioUnit::StepBasic_SiUnitAndRatioUnit() {}
 
-void StepBasic_SiUnitAndRatioUnit::Init(const Standard_Boolean hasAprefix,
-					const StepBasic_SiPrefix aPrefix,
-					const StepBasic_SiUnitName aName)
+void StepBasic_SiUnitAndRatioUnit::Init(const Standard_Boolean     hasAprefix,
+                                        const StepBasic_SiPrefix   aPrefix,
+                                        const StepBasic_SiUnitName aName)
 {
   // --- class inherited fields ---
   // --- ANDOR component fields ---
   StepBasic_SiUnit::Init(hasAprefix, aPrefix, aName);
-    
+
   // --- ANDOR component fields ---
   ratioUnit = new StepBasic_RatioUnit();
   Handle(StepBasic_DimensionalExponents) aDimensions;
@@ -47,4 +44,3 @@ Handle(StepBasic_RatioUnit) StepBasic_SiUnitAndRatioUnit::RatioUnit() const
 {
   return ratioUnit;
 }
-

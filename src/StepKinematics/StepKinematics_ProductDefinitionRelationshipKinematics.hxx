@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -23,17 +23,17 @@
 #include <TCollection_HAsciiString.hxx>
 #include <StepRepr_CharacterizedDefinition.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_ProductDefinitionRelationshipKinematics, StepRepr_PropertyDefinition)
+DEFINE_STANDARD_HANDLE(StepKinematics_ProductDefinitionRelationshipKinematics,
+                       StepRepr_PropertyDefinition)
 
 //! Representation of STEP entity ProductDefinitionRelationshipKinematics
 class StepKinematics_ProductDefinitionRelationshipKinematics : public StepRepr_PropertyDefinition
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_ProductDefinitionRelationshipKinematics();
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_ProductDefinitionRelationshipKinematics, StepRepr_PropertyDefinition)
-
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_ProductDefinitionRelationshipKinematics,
+                          StepRepr_PropertyDefinition)
 };
 #endif // _StepKinematics_ProductDefinitionRelationshipKinematics_HeaderFile_

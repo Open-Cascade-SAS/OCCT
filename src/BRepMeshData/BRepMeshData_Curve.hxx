@@ -25,34 +25,32 @@
 class BRepMeshData_Curve : public IMeshData_Curve
 {
 public:
-
   DEFINE_INC_ALLOC
 
   //! Constructor.
-  Standard_EXPORT BRepMeshData_Curve (const Handle (NCollection_IncAllocator)& theAllocator);
+  Standard_EXPORT BRepMeshData_Curve(const Handle(NCollection_IncAllocator)& theAllocator);
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMeshData_Curve ();
+  Standard_EXPORT virtual ~BRepMeshData_Curve();
 
   //! Inserts new discretization point at the given position.
-  Standard_EXPORT virtual void InsertPoint(
-    const Standard_Integer thePosition,
-    const gp_Pnt&          thePoint,
-    const Standard_Real    theParamOnPCurve) Standard_OVERRIDE;
+  Standard_EXPORT virtual void InsertPoint(const Standard_Integer thePosition,
+                                           const gp_Pnt&          thePoint,
+                                           const Standard_Real theParamOnPCurve) Standard_OVERRIDE;
 
   //! Adds new discretization point to pcurve.
-  Standard_EXPORT virtual void AddPoint (
-    const gp_Pnt&       thePoint,
-    const Standard_Real theParamOnCurve) Standard_OVERRIDE;
+  Standard_EXPORT virtual void AddPoint(const gp_Pnt&       thePoint,
+                                        const Standard_Real theParamOnCurve) Standard_OVERRIDE;
 
   //! Returns discretization point with the given index.
-  Standard_EXPORT virtual gp_Pnt& GetPoint (const Standard_Integer theIndex) Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt& GetPoint(const Standard_Integer theIndex) Standard_OVERRIDE;
 
   //! Removes point with the given index.
-  Standard_EXPORT virtual void RemovePoint (const Standard_Integer theIndex) Standard_OVERRIDE;
+  Standard_EXPORT virtual void RemovePoint(const Standard_Integer theIndex) Standard_OVERRIDE;
 
   //! Returns parameter with the given index.
-  Standard_EXPORT virtual Standard_Real& GetParameter (const Standard_Integer theIndex) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Real& GetParameter(const Standard_Integer theIndex)
+    Standard_OVERRIDE;
 
   //! Returns number of parameters stored in curve.
   Standard_EXPORT virtual Standard_Integer ParametersNb() const Standard_OVERRIDE;
@@ -63,12 +61,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRepMeshData_Curve, IMeshData_Curve)
 
 protected:
-
   //! Removes parameter with the given index.
-  Standard_EXPORT virtual void removeParameter (const Standard_Integer theIndex) Standard_OVERRIDE;
+  Standard_EXPORT virtual void removeParameter(const Standard_Integer theIndex) Standard_OVERRIDE;
 
 private:
-
   IMeshData::Model::SequenceOfPnt  myPoints;
   IMeshData::Model::SequenceOfReal myParameters;
 };

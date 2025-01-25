@@ -30,7 +30,6 @@ class Quantity_Color;
 class Graphic3d_MaterialAspect;
 class TCollection_AsciiString;
 
-
 class MeshVS_Drawer;
 DEFINE_STANDARD_HANDLE(MeshVS_Drawer, Standard_Transient)
 
@@ -42,74 +41,63 @@ class MeshVS_Drawer : public Standard_Transient
 {
 
 public:
-
-  
   //! This method copies other drawer contents to this.
-  Standard_EXPORT virtual void Assign (const Handle(MeshVS_Drawer)& aDrawer);
-  
-  Standard_EXPORT void SetInteger (const Standard_Integer Key, const Standard_Integer Value);
-  
-  Standard_EXPORT void SetDouble (const Standard_Integer Key, const Standard_Real Value);
-  
-  Standard_EXPORT void SetBoolean (const Standard_Integer Key, const Standard_Boolean Value);
-  
-  Standard_EXPORT void SetColor (const Standard_Integer Key, const Quantity_Color& Value);
-  
-  Standard_EXPORT void SetMaterial (const Standard_Integer Key, const Graphic3d_MaterialAspect& Value);
-  
-  Standard_EXPORT void SetAsciiString (const Standard_Integer Key, const TCollection_AsciiString& Value);
-  
-  Standard_EXPORT Standard_Boolean GetInteger (const Standard_Integer Key, Standard_Integer& Value) const;
-  
-  Standard_EXPORT Standard_Boolean GetDouble (const Standard_Integer Key, Standard_Real& Value) const;
-  
-  Standard_EXPORT Standard_Boolean GetBoolean (const Standard_Integer Key, Standard_Boolean& Value) const;
-  
-  Standard_EXPORT Standard_Boolean GetColor (const Standard_Integer Key, Quantity_Color& Value) const;
-  
-  Standard_EXPORT Standard_Boolean GetMaterial (const Standard_Integer Key, Graphic3d_MaterialAspect& Value) const;
-  
-  Standard_EXPORT Standard_Boolean GetAsciiString (const Standard_Integer Key, TCollection_AsciiString& Value) const;
-  
-  Standard_EXPORT Standard_Boolean RemoveInteger (const Standard_Integer Key);
-  
-  Standard_EXPORT Standard_Boolean RemoveDouble (const Standard_Integer Key);
-  
-  Standard_EXPORT Standard_Boolean RemoveBoolean (const Standard_Integer Key);
-  
-  Standard_EXPORT Standard_Boolean RemoveColor (const Standard_Integer Key);
-  
-  Standard_EXPORT Standard_Boolean RemoveMaterial (const Standard_Integer Key);
-  
-  Standard_EXPORT Standard_Boolean RemoveAsciiString (const Standard_Integer Key);
+  Standard_EXPORT virtual void Assign(const Handle(MeshVS_Drawer)& aDrawer);
 
+  Standard_EXPORT void SetInteger(const Standard_Integer Key, const Standard_Integer Value);
 
+  Standard_EXPORT void SetDouble(const Standard_Integer Key, const Standard_Real Value);
 
+  Standard_EXPORT void SetBoolean(const Standard_Integer Key, const Standard_Boolean Value);
 
-  DEFINE_STANDARD_RTTIEXT(MeshVS_Drawer,Standard_Transient)
+  Standard_EXPORT void SetColor(const Standard_Integer Key, const Quantity_Color& Value);
+
+  Standard_EXPORT void SetMaterial(const Standard_Integer          Key,
+                                   const Graphic3d_MaterialAspect& Value);
+
+  Standard_EXPORT void SetAsciiString(const Standard_Integer         Key,
+                                      const TCollection_AsciiString& Value);
+
+  Standard_EXPORT Standard_Boolean GetInteger(const Standard_Integer Key,
+                                              Standard_Integer&      Value) const;
+
+  Standard_EXPORT Standard_Boolean GetDouble(const Standard_Integer Key,
+                                             Standard_Real&         Value) const;
+
+  Standard_EXPORT Standard_Boolean GetBoolean(const Standard_Integer Key,
+                                              Standard_Boolean&      Value) const;
+
+  Standard_EXPORT Standard_Boolean GetColor(const Standard_Integer Key,
+                                            Quantity_Color&        Value) const;
+
+  Standard_EXPORT Standard_Boolean GetMaterial(const Standard_Integer    Key,
+                                               Graphic3d_MaterialAspect& Value) const;
+
+  Standard_EXPORT Standard_Boolean GetAsciiString(const Standard_Integer   Key,
+                                                  TCollection_AsciiString& Value) const;
+
+  Standard_EXPORT Standard_Boolean RemoveInteger(const Standard_Integer Key);
+
+  Standard_EXPORT Standard_Boolean RemoveDouble(const Standard_Integer Key);
+
+  Standard_EXPORT Standard_Boolean RemoveBoolean(const Standard_Integer Key);
+
+  Standard_EXPORT Standard_Boolean RemoveColor(const Standard_Integer Key);
+
+  Standard_EXPORT Standard_Boolean RemoveMaterial(const Standard_Integer Key);
+
+  Standard_EXPORT Standard_Boolean RemoveAsciiString(const Standard_Integer Key);
+
+  DEFINE_STANDARD_RTTIEXT(MeshVS_Drawer, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  TColStd_DataMapOfIntegerInteger myIntegers;
-  MeshVS_DataMapOfIntegerBoolean myBooleans;
-  TColStd_DataMapOfIntegerReal myDoubles;
-  MeshVS_DataMapOfIntegerColor myColors;
-  MeshVS_DataMapOfIntegerMaterial myMaterials;
+  TColStd_DataMapOfIntegerInteger    myIntegers;
+  MeshVS_DataMapOfIntegerBoolean     myBooleans;
+  TColStd_DataMapOfIntegerReal       myDoubles;
+  MeshVS_DataMapOfIntegerColor       myColors;
+  MeshVS_DataMapOfIntegerMaterial    myMaterials;
   MeshVS_DataMapOfIntegerAsciiString myAsciiString;
-
-
 };
-
-
-
-
-
-
 
 #endif // _MeshVS_Drawer_HeaderFile

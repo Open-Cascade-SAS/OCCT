@@ -18,45 +18,43 @@
 
 #include <Select3D_InteriorSensitivePointSet.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveFace,Select3D_SensitiveEntity)
+IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveFace, Select3D_SensitiveEntity)
 
 //==================================================
 // Function: Hide this constructor to the next version...
 // Purpose : simply avoid interfering with the version update
 //==================================================
-Select3D_SensitiveFace::Select3D_SensitiveFace (const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                                const TColgp_Array1OfPnt& thePoints,
-                                                const Select3D_TypeOfSensitivity theType)
-: Select3D_SensitiveEntity (theOwnerId),
-  mySensType (theType)
+Select3D_SensitiveFace::Select3D_SensitiveFace(const Handle(SelectMgr_EntityOwner)& theOwnerId,
+                                               const TColgp_Array1OfPnt&            thePoints,
+                                               const Select3D_TypeOfSensitivity     theType)
+    : Select3D_SensitiveEntity(theOwnerId),
+      mySensType(theType)
 {
   if (mySensType == Select3D_TOS_INTERIOR)
   {
-    myFacePoints = new Select3D_InteriorSensitivePointSet (theOwnerId, thePoints);
+    myFacePoints = new Select3D_InteriorSensitivePointSet(theOwnerId, thePoints);
   }
   else
   {
-    myFacePoints = new Select3D_SensitivePoly (theOwnerId, thePoints, Standard_True);
+    myFacePoints = new Select3D_SensitivePoly(theOwnerId, thePoints, Standard_True);
   }
 }
 
-//==================================================
-// Function: Creation
-// Purpose :
-//==================================================
-Select3D_SensitiveFace::Select3D_SensitiveFace (const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                                const Handle(TColgp_HArray1OfPnt)& thePoints,
-                                                const Select3D_TypeOfSensitivity theType)
-: Select3D_SensitiveEntity (theOwnerId),
-  mySensType (theType)
+//=================================================================================================
+
+Select3D_SensitiveFace::Select3D_SensitiveFace(const Handle(SelectMgr_EntityOwner)& theOwnerId,
+                                               const Handle(TColgp_HArray1OfPnt)&   thePoints,
+                                               const Select3D_TypeOfSensitivity     theType)
+    : Select3D_SensitiveEntity(theOwnerId),
+      mySensType(theType)
 {
   if (mySensType == Select3D_TOS_INTERIOR)
   {
-    myFacePoints = new Select3D_InteriorSensitivePointSet (theOwnerId, thePoints->Array1());
+    myFacePoints = new Select3D_InteriorSensitivePointSet(theOwnerId, thePoints->Array1());
   }
   else
   {
-    myFacePoints = new Select3D_SensitivePoly (theOwnerId, thePoints->Array1(), Standard_True);
+    myFacePoints = new Select3D_SensitivePoly(theOwnerId, thePoints->Array1(), Standard_True);
   }
 }
 
@@ -65,17 +63,16 @@ Select3D_SensitiveFace::Select3D_SensitiveFace (const Handle(SelectMgr_EntityOwn
 // purpose  : Initializes the given array theHArrayOfPnt by 3d
 //            coordinates of vertices of the face
 //=======================================================================
-void Select3D_SensitiveFace::GetPoints (Handle(TColgp_HArray1OfPnt)& theHArrayOfPnt)
+void Select3D_SensitiveFace::GetPoints(Handle(TColgp_HArray1OfPnt)& theHArrayOfPnt)
 {
   if (myFacePoints->IsKind(STANDARD_TYPE(Select3D_SensitivePoly)))
   {
-    Handle(Select3D_SensitivePoly)::DownCast (myFacePoints)->Points3D (theHArrayOfPnt);
+    Handle(Select3D_SensitivePoly)::DownCast(myFacePoints)->Points3D(theHArrayOfPnt);
   }
   else
   {
-    Handle(Select3D_InteriorSensitivePointSet)::DownCast (myFacePoints)->GetPoints (theHArrayOfPnt);
+    Handle(Select3D_InteriorSensitivePointSet)::DownCast(myFacePoints)->GetPoints(theHArrayOfPnt);
   }
-
 }
 
 //=======================================================================
@@ -91,24 +88,22 @@ void Select3D_SensitiveFace::BVH()
 // function : Matches
 // purpose  : Checks whether the face overlaps current selecting volume
 //=======================================================================
-Standard_Boolean Select3D_SensitiveFace::Matches (SelectBasics_SelectingVolumeManager& theMgr,
-                                                  SelectBasics_PickResult& thePickResult)
+Standard_Boolean Select3D_SensitiveFace::Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                                 SelectBasics_PickResult&             thePickResult)
 {
-  return myFacePoints->Matches (theMgr, thePickResult);
+  return myFacePoints->Matches(theMgr, thePickResult);
 }
 
-//=======================================================================
-//function : GetConnected
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Handle(Select3D_SensitiveEntity) Select3D_SensitiveFace::GetConnected()
 {
   // Create a copy of this
   Handle(TColgp_HArray1OfPnt) aPoints;
-  GetPoints (aPoints);
+  GetPoints(aPoints);
 
   Handle(Select3D_SensitiveEntity) aNewEntity =
-    new Select3D_SensitiveFace (myOwnerId, aPoints, mySensType);
+    new Select3D_SensitiveFace(myOwnerId, aPoints, mySensType);
 
   return aNewEntity;
 }
@@ -143,15 +138,13 @@ Standard_Integer Select3D_SensitiveFace::NbSubElements() const
   return myFacePoints->NbSubElements();
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  :
-//=======================================================================
-void Select3D_SensitiveFace::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Select3D_SensitiveEntity)
+//=================================================================================================
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mySensType)
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myFacePoints.get())
+void Select3D_SensitiveFace::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Select3D_SensitiveEntity)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, mySensType)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myFacePoints.get())
 }

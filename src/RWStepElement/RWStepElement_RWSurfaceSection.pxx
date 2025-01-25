@@ -27,48 +27,31 @@ class StepElement_SurfaceSection;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write tool for SurfaceSection
-class RWStepElement_RWSurfaceSection 
+class RWStepElement_RWSurfaceSection
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_HIDDEN RWStepElement_RWSurfaceSection();
-  
+
   //! Reads SurfaceSection
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepElement_SurfaceSection)& ent) const;
-  
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&    data,
+                                const Standard_Integer                    num,
+                                Handle(Interface_Check)&                  ach,
+                                const Handle(StepElement_SurfaceSection)& ent) const;
+
   //! Writes SurfaceSection
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepElement_SurfaceSection)& ent) const;
-  
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                      SW,
+                                 const Handle(StepElement_SurfaceSection)& ent) const;
+
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepElement_SurfaceSection)& ent, Interface_EntityIterator& iter) const;
-
-
-
+  Standard_HIDDEN void Share(const Handle(StepElement_SurfaceSection)& ent,
+                             Interface_EntityIterator&                 iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepElement_RWSurfaceSection_HeaderFile

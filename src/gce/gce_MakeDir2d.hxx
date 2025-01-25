@@ -27,34 +27,31 @@ class gp_Vec2d;
 class gp_XY;
 class gp_Pnt2d;
 
-
 //! This class implements the following algorithms used
 //! to create a Dir2d from gp.
 //! * Create a Dir2d with 2 points.
 //! * Create a Dir2d with a Vec2d.
 //! * Create a Dir2d with a XY from gp.
 //! * Create a Dir2d with a 2 Reals (Coordinates).
-class gce_MakeDir2d  : public gce_Root
+class gce_MakeDir2d : public gce_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Normalizes the vector V and creates a direction.
   //! Status is "NullVector" if V.Magnitude() <= Resolution.
   Standard_EXPORT gce_MakeDir2d(const gp_Vec2d& V);
-  
+
   //! Creates a direction from a triplet of coordinates.
   //! Status is "NullVector" if Coord.Modulus() <=
   //! Resolution from gp.
   Standard_EXPORT gce_MakeDir2d(const gp_XY& Coord);
-  
+
   //! Creates a direction with its 3 cartesian coordinates.
   //! Status is "NullVector" if Sqrt(Xv*Xv + Yv*Yv )
   //! <= Resolution
   Standard_EXPORT gce_MakeDir2d(const Standard_Real Xv, const Standard_Real Yv);
-  
+
   //! Make a Dir2d from gp <TheDir> passing through 2
   //! Pnt <P1>,<P2>.
   //! Status is "ConfusedPoints" if <P1> and <P2> are confused.
@@ -68,36 +65,17 @@ public:
   //! -   the modulus of Coord,
   //! -   Sqrt(Xv*Xv + Yv*Yv).
   Standard_EXPORT gce_MakeDir2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2);
-  
+
   //! Returns the constructed unit vector.
   //! Exceptions StdFail_NotDone if no unit vector is constructed.
   Standard_EXPORT const gp_Dir2d& Value() const;
-  
+
   Standard_EXPORT const gp_Dir2d& Operator() const;
-Standard_EXPORT operator gp_Dir2d() const;
-
-
-
+  Standard_EXPORT                 operator gp_Dir2d() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   gp_Dir2d TheDir2d;
-
-
 };
-
-
-
-
-
-
 
 #endif // _gce_MakeDir2d_HeaderFile

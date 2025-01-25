@@ -19,25 +19,25 @@
 IMPLEMENT_STANDARD_RTTIEXT(StdStorage_Root, Standard_Transient)
 
 StdStorage_Root::StdStorage_Root()
-  : myRef(0) 
+    : myRef(0)
 {
 }
 
 StdStorage_Root::StdStorage_Root(const TCollection_AsciiString&      theName,
                                  const Handle(StdObjMgt_Persistent)& theObject)
-  : myName(theName)
-  , myType(theObject->PName())
-  , myObject(theObject)
-  , myRef(0)
+    : myName(theName),
+      myType(theObject->PName()),
+      myObject(theObject),
+      myRef(0)
 {
 }
 
 StdStorage_Root::StdStorage_Root(const TCollection_AsciiString& theName,
                                  const Standard_Integer         theRef,
                                  const TCollection_AsciiString& theType)
-  : myName(theName)
-  , myType(theType)
-  , myRef(theRef)
+    : myName(theName),
+      myType(theType),
+      myRef(theRef)
 {
 }
 

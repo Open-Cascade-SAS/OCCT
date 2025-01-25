@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Plugin_Macro.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_GUID.hxx>
@@ -23,43 +22,42 @@
 #include <XmlXCAFDrivers_DocumentRetrievalDriver.hxx>
 #include <XmlXCAFDrivers_DocumentStorageDriver.hxx>
 
-static Standard_GUID XSStorageDriver  ("f78ff496-a779-11d5-aab4-0050044b1af1");
+static Standard_GUID XSStorageDriver("f78ff496-a779-11d5-aab4-0050044b1af1");
 static Standard_GUID XSRetrievalDriver("f78ff497-a779-11d5-aab4-0050044b1af1");
 
 const Handle(Standard_Transient)& XmlXCAFDrivers::Factory(const Standard_GUID& aGUID)
 {
-  if(aGUID == XSStorageDriver)  
+  if (aGUID == XSStorageDriver)
   {
 #ifdef OCCT_DEBUG
     std::cout << "XmlXCAFDrivers : Storage Plugin" << std::endl;
 #endif
-    static Handle(Standard_Transient) model_sd 
-      = new XmlXCAFDrivers_DocumentStorageDriver
-        ("Copyright: Open Cascade, 2001-2002"); // default copyright
+    static Handle(Standard_Transient) model_sd = new XmlXCAFDrivers_DocumentStorageDriver(
+      "Copyright: Open Cascade, 2001-2002"); // default copyright
     return model_sd;
   }
-  if(aGUID == XSRetrievalDriver) 
-  {  
+  if (aGUID == XSRetrievalDriver)
+  {
 #ifdef OCCT_DEBUG
     std::cout << "XmlXCAFDrivers : Retrieval Plugin" << std::endl;
 #endif
-    static Handle (Standard_Transient) model_rd 
-      = new XmlXCAFDrivers_DocumentRetrievalDriver;
+    static Handle(Standard_Transient) model_rd = new XmlXCAFDrivers_DocumentRetrievalDriver;
     return model_rd;
   }
-  
-  return XmlDrivers::Factory (aGUID);
+
+  return XmlDrivers::Factory(aGUID);
 }
 
-//=======================================================================
-//function : DefineFormat
-//purpose  : 
-//=======================================================================
-void XmlXCAFDrivers::DefineFormat (const Handle(TDocStd_Application)& theApp)
+//=================================================================================================
+
+void XmlXCAFDrivers::DefineFormat(const Handle(TDocStd_Application)& theApp)
 {
-  theApp->DefineFormat ("XmlXCAF", "Xml XCAF Document", "xml",
-                        new XmlXCAFDrivers_DocumentRetrievalDriver, 
-                        new XmlXCAFDrivers_DocumentStorageDriver ("Copyright: Open Cascade, 2001-2002"));
+  theApp->DefineFormat(
+    "XmlXCAF",
+    "Xml XCAF Document",
+    "xml",
+    new XmlXCAFDrivers_DocumentRetrievalDriver,
+    new XmlXCAFDrivers_DocumentStorageDriver("Copyright: Open Cascade, 2001-2002"));
 }
 
 PLUGIN(XmlXCAFDrivers)

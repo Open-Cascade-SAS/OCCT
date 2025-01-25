@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Geom_Axis1Placement.hxx>
 #include <Geom_Geometry.hxx>
 #include <gp_Ax1.hxx>
@@ -23,63 +22,63 @@
 #include <gp_Trsf.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Geom_Axis1Placement,Geom_AxisPlacement)
+IMPLEMENT_STANDARD_RTTIEXT(Geom_Axis1Placement, Geom_AxisPlacement)
 
-typedef Geom_Axis1Placement         Axis1Placement;
-typedef gp_Ax2  Ax2;
-typedef gp_Dir  Dir;
-typedef gp_Pnt  Pnt;
-typedef gp_Trsf Trsf;
-typedef gp_Vec  Vec;
+typedef Geom_Axis1Placement Axis1Placement;
+typedef gp_Ax2              Ax2;
+typedef gp_Dir              Dir;
+typedef gp_Pnt              Pnt;
+typedef gp_Trsf             Trsf;
+typedef gp_Vec              Vec;
 
-//=======================================================================
-//function : Copy
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(Geom_Geometry) Geom_Axis1Placement::Copy() const {
+Handle(Geom_Geometry) Geom_Axis1Placement::Copy() const
+{
 
   Handle(Geom_Axis1Placement) A1;
-  A1 = new Axis1Placement (axis);
+  A1 = new Axis1Placement(axis);
   return A1;
 }
 
+//=================================================================================================
 
-
-
-
-//=======================================================================
-//function : Geom_Axis1Placement
-//purpose  : 
-//=======================================================================
-
-Geom_Axis1Placement::Geom_Axis1Placement (const gp_Ax1& A1) 
+Geom_Axis1Placement::Geom_Axis1Placement(const gp_Ax1& A1)
 {
- axis = A1;
+  axis = A1;
 }
 
- 
-Geom_Axis1Placement::Geom_Axis1Placement (const Pnt& P, const Dir& V) {
+Geom_Axis1Placement::Geom_Axis1Placement(const Pnt& P, const Dir& V)
+{
 
- axis = gp_Ax1 (P, V);
+  axis = gp_Ax1(P, V);
 }
 
-
-
-void Geom_Axis1Placement::SetDirection (const Dir& V) {axis.SetDirection (V);}
-
-const gp_Ax1& Geom_Axis1Placement::Ax1 () const { return Axis(); }
-
-void Geom_Axis1Placement::Reverse()  { axis.Reverse(); }
-
-void Geom_Axis1Placement::Transform (const Trsf& T) { axis.Transform (T); }
-
-Handle(Geom_Axis1Placement) Geom_Axis1Placement::Reversed() const {
-
-   gp_Ax1 A1 = axis;
-   A1.Reverse();
-   Handle (Axis1Placement) Temp = new Axis1Placement (A1);
-   return Temp;
+void Geom_Axis1Placement::SetDirection(const Dir& V)
+{
+  axis.SetDirection(V);
 }
 
+const gp_Ax1& Geom_Axis1Placement::Ax1() const
+{
+  return Axis();
+}
 
+void Geom_Axis1Placement::Reverse()
+{
+  axis.Reverse();
+}
+
+void Geom_Axis1Placement::Transform(const Trsf& T)
+{
+  axis.Transform(T);
+}
+
+Handle(Geom_Axis1Placement) Geom_Axis1Placement::Reversed() const
+{
+
+  gp_Ax1 A1 = axis;
+  A1.Reverse();
+  Handle(Axis1Placement) Temp = new Axis1Placement(A1);
+  return Temp;
+}

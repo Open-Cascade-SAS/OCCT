@@ -20,128 +20,103 @@
 #include <StepBasic_ProductOrFormationOrDefinition.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentProductAssociation,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentProductAssociation, Standard_Transient)
 
-//=======================================================================
-//function : StepBasic_DocumentProductAssociation
-//purpose  : 
-//=======================================================================
-StepBasic_DocumentProductAssociation::StepBasic_DocumentProductAssociation ()
+//=================================================================================================
+
+StepBasic_DocumentProductAssociation::StepBasic_DocumentProductAssociation()
 {
   defDescription = Standard_False;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_DocumentProductAssociation::Init (const Handle(TCollection_HAsciiString) &aName,
-                                                 const Standard_Boolean hasDescription,
-                                                 const Handle(TCollection_HAsciiString) &aDescription,
-                                                 const Handle(StepBasic_Document) &aRelatingDocument,
-                                                 const StepBasic_ProductOrFormationOrDefinition &aRelatedProduct)
+void StepBasic_DocumentProductAssociation::Init(
+  const Handle(TCollection_HAsciiString)&         aName,
+  const Standard_Boolean                          hasDescription,
+  const Handle(TCollection_HAsciiString)&         aDescription,
+  const Handle(StepBasic_Document)&               aRelatingDocument,
+  const StepBasic_ProductOrFormationOrDefinition& aRelatedProduct)
 {
 
   theName = aName;
 
   defDescription = hasDescription;
-  if (defDescription) {
+  if (defDescription)
+  {
     theDescription = aDescription;
   }
-  else theDescription.Nullify();
+  else
+    theDescription.Nullify();
 
   theRelatingDocument = aRelatingDocument;
 
   theRelatedProduct = aRelatedProduct;
 }
 
-//=======================================================================
-//function : Name
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_DocumentProductAssociation::Name () const
+Handle(TCollection_HAsciiString) StepBasic_DocumentProductAssociation::Name() const
 {
   return theName;
 }
 
-//=======================================================================
-//function : SetName
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_DocumentProductAssociation::SetName (const Handle(TCollection_HAsciiString) &aName)
+void StepBasic_DocumentProductAssociation::SetName(const Handle(TCollection_HAsciiString)& aName)
 {
   theName = aName;
 }
 
-//=======================================================================
-//function : Description
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_DocumentProductAssociation::Description () const
+Handle(TCollection_HAsciiString) StepBasic_DocumentProductAssociation::Description() const
 {
   return theDescription;
 }
 
-//=======================================================================
-//function : SetDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_DocumentProductAssociation::SetDescription (const Handle(TCollection_HAsciiString) &aDescription)
+void StepBasic_DocumentProductAssociation::SetDescription(
+  const Handle(TCollection_HAsciiString)& aDescription)
 {
   theDescription = aDescription;
 }
 
-//=======================================================================
-//function : HasDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean StepBasic_DocumentProductAssociation::HasDescription () const
+Standard_Boolean StepBasic_DocumentProductAssociation::HasDescription() const
 {
   return defDescription;
 }
 
-//=======================================================================
-//function : RelatingDocument
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_Document) StepBasic_DocumentProductAssociation::RelatingDocument () const
+Handle(StepBasic_Document) StepBasic_DocumentProductAssociation::RelatingDocument() const
 {
   return theRelatingDocument;
 }
 
-//=======================================================================
-//function : SetRelatingDocument
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_DocumentProductAssociation::SetRelatingDocument (const Handle(StepBasic_Document) &aRelatingDocument)
+void StepBasic_DocumentProductAssociation::SetRelatingDocument(
+  const Handle(StepBasic_Document)& aRelatingDocument)
 {
   theRelatingDocument = aRelatingDocument;
 }
 
-//=======================================================================
-//function : RelatedProduct
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepBasic_ProductOrFormationOrDefinition StepBasic_DocumentProductAssociation::RelatedProduct () const
+StepBasic_ProductOrFormationOrDefinition StepBasic_DocumentProductAssociation::RelatedProduct()
+  const
 {
   return theRelatedProduct;
 }
 
-//=======================================================================
-//function : SetRelatedProduct
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_DocumentProductAssociation::SetRelatedProduct (const StepBasic_ProductOrFormationOrDefinition &aRelatedProduct)
+void StepBasic_DocumentProductAssociation::SetRelatedProduct(
+  const StepBasic_ProductOrFormationOrDefinition& aRelatedProduct)
 {
   theRelatedProduct = aRelatedProduct;
 }

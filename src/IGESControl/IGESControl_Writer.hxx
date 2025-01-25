@@ -36,7 +36,6 @@ class TopoDS_Shape;
 class Standard_Transient;
 class IGESData_IGESEntity;
 
-
 //! This class creates and writes
 //! IGES files from CAS.CADE models. An IGES file can be written to
 //! an existing IGES file or to a new one.
@@ -47,15 +46,15 @@ class IGESData_IGESEntity;
 //! To modify the IGES file header or to change translation
 //! parameters it is necessary to use class Interface_Static (see
 //! IGESParameters and GeneralParameters).
-class IGESControl_Writer 
+class IGESControl_Writer
 {
 public:
   DEFINE_STANDARD_ALLOC
 
   using ParameterMap = std::unordered_map<std::string, std::string>;
   // Flags defining operations to be performed on shapes. Since there is no std::optional in C++11,
-  // we use a pair. The first element is the flags, the second element is a boolean value that indicates
-  // whether the flags were set.
+  // we use a pair. The first element is the flags, the second element is a boolean value that
+  // indicates whether the flags were set.
   using ProcessingFlags = std::pair<ShapeProcess::OperationsFlags, bool>;
 
 public:
@@ -64,7 +63,7 @@ public:
   //! IGESControl_Writer (const Standard_CString unit,
   //! const Standard_Integer modecr = 0);
   Standard_EXPORT IGESControl_Writer();
-  
+
   //! Creates a writer with given
   //! values for units and for write mode.
   //! theUnit may be any unit that is accepted by the IGES standard.
@@ -74,7 +73,7 @@ public:
   //! - 1: BRep.
   Standard_EXPORT IGESControl_Writer(const Standard_CString theUnit,
                                      const Standard_Integer theModecr = 0);
-  
+
   //! Creates a writer object with the
   //! prepared IGES model theModel in write mode.
   //! theModecr defines the write mode and may be:
@@ -82,48 +81,48 @@ public:
   //! - 1: BRep.
   Standard_EXPORT IGESControl_Writer(const Handle(IGESData_IGESModel)& theModel,
                                      const Standard_Integer            theModecr = 0);
-  
-  //! Returns the IGES model to be written in output.
-  const Handle(IGESData_IGESModel) & Model() const
-  { return myModel; }
 
-  const Handle(Transfer_FinderProcess) & TransferProcess() const
-  { return myTP; }
+  //! Returns the IGES model to be written in output.
+  const Handle(IGESData_IGESModel)& Model() const { return myModel; }
+
+  const Handle(Transfer_FinderProcess)& TransferProcess() const { return myTP; }
 
   //! Returns/Sets the TransferProcess : it contains final results
   //! and if some, check messages
-  void SetTransferProcess (const Handle(Transfer_FinderProcess)& TP)
-  { myTP = TP; }
-  
+  void SetTransferProcess(const Handle(Transfer_FinderProcess)& TP) { myTP = TP; }
+
   //! Translates a Shape to IGES Entities and adds them to the model
   //! Returns True if done, False if Shape not suitable for IGES or null
-  Standard_EXPORT Standard_Boolean AddShape (const TopoDS_Shape& sh,
-                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+  Standard_EXPORT Standard_Boolean
+    AddShape(const TopoDS_Shape&          sh,
+             const Message_ProgressRange& theProgress = Message_ProgressRange());
+
   //! Translates a Geometry (Surface or Curve) to IGES Entities and
   //! adds them to the model
   //! Returns True if done, False if geom is neither a Surface or
   //! a Curve suitable for IGES or is null
-  Standard_EXPORT Standard_Boolean AddGeom (const Handle(Standard_Transient)& geom);
-  
+  Standard_EXPORT Standard_Boolean AddGeom(const Handle(Standard_Transient)& geom);
+
   //! Adds an IGES entity (and the ones it references) to the model
-  Standard_EXPORT Standard_Boolean AddEntity (const Handle(IGESData_IGESEntity)& ent);
-  
+  Standard_EXPORT Standard_Boolean AddEntity(const Handle(IGESData_IGESEntity)& ent);
+
   //! Computes the entities found in
   //! the model, which is ready to be written.
   //! This contrasts with the default computation of headers only.
   Standard_EXPORT void ComputeModel();
-  
+
   //! Computes then writes the model to an OStream
   //! Returns True when done, false in case of error
-  Standard_EXPORT Standard_Boolean Write (Standard_OStream& S, const Standard_Boolean fnes = Standard_False);
-  
+  Standard_EXPORT Standard_Boolean Write(Standard_OStream&      S,
+                                         const Standard_Boolean fnes = Standard_False);
+
   //! Prepares and writes an IGES model
   //! either to an OStream, S or to a file name,CString.
   //! Returns True if the operation was performed correctly and
   //! False if an error occurred (for instance,
   //! if the processor could not create the file).
-  Standard_EXPORT Standard_Boolean Write (const Standard_CString file, const Standard_Boolean fnes = Standard_False);
+  Standard_EXPORT Standard_Boolean Write(const Standard_CString file,
+                                         const Standard_Boolean fnes = Standard_False);
 
   //! Sets parameters for shape processing.
   //! @param theParameters the parameters for shape processing.
@@ -141,7 +140,7 @@ public:
   //! @param theParameters the parameters for shape processing.
   //! @param theAdditionalParameters the additional parameters for shape processing.
   Standard_EXPORT void SetShapeFixParameters(const DE_ShapeFixParameters& theParameters,
-                                             const ParameterMap&          theAdditionalParameters = {});
+                                             const ParameterMap& theAdditionalParameters = {});
 
   //! Returns parameters for shape processing that was set by SetParameters() method.
   //! @return the parameters for shape processing. Empty map if no parameters were set.
@@ -153,21 +152,24 @@ public:
 
   //! Returns flags defining operations to be performed on shapes.
   //! @return The flags defining operations to be performed on shapes.
-  inline const ShapeProcess::OperationsFlags& GetShapeProcessFlags() const { return myShapeProcFlags.first; }
+  inline const ShapeProcess::OperationsFlags& GetShapeProcessFlags() const
+  {
+    return myShapeProcFlags.first;
+  }
 
-  private:
+private:
   //! If parameters haven't yet been provided, initializes them with default values
   //! provided by GetDefaultShapeFixParameters() method.
   void InitializeMissingParameters();
 
- private:
+private:
   Handle(Transfer_FinderProcess) myTP;
   Handle(IGESData_IGESModel)     myModel;
   IGESData_BasicEditor           myEditor;
   Standard_Integer               myWriteMode;
   Standard_Boolean               myIsComputed;
   ParameterMap                   myShapeProcParams; //!< Parameters for shape processing.
-  ProcessingFlags                myShapeProcFlags;  //!< Flags defining operations to be performed on shapes.
+  ProcessingFlags myShapeProcFlags; //!< Flags defining operations to be performed on shapes.
 };
 
 #endif // _IGESControl_Writer_HeaderFile

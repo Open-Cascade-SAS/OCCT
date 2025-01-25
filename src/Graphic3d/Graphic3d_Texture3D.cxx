@@ -23,32 +23,33 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Texture3D, Graphic3d_TextureMap)
 // function : Graphic3d_Texture3D
 // purpose  :
 // =======================================================================
-Graphic3d_Texture3D::Graphic3d_Texture3D (const TCollection_AsciiString& theFileName)
-: Graphic3d_TextureMap (theFileName, Graphic3d_TypeOfTexture_3D)
+Graphic3d_Texture3D::Graphic3d_Texture3D(const TCollection_AsciiString& theFileName)
+    : Graphic3d_TextureMap(theFileName, Graphic3d_TypeOfTexture_3D)
 {
-  myParams->SetFilter (Graphic3d_TOTF_TRILINEAR);
+  myParams->SetFilter(Graphic3d_TOTF_TRILINEAR);
 }
 
 // =======================================================================
 // function : Graphic3d_Texture3D
 // purpose  :
 // =======================================================================
-Graphic3d_Texture3D::Graphic3d_Texture3D (const Handle(Image_PixMap)& thePixMap)
-: Graphic3d_TextureMap (thePixMap, Graphic3d_TypeOfTexture_3D)
+Graphic3d_Texture3D::Graphic3d_Texture3D(const Handle(Image_PixMap)& thePixMap)
+    : Graphic3d_TextureMap(thePixMap, Graphic3d_TypeOfTexture_3D)
 {
-  myParams->SetFilter (Graphic3d_TOTF_TRILINEAR);
+  myParams->SetFilter(Graphic3d_TOTF_TRILINEAR);
 }
 
 // =======================================================================
 // function : Graphic3d_Texture3D
 // purpose  :
 // =======================================================================
-Graphic3d_Texture3D::Graphic3d_Texture3D (const NCollection_Array1<TCollection_AsciiString>& theFiles)
-: Graphic3d_TextureMap ("", Graphic3d_TypeOfTexture_3D)
+Graphic3d_Texture3D::Graphic3d_Texture3D(
+  const NCollection_Array1<TCollection_AsciiString>& theFiles)
+    : Graphic3d_TextureMap("", Graphic3d_TypeOfTexture_3D)
 {
-  myParams->SetFilter (Graphic3d_TOTF_TRILINEAR);
-  myPaths.Resize (theFiles.Lower(), theFiles.Upper(), false);
-  myPaths.Assign (theFiles);
+  myParams->SetFilter(Graphic3d_TOTF_TRILINEAR);
+  myPaths.Resize(theFiles.Lower(), theFiles.Upper(), false);
+  myPaths.Assign(theFiles);
 }
 
 // =======================================================================
@@ -64,63 +65,67 @@ Graphic3d_Texture3D::~Graphic3d_Texture3D()
 // function : SetImage
 // purpose  :
 // =======================================================================
-void Graphic3d_Texture3D::SetImage (const Handle(Image_PixMap)& thePixMap)
+void Graphic3d_Texture3D::SetImage(const Handle(Image_PixMap)& thePixMap)
 {
   myPixMap = thePixMap;
-  myPath = OSD_Path();
+  myPath   = OSD_Path();
 
   NCollection_Array1<TCollection_AsciiString> anArr;
-  myPaths.Move (anArr);
+  myPaths.Move(anArr);
 }
 
 // =======================================================================
 // function : GetImage
 // purpose  :
 // =======================================================================
-Handle(Image_PixMap) Graphic3d_Texture3D::GetImage (const Handle(Image_SupportedFormats)& theSupported)
+Handle(Image_PixMap) Graphic3d_Texture3D::GetImage(
+  const Handle(Image_SupportedFormats)& theSupported)
 {
-  if (myPaths.IsEmpty()
-  || !myPixMap.IsNull())
+  if (myPaths.IsEmpty() || !myPixMap.IsNull())
   {
-    return base_type::GetImage (theSupported);
+    return base_type::GetImage(theSupported);
   }
 
-  Handle(Image_PixMap) anImage3D;
+  Handle(Image_PixMap)   anImage3D;
   const Standard_Integer aNbSlices = myPaths.Length();
   for (Standard_Integer aSlice = 0; aSlice < aNbSlices; ++aSlice)
   {
     const TCollection_AsciiString& aSlicePath = myPaths[myPaths.Lower() + aSlice];
-    Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap();
-    if (!anImage->Load (aSlicePath))
+    Handle(Image_AlienPixMap)      anImage    = new Image_AlienPixMap();
+    if (!anImage->Load(aSlicePath))
     {
-      Message::SendFail() << "Graphic3d_Texture3D::GetImage() failed to load slice " << aSlice << " from '" << aSlicePath << "'";
+      Message::SendFail() << "Graphic3d_Texture3D::GetImage() failed to load slice " << aSlice
+                          << " from '" << aSlicePath << "'";
       return Handle(Image_PixMap)();
     }
 
-    convertToCompatible (theSupported, anImage);
+    convertToCompatible(theSupported, anImage);
     if (anImage3D.IsNull())
     {
       myIsTopDown = anImage->IsTopDown();
-      anImage3D = new Image_PixMap();
-      anImage3D->SetTopDown (myIsTopDown);
-      if (!anImage3D->InitTrash3D (anImage->Format(),
-                                   NCollection_Vec3<Standard_Size> (anImage->SizeX(), anImage->SizeY(), aNbSlices),
-                                   anImage->SizeRowBytes()))
+      anImage3D   = new Image_PixMap();
+      anImage3D->SetTopDown(myIsTopDown);
+      if (!anImage3D->InitTrash3D(
+            anImage->Format(),
+            NCollection_Vec3<Standard_Size>(anImage->SizeX(), anImage->SizeY(), aNbSlices),
+            anImage->SizeRowBytes()))
       {
-        Message::SendFail() << "Graphic3d_Texture3D::GetImage() failed to allocate 3D image " << (int )anImage->SizeX() << "x" << (int )anImage->SizeY() << "x" << aNbSlices;
+        Message::SendFail() << "Graphic3d_Texture3D::GetImage() failed to allocate 3D image "
+                            << (int)anImage->SizeX() << "x" << (int)anImage->SizeY() << "x"
+                            << aNbSlices;
         return Handle(Image_PixMap)();
       }
     }
-    if (anImage->Format() != anImage3D->Format()
-     || anImage->SizeX()  != anImage3D->SizeX()
-     || anImage->SizeY()  != anImage3D->SizeY()
-     || anImage->SizeRowBytes() != anImage3D->SizeRowBytes())
+    if (anImage->Format() != anImage3D->Format() || anImage->SizeX() != anImage3D->SizeX()
+        || anImage->SizeY() != anImage3D->SizeY()
+        || anImage->SizeRowBytes() != anImage3D->SizeRowBytes())
     {
-      Message::SendFail() << "Graphic3d_Texture3D::GetImage() slice " << aSlice << " from '" << aSlicePath << "' have different dimensions";
+      Message::SendFail() << "Graphic3d_Texture3D::GetImage() slice " << aSlice << " from '"
+                          << aSlicePath << "' have different dimensions";
       return Handle(Image_PixMap)();
     }
 
-    memcpy (anImage3D->ChangeSlice (aSlice), anImage->Data(), anImage->SizeBytes());
+    memcpy(anImage3D->ChangeSlice(aSlice), anImage->Data(), anImage->SizeBytes());
   }
 
   return anImage3D;

@@ -17,13 +17,12 @@
 #ifndef _Blend_DecrochStatus_HeaderFile
 #define _Blend_DecrochStatus_HeaderFile
 
-
 enum Blend_DecrochStatus
 {
-Blend_NoDecroch,
-Blend_DecrochRst1,
-Blend_DecrochRst2,
-Blend_DecrochBoth
+  Blend_NoDecroch,
+  Blend_DecrochRst1,
+  Blend_DecrochRst2,
+  Blend_DecrochBoth
 };
 
 #endif // _Blend_DecrochStatus_HeaderFile

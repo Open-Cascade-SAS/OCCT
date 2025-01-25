@@ -11,13 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IFSelect_SelectBase.hxx>
 #include <IFSelect_SelectionIterator.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectBase,IFSelect_Selection)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectBase, IFSelect_Selection)
 
-void  IFSelect_SelectBase::FillIterator
-  (IFSelect_SelectionIterator& ) const 
-      {  }   // rien a faire, une SelectBase ne depend d aucune autre Selection
+void IFSelect_SelectBase::FillIterator(IFSelect_SelectionIterator&) const {
+} // rien a faire, une SelectBase ne depend d aucune autre Selection

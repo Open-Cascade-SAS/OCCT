@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -24,23 +24,17 @@
 #include <StepVisual_TessellatedEdgeOrVertex.hxx>
 #include <StepVisual_PathOrCompositeCurve.hxx>
 
-//=======================================================================
-//function : RWStepVisual_RWTessellatedWire
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 RWStepVisual_RWTessellatedWire::RWStepVisual_RWTessellatedWire() {}
 
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
-
-void RWStepVisual_RWTessellatedWire::ReadStep (const Handle(StepData_StepReaderData)& theData,
-                                               const Standard_Integer theNum,
-                                               Handle(Interface_Check)& theCheck,
-                                               const Handle(StepVisual_TessellatedWire)& theEnt) const
+void RWStepVisual_RWTessellatedWire::ReadStep(
+  const Handle(StepData_StepReaderData)&    theData,
+  const Standard_Integer                    theNum,
+  Handle(Interface_Check)&                  theCheck,
+  const Handle(StepVisual_TessellatedWire)& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theCheck, "tessellated_wire"))
@@ -56,11 +50,11 @@ void RWStepVisual_RWTessellatedWire::ReadStep (const Handle(StepData_StepReaderD
   // Own fields of TessellatedWire
 
   Handle(StepVisual_HArray1OfTessellatedEdgeOrVertex) aItems;
-  Standard_Integer sub2 = 0;
+  Standard_Integer                                    sub2 = 0;
   if (theData->ReadSubList(theNum, 2, "items", theCheck, sub2))
   {
-    Standard_Integer nb0 = theData->NbParams(sub2);
-    aItems = new StepVisual_HArray1OfTessellatedEdgeOrVertex(1, nb0);
+    Standard_Integer nb0  = theData->NbParams(sub2);
+    aItems                = new StepVisual_HArray1OfTessellatedEdgeOrVertex(1, nb0);
     Standard_Integer num2 = sub2;
     for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
     {
@@ -71,7 +65,7 @@ void RWStepVisual_RWTessellatedWire::ReadStep (const Handle(StepData_StepReaderD
   }
 
   StepVisual_PathOrCompositeCurve aGeometricModelLink;
-  Standard_Boolean hasGeometricModelLink = Standard_True;
+  Standard_Boolean                hasGeometricModelLink = Standard_True;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadEntity(theNum, 3, "geometric_model_link", theCheck, aGeometricModelLink);
@@ -79,20 +73,18 @@ void RWStepVisual_RWTessellatedWire::ReadStep (const Handle(StepData_StepReaderD
   else
   {
     hasGeometricModelLink = Standard_False;
-    aGeometricModelLink = StepVisual_PathOrCompositeCurve();
+    aGeometricModelLink   = StepVisual_PathOrCompositeCurve();
   }
 
   // Initialize entity
   theEnt->Init(aRepresentationItem_Name, aItems, hasGeometricModelLink, aGeometricModelLink);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepVisual_RWTessellatedWire::WriteStep (StepData_StepWriter& theSW,
-                                                const Handle(StepVisual_TessellatedWire)& theEnt) const
+void RWStepVisual_RWTessellatedWire::WriteStep(
+  StepData_StepWriter&                      theSW,
+  const Handle(StepVisual_TessellatedWire)& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -119,13 +111,10 @@ void RWStepVisual_RWTessellatedWire::WriteStep (StepData_StepWriter& theSW,
   }
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepVisual_RWTessellatedWire::Share (const Handle(StepVisual_TessellatedWire)&theEnt,
-                                            Interface_EntityIterator& theIter) const
+void RWStepVisual_RWTessellatedWire::Share(const Handle(StepVisual_TessellatedWire)& theEnt,
+                                           Interface_EntityIterator&                 theIter) const
 {
 
   // Inherited fields of RepresentationItem

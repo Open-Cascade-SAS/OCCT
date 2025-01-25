@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Geom2dGcc_CurveTool.hxx>
 #include <Geom2dGcc_FunctionTanCuPnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -35,62 +34,59 @@
 //     f(u) = --------  -  --------------------------------               +
 //               N.N            N*N*N*CP1*CP1*CP1                         +
 //=========================================================================
-Geom2dGcc_FunctionTanCuPnt::
-Geom2dGcc_FunctionTanCuPnt(const Geom2dAdaptor_Curve& C      ,
-                           const gp_Pnt2d& Point  ) {
-                             TheCurv = C;
-                             ThePoint = Point;
+Geom2dGcc_FunctionTanCuPnt::Geom2dGcc_FunctionTanCuPnt(const Geom2dAdaptor_Curve& C,
+                                                       const gp_Pnt2d&            Point)
+{
+  TheCurv  = C;
+  ThePoint = Point;
 }
 
-
-Standard_Boolean Geom2dGcc_FunctionTanCuPnt::
-Value (const Standard_Real  X    ,
-       Standard_Real& Fval ) {
-         gp_Pnt2d Point;
-         gp_Vec2d Vect;
-         Geom2dGcc_CurveTool::D1(TheCurv,X,Point,Vect);
-         Standard_Real NormeD1 = Vect.Magnitude();
-         gp_Vec2d TheDirection(ThePoint,Point);
-         Standard_Real NormeDir = TheDirection.Magnitude();
-         Fval = TheDirection.Crossed(Vect)/(NormeD1*NormeDir);
-         return Standard_True;
+Standard_Boolean Geom2dGcc_FunctionTanCuPnt::Value(const Standard_Real X, Standard_Real& Fval)
+{
+  gp_Pnt2d Point;
+  gp_Vec2d Vect;
+  Geom2dGcc_CurveTool::D1(TheCurv, X, Point, Vect);
+  Standard_Real NormeD1 = Vect.Magnitude();
+  gp_Vec2d      TheDirection(ThePoint, Point);
+  Standard_Real NormeDir = TheDirection.Magnitude();
+  Fval                   = TheDirection.Crossed(Vect) / (NormeD1 * NormeDir);
+  return Standard_True;
 }
 
-Standard_Boolean Geom2dGcc_FunctionTanCuPnt::
-Derivative (const Standard_Real  X     ,
-            Standard_Real& Deriv ) {
-              gp_Pnt2d Point;
-              gp_Vec2d Vec1;
-              gp_Vec2d Vec2;
-              Geom2dGcc_CurveTool::D2(TheCurv,X,Point,Vec1,Vec2);
-              gp_Vec2d TheDirection(ThePoint.XY(),gp_XY(Point.XY()));
-              Standard_Real NormeD1 = Vec1.Magnitude();
-              Standard_Real NormeDir = TheDirection.Magnitude();
-              Deriv = TheDirection.Crossed(Vec2)/(NormeD1*NormeDir)-
-                (TheDirection.Crossed(Vec1)/(NormeD1*NormeDir))*
-                (Vec1.Dot(Vec2)/(NormeD1*NormeD1)+
-                Vec1.Dot(TheDirection)/(NormeDir*NormeDir));
-              return Standard_True;
+Standard_Boolean Geom2dGcc_FunctionTanCuPnt::Derivative(const Standard_Real X, Standard_Real& Deriv)
+{
+  gp_Pnt2d Point;
+  gp_Vec2d Vec1;
+  gp_Vec2d Vec2;
+  Geom2dGcc_CurveTool::D2(TheCurv, X, Point, Vec1, Vec2);
+  gp_Vec2d      TheDirection(ThePoint.XY(), gp_XY(Point.XY()));
+  Standard_Real NormeD1  = Vec1.Magnitude();
+  Standard_Real NormeDir = TheDirection.Magnitude();
+  Deriv =
+    TheDirection.Crossed(Vec2) / (NormeD1 * NormeDir)
+    - (TheDirection.Crossed(Vec1) / (NormeD1 * NormeDir))
+        * (Vec1.Dot(Vec2) / (NormeD1 * NormeD1) + Vec1.Dot(TheDirection) / (NormeDir * NormeDir));
+  return Standard_True;
 }
 
-Standard_Boolean Geom2dGcc_FunctionTanCuPnt::
-Values (const Standard_Real  X     ,
-        Standard_Real& Fval  ,
-        Standard_Real& Deriv ) {
-          gp_Pnt2d Point;
-          gp_Vec2d Vec1;
-          gp_Vec2d Vec2;
-          Geom2dGcc_CurveTool::D2(TheCurv,X,Point,Vec1,Vec2);
-          gp_Vec2d TheDirection(ThePoint.XY(),gp_XY(Point.XY()));
-          Standard_Real NormeD1 = Vec1.Magnitude();
-          Standard_Real NormeDir = TheDirection.Magnitude();
-          Fval = TheDirection.Crossed(Vec1)/(NormeD1*NormeDir);
-          Deriv = TheDirection.Crossed(Vec2)/(NormeD1*NormeDir)-
-            (TheDirection.Crossed(Vec1)/(NormeD1*NormeDir))*
-            (Vec1.Dot(Vec2)/(NormeD1*NormeD1)+
-            Vec1.Dot(TheDirection)/(NormeDir*NormeDir));
+Standard_Boolean Geom2dGcc_FunctionTanCuPnt::Values(const Standard_Real X,
+                                                    Standard_Real&      Fval,
+                                                    Standard_Real&      Deriv)
+{
+  gp_Pnt2d Point;
+  gp_Vec2d Vec1;
+  gp_Vec2d Vec2;
+  Geom2dGcc_CurveTool::D2(TheCurv, X, Point, Vec1, Vec2);
+  gp_Vec2d      TheDirection(ThePoint.XY(), gp_XY(Point.XY()));
+  Standard_Real NormeD1  = Vec1.Magnitude();
+  Standard_Real NormeDir = TheDirection.Magnitude();
+  Fval                   = TheDirection.Crossed(Vec1) / (NormeD1 * NormeDir);
+  Deriv =
+    TheDirection.Crossed(Vec2) / (NormeD1 * NormeDir)
+    - (TheDirection.Crossed(Vec1) / (NormeD1 * NormeDir))
+        * (Vec1.Dot(Vec2) / (NormeD1 * NormeD1) + Vec1.Dot(TheDirection) / (NormeDir * NormeDir));
 
-          //  std::cout  << "U = "<< X << " F ="<< Fval <<" DF ="<< Deriv<<std::endl;
+  //  std::cout  << "U = "<< X << " F ="<< Fval <<" DF ="<< Deriv<<std::endl;
 
-          return Standard_True;
+  return Standard_True;
 }

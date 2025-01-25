@@ -34,26 +34,25 @@
 #include <XSDRAW.hxx>
 
 //=======================================================================
-//function : SetCurWS
-//purpose  : Set current file if many files are read
+// function : SetCurWS
+// purpose  : Set current file if many files are read
 //=======================================================================
 static Standard_Integer SetCurWS(Draw_Interpretor& theDI,
-                                 Standard_Integer theNbArgs,
-                                 const char** theArgVec)
+                                 Standard_Integer  theNbArgs,
+                                 const char**      theArgVec)
 {
   if (theNbArgs < 2)
   {
     theDI << "Use: " << theArgVec[0] << " filename \n";
     return 1;
   }
-  const TCollection_AsciiString aSessionName(theArgVec[1]);
-  Handle(XSControl_WorkSession) aSession;
+  const TCollection_AsciiString   aSessionName(theArgVec[1]);
+  Handle(XSControl_WorkSession)   aSession;
   const XSControl_WorkSessionMap& aWSList = XSDRAW::WorkSessionList();
   if (!aWSList.Find(aSessionName, aSession))
   {
     TCollection_AsciiString aWSs;
-    for (XSControl_WorkSessionMap::Iterator anIter(aWSList);
-         anIter.More(); anIter.Next())
+    for (XSControl_WorkSessionMap::Iterator anIter(aWSList); anIter.More(); anIter.Next())
     {
       aWSs += "\"";
       aWSs += anIter.Key();
@@ -67,19 +66,19 @@ static Standard_Integer SetCurWS(Draw_Interpretor& theDI,
 }
 
 //=======================================================================
-//function : GetDicWSList
-//purpose  : List all files recorded after translation
+// function : GetDicWSList
+// purpose  : List all files recorded after translation
 //=======================================================================
 static Standard_Integer GetDicWSList(Draw_Interpretor& theDI,
-                                     Standard_Integer theNbArgs,
-                                     const char** theArgVec)
+                                     Standard_Integer  theNbArgs,
+                                     const char**      theArgVec)
 {
   (void)theNbArgs;
   (void)theArgVec;
   Message::SendInfo() << "Active sessions list:";
   TCollection_AsciiString aWSs;
-  for (XSControl_WorkSessionMap::Iterator anIter(XSDRAW::WorkSessionList());
-       anIter.More(); anIter.Next())
+  for (XSControl_WorkSessionMap::Iterator anIter(XSDRAW::WorkSessionList()); anIter.More();
+       anIter.Next())
   {
     theDI << "\"" << anIter.Key() << "\"\n";
   }
@@ -87,12 +86,12 @@ static Standard_Integer GetDicWSList(Draw_Interpretor& theDI,
 }
 
 //=======================================================================
-//function : GetCurWS
-//purpose  : Return name of file which is current
+// function : GetCurWS
+// purpose  : Return name of file which is current
 //=======================================================================
 static Standard_Integer GetCurWS(Draw_Interpretor& theDI,
-                                 Standard_Integer theNbArgs,
-                                 const char** theArgVec)
+                                 Standard_Integer  theNbArgs,
+                                 const char**      theArgVec)
 {
   (void)theNbArgs;
   (void)theArgVec;
@@ -102,12 +101,12 @@ static Standard_Integer GetCurWS(Draw_Interpretor& theDI,
 }
 
 //=======================================================================
-//function : FromShape
-//purpose  : Apply fromshape command to all the loaded WSs
+// function : FromShape
+// purpose  : Apply fromshape command to all the loaded WSs
 //=======================================================================
 static Standard_Integer FromShape(Draw_Interpretor& theDI,
-                                  Standard_Integer theNbArgs,
-                                  const char** theArgVec)
+                                  Standard_Integer  theNbArgs,
+                                  const char**      theArgVec)
 {
   if (theNbArgs < 2)
   {
@@ -122,10 +121,10 @@ static Standard_Integer FromShape(Draw_Interpretor& theDI,
     return theDI.Eval(command);
 
   Handle(XSControl_WorkSession) aWS = XSDRAW::Session();
-  for (XSControl_WorkSessionMap::Iterator DicIt(DictWS);
-       DicIt.More(); DicIt.Next())
+  for (XSControl_WorkSessionMap::Iterator DicIt(DictWS); DicIt.More(); DicIt.Next())
   {
-    Handle(XSControl_WorkSession) CurrentWS = Handle(XSControl_WorkSession)::DownCast(DicIt.Value());
+    Handle(XSControl_WorkSession) CurrentWS =
+      Handle(XSControl_WorkSession)::DownCast(DicIt.Value());
     if (!CurrentWS.IsNull())
     {
       XSDRAW::SetSession(CurrentWS);
@@ -136,29 +135,29 @@ static Standard_Integer FromShape(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : Expand
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer Expand(Draw_Interpretor& theDI,
-                               Standard_Integer theNbArgs,
-                               const char** theArgVec)
+                               Standard_Integer  theNbArgs,
+                               const char**      theArgVec)
 {
   if (theNbArgs < 3)
   {
     theDI << "Use: " << theArgVec[0]
-      << " Doc recurs(0/1) or Doc recurs(0/1) label1 label2 ... or Doc recurs(0/1 shape1 shape2 ...\n";
+          << " Doc recurs(0/1) or Doc recurs(0/1) label1 label2 ... or Doc recurs(0/1 shape1 "
+             "shape2 ...\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(theArgVec[1], Doc);
   if (Doc.IsNull())
   {
-    theDI << theArgVec[1] << " is not a document\n"; return 1;
+    theDI << theArgVec[1] << " is not a document\n";
+    return 1;
   }
 
   Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  Standard_Boolean recurs = Standard_False;
+  Standard_Boolean          recurs     = Standard_False;
   if (atoi(theArgVec[2]) != 0)
     recurs = Standard_True;
 
@@ -193,20 +192,19 @@ static Standard_Integer Expand(Draw_Interpretor& theDI,
       }
       else
       {
-        theDI << theArgVec[i] << " is not a shape\n"; return 1;
+        theDI << theArgVec[i] << " is not a shape\n";
+        return 1;
       }
     }
   }
   return 0;
 }
 
-//=======================================================================
-//function : Extract
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer Extract(Draw_Interpretor& theDI,
-                                Standard_Integer theNbArgs,
-                                const char** theArgVec)
+                                Standard_Integer  theNbArgs,
+                                const char**      theArgVec)
 {
   if (theNbArgs < 4)
   {
@@ -221,14 +219,14 @@ static Standard_Integer Extract(Draw_Interpretor& theDI,
     theDI << "Error " << theArgVec[1] << " is not a document\n";
     return 1;
   }
-  TDF_Label aDstLabel;
+  TDF_Label        aDstLabel;
   Standard_Integer anArgInd = 3;
   TDF_Tool::Label(aDstDoc->GetData(), theArgVec[2], aDstLabel);
   Handle(XCAFDoc_ShapeTool) aDstShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDstDoc->Main());
   if (aDstLabel.IsNull())
   {
     aDstLabel = aDstShapeTool->Label();
-    anArgInd = 2; // to get Src Doc
+    anArgInd  = 2; // to get Src Doc
   }
   DDocStd::GetDocument(theArgVec[anArgInd++], aSrcDoc);
   if (aSrcDoc.IsNull())
@@ -263,13 +261,11 @@ static Standard_Integer Extract(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : Filter
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer Filter(Draw_Interpretor& theDI,
-                                Standard_Integer theNbArgs,
-                                const char** theArgVec)
+                               Standard_Integer  theNbArgs,
+                               const char**      theArgVec)
 {
   if (theNbArgs < 3)
   {
@@ -310,10 +306,8 @@ static Standard_Integer Filter(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : InitCommands
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void XDEDRAW_Common::InitCommands(Draw_Interpretor& theDI)
 {
   static Standard_Boolean aIsActivated = Standard_False;
@@ -325,19 +319,46 @@ void XDEDRAW_Common::InitCommands(Draw_Interpretor& theDI)
 
   Standard_CString aGroup = "XDE translation commands";
 
-  theDI.Add("XFileList", "Print list of files that was transferred by the last transfer", __FILE__, GetDicWSList, aGroup);
-  theDI.Add("XFileCur", ": returns name of file which is set as current", __FILE__, GetCurWS, aGroup);
-  theDI.Add("XFileSet", "filename: Set the specified file to be the current one", __FILE__, SetCurWS, aGroup);
-  theDI.Add("XFromShape", "shape: do fromshape command for all the files", __FILE__, FromShape, aGroup);
+  theDI.Add("XFileList",
+            "Print list of files that was transferred by the last transfer",
+            __FILE__,
+            GetDicWSList,
+            aGroup);
+  theDI.Add("XFileCur",
+            ": returns name of file which is set as current",
+            __FILE__,
+            GetCurWS,
+            aGroup);
+  theDI.Add("XFileSet",
+            "filename: Set the specified file to be the current one",
+            __FILE__,
+            SetCurWS,
+            aGroup);
+  theDI.Add("XFromShape",
+            "shape: do fromshape command for all the files",
+            __FILE__,
+            FromShape,
+            aGroup);
 
-  theDI.Add("XExpand", "XExpand Doc recursively(0/1) or XExpand Doc recursively(0/1) label1 label2 ..."
-            "or XExpand Doc recursively(0/1) shape1 shape2 ...", __FILE__, Expand, aGroup);
-  theDI.Add("XExtract", "XExtract dstDoc [dstAssmblSh] srcDoc srcLabel1 srcLabel2 ...\t"
+  theDI.Add("XExpand",
+            "XExpand Doc recursively(0/1) or XExpand Doc recursively(0/1) label1 label2 ..."
+            "or XExpand Doc recursively(0/1) shape1 shape2 ...",
+            __FILE__,
+            Expand,
+            aGroup);
+  theDI.Add("XExtract",
+            "XExtract dstDoc [dstAssmblSh] srcDoc srcLabel1 srcLabel2 ...\t"
             "Extracts given srcLabel1 srcLabel2 ... from srcDoc into given Doc or assembly shape",
-            __FILE__, Extract, aGroup);
-  theDI.Add("XShapeTreeFilter", "XShapeTreeFilter Doc label1 label2 ...\t"
-            "Removes not related labels with input labels from original document. Hierarchical structure is kept",
-            __FILE__, Filter, aGroup);
+            __FILE__,
+            Extract,
+            aGroup);
+  theDI.Add("XShapeTreeFilter",
+            "XShapeTreeFilter Doc label1 label2 ...\t"
+            "Removes not related labels with input labels from original document. Hierarchical "
+            "structure is kept",
+            __FILE__,
+            Filter,
+            aGroup);
   // Load XSDRAW session for pilot activation
   XSDRAW::LoadDraw(theDI);
 }

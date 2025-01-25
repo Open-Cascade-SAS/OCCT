@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(StepShape_HArray1OfFace, StepShape_Array1OfFace)
 
-
 #endif

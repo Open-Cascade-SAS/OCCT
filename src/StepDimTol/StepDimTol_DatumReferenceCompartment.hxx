@@ -22,15 +22,15 @@
 
 class StepDimTol_DatumReferenceCompartment;
 DEFINE_STANDARD_HANDLE(StepDimTol_DatumReferenceCompartment, StepDimTol_GeneralDatumReference)
+
 //! Representation of STEP entity DatumReferenceCompartment
 class StepDimTol_DatumReferenceCompartment : public StepDimTol_GeneralDatumReference
 {
 
 public:
-  
   //! Empty constructor
   Standard_EXPORT StepDimTol_DatumReferenceCompartment();
 
-  DEFINE_STANDARD_RTTIEXT(StepDimTol_DatumReferenceCompartment,StepDimTol_GeneralDatumReference)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_DatumReferenceCompartment, StepDimTol_GeneralDatumReference)
 };
 #endif // _StepDimTol_DatumReferenceCompartment_HeaderFile

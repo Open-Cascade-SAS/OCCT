@@ -39,7 +39,8 @@ enum Graphic3d_TypeOfLightSource
 
 enum
 {
-  //! Auxiliary value defining the overall number of values in enumeration Graphic3d_TypeOfLightSource
+  //! Auxiliary value defining the overall number of values in enumeration
+  //! Graphic3d_TypeOfLightSource
   Graphic3d_TypeOfLightSource_NB = Graphic3d_TypeOfLightSource_Spot + 1
 };
 

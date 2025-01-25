@@ -35,37 +35,38 @@ class PrsDim_EllipseRadiusDimension : public PrsDim_Relation
 {
   DEFINE_STANDARD_RTTIEXT(PrsDim_EllipseRadiusDimension, PrsDim_Relation)
 public:
+  virtual PrsDim_KindOfDimension KindOfDimension() const Standard_OVERRIDE
+  {
+    return PrsDim_KOD_ELLIPSERADIUS;
+  }
 
-  virtual PrsDim_KindOfDimension KindOfDimension() const Standard_OVERRIDE { return PrsDim_KOD_ELLIPSERADIUS; }
-  
   virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
-  
+
   Standard_EXPORT void ComputeGeometry();
 
 protected:
-
-  Standard_EXPORT PrsDim_EllipseRadiusDimension(const TopoDS_Shape& aShape, const TCollection_ExtendedString& aText);
+  Standard_EXPORT PrsDim_EllipseRadiusDimension(const TopoDS_Shape&               aShape,
+                                                const TCollection_ExtendedString& aText);
 
 protected:
-
-  gp_Elips myEllipse;
-  Standard_Real myFirstPar;
-  Standard_Real myLastPar;
-  Standard_Boolean myIsAnArc;
+  gp_Elips                 myEllipse;
+  Standard_Real            myFirstPar;
+  Standard_Real            myLastPar;
+  Standard_Boolean         myIsAnArc;
   Handle(Geom_OffsetCurve) myOffsetCurve;
-  Standard_Real myOffset;
-  Standard_Boolean myIsOffset;
+  Standard_Real            myOffset;
+  Standard_Boolean         myIsOffset;
 
 private:
-
   Standard_EXPORT void ComputeFaceGeometry();
-  
-  Standard_EXPORT void ComputeCylFaceGeometry (const PrsDim_KindOfSurface aSurfType, const Handle(Geom_Surface)& aSurf, const Standard_Real Offset);
-  
-  Standard_EXPORT void ComputePlanarFaceGeometry();
-  
-  Standard_EXPORT void ComputeEdgeGeometry();
 
+  Standard_EXPORT void ComputeCylFaceGeometry(const PrsDim_KindOfSurface  aSurfType,
+                                              const Handle(Geom_Surface)& aSurf,
+                                              const Standard_Real         Offset);
+
+  Standard_EXPORT void ComputePlanarFaceGeometry();
+
+  Standard_EXPORT void ComputeEdgeGeometry();
 };
 
 #endif // _PrsDim_EllipseRadiusDimension_HeaderFile

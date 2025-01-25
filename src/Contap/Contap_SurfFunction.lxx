@@ -19,33 +19,31 @@
 inline void Contap_SurfFunction::Set(const gp_Pnt& Eye)
 {
   myType = Contap_ContourPrs; // pers
-  myEye = Eye;
-  myAng = 0.;
+  myEye  = Eye;
+  myAng  = 0.;
 }
 
 inline void Contap_SurfFunction::Set(const gp_Dir& Direction)
 {
   myType = Contap_ContourStd; // Contour app
-  myDir = Direction;
-  myAng = 0.;
+  myDir  = Direction;
+  myAng  = 0.;
 }
 
-inline void Contap_SurfFunction::Set(const gp_Dir& Direction,
-				     const Standard_Real Angle)
+inline void Contap_SurfFunction::Set(const gp_Dir& Direction, const Standard_Real Angle)
 {
-  myType = Contap_DraftStd; // Contour vu
-  myDir = Direction;
-  myAng = Angle;
-  myCosAng = Cos(M_PI/2.+Angle);
+  myType   = Contap_DraftStd; // Contour vu
+  myDir    = Direction;
+  myAng    = Angle;
+  myCosAng = Cos(M_PI / 2. + Angle);
 }
 
-inline void Contap_SurfFunction::Set(const gp_Pnt& Eye,
-				     const Standard_Real Angle)
+inline void Contap_SurfFunction::Set(const gp_Pnt& Eye, const Standard_Real Angle)
 {
-  myType = Contap_DraftPrs; // Contour vu "conique"...
-  myEye = Eye;
-  myAng = Angle;
-  myCosAng = Cos(M_PI/2.+Angle);
+  myType   = Contap_DraftPrs; // Contour vu "conique"...
+  myEye    = Eye;
+  myAng    = Angle;
+  myCosAng = Cos(M_PI / 2. + Angle);
 }
 
 inline void Contap_SurfFunction::Set(const Standard_Real Tolerance)
@@ -53,30 +51,32 @@ inline void Contap_SurfFunction::Set(const Standard_Real Tolerance)
   tol = Max(Tolerance, 1.e-12);
 }
 
-inline const gp_Pnt& Contap_SurfFunction::Point () const
+inline const gp_Pnt& Contap_SurfFunction::Point() const
 {
   return solpt;
 }
 
-inline Standard_Real Contap_SurfFunction::Root () const
+inline Standard_Real Contap_SurfFunction::Root() const
 {
   return valf;
 }
 
-inline Standard_Real Contap_SurfFunction::Tolerance () const
+inline Standard_Real Contap_SurfFunction::Tolerance() const
 {
   return tol;
 }
 
 inline const gp_Vec& Contap_SurfFunction::Direction3d()
 {
-  if (IsTangent()) throw StdFail_UndefinedDerivative();
+  if (IsTangent())
+    throw StdFail_UndefinedDerivative();
   return d3d;
 }
 
 inline const gp_Dir2d& Contap_SurfFunction::Direction2d()
 {
-  if (IsTangent()) throw StdFail_UndefinedDerivative();
+  if (IsTangent())
+    throw StdFail_UndefinedDerivative();
   return d2d;
 }
 
@@ -95,12 +95,12 @@ inline const gp_Dir& Contap_SurfFunction::Direction() const
   return myDir;
 }
 
-inline Standard_Real Contap_SurfFunction::Angle () const
+inline Standard_Real Contap_SurfFunction::Angle() const
 {
   return myAng;
 }
 
-inline Contap_TFunction Contap_SurfFunction::FunctionType () const
+inline Contap_TFunction Contap_SurfFunction::FunctionType() const
 {
   return myType;
 }

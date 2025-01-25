@@ -18,28 +18,25 @@
 #include <StepDimTol_GeometricToleranceTarget.hxx>
 #include <StepDimTol_HArray1OfGeometricToleranceModifier.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithModifiers,StepDimTol_GeometricTolerance)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithModifiers,
+                           StepDimTol_GeometricTolerance)
 
-//=======================================================================
-//function : StepDimTol_GeometricToleranceWithModifiers
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepDimTol_GeometricToleranceWithModifiers::StepDimTol_GeometricToleranceWithModifiers ()
+StepDimTol_GeometricToleranceWithModifiers::StepDimTol_GeometricToleranceWithModifiers() {}
+
+//=================================================================================================
+
+void StepDimTol_GeometricToleranceWithModifiers::Init(
+  const Handle(TCollection_HAsciiString)&                       theName,
+  const Handle(TCollection_HAsciiString)&                       theDescription,
+  const Handle(StepBasic_MeasureWithUnit)&                      theMagnitude,
+  const StepDimTol_GeometricToleranceTarget&                    theTolerancedShapeAspect,
+  const Handle(StepDimTol_HArray1OfGeometricToleranceModifier)& theModifiers)
 {
-}
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void StepDimTol_GeometricToleranceWithModifiers::Init (const Handle(TCollection_HAsciiString) &theName,
-                                                       const Handle(TCollection_HAsciiString) &theDescription,
-                                                       const Handle(StepBasic_MeasureWithUnit) &theMagnitude,
-                                                       const StepDimTol_GeometricToleranceTarget &theTolerancedShapeAspect,
-                                                       const Handle(StepDimTol_HArray1OfGeometricToleranceModifier) &theModifiers)
-{
-  StepDimTol_GeometricTolerance::Init(theName, theDescription, theMagnitude, theTolerancedShapeAspect);
+  StepDimTol_GeometricTolerance::Init(theName,
+                                      theDescription,
+                                      theMagnitude,
+                                      theTolerancedShapeAspect);
   myModifiers = theModifiers;
 }

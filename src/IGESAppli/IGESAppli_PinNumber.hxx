@@ -23,7 +23,6 @@
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 
-
 class IGESAppli_PinNumber;
 DEFINE_STANDARD_HANDLE(IGESAppli_PinNumber, IGESData_IGESEntity)
 
@@ -36,46 +35,28 @@ class IGESAppli_PinNumber : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESAppli_PinNumber();
-  
+
   //! This method is used to set the fields of the class
   //! PinNumber
   //! - nbPropVal : Number of property values (always = 1)
   //! - aValue    : Pin Number value
-  Standard_EXPORT void Init (const Standard_Integer nbPropVal, const Handle(TCollection_HAsciiString)& aValue);
-  
+  Standard_EXPORT void Init(const Standard_Integer                  nbPropVal,
+                            const Handle(TCollection_HAsciiString)& aValue);
+
   //! returns the number of property values
   //! is always 1
   Standard_EXPORT Standard_Integer NbPropertyValues() const;
-  
+
   //! returns the pin number value
   Standard_EXPORT Handle(TCollection_HAsciiString) PinNumberVal() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESAppli_PinNumber,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESAppli_PinNumber, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-  Standard_Integer theNbPropertyValues;
+  Standard_Integer                 theNbPropertyValues;
   Handle(TCollection_HAsciiString) thePinNumber;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESAppli_PinNumber_HeaderFile

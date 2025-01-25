@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<AppParCurves_ConstraintCouple> AppParCurves_Array1OfConstraintCouple;
 
-
 #endif

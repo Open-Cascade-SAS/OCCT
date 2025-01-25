@@ -22,7 +22,6 @@
 #include <ShapeUpgrade_FaceDivide.hxx>
 class TopoDS_Face;
 
-
 class ShapeUpgrade_FaceDivideArea;
 DEFINE_STANDARD_HANDLE(ShapeUpgrade_FaceDivideArea, ShapeUpgrade_FaceDivide)
 
@@ -31,58 +30,43 @@ class ShapeUpgrade_FaceDivideArea : public ShapeUpgrade_FaceDivide
 {
 
 public:
-
-  
   //! Creates empty  constructor.
   Standard_EXPORT ShapeUpgrade_FaceDivideArea();
-  
+
   Standard_EXPORT ShapeUpgrade_FaceDivideArea(const TopoDS_Face& F);
-  
+
   //! Performs splitting and computes the resulting shell
   //! The context is used to keep track of former splittings
-  Standard_EXPORT virtual Standard_Boolean Perform(const Standard_Real theArea = 0.) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Standard_Boolean Perform(const Standard_Real theArea = 0.)
+    Standard_OVERRIDE;
+
   //! Set max area allowed for faces
-    Standard_Real& MaxArea();
+  Standard_Real& MaxArea();
 
   //! Set number of parts expected
-    Standard_Integer& NbParts();
+  Standard_Integer& NbParts();
 
   //! Set fixed numbers of splits in U and V directions.
   //! Only for "Splitting By Numbers" mode
-    void SetNumbersUVSplits(const Standard_Integer theNbUsplits,
-                            const Standard_Integer theNbVsplits);
-  
+  void SetNumbersUVSplits(const Standard_Integer theNbUsplits, const Standard_Integer theNbVsplits);
+
   //! Set splitting mode
   //! If the mode is "splitting by number",
   //! the face is splitted approximately into <myNbParts> parts,
   //! the parts are similar to squares in 2D.
-    void SetSplittingByNumber(const Standard_Boolean theIsSplittingByNumber);
+  void SetSplittingByNumber(const Standard_Boolean theIsSplittingByNumber);
 
-
-  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_FaceDivideArea,ShapeUpgrade_FaceDivide)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_FaceDivideArea, ShapeUpgrade_FaceDivide)
 
 protected:
-
-
-
-
 private:
-
-
-  Standard_Real myMaxArea;
+  Standard_Real    myMaxArea;
   Standard_Integer myNbParts;
   Standard_Integer myUnbSplit;
   Standard_Integer myVnbSplit;
   Standard_Boolean myIsSplittingByNumber;
-
 };
 
-
 #include <ShapeUpgrade_FaceDivideArea.lxx>
-
-
-
-
 
 #endif // _ShapeUpgrade_FaceDivideArea_HeaderFile

@@ -17,7 +17,6 @@
 #ifndef _GccEnt_Position_HeaderFile
 #define _GccEnt_Position_HeaderFile
 
-
 //! Qualifies the position of a solution of a construction
 //! algorithm with respect to one of its arguments. This is one of the following:
 //! -   GccEnt_unqualified: the position of the solution
@@ -34,11 +33,11 @@
 //! relation to its orientation.
 enum GccEnt_Position
 {
-GccEnt_unqualified,
-GccEnt_enclosing,
-GccEnt_enclosed,
-GccEnt_outside,
-GccEnt_noqualifier
+  GccEnt_unqualified,
+  GccEnt_enclosing,
+  GccEnt_enclosed,
+  GccEnt_outside,
+  GccEnt_noqualifier
 };
 
 #endif // _GccEnt_Position_HeaderFile

@@ -19,35 +19,31 @@ inline Standard_Boolean math_BissecNewton::IsSolutionReached(math_FunctionWithDe
   return Abs(dx) <= XTol;
 }
 
-
-inline Standard_OStream& operator<<(Standard_OStream& o, 
-				    const math_BissecNewton& Bi)
+inline Standard_OStream& operator<<(Standard_OStream& o, const math_BissecNewton& Bi)
 {
   Bi.Dump(o);
   return o;
 }
 
+inline Standard_Boolean math_BissecNewton::IsDone() const
+{
+  return Done;
+}
 
-inline Standard_Boolean math_BissecNewton::IsDone() const { return Done; }
-
-
-inline Standard_Real math_BissecNewton::Root() const{
+inline Standard_Real math_BissecNewton::Root() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return x;
 }
 
-
-inline Standard_Real math_BissecNewton::Derivative() const{
+inline Standard_Real math_BissecNewton::Derivative() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return df;
 }
 
-
-inline Standard_Real math_BissecNewton::Value() const{
+inline Standard_Real math_BissecNewton::Value() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return f;
 }
-
-
-
-

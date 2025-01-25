@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -24,23 +24,17 @@
 #include <StepShape_VertexPoint.hxx>
 #include <Standard_Integer.hxx>
 
-//=======================================================================
-//function : RWStepVisual_RWTessellatedVertex
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 RWStepVisual_RWTessellatedVertex::RWStepVisual_RWTessellatedVertex() {}
 
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
-
-void RWStepVisual_RWTessellatedVertex::ReadStep (const Handle(StepData_StepReaderData)& theData,
-                                                 const Standard_Integer theNum,
-                                                 Handle(Interface_Check)& theCheck,
-                                                 const Handle(StepVisual_TessellatedVertex)& theEnt) const
+void RWStepVisual_RWTessellatedVertex::ReadStep(
+  const Handle(StepData_StepReaderData)&      theData,
+  const Standard_Integer                      theNum,
+  Handle(Interface_Check)&                    theCheck,
+  const Handle(StepVisual_TessellatedVertex)& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theCheck, "tessellated_vertex"))
@@ -56,15 +50,23 @@ void RWStepVisual_RWTessellatedVertex::ReadStep (const Handle(StepData_StepReade
   // Own fields of TessellatedVertex
 
   Handle(StepVisual_CoordinatesList) aCoordinates;
-  theData->ReadEntity(theNum, 2, "coordinates", theCheck,
-    STANDARD_TYPE(StepVisual_CoordinatesList), aCoordinates);
+  theData->ReadEntity(theNum,
+                      2,
+                      "coordinates",
+                      theCheck,
+                      STANDARD_TYPE(StepVisual_CoordinatesList),
+                      aCoordinates);
 
   Handle(StepShape_VertexPoint) aTopologicalLink;
-  Standard_Boolean hasTopologicalLink = Standard_True;
+  Standard_Boolean              hasTopologicalLink = Standard_True;
   if (theData->IsParamDefined(theNum, 3))
   {
-    theData->ReadEntity(theNum, 3, "topological_link", theCheck,
-      STANDARD_TYPE(StepShape_VertexPoint), aTopologicalLink);
+    theData->ReadEntity(theNum,
+                        3,
+                        "topological_link",
+                        theCheck,
+                        STANDARD_TYPE(StepShape_VertexPoint),
+                        aTopologicalLink);
   }
   else
   {
@@ -76,16 +78,18 @@ void RWStepVisual_RWTessellatedVertex::ReadStep (const Handle(StepData_StepReade
   theData->ReadInteger(theNum, 4, "point_index", theCheck, aPointIndex);
 
   // Initialize entity
-  theEnt->Init(aRepresentationItem_Name, aCoordinates, hasTopologicalLink, aTopologicalLink, aPointIndex);
+  theEnt->Init(aRepresentationItem_Name,
+               aCoordinates,
+               hasTopologicalLink,
+               aTopologicalLink,
+               aPointIndex);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepVisual_RWTessellatedVertex::WriteStep (StepData_StepWriter& theSW,
-                                                  const Handle(StepVisual_TessellatedVertex)& theEnt) const
+void RWStepVisual_RWTessellatedVertex::WriteStep(
+  StepData_StepWriter&                        theSW,
+  const Handle(StepVisual_TessellatedVertex)& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -108,13 +112,10 @@ void RWStepVisual_RWTessellatedVertex::WriteStep (StepData_StepWriter& theSW,
   theSW.Send(theEnt->PointIndex());
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepVisual_RWTessellatedVertex::Share (const Handle(StepVisual_TessellatedVertex)&theEnt,
-                                              Interface_EntityIterator& theIter) const
+void RWStepVisual_RWTessellatedVertex::Share(const Handle(StepVisual_TessellatedVertex)& theEnt,
+                                             Interface_EntityIterator& theIter) const
 {
 
   // Inherited fields of RepresentationItem

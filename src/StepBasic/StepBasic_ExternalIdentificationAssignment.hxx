@@ -24,51 +24,36 @@ class StepBasic_ExternalSource;
 class TCollection_HAsciiString;
 class StepBasic_IdentificationRole;
 
-
 class StepBasic_ExternalIdentificationAssignment;
-DEFINE_STANDARD_HANDLE(StepBasic_ExternalIdentificationAssignment, StepBasic_IdentificationAssignment)
+DEFINE_STANDARD_HANDLE(StepBasic_ExternalIdentificationAssignment,
+                       StepBasic_IdentificationAssignment)
 
 //! Representation of STEP entity ExternalIdentificationAssignment
 class StepBasic_ExternalIdentificationAssignment : public StepBasic_IdentificationAssignment
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepBasic_ExternalIdentificationAssignment();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aIdentificationAssignment_AssignedId, const Handle(StepBasic_IdentificationRole)& aIdentificationAssignment_Role, const Handle(StepBasic_ExternalSource)& aSource);
-  
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&     aIdentificationAssignment_AssignedId,
+    const Handle(StepBasic_IdentificationRole)& aIdentificationAssignment_Role,
+    const Handle(StepBasic_ExternalSource)&     aSource);
+
   //! Returns field Source
   Standard_EXPORT Handle(StepBasic_ExternalSource) Source() const;
-  
+
   //! Set field Source
-  Standard_EXPORT void SetSource (const Handle(StepBasic_ExternalSource)& Source);
+  Standard_EXPORT void SetSource(const Handle(StepBasic_ExternalSource)& Source);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ExternalIdentificationAssignment,StepBasic_IdentificationAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ExternalIdentificationAssignment,
+                          StepBasic_IdentificationAssignment)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_ExternalSource) theSource;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_ExternalIdentificationAssignment_HeaderFile

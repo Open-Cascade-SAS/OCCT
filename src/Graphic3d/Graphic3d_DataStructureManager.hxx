@@ -33,9 +33,8 @@ DEFINE_STANDARD_HANDLE(Graphic3d_DataStructureManager, Standard_Transient)
 class Graphic3d_DataStructureManager : public Standard_Transient
 {
 
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_DataStructureManager,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_DataStructureManager, Standard_Transient)
 protected:
-
   //! Initializes the manager <me>.
   Standard_EXPORT Graphic3d_DataStructureManager();
 
@@ -43,8 +42,8 @@ protected:
   virtual const Handle(Graphic3d_Camera)& Camera() const = 0;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
-
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const;
 };
 
 #endif // _Graphic3d_DataStructureManager_HeaderFile

@@ -16,13 +16,13 @@
 #include <gp_Pnt2d.hxx>
 
 #ifndef Bnd_B2x_RealLast
-#define Bnd_B2x_RealLast RealType(1e30);
+  #define Bnd_B2x_RealLast RealType(1e30);
 #endif
 
 /**
  * Empty constructor
  */
-inline Bnd_B2x::Bnd_B2x ()
+inline Bnd_B2x::Bnd_B2x()
 {
   Clear();
 }
@@ -34,8 +34,7 @@ inline Bnd_B2x::Bnd_B2x ()
  * @param theHSize
  *   Half-diagonal of the box, both X and Y should be non-negative
  */
-inline Bnd_B2x::Bnd_B2x (const gp_XY& theCenter,
-                         const gp_XY& theHSize)
+inline Bnd_B2x::Bnd_B2x(const gp_XY& theCenter, const gp_XY& theHSize)
 {
   myCenter[0] = RealType(theCenter.X());
   myCenter[1] = RealType(theCenter.Y());
@@ -46,18 +45,18 @@ inline Bnd_B2x::Bnd_B2x (const gp_XY& theCenter,
 /**
  * Reset the box data.
  */
-inline void Bnd_B2x::Clear ()
+inline void Bnd_B2x::Clear()
 {
   myCenter[0] = Bnd_B2x_RealLast;
   myCenter[1] = Bnd_B2x_RealLast;
-  myHSize[0] = -Bnd_B2x_RealLast;
-  myHSize[1] = -Bnd_B2x_RealLast;
+  myHSize[0]  = -Bnd_B2x_RealLast;
+  myHSize[1]  = -Bnd_B2x_RealLast;
 }
 
 /**
  * Check if the box is empty.
  */
-inline Standard_Boolean Bnd_B2x::IsVoid () const
+inline Standard_Boolean Bnd_B2x::IsVoid() const
 {
   return (myHSize[0] < -1e-5);
 }
@@ -65,42 +64,43 @@ inline Standard_Boolean Bnd_B2x::IsVoid () const
 /**
  * Update the box by point.
  */
-inline void Bnd_B2x::Add (const gp_Pnt2d& thePnt)
+inline void Bnd_B2x::Add(const gp_Pnt2d& thePnt)
 {
-  Add (thePnt.XY());
+  Add(thePnt.XY());
 }
 
 /**
  * Update the box by another box.
  */
-inline void Bnd_B2x::Add (const Bnd_B2x& theBox)
+inline void Bnd_B2x::Add(const Bnd_B2x& theBox)
 {
-  if (theBox.IsVoid() == Standard_False) {
-    Add (theBox.CornerMin());
-    Add (theBox.CornerMax());
+  if (theBox.IsVoid() == Standard_False)
+  {
+    Add(theBox.CornerMin());
+    Add(theBox.CornerMax());
   }
 }
 
 /**
  * Query a box corner.
  */
-inline gp_XY Bnd_B2x::CornerMin () const
+inline gp_XY Bnd_B2x::CornerMin() const
 {
-  return gp_XY (myCenter[0] - myHSize[0], myCenter[1] - myHSize[1]);
+  return gp_XY(myCenter[0] - myHSize[0], myCenter[1] - myHSize[1]);
 }
 
 /**
  * Query a box corner.
  */
-inline gp_XY Bnd_B2x::CornerMax () const
+inline gp_XY Bnd_B2x::CornerMax() const
 {
-  return gp_XY (myCenter[0] + myHSize[0], myCenter[1] + myHSize[1]);
+  return gp_XY(myCenter[0] + myHSize[0], myCenter[1] + myHSize[1]);
 }
 
 /**
  * Query the square diagonal.
  */
-inline Standard_Real Bnd_B2x::SquareExtent () const
+inline Standard_Real Bnd_B2x::SquareExtent() const
 {
   return 4 * (myHSize[0] * myHSize[0] + myHSize[1] * myHSize[1]);
 }
@@ -108,7 +108,7 @@ inline Standard_Real Bnd_B2x::SquareExtent () const
 /**
  * Set the Center coordinates.
  */
-inline void Bnd_B2x::SetCenter (const gp_XY& theCenter)
+inline void Bnd_B2x::SetCenter(const gp_XY& theCenter)
 {
   myCenter[0] = RealType(theCenter.X());
   myCenter[1] = RealType(theCenter.Y());
@@ -117,7 +117,7 @@ inline void Bnd_B2x::SetCenter (const gp_XY& theCenter)
 /**
  * Set the HSize coordinates.
  */
-inline void Bnd_B2x::SetHSize (const gp_XY& theHSize)
+inline void Bnd_B2x::SetHSize(const gp_XY& theHSize)
 {
   myHSize[0] = RealType(theHSize.X());
   myHSize[1] = RealType(theHSize.Y());
@@ -128,7 +128,7 @@ inline void Bnd_B2x::SetHSize (const gp_XY& theHSize)
  * @param aDiff
  *   absolute value of this parameter is added to the box size in all dimensions.
  */
-inline void Bnd_B2x::Enlarge (const Standard_Real aDiff)
+inline void Bnd_B2x::Enlarge(const Standard_Real aDiff)
 {
   const RealType aD = RealType(Abs(aDiff));
   myHSize[0] += aD;
@@ -138,27 +138,26 @@ inline void Bnd_B2x::Enlarge (const Standard_Real aDiff)
 /**
  * Intersection Box - Point
  */
-inline Standard_Boolean Bnd_B2x::IsOut (const gp_XY& thePnt) const
+inline Standard_Boolean Bnd_B2x::IsOut(const gp_XY& thePnt) const
 {
-  return (Abs(RealType(thePnt.X()) - myCenter[0]) > myHSize[0] ||
-          Abs(RealType(thePnt.Y()) - myCenter[1]) > myHSize[1]);
+  return (Abs(RealType(thePnt.X()) - myCenter[0]) > myHSize[0]
+          || Abs(RealType(thePnt.Y()) - myCenter[1]) > myHSize[1]);
 }
 
 /**
  * Intersection Box-Box.
  */
-inline Standard_Boolean Bnd_B2x::IsOut (const Bnd_B2x& theBox) const
+inline Standard_Boolean Bnd_B2x::IsOut(const Bnd_B2x& theBox) const
 {
-  return (Abs(theBox.myCenter[0]-myCenter[0]) > theBox.myHSize[0]+myHSize[0] ||
-          Abs(theBox.myCenter[1]-myCenter[1]) > theBox.myHSize[1]+myHSize[1]);
+  return (Abs(theBox.myCenter[0] - myCenter[0]) > theBox.myHSize[0] + myHSize[0]
+          || Abs(theBox.myCenter[1] - myCenter[1]) > theBox.myHSize[1] + myHSize[1]);
 }
 
 /**
  * Test the complete inclusion of this box in theBox.
  */
-inline Standard_Boolean Bnd_B2x::IsIn (const Bnd_B2x& theBox) const
+inline Standard_Boolean Bnd_B2x::IsIn(const Bnd_B2x& theBox) const
 {
-  return (Abs(theBox.myCenter[0]-myCenter[0]) < theBox.myHSize[0]-myHSize[0] &&
-          Abs(theBox.myCenter[1]-myCenter[1]) < theBox.myHSize[1]-myHSize[1]);
+  return (Abs(theBox.myCenter[0] - myCenter[0]) < theBox.myHSize[0] - myHSize[0]
+          && Abs(theBox.myCenter[1] - myCenter[1]) < theBox.myHSize[1] - myHSize[1]);
 }
-

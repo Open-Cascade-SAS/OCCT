@@ -20,7 +20,6 @@
 #include <Adaptor2d_Curve2d.hxx>
 #include <IntSurf_Transition.hxx>
 
-
 //! Definition of an intersection point between a line
 //! and a restriction on a surface.
 //! Such a point is contains geometrical information (see
@@ -28,64 +27,50 @@
 class BRepBlend_PointOnRst
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor.
   Standard_EXPORT BRepBlend_PointOnRst();
-  
+
   //! Creates the PointOnRst on the arc A, at parameter Param,
   //! with the transition TLine on the walking line, and
   //! TArc on the arc A.
-  Standard_EXPORT BRepBlend_PointOnRst(const Handle(Adaptor2d_Curve2d)& A, const Standard_Real Param, const IntSurf_Transition& TLine, const IntSurf_Transition& TArc);
-  
+  Standard_EXPORT BRepBlend_PointOnRst(const Handle(Adaptor2d_Curve2d)& A,
+                                       const Standard_Real              Param,
+                                       const IntSurf_Transition&        TLine,
+                                       const IntSurf_Transition&        TArc);
+
   //! Sets the values of a point which is on the arc
   //! A, at parameter Param.
-  Standard_EXPORT void SetArc (const Handle(Adaptor2d_Curve2d)& A, const Standard_Real Param, const IntSurf_Transition& TLine, const IntSurf_Transition& TArc);
-  
+  Standard_EXPORT void SetArc(const Handle(Adaptor2d_Curve2d)& A,
+                              const Standard_Real              Param,
+                              const IntSurf_Transition&        TLine,
+                              const IntSurf_Transition&        TArc);
+
   //! Returns the arc of restriction containing the
   //! vertex.
-    const Handle(Adaptor2d_Curve2d)& Arc() const;
-  
+  const Handle(Adaptor2d_Curve2d)& Arc() const;
+
   //! Returns the transition of the point on the
   //! line on surface.
-    const IntSurf_Transition& TransitionOnLine() const;
-  
+  const IntSurf_Transition& TransitionOnLine() const;
+
   //! Returns the transition of the point on the arc
   //! returned by Arc().
-    const IntSurf_Transition& TransitionOnArc() const;
-  
+  const IntSurf_Transition& TransitionOnArc() const;
+
   //! Returns the parameter of the point on the
   //! arc returned by the method Arc().
-    Standard_Real ParameterOnArc() const;
-
-
-
+  Standard_Real ParameterOnArc() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(Adaptor2d_Curve2d) arc;
-  IntSurf_Transition traline;
-  IntSurf_Transition traarc;
-  Standard_Real prm;
-
-
+  IntSurf_Transition        traline;
+  IntSurf_Transition        traarc;
+  Standard_Real             prm;
 };
 
-
 #include <BRepBlend_PointOnRst.lxx>
-
-
-
-
 
 #endif // _BRepBlend_PointOnRst_HeaderFile

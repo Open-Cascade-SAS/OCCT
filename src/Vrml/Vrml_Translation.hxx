@@ -24,51 +24,29 @@
 #include <gp_Vec.hxx>
 #include <Standard_OStream.hxx>
 
-
 //! defines a Translation of VRML specifying transform
 //! properties.
 //! This  node  defines  a  translation  by  3D  vector.
 //! By  default  :
 //! myTranslation (0,0,0)
-class Vrml_Translation 
+class Vrml_Translation
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Vrml_Translation();
-  
+
   Standard_EXPORT Vrml_Translation(const gp_Vec& aTranslation);
-  
-  Standard_EXPORT void SetTranslation (const gp_Vec& aTranslation);
-  
+
+  Standard_EXPORT void SetTranslation(const gp_Vec& aTranslation);
+
   Standard_EXPORT gp_Vec Translation() const;
-  
-  Standard_EXPORT Standard_OStream& Print (Standard_OStream& anOStream) const;
 
-
-
+  Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   gp_Vec myTranslation;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Vrml_Translation_HeaderFile

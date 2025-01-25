@@ -11,29 +11,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_NamedUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_NamedUnit,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_NamedUnit, Standard_Transient)
 
-StepBasic_NamedUnit::StepBasic_NamedUnit ()  {}
+StepBasic_NamedUnit::StepBasic_NamedUnit() {}
 
-void StepBasic_NamedUnit::Init(
-	const Handle(StepBasic_DimensionalExponents)& aDimensions)
+void StepBasic_NamedUnit::Init(const Handle(StepBasic_DimensionalExponents)& aDimensions)
 {
-	// --- classe own fields ---
-	dimensions = aDimensions;
+  // --- classe own fields ---
+  dimensions = aDimensions;
 }
-
 
 void StepBasic_NamedUnit::SetDimensions(const Handle(StepBasic_DimensionalExponents)& aDimensions)
 {
-	dimensions = aDimensions;
+  dimensions = aDimensions;
 }
 
 Handle(StepBasic_DimensionalExponents) StepBasic_NamedUnit::Dimensions() const
 {
-	return dimensions;
+  return dimensions;
 }

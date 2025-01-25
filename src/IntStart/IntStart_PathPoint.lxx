@@ -14,24 +14,26 @@
 
 #include <Standard_DomainError.hxx>
 
-inline void IntStart_PathPoint::SetValue (const gp_Pnt& P,
-					  const Standard_Real Tol,
-					  const TheVertex& V,
-					  const TheArc& A,
-					  const Standard_Real Parameter) {
+inline void IntStart_PathPoint::SetValue(const gp_Pnt&       P,
+                                         const Standard_Real Tol,
+                                         const TheVertex&    V,
+                                         const TheArc&       A,
+                                         const Standard_Real Parameter)
+{
 
   isnew = Standard_False;
   point = P;
   tol   = Tol;
-  vtx = V;
-  arc = A;
+  vtx   = V;
+  arc   = A;
   param = Parameter;
 }
 
-inline void IntStart_PathPoint::SetValue (const gp_Pnt& P,
-					  const Standard_Real Tol,
-					  const TheArc& A,
-					  const Standard_Real Parameter) {
+inline void IntStart_PathPoint::SetValue(const gp_Pnt&       P,
+                                         const Standard_Real Tol,
+                                         const TheArc&       A,
+                                         const Standard_Real Parameter)
+{
 
   isnew = Standard_True;
   point = P;
@@ -40,35 +42,42 @@ inline void IntStart_PathPoint::SetValue (const gp_Pnt& P,
   param = Parameter;
 }
 
-inline const gp_Pnt& IntStart_PathPoint::Value () const {
+inline const gp_Pnt& IntStart_PathPoint::Value() const
+{
 
   return point;
 }
 
-
-inline Standard_Real IntStart_PathPoint::Tolerance () const {
+inline Standard_Real IntStart_PathPoint::Tolerance() const
+{
 
   return tol;
 }
 
-inline Standard_Boolean IntStart_PathPoint::IsNew () const {
+inline Standard_Boolean IntStart_PathPoint::IsNew() const
+{
 
   return isnew;
 }
 
-inline const TheVertex& IntStart_PathPoint::Vertex () const {
+inline const TheVertex& IntStart_PathPoint::Vertex() const
+{
 
-  if (isnew) {throw Standard_DomainError();}
+  if (isnew)
+  {
+    throw Standard_DomainError();
+  }
   return vtx;
 }
 
-inline const TheArc& IntStart_PathPoint::Arc () const {
+inline const TheArc& IntStart_PathPoint::Arc() const
+{
 
   return arc;
 }
 
-inline Standard_Real IntStart_PathPoint::Parameter () const {
+inline Standard_Real IntStart_PathPoint::Parameter() const
+{
 
   return param;
 }
-

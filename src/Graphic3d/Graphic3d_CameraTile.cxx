@@ -11,20 +11,18 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <Graphic3d_CameraTile.hxx>
 
 #include <Standard_Dump.hxx>
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void Graphic3d_CameraTile::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+//=================================================================================================
+
+void Graphic3d_CameraTile::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &TotalSize)
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &TileSize)
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &Offset)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsTopDown)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &TotalSize)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &TileSize)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &Offset)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, IsTopDown)
 }

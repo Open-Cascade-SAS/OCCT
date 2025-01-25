@@ -15,22 +15,15 @@
 
 #include <StepShape_ValueFormatTypeQualifier.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_ValueFormatTypeQualifier,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_ValueFormatTypeQualifier, Standard_Transient)
 
-//=======================================================================
-//function : StepShape_ValueFormatTypeQualifier
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepShape_ValueFormatTypeQualifier::StepShape_ValueFormatTypeQualifier ()  {}
+StepShape_ValueFormatTypeQualifier::StepShape_ValueFormatTypeQualifier() {}
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepShape_ValueFormatTypeQualifier::Init(
-  const Handle(TCollection_HAsciiString)& theFormatType)
+void StepShape_ValueFormatTypeQualifier::Init(const Handle(TCollection_HAsciiString)& theFormatType)
 {
   // --- classe own fields ---
   formatType = theFormatType;

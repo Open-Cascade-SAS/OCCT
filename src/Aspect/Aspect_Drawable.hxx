@@ -23,9 +23,9 @@
 #define _Aspect_Drawable_HeaderFile
 
 #ifdef _WIN32
- typedef void*        Aspect_Drawable;	/* HDC under WNT */
+typedef void* Aspect_Drawable; /* HDC under WNT */
 #else
- typedef unsigned long Aspect_Drawable;	/* Window or Pixmap under UNIX */
+typedef unsigned long Aspect_Drawable; /* Window or Pixmap under UNIX */
 #endif /* _WIN32 */
 
 #endif /* _Aspect_Drawable_HeaderFile */

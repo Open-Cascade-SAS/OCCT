@@ -21,7 +21,6 @@
 #include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_HSurfaceTool.hxx>
 #include <math_Matrix.hxx>
- 
 
 #define ThePSurface Handle(Adaptor3d_Surface)
 #define ThePSurface_hxx <Adaptor3d_Surface.hxx>
@@ -30,4 +29,3 @@
 #define IntImp_ZerParFunc GeomInt_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfWLApprox
 #define IntImp_ZerParFunc_hxx <GeomInt_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfWLApprox.hxx>
 #include "../IntImp/IntImp_ZerParFunc.gxx"
-

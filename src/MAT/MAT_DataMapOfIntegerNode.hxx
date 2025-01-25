@@ -21,8 +21,8 @@
 #include <MAT_Node.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,Handle(MAT_Node)> MAT_DataMapOfIntegerNode;
-typedef NCollection_DataMap<Standard_Integer,Handle(MAT_Node)>::Iterator MAT_DataMapIteratorOfDataMapOfIntegerNode;
-
+typedef NCollection_DataMap<Standard_Integer, Handle(MAT_Node)> MAT_DataMapOfIntegerNode;
+typedef NCollection_DataMap<Standard_Integer, Handle(MAT_Node)>::Iterator
+  MAT_DataMapIteratorOfDataMapOfIntegerNode;
 
 #endif

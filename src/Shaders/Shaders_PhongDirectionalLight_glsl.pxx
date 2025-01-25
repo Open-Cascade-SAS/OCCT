@@ -1,4 +1,5 @@
-// This file has been automatically generated from resource file src/Shaders/PhongDirectionalLight.glsl
+// This file has been automatically generated from resource file
+// src/Shaders/PhongDirectionalLight.glsl
 
 static const char Shaders_PhongDirectionalLight_glsl[] =
   "//! Function computes contribution of directional light source\n"

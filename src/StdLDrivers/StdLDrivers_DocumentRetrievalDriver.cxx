@@ -34,37 +34,36 @@
 #include <TDocStd_Document.hxx>
 #include <Storage_Schema.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT (StdLDrivers_DocumentRetrievalDriver, PCDM_RetrievalDriver)
+IMPLEMENT_STANDARD_RTTIEXT(StdLDrivers_DocumentRetrievalDriver, PCDM_RetrievalDriver)
 
 //=======================================================================
-//function : Read
-//purpose  : Retrieve the content of a file into a new document
+// function : Read
+// purpose  : Retrieve the content of a file into a new document
 //=======================================================================
-void StdLDrivers_DocumentRetrievalDriver::Read (const TCollection_ExtendedString& theFileName,
-                                                const Handle(CDM_Document)&       theNewDocument,
-                                                const Handle(CDM_Application)&                  ,
-                                                const Handle(PCDM_ReaderFilter)&                ,
-                                                const Message_ProgressRange&     /*theRange*/)
+void StdLDrivers_DocumentRetrievalDriver::Read(const TCollection_ExtendedString& theFileName,
+                                               const Handle(CDM_Document)&       theNewDocument,
+                                               const Handle(CDM_Application)&,
+                                               const Handle(PCDM_ReaderFilter)&,
+                                               const Message_ProgressRange& /*theRange*/)
 {
   // Read header data and persistent document
-  Storage_HeaderData aHeaderData;
-  Handle(StdObjMgt_Persistent) aPDocument = read (theFileName, aHeaderData);
+  Storage_HeaderData           aHeaderData;
+  Handle(StdObjMgt_Persistent) aPDocument = read(theFileName, aHeaderData);
   if (aPDocument.IsNull())
     return;
 
   // Import transient document from the persistent one
-  aPDocument->ImportDocument (
-    Handle(TDocStd_Document)::DownCast (theNewDocument));
+  aPDocument->ImportDocument(Handle(TDocStd_Document)::DownCast(theNewDocument));
 
   // Copy comments from the header data
-  theNewDocument->SetComments (aHeaderData.Comments());
+  theNewDocument->SetComments(aHeaderData.Comments());
 }
 
 //=======================================================================
-//function : read
-//purpose  : Read persistent document from a file
+// function : read
+// purpose  : Read persistent document from a file
 //=======================================================================
-Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read (
+Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read(
   const TCollection_ExtendedString& theFileName,
   Storage_HeaderData&               theHeaderData)
 {
@@ -72,7 +71,7 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read (
 
   // Create a driver appropriate for the given file
   Handle(Storage_BaseDriver) aFileDriver;
-  if (PCDM::FileDriverType (TCollection_AsciiString (theFileName), aFileDriver) == PCDM_TOFD_Unknown)
+  if (PCDM::FileDriverType(TCollection_AsciiString(theFileName), aFileDriver) == PCDM_TOFD_Unknown)
   {
     myReaderStatus = PCDM_RS_UnknownFileDriver;
     return NULL;
@@ -82,9 +81,9 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read (
   try
   {
     OCC_CATCH_SIGNALS
-    PCDM_ReadWriter::Open (aFileDriver, theFileName, Storage_VSRead);
+    PCDM_ReadWriter::Open(aFileDriver, theFileName, Storage_VSRead);
     myReaderStatus = PCDM_RS_OK;
-  } 
+  }
   catch (Standard_Failure const& anException)
   {
     myReaderStatus = PCDM_RS_OpenError;
@@ -93,20 +92,20 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read (
     aMsg << anException << std::endl;
     throw Standard_Failure(aMsg.str().c_str());
   }
-  
+
   // Read header section
-  if (!theHeaderData.Read (aFileDriver))
-    raiseOnStorageError (theHeaderData.ErrorStatus());
+  if (!theHeaderData.Read(aFileDriver))
+    raiseOnStorageError(theHeaderData.ErrorStatus());
 
   // Read type section
   Storage_TypeData aTypeData;
-  if (!aTypeData.Read (aFileDriver))
-    raiseOnStorageError (aTypeData.ErrorStatus());
+  if (!aTypeData.Read(aFileDriver))
+    raiseOnStorageError(aTypeData.ErrorStatus());
 
   // Read root section
   Storage_RootData aRootData;
-  if (!aRootData.Read (aFileDriver))
-    raiseOnStorageError (aRootData.ErrorStatus());
+  if (!aRootData.Read(aFileDriver))
+    raiseOnStorageError(aRootData.ErrorStatus());
 
   if (aRootData.NumberOfRoots() < 1)
   {
@@ -118,34 +117,37 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read (
   }
 
   // Select instantiators for the used types
-  NCollection_Array1<StdObjMgt_Persistent::Instantiator>
-    anInstantiators (1, aTypeData.NumberOfTypes());
+  NCollection_Array1<StdObjMgt_Persistent::Instantiator> anInstantiators(1,
+                                                                         aTypeData.NumberOfTypes());
   {
     StdObjMgt_MapOfInstantiators aMapOfInst;
-    bindTypes (aMapOfInst);
+    bindTypes(aMapOfInst);
 
     TColStd_SequenceOfAsciiString anUnknownTypes;
-    Standard_Integer        aCurTypeNum;
-    TCollection_AsciiString aCurTypeName;
+    Standard_Integer              aCurTypeNum;
+    TCollection_AsciiString       aCurTypeName;
 
     for (i = 1; i <= aTypeData.NumberOfTypes(); i++)
     {
-      aCurTypeName = aTypeData.Type (i);
-      aCurTypeNum  = aTypeData.Type (aCurTypeName);
+      aCurTypeName = aTypeData.Type(i);
+      aCurTypeNum  = aTypeData.Type(aCurTypeName);
 
-	  TCollection_AsciiString  newName;
-	  if (Storage_Schema::CheckTypeMigration(aCurTypeName, newName)) {
+      TCollection_AsciiString newName;
+      if (Storage_Schema::CheckTypeMigration(aCurTypeName, newName))
+      {
 #ifdef OCCT_DEBUG
-		  std::cout << "CheckTypeMigration:OldType = " << aCurTypeName << " Len = " << aCurTypeNum << std::endl;
-		  std::cout << "CheckTypeMigration:NewType = " << newName << " Len = " << newName.Length() << std::endl;
+        std::cout << "CheckTypeMigration:OldType = " << aCurTypeName << " Len = " << aCurTypeNum
+                  << std::endl;
+        std::cout << "CheckTypeMigration:NewType = " << newName << " Len = " << newName.Length()
+                  << std::endl;
 #endif
-		  aCurTypeName = newName;
-	  }
+        aCurTypeName = newName;
+      }
       StdObjMgt_Persistent::Instantiator anInstantiator;
       if (aMapOfInst.Find(aCurTypeName, anInstantiator))
-        anInstantiators (aCurTypeNum) = anInstantiator;
+        anInstantiators(aCurTypeNum) = anInstantiator;
       else
-        anUnknownTypes.Append (aCurTypeName);
+        anUnknownTypes.Append(aCurTypeName);
     }
 
     if (!anUnknownTypes.IsEmpty())
@@ -154,12 +156,14 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read (
 
       Standard_SStream aMsg;
       aMsg << "cannot read: `" << theFileName
-            << "' because it contains the following unknown types: ";
+           << "' because it contains the following unknown types: ";
       for (i = 1; i <= anUnknownTypes.Length(); i++)
       {
         aMsg << anUnknownTypes(i);
-        if (i < anUnknownTypes.Length()) aMsg << ",";
-        else                             aMsg << std::endl;
+        if (i < anUnknownTypes.Length())
+          aMsg << ",";
+        else
+          aMsg << std::endl;
       }
 
       throw Standard_Failure(aMsg.str().c_str());
@@ -167,19 +171,19 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read (
   }
 
   // Read and parse reference section
-  StdObjMgt_ReadData aReadData (aFileDriver, theHeaderData.NumberOfObjects());
+  StdObjMgt_ReadData aReadData(aFileDriver, theHeaderData.NumberOfObjects());
 
-  raiseOnStorageError (aFileDriver->BeginReadRefSection());
+  raiseOnStorageError(aFileDriver->BeginReadRefSection());
 
   Standard_Integer len = aFileDriver->RefSectionSize();
   for (i = 1; i <= len; i++)
   {
     Standard_Integer aRef = 0, aType = 0;
-    Storage_Error anError;
+    Storage_Error    anError;
     try
     {
       OCC_CATCH_SIGNALS
-      aFileDriver->ReadReferenceType (aRef, aType);
+      aFileDriver->ReadReferenceType(aRef, aType);
       anError = Storage_VSOk;
     }
     catch (Storage_StreamTypeMismatchError const&)
@@ -187,15 +191,15 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read (
       anError = Storage_VSTypeMismatch;
     }
 
-    raiseOnStorageError (anError);
+    raiseOnStorageError(anError);
 
-    aReadData.CreatePersistentObject (aRef, anInstantiators (aType));
+    aReadData.CreatePersistentObject(aRef, anInstantiators(aType));
   }
 
-  raiseOnStorageError (aFileDriver->EndReadRefSection());
+  raiseOnStorageError(aFileDriver->EndReadRefSection());
 
   // Read and parse data section
-  raiseOnStorageError (aFileDriver->BeginReadDataSection());
+  raiseOnStorageError(aFileDriver->BeginReadDataSection());
 
   for (i = 1; i <= theHeaderData.NumberOfObjects(); i++)
   {
@@ -203,95 +207,105 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read (
     try
     {
       OCC_CATCH_SIGNALS
-      aReadData.ReadPersistentObject (i);
+      aReadData.ReadPersistentObject(i);
       anError = Storage_VSOk;
     }
-    catch (Storage_StreamTypeMismatchError const&) { anError = Storage_VSTypeMismatch; }
-    catch (Storage_StreamFormatError const&      ) { anError = Storage_VSFormatError;  }
-    catch (Storage_StreamReadError const&        ) { anError = Storage_VSFormatError;  }
+    catch (Storage_StreamTypeMismatchError const&)
+    {
+      anError = Storage_VSTypeMismatch;
+    }
+    catch (Storage_StreamFormatError const&)
+    {
+      anError = Storage_VSFormatError;
+    }
+    catch (Storage_StreamReadError const&)
+    {
+      anError = Storage_VSFormatError;
+    }
 
-    raiseOnStorageError (anError);
+    raiseOnStorageError(anError);
   }
 
-  raiseOnStorageError (aFileDriver->EndReadDataSection());
+  raiseOnStorageError(aFileDriver->EndReadDataSection());
 
   // Get persistent document from the root object
-  return aReadData.PersistentObject (aRootData.Roots()->First()->Reference());
+  return aReadData.PersistentObject(aRootData.Roots()->First()->Reference());
 }
 
 //=======================================================================
-//function : Read
-//purpose  : not implemented
+// function : Read
+// purpose  : not implemented
 //=======================================================================
 
-void StdLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               /*theIStream*/,
-                                                const Handle(Storage_Data)&     /*theStorageData*/,
-                                                const Handle(CDM_Document)&     /*theDoc*/,
-                                                const Handle(CDM_Application)&  /*theApplication*/,
-                                                const Handle(PCDM_ReaderFilter)&/*theFilter*/,
-                                                const Message_ProgressRange&    /*theRange*/)
+void StdLDrivers_DocumentRetrievalDriver::Read(Standard_IStream& /*theIStream*/,
+                                               const Handle(Storage_Data)& /*theStorageData*/,
+                                               const Handle(CDM_Document)& /*theDoc*/,
+                                               const Handle(CDM_Application)& /*theApplication*/,
+                                               const Handle(PCDM_ReaderFilter)& /*theFilter*/,
+                                               const Message_ProgressRange& /*theRange*/)
 {
-  throw Standard_NotImplemented("Reading from stream is not supported by StdLDrivers_DocumentRetrievalDriver");
+  throw Standard_NotImplemented(
+    "Reading from stream is not supported by StdLDrivers_DocumentRetrievalDriver");
 }
 
 //=======================================================================
-//function : raiseOnStorageError
-//purpose  : Update the reader status and raise an exception
+// function : raiseOnStorageError
+// purpose  : Update the reader status and raise an exception
 //           appropriate for the given storage error
 //=======================================================================
-void StdLDrivers_DocumentRetrievalDriver::raiseOnStorageError (Storage_Error theError)
+void StdLDrivers_DocumentRetrievalDriver::raiseOnStorageError(Storage_Error theError)
 {
   Standard_SStream aMsg;
 
   switch (theError)
   {
-  case Storage_VSOk:
-    break;
+    case Storage_VSOk:
+      break;
 
-  case Storage_VSOpenError:
-  case Storage_VSNotOpen:
-  case Storage_VSAlreadyOpen:
-    myReaderStatus = PCDM_RS_OpenError;
-    aMsg << "Stream Open Error" << std::endl;
-    throw Standard_Failure(aMsg.str().c_str());
+    case Storage_VSOpenError:
+    case Storage_VSNotOpen:
+    case Storage_VSAlreadyOpen:
+      myReaderStatus = PCDM_RS_OpenError;
+      aMsg << "Stream Open Error" << std::endl;
+      throw Standard_Failure(aMsg.str().c_str());
 
-  case Storage_VSModeError:
-    myReaderStatus = PCDM_RS_WrongStreamMode;
-    aMsg << "Stream is opened with a wrong mode for operation" << std::endl;
-    throw Standard_Failure(aMsg.str().c_str());
+    case Storage_VSModeError:
+      myReaderStatus = PCDM_RS_WrongStreamMode;
+      aMsg << "Stream is opened with a wrong mode for operation" << std::endl;
+      throw Standard_Failure(aMsg.str().c_str());
 
-  case Storage_VSSectionNotFound:
-    myReaderStatus = PCDM_RS_FormatFailure;
-    aMsg << "Section is not found" << std::endl;
-    throw Standard_Failure(aMsg.str().c_str());
+    case Storage_VSSectionNotFound:
+      myReaderStatus = PCDM_RS_FormatFailure;
+      aMsg << "Section is not found" << std::endl;
+      throw Standard_Failure(aMsg.str().c_str());
 
-  case Storage_VSFormatError:
-    myReaderStatus = PCDM_RS_FormatFailure;
-    aMsg << "Wrong format error" << std::endl;
-    throw Standard_Failure(aMsg.str().c_str());
+    case Storage_VSFormatError:
+      myReaderStatus = PCDM_RS_FormatFailure;
+      aMsg << "Wrong format error" << std::endl;
+      throw Standard_Failure(aMsg.str().c_str());
 
-  case Storage_VSUnknownType:
-    myReaderStatus = PCDM_RS_TypeFailure;
-    aMsg << "Try to read an unknown type" << std::endl;
-    throw Standard_Failure(aMsg.str().c_str());
+    case Storage_VSUnknownType:
+      myReaderStatus = PCDM_RS_TypeFailure;
+      aMsg << "Try to read an unknown type" << std::endl;
+      throw Standard_Failure(aMsg.str().c_str());
 
-  case Storage_VSTypeMismatch:
-    myReaderStatus = PCDM_RS_TypeFailure;
-    aMsg << "Try to read a wrong primitive type" << std::endl;
-    throw Standard_Failure(aMsg.str().c_str());
+    case Storage_VSTypeMismatch:
+      myReaderStatus = PCDM_RS_TypeFailure;
+      aMsg << "Try to read a wrong primitive type" << std::endl;
+      throw Standard_Failure(aMsg.str().c_str());
 
-  default:
-    myReaderStatus = PCDM_RS_DriverFailure;
-    aMsg << "Retrieval Driver Failure" << std::endl;
-    throw Standard_Failure(aMsg.str().c_str());
+    default:
+      myReaderStatus = PCDM_RS_DriverFailure;
+      aMsg << "Retrieval Driver Failure" << std::endl;
+      throw Standard_Failure(aMsg.str().c_str());
   }
 }
 
 //=======================================================================
-//function : bindTypes
-//purpose  : Register types
+// function : bindTypes
+// purpose  : Register types
 //=======================================================================
-void StdLDrivers_DocumentRetrievalDriver::bindTypes (StdObjMgt_MapOfInstantiators& theMap)
+void StdLDrivers_DocumentRetrievalDriver::bindTypes(StdObjMgt_MapOfInstantiators& theMap)
 {
-  StdLDrivers::BindTypes (theMap);
+  StdLDrivers::BindTypes(theMap);
 }

@@ -15,14 +15,12 @@
 
 #include <BRepMesh_UndefinedRangeSplitter.hxx>
 
-//=======================================================================
-// Function: getUndefinedIntervalNb
-// Purpose : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer BRepMesh_UndefinedRangeSplitter::getUndefinedIntervalNb(
   const Handle(Adaptor3d_Surface)& /*theSurface*/,
-  const Standard_Boolean           /*isU*/,
-  const GeomAbs_Shape              /*theContinuity*/) const
+  const Standard_Boolean /*isU*/,
+  const GeomAbs_Shape /*theContinuity*/) const
 {
   return 1;
 }

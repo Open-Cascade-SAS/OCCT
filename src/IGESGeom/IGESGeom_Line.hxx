@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 class gp_Pnt;
 
-
 class IGESGeom_Line;
 DEFINE_STANDARD_HANDLE(IGESGeom_Line, IGESData_IGESEntity)
 
@@ -43,57 +42,38 @@ class IGESGeom_Line : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESGeom_Line();
-  
+
   //! This method is used to set the fields of the class Line
   //! - aStart : Start point of the line
   //! - anEnd  : End point of the line
-  Standard_EXPORT void Init (const gp_XYZ& aStart, const gp_XYZ& anEnd);
-  
+  Standard_EXPORT void Init(const gp_XYZ& aStart, const gp_XYZ& anEnd);
+
   //! Returns the Infinite status i.e. the Form Number : 0 1 2
   Standard_EXPORT Standard_Integer Infinite() const;
-  
+
   //! Sets the Infinite status
   //! Does nothing if <status> is not 0 1 or 2
-  Standard_EXPORT void SetInfinite (const Standard_Integer status);
-  
+  Standard_EXPORT void SetInfinite(const Standard_Integer status);
+
   //! returns the start point of the line
   Standard_EXPORT gp_Pnt StartPoint() const;
-  
+
   //! returns the start point of the line after applying Transf. Matrix
   Standard_EXPORT gp_Pnt TransformedStartPoint() const;
-  
+
   //! returns the end point of the line
   Standard_EXPORT gp_Pnt EndPoint() const;
-  
+
   //! returns the end point of the line after applying Transf. Matrix
   Standard_EXPORT gp_Pnt TransformedEndPoint() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESGeom_Line,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_Line, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
   gp_XYZ theStart;
   gp_XYZ theEnd;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESGeom_Line_HeaderFile

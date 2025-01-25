@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Expr.hxx>
 #include <Expr_GeneralExpression.hxx>
 #include <Expr_GreaterThanOrEqual.hxx>
@@ -22,22 +21,25 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Expr_GreaterThanOrEqual,Expr_SingleRelation)
+IMPLEMENT_STANDARD_RTTIEXT(Expr_GreaterThanOrEqual, Expr_SingleRelation)
 
-Expr_GreaterThanOrEqual::Expr_GreaterThanOrEqual (const Handle(Expr_GeneralExpression)& exp1, const Handle(Expr_GeneralExpression)& exp2)
+Expr_GreaterThanOrEqual::Expr_GreaterThanOrEqual(const Handle(Expr_GeneralExpression)& exp1,
+                                                 const Handle(Expr_GeneralExpression)& exp2)
 {
   SetFirstMember(exp1);
   SetSecondMember(exp2);
 }
 
-Standard_Boolean Expr_GreaterThanOrEqual::IsSatisfied () const
+Standard_Boolean Expr_GreaterThanOrEqual::IsSatisfied() const
 {
   Handle(Expr_GeneralExpression) fm = FirstMember();
   Handle(Expr_GeneralExpression) sm = SecondMember();
-  fm = fm->Simplified();
-  sm = sm->Simplified();
-  if (fm->IsKind(STANDARD_TYPE(Expr_NumericValue))) {
-    if (sm->IsKind(STANDARD_TYPE(Expr_NumericValue))) {
+  fm                                = fm->Simplified();
+  sm                                = sm->Simplified();
+  if (fm->IsKind(STANDARD_TYPE(Expr_NumericValue)))
+  {
+    if (sm->IsKind(STANDARD_TYPE(Expr_NumericValue)))
+    {
       Handle(Expr_NumericValue) nfm = Handle(Expr_NumericValue)::DownCast(fm);
       Handle(Expr_NumericValue) nsm = Handle(Expr_NumericValue)::DownCast(sm);
       return (nfm->GetValue() >= nsm->GetValue());
@@ -46,14 +48,14 @@ Standard_Boolean Expr_GreaterThanOrEqual::IsSatisfied () const
   return Standard_False;
 }
 
-Handle(Expr_GeneralRelation) Expr_GreaterThanOrEqual::Simplified () const
+Handle(Expr_GeneralRelation) Expr_GreaterThanOrEqual::Simplified() const
 {
   Handle(Expr_GeneralExpression) fm = FirstMember();
   Handle(Expr_GeneralExpression) sm = SecondMember();
-  return new Expr_GreaterThanOrEqual(fm->Simplified(),sm->Simplified());
+  return new Expr_GreaterThanOrEqual(fm->Simplified(), sm->Simplified());
 }
 
-void Expr_GreaterThanOrEqual::Simplify ()
+void Expr_GreaterThanOrEqual::Simplify()
 {
   Handle(Expr_GeneralExpression) fm = FirstMember();
   Handle(Expr_GeneralExpression) sm = SecondMember();
@@ -61,10 +63,10 @@ void Expr_GreaterThanOrEqual::Simplify ()
   SetSecondMember(sm->Simplified());
 }
 
-Handle(Expr_GeneralRelation) Expr_GreaterThanOrEqual::Copy () const
+Handle(Expr_GeneralRelation) Expr_GreaterThanOrEqual::Copy() const
 {
   return new Expr_GreaterThanOrEqual(Expr::CopyShare(FirstMember()),
-				     Expr::CopyShare(SecondMember()));
+                                     Expr::CopyShare(SecondMember()));
 }
 
 TCollection_AsciiString Expr_GreaterThanOrEqual::String() const

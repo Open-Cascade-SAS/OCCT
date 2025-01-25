@@ -21,29 +21,26 @@
 
 namespace std
 {
-  template <>
-  struct hash<TCollection_AsciiString>
-  {
-    size_t operator()(const TCollection_AsciiString& theString) const
-    {
-      return theString.HashCode();
-    }
-  };
-}
+template <>
+struct hash<TCollection_AsciiString>
+{
+  size_t operator()(const TCollection_AsciiString& theString) const { return theString.HashCode(); }
+};
+} // namespace std
 
 //------------------------------------------------------------------------
 //  IsEqual
 //------------------------------------------------------------------------
 inline Standard_Boolean IsEqual(const TCollection_AsciiString& string1,
-						  const TCollection_AsciiString& string2)
+                                const TCollection_AsciiString& string2)
 {
-  return TCollection_AsciiString::IsEqual(string1,string2);
+  return TCollection_AsciiString::IsEqual(string1, string2);
 }
 
 // ----------------------------------------------------------------------------
 // ToCString
 // ----------------------------------------------------------------------------
-inline Standard_CString TCollection_AsciiString::ToCString()const
+inline Standard_CString TCollection_AsciiString::ToCString() const
 {
   return mystring;
 }
@@ -51,34 +48,35 @@ inline Standard_CString TCollection_AsciiString::ToCString()const
 // ----------------------------------------------------------------------------
 inline Standard_Integer TCollection_AsciiString::Length() const
 {
- return mylength;
+  return mylength;
 }
 
-inline TCollection_AsciiString TCollection_AsciiString::Cat(const TCollection_AsciiString& other) const
+inline TCollection_AsciiString TCollection_AsciiString::Cat(
+  const TCollection_AsciiString& other) const
 {
-  return TCollection_AsciiString( *this , other ) ;
+  return TCollection_AsciiString(*this, other);
 }
 
-inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_CString other) const 
+inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_CString other) const
 {
- return TCollection_AsciiString( *this , other ) ;
+  return TCollection_AsciiString(*this, other);
 }
 
-inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_Character other) const 
+inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_Character other) const
 {
- return TCollection_AsciiString( *this , other ) ;
+  return TCollection_AsciiString(*this, other);
 }
 
-inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_Integer other) const 
+inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_Integer other) const
 {
 
- return TCollection_AsciiString( *this , TCollection_AsciiString(other) ) ;
+  return TCollection_AsciiString(*this, TCollection_AsciiString(other));
 }
 
-inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_Real other) const 
+inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_Real other) const
 {
 
- return TCollection_AsciiString( *this , TCollection_AsciiString(other) ) ;
+  return TCollection_AsciiString(*this, TCollection_AsciiString(other));
 }
 
 //============================================================================
@@ -94,12 +92,11 @@ inline size_t TCollection_AsciiString::HashCode() const
   return opencascade::hashBytes(mystring, mylength);
 }
 
-
 //------------------------------------------------------------------------
 //  IsEqual
 //------------------------------------------------------------------------
 inline Standard_Boolean TCollection_AsciiString::IsEqual(const TCollection_AsciiString& string1,
-						  const TCollection_AsciiString& string2)
+                                                         const TCollection_AsciiString& string2)
 {
   return string1.IsEqual(string2);
 }
@@ -108,20 +105,23 @@ inline Standard_Boolean TCollection_AsciiString::IsEqual(const TCollection_Ascii
 //  IsEqual
 //------------------------------------------------------------------------
 inline Standard_Boolean TCollection_AsciiString::IsEqual(const TCollection_AsciiString& string1,
-						  const Standard_CString string2)
+                                                         const Standard_CString         string2)
 {
-  return string1.IsEqual( string2 );
+  return string1.IsEqual(string2);
 }
 
 // ----------------------------------------------------------------------------
 // SubString
 // ----------------------------------------------------------------------------
-inline TCollection_AsciiString TCollection_AsciiString::SubString(const Standard_Integer FromIndex,
-							   const Standard_Integer ToIndex) const
+inline TCollection_AsciiString TCollection_AsciiString::SubString(
+  const Standard_Integer FromIndex,
+  const Standard_Integer ToIndex) const
 {
-  // note the we are doing here weird casts just to suppress annoying and meaningless warning -Wstrict-overflow
-  Standard_OutOfRange_Always_Raise_if(FromIndex <= 0 || ToIndex <= 0 || (unsigned int)ToIndex > (unsigned int)mylength || (unsigned int)FromIndex > (unsigned int)ToIndex,
+  // note the we are doing here weird casts just to suppress annoying and meaningless warning
+  // -Wstrict-overflow
+  Standard_OutOfRange_Always_Raise_if(FromIndex <= 0 || ToIndex <= 0
+                                        || (unsigned int)ToIndex > (unsigned int)mylength
+                                        || (unsigned int)FromIndex > (unsigned int)ToIndex,
                                       "TCollection_AsciiString::SubString() out of range");
-  return TCollection_AsciiString( &mystring [ FromIndex - 1 ] ,
-                                  ToIndex - FromIndex + 1 ) ;
+  return TCollection_AsciiString(&mystring[FromIndex - 1], ToIndex - FromIndex + 1);
 }

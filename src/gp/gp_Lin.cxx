@@ -25,47 +25,54 @@
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 
-Standard_Real gp_Lin::Distance (const gp_Lin& Other) const
+Standard_Real gp_Lin::Distance(const gp_Lin& Other) const
 {
-  if (pos.IsParallel (Other.pos, gp::Resolution())) { 
+  if (pos.IsParallel(Other.pos, gp::Resolution()))
+  {
     return Other.Distance(pos.Location());
   }
-  else {
-    gp_Dir dir(pos.Direction().Crossed(Other.pos.Direction()));
-    Standard_Real D = gp_Vec (pos.Location(),Other.pos.Location())
-      .Dot(gp_Vec(dir));
-    if (D < 0) D = - D;
+  else
+  {
+    gp_Dir        dir(pos.Direction().Crossed(Other.pos.Direction()));
+    Standard_Real D = gp_Vec(pos.Location(), Other.pos.Location()).Dot(gp_Vec(dir));
+    if (D < 0)
+      D = -D;
     return D;
   }
 }
 
-void gp_Lin::Mirror (const gp_Pnt& P)
-{ pos.Mirror(P);  }
-
-gp_Lin gp_Lin::Mirrored (const gp_Pnt& P)  const
+void gp_Lin::Mirror(const gp_Pnt& P)
 {
-  gp_Lin L = *this;    
-  L.pos.Mirror (P);
-  return L;
+  pos.Mirror(P);
 }
 
-void gp_Lin::Mirror (const gp_Ax1& A1)
-{ pos.Mirror(A1); }
-
-gp_Lin gp_Lin::Mirrored (const gp_Ax1& A1) const
+gp_Lin gp_Lin::Mirrored(const gp_Pnt& P) const
 {
   gp_Lin L = *this;
-  L.pos.Mirror (A1);
+  L.pos.Mirror(P);
   return L;
 }
 
-void gp_Lin::Mirror (const gp_Ax2& A2)
-{ pos.Mirror(A2); }
+void gp_Lin::Mirror(const gp_Ax1& A1)
+{
+  pos.Mirror(A1);
+}
 
-gp_Lin gp_Lin::Mirrored (const gp_Ax2& A2) const
+gp_Lin gp_Lin::Mirrored(const gp_Ax1& A1) const
 {
   gp_Lin L = *this;
-  L.pos.Mirror (A2);
+  L.pos.Mirror(A1);
   return L;
 }
 
+void gp_Lin::Mirror(const gp_Ax2& A2)
+{
+  pos.Mirror(A2);
+}
+
+gp_Lin gp_Lin::Mirrored(const gp_Ax2& A2) const
+{
+  gp_Lin L = *this;
+  L.pos.Mirror(A2);
+  return L;
+}

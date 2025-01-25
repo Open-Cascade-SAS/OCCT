@@ -19,8 +19,8 @@ inline const Standard_Integer& Plate_GtoCConstraint::nb_PPC() const
   return nb_PPConstraints;
 }
 
- 
-inline const Plate_PinpointConstraint& Plate_GtoCConstraint::GetPPC(const Standard_Integer Index) const
+inline const Plate_PinpointConstraint& Plate_GtoCConstraint::GetPPC(
+  const Standard_Integer Index) const
 {
   return myPPC[Index];
 }

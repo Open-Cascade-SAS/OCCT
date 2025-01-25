@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Plate_PinpointConstraint> Plate_Array1OfPinpointConstraint;
 
-
 #endif

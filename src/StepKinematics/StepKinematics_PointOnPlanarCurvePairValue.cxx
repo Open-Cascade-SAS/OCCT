@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -18,63 +18,51 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_PointOnPlanarCurvePairValue, StepKinematics_PairValue)
 
-//=======================================================================
-//function : StepKinematics_PointOnPlanarCurvePairValue
-//purpose  :
-//=======================================================================
-StepKinematics_PointOnPlanarCurvePairValue::StepKinematics_PointOnPlanarCurvePairValue ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_PointOnPlanarCurvePairValue::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                                       const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                                                       const Handle(StepGeom_PointOnCurve)& theActualPointOnCurve,
-                                                       const StepKinematics_SpatialRotation& theInputOrientation)
+StepKinematics_PointOnPlanarCurvePairValue::StepKinematics_PointOnPlanarCurvePairValue() {}
+
+//=================================================================================================
+
+void StepKinematics_PointOnPlanarCurvePairValue::Init(
+  const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
+  const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
+  const Handle(StepGeom_PointOnCurve)&        theActualPointOnCurve,
+  const StepKinematics_SpatialRotation&       theInputOrientation)
 {
-  StepKinematics_PairValue::Init(theRepresentationItem_Name,
-                                 thePairValue_AppliesToPair);
+  StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
   myActualPointOnCurve = theActualPointOnCurve;
 
   myInputOrientation = theInputOrientation;
 }
 
-//=======================================================================
-//function : ActualPointOnCurve
-//purpose  :
-//=======================================================================
-Handle(StepGeom_PointOnCurve) StepKinematics_PointOnPlanarCurvePairValue::ActualPointOnCurve () const
+//=================================================================================================
+
+Handle(StepGeom_PointOnCurve) StepKinematics_PointOnPlanarCurvePairValue::ActualPointOnCurve() const
 {
   return myActualPointOnCurve;
 }
 
-//=======================================================================
-//function : SetActualPointOnCurve
-//purpose  :
-//=======================================================================
-void StepKinematics_PointOnPlanarCurvePairValue::SetActualPointOnCurve (const Handle(StepGeom_PointOnCurve)& theActualPointOnCurve)
+//=================================================================================================
+
+void StepKinematics_PointOnPlanarCurvePairValue::SetActualPointOnCurve(
+  const Handle(StepGeom_PointOnCurve)& theActualPointOnCurve)
 {
   myActualPointOnCurve = theActualPointOnCurve;
 }
 
-//=======================================================================
-//function : InputOrientation
-//purpose  :
-//=======================================================================
-StepKinematics_SpatialRotation StepKinematics_PointOnPlanarCurvePairValue::InputOrientation () const
+//=================================================================================================
+
+StepKinematics_SpatialRotation StepKinematics_PointOnPlanarCurvePairValue::InputOrientation() const
 {
   return myInputOrientation;
 }
 
-//=======================================================================
-//function : SetInputOrientation
-//purpose  :
-//=======================================================================
-void StepKinematics_PointOnPlanarCurvePairValue::SetInputOrientation (const StepKinematics_SpatialRotation& theInputOrientation)
+//=================================================================================================
+
+void StepKinematics_PointOnPlanarCurvePairValue::SetInputOrientation(
+  const StepKinematics_SpatialRotation& theInputOrientation)
 {
   myInputOrientation = theInputOrientation;
 }

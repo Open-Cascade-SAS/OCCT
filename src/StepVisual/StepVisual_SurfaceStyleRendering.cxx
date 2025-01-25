@@ -18,22 +18,15 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleRendering, Standard_Transient)
 
-//=======================================================================
-//function : StepVisual_SurfaceStyleRendering
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
-StepVisual_SurfaceStyleRendering::StepVisual_SurfaceStyleRendering ()
-{
-}
+StepVisual_SurfaceStyleRendering::StepVisual_SurfaceStyleRendering() {}
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_SurfaceStyleRendering::Init (const StepVisual_ShadingSurfaceMethod theRenderingMethod,
-                                             const Handle(StepVisual_Colour)& theSurfaceColour)
+void StepVisual_SurfaceStyleRendering::Init(
+  const StepVisual_ShadingSurfaceMethod theRenderingMethod,
+  const Handle(StepVisual_Colour)&      theSurfaceColour)
 {
 
   myRenderingMethod = theRenderingMethod;
@@ -41,42 +34,32 @@ void StepVisual_SurfaceStyleRendering::Init (const StepVisual_ShadingSurfaceMeth
   mySurfaceColour = theSurfaceColour;
 }
 
-//=======================================================================
-//function : RenderingMethod
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
-StepVisual_ShadingSurfaceMethod StepVisual_SurfaceStyleRendering::RenderingMethod () const
+StepVisual_ShadingSurfaceMethod StepVisual_SurfaceStyleRendering::RenderingMethod() const
 {
   return myRenderingMethod;
 }
 
-//=======================================================================
-//function : SetRenderingMethod
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_SurfaceStyleRendering::SetRenderingMethod (const StepVisual_ShadingSurfaceMethod theRenderingMethod)
+void StepVisual_SurfaceStyleRendering::SetRenderingMethod(
+  const StepVisual_ShadingSurfaceMethod theRenderingMethod)
 {
   myRenderingMethod = theRenderingMethod;
 }
 
-//=======================================================================
-//function : SurfaceColour
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
-Handle(StepVisual_Colour) StepVisual_SurfaceStyleRendering::SurfaceColour () const
+Handle(StepVisual_Colour) StepVisual_SurfaceStyleRendering::SurfaceColour() const
 {
   return mySurfaceColour;
 }
 
-//=======================================================================
-//function : SetSurfaceColour
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_SurfaceStyleRendering::SetSurfaceColour (const Handle(StepVisual_Colour)& theSurfaceColour)
+void StepVisual_SurfaceStyleRendering::SetSurfaceColour(
+  const Handle(StepVisual_Colour)& theSurfaceColour)
 {
   mySurfaceColour = theSurfaceColour;
 }

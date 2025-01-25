@@ -24,30 +24,23 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Express_Enum, Express_Item)
 
-//=======================================================================
-// function : Express_Enum
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
-Express_Enum::Express_Enum (const Standard_CString theName, const Handle(TColStd_HSequenceOfHAsciiString)& theNames)
-: Express_Item (theName), myNames (theNames)
+Express_Enum::Express_Enum(const Standard_CString                         theName,
+                           const Handle(TColStd_HSequenceOfHAsciiString)& theNames)
+    : Express_Item(theName),
+      myNames(theNames)
 {
 }
 
-//=======================================================================
-// function : Names
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 const Handle(TColStd_HSequenceOfHAsciiString)& Express_Enum::Names() const
 {
   return myNames;
 }
 
-//=======================================================================
-// function : GenerateClass
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean Express_Enum::GenerateClass() const
 {
@@ -55,53 +48,55 @@ Standard_Boolean Express_Enum::GenerateClass() const
   Message::SendInfo() << "Generating ENUMERATION " << aCPPName;
 
   // create a package directory (if not yet exist)
-  OSD_Protection aProt (OSD_RWXD, OSD_RWXD, OSD_RX, OSD_RX);
+  OSD_Protection          aProt(OSD_RWXD, OSD_RWXD, OSD_RX, OSD_RX);
   TCollection_AsciiString aPack = GetPackageName();
-  OSD_Path aPath (aPack);
-  OSD_Directory aDir (aPath);
-  aDir.Build (aProt);
+  OSD_Path                aPath(aPack);
+  OSD_Directory           aDir(aPath);
+  aDir.Build(aProt);
   aPack += "/";
   aPack += aCPPName;
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
 
   // Open HXX file
-  std::shared_ptr<std::ostream> aStreamPtr = aFileSystem->OpenOStream (aPack.Cat (".hxx"), std::ios::out | std::ios::ate);
+  std::shared_ptr<std::ostream> aStreamPtr =
+    aFileSystem->OpenOStream(aPack.Cat(".hxx"), std::ios::out | std::ios::ate);
   Standard_OStream& anOS = *aStreamPtr;
 
   // write header
-  Express::WriteFileStamp (anOS);
+  Express::WriteFileStamp(anOS);
 
   // write defines
-  anOS << "#ifndef _" << aCPPName << "_HeaderFile\n"
-          "#define _" << aCPPName << "_HeaderFile\n"
+  anOS << "#ifndef _" << aCPPName
+       << "_HeaderFile\n"
+          "#define _"
+       << aCPPName
+       << "_HeaderFile\n"
           "\n"
-          "enum " << aCPPName << "\n"
+          "enum "
+       << aCPPName
+       << "\n"
           "{\n";
-  TCollection_AsciiString aPrefix = Express::EnumPrefix (Name());
+  TCollection_AsciiString aPrefix = Express::EnumPrefix(Name());
   for (Standard_Integer i = 1; i <= myNames->Length(); i++)
   {
     if (i > 1)
     {
       anOS << ",\n";
     }
-    anOS << "  " << GetPackageName() << "_" << aPrefix << myNames->Value (i)->String();
+    anOS << "  " << GetPackageName() << "_" << aPrefix << myNames->Value(i)->String();
   }
 
   anOS << "\n"
           "};\n"
           "\n"
-          "#endif // _" << aCPPName << "_HeaderFile\n";
+          "#endif // _"
+       << aCPPName << "_HeaderFile\n";
 
   aStreamPtr.reset();
 
   return Standard_False;
 }
 
-//=======================================================================
-// function : PropagateUse
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
-void Express_Enum::PropagateUse() const
-{
-}
+void Express_Enum::PropagateUse() const {}

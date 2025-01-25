@@ -11,12 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepVisual_AnnotationOccurrence.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_AnnotationOccurrence,StepVisual_StyledItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_AnnotationOccurrence, StepVisual_StyledItem)
 
-StepVisual_AnnotationOccurrence::StepVisual_AnnotationOccurrence ()  {}
-
-
-
+StepVisual_AnnotationOccurrence::StepVisual_AnnotationOccurrence() {}

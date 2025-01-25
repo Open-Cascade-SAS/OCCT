@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/ShapeView_Tools.hxx>
 #include <inspector/ShapeView_ItemShape.hxx>
@@ -26,21 +26,22 @@
 // function : IsPossibleToExplode
 // purpose :
 // =======================================================================
-Standard_Boolean ShapeView_Tools::IsPossibleToExplode (const TopoDS_Shape& theShape,
+Standard_Boolean ShapeView_Tools::IsPossibleToExplode(
+  const TopoDS_Shape&                 theShape,
   NCollection_List<TopAbs_ShapeEnum>& theExplodeTypes)
 {
   TopAbs_ShapeEnum aShapeType = theShape.ShapeType();
 
-  if (!theExplodeTypes.Contains (aShapeType))
+  if (!theExplodeTypes.Contains(aShapeType))
     theExplodeTypes.Append(aShapeType);
 
   if (theExplodeTypes.Extent() == TopAbs_SHAPE + 1) // all types are collected, stop
     return Standard_True;
 
-  TopoDS_Iterator aSubShapeIt (theShape);
+  TopoDS_Iterator aSubShapeIt(theShape);
   for (int aCurrentIndex = 0; aSubShapeIt.More(); aSubShapeIt.Next(), aCurrentIndex++)
   {
-    if (IsPossibleToExplode (aSubShapeIt.Value(), theExplodeTypes))
+    if (IsPossibleToExplode(aSubShapeIt.Value(), theExplodeTypes))
       return Standard_True;
   }
   return Standard_False;

@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(Message_Printer)> Message_SequenceOfPrinters;
 
-
 #endif

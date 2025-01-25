@@ -13,75 +13,78 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : 
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
-  inline BOPDS_Pave::BOPDS_Pave()
+inline BOPDS_Pave::BOPDS_Pave()
 {
-  myIndex=-1;
-  myParameter=99.;
+  myIndex     = -1;
+  myParameter = 99.;
 }
 
 //=======================================================================
-//function : SetIndex
-//purpose  : 
+// function : SetIndex
+// purpose  :
 //=======================================================================
-  inline void BOPDS_Pave::SetIndex(const Standard_Integer theIndex)
+inline void BOPDS_Pave::SetIndex(const Standard_Integer theIndex)
 {
-  myIndex=theIndex;
+  myIndex = theIndex;
 }
+
 //=======================================================================
-//function : Index
-//purpose  : 
+// function : Index
+// purpose  :
 //=======================================================================
-  inline Standard_Integer BOPDS_Pave::Index()const
+inline Standard_Integer BOPDS_Pave::Index() const
 {
   return myIndex;
 }
+
 //=======================================================================
-//function : SetParameter
-//purpose  : 
+// function : SetParameter
+// purpose  :
 //=======================================================================
-  inline void BOPDS_Pave::SetParameter(const Standard_Real theParameter)
+inline void BOPDS_Pave::SetParameter(const Standard_Real theParameter)
 {
-  myParameter=theParameter;
+  myParameter = theParameter;
 }
 
 //=======================================================================
-//function : Parameter
-//purpose  : 
+// function : Parameter
+// purpose  :
 //=======================================================================
-  inline  Standard_Real BOPDS_Pave::Parameter()const
+inline Standard_Real BOPDS_Pave::Parameter() const
 {
   return myParameter;
 }
+
 //=======================================================================
-//function : Contents
-//purpose  : 
+// function : Contents
+// purpose  :
 //=======================================================================
-  inline void BOPDS_Pave::Contents(Standard_Integer& theIndex,
-				   Standard_Real& theParameter)const
+inline void BOPDS_Pave::Contents(Standard_Integer& theIndex, Standard_Real& theParameter) const
 {
-  theIndex=myIndex;
-  theParameter=myParameter;
+  theIndex     = myIndex;
+  theParameter = myParameter;
 }
+
 //=======================================================================
-//function : IsLess
-//purpose  : 
+// function : IsLess
+// purpose  :
 //=======================================================================
-  inline Standard_Boolean BOPDS_Pave::IsLess(const BOPDS_Pave& theOther)const
+inline Standard_Boolean BOPDS_Pave::IsLess(const BOPDS_Pave& theOther) const
 {
-  return myParameter<theOther.myParameter;
+  return myParameter < theOther.myParameter;
 }
+
 //=======================================================================
-//function : IsEqual
-//purpose  : 
+// function : IsEqual
+// purpose  :
 //=======================================================================
-  inline Standard_Boolean BOPDS_Pave::IsEqual(const BOPDS_Pave& theOther)const
+inline Standard_Boolean BOPDS_Pave::IsEqual(const BOPDS_Pave& theOther) const
 {
   Standard_Boolean bFlag;
   //
-  bFlag=((myIndex==theOther.myIndex) &&
-	 (myParameter==theOther.myParameter));
+  bFlag = ((myIndex == theOther.myIndex) && (myParameter == theOther.myParameter));
   return bFlag;
 }

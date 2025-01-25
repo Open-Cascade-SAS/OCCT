@@ -28,7 +28,6 @@ class gp_Pnt2d;
 class gp_Vec2d;
 class Geom2d_Point;
 
-
 //! Bisec provides the bisecting line between two elements
 //! This line is trimmed by a point <P> and it's contained in the domain
 //! defined by the two vectors <V1>, <V2> and <Sense>.
@@ -49,63 +48,71 @@ class Geom2d_Point;
 //! if the bisector is an ellipse  and the minor radius is smaller than
 //! <Tolerance>, the bisector is replaced by a segment corresponding
 //! to the great axe of the ellipse.
-class Bisector_Bisec 
+class Bisector_Bisec
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Bisector_Bisec();
-  
+
   //! Performs  the bisecting line  between the  curves
   //! <Cu1> and <Cu2>.
   //! <oncurve> is True if the point <P> is common to <Cu1>
   //! and <Cu2>.
-  Standard_EXPORT void Perform (const Handle(Geom2d_Curve)& Cu1, const Handle(Geom2d_Curve)& Cu2, const gp_Pnt2d& P, const gp_Vec2d& V1, const gp_Vec2d& V2, const Standard_Real Sense, const GeomAbs_JoinType ajointype, const Standard_Real Tolerance, const Standard_Boolean oncurve = Standard_True);
-  
+  Standard_EXPORT void Perform(const Handle(Geom2d_Curve)& Cu1,
+                               const Handle(Geom2d_Curve)& Cu2,
+                               const gp_Pnt2d&             P,
+                               const gp_Vec2d&             V1,
+                               const gp_Vec2d&             V2,
+                               const Standard_Real         Sense,
+                               const GeomAbs_JoinType      ajointype,
+                               const Standard_Real         Tolerance,
+                               const Standard_Boolean      oncurve = Standard_True);
+
   //! Performs  the bisecting line  between the  curve
   //! <Cu1> and the point <Pnt>.
   //! <oncurve> is True if the point <P> is the point <Pnt>.
-  Standard_EXPORT void Perform (const Handle(Geom2d_Curve)& Cu, const Handle(Geom2d_Point)& Pnt, const gp_Pnt2d& P, const gp_Vec2d& V1, const gp_Vec2d& V2, const Standard_Real Sense, const Standard_Real Tolerance, const Standard_Boolean oncurve = Standard_True);
-  
+  Standard_EXPORT void Perform(const Handle(Geom2d_Curve)& Cu,
+                               const Handle(Geom2d_Point)& Pnt,
+                               const gp_Pnt2d&             P,
+                               const gp_Vec2d&             V1,
+                               const gp_Vec2d&             V2,
+                               const Standard_Real         Sense,
+                               const Standard_Real         Tolerance,
+                               const Standard_Boolean      oncurve = Standard_True);
+
   //! Performs  the bisecting line  between the  curve
   //! <Cu> and the point <Pnt>.
   //! <oncurve> is True if the point <P> is the point <Pnt>.
-  Standard_EXPORT void Perform (const Handle(Geom2d_Point)& Pnt, const Handle(Geom2d_Curve)& Cu, const gp_Pnt2d& P, const gp_Vec2d& V1, const gp_Vec2d& V2, const Standard_Real Sense, const Standard_Real Tolerance, const Standard_Boolean oncurve = Standard_True);
-  
+  Standard_EXPORT void Perform(const Handle(Geom2d_Point)& Pnt,
+                               const Handle(Geom2d_Curve)& Cu,
+                               const gp_Pnt2d&             P,
+                               const gp_Vec2d&             V1,
+                               const gp_Vec2d&             V2,
+                               const Standard_Real         Sense,
+                               const Standard_Real         Tolerance,
+                               const Standard_Boolean      oncurve = Standard_True);
+
   //! Performs  the bisecting line  between the two points
   //! <Pnt1>  and <Pnt2>.
-  Standard_EXPORT void Perform (const Handle(Geom2d_Point)& Pnt1, const Handle(Geom2d_Point)& Pnt2, const gp_Pnt2d& P, const gp_Vec2d& V1, const gp_Vec2d& V2, const Standard_Real Sense, const Standard_Real Tolerance = 0.0, const Standard_Boolean oncurve = Standard_True);
-  
+  Standard_EXPORT void Perform(const Handle(Geom2d_Point)& Pnt1,
+                               const Handle(Geom2d_Point)& Pnt2,
+                               const gp_Pnt2d&             P,
+                               const gp_Vec2d&             V1,
+                               const gp_Vec2d&             V2,
+                               const Standard_Real         Sense,
+                               const Standard_Real         Tolerance = 0.0,
+                               const Standard_Boolean      oncurve   = Standard_True);
+
   //! Returns the Curve of <me>.
   Standard_EXPORT const Handle(Geom2d_TrimmedCurve)& Value() const;
-  
+
   //! Returns the Curve of <me>.
   Standard_EXPORT const Handle(Geom2d_TrimmedCurve)& ChangeValue();
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(Geom2d_TrimmedCurve) thebisector;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Bisector_Bisec_HeaderFile

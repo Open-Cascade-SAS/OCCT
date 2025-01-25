@@ -22,57 +22,46 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-//=======================================================================
-//function : RWStepBasic_RWCertificationType
-//purpose  : 
-//=======================================================================
-RWStepBasic_RWCertificationType::RWStepBasic_RWCertificationType ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
+RWStepBasic_RWCertificationType::RWStepBasic_RWCertificationType() {}
 
-void RWStepBasic_RWCertificationType::ReadStep (const Handle(StepData_StepReaderData)& data,
-                                                const Standard_Integer num,
-                                                Handle(Interface_Check)& ach,
-                                                const Handle(StepBasic_CertificationType) &ent) const
+//=================================================================================================
+
+void RWStepBasic_RWCertificationType::ReadStep(const Handle(StepData_StepReaderData)&     data,
+                                               const Standard_Integer                     num,
+                                               Handle(Interface_Check)&                   ach,
+                                               const Handle(StepBasic_CertificationType)& ent) const
 {
   // Check number of parameters
-  if ( ! data->CheckNbParams(num,1,ach,"certification_type") ) return;
+  if (!data->CheckNbParams(num, 1, ach, "certification_type"))
+    return;
 
   // Own fields of CertificationType
 
   Handle(TCollection_HAsciiString) aDescription;
-  data->ReadString (num, 1, "description", ach, aDescription);
+  data->ReadString(num, 1, "description", ach, aDescription);
 
   // Initialize entity
   ent->Init(aDescription);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepBasic_RWCertificationType::WriteStep (StepData_StepWriter& SW,
-                                                 const Handle(StepBasic_CertificationType) &ent) const
+void RWStepBasic_RWCertificationType::WriteStep(
+  StepData_StepWriter&                       SW,
+  const Handle(StepBasic_CertificationType)& ent) const
 {
 
   // Own fields of CertificationType
 
-  SW.Send (ent->Description());
+  SW.Send(ent->Description());
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepBasic_RWCertificationType::Share (const Handle(StepBasic_CertificationType) &,
-                                             Interface_EntityIterator&) const
+void RWStepBasic_RWCertificationType::Share(const Handle(StepBasic_CertificationType)&,
+                                            Interface_EntityIterator&) const
 {
   // Own fields of CertificationType
 }

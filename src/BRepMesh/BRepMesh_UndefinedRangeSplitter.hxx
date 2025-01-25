@@ -18,24 +18,18 @@
 
 #include <BRepMesh_NURBSRangeSplitter.hxx>
 
-//! Auxiliary class provides safe value for surfaces that looks like NURBS 
+//! Auxiliary class provides safe value for surfaces that looks like NURBS
 //! but has no poles or other characteristics.
 class BRepMesh_UndefinedRangeSplitter : public BRepMesh_NURBSRangeSplitter
 {
 public:
-
   //! Constructor.
-  BRepMesh_UndefinedRangeSplitter()
-  {
-  }
+  BRepMesh_UndefinedRangeSplitter() {}
 
   //! Destructor.
-  virtual ~BRepMesh_UndefinedRangeSplitter()
-  {
-  }
+  virtual ~BRepMesh_UndefinedRangeSplitter() {}
 
 protected:
-
   //! Returns number of intervals computed using available geometrical parameters.
   Standard_EXPORT virtual Standard_Integer getUndefinedIntervalNb(
     const Handle(Adaptor3d_Surface)& theSurface,

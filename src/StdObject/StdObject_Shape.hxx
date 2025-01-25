@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _StdObject_Shape_HeaderFile
 #define _StdObject_Shape_HeaderFile
 
@@ -20,14 +19,16 @@
 
 #include <TopoDS_Shape.hxx>
 
-
 class StdObject_Shape
 {
   friend class ShapePersistent_TopoDS;
 
 public:
   //! Empty constructor.
-  StdObject_Shape() : myOrient(0) {}
+  StdObject_Shape()
+      : myOrient(0)
+  {
+  }
 
   //! Import transient object from the persistent data.
   Standard_EXPORT TopoDS_Shape Import() const;
@@ -36,39 +37,40 @@ public:
 
 protected:
   //! Read persistent data from a file.
-  inline void read (StdObjMgt_ReadData& theReadData)
-    { theReadData >> myTShape >> myLocation >> myOrient; }
+  inline void read(StdObjMgt_ReadData& theReadData)
+  {
+    theReadData >> myTShape >> myLocation >> myOrient;
+  }
 
   //! Write persistent data to a file.
-  inline void write (StdObjMgt_WriteData& theWriteData) const
-    { theWriteData << myTShape << myLocation << myOrient; }
+  inline void write(StdObjMgt_WriteData& theWriteData) const
+  {
+    theWriteData << myTShape << myLocation << myOrient;
+  }
 
 protected:
   Handle(StdPersistent_TopoDS::TShape) myTShape;
   StdObject_Location                   myLocation;
   Standard_Integer                     myOrient;
 
-  friend StdObjMgt_ReadData& operator >>
-    (StdObjMgt_ReadData&, StdObject_Shape&);
-  friend StdObjMgt_WriteData& operator <<
-    (StdObjMgt_WriteData&, const StdObject_Shape&);
+  friend StdObjMgt_ReadData&  operator>>(StdObjMgt_ReadData&, StdObject_Shape&);
+  friend StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData&, const StdObject_Shape&);
 };
 
 //! Read persistent data from a file.
-inline StdObjMgt_ReadData& operator >>
-  (StdObjMgt_ReadData& theReadData, StdObject_Shape& theShape)
+inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, StdObject_Shape& theShape)
 {
-  StdObjMgt_ReadData::ObjectSentry aSentry (theReadData);
-  theShape.read (theReadData);
+  StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
+  theShape.read(theReadData);
   return theReadData;
 }
 
 //! Write persistent data to a file.
-inline StdObjMgt_WriteData& operator <<
-  (StdObjMgt_WriteData& theWriteData, const StdObject_Shape& theShape)
+inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData&   theWriteData,
+                                       const StdObject_Shape& theShape)
 {
-  StdObjMgt_WriteData::ObjectSentry aSentry (theWriteData);
-  theShape.write (theWriteData);
+  StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
+  theShape.write(theWriteData);
   return theWriteData;
 }
 

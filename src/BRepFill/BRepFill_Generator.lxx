@@ -15,11 +15,11 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Shell
-//purpose  : 
+// function : Shell
+// purpose  :
 //=======================================================================
 
-inline const TopoDS_Shell& BRepFill_Generator::Shell() const 
+inline const TopoDS_Shell& BRepFill_Generator::Shell() const
 {
   return myShell;
 }

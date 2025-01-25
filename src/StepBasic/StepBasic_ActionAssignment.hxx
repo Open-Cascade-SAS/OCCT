@@ -23,7 +23,6 @@
 #include <Standard_Transient.hxx>
 class StepBasic_Action;
 
-
 class StepBasic_ActionAssignment;
 DEFINE_STANDARD_HANDLE(StepBasic_ActionAssignment, Standard_Transient)
 
@@ -32,42 +31,23 @@ class StepBasic_ActionAssignment : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepBasic_ActionAssignment();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(StepBasic_Action)& aAssignedAction);
-  
+  Standard_EXPORT void Init(const Handle(StepBasic_Action)& aAssignedAction);
+
   //! Returns field AssignedAction
   Standard_EXPORT Handle(StepBasic_Action) AssignedAction() const;
-  
+
   //! Set field AssignedAction
-  Standard_EXPORT void SetAssignedAction (const Handle(StepBasic_Action)& AssignedAction);
+  Standard_EXPORT void SetAssignedAction(const Handle(StepBasic_Action)& AssignedAction);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ActionAssignment,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ActionAssignment, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_Action) theAssignedAction;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_ActionAssignment_HeaderFile

@@ -19,7 +19,6 @@ inline const gp_XYZ& Plate_D1::DU() const
   return Du;
 }
 
- 
 inline const gp_XYZ& Plate_D1::DV() const
 {
   return Dv;

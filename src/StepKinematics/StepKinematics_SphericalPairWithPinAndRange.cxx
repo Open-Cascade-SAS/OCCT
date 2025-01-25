@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:16 2020 
+// Created on : Sat May 02 12:41:16 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -16,45 +16,43 @@
 
 #include <StepKinematics_SphericalPairWithPinAndRange.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_SphericalPairWithPinAndRange, StepKinematics_SphericalPairWithPin)
+IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_SphericalPairWithPinAndRange,
+                           StepKinematics_SphericalPairWithPin)
 
-//=======================================================================
-//function : StepKinematics_SphericalPairWithPinAndRange
-//purpose  :
-//=======================================================================
-StepKinematics_SphericalPairWithPinAndRange::StepKinematics_SphericalPairWithPinAndRange ()
+//=================================================================================================
+
+StepKinematics_SphericalPairWithPinAndRange::StepKinematics_SphericalPairWithPinAndRange()
 {
-  defLowerLimitYaw = Standard_False;
-  defUpperLimitYaw = Standard_False;
+  defLowerLimitYaw  = Standard_False;
+  defUpperLimitYaw  = Standard_False;
   defLowerLimitRoll = Standard_False;
   defUpperLimitRoll = Standard_False;
 }
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_SphericalPairWithPinAndRange::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                                        const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Name,
-                                                        const Standard_Boolean hasItemDefinedTransformation_Description,
-                                                        const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Description,
-                                                        const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem1,
-                                                        const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem2,
-                                                        const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-                                                        const Standard_Boolean theLowOrderKinematicPair_TX,
-                                                        const Standard_Boolean theLowOrderKinematicPair_TY,
-                                                        const Standard_Boolean theLowOrderKinematicPair_TZ,
-                                                        const Standard_Boolean theLowOrderKinematicPair_RX,
-                                                        const Standard_Boolean theLowOrderKinematicPair_RY,
-                                                        const Standard_Boolean theLowOrderKinematicPair_RZ,
-                                                        const Standard_Boolean hasLowerLimitYaw,
-                                                        const Standard_Real theLowerLimitYaw,
-                                                        const Standard_Boolean hasUpperLimitYaw,
-                                                        const Standard_Real theUpperLimitYaw,
-                                                        const Standard_Boolean hasLowerLimitRoll,
-                                                        const Standard_Real theLowerLimitRoll,
-                                                        const Standard_Boolean hasUpperLimitRoll,
-                                                        const Standard_Real theUpperLimitRoll)
+//=================================================================================================
+
+void StepKinematics_SphericalPairWithPinAndRange::Init(
+  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
+  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
+  const Standard_Boolean                       hasItemDefinedTransformation_Description,
+  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
+  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
+  const Standard_Boolean                       theLowOrderKinematicPair_TX,
+  const Standard_Boolean                       theLowOrderKinematicPair_TY,
+  const Standard_Boolean                       theLowOrderKinematicPair_TZ,
+  const Standard_Boolean                       theLowOrderKinematicPair_RX,
+  const Standard_Boolean                       theLowOrderKinematicPair_RY,
+  const Standard_Boolean                       theLowOrderKinematicPair_RZ,
+  const Standard_Boolean                       hasLowerLimitYaw,
+  const Standard_Real                          theLowerLimitYaw,
+  const Standard_Boolean                       hasUpperLimitYaw,
+  const Standard_Real                          theUpperLimitYaw,
+  const Standard_Boolean                       hasLowerLimitRoll,
+  const Standard_Real                          theLowerLimitRoll,
+  const Standard_Boolean                       hasUpperLimitRoll,
+  const Standard_Real                          theUpperLimitRoll)
 {
   StepKinematics_SphericalPairWithPin::Init(theRepresentationItem_Name,
                                             theItemDefinedTransformation_Name,
@@ -71,134 +69,122 @@ void StepKinematics_SphericalPairWithPinAndRange::Init (const Handle(TCollection
                                             theLowOrderKinematicPair_RZ);
 
   defLowerLimitYaw = hasLowerLimitYaw;
-  if (defLowerLimitYaw) {
+  if (defLowerLimitYaw)
+  {
     myLowerLimitYaw = theLowerLimitYaw;
   }
-  else myLowerLimitYaw = 0;
+  else
+    myLowerLimitYaw = 0;
 
   defUpperLimitYaw = hasUpperLimitYaw;
-  if (defUpperLimitYaw) {
+  if (defUpperLimitYaw)
+  {
     myUpperLimitYaw = theUpperLimitYaw;
   }
-  else myUpperLimitYaw = 0;
+  else
+    myUpperLimitYaw = 0;
 
   defLowerLimitRoll = hasLowerLimitRoll;
-  if (defLowerLimitRoll) {
+  if (defLowerLimitRoll)
+  {
     myLowerLimitRoll = theLowerLimitRoll;
   }
-  else myLowerLimitRoll = 0;
+  else
+    myLowerLimitRoll = 0;
 
   defUpperLimitRoll = hasUpperLimitRoll;
-  if (defUpperLimitRoll) {
+  if (defUpperLimitRoll)
+  {
     myUpperLimitRoll = theUpperLimitRoll;
   }
-  else myUpperLimitRoll = 0;
+  else
+    myUpperLimitRoll = 0;
 }
 
-//=======================================================================
-//function : LowerLimitYaw
-//purpose  :
-//=======================================================================
-Standard_Real StepKinematics_SphericalPairWithPinAndRange::LowerLimitYaw () const
+//=================================================================================================
+
+Standard_Real StepKinematics_SphericalPairWithPinAndRange::LowerLimitYaw() const
 {
   return myLowerLimitYaw;
 }
 
-//=======================================================================
-//function : SetLowerLimitYaw
-//purpose  :
-//=======================================================================
-void StepKinematics_SphericalPairWithPinAndRange::SetLowerLimitYaw (const Standard_Real theLowerLimitYaw)
+//=================================================================================================
+
+void StepKinematics_SphericalPairWithPinAndRange::SetLowerLimitYaw(
+  const Standard_Real theLowerLimitYaw)
 {
   myLowerLimitYaw = theLowerLimitYaw;
 }
 
-//=======================================================================
-//function : HasLowerLimitYaw
-//purpose  :
-//=======================================================================
-Standard_Boolean StepKinematics_SphericalPairWithPinAndRange::HasLowerLimitYaw () const
+//=================================================================================================
+
+Standard_Boolean StepKinematics_SphericalPairWithPinAndRange::HasLowerLimitYaw() const
 {
   return defLowerLimitYaw;
 }
 
-//=======================================================================
-//function : UpperLimitYaw
-//purpose  :
-//=======================================================================
-Standard_Real StepKinematics_SphericalPairWithPinAndRange::UpperLimitYaw () const
+//=================================================================================================
+
+Standard_Real StepKinematics_SphericalPairWithPinAndRange::UpperLimitYaw() const
 {
   return myUpperLimitYaw;
 }
 
-//=======================================================================
-//function : SetUpperLimitYaw
-//purpose  :
-//=======================================================================
-void StepKinematics_SphericalPairWithPinAndRange::SetUpperLimitYaw (const Standard_Real theUpperLimitYaw)
+//=================================================================================================
+
+void StepKinematics_SphericalPairWithPinAndRange::SetUpperLimitYaw(
+  const Standard_Real theUpperLimitYaw)
 {
   myUpperLimitYaw = theUpperLimitYaw;
 }
 
-//=======================================================================
-//function : HasUpperLimitYaw
-//purpose  :
-//=======================================================================
-Standard_Boolean StepKinematics_SphericalPairWithPinAndRange::HasUpperLimitYaw () const
+//=================================================================================================
+
+Standard_Boolean StepKinematics_SphericalPairWithPinAndRange::HasUpperLimitYaw() const
 {
   return defUpperLimitYaw;
 }
 
-//=======================================================================
-//function : LowerLimitRoll
-//purpose  :
-//=======================================================================
-Standard_Real StepKinematics_SphericalPairWithPinAndRange::LowerLimitRoll () const
+//=================================================================================================
+
+Standard_Real StepKinematics_SphericalPairWithPinAndRange::LowerLimitRoll() const
 {
   return myLowerLimitRoll;
 }
 
-//=======================================================================
-//function : SetLowerLimitRoll
-//purpose  :
-//=======================================================================
-void StepKinematics_SphericalPairWithPinAndRange::SetLowerLimitRoll (const Standard_Real theLowerLimitRoll)
+//=================================================================================================
+
+void StepKinematics_SphericalPairWithPinAndRange::SetLowerLimitRoll(
+  const Standard_Real theLowerLimitRoll)
 {
   myLowerLimitRoll = theLowerLimitRoll;
 }
 
-//=======================================================================
-//function : HasLowerLimitRoll
-//purpose  :
-//=======================================================================
-Standard_Boolean StepKinematics_SphericalPairWithPinAndRange::HasLowerLimitRoll () const
+//=================================================================================================
+
+Standard_Boolean StepKinematics_SphericalPairWithPinAndRange::HasLowerLimitRoll() const
 {
   return defLowerLimitRoll;
 }
 
-//=======================================================================
-//function : UpperLimitRoll
-//purpose  :
-//=======================================================================
-Standard_Real StepKinematics_SphericalPairWithPinAndRange::UpperLimitRoll () const
+//=================================================================================================
+
+Standard_Real StepKinematics_SphericalPairWithPinAndRange::UpperLimitRoll() const
 {
   return myUpperLimitRoll;
 }
 
-//=======================================================================
-//function : SetUpperLimitRoll
-//purpose  :
-//=======================================================================
-void StepKinematics_SphericalPairWithPinAndRange::SetUpperLimitRoll (const Standard_Real theUpperLimitRoll)
+//=================================================================================================
+
+void StepKinematics_SphericalPairWithPinAndRange::SetUpperLimitRoll(
+  const Standard_Real theUpperLimitRoll)
 {
   myUpperLimitRoll = theUpperLimitRoll;
 }
 
-//=======================================================================
-//function : HasUpperLimitRoll
-//purpose  :
-//=======================================================================
-Standard_Boolean StepKinematics_SphericalPairWithPinAndRange::HasUpperLimitRoll () const
+//=================================================================================================
+
+Standard_Boolean StepKinematics_SphericalPairWithPinAndRange::HasUpperLimitRoll() const
 {
   return defUpperLimitRoll;
 }

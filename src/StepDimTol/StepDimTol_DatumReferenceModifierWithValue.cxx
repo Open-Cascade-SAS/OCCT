@@ -15,26 +15,18 @@
 
 #include <StepDimTol_DatumReferenceModifierWithValue.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_DatumReferenceModifierWithValue,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_DatumReferenceModifierWithValue, Standard_Transient)
 
-//=======================================================================
-//function : StepDimTol_DatumReferenceModifierWithValue
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepDimTol_DatumReferenceModifierWithValue::StepDimTol_DatumReferenceModifierWithValue ()
+StepDimTol_DatumReferenceModifierWithValue::StepDimTol_DatumReferenceModifierWithValue() {}
+
+//=================================================================================================
+
+void StepDimTol_DatumReferenceModifierWithValue::Init(
+  const StepDimTol_DatumReferenceModifierType&   theModifierType,
+  const Handle(StepBasic_LengthMeasureWithUnit)& theModifierValue)
 {
-}
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void StepDimTol_DatumReferenceModifierWithValue::Init (const StepDimTol_DatumReferenceModifierType& theModifierType,
-                                                       const Handle(StepBasic_LengthMeasureWithUnit)& theModifierValue)
-{
-  myModifierType = theModifierType;
+  myModifierType  = theModifierType;
   myModifierValue = theModifierValue;
 }
-    

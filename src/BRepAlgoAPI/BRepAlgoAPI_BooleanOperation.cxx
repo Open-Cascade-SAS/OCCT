@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRepAlgoAPI_BooleanOperation.hxx>
 
 #include <BOPAlgo_Alerts.hxx>
@@ -31,113 +30,97 @@
 #include <stdio.h>
 
 //=======================================================================
-//class : BRepAlgoAPI_DumpOper
-//purpose : Dumps the arguments ad script to perform operation in DRAW
+// class : BRepAlgoAPI_DumpOper
+// purpose : Dumps the arguments ad script to perform operation in DRAW
 //=======================================================================
-class BRepAlgoAPI_DumpOper {
- public:
-  BRepAlgoAPI_DumpOper() :
-    myIsDump(Standard_False),
-    myIsDumpArgs(Standard_False),
-    myIsDumpRes(Standard_False)  {
-      OSD_Environment env("CSF_DEBUG_BOP");
-      TCollection_AsciiString pathdump = env.Value();
-      myIsDump = (!pathdump.IsEmpty() ? Standard_True: Standard_False);
-      myPath=pathdump.ToCString();
+class BRepAlgoAPI_DumpOper
+{
+public:
+  BRepAlgoAPI_DumpOper()
+      : myIsDump(Standard_False),
+        myIsDumpArgs(Standard_False),
+        myIsDumpRes(Standard_False)
+  {
+    OSD_Environment         env("CSF_DEBUG_BOP");
+    TCollection_AsciiString pathdump = env.Value();
+    myIsDump                         = (!pathdump.IsEmpty() ? Standard_True : Standard_False);
+    myPath                           = pathdump.ToCString();
   };
+
   //
-  virtual ~BRepAlgoAPI_DumpOper() {
-  };
+  virtual ~BRepAlgoAPI_DumpOper() {};
+
   //
-  Standard_Boolean IsDump()const {
-    return myIsDump;
-  };
+  Standard_Boolean IsDump() const { return myIsDump; };
+
   //
-  void SetIsDumpArgs(const Standard_Boolean bFlag) {
-    myIsDumpArgs=bFlag;
-  }
+  void SetIsDumpArgs(const Standard_Boolean bFlag) { myIsDumpArgs = bFlag; }
+
   //
-  Standard_Boolean IsDumpArgs()const {
-    return myIsDumpArgs;
-  };
+  Standard_Boolean IsDumpArgs() const { return myIsDumpArgs; };
+
   //
-  void SetIsDumpRes(const Standard_Boolean bFlag) {
-    myIsDumpRes=bFlag;
-  };
+  void SetIsDumpRes(const Standard_Boolean bFlag) { myIsDumpRes = bFlag; };
+
   //
-  Standard_Boolean IsDumpRes()const {
-    return myIsDumpRes;
-  };
+  Standard_Boolean IsDumpRes() const { return myIsDumpRes; };
+
   //
-  void Dump(
-            const TopoDS_Shape& theShape1,
+  void Dump(const TopoDS_Shape& theShape1,
             const TopoDS_Shape& theShape2,
             const TopoDS_Shape& theResult,
-            BOPAlgo_Operation theOperation);
+            BOPAlgo_Operation   theOperation);
   //
- protected:
+protected:
   Standard_Boolean myIsDump;
   Standard_Boolean myIsDumpArgs;
   Standard_Boolean myIsDumpRes;
   Standard_CString myPath;
 };
 
-//=======================================================================
-//function : BRepAlgoAPI_BooleanOperation
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation()
-:
-  BRepAlgoAPI_BuilderAlgo(),
-  myOperation(BOPAlgo_UNKNOWN)
+    : BRepAlgoAPI_BuilderAlgo(),
+      myOperation(BOPAlgo_UNKNOWN)
 {
 }
-//=======================================================================
-//function : BRepAlgoAPI_BooleanOperation
-//purpose  : 
-//=======================================================================
-BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation
-  (const BOPAlgo_PaveFiller& thePF)
-:
-  BRepAlgoAPI_BuilderAlgo(thePF),
-  myOperation(BOPAlgo_UNKNOWN)
+
+//=================================================================================================
+
+BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation(const BOPAlgo_PaveFiller& thePF)
+    : BRepAlgoAPI_BuilderAlgo(thePF),
+      myOperation(BOPAlgo_UNKNOWN)
 {
 }
-//=======================================================================
-//function : BRepAlgoAPI_BooleanOperation
-//purpose  : obsolete
-//=======================================================================
-BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation
-  (const TopoDS_Shape& theS1,
-   const TopoDS_Shape& theS2,
-   const BOPAlgo_Operation theOp)
-:
-  BRepAlgoAPI_BuilderAlgo(),
-  myOperation(theOp)
+
+//=================================================================================================
+
+BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation(const TopoDS_Shape&     theS1,
+                                                           const TopoDS_Shape&     theS2,
+                                                           const BOPAlgo_Operation theOp)
+    : BRepAlgoAPI_BuilderAlgo(),
+      myOperation(theOp)
 {
   myArguments.Append(theS1);
   myTools.Append(theS2);
 }
-//=======================================================================
-//function : BRepAlgoAPI_BooleanOperation
-//purpose  : 
-//=======================================================================
-BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation
-  (const TopoDS_Shape& theS1,
-   const TopoDS_Shape& theS2,
-   const BOPAlgo_PaveFiller& thePF,
-   const BOPAlgo_Operation theOp)
-:
-  BRepAlgoAPI_BuilderAlgo(thePF),
-  myOperation(theOp)
+
+//=================================================================================================
+
+BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation(const TopoDS_Shape&       theS1,
+                                                           const TopoDS_Shape&       theS2,
+                                                           const BOPAlgo_PaveFiller& thePF,
+                                                           const BOPAlgo_Operation   theOp)
+    : BRepAlgoAPI_BuilderAlgo(thePF),
+      myOperation(theOp)
 {
   myArguments.Append(theS1);
   myTools.Append(theS2);
 }
-//=======================================================================
-//function : Build
-//purpose  :
-//=======================================================================
+
+//=================================================================================================
+
 void BRepAlgoAPI_BooleanOperation::Build(const Message_ProgressRange& theRange)
 {
   // Set Not Done status by default
@@ -148,20 +131,21 @@ void BRepAlgoAPI_BooleanOperation::Build(const Message_ProgressRange& theRange)
   // Both should be present
   if (myArguments.IsEmpty() || myTools.IsEmpty())
   {
-    AddError (new BOPAlgo_AlertTooFewArguments);
+    AddError(new BOPAlgo_AlertTooFewArguments);
     return;
   }
   // Check if the operation is set
   if (myOperation == BOPAlgo_UNKNOWN)
   {
-    AddError (new BOPAlgo_AlertBOPNotSet);
+    AddError(new BOPAlgo_AlertBOPNotSet);
     return;
   }
 
   // DEBUG option for dumping shapes and scripts
   BRepAlgoAPI_DumpOper aDumpOper;
   {
-    if (aDumpOper.IsDump()) {
+    if (aDumpOper.IsDump())
+    {
       BRepAlgoAPI_Check aChekArgs(myArguments.First(), myTools.First(), myOperation);
       aDumpOper.SetIsDumpArgs(!aChekArgs.IsValid());
     }
@@ -230,96 +214,103 @@ void BRepAlgoAPI_BooleanOperation::Build(const Message_ProgressRange& theRange)
     return;
   }
 
-  if (aDumpOper.IsDump()) {
-    Standard_Boolean isDumpRes = myShape.IsNull() ||
-                                 !BRepAlgoAPI_Check(myShape).IsValid();
+  if (aDumpOper.IsDump())
+  {
+    Standard_Boolean isDumpRes = myShape.IsNull() || !BRepAlgoAPI_Check(myShape).IsValid();
     aDumpOper.SetIsDumpRes(isDumpRes);
     aDumpOper.Dump(myArguments.First(), myTools.First(), myShape, myOperation);
   }
 }
 
 //=======================================================================
-//function : Dump
-//purpose  : DEBUG: Dumping the shapes and script of the operation
+// function : Dump
+// purpose  : DEBUG: Dumping the shapes and script of the operation
 //=======================================================================
 void BRepAlgoAPI_DumpOper::Dump(const TopoDS_Shape& theShape1,
                                 const TopoDS_Shape& theShape2,
                                 const TopoDS_Shape& theResult,
-                                BOPAlgo_Operation theOperation)
+                                BOPAlgo_Operation   theOperation)
 {
-  if (!(myIsDumpArgs && myIsDumpRes)) {
+  if (!(myIsDumpArgs && myIsDumpRes))
+  {
     return;
   }
   //
   TCollection_AsciiString aPath(myPath);
   aPath += "/";
-  Standard_Integer aNumOper = 1;
-  Standard_Boolean isExist = Standard_True;
+  Standard_Integer        aNumOper = 1;
+  Standard_Boolean        isExist  = Standard_True;
   TCollection_AsciiString aFileName;
- 
-  while(isExist)
+
+  while (isExist)
   {
-    aFileName = aPath + "BO_" + TCollection_AsciiString(aNumOper) +".tcl";
+    aFileName = aPath + "BO_" + TCollection_AsciiString(aNumOper) + ".tcl";
     OSD_File aScript(aFileName);
     isExist = aScript.Exists();
-    if(isExist)
+    if (isExist)
       aNumOper++;
   }
 
   FILE* afile = fopen(aFileName.ToCString(), "w+");
-  if(!afile)
+  if (!afile)
     return;
-  if(myIsDumpArgs)
-    fprintf(afile,"%s\n","# Arguments are invalid");
+  if (myIsDumpArgs)
+    fprintf(afile, "%s\n", "# Arguments are invalid");
 
   TCollection_AsciiString aName1;
   TCollection_AsciiString aName2;
   TCollection_AsciiString aNameRes;
-  if(!theShape1.IsNull())
+  if (!theShape1.IsNull())
   {
-    aName1 = aPath +
-      "Arg1_" + TCollection_AsciiString(aNumOper) + ".brep";
+    aName1 = aPath + "Arg1_" + TCollection_AsciiString(aNumOper) + ".brep";
     BRepTools::Write(theShape1, aName1.ToCString());
   }
   else
-    fprintf(afile,"%s\n","# First argument is Null ");
-   
-  if(!theShape2.IsNull())
+    fprintf(afile, "%s\n", "# First argument is Null ");
+
+  if (!theShape2.IsNull())
   {
-    aName2 =  aPath +
-      "Arg2_"+ TCollection_AsciiString(aNumOper) + ".brep";
+    aName2 = aPath + "Arg2_" + TCollection_AsciiString(aNumOper) + ".brep";
 
     BRepTools::Write(theShape2, aName2.ToCString());
   }
   else
-    fprintf(afile,"%s\n","# Second argument is Null ");
-   
-   if(!theResult.IsNull())
+    fprintf(afile, "%s\n", "# Second argument is Null ");
+
+  if (!theResult.IsNull())
   {
-    aNameRes =  aPath +
-      "Result_"+ TCollection_AsciiString(aNumOper) + ".brep";
+    aNameRes = aPath + "Result_" + TCollection_AsciiString(aNumOper) + ".brep";
 
     BRepTools::Write(theResult, aNameRes.ToCString());
   }
   else
-    fprintf(afile,"%s\n","# Result is Null ");
-  
-  fprintf(afile, "%s %s %s\n","restore",  aName1.ToCString(), "arg1");
-  fprintf(afile, "%s %s %s\n","restore",  aName2.ToCString(), "arg2");
+    fprintf(afile, "%s\n", "# Result is Null ");
+
+  fprintf(afile, "%s %s %s\n", "restore", aName1.ToCString(), "arg1");
+  fprintf(afile, "%s %s %s\n", "restore", aName2.ToCString(), "arg2");
   TCollection_AsciiString aBopString;
   switch (theOperation)
   {
-    case BOPAlgo_COMMON : aBopString += "bcommon Res "; break;
-    case BOPAlgo_FUSE   : aBopString += "bfuse Res "; break;
-    case BOPAlgo_CUT    : 
-    case BOPAlgo_CUT21  : aBopString += "bcut Res "; break;
-    case BOPAlgo_SECTION : aBopString += "bsection Res "; break;
-    default : break;
+    case BOPAlgo_COMMON:
+      aBopString += "bcommon Res ";
+      break;
+    case BOPAlgo_FUSE:
+      aBopString += "bfuse Res ";
+      break;
+    case BOPAlgo_CUT:
+    case BOPAlgo_CUT21:
+      aBopString += "bcut Res ";
+      break;
+    case BOPAlgo_SECTION:
+      aBopString += "bsection Res ";
+      break;
+    default:
+      break;
   };
   aBopString += ("arg1 arg2");
-  if(theOperation == BOPAlgo_CUT21)
+  if (theOperation == BOPAlgo_CUT21)
     aBopString += " 1";
 
-  fprintf(afile, "%s\n",aBopString.ToCString());
+  fprintf(afile, "%s\n", aBopString.ToCString());
   fclose(afile);
 }

@@ -23,5 +23,4 @@
 
 DEFINE_HSEQUENCE(TColgp_HSequenceOfDir, TColgp_SequenceOfDir)
 
-
 #endif

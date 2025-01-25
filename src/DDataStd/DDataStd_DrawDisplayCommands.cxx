@@ -34,37 +34,35 @@ extern Draw_Viewer dout;
 Standard_IMPORT Draw_Viewer dout;
 #endif
 //=======================================================================
-//function : DDataStd_PNT
-//purpose  : SetPoint (DF, entry, x, y, z)
+// function : DDataStd_PNT
+// purpose  : SetPoint (DF, entry, x, y, z)
 //=======================================================================
 
-static Standard_Integer DDataStd_PNT (Draw_Interpretor& di,
-				      Standard_Integer nb, 
-				      const char** arg) 
-{ 
-  if (nb == 6) {
+static Standard_Integer DDataStd_PNT(Draw_Interpretor& di, Standard_Integer nb, const char** arg)
+{
+  if (nb == 6)
+  {
     Handle(TDF_Data) DF;
-    if (!DDF::GetDF (arg[1], DF)) return 1;  
+    if (!DDF::GetDF(arg[1], DF))
+      return 1;
     TDF_Label L;
-    DDF::AddLabel (DF, arg[2], L);    
+    DDF::AddLabel(DF, arg[2], L);
     Standard_Real x = Draw::Atof(arg[3]);
     Standard_Real y = Draw::Atof(arg[4]);
     Standard_Real z = Draw::Atof(arg[5]);
-    TDataXtd_Point::Set (L,gp_Pnt(x,y,z));
+    TDataXtd_Point::Set(L, gp_Pnt(x, y, z));
     return 0;
-  }  
+  }
   di << "DDataStd_PNT : Error : not done\n";
   return 1;
 }
- 
+
 //=======================================================================
-//function : DDataStd_Rmdraw
-//purpose  : Rmdraw (name)
+// function : DDataStd_Rmdraw
+// purpose  : Rmdraw (name)
 //=======================================================================
 
-static Standard_Integer DDataStd_Rmdraw (Draw_Interpretor& ,
-					      Standard_Integer nb, 
-					      const char** arg)
+static Standard_Integer DDataStd_Rmdraw(Draw_Interpretor&, Standard_Integer nb, const char** arg)
 {
   if (nb != 2)
   {
@@ -72,9 +70,9 @@ static Standard_Integer DDataStd_Rmdraw (Draw_Interpretor& ,
     return 1;
   }
 
-  if (Handle(Draw_Drawable3D) D3D = Draw::Get (arg[1]))
+  if (Handle(Draw_Drawable3D) D3D = Draw::Get(arg[1]))
   {
-    dout.RemoveDrawable (D3D);
+    dout.RemoveDrawable(D3D);
     return 0;
   }
   else
@@ -85,28 +83,33 @@ static Standard_Integer DDataStd_Rmdraw (Draw_Interpretor& ,
 }
 
 //=======================================================================
-//function : DDataStd_DrawOwner
-//purpose  : DrawOwner (drawable)
+// function : DDataStd_DrawOwner
+// purpose  : DrawOwner (drawable)
 //=======================================================================
 
-static Standard_Integer DDataStd_DrawOwner (Draw_Interpretor& di,
-					     Standard_Integer nb, 
-					     const char** arg)
+static Standard_Integer DDataStd_DrawOwner(Draw_Interpretor& di,
+                                           Standard_Integer  nb,
+                                           const char**      arg)
 {
-  if (nb == 2) {
+  if (nb == 2)
+  {
     Handle(Draw_Drawable3D) D = Draw::Get(arg[1]);
-    if (!D.IsNull()) {
+    if (!D.IsNull())
+    {
       TCollection_AsciiString entry;
-      TCollection_AsciiString name (D->Name());
-      Standard_Integer index = name.Search("_0:");
-      if (index > 0) {
-	entry = name.Split(index);
-	name.Remove(index);
-	di << entry.ToCString();
+      TCollection_AsciiString name(D->Name());
+      Standard_Integer        index = name.Search("_0:");
+      if (index > 0)
+      {
+        entry = name.Split(index);
+        name.Remove(index);
+        di << entry.ToCString();
       }
-      else di << name.ToCString();
+      else
+        di << name.ToCString();
     }
-    else di << 0;
+    else
+      di << 0;
     return 0;
   }
   di << "DDataStd_DrawOwner : Error\n";
@@ -114,19 +117,22 @@ static Standard_Integer DDataStd_DrawOwner (Draw_Interpretor& di,
 }
 
 //=======================================================================
-//function : DDataStd_DrawDisplay
-//purpose  : DDisplay (DOC,entry)
+// function : DDataStd_DrawDisplay
+// purpose  : DDisplay (DOC,entry)
 //=======================================================================
 
-static Standard_Integer DDataStd_DrawDisplay (Draw_Interpretor& di,
-						Standard_Integer nb, 
-						const char** arg) 
-{   
-  if (nb == 3) {   
+static Standard_Integer DDataStd_DrawDisplay(Draw_Interpretor& di,
+                                             Standard_Integer  nb,
+                                             const char**      arg)
+{
+  if (nb == 3)
+  {
     Handle(TDF_Data) DF;
-    if (!DDF::GetDF(arg[1],DF)) return 1;   
+    if (!DDF::GetDF(arg[1], DF))
+      return 1;
     TDF_Label L;
-    if (!DDF::FindLabel(DF,arg[2],L)) return 1;
+    if (!DDF::FindLabel(DF, arg[2], L))
+      return 1;
     DDataStd_DrawPresentation::Display(L);
     return 0;
   }
@@ -140,12 +146,12 @@ static Standard_Integer DDataStd_DrawDisplay (Draw_Interpretor& di,
 // //=======================================================================
 
 // static Standard_Integer DDataStd_DrawRedisplay (Draw_Interpretor&,
-// 						  Standard_Integer nb, 
-// 						  const char** arg) 
-// {   
-//   if (nb == 3) {     
+// 						  Standard_Integer nb,
+// 						  const char** arg)
+// {
+//   if (nb == 3) {
 //     Handle(TDF_Data) DF;
-//     if (!DDF::GetDF(arg[1],DF)) return 1;   
+//     if (!DDF::GetDF(arg[1],DF)) return 1;
 //     TDF_Label L;
 //     if (!DDF::FindLabel(DF,arg[2],L)) return 1;
 //     DDataStd_DrawPresentation::Display(L,Standard_True);
@@ -155,21 +161,23 @@ static Standard_Integer DDataStd_DrawDisplay (Draw_Interpretor& di,
 //   return 1;
 // }
 
-
 //=======================================================================
-//function : DDataStd_DrawErase
-//purpose  : DrawErase (DOC,entry)
+// function : DDataStd_DrawErase
+// purpose  : DrawErase (DOC,entry)
 //=======================================================================
 
-static Standard_Integer DDataStd_DrawErase (Draw_Interpretor& di,
-					      Standard_Integer nb, 
-					      const char** arg) 
-{   
-  if (nb == 3) {     
+static Standard_Integer DDataStd_DrawErase(Draw_Interpretor& di,
+                                           Standard_Integer  nb,
+                                           const char**      arg)
+{
+  if (nb == 3)
+  {
     Handle(TDF_Data) DF;
-    if (!DDF::GetDF(arg[1],DF)) return 1;   
+    if (!DDF::GetDF(arg[1], DF))
+      return 1;
     TDF_Label L;
-    if (!DDF::FindLabel(DF,arg[2],L)) return 1;
+    if (!DDF::FindLabel(DF, arg[2], L))
+      return 1;
     DDataStd_DrawPresentation::Erase(L);
     return 0;
   }
@@ -178,19 +186,22 @@ static Standard_Integer DDataStd_DrawErase (Draw_Interpretor& di,
 }
 
 //=======================================================================
-//function : DDataStd_DrawUpdate
-//purpose  : DrawUpdate (DOC,entry)
+// function : DDataStd_DrawUpdate
+// purpose  : DrawUpdate (DOC,entry)
 //=======================================================================
 
-static Standard_Integer DDataStd_DrawUpdate (Draw_Interpretor& di,
-					       Standard_Integer nb, 
-					       const char** arg) 
-{   
-  if (nb == 3) {  
+static Standard_Integer DDataStd_DrawUpdate(Draw_Interpretor& di,
+                                            Standard_Integer  nb,
+                                            const char**      arg)
+{
+  if (nb == 3)
+  {
     Handle(TDF_Data) DF;
-    if (!DDF::GetDF(arg[1],DF)) return 1;   
+    if (!DDF::GetDF(arg[1], DF))
+      return 1;
     TDF_Label L;
-    if (!DDF::FindLabel(DF,arg[2],L)) return 1;     
+    if (!DDF::FindLabel(DF, arg[2], L))
+      return 1;
     DDataStd_DrawPresentation::Update(L);
     return 0;
   }
@@ -198,72 +209,45 @@ static Standard_Integer DDataStd_DrawUpdate (Draw_Interpretor& di,
   return 1;
 }
 
-//=======================================================================
-//function : DDataStd_DrawRepaint
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-static Standard_Integer DDataStd_DrawRepaint (Draw_Interpretor& /*di*/,
-					      Standard_Integer /*nb*/, 
-					      const char** /*arg*/) 
-{  
-  dout.Repaint3D(); 
+static Standard_Integer DDataStd_DrawRepaint(Draw_Interpretor& /*di*/,
+                                             Standard_Integer /*nb*/,
+                                             const char** /*arg*/)
+{
+  dout.Repaint3D();
   dout.Flush();
   return 0;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : DrawDisplayCommands
-//purpose  : 
-//=======================================================================
-
-
-void DDataStd::DrawDisplayCommands (Draw_Interpretor& theCommands)
-{  
+void DDataStd::DrawDisplayCommands(Draw_Interpretor& theCommands)
+{
 
   static Standard_Boolean done = Standard_False;
-  if (done) return;
-  done = Standard_True;
-  const char* g = "SKETCH commands" ;
+  if (done)
+    return;
+  done          = Standard_True;
+  const char* g = "SKETCH commands";
 
+  theCommands.Add("PNT", "PNT (DF, entry, x, y, z)", __FILE__, DDataStd_PNT, g);
 
-  theCommands.Add ("PNT", 
-                   "PNT (DF, entry, x, y, z)",
-		   __FILE__, DDataStd_PNT, g);
-  
-  
   // remove drawable
 
-
-  theCommands.Add ("rmdraw", 
-                   "rmdraw(name)",
-		   __FILE__, DDataStd_Rmdraw, g);
-
+  theCommands.Add("rmdraw", "rmdraw(name)", __FILE__, DDataStd_Rmdraw, g);
 
   // rtetrieve a label from a drawable
 
+  theCommands.Add("DrawOwner", "DrawOwner (drawable)", __FILE__, DDataStd_DrawOwner, g);
 
-  theCommands.Add ("DrawOwner", 
-                   "DrawOwner (drawable)",
-		   __FILE__, DDataStd_DrawOwner, g); 
-  
-  // draw display 
- 
+  // draw display
 
-  theCommands.Add ("DrawDisplay", 
-                   "DrawDisplay (DF, entry)",
-		   __FILE__, DDataStd_DrawDisplay, g);  
+  theCommands.Add("DrawDisplay", "DrawDisplay (DF, entry)", __FILE__, DDataStd_DrawDisplay, g);
 
-  theCommands.Add ("DrawErase", 
-                   "DrawErase (DF, entry)",
-		   __FILE__, DDataStd_DrawErase, g);    
+  theCommands.Add("DrawErase", "DrawErase (DF, entry)", __FILE__, DDataStd_DrawErase, g);
 
-  theCommands.Add ("DrawUpdate", 
-                   "DrawUpdate (DF, entry)",
-		   __FILE__, DDataStd_DrawUpdate, g);  
+  theCommands.Add("DrawUpdate", "DrawUpdate (DF, entry)", __FILE__, DDataStd_DrawUpdate, g);
 
-  theCommands.Add ("DrawRepaint", 
-                   "update the draw viewer",
-		   __FILE__, DDataStd_DrawRepaint, g);    
+  theCommands.Add("DrawRepaint", "update the draw viewer", __FILE__, DDataStd_DrawRepaint, g);
 }

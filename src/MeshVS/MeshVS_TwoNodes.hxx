@@ -25,32 +25,35 @@ struct MeshVS_TwoNodes
 {
   Standard_Integer First, Second;
 
-  MeshVS_TwoNodes (Standard_Integer aFirst=0, Standard_Integer aSecond=0) 
-  : First(aFirst), Second(aSecond) {}
+  MeshVS_TwoNodes(Standard_Integer aFirst = 0, Standard_Integer aSecond = 0)
+      : First(aFirst),
+        Second(aSecond)
+  {
+  }
 
   bool operator==(const MeshVS_TwoNodes& theTwoNode) const
   {
-    return ((First == theTwoNode.First) && (Second == theTwoNode.Second)) ||
-      ((First == theTwoNode.Second) && (Second == theTwoNode.First));
+    return ((First == theTwoNode.First) && (Second == theTwoNode.Second))
+           || ((First == theTwoNode.Second) && (Second == theTwoNode.First));
   }
 };
 
 namespace std
 {
-  template<>
-  struct hash<MeshVS_TwoNodes>
+template <>
+struct hash<MeshVS_TwoNodes>
+{
+  size_t operator()(const MeshVS_TwoNodes& theTwoNodes) const noexcept
   {
-    size_t operator()(const MeshVS_TwoNodes& theTwoNodes) const noexcept
+    // Combine two int values into a single hash value.
+    int aCombination[2]{theTwoNodes.First, theTwoNodes.Second};
+    if (aCombination[0] > aCombination[1])
     {
-      // Combine two int values into a single hash value.
-      int aCombination[2]{ theTwoNodes.First, theTwoNodes.Second };
-      if (aCombination[0] > aCombination[1])
-      {
-        std::swap(aCombination[0], aCombination[1]);
-      }
-      return opencascade::hashBytes(aCombination, sizeof(aCombination));
+      std::swap(aCombination[0], aCombination[1]);
     }
-  };
-}
+    return opencascade::hashBytes(aCombination, sizeof(aCombination));
+  }
+};
+} // namespace std
 
 #endif

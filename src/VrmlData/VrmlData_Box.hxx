@@ -26,78 +26,79 @@
  */
 class VrmlData_Box : public VrmlData_Geometry
 {
- public:
+public:
   // ---------- PUBLIC METHODS ----------
 
   /**
    * Empty constructor
    */
-  inline VrmlData_Box           ()
-    : mySize (2., 2., 2.)
-  {}
+  inline VrmlData_Box()
+      : mySize(2., 2., 2.)
+  {
+  }
 
   /**
    * Constructor
    */
-  inline VrmlData_Box           (const VrmlData_Scene&  theScene,
-                                 const char             * theName,
-                                 const Standard_Real    sizeX = 2.,
-                                 const Standard_Real    sizeY = 2.,
-                                 const Standard_Real    sizeZ = 2.)
-    : VrmlData_Geometry (theScene, theName),
-      mySize            (sizeX, sizeY, sizeZ)
-  {}
+  inline VrmlData_Box(const VrmlData_Scene& theScene,
+                      const char*           theName,
+                      const Standard_Real   sizeX = 2.,
+                      const Standard_Real   sizeY = 2.,
+                      const Standard_Real   sizeZ = 2.)
+      : VrmlData_Geometry(theScene, theName),
+        mySize(sizeX, sizeY, sizeZ)
+  {
+  }
 
   /**
    * Query the Box size
    */
-  inline const gp_XYZ&  Size    () const                { return mySize; }
+  inline const gp_XYZ& Size() const { return mySize; }
 
   /**
    * Set the Box Size
    */
-  inline void           SetSize (const gp_XYZ& theSize)
-  { mySize = theSize; SetModified(); }
+  inline void SetSize(const gp_XYZ& theSize)
+  {
+    mySize = theSize;
+    SetModified();
+  }
 
   /**
    * Query the primitive topology. This method returns a Null shape if there
    * is an internal error during the primitive creation (zero radius, etc.)
    */
-  Standard_EXPORT virtual const Handle(TopoDS_TShape)&
-                        TShape  () Standard_OVERRIDE;
+  Standard_EXPORT virtual const Handle(TopoDS_TShape)& TShape() Standard_OVERRIDE;
 
   /**
    * Create a copy of this node.
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.
    */
-  Standard_EXPORT virtual Handle(VrmlData_Node)
-                        Clone   (const Handle(VrmlData_Node)& theOther)const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(VrmlData_Node) Clone(const Handle(VrmlData_Node)& theOther) const
+    Standard_OVERRIDE;
 
   /**
    * Fill the Node internal data from the given input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus
-                        Read    (VrmlData_InBuffer& theBuffer) Standard_OVERRIDE;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) Standard_OVERRIDE;
 
   /**
    * Write the Node to output stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus
-                        Write   (const char * thePrefix) const Standard_OVERRIDE;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const Standard_OVERRIDE;
 
- private:
+private:
   // ---------- PRIVATE FIELDS ----------
 
-  gp_XYZ        mySize;
+  gp_XYZ mySize;
 
- public:
-// Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI_INLINE(VrmlData_Box,VrmlData_Geometry)
+public:
+  // Declaration of CASCADE RTTI
+  DEFINE_STANDARD_RTTI_INLINE(VrmlData_Box, VrmlData_Geometry)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE (VrmlData_Box, VrmlData_Geometry)
-
+DEFINE_STANDARD_HANDLE(VrmlData_Box, VrmlData_Geometry)
 
 #endif

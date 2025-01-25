@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GeomToStep_MakeCartesianPoint.hxx>
 #include <GeomToStep_MakePolyline.hxx>
 #include <gp_Pnt.hxx>
@@ -27,10 +26,10 @@
 #include <TCollection_HAsciiString.hxx>
 
 //=============================================================================
-// Creation d' une polyline Step a partir d' une Array1OfPnt 
+// Creation d' une polyline Step a partir d' une Array1OfPnt
 //=============================================================================
-GeomToStep_MakePolyline::GeomToStep_MakePolyline( const TColgp_Array1OfPnt& P,
-                                                  const StepData_Factors& theLocalFactors)
+GeomToStep_MakePolyline::GeomToStep_MakePolyline(const TColgp_Array1OfPnt& P,
+                                                 const StepData_Factors&   theLocalFactors)
 {
   gp_Pnt P1;
 #include "GeomToStep_MakePolyline_gen.pxx"
@@ -40,19 +39,19 @@ GeomToStep_MakePolyline::GeomToStep_MakePolyline( const TColgp_Array1OfPnt& P,
 // Creation d' une polyline Step a partir d' une Array1OfPnt2d
 //=============================================================================
 
-GeomToStep_MakePolyline::GeomToStep_MakePolyline( const TColgp_Array1OfPnt2d& P,
-                                                  const StepData_Factors& theLocalFactors)
+GeomToStep_MakePolyline::GeomToStep_MakePolyline(const TColgp_Array1OfPnt2d& P,
+                                                 const StepData_Factors&     theLocalFactors)
 {
   gp_Pnt2d P1;
 #include "GeomToStep_MakePolyline_gen.pxx"
 }
+
 //=============================================================================
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_Polyline) &
-      GeomToStep_MakePolyline::Value() const
+const Handle(StepGeom_Polyline)& GeomToStep_MakePolyline::Value() const
 {
-  StdFail_NotDone_Raise_if (!done, "GeomToStep_MakePolyline::Value() - no result");
+  StdFail_NotDone_Raise_if(!done, "GeomToStep_MakePolyline::Value() - no result");
   return thePolyline;
 }

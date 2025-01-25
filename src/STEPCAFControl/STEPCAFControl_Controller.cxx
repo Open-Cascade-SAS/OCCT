@@ -13,37 +13,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_Static.hxx>
 #include <Standard_Type.hxx>
 #include <STEPCAFControl_ActorWrite.hxx>
 #include <STEPCAFControl_Controller.hxx>
 #include <XSAlgo.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(STEPCAFControl_Controller,STEPControl_Controller)
+IMPLEMENT_STANDARD_RTTIEXT(STEPCAFControl_Controller, STEPControl_Controller)
 
-//=======================================================================
-//function : STEPCAFControl_Controller
-//purpose  : 
-//=======================================================================
-STEPCAFControl_Controller::STEPCAFControl_Controller ()
+//=================================================================================================
+
+STEPCAFControl_Controller::STEPCAFControl_Controller()
 {
   Handle(STEPCAFControl_ActorWrite) ActWrite = new STEPCAFControl_ActorWrite;
-  myAdaptorWrite = ActWrite;
+  myAdaptorWrite                             = ActWrite;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean STEPCAFControl_Controller::Init ()
+Standard_Boolean STEPCAFControl_Controller::Init()
 {
   static Standard_Mutex theMutex;
   {
-    Standard_Mutex::Sentry aSentry(theMutex);
+    Standard_Mutex::Sentry  aSentry(theMutex);
     static Standard_Boolean inic = Standard_False;
-    if (inic) return Standard_True;
+    if (inic)
+      return Standard_True;
     inic = Standard_True;
   }
   // self-registering
@@ -59,18 +54,18 @@ Standard_Boolean STEPCAFControl_Controller::Init ()
 
   // Indicates whether to write sub-shape names to 'Name' attributes of
   // STEP Representation Items
-  Interface_Static::Init   ("stepcaf", "write.stepcaf.subshapes.name", 'e', "");
-  Interface_Static::Init   ("stepcaf", "write.stepcaf.subshapes.name", '&', "enum 0");
-  Interface_Static::Init   ("stepcaf", "write.stepcaf.subshapes.name", '&', "eval Off"); // 0
-  Interface_Static::Init   ("stepcaf", "write.stepcaf.subshapes.name", '&', "eval On");  // 1
+  Interface_Static::Init("stepcaf", "write.stepcaf.subshapes.name", 'e', "");
+  Interface_Static::Init("stepcaf", "write.stepcaf.subshapes.name", '&', "enum 0");
+  Interface_Static::Init("stepcaf", "write.stepcaf.subshapes.name", '&', "eval Off"); // 0
+  Interface_Static::Init("stepcaf", "write.stepcaf.subshapes.name", '&', "eval On");  // 1
   Interface_Static::SetIVal("write.stepcaf.subshapes.name", 0); // Disabled by default
 
   // Indicates whether to read sub-shape names from 'Name' attributes of
   // STEP Representation Items
-  Interface_Static::Init   ("stepcaf", "read.stepcaf.subshapes.name", 'e', "");
-  Interface_Static::Init   ("stepcaf", "read.stepcaf.subshapes.name", '&', "enum 0");
-  Interface_Static::Init   ("stepcaf", "read.stepcaf.subshapes.name", '&', "eval Off"); // 0
-  Interface_Static::Init   ("stepcaf", "read.stepcaf.subshapes.name", '&', "eval On");  // 1
+  Interface_Static::Init("stepcaf", "read.stepcaf.subshapes.name", 'e', "");
+  Interface_Static::Init("stepcaf", "read.stepcaf.subshapes.name", '&', "enum 0");
+  Interface_Static::Init("stepcaf", "read.stepcaf.subshapes.name", '&', "eval Off"); // 0
+  Interface_Static::Init("stepcaf", "read.stepcaf.subshapes.name", '&', "eval On");  // 1
   Interface_Static::SetIVal("read.stepcaf.subshapes.name", 0); // Disabled by default
 
   return Standard_True;

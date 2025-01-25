@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef TInspector_Preferences_H
 #define TInspector_Preferences_H
@@ -40,7 +40,11 @@ public:
 
   //! Sets path to a preferences file
   //! \param thePath a path
-  void SetDirectory (const TCollection_AsciiString& thePath) { reset(); myDirectory = thePath; }
+  void SetDirectory(const TCollection_AsciiString& thePath)
+  {
+    reset();
+    myDirectory = thePath;
+  }
 
   //! Returns path to a preferences file
   //! \return path
@@ -48,14 +52,17 @@ public:
 
   //! Returns plugin preferences
   //! \param thePluginName a plugin name
-  Standard_EXPORT void GetPreferences (const TCollection_AsciiString& thePluginName,
-                                       TInspectorAPI_PreferencesDataMap& theItem);
+  Standard_EXPORT void GetPreferences(const TCollection_AsciiString&    thePluginName,
+                                      TInspectorAPI_PreferencesDataMap& theItem);
 
   //! Stores plugin preferences
   //! \param thePluginName a plugin name
   //! \theItem container of plugin preferences values in form: <name, value>
-  void SetPreferences (const TCollection_AsciiString& thePluginName, const TInspectorAPI_PreferencesDataMap& theItem)
-  { myLoadedPreferences.Bind(thePluginName, theItem); }
+  void SetPreferences(const TCollection_AsciiString&          thePluginName,
+                      const TInspectorAPI_PreferencesDataMap& theItem)
+  {
+    myLoadedPreferences.Bind(thePluginName, theItem);
+  }
 
   //! Stores plugin preferences into a preferences file
   Standard_EXPORT void StorePreferences();
@@ -68,10 +75,15 @@ private:
   void loadPreferences();
 
   //! Clears all internal containers with information of already loaded file
-  void reset() { myLoadedPreferences.Clear(); myIsLoadedPreferences = Standard_False; }
+  void reset()
+  {
+    myLoadedPreferences.Clear();
+    myIsLoadedPreferences = Standard_False;
+  }
 
   //! Reads plugin preferences and fill container
-  void readPluginItem(const QDomElement thePluginElement, TInspectorAPI_PreferencesDataMap& theItem);
+  void readPluginItem(const QDomElement                 thePluginElement,
+                      TInspectorAPI_PreferencesDataMap& theItem);
 
   //! Returns text of attribute document
   static Standard_CString documentKey() { return "document"; }
@@ -92,7 +104,8 @@ private:
   //! directory of preferences file
   TCollection_AsciiString myDirectory;
   //! container of already loaded preferences : cache
-  NCollection_DataMap<TCollection_AsciiString, TInspectorAPI_PreferencesDataMap> myLoadedPreferences;
+  NCollection_DataMap<TCollection_AsciiString, TInspectorAPI_PreferencesDataMap>
+    myLoadedPreferences;
   //! state whether the preferences of the current directory is loaded
   Standard_Boolean myIsLoadedPreferences;
 };

@@ -20,46 +20,49 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_Transformation, Standard_Transient)
 
-Geom_Transformation::Geom_Transformation () { }
+Geom_Transformation::Geom_Transformation() {}
 
+Geom_Transformation::Geom_Transformation(const gp_Trsf& T)
+    : gpTrsf(T)
+{
+}
 
-Geom_Transformation::Geom_Transformation (const gp_Trsf& T) 
-: gpTrsf (T) { }
-
-
-Handle(Geom_Transformation) Geom_Transformation::Copy() const {
+Handle(Geom_Transformation) Geom_Transformation::Copy() const
+{
 
   Handle(Geom_Transformation) T;
-  T = new Geom_Transformation (gpTrsf);
-  return T; 
+  T = new Geom_Transformation(gpTrsf);
+  return T;
 }
 
-Handle(Geom_Transformation) Geom_Transformation::Inverted () const {
+Handle(Geom_Transformation) Geom_Transformation::Inverted() const
+{
 
-   return new Geom_Transformation (gpTrsf.Inverted());
+  return new Geom_Transformation(gpTrsf.Inverted());
 }
 
+Handle(Geom_Transformation) Geom_Transformation::Multiplied(
+  const Handle(Geom_Transformation)& Other) const
+{
 
-Handle(Geom_Transformation) Geom_Transformation::Multiplied (
-const Handle(Geom_Transformation)& Other) const {
-
-   return new Geom_Transformation (gpTrsf.Multiplied (Other->Trsf()));
+  return new Geom_Transformation(gpTrsf.Multiplied(Other->Trsf()));
 }
 
-Handle(Geom_Transformation) Geom_Transformation::Powered (const Standard_Integer N) const {
+Handle(Geom_Transformation) Geom_Transformation::Powered(const Standard_Integer N) const
+{
 
   gp_Trsf T = gpTrsf;
-  T.Power (N);  
-  return new Geom_Transformation (T);
+  T.Power(N);
+  return new Geom_Transformation(T);
 }
 
-
-void Geom_Transformation::PreMultiply (const Handle(Geom_Transformation)& Other){
-
-   gpTrsf.PreMultiply (Other->Trsf());
-}
-
-void Geom_Transformation::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom_Transformation::PreMultiply(const Handle(Geom_Transformation)& Other)
 {
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &gpTrsf)
+
+  gpTrsf.PreMultiply(Other->Trsf());
+}
+
+void Geom_Transformation::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &gpTrsf)
 }

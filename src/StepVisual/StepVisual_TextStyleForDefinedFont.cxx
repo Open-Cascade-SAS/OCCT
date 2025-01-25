@@ -11,29 +11,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepVisual_Colour.hxx>
 #include <StepVisual_TextStyleForDefinedFont.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TextStyleForDefinedFont,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TextStyleForDefinedFont, Standard_Transient)
 
-StepVisual_TextStyleForDefinedFont::StepVisual_TextStyleForDefinedFont ()  {}
+StepVisual_TextStyleForDefinedFont::StepVisual_TextStyleForDefinedFont() {}
 
-void StepVisual_TextStyleForDefinedFont::Init(
-	const Handle(StepVisual_Colour)& aTextColour)
+void StepVisual_TextStyleForDefinedFont::Init(const Handle(StepVisual_Colour)& aTextColour)
 {
-	// --- classe own fields ---
-	textColour = aTextColour;
+  // --- classe own fields ---
+  textColour = aTextColour;
 }
-
 
 void StepVisual_TextStyleForDefinedFont::SetTextColour(const Handle(StepVisual_Colour)& aTextColour)
 {
-	textColour = aTextColour;
+  textColour = aTextColour;
 }
 
 Handle(StepVisual_Colour) StepVisual_TextStyleForDefinedFont::TextColour() const
 {
-	return textColour;
+  return textColour;
 }

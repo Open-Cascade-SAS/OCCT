@@ -15,21 +15,20 @@
 #ifndef _BOPAlgo_CheckStatus_HeaderFile
 #define _BOPAlgo_CheckStatus_HeaderFile
 
-
 enum BOPAlgo_CheckStatus
 {
-BOPAlgo_CheckUnknown,
-BOPAlgo_BadType,
-BOPAlgo_SelfIntersect,
-BOPAlgo_TooSmallEdge,
-BOPAlgo_NonRecoverableFace,
-BOPAlgo_IncompatibilityOfVertex,
-BOPAlgo_IncompatibilityOfEdge,
-BOPAlgo_IncompatibilityOfFace,
-BOPAlgo_OperationAborted,
-BOPAlgo_GeomAbs_C0,
-BOPAlgo_InvalidCurveOnSurface,
-BOPAlgo_NotValid
+  BOPAlgo_CheckUnknown,
+  BOPAlgo_BadType,
+  BOPAlgo_SelfIntersect,
+  BOPAlgo_TooSmallEdge,
+  BOPAlgo_NonRecoverableFace,
+  BOPAlgo_IncompatibilityOfVertex,
+  BOPAlgo_IncompatibilityOfEdge,
+  BOPAlgo_IncompatibilityOfFace,
+  BOPAlgo_OperationAborted,
+  BOPAlgo_GeomAbs_C0,
+  BOPAlgo_InvalidCurveOnSurface,
+  BOPAlgo_NotValid
 };
 
 #endif // _BOPAlgo_CheckStatus_HeaderFile

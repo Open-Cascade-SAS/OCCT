@@ -74,7 +74,7 @@ public:
     try
     {
       OCC_CATCH_SIGNALS
-      //aRes = Draw::GetInterpretor().Eval (theCommand.c_str());
+      // aRes = Draw::GetInterpretor().Eval (theCommand.c_str());
       aRes = Draw_Interprete(theCommand.c_str()) ? 1 : 0;
     }
     catch (Standard_Failure& anExcept)
@@ -135,7 +135,7 @@ EM_JS(void, occJSPrintMessage, (const char* theStr, int theGravity), {
   }
   else
   {
-    //console.info (UTF8ToString(theStr));
+    // console.info (UTF8ToString(theStr));
   }
 });
 
@@ -222,8 +222,7 @@ static Standard_Integer Pload(Draw_Interpretor& theDI,
   NCollection_IndexedMap<TCollection_AsciiString> aPlugins;
 
   std::function<void(const TCollection_AsciiString&)> processAlias;
-  processAlias = [&](const TCollection_AsciiString& theAlias) -> void
-  {
+  processAlias = [&](const TCollection_AsciiString& theAlias) -> void {
     auto anAliasIt = anAliasMap.find(theAlias.ToCString());
     if (anAliasIt != anAliasMap.end())
     {
@@ -266,20 +265,18 @@ static Standard_Integer Pload(Draw_Interpretor& theDI,
 }
 #endif
 
-//=======================================================================
-//function : Draw_InitAppli
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
 void Draw_InitAppli(Draw_Interpretor& theDI)
 {
 #if defined(__EMSCRIPTEN__)
   // open JavaScript console within the Browser to see this output
-  Message_Gravity                  aGravity          = Message_Info;
-  Handle(Message_PrinterSystemLog) aJSConsolePrinter = new Message_PrinterSystemLog("DRAWEXE",
-                                                                                    aGravity);
+  Message_Gravity                  aGravity = Message_Info;
+  Handle(Message_PrinterSystemLog) aJSConsolePrinter =
+    new Message_PrinterSystemLog("DRAWEXE", aGravity);
   Message::DefaultMessenger()->AddPrinter(aJSConsolePrinter);
-  // replace printer into std::cout by a printer into a custom callback Module.printMessage accepting message gravity
+  // replace printer into std::cout by a printer into a custom callback Module.printMessage
+  // accepting message gravity
   Message::DefaultMessenger()->RemovePrinters(STANDARD_TYPE(Message_PrinterOStream));
   Handle(DRAWEXE_WasmModulePrinter) aJSModulePrinter = new DRAWEXE_WasmModulePrinter(aGravity);
   Message::DefaultMessenger()->AddPrinter(aJSModulePrinter);

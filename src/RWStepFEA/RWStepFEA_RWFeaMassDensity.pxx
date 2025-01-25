@@ -27,48 +27,31 @@ class StepFEA_FeaMassDensity;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write tool for FeaMassDensity
-class RWStepFEA_RWFeaMassDensity 
+class RWStepFEA_RWFeaMassDensity
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_HIDDEN RWStepFEA_RWFeaMassDensity();
-  
+
   //! Reads FeaMassDensity
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepFEA_FeaMassDensity)& ent) const;
-  
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& data,
+                                const Standard_Integer                 num,
+                                Handle(Interface_Check)&               ach,
+                                const Handle(StepFEA_FeaMassDensity)&  ent) const;
+
   //! Writes FeaMassDensity
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepFEA_FeaMassDensity)& ent) const;
-  
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                  SW,
+                                 const Handle(StepFEA_FeaMassDensity)& ent) const;
+
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepFEA_FeaMassDensity)& ent, Interface_EntityIterator& iter) const;
-
-
-
+  Standard_HIDDEN void Share(const Handle(StepFEA_FeaMassDensity)& ent,
+                             Interface_EntityIterator&             iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepFEA_RWFeaMassDensity_HeaderFile

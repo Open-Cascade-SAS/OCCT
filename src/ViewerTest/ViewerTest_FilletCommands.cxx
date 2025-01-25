@@ -34,93 +34,107 @@
 #include <AIS_Shape.hxx>
 
 #ifdef _WIN32
-# include <stdio.h>
+  #include <stdio.h>
 #endif
 
-static Standard_Real tesp = 1.e-4;
-static Standard_Real t3d = 1.e-4;
-static Standard_Real t2d = 1.e-5;
-static Standard_Real ta  = 1.e-2;
-static Standard_Real fl  = 1.e-3;
+static Standard_Real tesp       = 1.e-4;
+static Standard_Real t3d        = 1.e-4;
+static Standard_Real t2d        = 1.e-5;
+static Standard_Real ta         = 1.e-2;
+static Standard_Real fl         = 1.e-3;
 static Standard_Real tapp_angle = 1.e-2;
 static GeomAbs_Shape blend_cont = GeomAbs_C1;
 
 static BRepFilletAPI_MakeFillet* Rakk = 0;
 
-
 static void printtolblend(Draw_Interpretor& di)
 {
-  di<<"tolerance ang : "<<ta<<"\n";
-  di<<"tolerance 3d  : "<<t3d<<"\n";
-  di<<"tolerance 2d  : "<<t2d<<"\n";
-  di<<"fleche        : "<<fl<<"\n";
+  di << "tolerance ang : " << ta << "\n";
+  di << "tolerance 3d  : " << t3d << "\n";
+  di << "tolerance 2d  : " << t2d << "\n";
+  di << "fleche        : " << fl << "\n";
 
-  di<<"tolblend "<<ta<<" "<<t3d<<" "<<t2d<<" "<<fl<<"\n";
+  di << "tolblend " << ta << " " << t3d << " " << t2d << " " << fl << "\n";
 }
 
 static Standard_Integer VBLEND(Draw_Interpretor& di, Standard_Integer narg, const char** a)
 {
-  if(Rakk != 0) {delete Rakk; Rakk = 0;}
+  if (Rakk != 0)
+  {
+    delete Rakk;
+    Rakk = 0;
+  }
   printtolblend(di);
-  if (narg<5) return 1;
-  
-  Standard_Integer NbToPick = (narg -4)/2;
-  Handle(TopTools_HArray1OfShape) arr = new TopTools_HArray1OfShape(1,NbToPick);
-  if(ViewerTest::PickShapes(TopAbs_EDGE,arr)){
-    for(Standard_Integer i=1;i<=NbToPick;i++){
+  if (narg < 5)
+    return 1;
+
+  Standard_Integer                NbToPick = (narg - 4) / 2;
+  Handle(TopTools_HArray1OfShape) arr      = new TopTools_HArray1OfShape(1, NbToPick);
+  if (ViewerTest::PickShapes(TopAbs_EDGE, arr))
+  {
+    for (Standard_Integer i = 1; i <= NbToPick; i++)
+    {
       TopoDS_Shape PickSh = arr->Value(i);
-      if(!PickSh.IsNull()){
-	DBRep::Set(a[(2*i+2)],PickSh);
+      if (!PickSh.IsNull())
+      {
+        DBRep::Set(a[(2 * i + 2)], PickSh);
       }
     }
   }
-  
+
   TopoDS_Shape V = DBRep::Get(a[2]);
-  if(V.IsNull()) return 1;
+  if (V.IsNull())
+    return 1;
   ChFi3d_FilletShape FSh = ChFi3d_Rational;
-  if (narg%2 == 0) {
-    if (!strcasecmp(a[narg-1], "Q")) {
+  if (narg % 2 == 0)
+  {
+    if (!strcasecmp(a[narg - 1], "Q"))
+    {
       FSh = ChFi3d_QuasiAngular;
     }
-    else if (!strcasecmp(a[narg-1], "P")) {
+    else if (!strcasecmp(a[narg - 1], "P"))
+    {
       FSh = ChFi3d_Polynomial;
     }
   }
-  Rakk = new BRepFilletAPI_MakeFillet(V,FSh);
+  Rakk = new BRepFilletAPI_MakeFillet(V, FSh);
   Rakk->SetParams(ta, tesp, t2d, t3d, t2d, fl);
   Rakk->SetContinuity(blend_cont, tapp_angle);
-  Standard_Real Rad;
-  TopoDS_Edge E;
+  Standard_Real    Rad;
+  TopoDS_Edge      E;
   Standard_Integer nbedge = 0;
-  for (Standard_Integer ii = 1; ii < (narg-1)/2; ii++){
-    Rad = Draw::Atof(a[2*ii + 1]);
-    TopoDS_Shape aLocalShape = DBRep::Get(a[(2*ii+2)],TopAbs_EDGE);
-    E = TopoDS::Edge(aLocalShape);
-//    E = TopoDS::Edge(DBRep::Get(a[(2*ii+2)],TopAbs_EDGE));
-    if(!E.IsNull()){
-      Rakk->Add(Rad,E);
+  for (Standard_Integer ii = 1; ii < (narg - 1) / 2; ii++)
+  {
+    Rad                      = Draw::Atof(a[2 * ii + 1]);
+    TopoDS_Shape aLocalShape = DBRep::Get(a[(2 * ii + 2)], TopAbs_EDGE);
+    E                        = TopoDS::Edge(aLocalShape);
+    //    E = TopoDS::Edge(DBRep::Get(a[(2*ii+2)],TopAbs_EDGE));
+    if (!E.IsNull())
+    {
+      Rakk->Add(Rad, E);
       nbedge++;
     }
   }
-  if(!nbedge) return 1;
+  if (!nbedge)
+    return 1;
   Rakk->Build();
-  if(!Rakk->IsDone()) return 1;
+  if (!Rakk->IsDone())
+    return 1;
   TopoDS_Shape res = Rakk->Shape();
-  DBRep::Set(a[1],res);
+  DBRep::Set(a[1], res);
 
   // visu resultat...
-  ViewerTest::Display (a[2], Handle(AIS_InteractiveObject)(), false);
-  ViewerTest::Display (a[1], new AIS_Shape (res), true);
+  ViewerTest::Display(a[2], Handle(AIS_InteractiveObject)(), false);
+  ViewerTest::Display(a[1], new AIS_Shape(res), true);
   return 0;
 }
 
-
-
-
-void  ViewerTest::FilletCommands(Draw_Interpretor& theCommands)
+void ViewerTest::FilletCommands(Draw_Interpretor& theCommands)
 {
   const char* g = "Viewer Fillet construction commands";
   theCommands.Add("vblend",
-		  "vblend result object rad1 ed1 rad2 ed2 ... [R/Q/P]",__FILE__,
-		  VBLEND,g);
+                  "vblend result object rad1 ed1 rad2 ed2 ... [R/Q/P]",
+                  __FILE__,
+                  VBLEND,
+                  g);
 }

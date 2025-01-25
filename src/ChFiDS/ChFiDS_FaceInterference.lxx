@@ -15,144 +15,127 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : SetInterference
-//purpose  : 
+// function : SetInterference
+// purpose  :
 //=======================================================================
 
-inline void ChFiDS_FaceInterference:: SetInterference
-  (const Standard_Integer LineIndex,
-   const TopAbs_Orientation Trans, 
-   const Handle(Geom2d_Curve)& PCurv1,
-   const Handle(Geom2d_Curve)& PCurv2)
+inline void ChFiDS_FaceInterference::SetInterference(const Standard_Integer      LineIndex,
+                                                     const TopAbs_Orientation    Trans,
+                                                     const Handle(Geom2d_Curve)& PCurv1,
+                                                     const Handle(Geom2d_Curve)& PCurv2)
 {
-  lineindex = LineIndex;
+  lineindex      = LineIndex;
   LineTransition = Trans;
-  pCurveOnFace = PCurv1;
-  pCurveOnSurf = PCurv2;
+  pCurveOnFace   = PCurv1;
+  pCurveOnSurf   = PCurv2;
 }
 
-
 //=======================================================================
-//function : SetLineIndex
-//purpose  : 
+// function : SetLineIndex
+// purpose  :
 //=======================================================================
 
-  inline void ChFiDS_FaceInterference::SetLineIndex
-  (const Standard_Integer I)
+inline void ChFiDS_FaceInterference::SetLineIndex(const Standard_Integer I)
 {
   lineindex = I;
 }
 
 //=======================================================================
-//function : SetFirstParameter
-//purpose  : 
+// function : SetFirstParameter
+// purpose  :
 //=======================================================================
 
- inline void  ChFiDS_FaceInterference::SetFirstParameter(
-				      const Standard_Real U1)
+inline void ChFiDS_FaceInterference::SetFirstParameter(const Standard_Real U1)
 {
   firstParam = U1;
 }
 
-
 //=======================================================================
-//function : SetLastParameter
-//purpose  : 
+// function : SetLastParameter
+// purpose  :
 //=======================================================================
 
- inline void  ChFiDS_FaceInterference::SetLastParameter(
-					const Standard_Real U1)
+inline void ChFiDS_FaceInterference::SetLastParameter(const Standard_Real U1)
 {
   lastParam = U1;
 }
 
-
 //=======================================================================
-//function : LineIndex
-//purpose  : 
+// function : LineIndex
+// purpose  :
 //=======================================================================
 
- inline Standard_Integer ChFiDS_FaceInterference::LineIndex()const 
+inline Standard_Integer ChFiDS_FaceInterference::LineIndex() const
 {
   return lineindex;
 }
 
-
 //=======================================================================
-//function : Transition
-//purpose  : 
+// function : Transition
+// purpose  :
 //=======================================================================
 
- inline TopAbs_Orientation  ChFiDS_FaceInterference::Transition()const 
+inline TopAbs_Orientation ChFiDS_FaceInterference::Transition() const
 {
   return LineTransition;
 }
 
-
 //=======================================================================
-//function : PCurveOnFace
-//purpose  : 
+// function : PCurveOnFace
+// purpose  :
 //=======================================================================
 
- inline const Handle(Geom2d_Curve)&  
-  ChFiDS_FaceInterference::PCurveOnFace()const 
+inline const Handle(Geom2d_Curve)& ChFiDS_FaceInterference::PCurveOnFace() const
 {
   return pCurveOnFace;
 }
 
 //=======================================================================
-//function : PCurveOnSurf
-//purpose  : 
+// function : PCurveOnSurf
+// purpose  :
 //=======================================================================
 
- inline const Handle(Geom2d_Curve)&  ChFiDS_FaceInterference::PCurveOnSurf()const 
+inline const Handle(Geom2d_Curve)& ChFiDS_FaceInterference::PCurveOnSurf() const
 {
   return pCurveOnSurf;
 }
 
-
 //=======================================================================
-//function : ChangePCurveOnFace
-//purpose  : 
+// function : ChangePCurveOnFace
+// purpose  :
 //=======================================================================
 
- inline Handle(Geom2d_Curve)&  
-  ChFiDS_FaceInterference::ChangePCurveOnFace() 
+inline Handle(Geom2d_Curve)& ChFiDS_FaceInterference::ChangePCurveOnFace()
 {
   return pCurveOnFace;
 }
 
 //=======================================================================
-//function : ChangePCurveOnSurf
-//purpose  : 
+// function : ChangePCurveOnSurf
+// purpose  :
 //=======================================================================
 
- inline Handle(Geom2d_Curve)&  
-  ChFiDS_FaceInterference::ChangePCurveOnSurf()
+inline Handle(Geom2d_Curve)& ChFiDS_FaceInterference::ChangePCurveOnSurf()
 {
   return pCurveOnSurf;
 }
 
-
 //=======================================================================
-//function : FirstParameter
-//purpose  : 
+// function : FirstParameter
+// purpose  :
 //=======================================================================
 
- inline  Standard_Real ChFiDS_FaceInterference:: FirstParameter()const 
+inline Standard_Real ChFiDS_FaceInterference::FirstParameter() const
 {
   return firstParam;
 }
 
-
 //=======================================================================
-//function : LastParameter
-//purpose  : 
+// function : LastParameter
+// purpose  :
 //=======================================================================
 
- inline  Standard_Real  ChFiDS_FaceInterference:: LastParameter()const 
+inline Standard_Real ChFiDS_FaceInterference::LastParameter() const
 {
   return lastParam;
 }
-
-

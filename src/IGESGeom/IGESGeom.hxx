@@ -23,21 +23,17 @@
 
 class IGESGeom_Protocol;
 
-
 //! This package consists of B-Rep and CSG Solid entities
-class IGESGeom 
+class IGESGeom
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Prepares dynamic data (Protocol, Modules) for this package
   Standard_EXPORT static void Init();
-  
+
   //! Returns the Protocol for this Package
   Standard_EXPORT static Handle(IGESGeom_Protocol) Protocol();
-
 };
 
 #endif // _IGESGeom_HeaderFile

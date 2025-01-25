@@ -11,19 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepShape_ClosedShell.hxx>
 #include <StepShape_ConnectedFaceSet.hxx>
 #include <StepShape_ManifoldSolidBrep.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_ManifoldSolidBrep,StepShape_SolidModel)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_ManifoldSolidBrep, StepShape_SolidModel)
 
-StepShape_ManifoldSolidBrep::StepShape_ManifoldSolidBrep ()  {}
+StepShape_ManifoldSolidBrep::StepShape_ManifoldSolidBrep() {}
 
-void StepShape_ManifoldSolidBrep::Init(
-  const Handle(TCollection_HAsciiString)& aName,
-  const Handle(StepShape_ClosedShell)& aOuter)
+void StepShape_ManifoldSolidBrep::Init(const Handle(TCollection_HAsciiString)& aName,
+                                       const Handle(StepShape_ClosedShell)&    aOuter)
 {
   // --- classe own fields ---
   outer = aOuter;
@@ -31,22 +29,21 @@ void StepShape_ManifoldSolidBrep::Init(
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_ManifoldSolidBrep::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepShape_ConnectedFaceSet)& aOuter)
+void StepShape_ManifoldSolidBrep::Init(const Handle(TCollection_HAsciiString)&   aName,
+                                       const Handle(StepShape_ConnectedFaceSet)& aOuter)
 {
-	// --- classe own fields ---
-	outer = aOuter;
-	// --- classe inherited fields ---
-	StepRepr_RepresentationItem::Init(aName);
+  // --- classe own fields ---
+  outer = aOuter;
+  // --- classe inherited fields ---
+  StepRepr_RepresentationItem::Init(aName);
 }
 
 void StepShape_ManifoldSolidBrep::SetOuter(const Handle(StepShape_ConnectedFaceSet)& aOuter)
 {
-	outer = aOuter;
+  outer = aOuter;
 }
 
 Handle(StepShape_ConnectedFaceSet) StepShape_ManifoldSolidBrep::Outer() const
 {
-	return outer;
+  return outer;
 }

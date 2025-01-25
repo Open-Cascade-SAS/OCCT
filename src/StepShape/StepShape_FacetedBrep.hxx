@@ -22,41 +22,20 @@
 
 #include <StepShape_ManifoldSolidBrep.hxx>
 
-
 class StepShape_FacetedBrep;
 DEFINE_STANDARD_HANDLE(StepShape_FacetedBrep, StepShape_ManifoldSolidBrep)
-
 
 class StepShape_FacetedBrep : public StepShape_ManifoldSolidBrep
 {
 
 public:
-
-  
   //! Returns a FacetedBrep
   Standard_EXPORT StepShape_FacetedBrep();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_FacetedBrep,StepShape_ManifoldSolidBrep)
+  DEFINE_STANDARD_RTTIEXT(StepShape_FacetedBrep, StepShape_ManifoldSolidBrep)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_FacetedBrep_HeaderFile

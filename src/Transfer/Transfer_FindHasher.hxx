@@ -39,13 +39,12 @@ public:
   //! Returns True if two keys are the same.
   //! The test does not work on the Finders themselves but by
   //! calling their methods Equates
-  bool operator() (const Handle(Transfer_Finder)& theK1,
-                   const Handle(Transfer_Finder)& theK2) const
+  bool operator()(const Handle(Transfer_Finder)& theK1, const Handle(Transfer_Finder)& theK2) const
   {
-    if (theK1.IsNull()) return false;
+    if (theK1.IsNull())
+      return false;
     return theK1->Equates(theK2);
   }
-
 };
 
 #endif // _Transfer_FindHasher_HeaderFile

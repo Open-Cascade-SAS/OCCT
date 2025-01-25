@@ -17,23 +17,16 @@
 
 #include <StepFEA_FreedomAndCoefficient.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FreedomAndCoefficient,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FreedomAndCoefficient, Standard_Transient)
 
-//=======================================================================
-//function : StepFEA_FreedomAndCoefficient
-//purpose  : 
-//=======================================================================
-StepFEA_FreedomAndCoefficient::StepFEA_FreedomAndCoefficient ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepFEA_FreedomAndCoefficient::StepFEA_FreedomAndCoefficient() {}
 
-void StepFEA_FreedomAndCoefficient::Init (const StepFEA_DegreeOfFreedom &aFreedom,
-                                          const StepElement_MeasureOrUnspecifiedValue &aA)
+//=================================================================================================
+
+void StepFEA_FreedomAndCoefficient::Init(const StepFEA_DegreeOfFreedom&               aFreedom,
+                                         const StepElement_MeasureOrUnspecifiedValue& aA)
 {
 
   theFreedom = aFreedom;
@@ -41,42 +34,30 @@ void StepFEA_FreedomAndCoefficient::Init (const StepFEA_DegreeOfFreedom &aFreedo
   theA = aA;
 }
 
-//=======================================================================
-//function : Freedom
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepFEA_DegreeOfFreedom StepFEA_FreedomAndCoefficient::Freedom () const
+StepFEA_DegreeOfFreedom StepFEA_FreedomAndCoefficient::Freedom() const
 {
   return theFreedom;
 }
 
-//=======================================================================
-//function : SetFreedom
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_FreedomAndCoefficient::SetFreedom (const StepFEA_DegreeOfFreedom &aFreedom)
+void StepFEA_FreedomAndCoefficient::SetFreedom(const StepFEA_DegreeOfFreedom& aFreedom)
 {
   theFreedom = aFreedom;
 }
 
-//=======================================================================
-//function : A
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepElement_MeasureOrUnspecifiedValue StepFEA_FreedomAndCoefficient::A () const
+StepElement_MeasureOrUnspecifiedValue StepFEA_FreedomAndCoefficient::A() const
 {
   return theA;
 }
 
-//=======================================================================
-//function : SetA
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_FreedomAndCoefficient::SetA (const StepElement_MeasureOrUnspecifiedValue &aA)
+void StepFEA_FreedomAndCoefficient::SetA(const StepElement_MeasureOrUnspecifiedValue& aA)
 {
   theA = aA;
 }

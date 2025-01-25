@@ -25,7 +25,6 @@
 class Law_BSpline;
 class gp_Vec;
 
-
 class GeomFill_TgtField;
 DEFINE_STANDARD_HANDLE(GeomFill_TgtField, Standard_Transient)
 
@@ -35,45 +34,26 @@ class GeomFill_TgtField : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT virtual Standard_Boolean IsScalable() const;
-  
-  Standard_EXPORT virtual void Scale (const Handle(Law_BSpline)& Func);
-  
+
+  Standard_EXPORT virtual void Scale(const Handle(Law_BSpline)& Func);
+
   //! Computes  the value  of the    field of tangency    at
   //! parameter W.
-  Standard_EXPORT virtual gp_Vec Value (const Standard_Real W) const = 0;
-  
+  Standard_EXPORT virtual gp_Vec Value(const Standard_Real W) const = 0;
+
   //! Computes the  derivative of  the field of  tangency at
   //! parameter W.
-  Standard_EXPORT virtual gp_Vec D1 (const Standard_Real W) const = 0;
-  
+  Standard_EXPORT virtual gp_Vec D1(const Standard_Real W) const = 0;
+
   //! Computes the value and the  derivative of the field of
   //! tangency at parameter W.
-  Standard_EXPORT virtual void D1 (const Standard_Real W, gp_Vec& V, gp_Vec& DV) const = 0;
+  Standard_EXPORT virtual void D1(const Standard_Real W, gp_Vec& V, gp_Vec& DV) const = 0;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(GeomFill_TgtField,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_TgtField, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeomFill_TgtField_HeaderFile

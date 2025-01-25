@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY1(TDataStd_HLabelArray1, TDataStd_LabelArray1)
 
-
 #endif

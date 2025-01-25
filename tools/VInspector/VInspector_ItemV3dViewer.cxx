@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/VInspector_ItemV3dViewer.hxx>
 
@@ -33,13 +33,14 @@ int VInspector_ItemV3dViewer::initRowCount() const
 // function : initValue
 // purpose :
 // =======================================================================
-QVariant VInspector_ItemV3dViewer::initValue (const int theItemRole) const
+QVariant VInspector_ItemV3dViewer::initValue(const int theItemRole) const
 {
-  QVariant aParentValue = VInspector_ItemBase::initValue (theItemRole);
+  QVariant aParentValue = VInspector_ItemBase::initValue(theItemRole);
   if (aParentValue.isValid())
     return aParentValue;
 
-  if (theItemRole != Qt::DisplayRole && theItemRole != Qt::EditRole && theItemRole != Qt::ToolTipRole)
+  if (theItemRole != Qt::DisplayRole && theItemRole != Qt::EditRole
+      && theItemRole != Qt::ToolTipRole)
     return QVariant();
 
   if (GetViewer().IsNull())
@@ -54,15 +55,17 @@ QVariant VInspector_ItemV3dViewer::initValue (const int theItemRole) const
 // =======================================================================
 void VInspector_ItemV3dViewer::Init()
 {
-  VInspector_ItemContextPropertiesPtr aParentItem = itemDynamicCast<VInspector_ItemContextProperties>(Parent());
+  VInspector_ItemContextPropertiesPtr aParentItem =
+    itemDynamicCast<VInspector_ItemContextProperties>(Parent());
   Handle(V3d_Viewer) aViewer;
   if (aParentItem)
   {
-    VInspector_ItemContextPtr aParentContextItem = itemDynamicCast<VInspector_ItemContext>(aParentItem->Parent());
+    VInspector_ItemContextPtr aParentContextItem =
+      itemDynamicCast<VInspector_ItemContext>(aParentItem->Parent());
     if (aParentContextItem)
     {
       Handle(AIS_InteractiveContext) aContext = aParentContextItem->GetContext();
-      aViewer = aContext->CurrentViewer();
+      aViewer                                 = aContext->CurrentViewer();
     }
   }
   myViewer = aViewer;
@@ -95,11 +98,11 @@ void VInspector_ItemV3dViewer::initItem() const
 // function : initStream
 // purpose :
 // =======================================================================
-void VInspector_ItemV3dViewer::initStream (Standard_OStream& theOStream) const
+void VInspector_ItemV3dViewer::initStream(Standard_OStream& theOStream) const
 {
   Handle(V3d_Viewer) aViewer = GetViewer();
   if (aViewer.IsNull())
     return;
 
-  aViewer->DumpJson (theOStream);
+  aViewer->DumpJson(theOStream);
 }

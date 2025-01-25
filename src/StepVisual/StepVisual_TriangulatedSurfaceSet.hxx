@@ -28,12 +28,12 @@ public:
   Standard_EXPORT StepVisual_TriangulatedSurfaceSet();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItemName,
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&   theRepresentationItemName,
                             const Handle(StepVisual_CoordinatesList)& theTessellatedFaceCoordinates,
-                            const Standard_Integer theTessellatedFacePnmax,
-                            const Handle(TColStd_HArray2OfReal)& theTessellatedFaceNormals,
-                            const Handle(TColStd_HArray1OfInteger)& thePnindex,
-                            const Handle(TColStd_HArray2OfInteger)& theTriangles);
+                            const Standard_Integer                    theTessellatedFacePnmax,
+                            const Handle(TColStd_HArray2OfReal)&      theTessellatedFaceNormals,
+                            const Handle(TColStd_HArray1OfInteger)&   thePnindex,
+                            const Handle(TColStd_HArray2OfInteger)&   theTriangles);
 
   //! Returns field Pnindex
   const Handle(TColStd_HArray1OfInteger) Pnindex() const { return myPnindex; }
@@ -53,7 +53,7 @@ public:
   //! Sets field Triangles
   void SetTriangles(const Handle(TColStd_HArray2OfInteger)& theTriangles)
   {
-    myTriangles = theTriangles; 
+    myTriangles = theTriangles;
   }
 
   //! Returns number of Triangles
@@ -62,7 +62,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepVisual_TriangulatedSurfaceSet, StepVisual_TessellatedSurfaceSet)
 
 private:
-
   Handle(TColStd_HArray1OfInteger) myPnindex;
   Handle(TColStd_HArray2OfInteger) myTriangles;
 };

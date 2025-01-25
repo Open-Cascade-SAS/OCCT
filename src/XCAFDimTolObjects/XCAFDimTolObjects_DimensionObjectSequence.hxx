@@ -13,13 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef XCAFDimTolObjects_DimensionObjectSequence_HeaderFile
 #define XCAFDimTolObjects_DimensionObjectSequence_HeaderFile
 
 #include <NCollection_Sequence.hxx>
 
 class XCAFDimTolObjects_DimensionObject;
-typedef NCollection_Sequence<Handle(XCAFDimTolObjects_DimensionObject)> XCAFDimTolObjects_DimensionObjectSequence;
+typedef NCollection_Sequence<Handle(XCAFDimTolObjects_DimensionObject)>
+  XCAFDimTolObjects_DimensionObjectSequence;
 
 #endif

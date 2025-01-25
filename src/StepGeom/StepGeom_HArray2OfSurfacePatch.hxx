@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY2(StepGeom_HArray2OfSurfacePatch, StepGeom_Array2OfSurfacePatch)
 
-
 #endif

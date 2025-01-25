@@ -15,65 +15,58 @@
 
 #include <AIS_ManipulatorOwner.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(AIS_ManipulatorOwner,SelectMgr_EntityOwner)
-//=======================================================================
-//function : Constructor
-//purpose  : 
-//=======================================================================
-AIS_ManipulatorOwner::AIS_ManipulatorOwner (const Handle(SelectMgr_SelectableObject)& theSelObject,
-                                            const Standard_Integer theIndex,
-                                            const AIS_ManipulatorMode theMode,
-                                            const Standard_Integer thePriority)
-: SelectMgr_EntityOwner(theSelObject, thePriority),
-  myIndex (theIndex),
-  myMode (theMode)
+IMPLEMENT_STANDARD_RTTIEXT(AIS_ManipulatorOwner, SelectMgr_EntityOwner)
+
+//=================================================================================================
+
+AIS_ManipulatorOwner::AIS_ManipulatorOwner(const Handle(SelectMgr_SelectableObject)& theSelObject,
+                                           const Standard_Integer                    theIndex,
+                                           const AIS_ManipulatorMode                 theMode,
+                                           const Standard_Integer                    thePriority)
+    : SelectMgr_EntityOwner(theSelObject, thePriority),
+      myIndex(theIndex),
+      myMode(theMode)
 {
   //
 }
 
-//=======================================================================
-//function : HilightWithColor
-//purpose  : 
-//=======================================================================
-void AIS_ManipulatorOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
-                                             const Handle(Prs3d_Drawer)& theStyle,
-                                             const Standard_Integer theMode)
+//=================================================================================================
+
+void AIS_ManipulatorOwner::HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePM,
+                                            const Handle(Prs3d_Drawer)&               theStyle,
+                                            const Standard_Integer                    theMode)
 {
   if (theMode == 0)
   {
-    SelectMgr_EntityOwner::HilightWithColor (thePM, theStyle, theMode);
+    SelectMgr_EntityOwner::HilightWithColor(thePM, theStyle, theMode);
     return;
   }
 
-  Selectable()->HilightOwnerWithColor (thePM, theStyle, this);
+  Selectable()->HilightOwnerWithColor(thePM, theStyle, this);
 }
 
-//=======================================================================
-//function : IsHilighted
-//purpose  : 
-//=======================================================================
-Standard_Boolean AIS_ManipulatorOwner::IsHilighted (const Handle(PrsMgr_PresentationManager)& thePM,
-                                                    const Standard_Integer /*theMode*/) const
+//=================================================================================================
+
+Standard_Boolean AIS_ManipulatorOwner::IsHilighted(const Handle(PrsMgr_PresentationManager)& thePM,
+                                                   const Standard_Integer /*theMode*/) const
 {
   if (!HasSelectable())
   {
     return Standard_False;
   }
 
-  return thePM->IsHighlighted (Selectable(), myMode);
+  return thePM->IsHighlighted(Selectable(), myMode);
 }
 
-//=======================================================================
-//function : Unhilight
-//purpose  : 
-//=======================================================================
-void AIS_ManipulatorOwner::Unhilight (const Handle(PrsMgr_PresentationManager)& thePM,
-                                      const Standard_Integer /*theMode*/)
+//=================================================================================================
+
+void AIS_ManipulatorOwner::Unhilight(const Handle(PrsMgr_PresentationManager)& thePM,
+                                     const Standard_Integer /*theMode*/)
 {
   if (!HasSelectable())
   {
     return;
   }
 
-  thePM->Unhighlight (Selectable());
+  thePM->Unhighlight(Selectable());
 }

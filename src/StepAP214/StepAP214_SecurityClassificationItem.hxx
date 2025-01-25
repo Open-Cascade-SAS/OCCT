@@ -34,13 +34,11 @@ class StepRepr_ProductConcept;
 class StepRepr_ProductDefinitionUsage;
 class StepBasic_VersionedActionRequest;
 
-class StepAP214_SecurityClassificationItem  : public StepAP214_ApprovalItem
+class StepAP214_SecurityClassificationItem : public StepAP214_ApprovalItem
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a SecurityClassificationItem SelectType
   Standard_EXPORT StepAP214_SecurityClassificationItem();
 
@@ -68,7 +66,7 @@ public:
   //! 21 -> ShapeRepresentation
   //! 22 -> VersionedActionRequest
   //! 0 else
-  Standard_EXPORT virtual Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT virtual Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
 
   //! returns Value as a Action (Null if another type)
   Standard_EXPORT virtual Handle(StepBasic_Action) Action() const;
@@ -80,7 +78,8 @@ public:
   Standard_EXPORT virtual Handle(StepRepr_ConfigurationDesign) ConfigurationDesign() const;
 
   //! returns Value as a ConfigurationEffectivity (Null if another type)
-  Standard_EXPORT virtual Handle(StepRepr_ConfigurationEffectivity) ConfigurationEffectivity() const;
+  Standard_EXPORT virtual Handle(StepRepr_ConfigurationEffectivity) ConfigurationEffectivity()
+    const;
 
   //! returns Value as a DraughtingModel (Null if another type)
   Standard_EXPORT virtual Handle(StepVisual_DraughtingModel) DraughtingModel() const;
@@ -101,23 +100,7 @@ public:
   Standard_EXPORT virtual Handle(StepBasic_VersionedActionRequest) VersionedActionRequest() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepAP214_SecurityClassificationItem_HeaderFile

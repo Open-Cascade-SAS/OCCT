@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef MessageModel_ItemBase_H
 #define MessageModel_ItemBase_H
@@ -28,12 +28,10 @@ typedef QExplicitlySharedDataPointer<MessageModel_ItemBase> MessageModel_ItemBas
 class MessageModel_ItemBase : public TreeModel_ItemBase
 {
 public:
-
   //! Resets cached values
   virtual void Reset() Standard_OVERRIDE { TreeModel_ItemBase::Reset(); }
 
 protected:
-
   //! Initialize the current item. It creates a backup of the specific item information
   virtual void initItem() const Standard_OVERRIDE {};
 
@@ -41,8 +39,10 @@ protected:
   //! param theParent a parent item
   //! \param theRow the item row positition in the parent item
   //! \param theColumn the item column positition in the parent item
-  MessageModel_ItemBase (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
-  : TreeModel_ItemBase (theParent, theRow, theColumn) {}
+  MessageModel_ItemBase(TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
+      : TreeModel_ItemBase(theParent, theRow, theColumn)
+  {
+  }
 
   //! Return root item
   //! \return an item instance

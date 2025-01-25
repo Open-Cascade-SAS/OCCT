@@ -17,15 +17,14 @@
 #ifndef _IntWalk_StatusDeflection_HeaderFile
 #define _IntWalk_StatusDeflection_HeaderFile
 
-
 enum IntWalk_StatusDeflection
 {
-IntWalk_PasTropGrand,
-IntWalk_StepTooSmall,
-IntWalk_PointConfondu,
-IntWalk_ArretSurPointPrecedent,
-IntWalk_ArretSurPoint,
-IntWalk_OK
+  IntWalk_PasTropGrand,
+  IntWalk_StepTooSmall,
+  IntWalk_PointConfondu,
+  IntWalk_ArretSurPointPrecedent,
+  IntWalk_ArretSurPoint,
+  IntWalk_OK
 };
 
 #endif // _IntWalk_StatusDeflection_HeaderFile

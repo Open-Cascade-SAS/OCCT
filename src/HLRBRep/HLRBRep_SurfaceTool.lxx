@@ -28,213 +28,235 @@
 #include <Adaptor3d_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 
-inline Standard_Real HLRBRep_SurfaceTool::FirstUParameter(const Standard_Address Surf){  return ((BRepAdaptor_Surface *)Surf)->FirstUParameter(); }
-inline Standard_Real HLRBRep_SurfaceTool::FirstVParameter(const Standard_Address Surf){  return ((BRepAdaptor_Surface *)Surf)->FirstVParameter();}
-inline Standard_Real HLRBRep_SurfaceTool::LastUParameter(const Standard_Address Surf){  return ((BRepAdaptor_Surface *)Surf)->LastUParameter();}
-inline Standard_Real HLRBRep_SurfaceTool::LastVParameter(const Standard_Address Surf){  return ((BRepAdaptor_Surface *)Surf)->LastVParameter();}
+inline Standard_Real HLRBRep_SurfaceTool::FirstUParameter(const Standard_Address Surf)
+{
+  return ((BRepAdaptor_Surface*)Surf)->FirstUParameter();
+}
+
+inline Standard_Real HLRBRep_SurfaceTool::FirstVParameter(const Standard_Address Surf)
+{
+  return ((BRepAdaptor_Surface*)Surf)->FirstVParameter();
+}
+
+inline Standard_Real HLRBRep_SurfaceTool::LastUParameter(const Standard_Address Surf)
+{
+  return ((BRepAdaptor_Surface*)Surf)->LastUParameter();
+}
+
+inline Standard_Real HLRBRep_SurfaceTool::LastVParameter(const Standard_Address Surf)
+{
+  return ((BRepAdaptor_Surface*)Surf)->LastVParameter();
+}
 
 inline Standard_Integer HLRBRep_SurfaceTool::NbUIntervals(const Standard_Address Surf,
-							  const GeomAbs_Shape S){
-  return ((BRepAdaptor_Surface *)Surf)->NbUIntervals(S);
+                                                          const GeomAbs_Shape    S)
+{
+  return ((BRepAdaptor_Surface*)Surf)->NbUIntervals(S);
 }
 
 inline Standard_Integer HLRBRep_SurfaceTool::NbVIntervals(const Standard_Address Surf,
-							  const GeomAbs_Shape S){
-  return ((BRepAdaptor_Surface *)Surf)->NbVIntervals(S);
+                                                          const GeomAbs_Shape    S)
+{
+  return ((BRepAdaptor_Surface*)Surf)->NbVIntervals(S);
 }
 
 inline void HLRBRep_SurfaceTool::UIntervals(const Standard_Address Surf,
-							TColStd_Array1OfReal& Tab,
-							const GeomAbs_Shape S){
-  ((BRepAdaptor_Surface *)Surf)->UIntervals(Tab,S);
+                                            TColStd_Array1OfReal&  Tab,
+                                            const GeomAbs_Shape    S)
+{
+  ((BRepAdaptor_Surface*)Surf)->UIntervals(Tab, S);
 }
 
 inline void HLRBRep_SurfaceTool::VIntervals(const Standard_Address Surf,
-						     TColStd_Array1OfReal& Tab,
-						     const GeomAbs_Shape S){
-  ((BRepAdaptor_Surface *)Surf)->VIntervals(Tab,S);
+                                            TColStd_Array1OfReal&  Tab,
+                                            const GeomAbs_Shape    S)
+{
+  ((BRepAdaptor_Surface*)Surf)->VIntervals(Tab, S);
 }
 
-
 inline Handle(Adaptor3d_Surface) HLRBRep_SurfaceTool::UTrim(const Standard_Address Surf,
-								   const Standard_Real F,
-								   const Standard_Real L,
-								   const Standard_Real Tol) { 
-  return ((BRepAdaptor_Surface *)Surf)->UTrim(F,L,Tol);
+                                                            const Standard_Real    F,
+                                                            const Standard_Real    L,
+                                                            const Standard_Real    Tol)
+{
+  return ((BRepAdaptor_Surface*)Surf)->UTrim(F, L, Tol);
 }
 
 inline Handle(Adaptor3d_Surface) HLRBRep_SurfaceTool::VTrim(const Standard_Address Surf,
-								   const Standard_Real F,
-								   const Standard_Real L,
-								   const Standard_Real Tol) { 
-  return ((BRepAdaptor_Surface *)Surf)->VTrim(F,L,Tol);
+                                                            const Standard_Real    F,
+                                                            const Standard_Real    L,
+                                                            const Standard_Real    Tol)
+{
+  return ((BRepAdaptor_Surface*)Surf)->VTrim(F, L, Tol);
 }
-
-
-
 
 inline Standard_Boolean HLRBRep_SurfaceTool::IsUClosed(const Standard_Address S)
 {
-  return ((BRepAdaptor_Surface *)S)->IsUClosed();
+  return ((BRepAdaptor_Surface*)S)->IsUClosed();
 }
 
 inline Standard_Boolean HLRBRep_SurfaceTool::IsVClosed(const Standard_Address S)
 {
-  return ((BRepAdaptor_Surface *)S)->IsVClosed();
+  return ((BRepAdaptor_Surface*)S)->IsVClosed();
 }
 
 inline Standard_Boolean HLRBRep_SurfaceTool::IsUPeriodic(const Standard_Address S)
 {
-  return ((BRepAdaptor_Surface *)S)->IsUPeriodic();
+  return ((BRepAdaptor_Surface*)S)->IsUPeriodic();
 }
 
 inline Standard_Real HLRBRep_SurfaceTool::UPeriod(const Standard_Address S)
 {
-  return ((BRepAdaptor_Surface *)S)->UPeriod();
+  return ((BRepAdaptor_Surface*)S)->UPeriod();
 }
 
 inline Standard_Boolean HLRBRep_SurfaceTool::IsVPeriodic(const Standard_Address S)
 {
-  return ((BRepAdaptor_Surface *)S)->IsVPeriodic();
+  return ((BRepAdaptor_Surface*)S)->IsVPeriodic();
 }
 
 inline Standard_Real HLRBRep_SurfaceTool::VPeriod(const Standard_Address S)
 {
-  return ((BRepAdaptor_Surface *)S)->VPeriod();
+  return ((BRepAdaptor_Surface*)S)->VPeriod();
 }
 
 inline gp_Pnt HLRBRep_SurfaceTool::Value(const Standard_Address S,
-					 const Standard_Real U,
-					 const Standard_Real V )
+                                         const Standard_Real    U,
+                                         const Standard_Real    V)
 {
-  return ((BRepAdaptor_Surface *)S)->Value(U,V);
+  return ((BRepAdaptor_Surface*)S)->Value(U, V);
 }
 
 inline void HLRBRep_SurfaceTool::D0(const Standard_Address S,
-				    const Standard_Real U,
-				    const Standard_Real V,
-				    gp_Pnt& P)
+                                    const Standard_Real    U,
+                                    const Standard_Real    V,
+                                    gp_Pnt&                P)
 {
-  ((BRepAdaptor_Surface *)S)->D0(U,V,P);
+  ((BRepAdaptor_Surface*)S)->D0(U, V, P);
 }
 
 inline void HLRBRep_SurfaceTool::D1(const Standard_Address S,
-				    const Standard_Real U,
-				    const Standard_Real V,
-				    gp_Pnt& P,
-				    gp_Vec& D1U,
-				    gp_Vec& D1V) 
+                                    const Standard_Real    U,
+                                    const Standard_Real    V,
+                                    gp_Pnt&                P,
+                                    gp_Vec&                D1U,
+                                    gp_Vec&                D1V)
 {
-  ((BRepAdaptor_Surface *)S)->D1(U,V,P,D1U,D1V);
+  ((BRepAdaptor_Surface*)S)->D1(U, V, P, D1U, D1V);
 }
 
 inline void HLRBRep_SurfaceTool::D2(const Standard_Address S,
-				    const Standard_Real U,
-				    const Standard_Real V,
-				    gp_Pnt& P,
-				    gp_Vec& D1U,
-				    gp_Vec& D1V,
-				    gp_Vec& D2U,
-				    gp_Vec& D2V,
-				    gp_Vec& D2UV)
+                                    const Standard_Real    U,
+                                    const Standard_Real    V,
+                                    gp_Pnt&                P,
+                                    gp_Vec&                D1U,
+                                    gp_Vec&                D1V,
+                                    gp_Vec&                D2U,
+                                    gp_Vec&                D2V,
+                                    gp_Vec&                D2UV)
 {
-  ((BRepAdaptor_Surface *)S)->D2(U,V,P,D1U,D1V,D2U,D2V,D2UV);
+  ((BRepAdaptor_Surface*)S)->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
 }
 
 inline void HLRBRep_SurfaceTool::D3(const Standard_Address S,
-				    const Standard_Real U,
-				    const Standard_Real V,
-				    gp_Pnt& P,
-				    gp_Vec& D1U,
-				    gp_Vec& D1V, 
-				    gp_Vec& D2U,
-				    gp_Vec& D2V,
-				    gp_Vec& D2UV,
-				    gp_Vec& D3U,
-				    gp_Vec& D3V,
-				    gp_Vec& D3UUV,
-				    gp_Vec& D3UVV)
+                                    const Standard_Real    U,
+                                    const Standard_Real    V,
+                                    gp_Pnt&                P,
+                                    gp_Vec&                D1U,
+                                    gp_Vec&                D1V,
+                                    gp_Vec&                D2U,
+                                    gp_Vec&                D2V,
+                                    gp_Vec&                D2UV,
+                                    gp_Vec&                D3U,
+                                    gp_Vec&                D3V,
+                                    gp_Vec&                D3UUV,
+                                    gp_Vec&                D3UVV)
 {
-  ((BRepAdaptor_Surface *)S)->D3(U,V,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
+  ((BRepAdaptor_Surface*)S)->D3(U, V, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
 }
 
 inline gp_Vec HLRBRep_SurfaceTool::DN(const Standard_Address S,
-				      const Standard_Real U,
-				      const Standard_Real V,
-				      const Standard_Integer Nu,
-				      const Standard_Integer Nv)
+                                      const Standard_Real    U,
+                                      const Standard_Real    V,
+                                      const Standard_Integer Nu,
+                                      const Standard_Integer Nv)
 {
-  return ((BRepAdaptor_Surface *)S)->DN(U,V,Nu,Nv);
+  return ((BRepAdaptor_Surface*)S)->DN(U, V, Nu, Nv);
 }
 
 inline Standard_Real HLRBRep_SurfaceTool::UResolution(const Standard_Address S,
-						      const Standard_Real R3d)
+                                                      const Standard_Real    R3d)
 {
-  return ((BRepAdaptor_Surface *)S)->UResolution(R3d);
+  return ((BRepAdaptor_Surface*)S)->UResolution(R3d);
 }
 
 inline Standard_Real HLRBRep_SurfaceTool::VResolution(const Standard_Address S,
-						      const Standard_Real R3d)
+                                                      const Standard_Real    R3d)
 {
-  return ((BRepAdaptor_Surface *)S)->VResolution(R3d);
+  return ((BRepAdaptor_Surface*)S)->VResolution(R3d);
 }
 
-inline GeomAbs_SurfaceType HLRBRep_SurfaceTool::GetType(const Standard_Address S )
+inline GeomAbs_SurfaceType HLRBRep_SurfaceTool::GetType(const Standard_Address S)
 {
-  return ((BRepAdaptor_Surface *)S)->GetType();
+  return ((BRepAdaptor_Surface*)S)->GetType();
 }
 
 inline gp_Pln HLRBRep_SurfaceTool::Plane(const Standard_Address S)
 {
-  return ((BRepAdaptor_Surface *)S)->Plane();
+  return ((BRepAdaptor_Surface*)S)->Plane();
 }
 
-inline gp_Cylinder HLRBRep_SurfaceTool::Cylinder(const Standard_Address S) 
+inline gp_Cylinder HLRBRep_SurfaceTool::Cylinder(const Standard_Address S)
 {
-  return ((BRepAdaptor_Surface *)S)->Cylinder();
+  return ((BRepAdaptor_Surface*)S)->Cylinder();
 }
 
-inline gp_Cone HLRBRep_SurfaceTool::Cone(const Standard_Address S) 
+inline gp_Cone HLRBRep_SurfaceTool::Cone(const Standard_Address S)
 {
-  return ((BRepAdaptor_Surface *)S)->Cone();
+  return ((BRepAdaptor_Surface*)S)->Cone();
 }
 
-inline gp_Sphere HLRBRep_SurfaceTool::Sphere(const Standard_Address S) 
+inline gp_Sphere HLRBRep_SurfaceTool::Sphere(const Standard_Address S)
 {
-  return ((BRepAdaptor_Surface *)S)->Sphere();
+  return ((BRepAdaptor_Surface*)S)->Sphere();
 }
 
-inline gp_Torus HLRBRep_SurfaceTool::Torus(const Standard_Address S) 
+inline gp_Torus HLRBRep_SurfaceTool::Torus(const Standard_Address S)
 {
-  return ((BRepAdaptor_Surface *)S)->Torus();
+  return ((BRepAdaptor_Surface*)S)->Torus();
 }
 
-
-inline Handle(Geom_BezierSurface) HLRBRep_SurfaceTool::Bezier(const Standard_Address S) { 
-  return(((BRepAdaptor_Surface *)S)->Bezier());
+inline Handle(Geom_BezierSurface) HLRBRep_SurfaceTool::Bezier(const Standard_Address S)
+{
+  return (((BRepAdaptor_Surface*)S)->Bezier());
 }
 
-inline Handle(Geom_BSplineSurface) HLRBRep_SurfaceTool::BSpline(const Standard_Address S) { 
-  return(((BRepAdaptor_Surface *)S)->BSpline());
+inline Handle(Geom_BSplineSurface) HLRBRep_SurfaceTool::BSpline(const Standard_Address S)
+{
+  return (((BRepAdaptor_Surface*)S)->BSpline());
 }
 
-
-inline gp_Ax1  HLRBRep_SurfaceTool::AxeOfRevolution(const Standard_Address S) { 
-  return(((BRepAdaptor_Surface *)S)->AxeOfRevolution());
+inline gp_Ax1 HLRBRep_SurfaceTool::AxeOfRevolution(const Standard_Address S)
+{
+  return (((BRepAdaptor_Surface*)S)->AxeOfRevolution());
 }
 
-inline gp_Dir  HLRBRep_SurfaceTool::Direction(const Standard_Address S) { 
-  return(((BRepAdaptor_Surface *)S)->Direction());
+inline gp_Dir HLRBRep_SurfaceTool::Direction(const Standard_Address S)
+{
+  return (((BRepAdaptor_Surface*)S)->Direction());
 }
 
-inline Handle(Adaptor3d_Curve)  HLRBRep_SurfaceTool::BasisCurve(const Standard_Address S) { 
-  return(((BRepAdaptor_Surface *)S)->BasisCurve());
+inline Handle(Adaptor3d_Curve) HLRBRep_SurfaceTool::BasisCurve(const Standard_Address S)
+{
+  return (((BRepAdaptor_Surface*)S)->BasisCurve());
 }
 
-inline Handle(Adaptor3d_Surface) HLRBRep_SurfaceTool::BasisSurface(const Standard_Address S) { 
-  return(((BRepAdaptor_Surface *)S)->BasisSurface());
+inline Handle(Adaptor3d_Surface) HLRBRep_SurfaceTool::BasisSurface(const Standard_Address S)
+{
+  return (((BRepAdaptor_Surface*)S)->BasisSurface());
 }
 
-inline Standard_Real HLRBRep_SurfaceTool::OffsetValue(const Standard_Address S) { 
-  return(((BRepAdaptor_Surface *)S)->OffsetValue());
+inline Standard_Real HLRBRep_SurfaceTool::OffsetValue(const Standard_Address S)
+{
+  return (((BRepAdaptor_Surface*)S)->OffsetValue());
 }

@@ -21,11 +21,10 @@ class Select3D_PointData
 {
 
 public:
-
   // Constructs internal array of 3D points defined
   // by number of points theNbPoints
-  Select3D_PointData (const Standard_Integer theNbPoints)
-  : mynbpoints(theNbPoints)
+  Select3D_PointData(const Standard_Integer theNbPoints)
+      : mynbpoints(theNbPoints)
   {
     if (theNbPoints <= 0)
       throw Standard_ConstructionError("Select3D_PointData");
@@ -34,15 +33,11 @@ public:
   }
 
   // Destructor
-  ~Select3D_PointData ()
-  {
-    delete [] mypolyg3d;
-  }
+  ~Select3D_PointData() { delete[] mypolyg3d; }
 
   // Sets Select3D_Pnt to internal array
   // of 3D points if theIndex is valid
-  void SetPnt (const Standard_Integer theIndex,
-               const Select3D_Pnt& theValue)
+  void SetPnt(const Standard_Integer theIndex, const Select3D_Pnt& theValue)
   {
     if (theIndex < 0 || theIndex >= mynbpoints)
       throw Standard_OutOfRange("Select3D_PointData::SetPnt");
@@ -51,8 +46,7 @@ public:
 
   // Sets gp_Pnt to internal array
   // of 3D points if theIndex is valid
-  void SetPnt (const Standard_Integer theIndex,
-               const gp_Pnt& theValue)
+  void SetPnt(const Standard_Integer theIndex, const gp_Pnt& theValue)
   {
     if (theIndex < 0 || theIndex >= mynbpoints)
       throw Standard_OutOfRange("Select3D_PointData::SetPnt");
@@ -61,7 +55,7 @@ public:
 
   // Returns 3D point from internal array
   // if theIndex is valid
-  const Select3D_Pnt& Pnt (const Standard_Integer theIndex) const
+  const Select3D_Pnt& Pnt(const Standard_Integer theIndex) const
   {
     if (theIndex < 0 || theIndex >= mynbpoints)
       throw Standard_OutOfRange("Select3D_PointData::Pnt");
@@ -70,7 +64,7 @@ public:
 
   // Returns 3D point from internal array
   // if theIndex is valid
-  gp_Pnt Pnt3d (const Standard_Integer theIndex) const
+  gp_Pnt Pnt3d(const Standard_Integer theIndex) const
   {
     if (theIndex < 0 || theIndex >= mynbpoints)
       throw Standard_OutOfRange("Select3D_PointData::Pnt");
@@ -78,17 +72,13 @@ public:
   }
 
   // Returns size of internal arrays
-  Standard_Integer Size () const
-  {
-    return mynbpoints;
-  }
+  Standard_Integer Size() const { return mynbpoints; }
 
 private:
-  Select3D_PointData (const Select3D_PointData&);
-  Select3D_PointData& operator= (const Select3D_PointData&);
+  Select3D_PointData(const Select3D_PointData&);
+  Select3D_PointData& operator=(const Select3D_PointData&);
 
 private:
-
   Select3D_Pnt*    mypolyg3d;
   Standard_Integer mynbpoints;
 };

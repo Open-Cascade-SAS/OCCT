@@ -40,7 +40,6 @@ class IntTools_SurfaceRangeSample;
 class IntTools_CurveRangeLocalizeData;
 class IntTools_SurfaceRangeLocalizeData;
 
-
 //! The class BeanFaceIntersector computes ranges of parameters on
 //! the curve of a bean(part of edge) that bound the parts of bean which
 //! are on the surface of a face according to edge and face tolerances.
@@ -48,15 +47,12 @@ class IntTools_SurfaceRangeLocalizeData;
 //! Most of the result parts of the bean lays only inside the region of the surface,
 //! which includes the inside of the face. And the parts which are out of this region can be
 //! excluded from the result.
-class IntTools_BeanFaceIntersector 
+class IntTools_BeanFaceIntersector
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT IntTools_BeanFaceIntersector();
-  
 
   //! Initializes the algorithm
   //!
@@ -65,18 +61,28 @@ public:
   //! the surface of the face and belong to
   //! the whole in the face (if there is)
   //! is considered as result
-  Standard_EXPORT IntTools_BeanFaceIntersector(const TopoDS_Edge& theEdge, const TopoDS_Face& theFace);
-  
+  Standard_EXPORT IntTools_BeanFaceIntersector(const TopoDS_Edge& theEdge,
+                                               const TopoDS_Face& theFace);
 
   //! Initializes the algorithm
-  Standard_EXPORT IntTools_BeanFaceIntersector(const BRepAdaptor_Curve& theCurve, const BRepAdaptor_Surface& theSurface, const Standard_Real theBeanTolerance, const Standard_Real theFaceTolerance);
-  
+  Standard_EXPORT IntTools_BeanFaceIntersector(const BRepAdaptor_Curve&   theCurve,
+                                               const BRepAdaptor_Surface& theSurface,
+                                               const Standard_Real        theBeanTolerance,
+                                               const Standard_Real        theFaceTolerance);
 
   //! Initializes the algorithm
   //! theUMinParameter, ... are used for
   //! optimization purposes
-  Standard_EXPORT IntTools_BeanFaceIntersector(const BRepAdaptor_Curve& theCurve, const BRepAdaptor_Surface& theSurface, const Standard_Real theFirstParOnCurve, const Standard_Real theLastParOnCurve, const Standard_Real theUMinParameter, const Standard_Real theUMaxParameter, const Standard_Real theVMinParameter, const Standard_Real theVMaxParameter, const Standard_Real theBeanTolerance, const Standard_Real theFaceTolerance);
-  
+  Standard_EXPORT IntTools_BeanFaceIntersector(const BRepAdaptor_Curve&   theCurve,
+                                               const BRepAdaptor_Surface& theSurface,
+                                               const Standard_Real        theFirstParOnCurve,
+                                               const Standard_Real        theLastParOnCurve,
+                                               const Standard_Real        theUMinParameter,
+                                               const Standard_Real        theUMaxParameter,
+                                               const Standard_Real        theVMinParameter,
+                                               const Standard_Real        theVMaxParameter,
+                                               const Standard_Real        theBeanTolerance,
+                                               const Standard_Real        theFaceTolerance);
 
   //! Initializes the algorithm
   //!
@@ -85,107 +91,123 @@ public:
   //! the surface of the face and belong to
   //! the whole in the face (if there is)
   //! is considered as result
-  Standard_EXPORT void Init (const TopoDS_Edge& theEdge, const TopoDS_Face& theFace);
-  
+  Standard_EXPORT void Init(const TopoDS_Edge& theEdge, const TopoDS_Face& theFace);
 
   //! Initializes the algorithm
-  Standard_EXPORT void Init (const BRepAdaptor_Curve& theCurve, const BRepAdaptor_Surface& theSurface, const Standard_Real theBeanTolerance, const Standard_Real theFaceTolerance);
-  
+  Standard_EXPORT void Init(const BRepAdaptor_Curve&   theCurve,
+                            const BRepAdaptor_Surface& theSurface,
+                            const Standard_Real        theBeanTolerance,
+                            const Standard_Real        theFaceTolerance);
 
   //! Initializes the algorithm
   //! theUMinParameter, ... are used for
   //! optimization purposes
-  Standard_EXPORT void Init (const BRepAdaptor_Curve& theCurve, const BRepAdaptor_Surface& theSurface, const Standard_Real theFirstParOnCurve, const Standard_Real theLastParOnCurve, const Standard_Real theUMinParameter, const Standard_Real theUMaxParameter, const Standard_Real theVMinParameter, const Standard_Real theVMaxParameter, const Standard_Real theBeanTolerance, const Standard_Real theFaceTolerance);
-  
+  Standard_EXPORT void Init(const BRepAdaptor_Curve&   theCurve,
+                            const BRepAdaptor_Surface& theSurface,
+                            const Standard_Real        theFirstParOnCurve,
+                            const Standard_Real        theLastParOnCurve,
+                            const Standard_Real        theUMinParameter,
+                            const Standard_Real        theUMaxParameter,
+                            const Standard_Real        theVMinParameter,
+                            const Standard_Real        theVMaxParameter,
+                            const Standard_Real        theBeanTolerance,
+                            const Standard_Real        theFaceTolerance);
 
   //! Sets the intersection context
-  Standard_EXPORT void SetContext (const Handle(IntTools_Context)& theContext);
-  
+  Standard_EXPORT void SetContext(const Handle(IntTools_Context)& theContext);
 
   //! Gets the intersection context
   Standard_EXPORT const Handle(IntTools_Context)& Context() const;
-  
 
   //! Set restrictions for curve
-  Standard_EXPORT void SetBeanParameters (const Standard_Real theFirstParOnCurve, const Standard_Real theLastParOnCurve);
-  
+  Standard_EXPORT void SetBeanParameters(const Standard_Real theFirstParOnCurve,
+                                         const Standard_Real theLastParOnCurve);
 
   //! Set restrictions for surface
-  Standard_EXPORT void SetSurfaceParameters (const Standard_Real theUMinParameter, const Standard_Real theUMaxParameter, const Standard_Real theVMinParameter, const Standard_Real theVMaxParameter);
-  
+  Standard_EXPORT void SetSurfaceParameters(const Standard_Real theUMinParameter,
+                                            const Standard_Real theUMaxParameter,
+                                            const Standard_Real theVMinParameter,
+                                            const Standard_Real theVMaxParameter);
 
   //! Launches the algorithm
   Standard_EXPORT void Perform();
-  
+
   //! Returns Done/NotDone state of the algorithm.
-  Standard_Boolean IsDone() const
-  {
-    return myIsDone;
-  }
-  
+  Standard_Boolean IsDone() const { return myIsDone; }
+
   Standard_EXPORT const IntTools_SequenceOfRanges& Result() const;
-  
-  Standard_EXPORT void Result (IntTools_SequenceOfRanges& theResults) const;
+
+  Standard_EXPORT void Result(IntTools_SequenceOfRanges& theResults) const;
 
   //! Returns the minimal distance found between edge and face
-  Standard_Real MinimalSquareDistance() const
-  {
-    return myMinSqDistance;
-  }
-
+  Standard_Real MinimalSquareDistance() const { return myMinSqDistance; }
 
 private:
-  
   Standard_EXPORT void ComputeAroundExactIntersection();
-  
+
   Standard_EXPORT void ComputeLinePlane();
-  
+
   //! Fast check on coincidence of the edge with face for the cases when both shapes are
   //! based on analytic geometries. The method also computes if the intersection
   //! between shapes is possible.
-  //! The method returns TRUE if the computation was successful and further computation is unnecessary.
-  //! Otherwise it returns FALSE and computation continues.
+  //! The method returns TRUE if the computation was successful and further computation is
+  //! unnecessary. Otherwise it returns FALSE and computation continues.
   Standard_EXPORT Standard_Boolean FastComputeAnalytic();
-  
+
   Standard_EXPORT void ComputeUsingExtremum();
-  
+
   Standard_EXPORT void ComputeNearRangeBoundaries();
-  
+
   Standard_EXPORT Standard_Boolean ComputeLocalized();
-  
-  Standard_EXPORT void ComputeRangeFromStartPoint (const Standard_Boolean ToIncreaseParameter, const Standard_Real theParameter, const Standard_Real theUParameter, const Standard_Real theVParameter);
-  
-  Standard_EXPORT void ComputeRangeFromStartPoint (const Standard_Boolean ToIncreaseParameter, const Standard_Real theParameter, const Standard_Real theUParameter, const Standard_Real theVParameter, const Standard_Integer theIndex);
-  
-  Standard_EXPORT Standard_Real Distance (const Standard_Real theArg, Standard_Real& theUParameter, Standard_Real& theVParameter);
-  
-  Standard_EXPORT Standard_Real Distance (const Standard_Real theArg);
-  
-  Standard_EXPORT Standard_Boolean LocalizeSolutions (const IntTools_CurveRangeSample& theCurveRange, const Bnd_Box& theBoxCurve, const IntTools_SurfaceRangeSample& theSurfaceRange, const Bnd_Box& theBoxSurface, IntTools_CurveRangeLocalizeData& theCurveData, IntTools_SurfaceRangeLocalizeData& theSurfaceData, IntTools_ListOfCurveRangeSample& theListCurveRange, IntTools_ListOfSurfaceRangeSample& theListSurfaceRange);
-  
+
+  Standard_EXPORT void ComputeRangeFromStartPoint(const Standard_Boolean ToIncreaseParameter,
+                                                  const Standard_Real    theParameter,
+                                                  const Standard_Real    theUParameter,
+                                                  const Standard_Real    theVParameter);
+
+  Standard_EXPORT void ComputeRangeFromStartPoint(const Standard_Boolean ToIncreaseParameter,
+                                                  const Standard_Real    theParameter,
+                                                  const Standard_Real    theUParameter,
+                                                  const Standard_Real    theVParameter,
+                                                  const Standard_Integer theIndex);
+
+  Standard_EXPORT Standard_Real Distance(const Standard_Real theArg,
+                                         Standard_Real&      theUParameter,
+                                         Standard_Real&      theVParameter);
+
+  Standard_EXPORT Standard_Real Distance(const Standard_Real theArg);
+
+  Standard_EXPORT Standard_Boolean
+    LocalizeSolutions(const IntTools_CurveRangeSample&   theCurveRange,
+                      const Bnd_Box&                     theBoxCurve,
+                      const IntTools_SurfaceRangeSample& theSurfaceRange,
+                      const Bnd_Box&                     theBoxSurface,
+                      IntTools_CurveRangeLocalizeData&   theCurveData,
+                      IntTools_SurfaceRangeLocalizeData& theSurfaceData,
+                      IntTools_ListOfCurveRangeSample&   theListCurveRange,
+                      IntTools_ListOfSurfaceRangeSample& theListSurfaceRange);
+
   Standard_EXPORT Standard_Boolean TestComputeCoinside();
 
-
-  BRepAdaptor_Curve myCurve;
-  BRepAdaptor_Surface mySurface;
-  Handle(Geom_Surface) myTrsfSurface;
-  Standard_Real myFirstParameter;
-  Standard_Real myLastParameter;
-  Standard_Real myUMinParameter;
-  Standard_Real myUMaxParameter;
-  Standard_Real myVMinParameter;
-  Standard_Real myVMaxParameter;
-  Standard_Real myBeanTolerance;
-  Standard_Real myFaceTolerance;
-  Standard_Real myCurveResolution;
-  Standard_Real myCriteria;
+  BRepAdaptor_Curve          myCurve;
+  BRepAdaptor_Surface        mySurface;
+  Handle(Geom_Surface)       myTrsfSurface;
+  Standard_Real              myFirstParameter;
+  Standard_Real              myLastParameter;
+  Standard_Real              myUMinParameter;
+  Standard_Real              myUMaxParameter;
+  Standard_Real              myVMinParameter;
+  Standard_Real              myVMaxParameter;
+  Standard_Real              myBeanTolerance;
+  Standard_Real              myFaceTolerance;
+  Standard_Real              myCurveResolution;
+  Standard_Real              myCriteria;
   GeomAPI_ProjectPointOnSurf myProjector;
-  IntTools_MarkedRangeSet myRangeManager;
-  Handle(IntTools_Context) myContext;
-  IntTools_SequenceOfRanges myResults;
-  Standard_Boolean myIsDone;
-  Standard_Real myMinSqDistance;
-
+  IntTools_MarkedRangeSet    myRangeManager;
+  Handle(IntTools_Context)   myContext;
+  IntTools_SequenceOfRanges  myResults;
+  Standard_Boolean           myIsDone;
+  Standard_Real              myMinSqDistance;
 };
 
 #endif // _IntTools_BeanFaceIntersector_HeaderFile

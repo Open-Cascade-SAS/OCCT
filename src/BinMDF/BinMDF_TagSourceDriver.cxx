@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMDF_TagSourceDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <Message_Messenger.hxx>
@@ -21,50 +20,45 @@
 #include <TDF_Attribute.hxx>
 #include <TDF_TagSource.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMDF_TagSourceDriver,BinMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinMDF_TagSourceDriver, BinMDF_ADriver)
 
-//=======================================================================
-//function : BinMDF_TagSourceDriver
-//purpose  : Constructor
-//=======================================================================
-BinMDF_TagSourceDriver::BinMDF_TagSourceDriver
-                        (const Handle(Message_Messenger)& theMsgDriver)
-      : BinMDF_ADriver (theMsgDriver, NULL)
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+BinMDF_TagSourceDriver::BinMDF_TagSourceDriver(const Handle(Message_Messenger)& theMsgDriver)
+    : BinMDF_ADriver(theMsgDriver, NULL)
+{
+}
+
+//=================================================================================================
+
 Handle(TDF_Attribute) BinMDF_TagSourceDriver::NewEmpty() const
 {
   return (new TDF_TagSource());
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean BinMDF_TagSourceDriver::Paste 
-                                (const BinObjMgt_Persistent&  theSource,
-                                 const Handle(TDF_Attribute)& theTarget,
-                                 BinObjMgt_RRelocationTable&  ) const
+Standard_Boolean BinMDF_TagSourceDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                               const Handle(TDF_Attribute)& theTarget,
+                                               BinObjMgt_RRelocationTable&) const
 {
   Handle(TDF_TagSource) aTag = Handle(TDF_TagSource)::DownCast(theTarget);
-  Standard_Integer aValue;
-  Standard_Boolean ok = theSource >> aValue;
+  Standard_Integer      aValue;
+  Standard_Boolean      ok = theSource >> aValue;
   if (ok)
     aTag->Set(aValue);
   return ok;
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDF_TagSourceDriver::Paste (const Handle(TDF_Attribute)& theSource,
-                                    BinObjMgt_Persistent&        theTarget,
-                                    BinObjMgt_SRelocationTable&  ) const
+void BinMDF_TagSourceDriver::Paste(const Handle(TDF_Attribute)& theSource,
+                                   BinObjMgt_Persistent&        theTarget,
+                                   BinObjMgt_SRelocationTable&) const
 {
   Handle(TDF_TagSource) aTag = Handle(TDF_TagSource)::DownCast(theSource);
   theTarget << aTag->Get();

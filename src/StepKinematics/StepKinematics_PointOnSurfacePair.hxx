@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -30,30 +30,29 @@ DEFINE_STANDARD_HANDLE(StepKinematics_PointOnSurfacePair, StepKinematics_HighOrd
 //! Representation of STEP entity PointOnSurfacePair
 class StepKinematics_PointOnSurfacePair : public StepKinematics_HighOrderKinematicPair
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_PointOnSurfacePair();
 
   //! Initialize all fields (own and inherited)
- Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                           const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Name,
-                           const Standard_Boolean hasItemDefinedTransformation_Description,
-                           const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Description,
-                           const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem1,
-                           const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem2,
-                           const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-                           const Handle(StepGeom_Surface)& thePairSurface);
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
+    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
+    const Standard_Boolean                       hasItemDefinedTransformation_Description,
+    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
+    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
+    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
+    const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
+    const Handle(StepGeom_Surface)&              thePairSurface);
 
   //! Returns field PairSurface
   Standard_EXPORT Handle(StepGeom_Surface) PairSurface() const;
   //! Sets field PairSurface
-  Standard_EXPORT void SetPairSurface (const Handle(StepGeom_Surface)& thePairSurface);
+  Standard_EXPORT void SetPairSurface(const Handle(StepGeom_Surface)& thePairSurface);
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_PointOnSurfacePair, StepKinematics_HighOrderKinematicPair)
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_PointOnSurfacePair, StepKinematics_HighOrderKinematicPair)
 
 private:
   Handle(StepGeom_Surface) myPairSurface;
-
 };
 #endif // _StepKinematics_PointOnSurfacePair_HeaderFile_

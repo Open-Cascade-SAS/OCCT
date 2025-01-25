@@ -21,5 +21,4 @@
 
 typedef NCollection_Sequence<IntTools_PntOn2Faces> IntTools_SequenceOfPntOn2Faces;
 
-
 #endif

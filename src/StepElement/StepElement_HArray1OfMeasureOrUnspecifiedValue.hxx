@@ -17,7 +17,7 @@
 #include <StepElement_Array1OfMeasureOrUnspecifiedValue.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepElement_HArray1OfMeasureOrUnspecifiedValue, StepElement_Array1OfMeasureOrUnspecifiedValue)
-
+DEFINE_HARRAY1(StepElement_HArray1OfMeasureOrUnspecifiedValue,
+               StepElement_Array1OfMeasureOrUnspecifiedValue)
 
 #endif

@@ -15,15 +15,15 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : MAT_TListNode
-//purpose  : 
+// function : MAT_TListNode
+// purpose  :
 //=======================================================================
 
 inline MAT_TListNode::MAT_TListNode() {}
 
 //=======================================================================
-//function : MAT_TListNode
-//purpose  : 
+// function : MAT_TListNode
+// purpose  :
 //=======================================================================
 
 inline MAT_TListNode::MAT_TListNode(const Item& anitem)
@@ -32,8 +32,8 @@ inline MAT_TListNode::MAT_TListNode(const Item& anitem)
 }
 
 //=======================================================================
-//function : GetItem
-//purpose  : 
+// function : GetItem
+// purpose  :
 //=======================================================================
 
 inline Item MAT_TListNode::GetItem() const
@@ -42,8 +42,8 @@ inline Item MAT_TListNode::GetItem() const
 }
 
 //=======================================================================
-//function : Next
-//purpose  : 
+// function : Next
+// purpose  :
 //=======================================================================
 
 inline Handle(MAT_TListNode) MAT_TListNode::Next() const
@@ -52,8 +52,8 @@ inline Handle(MAT_TListNode) MAT_TListNode::Next() const
 }
 
 //=======================================================================
-//function : Previous
-//purpose  : 
+// function : Previous
+// purpose  :
 //=======================================================================
 
 inline Handle(MAT_TListNode) MAT_TListNode::Previous() const
@@ -62,33 +62,31 @@ inline Handle(MAT_TListNode) MAT_TListNode::Previous() const
 }
 
 //=======================================================================
-//function : SetItem
-//purpose  : 
+// function : SetItem
+// purpose  :
 //=======================================================================
 
 inline void MAT_TListNode::SetItem(const Item& anitem)
 {
-  theitem=anitem;
+  theitem = anitem;
 }
 
 //=======================================================================
-//function : Next
-//purpose  : 
+// function : Next
+// purpose  :
 //=======================================================================
 
-inline void MAT_TListNode::Next
-  (const Handle(MAT_TListNode)& atlistnode)
+inline void MAT_TListNode::Next(const Handle(MAT_TListNode)& atlistnode)
 {
-  thenext=atlistnode;
+  thenext = atlistnode;
 }
 
 //=======================================================================
-//function : Previous
-//purpose  : 
+// function : Previous
+// purpose  :
 //=======================================================================
 
-inline void MAT_TListNode::Previous
-  (const Handle(MAT_TListNode)& atlistnode)
+inline void MAT_TListNode::Previous(const Handle(MAT_TListNode)& atlistnode)
 {
-  theprevious=atlistnode;
+  theprevious = atlistnode;
 }

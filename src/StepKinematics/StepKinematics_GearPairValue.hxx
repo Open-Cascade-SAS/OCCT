@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -28,25 +28,23 @@ DEFINE_STANDARD_HANDLE(StepKinematics_GearPairValue, StepKinematics_PairValue)
 //! Representation of STEP entity GearPairValue
 class StepKinematics_GearPairValue : public StepKinematics_PairValue
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_GearPairValue();
 
   //! Initialize all fields (own and inherited)
- Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                           const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                           const Standard_Real theActualRotation1);
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
+                            const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
+                            const Standard_Real                         theActualRotation1);
 
   //! Returns field ActualRotation1
   Standard_EXPORT Standard_Real ActualRotation1() const;
   //! Sets field ActualRotation1
-  Standard_EXPORT void SetActualRotation1 (const Standard_Real theActualRotation1);
+  Standard_EXPORT void SetActualRotation1(const Standard_Real theActualRotation1);
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_GearPairValue, StepKinematics_PairValue)
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_GearPairValue, StepKinematics_PairValue)
 
 private:
   Standard_Real myActualRotation1;
-
 };
 #endif // _StepKinematics_GearPairValue_HeaderFile_

@@ -24,7 +24,6 @@ class Express_Type : public Standard_Transient
 {
 
 public:
-
   //! Returns CPP-style name of the type
   Standard_EXPORT virtual const TCollection_AsciiString CPPName() const = 0;
 
@@ -47,17 +46,16 @@ public:
   //! Declares type as used by some item being generated.
   //! Calls Use() for all referred types and schema items.
   //! Default instantiation does nothing
-  Standard_EXPORT virtual void Use2 (const TCollection_AsciiString& theRefName, const TCollection_AsciiString& theRefPack) const;
+  Standard_EXPORT virtual void Use2(const TCollection_AsciiString& theRefName,
+                                    const TCollection_AsciiString& theRefPack) const;
 
   DEFINE_STANDARD_RTTIEXT(Express_Type, Standard_Transient)
 
 protected:
-
   //! Empty constructor
   Standard_EXPORT Express_Type();
 
 private:
-
 };
 
 #endif // _Express_Type_HeaderFile

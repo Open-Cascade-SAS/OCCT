@@ -12,13 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline const TopoDS_Vertex& BRepTopAdaptor_HVertex::Vertex () const
+inline const TopoDS_Vertex& BRepTopAdaptor_HVertex::Vertex() const
 {
   return myVtx;
 }
 
-inline TopoDS_Vertex& BRepTopAdaptor_HVertex::ChangeVertex ()
+inline TopoDS_Vertex& BRepTopAdaptor_HVertex::ChangeVertex()
 {
   return myVtx;
 }
-

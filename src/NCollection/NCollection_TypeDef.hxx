@@ -21,10 +21,10 @@
 // Macro TYPENAME - either C++ keyword typename, or empty on
 // platforms that do not support it
 #if defined(__SUNPRO_CC) && (__SUNPRO_CC <= 0x530)
-// work-around against obsolete SUN WorkShop 5.3 compiler
-#define TYPENAME
+  // work-around against obsolete SUN WorkShop 5.3 compiler
+  #define TYPENAME
 #else
-#define TYPENAME typename
+  #define TYPENAME typename
 #endif
 
 #endif

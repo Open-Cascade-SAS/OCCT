@@ -25,48 +25,29 @@
 #include <StepBasic_SiUnitName.hxx>
 class StepBasic_PlaneAngleUnit;
 
-
 class StepBasic_SiUnitAndPlaneAngleUnit;
 DEFINE_STANDARD_HANDLE(StepBasic_SiUnitAndPlaneAngleUnit, StepBasic_SiUnit)
-
 
 class StepBasic_SiUnitAndPlaneAngleUnit : public StepBasic_SiUnit
 {
 
 public:
-
-  
   //! Returns a SiUnitAndPlaneAngleUnit
   Standard_EXPORT StepBasic_SiUnitAndPlaneAngleUnit();
-  
-  Standard_EXPORT void Init (const Standard_Boolean hasAprefix, const StepBasic_SiPrefix aPrefix, const StepBasic_SiUnitName aName);
-  
-  Standard_EXPORT void SetPlaneAngleUnit (const Handle(StepBasic_PlaneAngleUnit)& aPlaneAngleUnit);
-  
+
+  Standard_EXPORT void Init(const Standard_Boolean     hasAprefix,
+                            const StepBasic_SiPrefix   aPrefix,
+                            const StepBasic_SiUnitName aName);
+
+  Standard_EXPORT void SetPlaneAngleUnit(const Handle(StepBasic_PlaneAngleUnit)& aPlaneAngleUnit);
+
   Standard_EXPORT Handle(StepBasic_PlaneAngleUnit) PlaneAngleUnit() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnitAndPlaneAngleUnit,StepBasic_SiUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnitAndPlaneAngleUnit, StepBasic_SiUnit)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_PlaneAngleUnit) planeAngleUnit;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_SiUnitAndPlaneAngleUnit_HeaderFile

@@ -16,44 +16,44 @@
 
 #include <Standard_CString.hxx>
 
-//=======================================================================
-//function : RealToCString
-//purpose  :
-//=======================================================================
-Standard_Boolean OSD::RealToCString(const Standard_Real aReal,
-				    Standard_PCharacter& aString)
+//=================================================================================================
+
+Standard_Boolean OSD::RealToCString(const Standard_Real aReal, Standard_PCharacter& aString)
 {
-  char *p, *q ;
-  
-  if (Sprintf(aString,"%.17e",aReal)  <= 0) //BUC60808
-    return Standard_False ;
+  char *p, *q;
 
-  // Suppress "e+00" and insignificant 0's 
+  if (Sprintf(aString, "%.17e", aReal) <= 0) // BUC60808
+    return Standard_False;
 
-  p = strchr(aString,'e');
-  if (p) {
-    if (!strcmp(p,"e+00"))
-      *p = 0 ;
-    for (q = p-1 ; *q == '0' ; q--) ;
-    if (q != p-1) {
-      if (*q != '.') q++ ;
+  // Suppress "e+00" and insignificant 0's
+
+  p = strchr(aString, 'e');
+  if (p)
+  {
+    if (!strcmp(p, "e+00"))
+      *p = 0;
+    for (q = p - 1; *q == '0'; q--)
+      ;
+    if (q != p - 1)
+    {
+      if (*q != '.')
+        q++;
       while (*p)
-	*q++ = *p++ ;
-      *q = 0 ;
+        *q++ = *p++;
+      *q = 0;
     }
   }
-  return Standard_True ;
+  return Standard_True;
 }
 
 // Make the RealToCString reciprocal conversion.
 
-Standard_Boolean OSD::CStringToReal(const Standard_CString aString,
-				    Standard_Real& aReal)
+Standard_Boolean OSD::CStringToReal(const Standard_CString aString, Standard_Real& aReal)
 {
-  char *endptr ;
+  char* endptr;
   aReal = Strtod(aString, &endptr);
   if (*endptr)
-    return Standard_False ;
+    return Standard_False;
   return Standard_True;
 }
 
@@ -64,27 +64,27 @@ Standard_Boolean OSD::CStringToReal(const Standard_CString aString,
 #endif
 
 //=======================================================================
-//function : OSDSecSleep
-//purpose  : Cause the process to sleep during a amount of seconds 
+// function : OSDSecSleep
+// purpose  : Cause the process to sleep during a amount of seconds
 //=======================================================================
-void OSD::SecSleep (const Standard_Integer theSeconds)
+void OSD::SecSleep(const Standard_Integer theSeconds)
 {
 #ifdef _WIN32
-  Sleep (theSeconds * 1000);
+  Sleep(theSeconds * 1000);
 #else
-  usleep (theSeconds * 1000 * 1000);
+  usleep(theSeconds * 1000 * 1000);
 #endif
 }
 
 //=======================================================================
-//function : MilliSecSleep
-//purpose  : Cause the process to sleep during a amount of milliseconds  
+// function : MilliSecSleep
+// purpose  : Cause the process to sleep during a amount of milliseconds
 //=======================================================================
-void OSD::MilliSecSleep (const Standard_Integer theMilliseconds)
+void OSD::MilliSecSleep(const Standard_Integer theMilliseconds)
 {
 #ifdef _WIN32
-  Sleep (theMilliseconds);
+  Sleep(theMilliseconds);
 #else
-  usleep (theMilliseconds * 1000);
+  usleep(theMilliseconds * 1000);
 #endif
 }

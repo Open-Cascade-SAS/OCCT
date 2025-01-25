@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<StepShape_GeometricSetSelect> StepShape_Array1OfGeometricSetSelect;
 
-
 #endif

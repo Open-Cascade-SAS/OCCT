@@ -11,13 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Vrml_Rotation.hxx>
 #include <Vrml_SFRotation.hxx>
 
 Vrml_Rotation::Vrml_Rotation()
 {
-  Vrml_SFRotation tmpR(0,0,1,0);
+  Vrml_SFRotation tmpR(0, 0, 1, 0);
   myRotation = tmpR;
 }
 
@@ -26,30 +25,28 @@ Vrml_Rotation::Vrml_Rotation(const Vrml_SFRotation& aRotation)
   myRotation = aRotation;
 }
 
- void Vrml_Rotation::SetRotation(const Vrml_SFRotation& aRotation) 
+void Vrml_Rotation::SetRotation(const Vrml_SFRotation& aRotation)
 {
   myRotation = aRotation;
 }
 
- Vrml_SFRotation Vrml_Rotation::Rotation() const
+Vrml_SFRotation Vrml_Rotation::Rotation() const
 {
   return myRotation;
 }
 
- Standard_OStream& Vrml_Rotation::Print(Standard_OStream& anOStream) const
+Standard_OStream& Vrml_Rotation::Print(Standard_OStream& anOStream) const
 {
- anOStream  << "Rotation {\n";
+  anOStream << "Rotation {\n";
 
- if ( Abs(myRotation.RotationX() - 0) > 0.0001 || 
-     Abs(myRotation.RotationY() - 0) > 0.0001 || 
-     Abs(myRotation.RotationZ() - 1) > 0.0001 ||
-     Abs(myRotation.Angle() - 0) > 0.0001 ) 
-   {
-    anOStream  << "    rotation\t";
+  if (Abs(myRotation.RotationX() - 0) > 0.0001 || Abs(myRotation.RotationY() - 0) > 0.0001
+      || Abs(myRotation.RotationZ() - 1) > 0.0001 || Abs(myRotation.Angle() - 0) > 0.0001)
+  {
+    anOStream << "    rotation\t";
     anOStream << myRotation.RotationX() << " " << myRotation.RotationY() << " ";
     anOStream << myRotation.RotationZ() << " " << myRotation.Angle() << "\n";
-   }
+  }
 
- anOStream  << "}\n";
- return anOStream;
+  anOStream << "}\n";
+  return anOStream;
 }

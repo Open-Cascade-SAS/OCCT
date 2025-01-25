@@ -25,53 +25,30 @@
 class CDF_Directory;
 class CDM_Document;
 
-
-
-class CDF_DirectoryIterator 
+class CDF_DirectoryIterator
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! creates an Iterator with the directory
   //! of the current CDF.
   Standard_EXPORT CDF_DirectoryIterator();
-  
+
   Standard_EXPORT CDF_DirectoryIterator(const Handle(CDF_Directory)& aDirectory);
-  
+
   //! Returns True if there are more entries to return
   Standard_EXPORT Standard_Boolean MoreDocument();
-  
+
   //! Go to the next entry
   //! (if there is not, Value will raise an exception)
   Standard_EXPORT void NextDocument();
-  
+
   //! Returns item value of current entry
   Standard_EXPORT Handle(CDM_Document) Document();
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   CDM_ListIteratorOfListOfDocument myIterator;
-
-
 };
-
-
-
-
-
-
 
 #endif // _CDF_DirectoryIterator_HeaderFile

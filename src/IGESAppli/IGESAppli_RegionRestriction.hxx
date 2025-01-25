@@ -22,7 +22,6 @@
 #include <Standard_Integer.hxx>
 #include <IGESData_IGESEntity.hxx>
 
-
 class IGESAppli_RegionRestriction;
 DEFINE_STANDARD_HANDLE(IGESAppli_RegionRestriction, IGESData_IGESEntity)
 
@@ -34,58 +33,42 @@ class IGESAppli_RegionRestriction : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESAppli_RegionRestriction();
-  
+
   //! This method is used to set the fields of the class
   //! RegionRestriction
   //! - nbPropVal  : Number of property values, always = 3
   //! - aViasRest  : Electrical Vias restriction
   //! - aCompoRest : Electrical components restriction
   //! - aCktRest   : Electrical circuitry restriction
-  Standard_EXPORT void Init (const Standard_Integer nbPropVal, const Standard_Integer aViasRest, const Standard_Integer aCompoRest, const Standard_Integer aCktRest);
-  
+  Standard_EXPORT void Init(const Standard_Integer nbPropVal,
+                            const Standard_Integer aViasRest,
+                            const Standard_Integer aCompoRest,
+                            const Standard_Integer aCktRest);
+
   //! is always 3
   Standard_EXPORT Standard_Integer NbPropertyValues() const;
-  
+
   //! returns the Electrical vias restriction
   //! is 0, 1 or 2
   Standard_EXPORT Standard_Integer ElectricalViasRestriction() const;
-  
+
   //! returns the Electrical components restriction
   //! is 0, 1 or 2
   Standard_EXPORT Standard_Integer ElectricalComponentRestriction() const;
-  
+
   //! returns the Electrical circuitry restriction
   //! is 0, 1 or 2
   Standard_EXPORT Standard_Integer ElectricalCktRestriction() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESAppli_RegionRestriction,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESAppli_RegionRestriction, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Integer theNbPropertyValues;
   Standard_Integer theElectViasRestrict;
   Standard_Integer theElectCompRestrict;
   Standard_Integer theElectCktRestrict;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESAppli_RegionRestriction_HeaderFile

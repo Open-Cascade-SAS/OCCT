@@ -16,60 +16,59 @@
 #include <LDOM_CharacterData.hxx>
 #include <LDOM_BasicText.hxx>
 
-//=======================================================================
-//function : LDOM_CharacterData
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-LDOM_CharacterData::LDOM_CharacterData (const LDOM_BasicText&          aText,
-                                        const Handle(LDOM_MemManager)& aDoc)
-     : LDOM_Node (aText, aDoc), myLength (-1) {}
-
-//=======================================================================
-//function : operator =
-//purpose  : Nullify
-//=======================================================================
-
-LDOM_CharacterData& LDOM_CharacterData::operator = (const LDOM_NullPtr* theNull)
+LDOM_CharacterData::LDOM_CharacterData(const LDOM_BasicText&          aText,
+                                       const Handle(LDOM_MemManager)& aDoc)
+    : LDOM_Node(aText, aDoc),
+      myLength(-1)
 {
-  LDOM_Node::operator = (theNull);
-  myLength = -1;
-  return * this;
 }
 
 //=======================================================================
-//function : operator =
-//purpose  : Assignment
+// function : operator =
+// purpose  : Nullify
 //=======================================================================
 
-LDOM_CharacterData& LDOM_CharacterData::operator =
-                                        (const LDOM_CharacterData& theOther)
+LDOM_CharacterData& LDOM_CharacterData::operator=(const LDOM_NullPtr* theNull)
 {
-  LDOM_Node::operator = (theOther);
+  LDOM_Node::operator=(theNull);
+  myLength = -1;
+  return *this;
+}
+
+//=======================================================================
+// function : operator =
+// purpose  : Assignment
+//=======================================================================
+
+LDOM_CharacterData& LDOM_CharacterData::operator=(const LDOM_CharacterData& theOther)
+{
+  LDOM_Node::operator=(theOther);
   myLength = theOther.myLength;
-  return * this;
+  return *this;
 }
 
 //=======================================================================
-//function : setData
-//purpose  : replace the data
+// function : setData
+// purpose  : replace the data
 //=======================================================================
 
-void LDOM_CharacterData::setData (const LDOMString& theValue)
+void LDOM_CharacterData::setData(const LDOMString& theValue)
 {
-  LDOM_BasicText& aText = (LDOM_BasicText&) Origin ();
-  aText.SetData (theValue, myDocument);
+  LDOM_BasicText& aText = (LDOM_BasicText&)Origin();
+  aText.SetData(theValue, myDocument);
   myLength = -1;
 }
 
 //=======================================================================
-//function : getLength
-//purpose  : query the data length
+// function : getLength
+// purpose  : query the data length
 //=======================================================================
 
-Standard_Integer LDOM_CharacterData::getLength () const
+Standard_Integer LDOM_CharacterData::getLength() const
 {
   if (myLength < 0)
-    (Standard_Integer&)myLength = (Standard_Integer)strlen (getNodeValue().GetString());
+    (Standard_Integer&)myLength = (Standard_Integer)strlen(getNodeValue().GetString());
   return myLength;
 }

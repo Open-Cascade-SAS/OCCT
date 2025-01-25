@@ -27,10 +27,9 @@
 //! - has an orientation for the underlying edge, in terms
 //! of its geometry (as opposed to orientation in
 //! relation to other shapes).
-class TopoDS_Edge  : public TopoDS_Shape
+class TopoDS_Edge : public TopoDS_Shape
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Undefined Edge.
@@ -39,14 +38,14 @@ public:
 
 namespace std
 {
-  template <>
-  struct hash<TopoDS_Edge>
+template <>
+struct hash<TopoDS_Edge>
+{
+  size_t operator()(const TopoDS_Edge& theShape) const
   {
-    size_t operator()(const TopoDS_Edge& theShape) const
-    {
-      return std::hash<TopoDS_Shape>{}(theShape);
-    }
-  };
-}
+    return std::hash<TopoDS_Shape>{}(theShape);
+  }
+};
+} // namespace std
 
 #endif // _TopoDS_Edge_HeaderFile

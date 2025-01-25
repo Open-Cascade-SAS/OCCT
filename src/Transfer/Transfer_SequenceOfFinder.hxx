@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(Transfer_Finder)> Transfer_SequenceOfFinder;
 
-
 #endif

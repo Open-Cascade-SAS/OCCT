@@ -23,58 +23,36 @@
 
 class IGESData_IGESModel;
 
-
 //! provides methods to transfer Geom2d entity from CASCADE to IGES.
-class Geom2dToIGES_Geom2dEntity 
+class Geom2dToIGES_Geom2dEntity
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates a tool Geom2dEntity
   Standard_EXPORT Geom2dToIGES_Geom2dEntity();
-  
+
   //! Creates a tool ready to run and sets its
   //! fields as GE's.
   Standard_EXPORT Geom2dToIGES_Geom2dEntity(const Geom2dToIGES_Geom2dEntity& GE);
-  
+
   //! Set the value of "TheModel"
-  Standard_EXPORT void SetModel (const Handle(IGESData_IGESModel)& model);
-  
+  Standard_EXPORT void SetModel(const Handle(IGESData_IGESModel)& model);
+
   //! Returns the value of "TheModel"
   Standard_EXPORT Handle(IGESData_IGESModel) GetModel() const;
-  
+
   //! Sets the value of the UnitFlag
-  Standard_EXPORT void SetUnit (const Standard_Real unit);
-  
+  Standard_EXPORT void SetUnit(const Standard_Real unit);
+
   //! Returns the value of the UnitFlag of the header of the model
   //! in millimeters.
   Standard_EXPORT Standard_Real GetUnit() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(IGESData_IGESModel) TheModel;
-  Standard_Real TheUnitFactor;
-
-
+  Standard_Real              TheUnitFactor;
 };
-
-
-
-
-
-
 
 #endif // _Geom2dToIGES_Geom2dEntity_HeaderFile

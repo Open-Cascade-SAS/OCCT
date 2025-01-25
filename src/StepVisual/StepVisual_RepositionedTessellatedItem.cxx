@@ -17,12 +17,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_RepositionedTessellatedItem, StepVisual_TessellatedItem)
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepVisual_RepositionedTessellatedItem::Init(const Handle(TCollection_HAsciiString)& theName,
-                                                  const Handle(StepGeom_Axis2Placement3d)& theLocation)
+//=================================================================================================
+
+void StepVisual_RepositionedTessellatedItem::Init(
+  const Handle(TCollection_HAsciiString)&  theName,
+  const Handle(StepGeom_Axis2Placement3d)& theLocation)
 {
   StepVisual_TessellatedItem::Init(theName);
   myLocation = theLocation;

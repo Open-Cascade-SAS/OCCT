@@ -17,33 +17,36 @@
 #include <StdFail_NotDone.hxx>
 
 //=======================================================================
-//function : LocOpe_CSIntersector
-//purpose  : 
+// function : LocOpe_CSIntersector
+// purpose  :
 //=======================================================================
 
-inline LocOpe_CSIntersector::LocOpe_CSIntersector () :
-   myDone(Standard_False),myPoints(NULL),myNbelem(0)
-{}
-
-
-//=======================================================================
-//function : LocOpe_CSIntersector
-//purpose  : 
-//=======================================================================
-
-inline LocOpe_CSIntersector::LocOpe_CSIntersector (const TopoDS_Shape& S):
-   myDone(Standard_False),myShape(S),myPoints(NULL),myNbelem(0)
-{}
+inline LocOpe_CSIntersector::LocOpe_CSIntersector()
+    : myDone(Standard_False),
+      myPoints(NULL),
+      myNbelem(0)
+{
+}
 
 //=======================================================================
-//function : IsDone
-//purpose  : 
+// function : LocOpe_CSIntersector
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean LocOpe_CSIntersector::IsDone () const
+inline LocOpe_CSIntersector::LocOpe_CSIntersector(const TopoDS_Shape& S)
+    : myDone(Standard_False),
+      myShape(S),
+      myPoints(NULL),
+      myNbelem(0)
+{
+}
+
+//=======================================================================
+// function : IsDone
+// purpose  :
+//=======================================================================
+
+inline Standard_Boolean LocOpe_CSIntersector::IsDone() const
 {
   return myDone;
 }
-
-
-

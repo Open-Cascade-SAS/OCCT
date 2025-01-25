@@ -22,7 +22,6 @@
 #include <TDF_DeltaOnModification.hxx>
 class TDF_Attribute;
 
-
 class TDF_DefaultDeltaOnModification;
 DEFINE_STANDARD_HANDLE(TDF_DefaultDeltaOnModification, TDF_DeltaOnModification)
 
@@ -32,36 +31,17 @@ class TDF_DefaultDeltaOnModification : public TDF_DeltaOnModification
 {
 
 public:
-
-  
   //! Creates a TDF_DefaultDeltaOnModification.
   //! <anAttribute> must be the backup copy.
   Standard_EXPORT TDF_DefaultDeltaOnModification(const Handle(TDF_Attribute)& anAttribute);
-  
+
   //! Applies the delta to the attribute.
   Standard_EXPORT virtual void Apply() Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(TDF_DefaultDeltaOnModification,TDF_DeltaOnModification)
+  DEFINE_STANDARD_RTTIEXT(TDF_DefaultDeltaOnModification, TDF_DeltaOnModification)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _TDF_DefaultDeltaOnModification_HeaderFile

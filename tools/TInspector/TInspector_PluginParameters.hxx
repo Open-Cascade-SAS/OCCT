@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowser_Communicator_H
 #define DFBrowser_Communicator_H
@@ -24,13 +24,13 @@
 #include <inspector/TInspector_Window.hxx>
 
 //! \class TInspector_PluginParameters.
-//! \brief This is plugin parameters extended by a possibility to activate module during setting new parameters
+//! \brief This is plugin parameters extended by a possibility to activate module during setting new
+//! parameters
 class TInspector_PluginParameters : public TInspectorAPI_PluginParameters
 {
 public:
-
   //! Constructor
-  Standard_EXPORT TInspector_PluginParameters (TInspector_Window* theWindow);
+  Standard_EXPORT TInspector_PluginParameters(TInspector_Window* theWindow);
 
   //! Destructor
   virtual ~TInspector_PluginParameters() {}
@@ -39,26 +39,31 @@ public:
   //! \param thePluginName a plugin name
   //! \param theParameters a list of parameters
   //! \param theToActivatePlugin a state whether the plugin should be immediately activated
-  Standard_EXPORT virtual void SetParameters (const TCollection_AsciiString& thePluginName,
-                                      const NCollection_List<Handle(Standard_Transient)>& theParameters,
-                                      const Standard_Boolean& theToActivatePlugin = Standard_False) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetParameters(
+    const TCollection_AsciiString&                      thePluginName,
+    const NCollection_List<Handle(Standard_Transient)>& theParameters,
+    const Standard_Boolean& theToActivatePlugin = Standard_False) Standard_OVERRIDE;
 
-  //! Sets path to a directory for temporary plugin files. Sets the directory into preferences loader
-  //! \param thePath a path
-  virtual void SetTemporaryDirectory (const TCollection_AsciiString& thePath) Standard_OVERRIDE;
+  //! Sets path to a directory for temporary plugin files. Sets the directory into preferences
+  //! loader \param thePath a path
+  virtual void SetTemporaryDirectory(const TCollection_AsciiString& thePath) Standard_OVERRIDE;
 
   //! Returns plugin preferences
   //! \param thePluginName a plugin name
-  virtual void GetPreferences (const TCollection_AsciiString& thePluginName,
-                               TInspectorAPI_PreferencesDataMap& theItem) Standard_OVERRIDE
-  { myPreferences->GetPreferences (thePluginName, theItem); }
+  virtual void GetPreferences(const TCollection_AsciiString&    thePluginName,
+                              TInspectorAPI_PreferencesDataMap& theItem) Standard_OVERRIDE
+  {
+    myPreferences->GetPreferences(thePluginName, theItem);
+  }
 
   //! Stores plugin preferences
   //! \param thePluginName a plugin name
   //! \theItem container of plugin preferences values in form: <name, value>
-  virtual void SetPreferences (const TCollection_AsciiString& thePluginName,
-                               const TInspectorAPI_PreferencesDataMap& theItem) Standard_OVERRIDE
-   { myPreferences->SetPreferences (thePluginName, theItem); }
+  virtual void SetPreferences(const TCollection_AsciiString&          thePluginName,
+                              const TInspectorAPI_PreferencesDataMap& theItem) Standard_OVERRIDE
+  {
+    myPreferences->SetPreferences(thePluginName, theItem);
+  }
 
   //! Stores plugin preferences into a preferences file
   virtual void StorePreferences() Standard_OVERRIDE { myPreferences->StorePreferences(); }
@@ -67,8 +72,7 @@ public:
   void RemovePreferences() { myPreferences->RemovePreferences(); }
 
 private:
-
-  TInspector_Window* myWindow; //!< the current window
+  TInspector_Window*      myWindow;      //!< the current window
   TInspector_Preferences* myPreferences; //!< the preferences loader
 };
 

@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -31,16 +31,19 @@ class StepKinematics_RackAndPinionPairValue;
 class RWStepKinematics_RWRackAndPinionPairValue
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   Standard_HIDDEN RWStepKinematics_RWRackAndPinionPairValue();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& theData, const Standard_Integer theNum, Handle(Interface_Check)& theArch, const Handle(StepKinematics_RackAndPinionPairValue)& theEnt) const;
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&               theData,
+                                const Standard_Integer                               theNum,
+                                Handle(Interface_Check)&                             theArch,
+                                const Handle(StepKinematics_RackAndPinionPairValue)& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter& theSW, const Handle(StepKinematics_RackAndPinionPairValue)& theEnt) const;
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                 theSW,
+                                 const Handle(StepKinematics_RackAndPinionPairValue)& theEnt) const;
 
-  Standard_HIDDEN void Share(const Handle(StepKinematics_RackAndPinionPairValue)& theEnt, Interface_EntityIterator& iter) const;
-
+  Standard_HIDDEN void Share(const Handle(StepKinematics_RackAndPinionPairValue)& theEnt,
+                             Interface_EntityIterator&                            iter) const;
 };
 #endif // _RWStepKinematics_RWRackAndPinionPairValue_HeaderFile_

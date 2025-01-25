@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -32,7 +32,6 @@ class StepVisual_FaceOrSurface : public StepData_SelectType
 {
 
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor
@@ -41,13 +40,13 @@ public:
   //! Recognizes a kind of FaceOrSurface select type
   //! -- 1 -> Face
   //! -- 2 -> Surface
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer
+    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
   //! Returns Value as Face (or Null if another type)
   Standard_EXPORT Handle(StepShape_Face) Face() const;
 
   //! Returns Value as Surface (or Null if another type)
   Standard_EXPORT Handle(StepGeom_Surface) Surface() const;
-
 };
 #endif // _StepVisual_FaceOrSurface_HeaderFile

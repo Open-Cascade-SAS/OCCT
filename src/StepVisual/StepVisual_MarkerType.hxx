@@ -17,16 +17,15 @@
 #ifndef _StepVisual_MarkerType_HeaderFile
 #define _StepVisual_MarkerType_HeaderFile
 
-
 enum StepVisual_MarkerType
 {
-StepVisual_mtDot,
-StepVisual_mtX,
-StepVisual_mtPlus,
-StepVisual_mtAsterisk,
-StepVisual_mtRing,
-StepVisual_mtSquare,
-StepVisual_mtTriangle
+  StepVisual_mtDot,
+  StepVisual_mtX,
+  StepVisual_mtPlus,
+  StepVisual_mtAsterisk,
+  StepVisual_mtRing,
+  StepVisual_mtSquare,
+  StepVisual_mtTriangle
 };
 
 #endif // _StepVisual_MarkerType_HeaderFile

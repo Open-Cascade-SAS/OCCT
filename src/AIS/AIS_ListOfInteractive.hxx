@@ -21,7 +21,7 @@
 #include <NCollection_List.hxx>
 
 typedef NCollection_List<Handle(AIS_InteractiveObject)> AIS_ListOfInteractive;
-typedef NCollection_List<Handle(AIS_InteractiveObject)>::Iterator AIS_ListIteratorOfListOfInteractive;
-
+typedef NCollection_List<Handle(AIS_InteractiveObject)>::Iterator
+  AIS_ListIteratorOfListOfInteractive;
 
 #endif

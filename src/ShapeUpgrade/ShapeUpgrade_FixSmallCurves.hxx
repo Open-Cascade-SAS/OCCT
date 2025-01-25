@@ -37,63 +37,50 @@ class Geom2d_Curve;
 class ShapeUpgrade_FixSmallCurves;
 DEFINE_STANDARD_HANDLE(ShapeUpgrade_FixSmallCurves, ShapeUpgrade_Tool)
 
-
 class ShapeUpgrade_FixSmallCurves : public ShapeUpgrade_Tool
 {
 
 public:
-
-  
   Standard_EXPORT ShapeUpgrade_FixSmallCurves();
-  
-  Standard_EXPORT void Init (const TopoDS_Edge& theEdge, const TopoDS_Face& theFace);
-  
-  Standard_EXPORT virtual Standard_Boolean Approx (Handle(Geom_Curve)& Curve3d, Handle(Geom2d_Curve)& Curve2d, Handle(Geom2d_Curve)& Curve2dR, Standard_Real& First, Standard_Real& Last);
-  
+
+  Standard_EXPORT void Init(const TopoDS_Edge& theEdge, const TopoDS_Face& theFace);
+
+  Standard_EXPORT virtual Standard_Boolean Approx(Handle(Geom_Curve)&   Curve3d,
+                                                  Handle(Geom2d_Curve)& Curve2d,
+                                                  Handle(Geom2d_Curve)& Curve2dR,
+                                                  Standard_Real&        First,
+                                                  Standard_Real&        Last);
+
   //! Sets the tool for splitting 3D curves.
-  Standard_EXPORT void SetSplitCurve3dTool (const Handle(ShapeUpgrade_SplitCurve3d)& splitCurve3dTool);
-  
+  Standard_EXPORT void SetSplitCurve3dTool(
+    const Handle(ShapeUpgrade_SplitCurve3d)& splitCurve3dTool);
+
   //! Sets the tool for splitting pcurves.
-  Standard_EXPORT void SetSplitCurve2dTool (const Handle(ShapeUpgrade_SplitCurve2d)& splitCurve2dTool);
-  
+  Standard_EXPORT void SetSplitCurve2dTool(
+    const Handle(ShapeUpgrade_SplitCurve2d)& splitCurve2dTool);
+
   //! Queries the status of last call to Perform
   //! OK   :
   //! DONE1:
   //! DONE2:
   //! FAIL1:
-  Standard_EXPORT Standard_Boolean Status (const ShapeExtend_Status status) const;
+  Standard_EXPORT Standard_Boolean Status(const ShapeExtend_Status status) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_FixSmallCurves,ShapeUpgrade_Tool)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_FixSmallCurves, ShapeUpgrade_Tool)
 
 protected:
-
-  
   Standard_EXPORT virtual Handle(ShapeUpgrade_SplitCurve3d) GetSplitCurve3dTool() const;
-  
+
   //! Returns the tool for splitting pcurves.
   Standard_EXPORT virtual Handle(ShapeUpgrade_SplitCurve2d) GetSplitCurve2dTool() const;
 
-  Standard_Integer myStatus;
+  Standard_Integer                  myStatus;
   Handle(ShapeUpgrade_SplitCurve3d) mySplitCurve3dTool;
   Handle(ShapeUpgrade_SplitCurve2d) mySplitCurve2dTool;
-  TopoDS_Edge myEdge;
-  TopoDS_Face myFace;
-
+  TopoDS_Edge                       myEdge;
+  TopoDS_Face                       myFace;
 
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _ShapeUpgrade_FixSmallCurves_HeaderFile

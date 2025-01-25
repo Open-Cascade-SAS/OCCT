@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowserPane_TableView_H
 #define DFBrowserPane_TableView_H
@@ -35,38 +35,41 @@ class QAbstractTableModel;
 class DFBrowserPane_TableView : public QWidget
 {
 public:
-
   //! Constructor
-  Standard_EXPORT DFBrowserPane_TableView (QWidget* theParent,
-                                           const QMap<int, int>& theDefaultColumnWidths = QMap<int, int>());
+  Standard_EXPORT DFBrowserPane_TableView(
+    QWidget*              theParent,
+    const QMap<int, int>& theDefaultColumnWidths = QMap<int, int>());
+
   //! Destructor
   virtual ~DFBrowserPane_TableView() {}
 
   //! Sets model into table view. After, set column widths for view
-  Standard_EXPORT void SetModel (QAbstractTableModel* theModel);
+  Standard_EXPORT void SetModel(QAbstractTableModel* theModel);
 
   //! Returns the current table view
   QTableView* GetTableView() const { return myTableView; }
 
   //! Set horizontal header shown or hidden
   //! \param theVisible visibility flag
-  Standard_EXPORT void SetVisibleHorizontalHeader (const bool& theVisible);
+  Standard_EXPORT void SetVisibleHorizontalHeader(const bool& theVisible);
 
   //! Updates table view height to contain the given number of rows only
   //! \param theCount a row count
   //! \param theView a table view, which size will be changed
   //! \param theScroll flag whether add scroll height to size
-  Standard_EXPORT static void SetFixedRowCount (const int theCount, QTableView* theView, const bool theScroll = false);
+  Standard_EXPORT static void SetFixedRowCount(const int   theCount,
+                                               QTableView* theView,
+                                               const bool  theScroll = false);
 
   //! Returns names of selected items in the view
   //! \param theView a table view
   //! \param theColumnId a column index
   //! \return container of strings
-  Standard_EXPORT static QStringList GetSelectedColumnValues (QTableView* theTable, const int theColumnId);
+  Standard_EXPORT static QStringList GetSelectedColumnValues(QTableView* theTable,
+                                                             const int   theColumnId);
 
 private:
-
-  QTableView* myTableView; //!< the current table view
+  QTableView*    myTableView;           //!< the current table view
   QMap<int, int> myDefaultColumnWidths; //!< container of default widths of columns
 };
 

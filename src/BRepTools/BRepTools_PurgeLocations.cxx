@@ -19,19 +19,14 @@
 #include <BRepTools_Modifier.hxx>
 #include <TopLoc_Datum3D.hxx>
 
-//=======================================================================
-//function : BRepTools_PurgeLocations
-//purpose  : 
-//=======================================================================
-BRepTools_PurgeLocations::BRepTools_PurgeLocations() :
-  myDone(Standard_False)
+//=================================================================================================
+
+BRepTools_PurgeLocations::BRepTools_PurgeLocations()
+    : myDone(Standard_False)
 {
 }
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean BRepTools_PurgeLocations::Perform(const TopoDS_Shape& theShape)
 {
@@ -41,19 +36,19 @@ Standard_Boolean BRepTools_PurgeLocations::Perform(const TopoDS_Shape& theShape)
   myDone = Standard_True;
   AddShape(myShape);
 
-  //Check locations;
-  Standard_Integer ind;
+  // Check locations;
+  Standard_Integer                     ind;
   NCollection_Vector<Standard_Integer> aBadTrsfInds;
-  for (ind = 1; ; ++ind)
+  for (ind = 1;; ++ind)
   {
     const TopLoc_Location& aLoc = myLocations.Location(ind);
 
     if (aLoc.IsIdentity())
       break;
 
-    const gp_Trsf& aTrsf = aLoc.Transformation();
-    Standard_Boolean isBadTrsf = aTrsf.IsNegative() ||
-      (Abs(Abs(aTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
+    const gp_Trsf&   aTrsf = aLoc.Transformation();
+    Standard_Boolean isBadTrsf =
+      aTrsf.IsNegative() || (Abs(Abs(aTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
     if (isBadTrsf)
     {
       aBadTrsfInds.Append(ind);
@@ -70,9 +65,9 @@ Standard_Boolean BRepTools_PurgeLocations::Perform(const TopoDS_Shape& theShape)
   Standard_Integer inds;
   for (inds = 1; inds <= aNbShapes; ++inds)
   {
-    const TopoDS_Shape& anS = myMapShapes(inds);
-    Standard_Integer aLocInd = myLocations.Index(anS.Location());
-    if(aLocInd == 0)
+    const TopoDS_Shape& anS     = myMapShapes(inds);
+    Standard_Integer    aLocInd = myLocations.Index(anS.Location());
+    if (aLocInd == 0)
     {
       continue;
     }
@@ -81,13 +76,12 @@ Standard_Boolean BRepTools_PurgeLocations::Perform(const TopoDS_Shape& theShape)
     {
       if (aBadTrsfInds(il) == aLocInd)
       {
-        TopoDS_Shape aTrS;
+        TopoDS_Shape     aTrS;
         Standard_Boolean isDone = PurgeLocation(anS, aTrS);
-        myDone = myDone && isDone;
+        myDone                  = myDone && isDone;
         myMapNewShapes.Bind(anS, aTrS);
         break;
       }
-
     }
   }
 
@@ -103,25 +97,22 @@ Standard_Boolean BRepTools_PurgeLocations::Perform(const TopoDS_Shape& theShape)
   for (; anIter.More(); anIter.Next())
   {
     const TopoDS_Shape& anOldS = anIter.Key();
-    const TopoDS_Shape& aNewS = anIter.Value();
+    const TopoDS_Shape& aNewS  = anIter.Value();
     myReShape->Replace(anOldS, aNewS);
   }
 
   myShape = myReShape->Apply(myShape);
 
   return myDone;
-
 }
 
-//=======================================================================
-//function : PurgeLocation
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean BRepTools_PurgeLocations::PurgeLocation(const TopoDS_Shape& theS, TopoDS_Shape& theRes)
+Standard_Boolean BRepTools_PurgeLocations::PurgeLocation(const TopoDS_Shape& theS,
+                                                         TopoDS_Shape&       theRes)
 {
-  Standard_Boolean isDone = Standard_True;
-  TopLoc_Location aRefLoc = theS.Location();
+  Standard_Boolean isDone  = Standard_True;
+  TopLoc_Location  aRefLoc = theS.Location();
   Standard_Boolean isEmpty = aRefLoc.IsIdentity();
   if (isEmpty)
   {
@@ -134,23 +125,24 @@ Standard_Boolean BRepTools_PurgeLocations::PurgeLocation(const TopoDS_Shape& the
 
   while (!isEmpty)
   {
-    const Handle(TopLoc_Datum3D)& aFD = aRefLoc.FirstDatum();
-    gp_Trsf aTrsf = aFD->Trsf();
-    Standard_Integer aFP = aRefLoc.FirstPower();
-    Standard_Boolean isBad = aTrsf.IsNegative() || (Abs(Abs(aTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
+    const Handle(TopLoc_Datum3D)& aFD   = aRefLoc.FirstDatum();
+    gp_Trsf                       aTrsf = aFD->Trsf();
+    Standard_Integer              aFP   = aRefLoc.FirstPower();
+    Standard_Boolean              isBad =
+      aTrsf.IsNegative() || (Abs(Abs(aTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
     TopLoc_Location aLoc(aFD);
-    aLoc = aLoc.Powered(aFP);
+    aLoc  = aLoc.Powered(aFP);
     aTrsf = aLoc.Transformation();
     if (isBad)
     {
       Handle(BRepTools_TrsfModification) aModification = new BRepTools_TrsfModification(aTrsf);
-      BRepTools_Modifier aModifier(theRes, aModification);
+      BRepTools_Modifier                 aModifier(theRes, aModification);
       if (aModifier.IsDone())
       {
         theRes = aModifier.ModifiedShape(theRes);
       }
       else
-      {      
+      {
         isDone = Standard_False;
         theRes = theRes.Moved(aLoc);
       }
@@ -167,53 +159,41 @@ Standard_Boolean BRepTools_PurgeLocations::PurgeLocation(const TopoDS_Shape& the
   return isDone;
 }
 
-//=======================================================================
-//function : AddShape
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void BRepTools_PurgeLocations::AddShape(const TopoDS_Shape& theS) 
+void BRepTools_PurgeLocations::AddShape(const TopoDS_Shape& theS)
 {
   myMapShapes.Add(theS);
   myLocations.Add(theS.Location());
 
   TopoDS_Iterator It(theS, Standard_False, Standard_False);
-  while (It.More()) {
+  while (It.More())
+  {
     AddShape(It.Value());
     It.Next();
   }
 }
 
-//=======================================================================
-//function : GetResult
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 const TopoDS_Shape& BRepTools_PurgeLocations::GetResult() const
 {
   return myShape;
 }
 
-//=======================================================================
-//function : IsDone
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean  BRepTools_PurgeLocations::IsDone() const
+Standard_Boolean BRepTools_PurgeLocations::IsDone() const
 {
   return myDone;
 }
 
-//=======================================================================
-//function : ModifiedShape
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TopoDS_Shape  BRepTools_PurgeLocations::ModifiedShape(const TopoDS_Shape& theInitShape) const
+TopoDS_Shape BRepTools_PurgeLocations::ModifiedShape(const TopoDS_Shape& theInitShape) const
 {
   TopoDS_Shape aShape = theInitShape;
   if (myMapNewShapes.IsBound(theInitShape))
     aShape = myMapNewShapes.Find(theInitShape);
   return aShape;
 }
-

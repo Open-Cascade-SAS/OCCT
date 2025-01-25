@@ -23,9 +23,9 @@
 //! uniform parametrisation with global range [0,1]
 enum ShapeExtend_Parametrisation
 {
-ShapeExtend_Natural,
-ShapeExtend_Uniform,
-ShapeExtend_Unitary
+  ShapeExtend_Natural,
+  ShapeExtend_Uniform,
+  ShapeExtend_Unitary
 };
 
 #endif // _ShapeExtend_Parametrisation_HeaderFile

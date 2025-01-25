@@ -22,45 +22,51 @@ class AIS_ColoredDrawer : public Prs3d_Drawer
 {
   DEFINE_STANDARD_RTTIEXT(AIS_ColoredDrawer, Prs3d_Drawer)
 public:
-
   //! Default constructor.
-  AIS_ColoredDrawer (const Handle(Prs3d_Drawer)& theLink)
-  : myIsHidden    (false),
-    myHasOwnMaterial(false),
-    myHasOwnColor (false),
-    myHasOwnTransp(false),
-    myHasOwnWidth (false)
+  AIS_ColoredDrawer(const Handle(Prs3d_Drawer)& theLink)
+      : myIsHidden(false),
+        myHasOwnMaterial(false),
+        myHasOwnColor(false),
+        myHasOwnTransp(false),
+        myHasOwnWidth(false)
   {
-    Link (theLink);
+    Link(theLink);
   }
 
-  bool IsHidden() const                                 { return myIsHidden;     }
-  void SetHidden (const bool theToHide)                 { myIsHidden = theToHide;}
+  bool IsHidden() const { return myIsHidden; }
 
-  bool HasOwnMaterial() const                           { return myHasOwnMaterial;  }
-  void UnsetOwnMaterial()                               { myHasOwnMaterial = false; }
-  void SetOwnMaterial()                                 { myHasOwnMaterial = true;  }
+  void SetHidden(const bool theToHide) { myIsHidden = theToHide; }
 
-  bool HasOwnColor() const                              { return myHasOwnColor;  }
-  void UnsetOwnColor()                                  { myHasOwnColor = false; }
-  void SetOwnColor (const Quantity_Color& /*theColor*/) { myHasOwnColor = true;  }
+  bool HasOwnMaterial() const { return myHasOwnMaterial; }
 
-  bool HasOwnTransparency() const                       { return myHasOwnTransp;  }
-  void UnsetOwnTransparency()                           { myHasOwnTransp = false; }
-  void SetOwnTransparency (Standard_Real /*theTransp*/) { myHasOwnTransp = true;  }
+  void UnsetOwnMaterial() { myHasOwnMaterial = false; }
 
-  bool HasOwnWidth() const                              { return myHasOwnWidth;  }
-  void UnsetOwnWidth()                                  { myHasOwnWidth = false; }
-  void SetOwnWidth (const Standard_Real /*theWidth*/)   { myHasOwnWidth = true;  }
+  void SetOwnMaterial() { myHasOwnMaterial = true; }
 
-public:  //! @name list of overridden properties
+  bool HasOwnColor() const { return myHasOwnColor; }
 
+  void UnsetOwnColor() { myHasOwnColor = false; }
+
+  void SetOwnColor(const Quantity_Color& /*theColor*/) { myHasOwnColor = true; }
+
+  bool HasOwnTransparency() const { return myHasOwnTransp; }
+
+  void UnsetOwnTransparency() { myHasOwnTransp = false; }
+
+  void SetOwnTransparency(Standard_Real /*theTransp*/) { myHasOwnTransp = true; }
+
+  bool HasOwnWidth() const { return myHasOwnWidth; }
+
+  void UnsetOwnWidth() { myHasOwnWidth = false; }
+
+  void SetOwnWidth(const Standard_Real /*theWidth*/) { myHasOwnWidth = true; }
+
+public: //! @name list of overridden properties
   bool myIsHidden;
   bool myHasOwnMaterial;
   bool myHasOwnColor;
   bool myHasOwnTransp;
   bool myHasOwnWidth;
-
 };
 
 DEFINE_STANDARD_HANDLE(AIS_ColoredDrawer, Prs3d_Drawer)

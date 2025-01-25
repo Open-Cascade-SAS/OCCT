@@ -31,11 +31,10 @@
 #include <XSDRAW.hxx>
 
 //=============================================================================
-//function : parseNameFormat
-//purpose  : Parse RWMesh_NameFormat enumeration
+// function : parseNameFormat
+// purpose  : Parse RWMesh_NameFormat enumeration
 //=============================================================================
-static bool parseNameFormat(const char* theArg,
-                            RWMesh_NameFormat& theFormat)
+static bool parseNameFormat(const char* theArg, RWMesh_NameFormat& theFormat)
 {
   TCollection_AsciiString aName(theArg);
   aName.LowerCase();
@@ -43,44 +42,32 @@ static bool parseNameFormat(const char* theArg,
   {
     theFormat = RWMesh_NameFormat_Empty;
   }
-  else if (aName == "product"
-           || aName == "prod")
+  else if (aName == "product" || aName == "prod")
   {
     theFormat = RWMesh_NameFormat_Product;
   }
-  else if (aName == "instance"
-           || aName == "inst")
+  else if (aName == "instance" || aName == "inst")
   {
     theFormat = RWMesh_NameFormat_Instance;
   }
-  else if (aName == "instanceorproduct"
-           || aName == "instance||product"
-           || aName == "instance|product"
-           || aName == "instorprod"
-           || aName == "inst||prod"
+  else if (aName == "instanceorproduct" || aName == "instance||product"
+           || aName == "instance|product" || aName == "instorprod" || aName == "inst||prod"
            || aName == "inst|prod")
   {
     theFormat = RWMesh_NameFormat_InstanceOrProduct;
   }
-  else if (aName == "productorinstance"
-           || aName == "product||instance"
-           || aName == "product|instance"
-           || aName == "prodorinst"
-           || aName == "prod||inst"
+  else if (aName == "productorinstance" || aName == "product||instance"
+           || aName == "product|instance" || aName == "prodorinst" || aName == "prod||inst"
            || aName == "prod|inst")
   {
     theFormat = RWMesh_NameFormat_ProductOrInstance;
   }
-  else if (aName == "productandinstance"
-           || aName == "prodandinst"
-           || aName == "product&instance"
+  else if (aName == "productandinstance" || aName == "prodandinst" || aName == "product&instance"
            || aName == "prod&inst")
   {
     theFormat = RWMesh_NameFormat_ProductAndInstance;
   }
-  else if (aName == "productandinstanceandocaf"
-           || aName == "verbose"
-           || aName == "debug")
+  else if (aName == "productandinstanceandocaf" || aName == "verbose" || aName == "debug")
   {
     theFormat = RWMesh_NameFormat_ProductAndInstanceAndOcaf;
   }
@@ -92,11 +79,10 @@ static bool parseNameFormat(const char* theArg,
 }
 
 //=============================================================================
-//function : parseCoordinateSystem
-//purpose  : Parse RWMesh_CoordinateSystem enumeration
+// function : parseCoordinateSystem
+// purpose  : Parse RWMesh_CoordinateSystem enumeration
 //=============================================================================
-static bool parseCoordinateSystem(const char* theArg,
-                                  RWMesh_CoordinateSystem& theSystem)
+static bool parseCoordinateSystem(const char* theArg, RWMesh_CoordinateSystem& theSystem)
 {
   TCollection_AsciiString aCSStr(theArg);
   aCSStr.LowerCase();
@@ -116,31 +102,29 @@ static bool parseCoordinateSystem(const char* theArg,
 }
 
 //=============================================================================
-//function : ReadGltf
-//purpose  : Reads glTF file
+// function : ReadGltf
+// purpose  : Reads glTF file
 //=============================================================================
 static Standard_Integer ReadGltf(Draw_Interpretor& theDI,
-                                 Standard_Integer theNbArgs,
-                                 const char** theArgVec)
+                                 Standard_Integer  theNbArgs,
+                                 const char**      theArgVec)
 {
   TCollection_AsciiString aDestName, aFilePath;
-  Standard_Boolean toUseExistingDoc = Standard_False;
-  Standard_Boolean toListExternalFiles = Standard_False;
-  Standard_Boolean isParallel = Standard_False;
-  Standard_Boolean isDoublePrec = Standard_False;
-  Standard_Boolean toSkipLateDataLoading = Standard_False;
-  Standard_Boolean toKeepLateData = Standard_True;
-  Standard_Boolean toPrintDebugInfo = Standard_False;
-  Standard_Boolean toLoadAllScenes = Standard_False;
-  Standard_Boolean toPrintAssetInfo = Standard_False;
-  Standard_Boolean isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "readgltf");
+  Standard_Boolean        toUseExistingDoc      = Standard_False;
+  Standard_Boolean        toListExternalFiles   = Standard_False;
+  Standard_Boolean        isParallel            = Standard_False;
+  Standard_Boolean        isDoublePrec          = Standard_False;
+  Standard_Boolean        toSkipLateDataLoading = Standard_False;
+  Standard_Boolean        toKeepLateData        = Standard_True;
+  Standard_Boolean        toPrintDebugInfo      = Standard_False;
+  Standard_Boolean        toLoadAllScenes       = Standard_False;
+  Standard_Boolean        toPrintAssetInfo      = Standard_False;
+  Standard_Boolean        isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "readgltf");
   for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArgCase(theArgVec[anArgIter]);
     anArgCase.LowerCase();
-    if (!isNoDoc
-      && (anArgCase == "-nocreate"
-        || anArgCase == "-nocreatedoc"))
+    if (!isNoDoc && (anArgCase == "-nocreate" || anArgCase == "-nocreatedoc"))
     {
       toUseExistingDoc = Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
     }
@@ -148,10 +132,8 @@ static Standard_Integer ReadGltf(Draw_Interpretor& theDI,
     {
       isParallel = Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
     }
-    else if (anArgCase == "-doubleprec"
-      || anArgCase == "-doubleprecision"
-      || anArgCase == "-singleprec"
-      || anArgCase == "-singleprecision")
+    else if (anArgCase == "-doubleprec" || anArgCase == "-doubleprecision"
+             || anArgCase == "-singleprec" || anArgCase == "-singleprecision")
     {
       isDoublePrec = Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
       if (anArgCase.StartsWith("-single"))
@@ -171,21 +153,17 @@ static Standard_Integer ReadGltf(Draw_Interpretor& theDI,
     {
       toLoadAllScenes = Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
     }
-    else if (anArgCase == "-toprintinfo"
-      || anArgCase == "-toprintdebuginfo")
+    else if (anArgCase == "-toprintinfo" || anArgCase == "-toprintdebuginfo")
     {
       toPrintDebugInfo = Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
     }
-    else if (anArgCase == "-listexternalfiles"
-      || anArgCase == "-listexternals"
-      || anArgCase == "-listexternal"
-      || anArgCase == "-external"
-      || anArgCase == "-externalfiles")
+    else if (anArgCase == "-listexternalfiles" || anArgCase == "-listexternals"
+             || anArgCase == "-listexternal" || anArgCase == "-external"
+             || anArgCase == "-externalfiles")
     {
       toListExternalFiles = Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
     }
-    else if (anArgCase == "-assetinfo"
-      || anArgCase == "-metadata")
+    else if (anArgCase == "-assetinfo" || anArgCase == "-metadata")
     {
       toPrintAssetInfo = Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
     }
@@ -217,12 +195,11 @@ static Standard_Integer ReadGltf(Draw_Interpretor& theDI,
   }
 
   Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(theDI, 1);
-  Handle(TDocStd_Document) aDoc;
-  if (!aDestName.IsEmpty()
-    && !isNoDoc)
+  Handle(TDocStd_Document)       aDoc;
+  if (!aDestName.IsEmpty() && !isNoDoc)
   {
-    Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
-    Standard_CString aNameVar = aDestName.ToCString();
+    Handle(TDocStd_Application) anApp    = DDocStd::GetApplication();
+    Standard_CString            aNameVar = aDestName.ToCString();
     DDocStd::GetDocument(aNameVar, aDoc, Standard_False);
     if (aDoc.IsNull())
     {
@@ -274,7 +251,9 @@ static Standard_Integer ReadGltf(Draw_Interpretor& theDI,
   bool isFirstLine = true;
   if (toPrintAssetInfo)
   {
-    for (TColStd_IndexedDataMapOfStringString::Iterator aKeyIter(aReader.Metadata()); aKeyIter.More(); aKeyIter.Next())
+    for (TColStd_IndexedDataMapOfStringString::Iterator aKeyIter(aReader.Metadata());
+         aKeyIter.More();
+         aKeyIter.Next())
     {
       if (!isFirstLine)
       {
@@ -290,7 +269,10 @@ static Standard_Integer ReadGltf(Draw_Interpretor& theDI,
     {
       theDI << "\n";
     }
-    for (NCollection_IndexedMap<TCollection_AsciiString>::Iterator aFileIter(aReader.ExternalFiles()); aFileIter.More(); aFileIter.Next())
+    for (NCollection_IndexedMap<TCollection_AsciiString>::Iterator aFileIter(
+           aReader.ExternalFiles());
+         aFileIter.More();
+         aFileIter.Next())
     {
       theDI << "\"" << aFileIter.Value() << "\" ";
     }
@@ -299,45 +281,41 @@ static Standard_Integer ReadGltf(Draw_Interpretor& theDI,
 }
 
 //=============================================================================
-//function : WriteGltf
-//purpose  : Writes glTF file
+// function : WriteGltf
+// purpose  : Writes glTF file
 //=============================================================================
 static Standard_Integer WriteGltf(Draw_Interpretor& theDI,
-                                  Standard_Integer theNbArgs,
-                                  const char** theArgVec)
+                                  Standard_Integer  theNbArgs,
+                                  const char**      theArgVec)
 {
-  TCollection_AsciiString aGltfFilePath;
-  Handle(TDocStd_Document) aDoc;
-  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
+  TCollection_AsciiString              aGltfFilePath;
+  Handle(TDocStd_Document)             aDoc;
+  Handle(TDocStd_Application)          anApp = DDocStd::GetApplication();
   TColStd_IndexedDataMapOfStringString aFileInfo;
-  RWGltf_WriterTrsfFormat aTrsfFormat = RWGltf_WriterTrsfFormat_Compact;
-  RWMesh_CoordinateSystem aSystemCoordSys = RWMesh_CoordinateSystem_Zup;
-  bool toForceUVExport = false, toEmbedTexturesInGlb = true;
-  bool toMergeFaces = false, toSplitIndices16 = false;
-  bool isParallel = false;
-  RWMesh_NameFormat aNodeNameFormat = RWMesh_NameFormat_InstanceOrProduct;
-  RWMesh_NameFormat aMeshNameFormat = RWMesh_NameFormat_Product;
-  RWGltf_DracoParameters aDracoParameters;
+  RWGltf_WriterTrsfFormat              aTrsfFormat     = RWGltf_WriterTrsfFormat_Compact;
+  RWMesh_CoordinateSystem              aSystemCoordSys = RWMesh_CoordinateSystem_Zup;
+  bool                                 toForceUVExport = false, toEmbedTexturesInGlb = true;
+  bool                                 toMergeFaces = false, toSplitIndices16 = false;
+  bool                                 isParallel      = false;
+  RWMesh_NameFormat                    aNodeNameFormat = RWMesh_NameFormat_InstanceOrProduct;
+  RWMesh_NameFormat                    aMeshNameFormat = RWMesh_NameFormat_Product;
+  RWGltf_DracoParameters               aDracoParameters;
   for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArgCase(theArgVec[anArgIter]);
     anArgCase.LowerCase();
-    if (anArgCase == "-comments"
-      && anArgIter + 1 < theNbArgs)
+    if (anArgCase == "-comments" && anArgIter + 1 < theNbArgs)
     {
       aFileInfo.Add("Comments", theArgVec[++anArgIter]);
     }
-    else if (anArgCase == "-author"
-      && anArgIter + 1 < theNbArgs)
+    else if (anArgCase == "-author" && anArgIter + 1 < theNbArgs)
     {
       aFileInfo.Add("Author", theArgVec[++anArgIter]);
     }
-    else if (anArgCase == "-forceuvexport"
-      || anArgCase == "-forceuv")
+    else if (anArgCase == "-forceuvexport" || anArgCase == "-forceuv")
     {
       toForceUVExport = true;
-      if (anArgIter + 1 < theNbArgs
-        && Draw::ParseOnOff(theArgVec[anArgIter + 1], toForceUVExport))
+      if (anArgIter + 1 < theNbArgs && Draw::ParseOnOff(theArgVec[anArgIter + 1], toForceUVExport))
       {
         ++anArgIter;
       }
@@ -345,39 +323,33 @@ static Standard_Integer WriteGltf(Draw_Interpretor& theDI,
     else if (anArgCase == "-mergefaces")
     {
       toMergeFaces = true;
-      if (anArgIter + 1 < theNbArgs
-        && Draw::ParseOnOff(theArgVec[anArgIter + 1], toMergeFaces))
+      if (anArgIter + 1 < theNbArgs && Draw::ParseOnOff(theArgVec[anArgIter + 1], toMergeFaces))
       {
         ++anArgIter;
       }
     }
-    else if (anArgCase == "-splitindices16"
-      || anArgCase == "-splitindexes16"
-      || anArgCase == "-splitindices"
-      || anArgCase == "-splitindexes"
-      || anArgCase == "-splitind")
+    else if (anArgCase == "-splitindices16" || anArgCase == "-splitindexes16"
+             || anArgCase == "-splitindices" || anArgCase == "-splitindexes"
+             || anArgCase == "-splitind")
     {
       toSplitIndices16 = true;
-      if (anArgIter + 1 < theNbArgs
-        && Draw::ParseOnOff(theArgVec[anArgIter + 1], toSplitIndices16))
+      if (anArgIter + 1 < theNbArgs && Draw::ParseOnOff(theArgVec[anArgIter + 1], toSplitIndices16))
       {
         ++anArgIter;
       }
     }
     else if (anArgIter + 1 < theNbArgs
-      && (anArgCase == "-systemcoordinatesystem"
-        || anArgCase == "-systemcoordsystem"
-        || anArgCase == "-systemcoordsys"
-        || anArgCase == "-syscoordsys"))
+             && (anArgCase == "-systemcoordinatesystem" || anArgCase == "-systemcoordsystem"
+                 || anArgCase == "-systemcoordsys" || anArgCase == "-syscoordsys"))
     {
       if (!parseCoordinateSystem(theArgVec[++anArgIter], aSystemCoordSys))
       {
-        Message::SendFail() << "Syntax error: unknown coordinate system '" << theArgVec[anArgIter] << "'";
+        Message::SendFail() << "Syntax error: unknown coordinate system '" << theArgVec[anArgIter]
+                            << "'";
         return 1;
       }
     }
-    else if (anArgCase == "-trsfformat"
-      && anArgIter + 1 < theNbArgs)
+    else if (anArgCase == "-trsfformat" && anArgIter + 1 < theNbArgs)
     {
       TCollection_AsciiString aTrsfStr(theArgVec[++anArgIter]);
       aTrsfStr.LowerCase();
@@ -399,23 +371,19 @@ static Standard_Integer WriteGltf(Draw_Interpretor& theDI,
         return 1;
       }
     }
-    else if (anArgCase == "-nodenameformat"
-      || anArgCase == "-nodename")
+    else if (anArgCase == "-nodenameformat" || anArgCase == "-nodename")
     {
       ++anArgIter;
-      if (anArgIter >= theNbArgs
-        || !parseNameFormat(theArgVec[anArgIter], aNodeNameFormat))
+      if (anArgIter >= theNbArgs || !parseNameFormat(theArgVec[anArgIter], aNodeNameFormat))
       {
         Message::SendFail() << "Syntax error at '" << anArgCase << "'";
         return 1;
       }
     }
-    else if (anArgCase == "-meshnameformat"
-      || anArgCase == "-meshname")
+    else if (anArgCase == "-meshnameformat" || anArgCase == "-meshname")
     {
       ++anArgIter;
-      if (anArgIter >= theNbArgs
-        || !parseNameFormat(theArgVec[anArgIter], aMeshNameFormat))
+      if (anArgIter >= theNbArgs || !parseNameFormat(theArgVec[anArgIter], aMeshNameFormat))
       {
         Message::SendFail() << "Syntax error at '" << anArgCase << "'";
         return 1;
@@ -437,7 +405,7 @@ static Standard_Integer WriteGltf(Draw_Interpretor& theDI,
         anApp->NewDocument(TCollection_ExtendedString("BinXCAF"), aDoc);
         Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
         // auto-naming doesn't generate meaningful instance names
-        //aShapeTool->SetAutoNaming (false);
+        // aShapeTool->SetAutoNaming (false);
         aNodeNameFormat = RWMesh_NameFormat_Product;
         aShapeTool->AddShape(aShape);
       }
@@ -455,38 +423,39 @@ static Standard_Integer WriteGltf(Draw_Interpretor& theDI,
       aDracoParameters.DracoCompression = Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
     }
     else if (anArgCase == "-compressionlevel" && (anArgIter + 1) < theNbArgs
-      && Draw::ParseInteger(theArgVec[anArgIter + 1], aDracoParameters.CompressionLevel))
+             && Draw::ParseInteger(theArgVec[anArgIter + 1], aDracoParameters.CompressionLevel))
     {
       ++anArgIter;
     }
     else if (anArgCase == "-quantizepositionbits" && (anArgIter + 1) < theNbArgs
-      && Draw::ParseInteger(theArgVec[anArgIter + 1], aDracoParameters.QuantizePositionBits))
+             && Draw::ParseInteger(theArgVec[anArgIter + 1], aDracoParameters.QuantizePositionBits))
     {
       ++anArgIter;
     }
     else if (anArgCase == "-quantizenormalbits" && (anArgIter + 1) < theNbArgs
-      && Draw::ParseInteger(theArgVec[anArgIter + 1], aDracoParameters.QuantizeNormalBits))
+             && Draw::ParseInteger(theArgVec[anArgIter + 1], aDracoParameters.QuantizeNormalBits))
     {
       ++anArgIter;
     }
     else if (anArgCase == "-quantizetexcoordbits" && (anArgIter + 1) < theNbArgs
-      && Draw::ParseInteger(theArgVec[anArgIter + 1], aDracoParameters.QuantizeTexcoordBits))
+             && Draw::ParseInteger(theArgVec[anArgIter + 1], aDracoParameters.QuantizeTexcoordBits))
     {
       ++anArgIter;
     }
     else if (anArgCase == "-quantizecolorbits" && (anArgIter + 1) < theNbArgs
-      && Draw::ParseInteger(theArgVec[anArgIter + 1], aDracoParameters.QuantizeColorBits))
+             && Draw::ParseInteger(theArgVec[anArgIter + 1], aDracoParameters.QuantizeColorBits))
     {
       ++anArgIter;
     }
     else if (anArgCase == "-quantizegenericbits" && (anArgIter + 1) < theNbArgs
-      && Draw::ParseInteger(theArgVec[anArgIter + 1], aDracoParameters.QuantizeGenericBits))
+             && Draw::ParseInteger(theArgVec[anArgIter + 1], aDracoParameters.QuantizeGenericBits))
     {
       ++anArgIter;
     }
     else if (anArgCase == "-unifiedquantization")
     {
-      aDracoParameters.UnifiedQuantization = Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
+      aDracoParameters.UnifiedQuantization =
+        Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
     }
     else if (anArgCase == "-parallel")
     {
@@ -527,10 +496,8 @@ static Standard_Integer WriteGltf(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : Factory
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void XSDRAWGLTF::Factory(Draw_Interpretor& theDI)
 {
   static Standard_Boolean aIsActivated = Standard_False;
@@ -540,9 +507,10 @@ void XSDRAWGLTF::Factory(Draw_Interpretor& theDI)
   }
   aIsActivated = Standard_True;
 
-  const char* aGroup = "XSTEP-STL/VRML";  // Step transfer file commands
+  const char* aGroup = "XSTEP-STL/VRML"; // Step transfer file commands
   theDI.Add("ReadGltf",
-            "ReadGltf Doc file [-parallel {on|off}] [-listExternalFiles] [-noCreateDoc] [-doublePrecision {on|off}] [-assetInfo]"
+            "ReadGltf Doc file [-parallel {on|off}] [-listExternalFiles] [-noCreateDoc] "
+            "[-doublePrecision {on|off}] [-assetInfo]"
             "\n\t\t: Read glTF file into XDE document."
             "\n\t\t:   -listExternalFiles do not read mesh and only list external files"
             "\n\t\t:   -noCreateDoc read into existing XDE document"
@@ -552,47 +520,65 @@ void XSDRAWGLTF::Factory(Draw_Interpretor& theDI)
             "\n\t\t:                    (false by default)"
             "\n\t\t:   -keepLate data is loaded into itself with preservation of information"
             "\n\t\t:             about deferred storage to load/unload this data later."
-            "\n\t\t:   -allScenes load all scenes defined in the document instead of default one (false by default)"
+            "\n\t\t:   -allScenes load all scenes defined in the document instead of default one "
+            "(false by default)"
             "\n\t\t:   -toPrintDebugInfo print additional debug information during data reading"
             "\n\t\t:   -assetInfo print asset information",
-            __FILE__, ReadGltf, aGroup);
+            __FILE__,
+            ReadGltf,
+            aGroup);
   theDI.Add("readgltf",
             "readgltf shape file"
             "\n\t\t: Same as ReadGltf but reads glTF file into a shape instead of a document.",
-            __FILE__, ReadGltf, aGroup);
-  theDI.Add("WriteGltf",
-            "WriteGltf Doc file [-trsfFormat {compact|TRS|mat4}]=compact"
-            "\n\t\t:            [-systemCoordSys {Zup|Yup}]=Zup"
-            "\n\t\t:            [-comments Text] [-author Name]"
-            "\n\t\t:            [-forceUVExport]=0 [-texturesSeparate]=0 [-mergeFaces]=0 [-splitIndices16]=0"
-            "\n\t\t:            [-nodeNameFormat {empty|product|instance|instOrProd|prodOrInst|prodAndInst|verbose}]=instOrProd"
-            "\n\t\t:            [-meshNameFormat {empty|product|instance|instOrProd|prodOrInst|prodAndInst|verbose}]=product"
-            "\n\t\t:            [-draco]=0 [-compressionLevel {0-10}]=7 [-quantizePositionBits Value]=14 [-quantizeNormalBits Value]=10"
-            "\n\t\t:            [-quantizeTexcoordBits Value]=12 [-quantizeColorBits Value]=8 [-quantizeGenericBits Value]=12"
-            "\n\t\t:            [-unifiedQuantization]=0 [-parallel]=0"
-            "\n\t\t: Write XDE document into glTF file."
-            "\n\t\t:   -trsfFormat       preferred transformation format"
-            "\n\t\t:   -systemCoordSys   system coordinate system; Zup when not specified"
-            "\n\t\t:   -mergeFaces       merge Faces within the same Mesh"
-            "\n\t\t:   -splitIndices16   split Faces to keep 16-bit indices when -mergeFaces is enabled"
-            "\n\t\t:   -forceUVExport    always export UV coordinates"
-            "\n\t\t:   -texturesSeparate write textures to separate files"
-            "\n\t\t:   -nodeNameFormat   name format for Nodes"
-            "\n\t\t:   -meshNameFormat   name format for Meshes"
-            "\n\t\t:   -draco            use Draco compression 3D geometric meshes"
-            "\n\t\t:   -compressionLevel draco compression level [0-10] (by default 7), a value of 0 will apply sequential encoding and preserve face order"
-            "\n\t\t:   -quantizePositionBits quantization bits for position attribute when using Draco compression (by default 14)"
-            "\n\t\t:   -quantizeNormalBits   quantization bits for normal attribute when using Draco compression (by default 10)"
-            "\n\t\t:   -quantizeTexcoordBits quantization bits for texture coordinate attribute when using Draco compression (by default 12)"
-            "\n\t\t:   -quantizeColorBits    quantization bits for color attribute when using Draco compression (by default 8)"
-            "\n\t\t:   -quantizeGenericBits  quantization bits for skinning attribute (joint indices and joint weights)"
-            "\n                        and custom attributes when using Draco compression (by default 12)"
-            "\n\t\t:   -unifiedQuantization  quantization is applied on each primitive separately if this option is false"
-            "\n\t\t:   -parallel             use multithreading for Draco compression",
-            __FILE__, WriteGltf, aGroup);
-  theDI.Add("writegltf",
-            "writegltf shape file",
-            __FILE__, WriteGltf, aGroup);
+            __FILE__,
+            ReadGltf,
+            aGroup);
+  theDI.Add(
+    "WriteGltf",
+    "WriteGltf Doc file [-trsfFormat {compact|TRS|mat4}]=compact"
+    "\n\t\t:            [-systemCoordSys {Zup|Yup}]=Zup"
+    "\n\t\t:            [-comments Text] [-author Name]"
+    "\n\t\t:            [-forceUVExport]=0 [-texturesSeparate]=0 [-mergeFaces]=0 "
+    "[-splitIndices16]=0"
+    "\n\t\t:            [-nodeNameFormat "
+    "{empty|product|instance|instOrProd|prodOrInst|prodAndInst|verbose}]=instOrProd"
+    "\n\t\t:            [-meshNameFormat "
+    "{empty|product|instance|instOrProd|prodOrInst|prodAndInst|verbose}]=product"
+    "\n\t\t:            [-draco]=0 [-compressionLevel {0-10}]=7 [-quantizePositionBits Value]=14 "
+    "[-quantizeNormalBits Value]=10"
+    "\n\t\t:            [-quantizeTexcoordBits Value]=12 [-quantizeColorBits Value]=8 "
+    "[-quantizeGenericBits Value]=12"
+    "\n\t\t:            [-unifiedQuantization]=0 [-parallel]=0"
+    "\n\t\t: Write XDE document into glTF file."
+    "\n\t\t:   -trsfFormat       preferred transformation format"
+    "\n\t\t:   -systemCoordSys   system coordinate system; Zup when not specified"
+    "\n\t\t:   -mergeFaces       merge Faces within the same Mesh"
+    "\n\t\t:   -splitIndices16   split Faces to keep 16-bit indices when -mergeFaces is enabled"
+    "\n\t\t:   -forceUVExport    always export UV coordinates"
+    "\n\t\t:   -texturesSeparate write textures to separate files"
+    "\n\t\t:   -nodeNameFormat   name format for Nodes"
+    "\n\t\t:   -meshNameFormat   name format for Meshes"
+    "\n\t\t:   -draco            use Draco compression 3D geometric meshes"
+    "\n\t\t:   -compressionLevel draco compression level [0-10] (by default 7), a value of 0 will "
+    "apply sequential encoding and preserve face order"
+    "\n\t\t:   -quantizePositionBits quantization bits for position attribute when using Draco "
+    "compression (by default 14)"
+    "\n\t\t:   -quantizeNormalBits   quantization bits for normal attribute when using Draco "
+    "compression (by default 10)"
+    "\n\t\t:   -quantizeTexcoordBits quantization bits for texture coordinate attribute when using "
+    "Draco compression (by default 12)"
+    "\n\t\t:   -quantizeColorBits    quantization bits for color attribute when using Draco "
+    "compression (by default 8)"
+    "\n\t\t:   -quantizeGenericBits  quantization bits for skinning attribute (joint indices and "
+    "joint weights)"
+    "\n                        and custom attributes when using Draco compression (by default 12)"
+    "\n\t\t:   -unifiedQuantization  quantization is applied on each primitive separately if this "
+    "option is false"
+    "\n\t\t:   -parallel             use multithreading for Draco compression",
+    __FILE__,
+    WriteGltf,
+    aGroup);
+  theDI.Add("writegltf", "writegltf shape file", __FILE__, WriteGltf, aGroup);
 
   // Load XSDRAW session for pilot activation
   XSDRAW::LoadDraw(theDI);

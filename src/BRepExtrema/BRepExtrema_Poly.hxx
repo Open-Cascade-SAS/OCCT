@@ -21,10 +21,13 @@ class gp_Pnt;
 
 class BRepExtrema_Poly
 {
- public:
-
+public:
   //! returns Standard_True if OK.
-  Standard_EXPORT static Standard_Boolean Distance(const TopoDS_Shape& S1,const TopoDS_Shape& S2,gp_Pnt& P1,gp_Pnt& P2,Standard_Real& dist);
+  Standard_EXPORT static Standard_Boolean Distance(const TopoDS_Shape& S1,
+                                                   const TopoDS_Shape& S2,
+                                                   gp_Pnt&             P1,
+                                                   gp_Pnt&             P2,
+                                                   Standard_Real&      dist);
 };
 
 #endif

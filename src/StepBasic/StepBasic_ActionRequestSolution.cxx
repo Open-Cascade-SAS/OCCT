@@ -21,23 +21,16 @@
 #include <StepBasic_ActionRequestSolution.hxx>
 #include <StepBasic_VersionedActionRequest.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ActionRequestSolution,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ActionRequestSolution, Standard_Transient)
 
-//=======================================================================
-//function : StepBasic_ActionRequestSolution
-//purpose  : 
-//=======================================================================
-StepBasic_ActionRequestSolution::StepBasic_ActionRequestSolution ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepBasic_ActionRequestSolution::StepBasic_ActionRequestSolution() {}
 
-void StepBasic_ActionRequestSolution::Init (const Handle(StepBasic_ActionMethod) &aMethod,
-                                            const Handle(StepBasic_VersionedActionRequest) &aRequest)
+//=================================================================================================
+
+void StepBasic_ActionRequestSolution::Init(const Handle(StepBasic_ActionMethod)&           aMethod,
+                                           const Handle(StepBasic_VersionedActionRequest)& aRequest)
 {
 
   theMethod = aMethod;
@@ -45,42 +38,31 @@ void StepBasic_ActionRequestSolution::Init (const Handle(StepBasic_ActionMethod)
   theRequest = aRequest;
 }
 
-//=======================================================================
-//function : Method
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_ActionMethod) StepBasic_ActionRequestSolution::Method () const
+Handle(StepBasic_ActionMethod) StepBasic_ActionRequestSolution::Method() const
 {
   return theMethod;
 }
 
-//=======================================================================
-//function : SetMethod
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ActionRequestSolution::SetMethod (const Handle(StepBasic_ActionMethod) &aMethod)
+void StepBasic_ActionRequestSolution::SetMethod(const Handle(StepBasic_ActionMethod)& aMethod)
 {
   theMethod = aMethod;
 }
 
-//=======================================================================
-//function : Request
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_VersionedActionRequest) StepBasic_ActionRequestSolution::Request () const
+Handle(StepBasic_VersionedActionRequest) StepBasic_ActionRequestSolution::Request() const
 {
   return theRequest;
 }
 
-//=======================================================================
-//function : SetRequest
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ActionRequestSolution::SetRequest (const Handle(StepBasic_VersionedActionRequest) &aRequest)
+void StepBasic_ActionRequestSolution::SetRequest(
+  const Handle(StepBasic_VersionedActionRequest)& aRequest)
 {
   theRequest = aRequest;
 }

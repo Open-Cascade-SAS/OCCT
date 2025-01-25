@@ -22,39 +22,17 @@
 
 #include <Draw_Interpretor.hxx>
 
-
 //! Contains commands to activate package ShapeProcess
-class SWDRAW_ShapeProcess 
+class SWDRAW_ShapeProcess
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Loads commands defined in ShapeProc
-  Standard_EXPORT static void InitCommands (Draw_Interpretor& theCommands);
-
-
-
+  Standard_EXPORT static void InitCommands(Draw_Interpretor& theCommands);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _SWDRAW_ShapeProcess_HeaderFile

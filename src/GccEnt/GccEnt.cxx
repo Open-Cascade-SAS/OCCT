@@ -26,29 +26,26 @@
 
 namespace
 {
-  static Standard_CString GccEnt_Table_PrintPosition[5] =
-  {
-    "UNQUALIFIED", "ENCLOSING", "ENCLOSED", "OUTSIDE", "NOQUALIFIER"
-  };
+static Standard_CString GccEnt_Table_PrintPosition[5] = {"UNQUALIFIED",
+                                                         "ENCLOSING",
+                                                         "ENCLOSED",
+                                                         "OUTSIDE",
+                                                         "NOQUALIFIER"};
 }
 
-//=======================================================================
-//function : PositionToString
-//purpose  :
-//=======================================================================
-Standard_CString GccEnt::PositionToString (GccEnt_Position thePosition)
+//=================================================================================================
+
+Standard_CString GccEnt::PositionToString(GccEnt_Position thePosition)
 {
   return GccEnt_Table_PrintPosition[thePosition];
 }
 
-//=======================================================================
-//function : PositionFromString
-//purpose  :
-//=======================================================================
-Standard_Boolean GccEnt::PositionFromString (Standard_CString thePositionString,
-                                             GccEnt_Position& thePosition)
+//=================================================================================================
+
+Standard_Boolean GccEnt::PositionFromString(Standard_CString thePositionString,
+                                            GccEnt_Position& thePosition)
 {
-  TCollection_AsciiString aName (thePositionString);
+  TCollection_AsciiString aName(thePositionString);
   aName.UpperCase();
   for (Standard_Integer aTypeIter = 0; aTypeIter <= GccEnt_noqualifier; ++aTypeIter)
   {
@@ -62,37 +59,37 @@ Standard_Boolean GccEnt::PositionFromString (Standard_CString thePositionString,
   return Standard_False;
 }
 
-GccEnt_QualifiedLin
-  GccEnt::Unqualified(const gp_Lin2d& Line) {
-    return GccEnt_QualifiedLin(Line,GccEnt_unqualified);
-  }
+GccEnt_QualifiedLin GccEnt::Unqualified(const gp_Lin2d& Line)
+{
+  return GccEnt_QualifiedLin(Line, GccEnt_unqualified);
+}
 
-GccEnt_QualifiedCirc
-  GccEnt::Unqualified(const gp_Circ2d& Circle) {
-    return GccEnt_QualifiedCirc(Circle,GccEnt_unqualified);
-  }
+GccEnt_QualifiedCirc GccEnt::Unqualified(const gp_Circ2d& Circle)
+{
+  return GccEnt_QualifiedCirc(Circle, GccEnt_unqualified);
+}
 
-GccEnt_QualifiedCirc
-  GccEnt::Enclosing(const gp_Circ2d& Circle) {
-    return GccEnt_QualifiedCirc(Circle,GccEnt_enclosing);
-  }
+GccEnt_QualifiedCirc GccEnt::Enclosing(const gp_Circ2d& Circle)
+{
+  return GccEnt_QualifiedCirc(Circle, GccEnt_enclosing);
+}
 
-GccEnt_QualifiedLin
-  GccEnt::Enclosed(const gp_Lin2d& Line) {
-    return GccEnt_QualifiedLin(Line,GccEnt_enclosed);
-  }
+GccEnt_QualifiedLin GccEnt::Enclosed(const gp_Lin2d& Line)
+{
+  return GccEnt_QualifiedLin(Line, GccEnt_enclosed);
+}
 
-GccEnt_QualifiedCirc
-  GccEnt::Enclosed(const gp_Circ2d& Circle) {
-    return GccEnt_QualifiedCirc(Circle,GccEnt_enclosed);
-  }
+GccEnt_QualifiedCirc GccEnt::Enclosed(const gp_Circ2d& Circle)
+{
+  return GccEnt_QualifiedCirc(Circle, GccEnt_enclosed);
+}
 
-GccEnt_QualifiedCirc
-  GccEnt::Outside(const gp_Circ2d& Circle) {
-    return GccEnt_QualifiedCirc(Circle,GccEnt_outside);
-  }
+GccEnt_QualifiedCirc GccEnt::Outside(const gp_Circ2d& Circle)
+{
+  return GccEnt_QualifiedCirc(Circle, GccEnt_outside);
+}
 
-GccEnt_QualifiedLin
-  GccEnt::Outside(const gp_Lin2d& Line) {
-    return GccEnt_QualifiedLin(Line,GccEnt_outside);
-  }
+GccEnt_QualifiedLin GccEnt::Outside(const gp_Lin2d& Line)
+{
+  return GccEnt_QualifiedLin(Line, GccEnt_outside);
+}

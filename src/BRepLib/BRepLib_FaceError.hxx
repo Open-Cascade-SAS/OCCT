@@ -22,11 +22,11 @@
 //! not initialised
 enum BRepLib_FaceError
 {
-BRepLib_FaceDone,
-BRepLib_NoFace,
-BRepLib_NotPlanar,
-BRepLib_CurveProjectionFailed,
-BRepLib_ParametersOutOfRange
+  BRepLib_FaceDone,
+  BRepLib_NoFace,
+  BRepLib_NotPlanar,
+  BRepLib_CurveProjectionFailed,
+  BRepLib_ParametersOutOfRange
 };
 
 #endif // _BRepLib_FaceError_HeaderFile

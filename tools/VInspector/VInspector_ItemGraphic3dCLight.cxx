@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/VInspector_ItemGraphic3dCLight.hxx>
 
@@ -37,9 +37,9 @@ int VInspector_ItemGraphic3dCLight::initRowCount() const
 // function : initValue
 // purpose :
 // =======================================================================
-QVariant VInspector_ItemGraphic3dCLight::initValue (const int theItemRole) const
+QVariant VInspector_ItemGraphic3dCLight::initValue(const int theItemRole) const
 {
-  QVariant aParentValue = VInspector_ItemBase::initValue (theItemRole);
+  QVariant aParentValue = VInspector_ItemBase::initValue(theItemRole);
   if (aParentValue.isValid())
     return aParentValue;
 
@@ -54,7 +54,8 @@ QVariant VInspector_ItemGraphic3dCLight::initValue (const int theItemRole) const
     return QVariant();
   }
 
-  if (theItemRole != Qt::DisplayRole && theItemRole != Qt::EditRole && theItemRole != Qt::ToolTipRole)
+  if (theItemRole != Qt::DisplayRole && theItemRole != Qt::EditRole
+      && theItemRole != Qt::ToolTipRole)
     return QVariant();
 
   if (GetLight().IsNull())
@@ -65,11 +66,16 @@ QVariant VInspector_ItemGraphic3dCLight::initValue (const int theItemRole) const
 
   switch (GetLight()->Type())
   {
-    case Graphic3d_TOLS_AMBIENT:     return "Ambient light";
-    case Graphic3d_TOLS_DIRECTIONAL: return "Directional light";
-    case Graphic3d_TOLS_POSITIONAL:  return "Positional light";
-    case Graphic3d_TOLS_SPOT:        return "Spot light";
-    default: break;
+    case Graphic3d_TOLS_AMBIENT:
+      return "Ambient light";
+    case Graphic3d_TOLS_DIRECTIONAL:
+      return "Directional light";
+    case Graphic3d_TOLS_POSITIONAL:
+      return "Positional light";
+    case Graphic3d_TOLS_SPOT:
+      return "Spot light";
+    default:
+      break;
   }
   return QVariant();
 }
@@ -80,20 +86,23 @@ QVariant VInspector_ItemGraphic3dCLight::initValue (const int theItemRole) const
 // =======================================================================
 void VInspector_ItemGraphic3dCLight::Init()
 {
-  VInspector_ItemContextPropertiesPtr aParentItem = itemDynamicCast<VInspector_ItemContextProperties>(Parent());
+  VInspector_ItemContextPropertiesPtr aParentItem =
+    itemDynamicCast<VInspector_ItemContextProperties>(Parent());
   Handle(Graphic3d_CLight) aLight;
   if (aParentItem)
   {
-    VInspector_ItemContextPtr aParentContextItem = itemDynamicCast<VInspector_ItemContext>(aParentItem->Parent());
+    VInspector_ItemContextPtr aParentContextItem =
+      itemDynamicCast<VInspector_ItemContext>(aParentItem->Parent());
     if (aParentContextItem)
     {
       Handle(AIS_InteractiveContext) aContext = aParentContextItem->GetContext();
-      Handle(V3d_Viewer) aViewer = aContext->CurrentViewer();
+      Handle(V3d_Viewer)             aViewer  = aContext->CurrentViewer();
       if (!aViewer.IsNull())
       {
-        int aLightId = Row() - 2 /*in parent*/;
+        int aLightId   = Row() - 2 /*in parent*/;
         int aCurrentId = 0;
-        for (V3d_ListOfLightIterator aLightsIt (aViewer->ActiveLightIterator()); aLightsIt.More(); aLightsIt.Next(), aCurrentId++)
+        for (V3d_ListOfLightIterator aLightsIt(aViewer->ActiveLightIterator()); aLightsIt.More();
+             aLightsIt.Next(), aCurrentId++)
         {
           if (aCurrentId != aLightId)
             continue;
@@ -121,7 +130,9 @@ void VInspector_ItemGraphic3dCLight::Reset()
 // function : initItem
 // purpose :
 // =======================================================================
-void VInspector_ItemGraphic3dCLight::StoreItemProperties (const int theRow, const int theColumn, const QVariant& theValue)
+void VInspector_ItemGraphic3dCLight::StoreItemProperties(const int       theRow,
+                                                         const int       theColumn,
+                                                         const QVariant& theValue)
 {
   if (myLight.IsNull())
     return;
@@ -132,80 +143,80 @@ void VInspector_ItemGraphic3dCLight::StoreItemProperties (const int theRow, cons
     Standard_SStream aStream;
     aStream << theValue.toString().toStdString().c_str();
 
-    int aStartPos = 1;
+    int                aStartPos = 1;
     Quantity_ColorRGBA aColor;
-    if (aColor.InitFromJson (aStream, aStartPos))
+    if (aColor.InitFromJson(aStream, aStartPos))
     {
-      myLight->SetColor (aColor.GetRGB());
+      myLight->SetColor(aColor.GetRGB());
       return;
     }
 
     // "Direction"
     gp_Dir aDir;
-    if (aDir.InitFromJson (aStream, aStartPos))
+    if (aDir.InitFromJson(aStream, aStartPos))
     {
-      myLight->SetDirection (aDir);
+      myLight->SetDirection(aDir);
       return;
     }
 
     // "Position"
     gp_Pnt aPnt;
-    if (aPnt.InitFromJson (aStream, aStartPos))
+    if (aPnt.InitFromJson(aStream, aStartPos))
     {
-      myLight->SetPosition (aPnt);
+      myLight->SetPosition(aPnt);
       return;
     }
   }
 
-  QString aPropertyName = aProperties->Data(theRow, 0).toString();
+  QString  aPropertyName  = aProperties->Data(theRow, 0).toString();
   QVariant aPropertyValue = aProperties->Data(theRow, 1);
   if (aPropertyName == "Position")
   {
   }
   else if (aPropertyName == "Intensity")
   {
-    myLight->SetIntensity ((Standard_ShortReal)aPropertyValue.toReal());
+    myLight->SetIntensity((Standard_ShortReal)aPropertyValue.toReal());
   }
   else if (aPropertyName == "ConstAttenuation")
   {
-    myLight->SetAttenuation ((Standard_ShortReal)aPropertyValue.toReal(),
-                             (Standard_ShortReal)aProperties->Data(theRow + 1, 1).toReal());
+    myLight->SetAttenuation((Standard_ShortReal)aPropertyValue.toReal(),
+                            (Standard_ShortReal)aProperties->Data(theRow + 1, 1).toReal());
   }
   else if (aPropertyName == "LinearAttenuation")
   {
-    myLight->SetAttenuation ((Standard_ShortReal)aProperties->Data(theRow - 1, 1).toReal(),
-                             (Standard_ShortReal)aPropertyValue.toReal());
+    myLight->SetAttenuation((Standard_ShortReal)aProperties->Data(theRow - 1, 1).toReal(),
+                            (Standard_ShortReal)aPropertyValue.toReal());
   }
   else if (aPropertyName == "Angle")
   {
-    myLight->SetAngle ((Standard_ShortReal)aPropertyValue.toReal());
+    myLight->SetAngle((Standard_ShortReal)aPropertyValue.toReal());
   }
   else if (aPropertyName == "Concentration")
   {
-    myLight->SetConcentration ((Standard_ShortReal)aPropertyValue.toReal());
+    myLight->SetConcentration((Standard_ShortReal)aPropertyValue.toReal());
   }
   else if (aPropertyName == "Range")
   {
-    myLight->SetRange ((Standard_ShortReal)aPropertyValue.toReal());
+    myLight->SetRange((Standard_ShortReal)aPropertyValue.toReal());
   }
   else if (aPropertyName == "Smoothness")
   {
     if (myLight->Type() == Graphic3d_TOLS_DIRECTIONAL)
     {
-      myLight->SetSmoothAngle ((Standard_ShortReal)aPropertyValue.toReal());
+      myLight->SetSmoothAngle((Standard_ShortReal)aPropertyValue.toReal());
     }
     else
     {
-      myLight->SetSmoothRadius ((Standard_ShortReal)aPropertyValue.toReal());
+      myLight->SetSmoothRadius((Standard_ShortReal)aPropertyValue.toReal());
     }
   }
   else if (aPropertyName == "IsHeadlight")
   {
-    myLight->SetHeadlight (aPropertyValue.toInt() == 1);
+    myLight->SetHeadlight(aPropertyValue.toInt() == 1);
   }
   else if (aPropertyName == "IsEnabled")
   {
-    myLight->SetEnabled (aPropertyValue.toInt() == 1);
+    myLight->SetEnabled(aPropertyValue.toInt() == 1);
   }
 }
 
@@ -224,11 +235,11 @@ void VInspector_ItemGraphic3dCLight::initItem() const
 // function : initStream
 // purpose :
 // =======================================================================
-void VInspector_ItemGraphic3dCLight::initStream (Standard_OStream& theOStream) const
+void VInspector_ItemGraphic3dCLight::initStream(Standard_OStream& theOStream) const
 {
   Handle(Graphic3d_CLight) aLight = GetLight();
   if (aLight.IsNull())
     return;
 
-  aLight->DumpJson (theOStream);
+  aLight->DumpJson(theOStream);
 }

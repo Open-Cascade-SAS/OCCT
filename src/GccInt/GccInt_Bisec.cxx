@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GccInt_Bisec.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Elips2d.hxx>
@@ -25,35 +24,34 @@
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(GccInt_Bisec,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(GccInt_Bisec, Standard_Transient)
 
-gp_Circ2d GccInt_Bisec::
-  Circle() const { 
-    throw Standard_NotImplemented();
-    }
+gp_Circ2d GccInt_Bisec::Circle() const
+{
+  throw Standard_NotImplemented();
+}
 
-gp_Elips2d GccInt_Bisec::
-  Ellipse() const { 
-    throw Standard_NotImplemented();
-    }
+gp_Elips2d GccInt_Bisec::Ellipse() const
+{
+  throw Standard_NotImplemented();
+}
 
-gp_Hypr2d GccInt_Bisec::
-  Hyperbola() const { 
-    throw Standard_NotImplemented();
-    }
+gp_Hypr2d GccInt_Bisec::Hyperbola() const
+{
+  throw Standard_NotImplemented();
+}
 
-gp_Lin2d GccInt_Bisec::
-  Line() const {
-    throw Standard_NotImplemented();
-    }
+gp_Lin2d GccInt_Bisec::Line() const
+{
+  throw Standard_NotImplemented();
+}
 
-gp_Parab2d GccInt_Bisec::
-  Parabola() const { 
-    throw Standard_NotImplemented();
-    }
+gp_Parab2d GccInt_Bisec::Parabola() const
+{
+  throw Standard_NotImplemented();
+}
 
-gp_Pnt2d GccInt_Bisec::
-  Point() const { 
-    throw Standard_NotImplemented();
-    }
-
+gp_Pnt2d GccInt_Bisec::Point() const
+{
+  throw Standard_NotImplemented();
+}

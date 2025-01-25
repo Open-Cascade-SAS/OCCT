@@ -22,8 +22,6 @@
 #include <GeomFill_TrihedronLaw.hxx>
 #include <Standard_Real.hxx>
 
-
-
 class GeomFill_TrihedronWithGuide;
 DEFINE_STANDARD_HANDLE(GeomFill_TrihedronWithGuide, GeomFill_TrihedronLaw)
 
@@ -32,40 +30,22 @@ class GeomFill_TrihedronWithGuide : public GeomFill_TrihedronLaw
 {
 
 public:
-
-  
   Standard_EXPORT virtual Handle(Adaptor3d_Curve) Guide() const = 0;
-  
-  Standard_EXPORT virtual void Origine (const Standard_Real Param1, const Standard_Real Param2) = 0;
-  
+
+  Standard_EXPORT virtual void Origine(const Standard_Real Param1, const Standard_Real Param2) = 0;
+
   //! Returns the current point on guide
   //! found by D0, D1 or D2.
   Standard_EXPORT gp_Pnt CurrentPointOnGuide() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(GeomFill_TrihedronWithGuide,GeomFill_TrihedronLaw)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_TrihedronWithGuide, GeomFill_TrihedronLaw)
 
 protected:
-
-
   Handle(Adaptor3d_Curve) myGuide;
   Handle(Adaptor3d_Curve) myTrimG;
-  gp_Pnt myCurPointOnGuide;
-
+  gp_Pnt                  myCurPointOnGuide;
 
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeomFill_TrihedronWithGuide_HeaderFile

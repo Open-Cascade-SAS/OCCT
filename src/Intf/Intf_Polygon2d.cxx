@@ -13,14 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Intf_Polygon2d.hxx>
 
-//=======================================================================
-//function : Closed
-//purpose  : 
-//=======================================================================
-Standard_Boolean Intf_Polygon2d::Closed () const
+//=================================================================================================
+
+Standard_Boolean Intf_Polygon2d::Closed() const
 {
   return Standard_False;
 }

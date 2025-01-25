@@ -27,48 +27,31 @@ class StepFEA_FeaRepresentationItem;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write tool for FeaRepresentationItem
-class RWStepFEA_RWFeaRepresentationItem 
+class RWStepFEA_RWFeaRepresentationItem
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_HIDDEN RWStepFEA_RWFeaRepresentationItem();
-  
+
   //! Reads FeaRepresentationItem
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepFEA_FeaRepresentationItem)& ent) const;
-  
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&       data,
+                                const Standard_Integer                       num,
+                                Handle(Interface_Check)&                     ach,
+                                const Handle(StepFEA_FeaRepresentationItem)& ent) const;
+
   //! Writes FeaRepresentationItem
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepFEA_FeaRepresentationItem)& ent) const;
-  
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                         SW,
+                                 const Handle(StepFEA_FeaRepresentationItem)& ent) const;
+
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepFEA_FeaRepresentationItem)& ent, Interface_EntityIterator& iter) const;
-
-
-
+  Standard_HIDDEN void Share(const Handle(StepFEA_FeaRepresentationItem)& ent,
+                             Interface_EntityIterator&                    iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepFEA_RWFeaRepresentationItem_HeaderFile

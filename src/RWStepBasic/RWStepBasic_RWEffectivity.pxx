@@ -28,44 +28,27 @@ class StepBasic_Effectivity;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write Module for Effectivity
-class RWStepBasic_RWEffectivity 
+class RWStepBasic_RWEffectivity
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_HIDDEN RWStepBasic_RWEffectivity();
-  
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepBasic_Effectivity)& ent) const;
-  
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepBasic_Effectivity)& ent) const;
-  
-  Standard_HIDDEN void Share (const Handle(StepBasic_Effectivity)& ent, Interface_EntityIterator& iter) const;
 
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& data,
+                                const Standard_Integer                 num,
+                                Handle(Interface_Check)&               ach,
+                                const Handle(StepBasic_Effectivity)&   ent) const;
 
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                 SW,
+                                 const Handle(StepBasic_Effectivity)& ent) const;
 
+  Standard_HIDDEN void Share(const Handle(StepBasic_Effectivity)& ent,
+                             Interface_EntityIterator&            iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepBasic_RWEffectivity_HeaderFile

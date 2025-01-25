@@ -22,23 +22,21 @@ class OpenGl_GraphicDriverFactory : public Graphic3d_GraphicDriverFactory
 {
   DEFINE_STANDARD_RTTIEXT(OpenGl_GraphicDriverFactory, Graphic3d_GraphicDriverFactory)
 public:
-
   //! Empty constructor.
   Standard_EXPORT OpenGl_GraphicDriverFactory();
 
   //! Creates new empty graphic driver.
-  Standard_EXPORT virtual Handle(Graphic3d_GraphicDriver) CreateDriver (const Handle(Aspect_DisplayConnection)& theDisp) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Graphic3d_GraphicDriver) CreateDriver(
+    const Handle(Aspect_DisplayConnection)& theDisp) Standard_OVERRIDE;
 
   //! Return default driver options.
   const Handle(OpenGl_Caps)& DefaultOptions() const { return myDefaultCaps; }
 
   //! Set default driver options.
-  void SetDefaultOptions (const Handle(OpenGl_Caps)& theOptions) { myDefaultCaps = theOptions; }
+  void SetDefaultOptions(const Handle(OpenGl_Caps)& theOptions) { myDefaultCaps = theOptions; }
 
 protected:
-
   Handle(OpenGl_Caps) myDefaultCaps;
-
 };
 
 #endif //_OpenGl_GraphicDriverFactory_Header

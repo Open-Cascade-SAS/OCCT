@@ -18,17 +18,18 @@
 struct RWGltf_DracoParameters
 {
   RWGltf_DracoParameters()
-  : DracoCompression (false),
-    CompressionLevel (7),
-    QuantizePositionBits (14),
-    QuantizeNormalBits   (10),
-    QuantizeTexcoordBits (12),
-    QuantizeColorBits    (8),
-    QuantizeGenericBits  (12),
-    UnifiedQuantization (false)
-  {}
+      : DracoCompression(false),
+        CompressionLevel(7),
+        QuantizePositionBits(14),
+        QuantizeNormalBits(10),
+        QuantizeTexcoordBits(12),
+        QuantizeColorBits(8),
+        QuantizeGenericBits(12),
+        UnifiedQuantization(false)
+  {
+  }
 
-// clang-format off
+  // clang-format off
   bool DracoCompression;    //!< flag to use Draco compression (FALSE by default). If it is TRUE, compression is used
   int CompressionLevel;     //!< Draco compression level [0-10] (7 by default)
   int QuantizePositionBits; //!< quantization bits for position attribute (14 by default)
@@ -37,7 +38,7 @@ struct RWGltf_DracoParameters
   int QuantizeColorBits;    //!< quantization bits for color attributes (8 by default)
   int QuantizeGenericBits;  //!< quantization bits for skinning and custom attributes (12 by default)
   bool UnifiedQuantization; //!< quantize positions of all primitives using the same quantization grid (FALSE by default)
-// clang-format on
+  // clang-format on
 };
 
 #endif

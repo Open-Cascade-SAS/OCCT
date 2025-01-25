@@ -17,14 +17,13 @@
 #ifndef _TopOpeBRep_P2Dstatus_HeaderFile
 #define _TopOpeBRep_P2Dstatus_HeaderFile
 
-
 enum TopOpeBRep_P2Dstatus
 {
-TopOpeBRep_P2DUNK,
-TopOpeBRep_P2DINT,
-TopOpeBRep_P2DSGF,
-TopOpeBRep_P2DSGL,
-TopOpeBRep_P2DNEW
+  TopOpeBRep_P2DUNK,
+  TopOpeBRep_P2DINT,
+  TopOpeBRep_P2DSGF,
+  TopOpeBRep_P2DSGL,
+  TopOpeBRep_P2DNEW
 };
 
 #endif // _TopOpeBRep_P2Dstatus_HeaderFile

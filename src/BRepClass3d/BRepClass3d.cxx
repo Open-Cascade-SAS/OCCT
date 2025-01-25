@@ -24,92 +24,98 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
 
-static 
-  Standard_Boolean IsInternal(const TopoDS_Shell& aSx);
+static Standard_Boolean IsInternal(const TopoDS_Shell& aSx);
 
-//=======================================================================
-//function : OuterShell
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 TopoDS_Shell BRepClass3d::OuterShell(const TopoDS_Solid& aSolid)
 {
-  Standard_Boolean bFound;
-  Standard_Real aTol;
-  TopoDS_Solid aSDx;
-  TopoDS_Shell aShell, aDummy;
-  TopoDS_Iterator aIt;
-  BRep_Builder aBB;
+  Standard_Boolean            bFound;
+  Standard_Real               aTol;
+  TopoDS_Solid                aSDx;
+  TopoDS_Shell                aShell, aDummy;
+  TopoDS_Iterator             aIt;
+  BRep_Builder                aBB;
   BRepClass3d_SolidClassifier aSC;
   //
-  if (aSolid.IsNull()) {
+  if (aSolid.IsNull())
+  {
     return aDummy;
   }
   //
-  aTol=1.e-7;
-  bFound=Standard_False;
+  aTol   = 1.e-7;
+  bFound = Standard_False;
   //
-  // if solid has one shell, it will return, without checking orientation 
+  // if solid has one shell, it will return, without checking orientation
   Standard_Integer aShellCounter = 0;
-  for (aIt.Initialize(aSolid); aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aSx=aIt.Value();
-    if (aSx.ShapeType()==TopAbs_SHELL) {
-      aShell=*((TopoDS_Shell*)&aSx);
+  for (aIt.Initialize(aSolid); aIt.More(); aIt.Next())
+  {
+    const TopoDS_Shape& aSx = aIt.Value();
+    if (aSx.ShapeType() == TopAbs_SHELL)
+    {
+      aShell = *((TopoDS_Shell*)&aSx);
       aShellCounter++;
       if (aShellCounter >= 2)
         break;
     }
   }
-  if (aShellCounter == 0) {
+  if (aShellCounter == 0)
+  {
     return aDummy;
   }
-  else if (aShellCounter == 1) {
+  else if (aShellCounter == 1)
+  {
     return aShell;
   }
   //
-  for (aIt.Initialize(aSolid); aIt.More(); aIt.Next()) { 
-    const TopoDS_Shape& aSx=aIt.Value();
-    if (aSx.ShapeType()==TopAbs_SHELL) {
-      aShell=*((TopoDS_Shell*)&aSx);
-      if (!IsInternal(aShell)) {
-	aSDx=aSolid;
-	aSDx.EmptyCopy();
-	aBB.Add(aSDx, aShell);
-	//
-	aSC.Load(aSDx);
-	aSC.PerformInfinitePoint(aTol);
-	if(aSC.State()==TopAbs_OUT) {
-	  bFound=Standard_True;
-	  break;
-	}
+  for (aIt.Initialize(aSolid); aIt.More(); aIt.Next())
+  {
+    const TopoDS_Shape& aSx = aIt.Value();
+    if (aSx.ShapeType() == TopAbs_SHELL)
+    {
+      aShell = *((TopoDS_Shell*)&aSx);
+      if (!IsInternal(aShell))
+      {
+        aSDx = aSolid;
+        aSDx.EmptyCopy();
+        aBB.Add(aSDx, aShell);
+        //
+        aSC.Load(aSDx);
+        aSC.PerformInfinitePoint(aTol);
+        if (aSC.State() == TopAbs_OUT)
+        {
+          bFound = Standard_True;
+          break;
+        }
       }
     }
   }
   //
-  if (!bFound) {
+  if (!bFound)
+  {
     return aDummy;
-  } 
+  }
   //
   return aShell;
 }
 
-//=======================================================================
-//function : IsInternal
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean IsInternal(const TopoDS_Shell& aSx)
 {
-  Standard_Boolean bInternal;
+  Standard_Boolean   bInternal;
   TopAbs_Orientation aOr;
-  TopoDS_Iterator aIt; 
+  TopoDS_Iterator    aIt;
   //
-  bInternal=Standard_False;
+  bInternal = Standard_False;
   //
   aIt.Initialize(aSx);
-  if (aIt.More()) {
-    const TopoDS_Shape& aSy=aIt.Value();
-    aOr=aSy.Orientation();
-    bInternal=(aOr==TopAbs_INTERNAL);
-  }	
+  if (aIt.More())
+  {
+    const TopoDS_Shape& aSy = aIt.Value();
+    aOr                     = aSy.Orientation();
+    bInternal               = (aOr == TopAbs_INTERNAL);
+  }
   //
   return bInternal;
 }

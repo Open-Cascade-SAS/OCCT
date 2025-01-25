@@ -13,60 +13,48 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <STEPCAFControl_ActorWrite.hxx>
 #include <TopoDS_Shape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(STEPCAFControl_ActorWrite,STEPControl_ActorWrite)
+IMPLEMENT_STANDARD_RTTIEXT(STEPCAFControl_ActorWrite, STEPControl_ActorWrite)
 
-//=======================================================================
-//function : STEPCAFControl_ActorWrite
-//purpose  : 
-//=======================================================================
-STEPCAFControl_ActorWrite::STEPCAFControl_ActorWrite () : myStdMode(Standard_True)
+//=================================================================================================
+
+STEPCAFControl_ActorWrite::STEPCAFControl_ActorWrite()
+    : myStdMode(Standard_True)
 {
 }
 
-//=======================================================================
-//function : ClearMap
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void STEPCAFControl_ActorWrite::SetStdMode (const Standard_Boolean stdmode)
+void STEPCAFControl_ActorWrite::SetStdMode(const Standard_Boolean stdmode)
 {
   myStdMode = stdmode;
-  if ( myStdMode ) ClearMap();
+  if (myStdMode)
+    ClearMap();
 }
 
-//=======================================================================
-//function : ClearMap
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void STEPCAFControl_ActorWrite::ClearMap ()
+void STEPCAFControl_ActorWrite::ClearMap()
 {
   myMap.Clear();
 }
 
-//=======================================================================
-//function : RegisterAssembly
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void STEPCAFControl_ActorWrite::RegisterAssembly (const TopoDS_Shape &S)
+void STEPCAFControl_ActorWrite::RegisterAssembly(const TopoDS_Shape& S)
 {
-  if ( ! myStdMode && S.ShapeType() == TopAbs_COMPOUND ) myMap.Add ( S );
+  if (!myStdMode && S.ShapeType() == TopAbs_COMPOUND)
+    myMap.Add(S);
 }
 
-//=======================================================================
-//function : IsAssembly
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean STEPCAFControl_ActorWrite::IsAssembly (const Handle(StepData_StepModel)& theModel,
-                                                        TopoDS_Shape &S) const
+Standard_Boolean STEPCAFControl_ActorWrite::IsAssembly(const Handle(StepData_StepModel)& theModel,
+                                                       TopoDS_Shape&                     S) const
 {
-  if ( myStdMode ) return STEPControl_ActorWrite::IsAssembly ( theModel, S );
-  return myMap.Contains ( S );
+  if (myStdMode)
+    return STEPControl_ActorWrite::IsAssembly(theModel, S);
+  return myMap.Contains(S);
 }
-

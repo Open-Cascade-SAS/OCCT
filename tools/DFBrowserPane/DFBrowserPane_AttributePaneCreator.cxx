@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowserPane_AttributePaneCreator.hxx>
 
@@ -38,22 +38,23 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-DFBrowserPane_AttributePaneAPI* DFBrowserPane_AttributePaneCreator::CreateAttributePane (Standard_CString theAttributeName)
+DFBrowserPane_AttributePaneAPI* DFBrowserPane_AttributePaneCreator::CreateAttributePane(
+  Standard_CString theAttributeName)
 {
   DFBrowserPane_AttributePaneAPI* aPane = 0;
-  if (theAttributeName == STANDARD_TYPE (TDF_Reference)->Name())
+  if (theAttributeName == STANDARD_TYPE(TDF_Reference)->Name())
     aPane = new DFBrowserPane_TDFReference();
-  else if (theAttributeName == STANDARD_TYPE (TDataStd_TreeNode)->Name())
+  else if (theAttributeName == STANDARD_TYPE(TDataStd_TreeNode)->Name())
     aPane = new DFBrowserPane_TDataStdTreeNode();
-  else if (theAttributeName == STANDARD_TYPE (TDataStd_ReferenceList)->Name())
+  else if (theAttributeName == STANDARD_TYPE(TDataStd_ReferenceList)->Name())
     aPane = new DFBrowserPane_TDataStdReferenceList();
-  else if (theAttributeName == STANDARD_TYPE (TDataStd_ReferenceArray)->Name())
+  else if (theAttributeName == STANDARD_TYPE(TDataStd_ReferenceArray)->Name())
     aPane = new DFBrowserPane_TDataStdReferenceArray();
-  else if (theAttributeName == STANDARD_TYPE (TNaming_NamedShape)->Name())
+  else if (theAttributeName == STANDARD_TYPE(TNaming_NamedShape)->Name())
     aPane = new DFBrowserPane_TNamingNamedShape();
-  else if (theAttributeName == STANDARD_TYPE (TNaming_Naming)->Name())
+  else if (theAttributeName == STANDARD_TYPE(TNaming_Naming)->Name())
     aPane = new DFBrowserPane_TNamingNaming();
-  else if (theAttributeName == STANDARD_TYPE (TNaming_UsedShapes)->Name())
+  else if (theAttributeName == STANDARD_TYPE(TNaming_UsedShapes)->Name())
     aPane = new DFBrowserPane_TNamingUsedShapes();
 
   return aPane;

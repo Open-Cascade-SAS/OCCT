@@ -17,15 +17,14 @@
 #ifndef _StepGeom_BSplineCurveForm_HeaderFile
 #define _StepGeom_BSplineCurveForm_HeaderFile
 
-
 enum StepGeom_BSplineCurveForm
 {
-StepGeom_bscfPolylineForm,
-StepGeom_bscfCircularArc,
-StepGeom_bscfEllipticArc,
-StepGeom_bscfParabolicArc,
-StepGeom_bscfHyperbolicArc,
-StepGeom_bscfUnspecified
+  StepGeom_bscfPolylineForm,
+  StepGeom_bscfCircularArc,
+  StepGeom_bscfEllipticArc,
+  StepGeom_bscfParabolicArc,
+  StepGeom_bscfHyperbolicArc,
+  StepGeom_bscfUnspecified
 };
 
 #endif // _StepGeom_BSplineCurveForm_HeaderFile

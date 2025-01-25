@@ -28,48 +28,31 @@ class StepRepr_ConfigurationEffectivity;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write tool for ConfigurationEffectivity
-class RWStepRepr_RWConfigurationEffectivity 
+class RWStepRepr_RWConfigurationEffectivity
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_HIDDEN RWStepRepr_RWConfigurationEffectivity();
-  
+
   //! Reads ConfigurationEffectivity
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepRepr_ConfigurationEffectivity)& ent) const;
-  
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&           data,
+                                const Standard_Integer                           num,
+                                Handle(Interface_Check)&                         ach,
+                                const Handle(StepRepr_ConfigurationEffectivity)& ent) const;
+
   //! Writes ConfigurationEffectivity
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepRepr_ConfigurationEffectivity)& ent) const;
-  
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                             SW,
+                                 const Handle(StepRepr_ConfigurationEffectivity)& ent) const;
+
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepRepr_ConfigurationEffectivity)& ent, Interface_EntityIterator& iter) const;
-
-
-
+  Standard_HIDDEN void Share(const Handle(StepRepr_ConfigurationEffectivity)& ent,
+                             Interface_EntityIterator&                        iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepRepr_RWConfigurationEffectivity_HeaderFile

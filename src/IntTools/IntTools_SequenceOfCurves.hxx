@@ -21,5 +21,4 @@
 
 typedef NCollection_Sequence<IntTools_Curve> IntTools_SequenceOfCurves;
 
-
 #endif

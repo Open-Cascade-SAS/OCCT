@@ -20,128 +20,102 @@
 #include <StepBasic_ProductCategoryRelationship.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductCategoryRelationship,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductCategoryRelationship, Standard_Transient)
 
-//=======================================================================
-//function : StepBasic_ProductCategoryRelationship
-//purpose  : 
-//=======================================================================
-StepBasic_ProductCategoryRelationship::StepBasic_ProductCategoryRelationship ()
+//=================================================================================================
+
+StepBasic_ProductCategoryRelationship::StepBasic_ProductCategoryRelationship()
 {
   defDescription = Standard_False;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ProductCategoryRelationship::Init (const Handle(TCollection_HAsciiString) &aName,
-                                                  const Standard_Boolean hasDescription,
-                                                  const Handle(TCollection_HAsciiString) &aDescription,
-                                                  const Handle(StepBasic_ProductCategory) &aCategory,
-                                                  const Handle(StepBasic_ProductCategory) &aSubCategory)
+void StepBasic_ProductCategoryRelationship::Init(
+  const Handle(TCollection_HAsciiString)&  aName,
+  const Standard_Boolean                   hasDescription,
+  const Handle(TCollection_HAsciiString)&  aDescription,
+  const Handle(StepBasic_ProductCategory)& aCategory,
+  const Handle(StepBasic_ProductCategory)& aSubCategory)
 {
 
   theName = aName;
 
   defDescription = hasDescription;
-  if (defDescription) {
+  if (defDescription)
+  {
     theDescription = aDescription;
   }
-  else theDescription.Nullify();
+  else
+    theDescription.Nullify();
 
   theCategory = aCategory;
 
   theSubCategory = aSubCategory;
 }
 
-//=======================================================================
-//function : Name
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ProductCategoryRelationship::Name () const
+Handle(TCollection_HAsciiString) StepBasic_ProductCategoryRelationship::Name() const
 {
   return theName;
 }
 
-//=======================================================================
-//function : SetName
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ProductCategoryRelationship::SetName (const Handle(TCollection_HAsciiString) &aName)
+void StepBasic_ProductCategoryRelationship::SetName(const Handle(TCollection_HAsciiString)& aName)
 {
   theName = aName;
 }
 
-//=======================================================================
-//function : Description
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ProductCategoryRelationship::Description () const
+Handle(TCollection_HAsciiString) StepBasic_ProductCategoryRelationship::Description() const
 {
   return theDescription;
 }
 
-//=======================================================================
-//function : SetDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ProductCategoryRelationship::SetDescription (const Handle(TCollection_HAsciiString) &aDescription)
+void StepBasic_ProductCategoryRelationship::SetDescription(
+  const Handle(TCollection_HAsciiString)& aDescription)
 {
   theDescription = aDescription;
 }
 
-//=======================================================================
-//function : HasDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean StepBasic_ProductCategoryRelationship::HasDescription () const
+Standard_Boolean StepBasic_ProductCategoryRelationship::HasDescription() const
 {
   return defDescription;
 }
 
-//=======================================================================
-//function : Category
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_ProductCategory) StepBasic_ProductCategoryRelationship::Category () const
+Handle(StepBasic_ProductCategory) StepBasic_ProductCategoryRelationship::Category() const
 {
   return theCategory;
 }
 
-//=======================================================================
-//function : SetCategory
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ProductCategoryRelationship::SetCategory (const Handle(StepBasic_ProductCategory) &aCategory)
+void StepBasic_ProductCategoryRelationship::SetCategory(
+  const Handle(StepBasic_ProductCategory)& aCategory)
 {
   theCategory = aCategory;
 }
 
-//=======================================================================
-//function : SubCategory
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_ProductCategory) StepBasic_ProductCategoryRelationship::SubCategory () const
+Handle(StepBasic_ProductCategory) StepBasic_ProductCategoryRelationship::SubCategory() const
 {
   return theSubCategory;
 }
 
-//=======================================================================
-//function : SetSubCategory
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ProductCategoryRelationship::SetSubCategory (const Handle(StepBasic_ProductCategory) &aSubCategory)
+void StepBasic_ProductCategoryRelationship::SetSubCategory(
+  const Handle(StepBasic_ProductCategory)& aSubCategory)
 {
   theSubCategory = aSubCategory;
 }

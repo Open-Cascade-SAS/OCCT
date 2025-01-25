@@ -21,8 +21,8 @@
 // function : splitLines
 // purpose  :
 // =======================================================================
-static void splitLines (const TCollection_AsciiString& theString,
-                        NCollection_IndexedMap<TCollection_AsciiString>& theLines)
+static void splitLines(const TCollection_AsciiString&                   theString,
+                       NCollection_IndexedMap<TCollection_AsciiString>& theLines)
 {
   if (theString.IsEmpty())
   {
@@ -32,27 +32,24 @@ static void splitLines (const TCollection_AsciiString& theString,
   Standard_Integer aLineFrom = 1;
   for (Standard_Integer aCharIter = 1;; ++aCharIter)
   {
-    const char aChar = theString.Value (aCharIter);
-    if (aChar != '\r'
-     && aChar != '\n'
-     && aCharIter != theString.Length())
+    const char aChar = theString.Value(aCharIter);
+    if (aChar != '\r' && aChar != '\n' && aCharIter != theString.Length())
     {
       continue;
     }
 
     if (aLineFrom != aCharIter)
     {
-      TCollection_AsciiString aLine = theString.SubString (aLineFrom, aCharIter);
+      TCollection_AsciiString aLine = theString.SubString(aLineFrom, aCharIter);
       aLine.RightAdjust();
-      theLines.Add (aLine);
+      theLines.Add(aLine);
     }
 
     if (aCharIter == theString.Length())
     {
       break;
     }
-    else if (aChar == '\r'
-          && theString.Value (aCharIter + 1) == '\n')
+    else if (aChar == '\r' && theString.Value(aCharIter + 1) == '\n')
     {
       // CRLF
       ++aCharIter;
@@ -66,17 +63,17 @@ static void splitLines (const TCollection_AsciiString& theString,
 // Purpose  :
 // ================================================================
 RWPly_PlyWriterContext::RWPly_PlyWriterContext()
-: myNbHeaderVerts (0),
-  myNbHeaderElems (0),
-  myNbVerts (0),
-  myNbElems (0),
-  mySurfId (0),
-  myVertOffset (0),
-  myIsDoublePrec (false),
-  myHasNormals   (false),
-  myHasColors    (false),
-  myHasTexCoords (false),
-  myHasSurfId    (false)
+    : myNbHeaderVerts(0),
+      myNbHeaderElems(0),
+      myNbVerts(0),
+      myNbElems(0),
+      mySurfId(0),
+      myVertOffset(0),
+      myIsDoublePrec(false),
+      myHasNormals(false),
+      myHasColors(false),
+      myHasTexCoords(false),
+      myHasSurfId(false)
 {
   //
 }
@@ -94,10 +91,10 @@ RWPly_PlyWriterContext::~RWPly_PlyWriterContext()
 // Function : Open
 // Purpose  :
 // ================================================================
-bool RWPly_PlyWriterContext::Open (const TCollection_AsciiString& theName,
-                                   const std::shared_ptr<std::ostream>& theStream)
+bool RWPly_PlyWriterContext::Open(const TCollection_AsciiString&       theName,
+                                  const std::shared_ptr<std::ostream>& theStream)
 {
-  myName = theName;
+  myName          = theName;
   myNbHeaderVerts = myNbHeaderElems = 0;
   myNbVerts = myNbElems = 0;
   if (theStream.get() != nullptr)
@@ -107,7 +104,7 @@ bool RWPly_PlyWriterContext::Open (const TCollection_AsciiString& theName,
   }
 
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  myStream = aFileSystem->OpenOStream (theName, std::ios::out | std::ios::binary);
+  myStream = aFileSystem->OpenOStream(theName, std::ios::out | std::ios::binary);
   if (myStream.get() == NULL || !myStream->good())
   {
     myStream.reset();
@@ -121,7 +118,7 @@ bool RWPly_PlyWriterContext::Open (const TCollection_AsciiString& theName,
 // Function : Close
 // Purpose  :
 // ================================================================
-bool RWPly_PlyWriterContext::Close (bool theIsAborted)
+bool RWPly_PlyWriterContext::Close(bool theIsAborted)
 {
   if (myStream.get() == nullptr)
   {
@@ -138,11 +135,13 @@ bool RWPly_PlyWriterContext::Close (bool theIsAborted)
   {
     if (myNbVerts != myNbHeaderVerts)
     {
-      Message::SendFail() << "Error: written less number of vertices (" << myNbVerts << ") than specified in PLY header (" << myNbHeaderVerts << ")";
+      Message::SendFail() << "Error: written less number of vertices (" << myNbVerts
+                          << ") than specified in PLY header (" << myNbHeaderVerts << ")";
     }
     else if (myNbElems != myNbHeaderElems)
     {
-      Message::SendFail() << "Error: written less number of elements (" << myNbElems << ") than specified in PLY header (" << myNbHeaderElems << ")";
+      Message::SendFail() << "Error: written less number of elements (" << myNbElems
+                          << ") than specified in PLY header (" << myNbHeaderElems << ")";
     }
   }
   myStream.reset();
@@ -153,9 +152,9 @@ bool RWPly_PlyWriterContext::Close (bool theIsAborted)
 // Function : WriteHeader
 // Purpose  :
 // ================================================================
-bool RWPly_PlyWriterContext::WriteHeader (const Standard_Integer theNbNodes,
-                                          const Standard_Integer theNbElems,
-                                          const TColStd_IndexedDataMapOfStringString& theFileInfo)
+bool RWPly_PlyWriterContext::WriteHeader(const Standard_Integer                      theNbNodes,
+                                         const Standard_Integer                      theNbElems,
+                                         const TColStd_IndexedDataMapOfStringString& theFileInfo)
 {
   if (myStream.get() == nullptr)
   {
@@ -167,26 +166,28 @@ bool RWPly_PlyWriterContext::WriteHeader (const Standard_Integer theNbNodes,
   *myStream << "ply\n"
                "format ascii 1.0\n"
                "comment Exported by Open CASCADE Technology [dev.opencascade.org]\n";
-  for (TColStd_IndexedDataMapOfStringString::Iterator aKeyValueIter (theFileInfo); aKeyValueIter.More(); aKeyValueIter.Next())
+  for (TColStd_IndexedDataMapOfStringString::Iterator aKeyValueIter(theFileInfo);
+       aKeyValueIter.More();
+       aKeyValueIter.Next())
   {
     NCollection_IndexedMap<TCollection_AsciiString> aKeyLines, aValLines;
-    splitLines (aKeyValueIter.Key(),   aKeyLines);
-    splitLines (aKeyValueIter.Value(), aValLines);
+    splitLines(aKeyValueIter.Key(), aKeyLines);
+    splitLines(aKeyValueIter.Value(), aValLines);
     for (Standard_Integer aLineIter = 1; aLineIter <= aKeyLines.Extent(); ++aLineIter)
     {
-      const TCollection_AsciiString& aLine = aKeyLines.FindKey (aLineIter);
+      const TCollection_AsciiString& aLine = aKeyLines.FindKey(aLineIter);
       *myStream << (aLineIter > 1 ? "\n" : "") << "comment " << aLine;
     }
     *myStream << (!aKeyLines.IsEmpty() ? ":" : "comment ");
     for (Standard_Integer aLineIter = 1; aLineIter <= aValLines.Extent(); ++aLineIter)
     {
-      const TCollection_AsciiString& aLine = aValLines.FindKey (aLineIter);
+      const TCollection_AsciiString& aLine = aValLines.FindKey(aLineIter);
       *myStream << (aLineIter > 1 ? "\n" : "") << "comment " << aLine;
     }
     *myStream << "\n";
   }
 
-  *myStream << "element vertex " << theNbNodes<< "\n";
+  *myStream << "element vertex " << theNbNodes << "\n";
   if (myIsDoublePrec)
   {
     *myStream << "property double x\n"
@@ -219,7 +220,8 @@ bool RWPly_PlyWriterContext::WriteHeader (const Standard_Integer theNbNodes,
 
   if (theNbElems > 0)
   {
-    *myStream << "element face " << theNbElems << "\n"
+    *myStream << "element face " << theNbElems
+              << "\n"
                  "property list uchar uint vertex_indices\n";
     if (myHasSurfId)
     {
@@ -235,10 +237,10 @@ bool RWPly_PlyWriterContext::WriteHeader (const Standard_Integer theNbNodes,
 // Function : WriteVertex
 // Purpose  :
 // ================================================================
-bool RWPly_PlyWriterContext::WriteVertex (const gp_Pnt& thePoint,
-                                          const Graphic3d_Vec3& theNorm,
-                                          const Graphic3d_Vec2& theUV,
-                                          const Graphic3d_Vec4ub& theColor)
+bool RWPly_PlyWriterContext::WriteVertex(const gp_Pnt&           thePoint,
+                                         const Graphic3d_Vec3&   theNorm,
+                                         const Graphic3d_Vec2&   theUV,
+                                         const Graphic3d_Vec4ub& theColor)
 {
   if (myStream.get() == nullptr)
   {
@@ -247,28 +249,30 @@ bool RWPly_PlyWriterContext::WriteVertex (const gp_Pnt& thePoint,
 
   if (myIsDoublePrec)
   {
-    *myStream << (double )thePoint.X() << " " << (double )thePoint.Y() << " " << (double )thePoint.Z();
+    *myStream << (double)thePoint.X() << " " << (double)thePoint.Y() << " " << (double)thePoint.Z();
   }
   else
   {
-    *myStream << (float )thePoint.X() << " " << (float )thePoint.Y() << " " << (float )thePoint.Z();
+    *myStream << (float)thePoint.X() << " " << (float)thePoint.Y() << " " << (float)thePoint.Z();
   }
   if (myHasNormals)
   {
-    *myStream << " " << (float )theNorm.x() << " " << (float )theNorm.y() << " " << (float )theNorm.z();
+    *myStream << " " << (float)theNorm.x() << " " << (float)theNorm.y() << " "
+              << (float)theNorm.z();
   }
   if (myHasTexCoords)
   {
-    *myStream << " " << (float )theUV.x() << " " << (float )theUV.y();
+    *myStream << " " << (float)theUV.x() << " " << (float)theUV.y();
   }
   if (myHasColors)
   {
-    *myStream << " " << (int )theColor.r() << " " << (int )theColor.g() << " " << (int )theColor.b();
+    *myStream << " " << (int)theColor.r() << " " << (int)theColor.g() << " " << (int)theColor.b();
   }
   *myStream << "\n";
   if (++myNbVerts > myNbHeaderVerts)
   {
-    throw Standard_OutOfRange ("RWPly_PlyWriterContext::WriteVertex() - number of vertices is greater than defined");
+    throw Standard_OutOfRange(
+      "RWPly_PlyWriterContext::WriteVertex() - number of vertices is greater than defined");
   }
   return myStream->good();
 }
@@ -277,7 +281,7 @@ bool RWPly_PlyWriterContext::WriteVertex (const gp_Pnt& thePoint,
 // Function : WriteTriangle
 // Purpose  :
 // ================================================================
-bool RWPly_PlyWriterContext::WriteTriangle (const Graphic3d_Vec3i& theTri)
+bool RWPly_PlyWriterContext::WriteTriangle(const Graphic3d_Vec3i& theTri)
 {
   if (myStream.get() == nullptr)
   {
@@ -293,7 +297,8 @@ bool RWPly_PlyWriterContext::WriteTriangle (const Graphic3d_Vec3i& theTri)
   *myStream << "\n";
   if (++myNbElems > myNbHeaderElems)
   {
-    throw Standard_OutOfRange ("RWPly_PlyWriterContext::WriteTriangle() - number of elements is greater than defined");
+    throw Standard_OutOfRange(
+      "RWPly_PlyWriterContext::WriteTriangle() - number of elements is greater than defined");
   }
   return myStream->good();
 }
@@ -302,7 +307,7 @@ bool RWPly_PlyWriterContext::WriteTriangle (const Graphic3d_Vec3i& theTri)
 // Function : WriteQuad
 // Purpose  :
 // ================================================================
-bool RWPly_PlyWriterContext::WriteQuad (const Graphic3d_Vec4i& theQuad)
+bool RWPly_PlyWriterContext::WriteQuad(const Graphic3d_Vec4i& theQuad)
 {
   if (myStream.get() == nullptr)
   {
@@ -318,7 +323,8 @@ bool RWPly_PlyWriterContext::WriteQuad (const Graphic3d_Vec4i& theQuad)
   *myStream << "\n";
   if (++myNbElems > myNbHeaderElems)
   {
-    throw Standard_OutOfRange ("RWPly_PlyWriterContext::WriteQuad() - number of elements is greater than defined");
+    throw Standard_OutOfRange(
+      "RWPly_PlyWriterContext::WriteQuad() - number of elements is greater than defined");
   }
   return myStream->good();
 }

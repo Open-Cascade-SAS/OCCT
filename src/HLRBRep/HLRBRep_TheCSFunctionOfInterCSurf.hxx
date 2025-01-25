@@ -32,60 +32,37 @@ class HLRBRep_LineTool;
 class math_Matrix;
 class gp_Pnt;
 
-
-
-class HLRBRep_TheCSFunctionOfInterCSurf  : public math_FunctionSetWithDerivatives
+class HLRBRep_TheCSFunctionOfInterCSurf : public math_FunctionSetWithDerivatives
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT HLRBRep_TheCSFunctionOfInterCSurf(const Standard_Address& S, const gp_Lin& C);
-  
+
   Standard_EXPORT Standard_Integer NbVariables() const;
-  
+
   Standard_EXPORT Standard_Integer NbEquations() const;
-  
-  Standard_EXPORT Standard_Boolean Value (const math_Vector& X, math_Vector& F);
-  
-  Standard_EXPORT Standard_Boolean Derivatives (const math_Vector& X, math_Matrix& D);
-  
-  Standard_EXPORT Standard_Boolean Values (const math_Vector& X, math_Vector& F, math_Matrix& D);
-  
+
+  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F);
+
+  Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& X, math_Matrix& D);
+
+  Standard_EXPORT Standard_Boolean Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
+
   Standard_EXPORT const gp_Pnt& Point() const;
-  
+
   Standard_EXPORT Standard_Real Root() const;
-  
+
   Standard_EXPORT const Standard_Address& AuxillarSurface() const;
-  
+
   Standard_EXPORT const gp_Lin& AuxillarCurve() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Address surface;
-  gp_Lin curve;
-  gp_Pnt p;
-  Standard_Real f;
-
-
+  gp_Lin           curve;
+  gp_Pnt           p;
+  Standard_Real    f;
 };
-
-
-
-
-
-
 
 #endif // _HLRBRep_TheCSFunctionOfInterCSurf_HeaderFile

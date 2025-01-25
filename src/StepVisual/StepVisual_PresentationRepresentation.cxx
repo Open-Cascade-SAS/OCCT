@@ -11,11 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepVisual_PresentationRepresentation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationRepresentation,StepRepr_Representation)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationRepresentation, StepRepr_Representation)
 
-StepVisual_PresentationRepresentation::StepVisual_PresentationRepresentation ()  {}
-
+StepVisual_PresentationRepresentation::StepVisual_PresentationRepresentation() {}

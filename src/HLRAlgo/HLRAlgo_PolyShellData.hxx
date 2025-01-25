@@ -36,10 +36,10 @@ public:
   };
 
   Standard_EXPORT HLRAlgo_PolyShellData(const Standard_Integer nbFace);
-  
-  Standard_EXPORT void UpdateGlobalMinMax (HLRAlgo_PolyData::Box& theBox);
-  
-  Standard_EXPORT void UpdateHiding (const Standard_Integer nbHiding);
+
+  Standard_EXPORT void UpdateGlobalMinMax(HLRAlgo_PolyData::Box& theBox);
+
+  Standard_EXPORT void UpdateHiding(const Standard_Integer nbHiding);
 
   Standard_Boolean Hiding() const { return !myHPolHi.IsEmpty(); }
 
@@ -49,20 +49,15 @@ public:
 
   HLRAlgo_ListOfBPoint& Edges() { return mySegList; }
 
-  ShellIndices& Indices()
-  {
-    return myIndices;
-  }
+  ShellIndices& Indices() { return myIndices; }
 
-  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyShellData,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyShellData, Standard_Transient)
 
 private:
-
-  ShellIndices myIndices;
+  ShellIndices                                 myIndices;
   NCollection_Array1<Handle(HLRAlgo_PolyData)> myPolyg;
   NCollection_Array1<Handle(HLRAlgo_PolyData)> myHPolHi;
-  HLRAlgo_ListOfBPoint mySegList;
-
+  HLRAlgo_ListOfBPoint                         mySegList;
 };
 
 #endif // _HLRAlgo_PolyShellData_HeaderFile

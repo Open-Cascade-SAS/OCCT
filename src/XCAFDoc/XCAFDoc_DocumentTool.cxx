@@ -35,44 +35,43 @@
 #include <XCAFDoc_VisMaterialTool.hxx>
 #include <UnitsMethods.hxx>
 
-IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_DocumentTool,TDataStd_GenericEmpty,"xcaf","DocumentTool")
+IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_DocumentTool,
+                                      TDataStd_GenericEmpty,
+                                      "xcaf",
+                                      "DocumentTool")
 
-//=======================================================================
-//function : GetID
-//purpose  : 
-//=======================================================================
-const Standard_GUID& XCAFDoc_DocumentTool::GetID() 
+//=================================================================================================
+
+const Standard_GUID& XCAFDoc_DocumentTool::GetID()
 {
-  static Standard_GUID DocumentToolID ("efd212ec-6dfd-11d4-b9c8-0060b0ee281b");
-  return DocumentToolID; 
+  static Standard_GUID DocumentToolID("efd212ec-6dfd-11d4-b9c8-0060b0ee281b");
+  return DocumentToolID;
 }
 
-namespace {
+namespace
+{
 //=======================================================================
-//function : GetRefID
-//purpose  : Returns a reference id to find a tree node attribute at the root
+// function : GetRefID
+// purpose  : Returns a reference id to find a tree node attribute at the root
 //           label
 //=======================================================================
 
-static const Standard_GUID& GetDocumentToolRefID() 
+static const Standard_GUID& GetDocumentToolRefID()
 {
-  static Standard_GUID DocumentToolRefID ("efd212eb-6dfd-11d4-b9c8-0060b0ee281b");
-  return DocumentToolRefID; 
+  static Standard_GUID DocumentToolRefID("efd212eb-6dfd-11d4-b9c8-0060b0ee281b");
+  return DocumentToolRefID;
 }
-}
+} // namespace
 
+//=================================================================================================
 
-//=======================================================================
-//function : Set
-//purpose  : 
-//=======================================================================
-
-Handle(XCAFDoc_DocumentTool) XCAFDoc_DocumentTool::Set(const TDF_Label& L,
+Handle(XCAFDoc_DocumentTool) XCAFDoc_DocumentTool::Set(const TDF_Label&       L,
                                                        const Standard_Boolean IsAcces)
 {
   Handle(XCAFDoc_DocumentTool) A;
-  TDF_Label aL = DocLabel (L);
-  if (!aL.FindAttribute (XCAFDoc_DocumentTool::GetID(), A)) {
+  TDF_Label                    aL = DocLabel(L);
+  if (!aL.FindAttribute(XCAFDoc_DocumentTool::GetID(), A))
+  {
     if (!IsAcces)
       aL = L;
 
@@ -92,21 +91,18 @@ Handle(XCAFDoc_DocumentTool) XCAFDoc_DocumentTool::Set(const TDF_Label& L,
   return A;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : DocLabel
-//purpose  : 
-//=======================================================================
-
-TDF_Label XCAFDoc_DocumentTool::DocLabel(const TDF_Label& acces) 
+TDF_Label XCAFDoc_DocumentTool::DocLabel(const TDF_Label& acces)
 {
-  TDF_Label DocL, RootL = acces.Root();
-  const Standard_GUID& aRefGuid = GetDocumentToolRefID();
+  TDF_Label                 DocL, RootL = acces.Root();
+  const Standard_GUID&      aRefGuid = GetDocumentToolRefID();
   Handle(TDataStd_TreeNode) aRootNode, aLabNode;
 
-  if (RootL.FindAttribute (aRefGuid, aRootNode)) {
+  if (RootL.FindAttribute(aRefGuid, aRootNode))
+  {
     aLabNode = aRootNode->First();
-    DocL = aLabNode->Label();
+    DocL     = aLabNode->Label();
     return DocL;
   }
 
@@ -114,86 +110,56 @@ TDF_Label XCAFDoc_DocumentTool::DocLabel(const TDF_Label& acces)
   return DocL;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Constructor
-//purpose  : 
-//=======================================================================
+XCAFDoc_DocumentTool::XCAFDoc_DocumentTool() {}
 
-XCAFDoc_DocumentTool::XCAFDoc_DocumentTool()
+//=================================================================================================
+
+TDF_Label XCAFDoc_DocumentTool::ShapesLabel(const TDF_Label& acces)
 {
-}
-
-
-//=======================================================================
-//function : ShapesLabel
-//purpose  : 
-//=======================================================================
-
-TDF_Label XCAFDoc_DocumentTool::ShapesLabel(const TDF_Label& acces) 
-{
-  TDF_Label L = DocLabel(acces).FindChild(1,Standard_True);
+  TDF_Label L = DocLabel(acces).FindChild(1, Standard_True);
   TDataStd_Name::Set(L, "Shapes");
   return L;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : ColorsLabel
-//purpose  : 
-//=======================================================================
-
-TDF_Label XCAFDoc_DocumentTool::ColorsLabel(const TDF_Label& acces) 
+TDF_Label XCAFDoc_DocumentTool::ColorsLabel(const TDF_Label& acces)
 {
-  TDF_Label L = DocLabel(acces).FindChild(2,Standard_True);
+  TDF_Label L = DocLabel(acces).FindChild(2, Standard_True);
   TDataStd_Name::Set(L, "Colors");
   return L;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : LayersLabel
-//purpose  : 
-//=======================================================================
-
-TDF_Label XCAFDoc_DocumentTool::LayersLabel(const TDF_Label& acces) 
+TDF_Label XCAFDoc_DocumentTool::LayersLabel(const TDF_Label& acces)
 {
-  TDF_Label L = DocLabel(acces).FindChild(3,Standard_True);
+  TDF_Label L = DocLabel(acces).FindChild(3, Standard_True);
   TDataStd_Name::Set(L, "Layers");
   return L;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : DGTsLabel
-//purpose  : 
-//=======================================================================
-
-TDF_Label XCAFDoc_DocumentTool::DGTsLabel(const TDF_Label& acces) 
+TDF_Label XCAFDoc_DocumentTool::DGTsLabel(const TDF_Label& acces)
 {
-  TDF_Label L = DocLabel(acces).FindChild(4,Standard_True);
+  TDF_Label L = DocLabel(acces).FindChild(4, Standard_True);
   TDataStd_Name::Set(L, "D&GTs");
   return L;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : MaterialsLabel
-//purpose  : 
-//=======================================================================
-
-TDF_Label XCAFDoc_DocumentTool::MaterialsLabel(const TDF_Label& acces) 
+TDF_Label XCAFDoc_DocumentTool::MaterialsLabel(const TDF_Label& acces)
 {
-  TDF_Label L = DocLabel(acces).FindChild(5,Standard_True);
+  TDF_Label L = DocLabel(acces).FindChild(5, Standard_True);
   TDataStd_Name::Set(L, "Materials");
   return L;
 }
 
-
-//=======================================================================
-//function : ViewsLabel
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TDF_Label XCAFDoc_DocumentTool::ViewsLabel(const TDF_Label& acces)
 {
@@ -202,10 +168,7 @@ TDF_Label XCAFDoc_DocumentTool::ViewsLabel(const TDF_Label& acces)
   return L;
 }
 
-//=======================================================================
-//function : ClippingPlanesLabel
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TDF_Label XCAFDoc_DocumentTool::ClippingPlanesLabel(const TDF_Label& acces)
 {
@@ -214,10 +177,7 @@ TDF_Label XCAFDoc_DocumentTool::ClippingPlanesLabel(const TDF_Label& acces)
   return L;
 }
 
-//=======================================================================
-//function : NotesLabel
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TDF_Label XCAFDoc_DocumentTool::NotesLabel(const TDF_Label& acces)
 {
@@ -226,31 +186,24 @@ TDF_Label XCAFDoc_DocumentTool::NotesLabel(const TDF_Label& acces)
   return L;
 }
 
-//=======================================================================
-//function : VisMaterialLabel
-//purpose  :
-//=======================================================================
-TDF_Label XCAFDoc_DocumentTool::VisMaterialLabel (const TDF_Label& theLabel)
+//=================================================================================================
+
+TDF_Label XCAFDoc_DocumentTool::VisMaterialLabel(const TDF_Label& theLabel)
 {
-  TDF_Label aLabel = DocLabel (theLabel).FindChild (10, Standard_True);
-  TDataStd_Name::Set (aLabel, "VisMaterials");
+  TDF_Label aLabel = DocLabel(theLabel).FindChild(10, Standard_True);
+  TDataStd_Name::Set(aLabel, "VisMaterials");
   return aLabel;
 }
 
-//=======================================================================
-//function : ShapeTool
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- Handle(XCAFDoc_ShapeTool) XCAFDoc_DocumentTool::ShapeTool(const TDF_Label& acces) 
+Handle(XCAFDoc_ShapeTool) XCAFDoc_DocumentTool::ShapeTool(const TDF_Label& acces)
 {
   return XCAFDoc_ShapeTool::Set(ShapesLabel(acces));
 }
 
- //=======================================================================
-//function : CheckShapeTool
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean XCAFDoc_DocumentTool::CheckShapeTool(const TDF_Label& theAcces)
 {
   TDF_Label aLabel = DocLabel(theAcces).FindChild(1, Standard_False);
@@ -261,20 +214,15 @@ Standard_Boolean XCAFDoc_DocumentTool::CheckShapeTool(const TDF_Label& theAcces)
   return aLabel.IsAttribute(XCAFDoc_ShapeTool::GetID());
 }
 
-//=======================================================================
-//function : ColorTool
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(XCAFDoc_ColorTool) XCAFDoc_DocumentTool::ColorTool (const TDF_Label& acces) 
+Handle(XCAFDoc_ColorTool) XCAFDoc_DocumentTool::ColorTool(const TDF_Label& acces)
 {
   return XCAFDoc_ColorTool::Set(ColorsLabel(acces));
 }
 
- //=======================================================================
- //function : CheckColorTool
- //purpose  :
- //=======================================================================
+//=================================================================================================
+
 Standard_Boolean XCAFDoc_DocumentTool::CheckColorTool(const TDF_Label& theAcces)
 {
   TDF_Label aLabel = DocLabel(theAcces).FindChild(2, Standard_False);
@@ -285,19 +233,15 @@ Standard_Boolean XCAFDoc_DocumentTool::CheckColorTool(const TDF_Label& theAcces)
   return aLabel.IsAttribute(XCAFDoc_ColorTool::GetID());
 }
 
-//=======================================================================
-//function : VisMaterialTool
-//purpose  :
-//=======================================================================
-Handle(XCAFDoc_VisMaterialTool) XCAFDoc_DocumentTool::VisMaterialTool (const TDF_Label& theLabel)
+//=================================================================================================
+
+Handle(XCAFDoc_VisMaterialTool) XCAFDoc_DocumentTool::VisMaterialTool(const TDF_Label& theLabel)
 {
-  return XCAFDoc_VisMaterialTool::Set (VisMaterialLabel (theLabel));
+  return XCAFDoc_VisMaterialTool::Set(VisMaterialLabel(theLabel));
 }
 
-//=======================================================================
-//function : CheckVisMaterialTool
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean XCAFDoc_DocumentTool::CheckVisMaterialTool(const TDF_Label& theAcces)
 {
   TDF_Label aLabel = DocLabel(theAcces).FindChild(10, Standard_False);
@@ -308,20 +252,15 @@ Standard_Boolean XCAFDoc_DocumentTool::CheckVisMaterialTool(const TDF_Label& the
   return aLabel.IsAttribute(XCAFDoc_VisMaterialTool::GetID());
 }
 
-//=======================================================================
-//function : LayerTool
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(XCAFDoc_LayerTool) XCAFDoc_DocumentTool::LayerTool (const TDF_Label& acces) 
+Handle(XCAFDoc_LayerTool) XCAFDoc_DocumentTool::LayerTool(const TDF_Label& acces)
 {
   return XCAFDoc_LayerTool::Set(LayersLabel(acces));
 }
 
-//=======================================================================
-//function : CheckLayerTool
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean XCAFDoc_DocumentTool::CheckLayerTool(const TDF_Label& theAcces)
 {
   TDF_Label aLabel = DocLabel(theAcces).FindChild(3, Standard_False);
@@ -332,20 +271,15 @@ Standard_Boolean XCAFDoc_DocumentTool::CheckLayerTool(const TDF_Label& theAcces)
   return aLabel.IsAttribute(XCAFDoc_LayerTool::GetID());
 }
 
-//=======================================================================
-//function : DimTolTool
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(XCAFDoc_DimTolTool) XCAFDoc_DocumentTool::DimTolTool(const TDF_Label& acces) 
+Handle(XCAFDoc_DimTolTool) XCAFDoc_DocumentTool::DimTolTool(const TDF_Label& acces)
 {
   return XCAFDoc_DimTolTool::Set(DGTsLabel(acces));
 }
 
-//=======================================================================
-//function : CheckDimTolTool
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean XCAFDoc_DocumentTool::CheckDimTolTool(const TDF_Label& theAcces)
 {
   TDF_Label aLabel = DocLabel(theAcces).FindChild(4, Standard_False);
@@ -356,20 +290,15 @@ Standard_Boolean XCAFDoc_DocumentTool::CheckDimTolTool(const TDF_Label& theAcces
   return aLabel.IsAttribute(XCAFDoc_DimTolTool::GetID());
 }
 
-//=======================================================================
-//function : MaterialTool
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(XCAFDoc_MaterialTool) XCAFDoc_DocumentTool::MaterialTool(const TDF_Label& acces) 
+Handle(XCAFDoc_MaterialTool) XCAFDoc_DocumentTool::MaterialTool(const TDF_Label& acces)
 {
   return XCAFDoc_MaterialTool::Set(MaterialsLabel(acces));
 }
 
-//=======================================================================
-//function : CheckMaterialTool
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean XCAFDoc_DocumentTool::CheckMaterialTool(const TDF_Label& theAcces)
 {
   TDF_Label aLabel = DocLabel(theAcces).FindChild(5, Standard_False);
@@ -380,20 +309,15 @@ Standard_Boolean XCAFDoc_DocumentTool::CheckMaterialTool(const TDF_Label& theAcc
   return aLabel.IsAttribute(XCAFDoc_MaterialTool::GetID());
 }
 
-//=======================================================================
-//function : ViewTool
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(XCAFDoc_ViewTool) XCAFDoc_DocumentTool::ViewTool(const TDF_Label& acces)
 {
   return XCAFDoc_ViewTool::Set(ViewsLabel(acces));
 }
 
-//=======================================================================
-//function : CheckViewTool
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean XCAFDoc_DocumentTool::CheckViewTool(const TDF_Label& theAcces)
 {
   TDF_Label aLabel = DocLabel(theAcces).FindChild(7, Standard_False);
@@ -404,20 +328,15 @@ Standard_Boolean XCAFDoc_DocumentTool::CheckViewTool(const TDF_Label& theAcces)
   return aLabel.IsAttribute(XCAFDoc_ViewTool::GetID());
 }
 
-//=======================================================================
-//function : ClippingPlaneTool
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(XCAFDoc_ClippingPlaneTool) XCAFDoc_DocumentTool::ClippingPlaneTool(const TDF_Label& acces)
 {
   return XCAFDoc_ClippingPlaneTool::Set(ClippingPlanesLabel(acces));
 }
 
-//=======================================================================
-//function : CheckClippingPlaneTool
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean XCAFDoc_DocumentTool::CheckClippingPlaneTool(const TDF_Label& theAcces)
 {
   TDF_Label aLabel = DocLabel(theAcces).FindChild(8, Standard_False);
@@ -428,19 +347,15 @@ Standard_Boolean XCAFDoc_DocumentTool::CheckClippingPlaneTool(const TDF_Label& t
   return aLabel.IsAttribute(XCAFDoc_ClippingPlaneTool::GetID());
 }
 
-//=======================================================================
-//function : NotesTool
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Handle(XCAFDoc_NotesTool) XCAFDoc_DocumentTool::NotesTool(const TDF_Label& acces)
 {
   return XCAFDoc_NotesTool::Set(NotesLabel(acces));
 }
 
-//=======================================================================
-//function : CheckNotesTool
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean XCAFDoc_DocumentTool::CheckNotesTool(const TDF_Label& theAcces)
 {
   TDF_Label aLabel = DocLabel(theAcces).FindChild(9, Standard_False);
@@ -451,13 +366,11 @@ Standard_Boolean XCAFDoc_DocumentTool::CheckNotesTool(const TDF_Label& theAcces)
   return aLabel.IsAttribute(XCAFDoc_NotesTool::GetID());
 }
 
-//=======================================================================
-//function : GetLengthUnit
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean XCAFDoc_DocumentTool::GetLengthUnit(const Handle(TDocStd_Document)& theDoc,
-                                                     Standard_Real& theResult,
-                                                     const UnitsMethods_LengthUnit theBaseUnit)
+                                                     Standard_Real&                  theResult,
+                                                     const UnitsMethods_LengthUnit   theBaseUnit)
 {
   if (theDoc.IsNull())
   {
@@ -466,19 +379,17 @@ Standard_Boolean XCAFDoc_DocumentTool::GetLengthUnit(const Handle(TDocStd_Docume
   Handle(XCAFDoc_LengthUnit) aLengthAttr;
   if (theDoc->Main().Root().FindAttribute(XCAFDoc_LengthUnit::GetID(), aLengthAttr))
   {
-    theResult = aLengthAttr->GetUnitValue() *
-      UnitsMethods::GetLengthUnitScale(UnitsMethods_LengthUnit_Meter, theBaseUnit);
+    theResult = aLengthAttr->GetUnitValue()
+                * UnitsMethods::GetLengthUnitScale(UnitsMethods_LengthUnit_Meter, theBaseUnit);
     return Standard_True;
   }
   return Standard_False;
 }
 
-//=======================================================================
-//function : GetLengthUnit
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean XCAFDoc_DocumentTool::GetLengthUnit(const Handle(TDocStd_Document)& theDoc,
-                                                     Standard_Real& theResult)
+                                                     Standard_Real&                  theResult)
 {
   if (theDoc.IsNull())
   {
@@ -493,27 +404,23 @@ Standard_Boolean XCAFDoc_DocumentTool::GetLengthUnit(const Handle(TDocStd_Docume
   return Standard_False;
 }
 
-//=======================================================================
-//function : SetLengthUnit
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void XCAFDoc_DocumentTool::SetLengthUnit(const Handle(TDocStd_Document)& theDoc,
-                                         const Standard_Real theUnitValue,
-                                         const UnitsMethods_LengthUnit theBaseUnit)
+                                         const Standard_Real             theUnitValue,
+                                         const UnitsMethods_LengthUnit   theBaseUnit)
 {
   // Sets length unit info
   TCollection_AsciiString aUnitName = UnitsMethods::DumpLengthUnit(theUnitValue, theBaseUnit);
-  const Standard_Real aScaleFactor = theUnitValue *
-    UnitsMethods::GetLengthUnitScale(theBaseUnit, UnitsMethods_LengthUnit_Meter);
+  const Standard_Real     aScaleFactor =
+    theUnitValue * UnitsMethods::GetLengthUnitScale(theBaseUnit, UnitsMethods_LengthUnit_Meter);
   XCAFDoc_LengthUnit::Set(theDoc->Main().Root(), aUnitName, aScaleFactor);
 }
 
-//=======================================================================
-//function : SetLengthUnit
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void XCAFDoc_DocumentTool::SetLengthUnit(const Handle(TDocStd_Document)& theDoc,
-                                         const Standard_Real theUnitValue)
+                                         const Standard_Real             theUnitValue)
 {
   // Sets length unit info
   TCollection_AsciiString aUnitName =
@@ -521,57 +428,44 @@ void XCAFDoc_DocumentTool::SetLengthUnit(const Handle(TDocStd_Document)& theDoc,
   XCAFDoc_LengthUnit::Set(theDoc->Main().Root(), aUnitName, theUnitValue);
 }
 
-//=======================================================================
-//function : ID
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 const Standard_GUID& XCAFDoc_DocumentTool::ID() const
 {
   return GetID();
 }
 
-//=======================================================================
-//function : AfterRetrieval
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean XCAFDoc_DocumentTool::AfterRetrieval (const Standard_Boolean /* forceIt */)
+Standard_Boolean XCAFDoc_DocumentTool::AfterRetrieval(const Standard_Boolean /* forceIt */)
 {
   Init();
   return Standard_True;
 }
 
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void XCAFDoc_DocumentTool::Init() const
 {
-  TDF_Label DocL = Label(), RootL = DocL.Root();
-  const Standard_GUID& aRefGuid = GetDocumentToolRefID();
+  TDF_Label                 DocL = Label(), RootL = DocL.Root();
+  const Standard_GUID&      aRefGuid = GetDocumentToolRefID();
   Handle(TDataStd_TreeNode) aRootNode, aLabNode;
 
-  if (!RootL.FindAttribute (aRefGuid, aRootNode)) {
-    Handle(TDataStd_TreeNode) aRootNodeNew = TDataStd_TreeNode::Set (RootL, aRefGuid);
-    Handle(TDataStd_TreeNode) aLNode = TDataStd_TreeNode::Set (DocL, aRefGuid);
-    aLNode->SetFather (aRootNodeNew);
-    aRootNodeNew->SetFirst (aLNode);
+  if (!RootL.FindAttribute(aRefGuid, aRootNode))
+  {
+    Handle(TDataStd_TreeNode) aRootNodeNew = TDataStd_TreeNode::Set(RootL, aRefGuid);
+    Handle(TDataStd_TreeNode) aLNode       = TDataStd_TreeNode::Set(DocL, aRefGuid);
+    aLNode->SetFather(aRootNodeNew);
+    aRootNodeNew->SetFirst(aLNode);
   }
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : IsXCAFDocument
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean XCAFDoc_DocumentTool::IsXCAFDocument(const  Handle(TDocStd_Document)& D)
+Standard_Boolean XCAFDoc_DocumentTool::IsXCAFDocument(const Handle(TDocStd_Document)& D)
 {
-  TDF_Label RootL = D->Main().Root();
-  const Standard_GUID& aRefGuid = GetDocumentToolRefID();
+  TDF_Label                 RootL    = D->Main().Root();
+  const Standard_GUID&      aRefGuid = GetDocumentToolRefID();
   Handle(TDataStd_TreeNode) aRootNode;
-  return RootL.FindAttribute (aRefGuid, aRootNode);
+  return RootL.FindAttribute(aRefGuid, aRootNode);
 }

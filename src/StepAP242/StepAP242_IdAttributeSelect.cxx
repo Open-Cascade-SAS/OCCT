@@ -27,65 +27,93 @@
 #include <StepRepr_ShapeAspectRelationship.hxx>
 #include <StepShape_DimensionalSize.hxx>
 
-//=======================================================================
-//function : StepAP242_IdAttributeSelect
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepAP242_IdAttributeSelect::StepAP242_IdAttributeSelect () {  }
+StepAP242_IdAttributeSelect::StepAP242_IdAttributeSelect() {}
 
-//=======================================================================
-//function : CaseNum
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer StepAP242_IdAttributeSelect::CaseNum(const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepBasic_Action))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepBasic_Address))) return 2;
-  if (ent->IsKind(STANDARD_TYPE(StepBasic_ApplicationContext))) return 3;
-  if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalSize))) return 4;
-  if (ent->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance))) return 5;
-  if (ent->IsKind(STANDARD_TYPE(StepBasic_Group))) return 6;
-  if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductCategory))) return 8;
-  if (ent->IsKind(STANDARD_TYPE(StepRepr_PropertyDefinition))) return 9;
-  if (ent->IsKind(STANDARD_TYPE(StepRepr_Representation))) return 10;
-  if (ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect))) return 11;
-  if (ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspectRelationship))) return 12;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_Action)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_Address)))
+    return 2;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_ApplicationContext)))
+    return 3;
+  if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalSize)))
+    return 4;
+  if (ent->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance)))
+    return 5;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_Group)))
+    return 6;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductCategory)))
+    return 8;
+  if (ent->IsKind(STANDARD_TYPE(StepRepr_PropertyDefinition)))
+    return 9;
+  if (ent->IsKind(STANDARD_TYPE(StepRepr_Representation)))
+    return 10;
+  if (ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect)))
+    return 11;
+  if (ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspectRelationship)))
+    return 12;
   return 0;
 }
 
 Handle(StepBasic_Action) StepAP242_IdAttributeSelect::Action() const
-{  return GetCasted(StepBasic_Action,Value());  }
+{
+  return GetCasted(StepBasic_Action, Value());
+}
 
 Handle(StepBasic_Address) StepAP242_IdAttributeSelect::Address() const
-{  return GetCasted(StepBasic_Address,Value());  }
+{
+  return GetCasted(StepBasic_Address, Value());
+}
 
 Handle(StepBasic_ApplicationContext) StepAP242_IdAttributeSelect::ApplicationContext() const
-{  return GetCasted(StepBasic_ApplicationContext,Value());  }
+{
+  return GetCasted(StepBasic_ApplicationContext, Value());
+}
 
 Handle(StepShape_DimensionalSize) StepAP242_IdAttributeSelect::DimensionalSize() const
-{  return GetCasted(StepShape_DimensionalSize,Value());  }
+{
+  return GetCasted(StepShape_DimensionalSize, Value());
+}
 
 Handle(StepDimTol_GeometricTolerance) StepAP242_IdAttributeSelect::GeometricTolerance() const
-{  return GetCasted(StepDimTol_GeometricTolerance,Value());  }
+{
+  return GetCasted(StepDimTol_GeometricTolerance, Value());
+}
 
 Handle(StepBasic_Group) StepAP242_IdAttributeSelect::Group() const
-{  return GetCasted(StepBasic_Group,Value());  }
+{
+  return GetCasted(StepBasic_Group, Value());
+}
 
 Handle(StepBasic_ProductCategory) StepAP242_IdAttributeSelect::ProductCategory() const
-{  return GetCasted(StepBasic_ProductCategory,Value());  }
+{
+  return GetCasted(StepBasic_ProductCategory, Value());
+}
 
 Handle(StepRepr_PropertyDefinition) StepAP242_IdAttributeSelect::PropertyDefinition() const
-{  return GetCasted(StepRepr_PropertyDefinition,Value());  }
+{
+  return GetCasted(StepRepr_PropertyDefinition, Value());
+}
 
 Handle(StepRepr_Representation) StepAP242_IdAttributeSelect::Representation() const
-{  return GetCasted(StepRepr_Representation,Value());  }
+{
+  return GetCasted(StepRepr_Representation, Value());
+}
 
 Handle(StepRepr_ShapeAspect) StepAP242_IdAttributeSelect::ShapeAspect() const
-{  return GetCasted(StepRepr_ShapeAspect,Value());  }
+{
+  return GetCasted(StepRepr_ShapeAspect, Value());
+}
 
-Handle(StepRepr_ShapeAspectRelationship) StepAP242_IdAttributeSelect::ShapeAspectRelationship() const
-{  return GetCasted(StepRepr_ShapeAspectRelationship,Value());  }
-
+Handle(StepRepr_ShapeAspectRelationship) StepAP242_IdAttributeSelect::ShapeAspectRelationship()
+  const
+{
+  return GetCasted(StepRepr_ShapeAspectRelationship, Value());
+}

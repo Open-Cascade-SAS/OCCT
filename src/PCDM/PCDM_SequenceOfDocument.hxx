@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(PCDM_Document)> PCDM_SequenceOfDocument;
 
-
 #endif

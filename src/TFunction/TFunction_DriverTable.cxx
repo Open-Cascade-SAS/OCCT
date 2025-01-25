@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -24,41 +23,35 @@
 #include <TFunction_Driver.hxx>
 #include <TFunction_DriverTable.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TFunction_DriverTable,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(TFunction_DriverTable, Standard_Transient)
 
 static Handle(TFunction_DriverTable) DT;
 
-//=======================================================================
-//function : Get
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(TFunction_DriverTable) TFunction_DriverTable::Get()
 {
-  if (DT.IsNull()) DT = new TFunction_DriverTable;
+  if (DT.IsNull())
+    DT = new TFunction_DriverTable;
   return DT;
 }
 
-//=======================================================================
-//function : TFunction_DriverTable
-//purpose  : Constructor
-//=======================================================================
+//=================================================================================================
 
-TFunction_DriverTable::TFunction_DriverTable()
-{}
+TFunction_DriverTable::TFunction_DriverTable() {}
 
 //=======================================================================
-//function : AddDriver
-//purpose  : Adds a driver to the DriverTable
+// function : AddDriver
+// purpose  : Adds a driver to the DriverTable
 //=======================================================================
 
 Standard_Boolean TFunction_DriverTable::AddDriver(const Standard_GUID&            guid,
-						  const Handle(TFunction_Driver)& driver,
-						  const Standard_Integer          thread)
+                                                  const Handle(TFunction_Driver)& driver,
+                                                  const Standard_Integer          thread)
 {
   if (thread == 0)
-    return myDrivers.Bind(guid,driver);
-  else if (thread > 0) 
+    return myDrivers.Bind(guid, driver);
+  else if (thread > 0)
   {
     if (myThreadDrivers.IsNull())
     {
@@ -68,32 +61,30 @@ Standard_Boolean TFunction_DriverTable::AddDriver(const Standard_GUID&          
     else if (myThreadDrivers->Upper() < thread)
     {
       // Create a bigger table for thread-drivers.
-      Handle(TFunction_HArray1OfDataMapOfGUIDDriver) new_dt = new TFunction_HArray1OfDataMapOfGUIDDriver(1, thread);
+      Handle(TFunction_HArray1OfDataMapOfGUIDDriver) new_dt =
+        new TFunction_HArray1OfDataMapOfGUIDDriver(1, thread);
       // Copy old table to the expanded (new) one.
       Standard_Integer i = 1, old_upper = myThreadDrivers->Upper();
       for (; i <= old_upper; i++)
       {
-	const TFunction_DataMapOfGUIDDriver& t = myThreadDrivers->Value(i);
-	TFunction_DataMapIteratorOfDataMapOfGUIDDriver itrt(t);
-	for (; itrt.More(); itrt.Next())
-	{
-	  new_dt->ChangeValue(i).Bind(itrt.Key(), itrt.Value());
-	}
-      }//for...
+        const TFunction_DataMapOfGUIDDriver&           t = myThreadDrivers->Value(i);
+        TFunction_DataMapIteratorOfDataMapOfGUIDDriver itrt(t);
+        for (; itrt.More(); itrt.Next())
+        {
+          new_dt->ChangeValue(i).Bind(itrt.Key(), itrt.Value());
+        }
+      } // for...
       myThreadDrivers = new_dt;
-    }//else...
+    } // else...
     return myThreadDrivers->ChangeValue(thread).Bind(guid, driver);
   }
   return Standard_False;
 }
 
-//=======================================================================
-//function : HasDriver
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean TFunction_DriverTable::HasDriver(const Standard_GUID&   guid,
-						  const Standard_Integer thread) const
+                                                  const Standard_Integer thread) const
 {
   if (thread == 0)
     return myDrivers.IsBound(guid);
@@ -103,13 +94,13 @@ Standard_Boolean TFunction_DriverTable::HasDriver(const Standard_GUID&   guid,
 }
 
 //=======================================================================
-//function : FindDriver
-//purpose  : Returns the driver if find
+// function : FindDriver
+// purpose  : Returns the driver if find
 //=======================================================================
 
 Standard_Boolean TFunction_DriverTable::FindDriver(const Standard_GUID&      guid,
-						   Handle(TFunction_Driver)& driver,
-						   const Standard_Integer    thread) const
+                                                   Handle(TFunction_Driver)& driver,
+                                                   const Standard_Integer    thread) const
 {
   if (thread == 0)
   {
@@ -130,32 +121,29 @@ Standard_Boolean TFunction_DriverTable::FindDriver(const Standard_GUID&      gui
   return Standard_False;
 }
 
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_OStream& TFunction_DriverTable::Dump(Standard_OStream& anOS) const
 {
   TFunction_DataMapIteratorOfDataMapOfGUIDDriver itr(myDrivers);
   for (; itr.More(); itr.Next())
   {
-    itr.Key().ShallowDump(anOS); 
-    anOS<<"\t";
+    itr.Key().ShallowDump(anOS);
+    anOS << "\t";
     TCollection_ExtendedString es;
     TDF::ProgIDFromGUID(itr.Key(), es);
-    anOS<<es<<"\n";
+    anOS << es << "\n";
   }
   return anOS;
 }
 
 //=======================================================================
-//function : RemoveDriver
-//purpose  : Removes a driver from the DriverTable
+// function : RemoveDriver
+// purpose  : Removes a driver from the DriverTable
 //=======================================================================
 
 Standard_Boolean TFunction_DriverTable::RemoveDriver(const Standard_GUID&   guid,
-						     const Standard_Integer thread)
+                                                     const Standard_Integer thread)
 {
   if (thread == 0)
     return myDrivers.UnBind(guid);
@@ -165,8 +153,8 @@ Standard_Boolean TFunction_DriverTable::RemoveDriver(const Standard_GUID&   guid
 }
 
 //=======================================================================
-//function : Clear
-//purpose  : Removes all drivers
+// function : Clear
+// purpose  : Removes all drivers
 //=======================================================================
 
 void TFunction_DriverTable::Clear()

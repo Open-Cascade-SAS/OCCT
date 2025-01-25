@@ -22,43 +22,21 @@
 #include <Standard_Integer.hxx>
 class TopOpeBRepDS_HDataStructure;
 
-
 //! EdgeInterferenceReducer
-class TopOpeBRepDS_EIR 
+class TopOpeBRepDS_EIR
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopOpeBRepDS_EIR(const Handle(TopOpeBRepDS_HDataStructure)& HDS);
-  
+
   Standard_EXPORT void ProcessEdgeInterferences();
-  
-  Standard_EXPORT void ProcessEdgeInterferences (const Standard_Integer I);
 
-
-
+  Standard_EXPORT void ProcessEdgeInterferences(const Standard_Integer I);
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(TopOpeBRepDS_HDataStructure) myHDS;
-
-
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepDS_EIR_HeaderFile

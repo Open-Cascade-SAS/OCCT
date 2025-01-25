@@ -21,12 +21,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SensitiveEntitySet, BVH_PrimitiveSet3d)
 
-//=======================================================================
-// function : SelectMgr_SensitiveEntitySet
-// purpose  :
-//=======================================================================
-SelectMgr_SensitiveEntitySet::SelectMgr_SensitiveEntitySet (const Handle(Select3D_BVHBuilder3d)& theBuilder)
-: BVH_PrimitiveSet3d (theBuilder)
+//=================================================================================================
+
+SelectMgr_SensitiveEntitySet::SelectMgr_SensitiveEntitySet(
+  const Handle(Select3D_BVHBuilder3d)& theBuilder)
+    : BVH_PrimitiveSet3d(theBuilder)
 {
   myNbEntityWithPersistence = 0;
 }
@@ -35,17 +34,17 @@ SelectMgr_SensitiveEntitySet::SelectMgr_SensitiveEntitySet (const Handle(Select3
 // function : Append
 // purpose  : Adds new entity to the set and marks BVH tree for rebuild
 //=======================================================================
-void SelectMgr_SensitiveEntitySet::Append (const Handle(SelectMgr_SensitiveEntity)& theEntity)
+void SelectMgr_SensitiveEntitySet::Append(const Handle(SelectMgr_SensitiveEntity)& theEntity)
 {
-  if (!theEntity->BaseSensitive()->IsKind (STANDARD_TYPE(Select3D_SensitiveEntity)))
+  if (!theEntity->BaseSensitive()->IsKind(STANDARD_TYPE(Select3D_SensitiveEntity)))
   {
     theEntity->ResetSelectionActiveStatus();
     return;
   }
   const Standard_Integer anExtent = mySensitives.Extent();
-  if (mySensitives.Add (theEntity) > anExtent)
+  if (mySensitives.Add(theEntity) > anExtent)
   {
-    addOwner (theEntity->BaseSensitive()->OwnerId());
+    addOwner(theEntity->BaseSensitive()->OwnerId());
   }
   if (!theEntity->BaseSensitive()->TransformPersistence().IsNull())
   {
@@ -59,21 +58,24 @@ void SelectMgr_SensitiveEntitySet::Append (const Handle(SelectMgr_SensitiveEntit
 // purpose  : Adds every entity of selection theSelection to the set
 //            and marks BVH tree for rebuild
 //=======================================================================
-void SelectMgr_SensitiveEntitySet::Append (const Handle(SelectMgr_Selection)& theSelection)
+void SelectMgr_SensitiveEntitySet::Append(const Handle(SelectMgr_Selection)& theSelection)
 {
-  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (theSelection->Entities()); aSelEntIter.More(); aSelEntIter.Next())
+  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter(
+         theSelection->Entities());
+       aSelEntIter.More();
+       aSelEntIter.Next())
   {
     const Handle(SelectMgr_SensitiveEntity)& aSensEnt = aSelEntIter.Value();
-    if (!aSensEnt->BaseSensitive()->IsKind (STANDARD_TYPE(Select3D_SensitiveEntity)))
+    if (!aSensEnt->BaseSensitive()->IsKind(STANDARD_TYPE(Select3D_SensitiveEntity)))
     {
       aSensEnt->ResetSelectionActiveStatus();
       continue;
     }
 
     const Standard_Integer anExtent = mySensitives.Extent();
-    if (mySensitives.Add (aSensEnt) > anExtent)
+    if (mySensitives.Add(aSensEnt) > anExtent)
     {
-      addOwner (aSensEnt->BaseSensitive()->OwnerId());
+      addOwner(aSensEnt->BaseSensitive()->OwnerId());
     }
     if (!aSensEnt->BaseSensitive()->TransformPersistence().IsNull())
     {
@@ -88,12 +90,15 @@ void SelectMgr_SensitiveEntitySet::Append (const Handle(SelectMgr_Selection)& th
 // purpose  : Removes every entity of selection theSelection from the set
 //            and marks BVH tree for rebuild
 //=======================================================================
-void SelectMgr_SensitiveEntitySet::Remove (const Handle(SelectMgr_Selection)& theSelection)
+void SelectMgr_SensitiveEntitySet::Remove(const Handle(SelectMgr_Selection)& theSelection)
 {
-  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (theSelection->Entities()); aSelEntIter.More(); aSelEntIter.Next())
+  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter(
+         theSelection->Entities());
+       aSelEntIter.More();
+       aSelEntIter.Next())
   {
     const Handle(SelectMgr_SensitiveEntity)& aSensEnt = aSelEntIter.Value();
-    const Standard_Integer anEntIdx = mySensitives.FindIndex (aSensEnt);
+    const Standard_Integer                   anEntIdx = mySensitives.FindIndex(aSensEnt);
     if (anEntIdx == 0)
     {
       continue;
@@ -101,7 +106,7 @@ void SelectMgr_SensitiveEntitySet::Remove (const Handle(SelectMgr_Selection)& th
 
     if (anEntIdx != mySensitives.Size())
     {
-      Swap (anEntIdx - 1, mySensitives.Size() - 1);
+      Swap(anEntIdx - 1, mySensitives.Size() - 1);
     }
     if (!aSensEnt->BaseSensitive()->TransformPersistence().IsNull())
     {
@@ -109,7 +114,7 @@ void SelectMgr_SensitiveEntitySet::Remove (const Handle(SelectMgr_Selection)& th
     }
 
     mySensitives.RemoveLast();
-    removeOwner (aSensEnt->BaseSensitive()->OwnerId());
+    removeOwner(aSensEnt->BaseSensitive()->OwnerId());
   }
 
   MarkDirty();
@@ -119,9 +124,9 @@ void SelectMgr_SensitiveEntitySet::Remove (const Handle(SelectMgr_Selection)& th
 // function : Box
 // purpose  : Returns bounding box of entity with index theIdx
 //=======================================================================
-Select3D_BndBox3d SelectMgr_SensitiveEntitySet::Box (const Standard_Integer theIndex) const
+Select3D_BndBox3d SelectMgr_SensitiveEntitySet::Box(const Standard_Integer theIndex) const
 {
-  const Handle(Select3D_SensitiveEntity)& aSensitive = GetSensitiveById (theIndex)->BaseSensitive();
+  const Handle(Select3D_SensitiveEntity)& aSensitive = GetSensitiveById(theIndex)->BaseSensitive();
   if (!aSensitive->TransformPersistence().IsNull())
   {
     return Select3D_BndBox3d();
@@ -135,14 +140,13 @@ Select3D_BndBox3d SelectMgr_SensitiveEntitySet::Box (const Standard_Integer theI
 // purpose  : Returns geometry center of sensitive entity index theIdx
 //            along the given axis theAxis
 //=======================================================================
-Standard_Real SelectMgr_SensitiveEntitySet::Center (const Standard_Integer theIndex,
-                                                    const Standard_Integer theAxis) const
+Standard_Real SelectMgr_SensitiveEntitySet::Center(const Standard_Integer theIndex,
+                                                   const Standard_Integer theAxis) const
 {
-  const Handle(Select3D_SensitiveEntity)& aSensitive = GetSensitiveById (theIndex)->BaseSensitive();
-  const gp_Pnt aCenter = aSensitive->CenterOfGeometry();
-  Standard_Real aCenterCoord = 0.0;
-  aCenterCoord = theAxis == 0 ? aCenter.X() :
-    (theAxis == 1 ? aCenter.Y() : aCenter.Z());
+  const Handle(Select3D_SensitiveEntity)& aSensitive = GetSensitiveById(theIndex)->BaseSensitive();
+  const gp_Pnt                            aCenter    = aSensitive->CenterOfGeometry();
+  Standard_Real                           aCenterCoord = 0.0;
+  aCenterCoord = theAxis == 0 ? aCenter.X() : (theAxis == 1 ? aCenter.Y() : aCenter.Z());
 
   return aCenterCoord;
 }
@@ -151,10 +155,10 @@ Standard_Real SelectMgr_SensitiveEntitySet::Center (const Standard_Integer theIn
 // function : Swap
 // purpose  : Swaps items with indexes theIdx1 and theIdx2
 //=======================================================================
-void SelectMgr_SensitiveEntitySet::Swap (const Standard_Integer theIndex1,
-                                         const Standard_Integer theIndex2)
+void SelectMgr_SensitiveEntitySet::Swap(const Standard_Integer theIndex1,
+                                        const Standard_Integer theIndex2)
 {
-  mySensitives.Swap (theIndex1 + 1, theIndex2 + 1);
+  mySensitives.Swap(theIndex1 + 1, theIndex2 + 1);
 }
 
 //=======================================================================
@@ -170,42 +174,38 @@ Standard_Integer SelectMgr_SensitiveEntitySet::Size() const
 // function : GetSensitiveById
 // purpose  : Returns the entity with index theIndex in the set
 //=======================================================================
-const Handle(SelectMgr_SensitiveEntity)& SelectMgr_SensitiveEntitySet::GetSensitiveById
-  (const Standard_Integer theIndex) const
+const Handle(SelectMgr_SensitiveEntity)& SelectMgr_SensitiveEntitySet::GetSensitiveById(
+  const Standard_Integer theIndex) const
 {
-  return mySensitives.FindKey (theIndex + 1);
+  return mySensitives.FindKey(theIndex + 1);
 }
 
-//=======================================================================
-// function : addOwner
-// purpose  :
-//=======================================================================
-void SelectMgr_SensitiveEntitySet::addOwner (const Handle(SelectMgr_EntityOwner)& theOwner)
+//=================================================================================================
+
+void SelectMgr_SensitiveEntitySet::addOwner(const Handle(SelectMgr_EntityOwner)& theOwner)
 {
   if (!theOwner.IsNull())
   {
-    if (Standard_Integer* aNumber = myOwnersMap.ChangeSeek (theOwner))
+    if (Standard_Integer* aNumber = myOwnersMap.ChangeSeek(theOwner))
     {
       ++(*aNumber);
     }
     else
     {
-      myOwnersMap.Bind (theOwner, 1);
+      myOwnersMap.Bind(theOwner, 1);
     }
   }
 }
 
-//=======================================================================
-// function : removeOwner
-// purpose  :
-//=======================================================================
-void SelectMgr_SensitiveEntitySet::removeOwner (const Handle(SelectMgr_EntityOwner)& theOwner)
+//=================================================================================================
+
+void SelectMgr_SensitiveEntitySet::removeOwner(const Handle(SelectMgr_EntityOwner)& theOwner)
 {
-  if (Standard_Integer* aNumber = !theOwner.IsNull() ? myOwnersMap.ChangeSeek (theOwner) : NULL)
+  if (Standard_Integer* aNumber = !theOwner.IsNull() ? myOwnersMap.ChangeSeek(theOwner) : NULL)
   {
     if (--(*aNumber) == 0)
     {
-      myOwnersMap.UnBind (theOwner);
+      myOwnersMap.UnBind(theOwner);
     }
   }
 }

@@ -20,5 +20,4 @@
 
 DEFINE_HSEQUENCE(TColStd_HSequenceOfHExtendedString, TColStd_SequenceOfHExtendedString)
 
-
 #endif

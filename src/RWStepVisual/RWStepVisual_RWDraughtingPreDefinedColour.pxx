@@ -27,42 +27,24 @@ class Interface_Check;
 class StepVisual_DraughtingPreDefinedColour;
 class StepData_StepWriter;
 
-
 //! Read & Write Module for DraughtingPreDefinedColour
-class RWStepVisual_RWDraughtingPreDefinedColour 
+class RWStepVisual_RWDraughtingPreDefinedColour
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_HIDDEN RWStepVisual_RWDraughtingPreDefinedColour();
-  
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepVisual_DraughtingPreDefinedColour)& ent) const;
-  
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepVisual_DraughtingPreDefinedColour)& ent) const;
 
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&               data,
+                                const Standard_Integer                               num,
+                                Handle(Interface_Check)&                             ach,
+                                const Handle(StepVisual_DraughtingPreDefinedColour)& ent) const;
 
-
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                 SW,
+                                 const Handle(StepVisual_DraughtingPreDefinedColour)& ent) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepVisual_RWDraughtingPreDefinedColour_HeaderFile

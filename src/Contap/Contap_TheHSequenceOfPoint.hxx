@@ -23,5 +23,4 @@
 
 DEFINE_HSEQUENCE(Contap_TheHSequenceOfPoint, Contap_TheSequenceOfPoint)
 
-
 #endif

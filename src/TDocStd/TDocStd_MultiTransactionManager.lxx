@@ -14,74 +14,70 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : GetUndoLimit
-//purpose  : 
+// function : GetUndoLimit
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer
-  TDocStd_MultiTransactionManager::GetUndoLimit() const
+inline Standard_Integer TDocStd_MultiTransactionManager::GetUndoLimit() const
 {
   return myUndoLimit;
 }
 
 //=======================================================================
-//function : GetAvailableUndos
-//purpose  : 
+// function : GetAvailableUndos
+// purpose  :
 //=======================================================================
 
-inline const TDocStd_SequenceOfApplicationDelta&
-  TDocStd_MultiTransactionManager::GetAvailableUndos() const
+inline const TDocStd_SequenceOfApplicationDelta& TDocStd_MultiTransactionManager::
+  GetAvailableUndos() const
 {
   return myUndos;
 }
 
 //=======================================================================
-//function : GetAvailableRedos
-//purpose  : 
+// function : GetAvailableRedos
+// purpose  :
 //=======================================================================
 
-inline const TDocStd_SequenceOfApplicationDelta&
-  TDocStd_MultiTransactionManager::GetAvailableRedos() const
+inline const TDocStd_SequenceOfApplicationDelta& TDocStd_MultiTransactionManager::
+  GetAvailableRedos() const
 {
   return myRedos;
 }
 
 //=======================================================================
-//function : Documents
-//purpose  : 
+// function : Documents
+// purpose  :
 //=======================================================================
 
-inline const TDocStd_SequenceOfDocument&
-  TDocStd_MultiTransactionManager::Documents() const
+inline const TDocStd_SequenceOfDocument& TDocStd_MultiTransactionManager::Documents() const
 {
   return myDocuments;
 }
 
 //=======================================================================
-//function : IsNestedTransactionMode
-//purpose  : 
+// function : IsNestedTransactionMode
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean
-  TDocStd_MultiTransactionManager::IsNestedTransactionMode () const
+inline Standard_Boolean TDocStd_MultiTransactionManager::IsNestedTransactionMode() const
 {
   return myIsNestedTransactionMode;
 }
 
 //=======================================================================
-//function : HasOpenCommand
-//purpose  : 
+// function : HasOpenCommand
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean
-  TDocStd_MultiTransactionManager::HasOpenCommand () const
+inline Standard_Boolean TDocStd_MultiTransactionManager::HasOpenCommand() const
 {
   return myOpenTransaction;
 }
 
 //=======================================================================
-//function : ModificationMode
-//purpose  : returns True if changes allowed only inside transactions
+// function : ModificationMode
+// purpose  : returns True if changes allowed only inside transactions
 //=======================================================================
 
 inline Standard_Boolean TDocStd_MultiTransactionManager::ModificationMode() const

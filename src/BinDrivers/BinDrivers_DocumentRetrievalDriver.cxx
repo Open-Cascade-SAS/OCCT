@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinDrivers.hxx>
 #include <BinDrivers_DocumentRetrievalDriver.hxx>
 #include <BinLDrivers_DocumentSection.hxx>
@@ -29,101 +28,89 @@
 #include <TCollection_ExtendedString.hxx>
 #include <TNaming_NamedShape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinDrivers_DocumentRetrievalDriver,BinLDrivers_DocumentRetrievalDriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinDrivers_DocumentRetrievalDriver, BinLDrivers_DocumentRetrievalDriver)
 
-//=======================================================================
-//function : BinDrivers_DocumentRetrievalDriver
-//purpose  : Constructor
-//=======================================================================
-BinDrivers_DocumentRetrievalDriver::BinDrivers_DocumentRetrievalDriver ()
+//=================================================================================================
+
+BinDrivers_DocumentRetrievalDriver::BinDrivers_DocumentRetrievalDriver() {}
+
+//=================================================================================================
+
+Handle(BinMDF_ADriverTable) BinDrivers_DocumentRetrievalDriver::AttributeDrivers(
+  const Handle(Message_Messenger)& theMessageDriver)
 {
+  return BinDrivers::AttributeDrivers(theMessageDriver);
 }
 
-//=======================================================================
-//function : AttributeDrivers
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
-Handle(BinMDF_ADriverTable) BinDrivers_DocumentRetrievalDriver::AttributeDrivers
-       (const Handle(Message_Messenger)& theMessageDriver)
-{
-  return BinDrivers::AttributeDrivers (theMessageDriver);
-}
-
-//=======================================================================
-//function : ReadShapeSection
-//purpose  : 
-//=======================================================================
-
-void BinDrivers_DocumentRetrievalDriver::ReadShapeSection
-                              (BinLDrivers_DocumentSection& /*theSection*/,
-                               Standard_IStream&            theIS,
-                               const Standard_Boolean       /*isMess*/,
-                               const Message_ProgressRange& theRange)
+void BinDrivers_DocumentRetrievalDriver::ReadShapeSection(
+  BinLDrivers_DocumentSection& /*theSection*/,
+  Standard_IStream& theIS,
+  const Standard_Boolean /*isMess*/,
+  const Message_ProgressRange& theRange)
 
 {
   // Read Shapes
   Handle(BinMDF_ADriver) aDriver;
-  if (myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape),aDriver))
+  if (myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver))
   {
-    try {
+    try
+    {
       OCC_CATCH_SIGNALS
       Handle(BinMNaming_NamedShapeDriver) aNamedShapeDriver =
-        Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
-      aNamedShapeDriver->ReadShapeSection (theIS, theRange);
+        Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
+      aNamedShapeDriver->ReadShapeSection(theIS, theRange);
     }
-    catch(Standard_Failure const& anException) {
-      const TCollection_ExtendedString aMethStr
-        ("BinDrivers_DocumentRetrievalDriver: ");
-      myMsgDriver->Send(aMethStr + "error of Shape Section " +
-        anException.GetMessageString(), Message_Fail);
+    catch (Standard_Failure const& anException)
+    {
+      const TCollection_ExtendedString aMethStr("BinDrivers_DocumentRetrievalDriver: ");
+      myMsgDriver->Send(aMethStr + "error of Shape Section " + anException.GetMessageString(),
+                        Message_Fail);
     }
   }
 }
 
-//=======================================================================
-//function : CheckShapeSection
-//purpose  : 
-//=======================================================================
-void BinDrivers_DocumentRetrievalDriver::CheckShapeSection (
-                              const Storage_Position& /*ShapeSectionPos*/,
-                              Standard_IStream& /*IS*/)
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : Clear
-//purpose  : 
-//=======================================================================
+void BinDrivers_DocumentRetrievalDriver::CheckShapeSection(
+  const Storage_Position& /*ShapeSectionPos*/,
+  Standard_IStream& /*IS*/)
+{
+}
+
+//=================================================================================================
+
 void BinDrivers_DocumentRetrievalDriver::Clear()
 {
   // Clear NamedShape driver
   Handle(BinMDF_ADriver) aDriver;
-  if (myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver))
+  if (myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver))
   {
     Handle(BinMNaming_NamedShapeDriver) aNamedShapeDriver =
-      Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
+      Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
     aNamedShapeDriver->Clear();
   }
   BinLDrivers_DocumentRetrievalDriver::Clear();
 }
 
-//=======================================================================
-//function : EnableQuickPartReading
-//purpose  : 
-//=======================================================================
-void BinDrivers_DocumentRetrievalDriver::EnableQuickPartReading (
-  const Handle(Message_Messenger)& theMessageDriver, Standard_Boolean theValue)
+//=================================================================================================
+
+void BinDrivers_DocumentRetrievalDriver::EnableQuickPartReading(
+  const Handle(Message_Messenger)& theMessageDriver,
+  Standard_Boolean                 theValue)
 {
   if (myDrivers.IsNull())
-    myDrivers = AttributeDrivers (theMessageDriver);
+    myDrivers = AttributeDrivers(theMessageDriver);
   if (myDrivers.IsNull())
     return;
 
   Handle(BinMDF_ADriver) aDriver;
-  myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver);
-  Handle(BinMNaming_NamedShapeDriver) aShapesDriver = Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
+  myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver);
+  Handle(BinMNaming_NamedShapeDriver) aShapesDriver =
+    Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
   if (aShapesDriver.IsNull())
-    throw Standard_NotImplemented ("Internal Error - TNaming_NamedShape is not found!");
+    throw Standard_NotImplemented("Internal Error - TNaming_NamedShape is not found!");
 
-  aShapesDriver->EnableQuickPart (theValue);
+  aShapesDriver->EnableQuickPart(theValue);
 }

@@ -40,17 +40,13 @@ class TopoDS_Shape;
 class BOPAlgo_BuilderShape : public BOPAlgo_Algo
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
 public: //! @name Getting the result
-
   //! Returns the result of algorithm
   const TopoDS_Shape& Shape() const { return myShape; }
 
-
 public: //! @name History methods
-
   //! Returns the list of shapes Modified from the shape theS.
   const TopTools_ListOfShape& Modified(const TopoDS_Shape& theS)
   {
@@ -101,10 +97,10 @@ public: //! @name History methods
     if (myFillHistory)
     {
       if (myHistory.IsNull())
-       // It seems the algorithm has exited with error before filling
-       // the history. Initialize the History tool to return the empty
-       // History instead of NULL.
-       myHistory = new BRepTools_History();
+        // It seems the algorithm has exited with error before filling
+        // the history. Initialize the History tool to return the empty
+        // History instead of NULL.
+        myHistory = new BRepTools_History();
 
       return myHistory;
     }
@@ -116,7 +112,6 @@ public: //! @name History methods
   }
 
 public: //! @name Enabling/Disabling the history collection.
-
   //! Allows disabling the history collection
   void SetToFillHistory(const Standard_Boolean theHistFlag) { myFillHistory = theHistFlag; }
 
@@ -124,24 +119,21 @@ public: //! @name Enabling/Disabling the history collection.
   Standard_Boolean HasHistory() const { return myFillHistory; }
 
 protected: //! @name Constructors
-
   //! Empty constructor
   BOPAlgo_BuilderShape()
-  :
-    BOPAlgo_Algo(),
-    myFillHistory(Standard_True)
-  {}
+      : BOPAlgo_Algo(),
+        myFillHistory(Standard_True)
+  {
+  }
 
   //! Constructor with allocator
   BOPAlgo_BuilderShape(const Handle(NCollection_BaseAllocator)& theAllocator)
-  :
-    BOPAlgo_Algo(theAllocator),
-    myFillHistory(Standard_True)
-  {}
-
+      : BOPAlgo_Algo(theAllocator),
+        myFillHistory(Standard_True)
+  {
+  }
 
 protected: //! @name Clearing
-
   //! Clears the content of the algorithm.
   virtual void Clear() Standard_OVERRIDE
   {
@@ -150,16 +142,14 @@ protected: //! @name Clearing
     myMapShape.Clear();
   }
 
-protected: //! @name Fields
-
+protected:              //! @name Fields
   TopoDS_Shape myShape; //!< Result of the operation
 
-  TopTools_ListOfShape myHistShapes;   //!< Storer for the history shapes
-  TopTools_MapOfShape myMapShape;      //!< cached map of all arguments shapes
+  TopTools_ListOfShape myHistShapes; //!< Storer for the history shapes
+  TopTools_MapOfShape  myMapShape;   //!< cached map of all arguments shapes
 
-  Standard_Boolean myFillHistory;      //!< Controls the history filling
-  Handle(BRepTools_History) myHistory; //!< History tool
-
+  Standard_Boolean          myFillHistory; //!< Controls the history filling
+  Handle(BRepTools_History) myHistory;     //!< History tool
 };
 
 #endif // _BOPAlgo_BuilderShape_HeaderFile

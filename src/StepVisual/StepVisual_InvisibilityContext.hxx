@@ -28,54 +28,32 @@ class StepVisual_DraughtingModel;
 class StepVisual_PresentationRepresentation;
 class StepVisual_PresentationSet;
 
-
-
-class StepVisual_InvisibilityContext  : public StepData_SelectType
+class StepVisual_InvisibilityContext : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a InvisibilityContext SelectType
   Standard_EXPORT StepVisual_InvisibilityContext();
-  
+
   //! Recognizes a InvisibilityContext Kind Entity that is :
   //! 1 -> PresentationRepresentation
   //! 2 -> PresentationSet
   //! 2 -> DraughtingModel
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a PresentationRepresentation (Null if another type)
   Standard_EXPORT Handle(StepVisual_PresentationRepresentation) PresentationRepresentation() const;
-  
+
   //! returns Value as a PresentationSet (Null if another type)
   Standard_EXPORT Handle(StepVisual_PresentationSet) PresentationSet() const;
 
   //! returns Value as a PresentationSet (Null if another type)
   Standard_EXPORT Handle(StepVisual_DraughtingModel) DraughtingModel() const;
 
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_InvisibilityContext_HeaderFile

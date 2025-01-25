@@ -28,15 +28,16 @@ class Graphic3d_GraphicDriverFactory : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_GraphicDriverFactory, Standard_Transient)
 public:
-
   //! Registers factory.
   //! @param[in] theFactory      factory to register
-  //! @param[in] theIsPreferred  add to the beginning of the list when TRUE, or add to the end otherwise
-  Standard_EXPORT static void RegisterFactory (const Handle(Graphic3d_GraphicDriverFactory)& theFactory,
-                                               bool theIsPreferred = false);
+  //! @param[in] theIsPreferred  add to the beginning of the list when TRUE, or add to the end
+  //! otherwise
+  Standard_EXPORT static void RegisterFactory(
+    const Handle(Graphic3d_GraphicDriverFactory)& theFactory,
+    bool                                          theIsPreferred = false);
 
   //! Unregisters factory.
-  Standard_EXPORT static void UnregisterFactory (const TCollection_AsciiString& theName);
+  Standard_EXPORT static void UnregisterFactory(const TCollection_AsciiString& theName);
 
   //! Return default driver factory or NULL if no one was registered.
   Standard_EXPORT static Handle(Graphic3d_GraphicDriverFactory) DefaultDriverFactory();
@@ -45,22 +46,19 @@ public:
   Standard_EXPORT static const Graphic3d_GraphicDriverFactoryList& DriverFactories();
 
 public:
-
   //! Creates new empty graphic driver.
-  virtual Handle(Graphic3d_GraphicDriver) CreateDriver (const Handle(Aspect_DisplayConnection)& theDisp) = 0;
+  virtual Handle(Graphic3d_GraphicDriver) CreateDriver(
+    const Handle(Aspect_DisplayConnection)& theDisp) = 0;
 
   //! Return driver factory name.
   const TCollection_AsciiString& Name() const { return myName; }
 
 protected:
-
   //! Empty constructor.
-  Standard_EXPORT Graphic3d_GraphicDriverFactory (const TCollection_AsciiString& theName);
+  Standard_EXPORT Graphic3d_GraphicDriverFactory(const TCollection_AsciiString& theName);
 
 protected:
-
   TCollection_AsciiString myName;
-
 };
 
 #endif // _Graphic3d_GraphicDriverFactory_HeaderFile

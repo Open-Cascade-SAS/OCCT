@@ -25,7 +25,6 @@
 #include <Standard_Type.hxx>
 class Interface_EntityIterator;
 
-
 //! This class defines a list of Entities (Transient Objects),
 //! it can be used as a field of other Transient classes, with
 //! these features :
@@ -43,81 +42,61 @@ class Interface_EntityIterator;
 //! are chained (in one sense : Single List)
 //! Remark : a new Item may not be Null, because this is the
 //! criterium used for "End of List"
-class Interface_EntityList 
+class Interface_EntityList
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates a List as being empty
   Standard_EXPORT Interface_EntityList();
-  
+
   //! Clears the List
   Standard_EXPORT void Clear();
-  
+
   //! Appends an Entity, that is to the END of the list
   //! (keeps order, but works slowerly than Add, see below)
-  Standard_EXPORT void Append (const Handle(Standard_Transient)& ent);
-  
+  Standard_EXPORT void Append(const Handle(Standard_Transient)& ent);
+
   //! Adds an Entity to the list, that is, with NO REGARD about the
   //! order (faster than Append if count becomes greater than 10)
-  Standard_EXPORT void Add (const Handle(Standard_Transient)& ent);
-  
+  Standard_EXPORT void Add(const Handle(Standard_Transient)& ent);
+
   //! Removes an Entity from the list, if it is there
-  Standard_EXPORT void Remove (const Handle(Standard_Transient)& ent);
-  
+  Standard_EXPORT void Remove(const Handle(Standard_Transient)& ent);
+
   //! Removes an Entity from the list, given its rank
-  Standard_EXPORT void Remove (const Standard_Integer num);
-  
+  Standard_EXPORT void Remove(const Standard_Integer num);
+
   //! Returns True if the list is empty
   Standard_EXPORT Standard_Boolean IsEmpty() const;
-  
+
   //! Returns count of recorded Entities
   Standard_EXPORT Standard_Integer NbEntities() const;
-  
+
   //! Returns an Item given its number. Beware about the way the
   //! list was filled (see above, Add and Append)
-  Standard_EXPORT const Handle(Standard_Transient)& Value (const Standard_Integer num) const;
-  
+  Standard_EXPORT const Handle(Standard_Transient)& Value(const Standard_Integer num) const;
+
   //! Returns an Item given its number. Beware about the way the
   //! list was filled (see above, Add and Append)
-  Standard_EXPORT void SetValue (const Standard_Integer num, const Handle(Standard_Transient)& ent);
-  
+  Standard_EXPORT void SetValue(const Standard_Integer num, const Handle(Standard_Transient)& ent);
+
   //! fills an Iterator with the content of the list
   //! (normal way to consult a list which has been filled with Add)
-  Standard_EXPORT void FillIterator (Interface_EntityIterator& iter) const;
-  
+  Standard_EXPORT void FillIterator(Interface_EntityIterator& iter) const;
+
   //! Returns count of Entities of a given Type (0 : none)
-  Standard_EXPORT Standard_Integer NbTypedEntities (const Handle(Standard_Type)& atype) const;
-  
+  Standard_EXPORT Standard_Integer NbTypedEntities(const Handle(Standard_Type)& atype) const;
+
   //! Returns the Entity which is of a given type.
   //! If num = 0 (D), there must be ONE AND ONLY ONE
   //! If num > 0, returns the num-th entity of this type
-  Standard_EXPORT Handle(Standard_Transient) TypedEntity (const Handle(Standard_Type)& atype, const Standard_Integer num = 0) const;
-
-
-
+  Standard_EXPORT Handle(Standard_Transient) TypedEntity(const Handle(Standard_Type)& atype,
+                                                         const Standard_Integer num = 0) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(Standard_Transient) theval;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Interface_EntityList_HeaderFile

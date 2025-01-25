@@ -19,7 +19,6 @@
 
 #include <TDF_Delta.hxx>
 
-
 class TDocStd_CompoundDelta;
 DEFINE_STANDARD_HANDLE(TDocStd_CompoundDelta, TDF_Delta)
 
@@ -30,36 +29,18 @@ class TDocStd_CompoundDelta : public TDF_Delta
 {
 
 public:
-
-  
   //! Creates a compound delta.
   //! Validates <me> at <aBeginTime>. If applied, it
   //! restores the TDF_Data in the state it was at
   //! <anEndTime>. Reserved to TDF_Data.
   Standard_EXPORT TDocStd_CompoundDelta();
 
+  friend class TDocStd_Document;
 
-friend class TDocStd_Document;
-
-
-  DEFINE_STANDARD_RTTIEXT(TDocStd_CompoundDelta,TDF_Delta)
+  DEFINE_STANDARD_RTTIEXT(TDocStd_CompoundDelta, TDF_Delta)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _TDocStd_CompoundDelta_HeaderFile

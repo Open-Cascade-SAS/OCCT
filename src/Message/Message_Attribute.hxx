@@ -27,7 +27,8 @@ class Message_Attribute : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(Message_Attribute, Standard_Transient)
 public:
   //! Empty constructor
-  Standard_EXPORT Message_Attribute (const TCollection_AsciiString& theName = TCollection_AsciiString());
+  Standard_EXPORT Message_Attribute(
+    const TCollection_AsciiString& theName = TCollection_AsciiString());
 
   //! Return a C string to be used as a key for generating text user messages describing this alert.
   //! The messages are generated with help of Message_Msg class, in Message_Report::Dump().
@@ -40,14 +41,14 @@ public:
 
   //! Sets the custom name of alert
   //! @param theName a name for the alert
-  void SetName (const TCollection_AsciiString& theName) { myName = theName; }
+  void SetName(const TCollection_AsciiString& theName) { myName = theName; }
 
   //! Dumps the content of me into the stream
-  virtual Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  virtual Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const;
 
 private:
   TCollection_AsciiString myName; //!< alert name, if defined is used in GetMessageKey
-
 };
 
 #endif // _Message_Attribute_HeaderFile

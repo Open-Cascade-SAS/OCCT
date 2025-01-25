@@ -15,15 +15,15 @@
 
 #include <StepGeom_Axis2Placement3d.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_RepositionedTessellatedGeometricSet, StepVisual_TessellatedGeometricSet)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_RepositionedTessellatedGeometricSet,
+                           StepVisual_TessellatedGeometricSet)
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepVisual_RepositionedTessellatedGeometricSet::Init(const Handle(TCollection_HAsciiString)& theName,
-                                                          const NCollection_Handle<StepVisual_Array1OfTessellatedItem>& theItems,
-                                                          const Handle(StepGeom_Axis2Placement3d)& theLocation)
+//=================================================================================================
+
+void StepVisual_RepositionedTessellatedGeometricSet::Init(
+  const Handle(TCollection_HAsciiString)&                       theName,
+  const NCollection_Handle<StepVisual_Array1OfTessellatedItem>& theItems,
+  const Handle(StepGeom_Axis2Placement3d)&                      theLocation)
 {
   StepVisual_TessellatedGeometricSet::Init(theName, theItems);
   myLocation = theLocation;

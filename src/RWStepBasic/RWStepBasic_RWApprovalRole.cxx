@@ -11,45 +11,40 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include "RWStepBasic_RWApprovalRole.pxx"
 #include <StepBasic_ApprovalRole.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWApprovalRole::RWStepBasic_RWApprovalRole () {}
+RWStepBasic_RWApprovalRole::RWStepBasic_RWApprovalRole() {}
 
-void RWStepBasic_RWApprovalRole::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepBasic_ApprovalRole)& ent) const
+void RWStepBasic_RWApprovalRole::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                          const Standard_Integer                 num,
+                                          Handle(Interface_Check)&               ach,
+                                          const Handle(StepBasic_ApprovalRole)&  ent) const
 {
 
+  // --- Number of Parameter Control ---
 
-	// --- Number of Parameter Control ---
+  if (!data->CheckNbParams(num, 1, ach, "approval_role"))
+    return;
 
-	if (!data->CheckNbParams(num,1,ach,"approval_role")) return;
+  // --- own field : role ---
 
-	// --- own field : role ---
+  Handle(TCollection_HAsciiString) aRole;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadString(num, 1, "role", ach, aRole);
 
-	Handle(TCollection_HAsciiString) aRole;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	data->ReadString (num,1,"role",ach,aRole);
+  //--- Initialisation of the read entity ---
 
-	//--- Initialisation of the read entity ---
-
-
-	ent->Init(aRole);
+  ent->Init(aRole);
 }
 
-
-void RWStepBasic_RWApprovalRole::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepBasic_ApprovalRole)& ent) const
+void RWStepBasic_RWApprovalRole::WriteStep(StepData_StepWriter&                  SW,
+                                           const Handle(StepBasic_ApprovalRole)& ent) const
 {
 
-	// --- own field : role ---
+  // --- own field : role ---
 
-	SW.Send(ent->Role());
+  SW.Send(ent->Role());
 }

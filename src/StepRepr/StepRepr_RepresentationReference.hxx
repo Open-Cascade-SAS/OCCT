@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:14 2020 
+// Created on : Sat May 02 12:41:14 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -27,30 +27,30 @@ DEFINE_STANDARD_HANDLE(StepRepr_RepresentationReference, Standard_Transient)
 //! Representation of STEP entity RepresentationReference
 class StepRepr_RepresentationReference : public Standard_Transient
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepRepr_RepresentationReference();
 
   //! Initialize all fields (own and inherited)
- Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theId,
-                           const Handle(StepRepr_RepresentationContextReference)& theContextOfItems);
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&                theId,
+    const Handle(StepRepr_RepresentationContextReference)& theContextOfItems);
 
   //! Returns field Id
   Standard_EXPORT Handle(TCollection_HAsciiString) Id() const;
   //! Sets field Id
-  Standard_EXPORT void SetId (const Handle(TCollection_HAsciiString)& theId);
+  Standard_EXPORT void SetId(const Handle(TCollection_HAsciiString)& theId);
 
   //! Returns field ContextOfItems
   Standard_EXPORT Handle(StepRepr_RepresentationContextReference) ContextOfItems() const;
   //! Sets field ContextOfItems
-  Standard_EXPORT void SetContextOfItems (const Handle(StepRepr_RepresentationContextReference)& theContextOfItems);
+  Standard_EXPORT void SetContextOfItems(
+    const Handle(StepRepr_RepresentationContextReference)& theContextOfItems);
 
-DEFINE_STANDARD_RTTIEXT(StepRepr_RepresentationReference, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_RepresentationReference, Standard_Transient)
 
 private:
-  Handle(TCollection_HAsciiString) myId;
+  Handle(TCollection_HAsciiString)                myId;
   Handle(StepRepr_RepresentationContextReference) myContextOfItems;
-
 };
 #endif // _StepRepr_RepresentationReference_HeaderFile_

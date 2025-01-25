@@ -28,25 +28,25 @@ class TCollection_AsciiString;
 class Express
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Returns (modifiable) handle to static schema object
   Standard_EXPORT static Handle(Express_Schema)& Schema();
 
   //! Writes standard copyright stamp (creation date/time, user, etc.)
-  Standard_EXPORT static void WriteFileStamp (Standard_OStream& theOS);
+  Standard_EXPORT static void WriteFileStamp(Standard_OStream& theOS);
 
   //! Writes standard comment for method in CXX file
-  Standard_EXPORT static void WriteMethodStamp (Standard_OStream& theOS, const TCollection_AsciiString& theName);
+  Standard_EXPORT static void WriteMethodStamp(Standard_OStream&              theOS,
+                                               const TCollection_AsciiString& theName);
 
   //! Converts item name from CASCADE to STEP style
   //! e.g. BoundedCurve -> bounded_curve
-  Standard_EXPORT static TCollection_AsciiString ToStepName (const TCollection_AsciiString& theName);
+  Standard_EXPORT static TCollection_AsciiString ToStepName(const TCollection_AsciiString& theName);
 
   //! Converts item name from CASCADE to STEP style
   //! e.g. BoundedCurve -> bounded_curve
-  Standard_EXPORT static TCollection_AsciiString EnumPrefix (const TCollection_AsciiString& theName);
+  Standard_EXPORT static TCollection_AsciiString EnumPrefix(const TCollection_AsciiString& theName);
 };
 
 #endif // _Express_HeaderFile

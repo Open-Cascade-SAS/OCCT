@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_ConversionBasedUnitAndMassUnit.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
@@ -19,55 +18,38 @@
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndMassUnit,StepBasic_ConversionBasedUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndMassUnit, StepBasic_ConversionBasedUnit)
 
-//=======================================================================
-//function : StepBasic_ConversionBasedUnitAndMassUnit
-//purpose  : 
-//=======================================================================
-StepBasic_ConversionBasedUnitAndMassUnit::StepBasic_ConversionBasedUnitAndMassUnit ()
-{
-}
+//=================================================================================================
 
+StepBasic_ConversionBasedUnitAndMassUnit::StepBasic_ConversionBasedUnitAndMassUnit() {}
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ConversionBasedUnitAndMassUnit::Init
-  (const Handle(StepBasic_DimensionalExponents)& aDimensions,
-   const Handle(TCollection_HAsciiString)& aName,
-   const Handle(StepBasic_MeasureWithUnit)& aConversionFactor)
+void StepBasic_ConversionBasedUnitAndMassUnit::Init(
+  const Handle(StepBasic_DimensionalExponents)& aDimensions,
+  const Handle(TCollection_HAsciiString)&       aName,
+  const Handle(StepBasic_MeasureWithUnit)&      aConversionFactor)
 {
   // --- ANDOR component fields ---
   StepBasic_ConversionBasedUnit::Init(aDimensions, aName, aConversionFactor);
-  
+
   // --- ANDOR component fields ---
   massUnit = new StepBasic_MassUnit();
   massUnit->Init(aDimensions);
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : SetMassUnit
-//purpose  : 
-//=======================================================================
-
-void StepBasic_ConversionBasedUnitAndMassUnit::SetMassUnit
-  (const Handle(StepBasic_MassUnit)& aMassUnit)
+void StepBasic_ConversionBasedUnitAndMassUnit::SetMassUnit(
+  const Handle(StepBasic_MassUnit)& aMassUnit)
 {
   massUnit = aMassUnit;
 }
 
-
-//=======================================================================
-//function : MassUnit
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(StepBasic_MassUnit) StepBasic_ConversionBasedUnitAndMassUnit::MassUnit() const
 {
   return massUnit;
 }
-

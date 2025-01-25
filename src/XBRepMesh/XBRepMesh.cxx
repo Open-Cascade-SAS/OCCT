@@ -17,20 +17,17 @@
 #include <BRepMesh_PluginMacro.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 
-//=======================================================================
-//function : Discret
-//purpose  : 
-//=======================================================================
-Standard_Integer XBRepMesh::Discret(
-  const TopoDS_Shape&   theShape,
-  const Standard_Real   theDeflection,
-  const Standard_Real   theAngle,
-  BRepMesh_DiscretRoot* &theAlgo)
+//=================================================================================================
+
+Standard_Integer XBRepMesh::Discret(const TopoDS_Shape&    theShape,
+                                    const Standard_Real    theDeflection,
+                                    const Standard_Real    theAngle,
+                                    BRepMesh_DiscretRoot*& theAlgo)
 {
   Standard_Integer iErr;
   //
-  iErr=0;
-  BRepMesh_IncrementalMesh* anAlgo = new BRepMesh_IncrementalMesh;
+  iErr                                  = 0;
+  BRepMesh_IncrementalMesh* anAlgo      = new BRepMesh_IncrementalMesh;
   anAlgo->ChangeParameters().Deflection = theDeflection;
   anAlgo->ChangeParameters().Angle      = theAngle;
   anAlgo->SetShape(theShape);

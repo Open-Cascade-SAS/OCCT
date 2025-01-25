@@ -11,29 +11,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepShape_ClosedShell.hxx>
 #include <StepShape_OpenShell.hxx>
 #include <StepShape_Shell.hxx>
 
-StepShape_Shell::StepShape_Shell () {  }
+StepShape_Shell::StepShape_Shell() {}
 
 Standard_Integer StepShape_Shell::CaseNum(const Handle(Standard_Transient)& ent) const
 {
-	if (ent.IsNull()) return 0;
-	if (ent->IsKind(STANDARD_TYPE(StepShape_OpenShell))) return 1;
-	if (ent->IsKind(STANDARD_TYPE(StepShape_ClosedShell))) return 2;
-	return 0;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepShape_OpenShell)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepShape_ClosedShell)))
+    return 2;
+  return 0;
 }
 
-Handle(StepShape_OpenShell) StepShape_Shell::OpenShell () const
+Handle(StepShape_OpenShell) StepShape_Shell::OpenShell() const
 {
-	return GetCasted(StepShape_OpenShell,Value());
+  return GetCasted(StepShape_OpenShell, Value());
 }
 
-Handle(StepShape_ClosedShell) StepShape_Shell::ClosedShell () const
+Handle(StepShape_ClosedShell) StepShape_Shell::ClosedShell() const
 {
-	return GetCasted(StepShape_ClosedShell,Value());
+  return GetCasted(StepShape_ClosedShell, Value());
 }

@@ -32,12 +32,10 @@ class OpenGl_TextureBuffer : public OpenGl_Buffer
 {
   DEFINE_STANDARD_RTTIEXT(OpenGl_TextureBuffer, OpenGl_Buffer)
 public:
-
   //! Helpful constants
   static const unsigned int NO_TEXTURE = 0;
 
 public:
-
   //! Create uninitialized TBO.
   Standard_EXPORT OpenGl_TextureBuffer();
 
@@ -49,54 +47,50 @@ public:
 
   //! Returns true if TBO is valid.
   //! Notice that no any real GL call is performed!
-  bool IsValid() const
-  {
-    return OpenGl_Buffer::IsValid()
-        && myTextureId != NO_TEXTURE;
-  }
+  bool IsValid() const { return OpenGl_Buffer::IsValid() && myTextureId != NO_TEXTURE; }
 
   //! Destroy object - will release GPU memory if any.
-  Standard_EXPORT virtual void Release (OpenGl_Context* theGlCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theGlCtx) Standard_OVERRIDE;
 
   //! Creates VBO and Texture names (ids) if not yet generated.
   //! Data should be initialized by another method.
-  Standard_EXPORT bool Create (const Handle(OpenGl_Context)& theGlCtx) Standard_OVERRIDE;
+  Standard_EXPORT bool Create(const Handle(OpenGl_Context)& theGlCtx) Standard_OVERRIDE;
 
   //! Perform TBO initialization with specified data.
   //! Existing data will be deleted.
-  Standard_EXPORT bool Init (const Handle(OpenGl_Context)& theGlCtx,
-                             const unsigned int     theComponentsNb,
-                             const Standard_Integer theElemsNb,
-                             const float* theData);
+  Standard_EXPORT bool Init(const Handle(OpenGl_Context)& theGlCtx,
+                            const unsigned int            theComponentsNb,
+                            const Standard_Integer        theElemsNb,
+                            const float*                  theData);
 
   //! Perform TBO initialization with specified data.
   //! Existing data will be deleted.
-  Standard_EXPORT bool Init (const Handle(OpenGl_Context)& theGlCtx,
-                             const unsigned int     theComponentsNb,
-                             const Standard_Integer theElemsNb,
-                             const unsigned int*    theData);
+  Standard_EXPORT bool Init(const Handle(OpenGl_Context)& theGlCtx,
+                            const unsigned int            theComponentsNb,
+                            const Standard_Integer        theElemsNb,
+                            const unsigned int*           theData);
 
   //! Perform TBO initialization with specified data.
   //! Existing data will be deleted.
-  Standard_EXPORT bool Init (const Handle(OpenGl_Context)& theGlCtx,
-                             const unsigned int     theComponentsNb,
-                             const Standard_Integer theElemsNb,
-                             const unsigned short*  theData);
+  Standard_EXPORT bool Init(const Handle(OpenGl_Context)& theGlCtx,
+                            const unsigned int            theComponentsNb,
+                            const Standard_Integer        theElemsNb,
+                            const unsigned short*         theData);
 
   //! Perform TBO initialization with specified data.
   //! Existing data will be deleted.
-  Standard_EXPORT bool Init (const Handle(OpenGl_Context)& theGlCtx,
-                             const unsigned int     theComponentsNb,
-                             const Standard_Integer theElemsNb,
-                             const Standard_Byte*   theData);
+  Standard_EXPORT bool Init(const Handle(OpenGl_Context)& theGlCtx,
+                            const unsigned int            theComponentsNb,
+                            const Standard_Integer        theElemsNb,
+                            const Standard_Byte*          theData);
 
   //! Bind TBO to specified Texture Unit.
-  Standard_EXPORT void BindTexture (const Handle(OpenGl_Context)& theGlCtx,
-                                    const Graphic3d_TextureUnit   theTextureUnit) const;
+  Standard_EXPORT void BindTexture(const Handle(OpenGl_Context)& theGlCtx,
+                                   const Graphic3d_TextureUnit   theTextureUnit) const;
 
   //! Unbind TBO.
-  Standard_EXPORT void UnbindTexture (const Handle(OpenGl_Context)& theGlCtx,
-                                      const Graphic3d_TextureUnit   theTextureUnit) const;
+  Standard_EXPORT void UnbindTexture(const Handle(OpenGl_Context)& theGlCtx,
+                                     const Graphic3d_TextureUnit   theTextureUnit) const;
 
   //! Returns name of TBO.
   unsigned int TextureId() const { return myTextureId; }
@@ -105,10 +99,8 @@ public:
   unsigned int TextureFormat() const { return myTexFormat; }
 
 protected:
-
   unsigned int myTextureId; //!< texture id
   unsigned int myTexFormat; //!< internal texture format
-
 };
 
 DEFINE_STANDARD_HANDLE(OpenGl_TextureBuffer, OpenGl_Buffer)

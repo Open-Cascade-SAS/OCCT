@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/VInspector_ItemContextProperties.hxx>
 
@@ -27,9 +27,9 @@
 // function : initValue
 // purpose :
 // =======================================================================
-QVariant VInspector_ItemContextProperties::initValue (int theItemRole) const
+QVariant VInspector_ItemContextProperties::initValue(int theItemRole) const
 {
-  QVariant aParentValue = VInspector_ItemBase::initValue (theItemRole);
+  QVariant aParentValue = VInspector_ItemBase::initValue(theItemRole);
   if (aParentValue.isValid())
     return aParentValue;
 
@@ -51,7 +51,7 @@ int VInspector_ItemContextProperties::initRowCount() const
   if (aParentContextItem)
   {
     Handle(AIS_InteractiveContext) aContext = aParentContextItem->GetContext();
-    Handle(V3d_Viewer) aViewer = aContext->CurrentViewer();
+    Handle(V3d_Viewer)             aViewer  = aContext->CurrentViewer();
     if (!aViewer.IsNull())
     {
       if (!aViewer->ActiveViews().IsEmpty())
@@ -69,15 +69,15 @@ int VInspector_ItemContextProperties::initRowCount() const
 // function : createChild
 // purpose :
 // =======================================================================
-TreeModel_ItemBasePtr VInspector_ItemContextProperties::createChild (int theRow, int theColumn)
+TreeModel_ItemBasePtr VInspector_ItemContextProperties::createChild(int theRow, int theColumn)
 {
   if (theRow == 0)
-    return VInspector_ItemV3dViewer::CreateItem (currentItem(), theRow, theColumn);
+    return VInspector_ItemV3dViewer::CreateItem(currentItem(), theRow, theColumn);
   else if (theRow == 1)
-    return VInspector_ItemSelectMgrViewerSelector::CreateItem (currentItem(), theRow, theColumn);
+    return VInspector_ItemSelectMgrViewerSelector::CreateItem(currentItem(), theRow, theColumn);
   else // lights
   {
-    return VInspector_ItemGraphic3dCLight::CreateItem (currentItem(), theRow, theColumn);
+    return VInspector_ItemGraphic3dCLight::CreateItem(currentItem(), theRow, theColumn);
   }
 }
 
@@ -89,5 +89,5 @@ void VInspector_ItemContextProperties::initItem() const
 {
   if (IsInitialized())
     return;
-  const_cast<VInspector_ItemContextProperties*> (this)->Init();
+  const_cast<VInspector_ItemContextProperties*>(this)->Init();
 }

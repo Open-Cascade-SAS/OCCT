@@ -21,7 +21,6 @@
 #include <TDF_AttributeDelta.hxx>
 class TDF_Attribute;
 
-
 class TDF_DeltaOnRemoval;
 DEFINE_STANDARD_HANDLE(TDF_DeltaOnRemoval, TDF_AttributeDelta)
 
@@ -34,32 +33,13 @@ class TDF_DeltaOnRemoval : public TDF_AttributeDelta
 {
 
 public:
-
-
-
-
-
-  DEFINE_STANDARD_RTTIEXT(TDF_DeltaOnRemoval,TDF_AttributeDelta)
+  DEFINE_STANDARD_RTTIEXT(TDF_DeltaOnRemoval, TDF_AttributeDelta)
 
 protected:
-
-  
   //! Initializes a TDF_DeltaOnRemoval.
   Standard_EXPORT TDF_DeltaOnRemoval(const Handle(TDF_Attribute)& anAtt);
 
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _TDF_DeltaOnRemoval_HeaderFile

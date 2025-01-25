@@ -14,33 +14,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Hatch_Hatcher.hxx>
 #include <Hatch_Line.hxx>
 #include <Hatch_Parameter.hxx>
 
-//=======================================================================
-//function : Hatch_Parameter
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Hatch_Parameter::Hatch_Parameter()
-: myPar1(0.0),
-  myStart(Standard_False),
-  myIndex(0),  
-  myPar2(0.0)
+    : myPar1(0.0),
+      myStart(Standard_False),
+      myIndex(0),
+      myPar2(0.0)
 {
 }
 
-//=======================================================================
-//function : Hatch_Parameter
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Hatch_Parameter::Hatch_Parameter
-  (const Standard_Real    Par1,
-   const Standard_Boolean Start,
-   const Standard_Integer Index,
-   const Standard_Real    Par2) :
-       myPar1(Par1), myStart(Start), myIndex(Index), myPar2(Par2)
+Hatch_Parameter::Hatch_Parameter(const Standard_Real    Par1,
+                                 const Standard_Boolean Start,
+                                 const Standard_Integer Index,
+                                 const Standard_Real    Par2)
+    : myPar1(Par1),
+      myStart(Start),
+      myIndex(Index),
+      myPar2(Par2)
 {
 }

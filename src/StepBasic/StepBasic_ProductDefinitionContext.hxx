@@ -24,48 +24,29 @@
 class TCollection_HAsciiString;
 class StepBasic_ApplicationContext;
 
-
 class StepBasic_ProductDefinitionContext;
 DEFINE_STANDARD_HANDLE(StepBasic_ProductDefinitionContext, StepBasic_ApplicationContextElement)
-
 
 class StepBasic_ProductDefinitionContext : public StepBasic_ApplicationContextElement
 {
 
 public:
-
-  
   //! Returns a ProductDefinitionContext
   Standard_EXPORT StepBasic_ProductDefinitionContext();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_ApplicationContext)& aFrameOfReference, const Handle(TCollection_HAsciiString)& aLifeCycleStage);
-  
-  Standard_EXPORT void SetLifeCycleStage (const Handle(TCollection_HAsciiString)& aLifeCycleStage);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     aName,
+                            const Handle(StepBasic_ApplicationContext)& aFrameOfReference,
+                            const Handle(TCollection_HAsciiString)&     aLifeCycleStage);
+
+  Standard_EXPORT void SetLifeCycleStage(const Handle(TCollection_HAsciiString)& aLifeCycleStage);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) LifeCycleStage() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionContext,StepBasic_ApplicationContextElement)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionContext, StepBasic_ApplicationContextElement)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TCollection_HAsciiString) lifeCycleStage;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_ProductDefinitionContext_HeaderFile

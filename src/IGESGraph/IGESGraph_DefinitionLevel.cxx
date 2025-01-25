@@ -20,32 +20,29 @@
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_DefinitionLevel,IGESData_LevelListEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_DefinitionLevel, IGESData_LevelListEntity)
 
-IGESGraph_DefinitionLevel::IGESGraph_DefinitionLevel ()    {  }
+IGESGraph_DefinitionLevel::IGESGraph_DefinitionLevel() {}
 
-
-    void IGESGraph_DefinitionLevel::Init
-  (const Handle(TColStd_HArray1OfInteger)& allLevelNumbers)
+void IGESGraph_DefinitionLevel::Init(const Handle(TColStd_HArray1OfInteger)& allLevelNumbers)
 {
   if (allLevelNumbers->Lower() != 1)
     throw Standard_DimensionMismatch("IGESGraph_DefinitionLevel : Init");
   theLevelNumbers = allLevelNumbers;
-  InitTypeAndForm(406,1);
+  InitTypeAndForm(406, 1);
 }
 
-    Standard_Integer IGESGraph_DefinitionLevel::NbPropertyValues () const
+Standard_Integer IGESGraph_DefinitionLevel::NbPropertyValues() const
 {
-  return ( theLevelNumbers->Length() );
+  return (theLevelNumbers->Length());
 }
 
-    Standard_Integer IGESGraph_DefinitionLevel::NbLevelNumbers () const
+Standard_Integer IGESGraph_DefinitionLevel::NbLevelNumbers() const
 {
-  return ( theLevelNumbers->Length() );
+  return (theLevelNumbers->Length());
 }
 
-    Standard_Integer IGESGraph_DefinitionLevel::LevelNumber
-  (const Standard_Integer LevelIndex) const
+Standard_Integer IGESGraph_DefinitionLevel::LevelNumber(const Standard_Integer LevelIndex) const
 {
-  return ( theLevelNumbers->Value(LevelIndex) );
+  return (theLevelNumbers->Value(LevelIndex));
 }

@@ -15,38 +15,61 @@
 #include <StdFail_NotDone.hxx>
 #include <Standard_OutOfRange.hxx>
 
-inline Standard_Boolean IntAna_IntLinTorus::IsDone () const {
+inline Standard_Boolean IntAna_IntLinTorus::IsDone() const
+{
   return done;
 }
 
-inline Standard_Integer IntAna_IntLinTorus::NbPoints () const {
-  if (!done) {throw StdFail_NotDone();}
+inline Standard_Integer IntAna_IntLinTorus::NbPoints() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return nbpt;
 }
 
-inline const gp_Pnt& IntAna_IntLinTorus::Value
-  (const Standard_Integer Index) const {
+inline const gp_Pnt& IntAna_IntLinTorus::Value(const Standard_Integer Index) const
+{
 
-  if (!done) {throw StdFail_NotDone();}
-  if(Index<=0 || Index>nbpt) { throw Standard_OutOfRange();}
-  return thePoint[Index-1];
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  if (Index <= 0 || Index > nbpt)
+  {
+    throw Standard_OutOfRange();
+  }
+  return thePoint[Index - 1];
 }
 
-inline Standard_Real IntAna_IntLinTorus::ParamOnLine 
-  (const Standard_Integer Index) const {
+inline Standard_Real IntAna_IntLinTorus::ParamOnLine(const Standard_Integer Index) const
+{
 
-  if (!done) {throw StdFail_NotDone();}
-  if(Index<=0 || Index>nbpt) { throw Standard_OutOfRange();}
-  return theParam[Index-1];
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  if (Index <= 0 || Index > nbpt)
+  {
+    throw Standard_OutOfRange();
+  }
+  return theParam[Index - 1];
 }
 
-inline void IntAna_IntLinTorus::ParamOnTorus 
-    (const Standard_Integer Index, 
-     Standard_Real& FI, Standard_Real& THETA) const {
+inline void IntAna_IntLinTorus::ParamOnTorus(const Standard_Integer Index,
+                                             Standard_Real&         FI,
+                                             Standard_Real&         THETA) const
+{
 
-  if (!done) {throw StdFail_NotDone();}
-  if(Index<=0 || Index>nbpt) { throw Standard_OutOfRange();}
-  FI=theFi[Index-1];
-  THETA=theTheta[Index-1];
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  if (Index <= 0 || Index > nbpt)
+  {
+    throw Standard_OutOfRange();
+  }
+  FI    = theFi[Index - 1];
+  THETA = theTheta[Index - 1];
 }
-

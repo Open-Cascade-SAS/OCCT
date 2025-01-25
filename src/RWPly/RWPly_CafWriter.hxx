@@ -35,10 +35,9 @@ class RWPly_CafWriter : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(RWPly_CafWriter, Standard_Transient)
 public:
-
   //! Main constructor.
   //! @param[in] theFile path to output PLY file
-  Standard_EXPORT RWPly_CafWriter (const TCollection_AsciiString& theFile);
+  Standard_EXPORT RWPly_CafWriter(const TCollection_AsciiString& theFile);
 
   //! Destructor.
   Standard_EXPORT virtual ~RWPly_CafWriter();
@@ -50,46 +49,49 @@ public:
   RWMesh_CoordinateSystemConverter& ChangeCoordinateSystemConverter() { return myCSTrsf; }
 
   //! Set transformation from OCCT to PLY coordinate system.
-  void SetCoordinateSystemConverter (const RWMesh_CoordinateSystemConverter& theConverter) { myCSTrsf = theConverter; }
+  void SetCoordinateSystemConverter(const RWMesh_CoordinateSystemConverter& theConverter)
+  {
+    myCSTrsf = theConverter;
+  }
 
   //! Return default material definition to be used for nodes with only color defined.
   const XCAFPrs_Style& DefaultStyle() const { return myDefaultStyle; }
 
   //! Set default material definition to be used for nodes with only color defined.
-  void SetDefaultStyle (const XCAFPrs_Style& theStyle) { myDefaultStyle = theStyle; }
+  void SetDefaultStyle(const XCAFPrs_Style& theStyle) { myDefaultStyle = theStyle; }
 
 public:
-
-  //! Return TRUE if vertex position should be stored with double floating point precision; FALSE by default.
+  //! Return TRUE if vertex position should be stored with double floating point precision; FALSE by
+  //! default.
   bool IsDoublePrecision() const { return myIsDoublePrec; }
 
   //! Set if vertex position should be stored with double floating point precision.
-  void SetDoublePrecision (bool theDoublePrec) { myIsDoublePrec = theDoublePrec; }
+  void SetDoublePrecision(bool theDoublePrec) { myIsDoublePrec = theDoublePrec; }
 
   //! Return TRUE if normals should be written; TRUE by default.
   bool HasNormals() const { return myHasNormals; }
 
   //! Set if normals are defined.
-  void SetNormals (const bool theHasNormals) { myHasNormals = theHasNormals; }
+  void SetNormals(const bool theHasNormals) { myHasNormals = theHasNormals; }
 
   //! Return TRUE if UV / texture coordinates should be written; FALSE by default.
   bool HasTexCoords() const { return myHasTexCoords; }
 
   //! Set if UV / texture coordinates should be written.
-  void SetTexCoords (const bool theHasTexCoords) { myHasTexCoords = theHasTexCoords; }
+  void SetTexCoords(const bool theHasTexCoords) { myHasTexCoords = theHasTexCoords; }
 
   //! Return TRUE if point colors should be written; TRUE by default.
   bool HasColors() const { return myHasColors; }
 
   //! Set if point colors should be written.
-  void SetColors (bool theToWrite) { myHasColors = theToWrite; }
+  void SetColors(bool theToWrite) { myHasColors = theToWrite; }
 
   //! Return TRUE if part Id should be written as element attribute; TRUE by default.
   bool HasPartId() const { return myHasPartId; }
 
   //! Set if part Id should be written as element attribute; FALSE by default.
   //! Cannot be combined with HasFaceId().
-  void SetPartId (bool theSurfId)
+  void SetPartId(bool theSurfId)
   {
     myHasPartId = theSurfId;
     myHasFaceId = myHasFaceId && !myHasPartId;
@@ -100,30 +102,29 @@ public:
 
   //! Set if face Id should be written as element attribute; FALSE by default.
   //! Cannot be combined with HasPartId().
-  void SetFaceId (bool theSurfId)
+  void SetFaceId(bool theSurfId)
   {
     myHasFaceId = theSurfId;
     myHasPartId = myHasPartId && !myHasFaceId;
   }
 
 public:
-
   //! Write PLY file and associated MTL material file.
   //! Triangulation data should be precomputed within shapes!
   //! @param[in] theDocument    input document
   //! @param[in] theRootLabels  list of root shapes to export
   //! @param[in] theLabelFilter optional filter with document nodes to export,
-  //!                           with keys defined by XCAFPrs_DocumentExplorer::DefineChildId() and filled recursively
-  //!                           (leaves and parent assembly nodes at all levels);
+  //!                           with keys defined by XCAFPrs_DocumentExplorer::DefineChildId() and
+  //!                           filled recursively (leaves and parent assembly nodes at all levels);
   //!                           when not NULL, all nodes not included into the map will be ignored
   //! @param[in] theFileInfo    map with file metadata to put into PLY header section
   //! @param[in] theProgress    optional progress indicator
   //! @return FALSE on file writing failure
-  Standard_EXPORT virtual bool Perform (const Handle(TDocStd_Document)& theDocument,
-                                        const TDF_LabelSequence& theRootLabels,
-                                        const TColStd_MapOfAsciiString* theLabelFilter,
-                                        const TColStd_IndexedDataMapOfStringString& theFileInfo,
-                                        const Message_ProgressRange& theProgress);
+  Standard_EXPORT virtual bool Perform(const Handle(TDocStd_Document)&             theDocument,
+                                       const TDF_LabelSequence&                    theRootLabels,
+                                       const TColStd_MapOfAsciiString*             theLabelFilter,
+                                       const TColStd_IndexedDataMapOfStringString& theFileInfo,
+                                       const Message_ProgressRange&                theProgress);
 
   //! Write PLY file and associated MTL material file.
   //! Triangulation data should be precomputed within shapes!
@@ -131,22 +132,21 @@ public:
   //! @param[in] theFileInfo map with file metadata to put into PLY header section
   //! @param[in] theProgress optional progress indicator
   //! @return FALSE on file writing failure
-  Standard_EXPORT virtual bool Perform (const Handle(TDocStd_Document)& theDocument,
-                                        const TColStd_IndexedDataMapOfStringString& theFileInfo,
-                                        const Message_ProgressRange& theProgress);
+  Standard_EXPORT virtual bool Perform(const Handle(TDocStd_Document)&             theDocument,
+                                       const TColStd_IndexedDataMapOfStringString& theFileInfo,
+                                       const Message_ProgressRange&                theProgress);
 
 protected:
-
   //! Return TRUE if face mesh should be skipped (e.g. because it is invalid or empty).
-  Standard_EXPORT virtual Standard_Boolean toSkipFaceMesh (const RWMesh_FaceIterator& theFaceIter);
+  Standard_EXPORT virtual Standard_Boolean toSkipFaceMesh(const RWMesh_FaceIterator& theFaceIter);
 
   //! Collect face triangulation info.
   //! @param[in] theFace face to process
   //! @param[in,out] theNbNodes overall number of triangulation nodes (should be appended)
   //! @param[in,out] theNbElems overall number of triangulation elements (should be appended)
-  Standard_EXPORT virtual void addFaceInfo (const RWMesh_FaceIterator& theFace,
-                                            Standard_Integer& theNbNodes,
-                                            Standard_Integer& theNbElems);
+  Standard_EXPORT virtual void addFaceInfo(const RWMesh_FaceIterator& theFace,
+                                           Standard_Integer&          theNbNodes,
+                                           Standard_Integer&          theNbElems);
 
   //! Write the shape.
   //! @param[in] theWriter      PLY writer context
@@ -155,46 +155,43 @@ protected:
   //! @param[in] theLabel       document label to process
   //! @param[in] theParentTrsf  parent node transformation
   //! @param[in] theParentStyle parent node style
-  Standard_EXPORT virtual bool writeShape (RWPly_PlyWriterContext& theWriter,
-                                           Message_LazyProgressScope& thePSentry,
-                                           const Standard_Integer theWriteStep,
-                                           const TDF_Label& theLabel,
-                                           const TopLoc_Location& theParentTrsf,
-                                           const XCAFPrs_Style& theParentStyle);
+  Standard_EXPORT virtual bool writeShape(RWPly_PlyWriterContext&    theWriter,
+                                          Message_LazyProgressScope& thePSentry,
+                                          const Standard_Integer     theWriteStep,
+                                          const TDF_Label&           theLabel,
+                                          const TopLoc_Location&     theParentTrsf,
+                                          const XCAFPrs_Style&       theParentStyle);
 
   //! Write face triangle vertices and attributes.
   //! @param[in] theWriter  PLY writer context
   //! @param[in] thePSentry progress sentry
   //! @param[in] theFace    current face
   //! @return FALSE on writing file error
-  Standard_EXPORT virtual bool writeNodes (RWPly_PlyWriterContext& theWriter,
-                                           Message_LazyProgressScope& thePSentry,
-                                           const RWMesh_FaceIterator& theFace);
+  Standard_EXPORT virtual bool writeNodes(RWPly_PlyWriterContext&    theWriter,
+                                          Message_LazyProgressScope& thePSentry,
+                                          const RWMesh_FaceIterator& theFace);
 
   //! Write face triangles indices.
   //! @param[in] theWriter  PLY writer context
   //! @param[in] thePSentry progress sentry
   //! @param[in] theFace    current face
   //! @return FALSE on writing file error
-  Standard_EXPORT virtual bool writeIndices (RWPly_PlyWriterContext& theWriter,
-                                             Message_LazyProgressScope& thePSentry,
-                                             const RWMesh_FaceIterator& theFace);
-
+  Standard_EXPORT virtual bool writeIndices(RWPly_PlyWriterContext&    theWriter,
+                                            Message_LazyProgressScope& thePSentry,
+                                            const RWMesh_FaceIterator& theFace);
 
 protected:
-
-  TCollection_AsciiString          myFile;         //!< output PLY file
-// clang-format off
+  TCollection_AsciiString myFile; //!< output PLY file
+                                  // clang-format off
   RWMesh_CoordinateSystemConverter myCSTrsf;       //!< transformation from OCCT to PLY coordinate system
   XCAFPrs_Style                    myDefaultStyle; //!< default material definition to be used for nodes with only color defined
-// clang-format on
-  Standard_Boolean                 myIsDoublePrec;
-  Standard_Boolean                 myHasNormals;
-  Standard_Boolean                 myHasColors;
-  Standard_Boolean                 myHasTexCoords;
-  Standard_Boolean                 myHasPartId;
-  Standard_Boolean                 myHasFaceId;
-
+                                  // clang-format on
+  Standard_Boolean myIsDoublePrec;
+  Standard_Boolean myHasNormals;
+  Standard_Boolean myHasColors;
+  Standard_Boolean myHasTexCoords;
+  Standard_Boolean myHasPartId;
+  Standard_Boolean myHasFaceId;
 };
 
 #endif // _RWPly_CafWriter_HeaderFiler

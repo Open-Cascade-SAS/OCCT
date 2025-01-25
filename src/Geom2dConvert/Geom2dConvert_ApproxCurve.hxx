@@ -26,13 +26,11 @@ class Geom2d_Curve;
 
 //! A framework to convert a 2D curve to a BSpline.
 //! This is done by approximation within a given tolerance.
-class Geom2dConvert_ApproxCurve 
+class Geom2dConvert_ApproxCurve
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs an approximation framework defined by
   //! -   the 2D conic Curve
   //! -   the tolerance value Tol2d
@@ -40,8 +38,12 @@ public:
   //! -   the maximum number of segments allowed MaxSegments
   //! -   the highest degree MaxDegree which the
   //! polynomial defining the BSpline is allowed to have.
-  Standard_EXPORT Geom2dConvert_ApproxCurve(const Handle(Geom2d_Curve)& Curve, const Standard_Real Tol2d, const GeomAbs_Shape Order, const Standard_Integer MaxSegments, const Standard_Integer MaxDegree);
-  
+  Standard_EXPORT Geom2dConvert_ApproxCurve(const Handle(Geom2d_Curve)& Curve,
+                                            const Standard_Real         Tol2d,
+                                            const GeomAbs_Shape         Order,
+                                            const Standard_Integer      MaxSegments,
+                                            const Standard_Integer      MaxDegree);
+
   //! Constructs an approximation framework defined by
   //! -   the 2D conic Curve
   //! -   the tolerance value Tol2d
@@ -49,57 +51,46 @@ public:
   //! -   the maximum number of segments allowed MaxSegments
   //! -   the highest degree MaxDegree which the
   //! polynomial defining the BSpline is allowed to have.
-  Standard_EXPORT Geom2dConvert_ApproxCurve(const Handle(Adaptor2d_Curve2d)& Curve, const Standard_Real Tol2d, const GeomAbs_Shape Order, const Standard_Integer MaxSegments, const Standard_Integer MaxDegree);
-  
+  Standard_EXPORT Geom2dConvert_ApproxCurve(const Handle(Adaptor2d_Curve2d)& Curve,
+                                            const Standard_Real              Tol2d,
+                                            const GeomAbs_Shape              Order,
+                                            const Standard_Integer           MaxSegments,
+                                            const Standard_Integer           MaxDegree);
+
   //! Returns the 2D BSpline curve resulting from the
   //! approximation algorithm.
   Standard_EXPORT Handle(Geom2d_BSplineCurve) Curve() const;
-  
+
   //! returns  Standard_True  if  the  approximation  has
   //! been  done  with  within  required tolerance
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
+
   //! returns  Standard_True if the approximation did come out
   //! with a result that  is not NECESSARELY within the required tolerance
   Standard_EXPORT Standard_Boolean HasResult() const;
-  
+
   //! Returns the greatest distance between a point on the
   //! source conic and the BSpline curve resulting from the
   //! approximation. (>0 when an approximation
   //! has  been  done, 0  if  no  approximation)
   Standard_EXPORT Standard_Real MaxError() const;
-  
+
   //! Print on the stream  o  information about the object
-  Standard_EXPORT void Dump (Standard_OStream& o) const;
-
-
-
+  Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 protected:
-
-
-
-
-
 private:
-
-  
   //! Converts a curve to B-spline
-  Standard_EXPORT void Approximate (const Handle(Adaptor2d_Curve2d)& theCurve, const Standard_Real theTol3d, const GeomAbs_Shape theOrder, const Standard_Integer theMaxSegments, const Standard_Integer theMaxDegree);
+  Standard_EXPORT void Approximate(const Handle(Adaptor2d_Curve2d)& theCurve,
+                                   const Standard_Real              theTol3d,
+                                   const GeomAbs_Shape              theOrder,
+                                   const Standard_Integer           theMaxSegments,
+                                   const Standard_Integer           theMaxDegree);
 
-
-  Standard_Boolean myIsDone;
-  Standard_Boolean myHasResult;
+  Standard_Boolean            myIsDone;
+  Standard_Boolean            myHasResult;
   Handle(Geom2d_BSplineCurve) myBSplCurve;
-  Standard_Real myMaxError;
-
-
+  Standard_Real               myMaxError;
 };
-
-
-
-
-
-
 
 #endif // _Geom2dConvert_ApproxCurve_HeaderFile

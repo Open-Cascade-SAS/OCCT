@@ -11,10 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepBasic_TimeMeasureWithUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_TimeMeasureWithUnit,StepBasic_MeasureWithUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_TimeMeasureWithUnit, StepBasic_MeasureWithUnit)
 
-StepBasic_TimeMeasureWithUnit::StepBasic_TimeMeasureWithUnit ()  {}
-
+StepBasic_TimeMeasureWithUnit::StepBasic_TimeMeasureWithUnit() {}

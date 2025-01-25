@@ -14,25 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TFunction_Driver.hxx>
 #include <TFunction_Logbook.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TFunction_Driver,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(TFunction_Driver, Standard_Transient)
+
+//=================================================================================================
+
+TFunction_Driver::TFunction_Driver() {}
 
 //=======================================================================
-//function : TFunction_Driver
-//purpose  : Constructor
-//=======================================================================
-TFunction_Driver::TFunction_Driver()
-{
-
-}
-
-
-//=======================================================================
-//function : Init
-//purpose  : Initialization
+// function : Init
+// purpose  : Initialization
 //=======================================================================
 
 void TFunction_Driver::Init(const TDF_Label& L)
@@ -40,10 +33,9 @@ void TFunction_Driver::Init(const TDF_Label& L)
   myLabel = L;
 }
 
-
 //=======================================================================
-//function : Validate
-//purpose  : Validates labels of a function
+// function : Validate
+// purpose  : Validates labels of a function
 //=======================================================================
 
 void TFunction_Driver::Validate(Handle(TFunction_Logbook)& log) const
@@ -58,10 +50,9 @@ void TFunction_Driver::Validate(Handle(TFunction_Logbook)& log) const
   }
 }
 
-
 //=======================================================================
-//function : MustExecute
-//purpose  : Analyzes the labels in the logbook
+// function : MustExecute
+// purpose  : Analyzes the labels in the logbook
 //=======================================================================
 
 Standard_Boolean TFunction_Driver::MustExecute(const Handle(TFunction_Logbook)& log) const
@@ -79,26 +70,18 @@ Standard_Boolean TFunction_Driver::MustExecute(const Handle(TFunction_Logbook)& 
   return Standard_False;
 }
 
-
 //=======================================================================
-//function : Arguments
-//purpose  : The method fills-in the list by labels, 
+// function : Arguments
+// purpose  : The method fills-in the list by labels,
 //           where the arguments of the function are located.
 //=======================================================================
 
-void TFunction_Driver::Arguments(TDF_LabelList& ) const
-{
-
-}
-
+void TFunction_Driver::Arguments(TDF_LabelList&) const {}
 
 //=======================================================================
-//function : Results
-//purpose  : The method fills-in the list by labels,
+// function : Results
+// purpose  : The method fills-in the list by labels,
 //           where the results of the function are located.
 //=======================================================================
 
-void TFunction_Driver::Results(TDF_LabelList& ) const
-{
-
-}
+void TFunction_Driver::Results(TDF_LabelList&) const {}

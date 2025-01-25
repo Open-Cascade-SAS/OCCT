@@ -23,47 +23,25 @@
 
 #include <Standard_Real.hxx>
 
-
-class StepVisual_BoxCharacteristicSelect 
+class StepVisual_BoxCharacteristicSelect
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT StepVisual_BoxCharacteristicSelect();
-  
+
   Standard_EXPORT Standard_Integer TypeOfContent() const;
-  
-  Standard_EXPORT void SetTypeOfContent (const Standard_Integer aType);
-  
+
+  Standard_EXPORT void SetTypeOfContent(const Standard_Integer aType);
+
   Standard_EXPORT Standard_Real RealValue() const;
-  
-  Standard_EXPORT void SetRealValue (const Standard_Real aValue);
 
-
-
+  Standard_EXPORT void SetRealValue(const Standard_Real aValue);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Real theRealValue;
+  Standard_Real    theRealValue;
   Standard_Integer theTypeOfContent;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_BoxCharacteristicSelect_HeaderFile

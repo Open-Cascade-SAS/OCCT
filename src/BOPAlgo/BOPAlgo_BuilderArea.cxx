@@ -15,44 +15,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPAlgo_BuilderArea.hxx>
 
-//=======================================================================
-//function : 
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 BOPAlgo_BuilderArea::BOPAlgo_BuilderArea()
-:
-  BOPAlgo_Algo(),
-  myShapes(myAllocator),
-  myLoops(myAllocator),
-  myLoopsInternal(myAllocator),
-  myAreas(myAllocator),
-  myShapesToAvoid(100, myAllocator),
-  myAvoidInternalShapes(Standard_False)
+    : BOPAlgo_Algo(),
+      myShapes(myAllocator),
+      myLoops(myAllocator),
+      myLoopsInternal(myAllocator),
+      myAreas(myAllocator),
+      myShapesToAvoid(100, myAllocator),
+      myAvoidInternalShapes(Standard_False)
 {
 }
-//=======================================================================
-//function : 
-//purpose  : 
-//=======================================================================
-BOPAlgo_BuilderArea::BOPAlgo_BuilderArea
-  (const Handle(NCollection_BaseAllocator)& theAllocator)
-:
-  BOPAlgo_Algo(theAllocator),
-  myShapes(myAllocator),
-  myLoops(myAllocator),
-  myLoopsInternal(myAllocator),
-  myAreas(myAllocator),
-  myShapesToAvoid(100, myAllocator),
-  myAvoidInternalShapes(Standard_False)
+
+//=================================================================================================
+
+BOPAlgo_BuilderArea::BOPAlgo_BuilderArea(const Handle(NCollection_BaseAllocator)& theAllocator)
+    : BOPAlgo_Algo(theAllocator),
+      myShapes(myAllocator),
+      myLoops(myAllocator),
+      myLoopsInternal(myAllocator),
+      myAreas(myAllocator),
+      myShapesToAvoid(100, myAllocator),
+      myAvoidInternalShapes(Standard_False)
 {
 }
-//=======================================================================
-//function : ~
-//purpose  : 
-//=======================================================================
-BOPAlgo_BuilderArea::~BOPAlgo_BuilderArea()
-{
-}
+
+//=================================================================================================
+
+BOPAlgo_BuilderArea::~BOPAlgo_BuilderArea() {}

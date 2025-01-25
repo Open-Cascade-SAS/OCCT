@@ -30,63 +30,42 @@
 class TopoDS_Wire;
 class Geom_Curve;
 
-
 //! Defines a  pipe  (near from   Pipe from BRepFill),
 //! with modifications provided for the Pipe feature.
-class LocOpe_Pipe 
+class LocOpe_Pipe
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT LocOpe_Pipe(const TopoDS_Wire& Spine, const TopoDS_Shape& Profile);
-  
-    const TopoDS_Shape& Spine() const;
-  
-    const TopoDS_Shape& Profile() const;
-  
-    const TopoDS_Shape& FirstShape() const;
-  
-    const TopoDS_Shape& LastShape() const;
-  
+
+  const TopoDS_Shape& Spine() const;
+
+  const TopoDS_Shape& Profile() const;
+
+  const TopoDS_Shape& FirstShape() const;
+
+  const TopoDS_Shape& LastShape() const;
+
   Standard_EXPORT const TopoDS_Shape& Shape() const;
-  
-  Standard_EXPORT const TopTools_ListOfShape& Shapes (const TopoDS_Shape& S);
-  
-  Standard_EXPORT const TColGeom_SequenceOfCurve& Curves (const TColgp_SequenceOfPnt& Spt);
-  
+
+  Standard_EXPORT const TopTools_ListOfShape& Shapes(const TopoDS_Shape& S);
+
+  Standard_EXPORT const TColGeom_SequenceOfCurve& Curves(const TColgp_SequenceOfPnt& Spt);
+
   Standard_EXPORT Handle(Geom_Curve) BarycCurve();
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-  BRepFill_Pipe myPipe;
+  BRepFill_Pipe                      myPipe;
   TopTools_DataMapOfShapeListOfShape myMap;
-  TopoDS_Shape myRes;
-  TopTools_ListOfShape myGShap;
-  TColGeom_SequenceOfCurve myCrvs;
-  TopoDS_Shape myFirstShape;
-  TopoDS_Shape myLastShape;
-
-
+  TopoDS_Shape                       myRes;
+  TopTools_ListOfShape               myGShap;
+  TColGeom_SequenceOfCurve           myCrvs;
+  TopoDS_Shape                       myFirstShape;
+  TopoDS_Shape                       myLastShape;
 };
 
-
 #include <LocOpe_Pipe.lxx>
-
-
-
-
 
 #endif // _LocOpe_Pipe_HeaderFile

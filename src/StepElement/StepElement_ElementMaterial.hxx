@@ -22,7 +22,6 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-
 class StepElement_ElementMaterial;
 DEFINE_STANDARD_HANDLE(StepElement_ElementMaterial, Standard_Transient)
 
@@ -31,56 +30,41 @@ class StepElement_ElementMaterial : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepElement_ElementMaterial();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aMaterialId, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepRepr_HArray1OfMaterialPropertyRepresentation)& aProperties);
-  
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&                         aMaterialId,
+    const Handle(TCollection_HAsciiString)&                         aDescription,
+    const Handle(StepRepr_HArray1OfMaterialPropertyRepresentation)& aProperties);
+
   //! Returns field MaterialId
   Standard_EXPORT Handle(TCollection_HAsciiString) MaterialId() const;
-  
+
   //! Set field MaterialId
-  Standard_EXPORT void SetMaterialId (const Handle(TCollection_HAsciiString)& MaterialId);
-  
+  Standard_EXPORT void SetMaterialId(const Handle(TCollection_HAsciiString)& MaterialId);
+
   //! Returns field Description
   Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
-  
+
   //! Set field Description
-  Standard_EXPORT void SetDescription (const Handle(TCollection_HAsciiString)& Description);
-  
+  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& Description);
+
   //! Returns field Properties
   Standard_EXPORT Handle(StepRepr_HArray1OfMaterialPropertyRepresentation) Properties() const;
-  
+
   //! Set field Properties
-  Standard_EXPORT void SetProperties (const Handle(StepRepr_HArray1OfMaterialPropertyRepresentation)& Properties);
+  Standard_EXPORT void SetProperties(
+    const Handle(StepRepr_HArray1OfMaterialPropertyRepresentation)& Properties);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepElement_ElementMaterial,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepElement_ElementMaterial, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(TCollection_HAsciiString) theMaterialId;
-  Handle(TCollection_HAsciiString) theDescription;
+  Handle(TCollection_HAsciiString)                         theMaterialId;
+  Handle(TCollection_HAsciiString)                         theDescription;
   Handle(StepRepr_HArray1OfMaterialPropertyRepresentation) theProperties;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepElement_ElementMaterial_HeaderFile

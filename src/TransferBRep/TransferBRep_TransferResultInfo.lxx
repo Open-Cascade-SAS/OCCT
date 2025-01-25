@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Result
-//purpose  : 
+// function : Result
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer& TransferBRep_TransferResultInfo::Result()
@@ -25,8 +25,8 @@ inline Standard_Integer& TransferBRep_TransferResultInfo::Result()
 }
 
 //=======================================================================
-//function : ResultWarning
-//purpose  : 
+// function : ResultWarning
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer& TransferBRep_TransferResultInfo::ResultWarning()
@@ -35,8 +35,8 @@ inline Standard_Integer& TransferBRep_TransferResultInfo::ResultWarning()
 }
 
 //=======================================================================
-//function : ResultFail
-//purpose  : 
+// function : ResultFail
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer& TransferBRep_TransferResultInfo::ResultFail()
@@ -45,8 +45,8 @@ inline Standard_Integer& TransferBRep_TransferResultInfo::ResultFail()
 }
 
 //=======================================================================
-//function : ResultWarningFail
-//purpose  : 
+// function : ResultWarningFail
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer& TransferBRep_TransferResultInfo::ResultWarningFail()
@@ -55,8 +55,8 @@ inline Standard_Integer& TransferBRep_TransferResultInfo::ResultWarningFail()
 }
 
 //=======================================================================
-//function : NoResult
-//purpose  : 
+// function : NoResult
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer& TransferBRep_TransferResultInfo::NoResult()
@@ -65,8 +65,8 @@ inline Standard_Integer& TransferBRep_TransferResultInfo::NoResult()
 }
 
 //=======================================================================
-//function : NoResultWarning
-//purpose  : 
+// function : NoResultWarning
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer& TransferBRep_TransferResultInfo::NoResultWarning()
@@ -75,8 +75,8 @@ inline Standard_Integer& TransferBRep_TransferResultInfo::NoResultWarning()
 }
 
 //=======================================================================
-//function : NoResultFail
-//purpose  : 
+// function : NoResultFail
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer& TransferBRep_TransferResultInfo::NoResultFail()
@@ -85,12 +85,11 @@ inline Standard_Integer& TransferBRep_TransferResultInfo::NoResultFail()
 }
 
 //=======================================================================
-//function : NoResultWarningFail
-//purpose  : 
+// function : NoResultWarningFail
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer& TransferBRep_TransferResultInfo::NoResultWarningFail()
 {
   return myNRWF;
 }
-

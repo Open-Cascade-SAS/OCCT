@@ -17,14 +17,11 @@
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <RWStl.hxx>
 
-//=============================================================================
-//function : Read
-//purpose  :
-//=============================================================================
-Standard_Boolean StlAPI_Reader::Read (TopoDS_Shape&          theShape,
-                                      const Standard_CString theFileName)
+//=================================================================================================
+
+Standard_Boolean StlAPI_Reader::Read(TopoDS_Shape& theShape, const Standard_CString theFileName)
 {
-  Handle(Poly_Triangulation) aMesh = RWStl::ReadFile (theFileName);
+  Handle(Poly_Triangulation) aMesh = RWStl::ReadFile(theFileName);
   if (aMesh.IsNull())
     return Standard_False;
 

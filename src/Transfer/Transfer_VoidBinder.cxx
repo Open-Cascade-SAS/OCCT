@@ -19,16 +19,19 @@
 #include <Standard_Type.hxx>
 #include <Transfer_VoidBinder.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Transfer_VoidBinder,Transfer_Binder)
+IMPLEMENT_STANDARD_RTTIEXT(Transfer_VoidBinder, Transfer_Binder)
 
-Transfer_VoidBinder::Transfer_VoidBinder ()    {  }
+Transfer_VoidBinder::Transfer_VoidBinder() {}
 
 //    Standard_Boolean  Transfer_VoidBinder::IsMultiple () const
 //      { return Standard_False;  }
 
+Handle(Standard_Type) Transfer_VoidBinder::ResultType() const
+{
+  return DynamicType();
+}
 
-    Handle(Standard_Type)  Transfer_VoidBinder::ResultType () const
-      {  return DynamicType();  }
-
-    Standard_CString  Transfer_VoidBinder::ResultTypeName () const
-      {  return "(void)";  }
+Standard_CString Transfer_VoidBinder::ResultTypeName() const
+{
+  return "(void)";
+}

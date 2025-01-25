@@ -46,7 +46,6 @@ class gp_Ax22d;
 class gp_Dir;
 class gp_Dir2d;
 
-
 //! Provides functions for basic geometric computations on
 //! elementary curves such as conics and lines in 2D and 3D space.
 //! This includes:
@@ -66,20 +65,20 @@ class gp_Dir2d;
 //! explicitly parameterized, they still have an implicit
 //! parameterization, analogous to that which they infer
 //! for the equivalent Geom or Geom2d curves.
-class ElCLib 
+class ElCLib
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Return a value in   the  range <UFirst, ULast>  by
   //! adding or removing the period <ULast -  UFirst> to
   //! <U>.
   //! ATTENTION!!!
   //!   It is expected but not checked that (ULast > UFirst)
-  Standard_EXPORT static Standard_Real InPeriod (const Standard_Real U, const Standard_Real UFirst, const Standard_Real ULast);
-  
+  Standard_EXPORT static Standard_Real InPeriod(const Standard_Real U,
+                                                const Standard_Real UFirst,
+                                                const Standard_Real ULast);
+
   //! Adjust U1 and  U2 in the  parametric range  UFirst
   //! Ulast of a periodic curve, where ULast -
   //! UFirst is its period. To do this, this function:
@@ -88,22 +87,26 @@ public:
   //! -   sets U2 in the range [ U1, U1 + period ] by
   //! adding/removing the period to/from the value U2.
   //! Precision is used to test the equalities.
-  Standard_EXPORT static void AdjustPeriodic (const Standard_Real UFirst, const Standard_Real ULast, const Standard_Real Precision, Standard_Real& U1, Standard_Real& U2);
-  
+  Standard_EXPORT static void AdjustPeriodic(const Standard_Real UFirst,
+                                             const Standard_Real ULast,
+                                             const Standard_Real Precision,
+                                             Standard_Real&      U1,
+                                             Standard_Real&      U2);
+
   //! For elementary curves (lines, circles and conics) from
   //! the gp package, computes the point of parameter U.
   //! The result is either:
   //! -   a gp_Pnt point for a curve in 3D space, or
   //! -   a gp_Pnt2d point for a curve in 2D space.
-  static gp_Pnt Value (const Standard_Real U, const gp_Lin& L);
-  
-  static gp_Pnt Value (const Standard_Real U, const gp_Circ& C);
-  
-  static gp_Pnt Value (const Standard_Real U, const gp_Elips& E);
-  
-  static gp_Pnt Value (const Standard_Real U, const gp_Hypr& H);
-  
-  static gp_Pnt Value (const Standard_Real U, const gp_Parab& Prb);
+  static gp_Pnt Value(const Standard_Real U, const gp_Lin& L);
+
+  static gp_Pnt Value(const Standard_Real U, const gp_Circ& C);
+
+  static gp_Pnt Value(const Standard_Real U, const gp_Elips& E);
+
+  static gp_Pnt Value(const Standard_Real U, const gp_Hypr& H);
+
+  static gp_Pnt Value(const Standard_Real U, const gp_Parab& Prb);
 
   //! For elementary curves (lines, circles and conics) from the
   //! gp package, computes:
@@ -112,16 +115,16 @@ public:
   //! The results P and V1 are either:
   //! -   a gp_Pnt point and a gp_Vec vector, for a curve in 3D  space, or
   //! -   a gp_Pnt2d point and a gp_Vec2d vector, for a curve in 2D space.
-  static void D1 (const Standard_Real U, const gp_Lin& L, gp_Pnt& P, gp_Vec& V1);
-  
-  static void D1 (const Standard_Real U, const gp_Circ& C, gp_Pnt& P, gp_Vec& V1);
-  
-  static void D1 (const Standard_Real U, const gp_Elips& E, gp_Pnt& P, gp_Vec& V1);
-  
-  static void D1 (const Standard_Real U, const gp_Hypr& H, gp_Pnt& P, gp_Vec& V1);
-  
-  static void D1 (const Standard_Real U, const gp_Parab& Prb, gp_Pnt& P, gp_Vec& V1);
-  
+  static void D1(const Standard_Real U, const gp_Lin& L, gp_Pnt& P, gp_Vec& V1);
+
+  static void D1(const Standard_Real U, const gp_Circ& C, gp_Pnt& P, gp_Vec& V1);
+
+  static void D1(const Standard_Real U, const gp_Elips& E, gp_Pnt& P, gp_Vec& V1);
+
+  static void D1(const Standard_Real U, const gp_Hypr& H, gp_Pnt& P, gp_Vec& V1);
+
+  static void D1(const Standard_Real U, const gp_Parab& Prb, gp_Pnt& P, gp_Vec& V1);
+
   //! For elementary curves (circles and conics) from the gp
   //! package, computes:
   //! - the point P of parameter U, and
@@ -129,14 +132,14 @@ public:
   //! The results, P, V1 and V2, are either:
   //! -   a gp_Pnt point and two gp_Vec vectors, for a curve in 3D space, or
   //! -   a gp_Pnt2d point and two gp_Vec2d vectors, for a curve in 2D space.
-  static void D2 (const Standard_Real U, const gp_Circ& C, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
-  
-  static void D2 (const Standard_Real U, const gp_Elips& E, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
-  
-  static void D2 (const Standard_Real U, const gp_Hypr& H, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
-  
-  static void D2 (const Standard_Real U, const gp_Parab& Prb, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
-  
+  static void D2(const Standard_Real U, const gp_Circ& C, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
+
+  static void D2(const Standard_Real U, const gp_Elips& E, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
+
+  static void D2(const Standard_Real U, const gp_Hypr& H, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
+
+  static void D2(const Standard_Real U, const gp_Parab& Prb, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
+
   //! For elementary curves (circles, ellipses and hyperbolae)
   //! from the gp package, computes:
   //! -   the point P of parameter U, and
@@ -145,11 +148,26 @@ public:
   //! The results, P, V1, V2 and V3, are either:
   //! -   a gp_Pnt point and three gp_Vec vectors, for a curve in 3D space, or
   //! -   a gp_Pnt2d point and three gp_Vec2d vectors, for a curve in 2D space.
-  static void D3 (const Standard_Real U, const gp_Circ& C, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3);
-  
-  static void D3 (const Standard_Real U, const gp_Elips& E, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3);
-  
-  static void D3 (const Standard_Real U, const gp_Hypr& H, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3);
+  static void D3(const Standard_Real U,
+                 const gp_Circ&      C,
+                 gp_Pnt&             P,
+                 gp_Vec&             V1,
+                 gp_Vec&             V2,
+                 gp_Vec&             V3);
+
+  static void D3(const Standard_Real U,
+                 const gp_Elips&     E,
+                 gp_Pnt&             P,
+                 gp_Vec&             V1,
+                 gp_Vec&             V2,
+                 gp_Vec&             V3);
+
+  static void D3(const Standard_Real U,
+                 const gp_Hypr&      H,
+                 gp_Pnt&             P,
+                 gp_Vec&             V1,
+                 gp_Vec&             V2,
+                 gp_Vec&             V3);
 
   //! For elementary curves (lines, circles and conics) from
   //! the gp package, computes the vector corresponding to
@@ -158,62 +176,93 @@ public:
   //! -   a gp_Vec2d vector for a curve in 2D space.
   //! In the following functions N is the order of derivation
   //! and should be greater than 0
-  static gp_Vec DN (const Standard_Real U, const gp_Lin& L, const Standard_Integer N);
-  
-  static gp_Vec DN (const Standard_Real U, const gp_Circ& C, const Standard_Integer N);
-  
-  static gp_Vec DN (const Standard_Real U, const gp_Elips& E, const Standard_Integer N);
-  
-  static gp_Vec DN (const Standard_Real U, const gp_Hypr& H, const Standard_Integer N);
-  
-  static gp_Vec DN (const Standard_Real U, const gp_Parab& Prb, const Standard_Integer N);
-  
-  static gp_Pnt2d Value (const Standard_Real U, const gp_Lin2d& L);
-  
-  static gp_Pnt2d Value (const Standard_Real U, const gp_Circ2d& C);
-  
-  static gp_Pnt2d Value (const Standard_Real U, const gp_Elips2d& E);
-  
-  static gp_Pnt2d Value (const Standard_Real U, const gp_Hypr2d& H);
-  
-  static gp_Pnt2d Value (const Standard_Real U, const gp_Parab2d& Prb);
-  
-  static void D1 (const Standard_Real U, const gp_Lin2d& L, gp_Pnt2d& P, gp_Vec2d& V1);
+  static gp_Vec DN(const Standard_Real U, const gp_Lin& L, const Standard_Integer N);
 
-  static void D1 (const Standard_Real U, const gp_Circ2d& C, gp_Pnt2d& P, gp_Vec2d& V1);
+  static gp_Vec DN(const Standard_Real U, const gp_Circ& C, const Standard_Integer N);
 
-  static void D1 (const Standard_Real U, const gp_Elips2d& E, gp_Pnt2d& P, gp_Vec2d& V1);
+  static gp_Vec DN(const Standard_Real U, const gp_Elips& E, const Standard_Integer N);
 
-  static void D1 (const Standard_Real U, const gp_Hypr2d& H, gp_Pnt2d& P, gp_Vec2d& V1);
+  static gp_Vec DN(const Standard_Real U, const gp_Hypr& H, const Standard_Integer N);
 
-  static void D1 (const Standard_Real U, const gp_Parab2d& Prb, gp_Pnt2d& P, gp_Vec2d& V1);
+  static gp_Vec DN(const Standard_Real U, const gp_Parab& Prb, const Standard_Integer N);
 
-  static void D2 (const Standard_Real U, const gp_Circ2d& C, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2);
+  static gp_Pnt2d Value(const Standard_Real U, const gp_Lin2d& L);
 
-  static void D2 (const Standard_Real U, const gp_Elips2d& E, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2);
+  static gp_Pnt2d Value(const Standard_Real U, const gp_Circ2d& C);
 
-  static void D2 (const Standard_Real U, const gp_Hypr2d& H, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2);
+  static gp_Pnt2d Value(const Standard_Real U, const gp_Elips2d& E);
 
-  static void D2 (const Standard_Real U, const gp_Parab2d& Prb, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2);
+  static gp_Pnt2d Value(const Standard_Real U, const gp_Hypr2d& H);
 
-  static void D3 (const Standard_Real U, const gp_Circ2d& C, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3);
+  static gp_Pnt2d Value(const Standard_Real U, const gp_Parab2d& Prb);
 
-  static void D3 (const Standard_Real U, const gp_Elips2d& E, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3);
+  static void D1(const Standard_Real U, const gp_Lin2d& L, gp_Pnt2d& P, gp_Vec2d& V1);
+
+  static void D1(const Standard_Real U, const gp_Circ2d& C, gp_Pnt2d& P, gp_Vec2d& V1);
+
+  static void D1(const Standard_Real U, const gp_Elips2d& E, gp_Pnt2d& P, gp_Vec2d& V1);
+
+  static void D1(const Standard_Real U, const gp_Hypr2d& H, gp_Pnt2d& P, gp_Vec2d& V1);
+
+  static void D1(const Standard_Real U, const gp_Parab2d& Prb, gp_Pnt2d& P, gp_Vec2d& V1);
+
+  static void D2(const Standard_Real U,
+                 const gp_Circ2d&    C,
+                 gp_Pnt2d&           P,
+                 gp_Vec2d&           V1,
+                 gp_Vec2d&           V2);
+
+  static void D2(const Standard_Real U,
+                 const gp_Elips2d&   E,
+                 gp_Pnt2d&           P,
+                 gp_Vec2d&           V1,
+                 gp_Vec2d&           V2);
+
+  static void D2(const Standard_Real U,
+                 const gp_Hypr2d&    H,
+                 gp_Pnt2d&           P,
+                 gp_Vec2d&           V1,
+                 gp_Vec2d&           V2);
+
+  static void D2(const Standard_Real U,
+                 const gp_Parab2d&   Prb,
+                 gp_Pnt2d&           P,
+                 gp_Vec2d&           V1,
+                 gp_Vec2d&           V2);
+
+  static void D3(const Standard_Real U,
+                 const gp_Circ2d&    C,
+                 gp_Pnt2d&           P,
+                 gp_Vec2d&           V1,
+                 gp_Vec2d&           V2,
+                 gp_Vec2d&           V3);
+
+  static void D3(const Standard_Real U,
+                 const gp_Elips2d&   E,
+                 gp_Pnt2d&           P,
+                 gp_Vec2d&           V1,
+                 gp_Vec2d&           V2,
+                 gp_Vec2d&           V3);
 
   //! In the following functions N is the order of derivation
   //! and should be greater than 0
-    static void D3 (const Standard_Real U, const gp_Hypr2d& H, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3);
-  
-    static gp_Vec2d DN (const Standard_Real U, const gp_Lin2d& L, const Standard_Integer N);
-  
-    static gp_Vec2d DN (const Standard_Real U, const gp_Circ2d& C, const Standard_Integer N);
-  
-    static gp_Vec2d DN (const Standard_Real U, const gp_Elips2d& E, const Standard_Integer N);
-  
-    static gp_Vec2d DN (const Standard_Real U, const gp_Hypr2d& H, const Standard_Integer N);
-  
-    static gp_Vec2d DN (const Standard_Real U, const gp_Parab2d& Prb, const Standard_Integer N);
-  
+  static void D3(const Standard_Real U,
+                 const gp_Hypr2d&    H,
+                 gp_Pnt2d&           P,
+                 gp_Vec2d&           V1,
+                 gp_Vec2d&           V2,
+                 gp_Vec2d&           V3);
+
+  static gp_Vec2d DN(const Standard_Real U, const gp_Lin2d& L, const Standard_Integer N);
+
+  static gp_Vec2d DN(const Standard_Real U, const gp_Circ2d& C, const Standard_Integer N);
+
+  static gp_Vec2d DN(const Standard_Real U, const gp_Elips2d& E, const Standard_Integer N);
+
+  static gp_Vec2d DN(const Standard_Real U, const gp_Hypr2d& H, const Standard_Integer N);
+
+  static gp_Vec2d DN(const Standard_Real U, const gp_Parab2d& Prb, const Standard_Integer N);
+
   //! Curve evaluation
   //! The following basis functions compute the derivatives on
   //! elementary curves defined by their geometric characteristics.
@@ -221,104 +270,278 @@ public:
   //! from package gp. They are called by the previous functions.
   //! Example :
   //! A circle is defined by its position and its radius.
-  Standard_EXPORT static gp_Pnt LineValue (const Standard_Real U, const gp_Ax1& Pos);
-  
-  Standard_EXPORT static gp_Pnt CircleValue (const Standard_Real U, const gp_Ax2& Pos, const Standard_Real Radius);
-  
-  Standard_EXPORT static gp_Pnt EllipseValue (const Standard_Real U, const gp_Ax2& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius);
-  
-  Standard_EXPORT static gp_Pnt HyperbolaValue (const Standard_Real U, const gp_Ax2& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius);
-  
-  Standard_EXPORT static gp_Pnt ParabolaValue (const Standard_Real U, const gp_Ax2& Pos, const Standard_Real Focal);
-  
-  Standard_EXPORT static void LineD1 (const Standard_Real U, const gp_Ax1& Pos, gp_Pnt& P, gp_Vec& V1);
-  
-  Standard_EXPORT static void CircleD1 (const Standard_Real U, const gp_Ax2& Pos, const Standard_Real Radius, gp_Pnt& P, gp_Vec& V1);
-  
-  Standard_EXPORT static void EllipseD1 (const Standard_Real U, const gp_Ax2& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, gp_Pnt& P, gp_Vec& V1);
-  
-  Standard_EXPORT static void HyperbolaD1 (const Standard_Real U, const gp_Ax2& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, gp_Pnt& P, gp_Vec& V1);
-  
-  Standard_EXPORT static void ParabolaD1 (const Standard_Real U, const gp_Ax2& Pos, const Standard_Real Focal, gp_Pnt& P, gp_Vec& V1);
-  
-  Standard_EXPORT static void CircleD2 (const Standard_Real U, const gp_Ax2& Pos, const Standard_Real Radius, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
-  
-  Standard_EXPORT static void EllipseD2 (const Standard_Real U, const gp_Ax2& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
-  
-  Standard_EXPORT static void HyperbolaD2 (const Standard_Real U, const gp_Ax2& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
-  
-  Standard_EXPORT static void ParabolaD2 (const Standard_Real U, const gp_Ax2& Pos, const Standard_Real Focal, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
-  
-  Standard_EXPORT static void CircleD3 (const Standard_Real U, const gp_Ax2& Pos, const Standard_Real Radius, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3);
-  
-  Standard_EXPORT static void EllipseD3 (const Standard_Real U, const gp_Ax2& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3);
-  
-  Standard_EXPORT static void HyperbolaD3 (const Standard_Real U, const gp_Ax2& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3);
-  
+  Standard_EXPORT static gp_Pnt LineValue(const Standard_Real U, const gp_Ax1& Pos);
+
+  Standard_EXPORT static gp_Pnt CircleValue(const Standard_Real U,
+                                            const gp_Ax2&       Pos,
+                                            const Standard_Real Radius);
+
+  Standard_EXPORT static gp_Pnt EllipseValue(const Standard_Real U,
+                                             const gp_Ax2&       Pos,
+                                             const Standard_Real MajorRadius,
+                                             const Standard_Real MinorRadius);
+
+  Standard_EXPORT static gp_Pnt HyperbolaValue(const Standard_Real U,
+                                               const gp_Ax2&       Pos,
+                                               const Standard_Real MajorRadius,
+                                               const Standard_Real MinorRadius);
+
+  Standard_EXPORT static gp_Pnt ParabolaValue(const Standard_Real U,
+                                              const gp_Ax2&       Pos,
+                                              const Standard_Real Focal);
+
+  Standard_EXPORT static void LineD1(const Standard_Real U,
+                                     const gp_Ax1&       Pos,
+                                     gp_Pnt&             P,
+                                     gp_Vec&             V1);
+
+  Standard_EXPORT static void CircleD1(const Standard_Real U,
+                                       const gp_Ax2&       Pos,
+                                       const Standard_Real Radius,
+                                       gp_Pnt&             P,
+                                       gp_Vec&             V1);
+
+  Standard_EXPORT static void EllipseD1(const Standard_Real U,
+                                        const gp_Ax2&       Pos,
+                                        const Standard_Real MajorRadius,
+                                        const Standard_Real MinorRadius,
+                                        gp_Pnt&             P,
+                                        gp_Vec&             V1);
+
+  Standard_EXPORT static void HyperbolaD1(const Standard_Real U,
+                                          const gp_Ax2&       Pos,
+                                          const Standard_Real MajorRadius,
+                                          const Standard_Real MinorRadius,
+                                          gp_Pnt&             P,
+                                          gp_Vec&             V1);
+
+  Standard_EXPORT static void ParabolaD1(const Standard_Real U,
+                                         const gp_Ax2&       Pos,
+                                         const Standard_Real Focal,
+                                         gp_Pnt&             P,
+                                         gp_Vec&             V1);
+
+  Standard_EXPORT static void CircleD2(const Standard_Real U,
+                                       const gp_Ax2&       Pos,
+                                       const Standard_Real Radius,
+                                       gp_Pnt&             P,
+                                       gp_Vec&             V1,
+                                       gp_Vec&             V2);
+
+  Standard_EXPORT static void EllipseD2(const Standard_Real U,
+                                        const gp_Ax2&       Pos,
+                                        const Standard_Real MajorRadius,
+                                        const Standard_Real MinorRadius,
+                                        gp_Pnt&             P,
+                                        gp_Vec&             V1,
+                                        gp_Vec&             V2);
+
+  Standard_EXPORT static void HyperbolaD2(const Standard_Real U,
+                                          const gp_Ax2&       Pos,
+                                          const Standard_Real MajorRadius,
+                                          const Standard_Real MinorRadius,
+                                          gp_Pnt&             P,
+                                          gp_Vec&             V1,
+                                          gp_Vec&             V2);
+
+  Standard_EXPORT static void ParabolaD2(const Standard_Real U,
+                                         const gp_Ax2&       Pos,
+                                         const Standard_Real Focal,
+                                         gp_Pnt&             P,
+                                         gp_Vec&             V1,
+                                         gp_Vec&             V2);
+
+  Standard_EXPORT static void CircleD3(const Standard_Real U,
+                                       const gp_Ax2&       Pos,
+                                       const Standard_Real Radius,
+                                       gp_Pnt&             P,
+                                       gp_Vec&             V1,
+                                       gp_Vec&             V2,
+                                       gp_Vec&             V3);
+
+  Standard_EXPORT static void EllipseD3(const Standard_Real U,
+                                        const gp_Ax2&       Pos,
+                                        const Standard_Real MajorRadius,
+                                        const Standard_Real MinorRadius,
+                                        gp_Pnt&             P,
+                                        gp_Vec&             V1,
+                                        gp_Vec&             V2,
+                                        gp_Vec&             V3);
+
+  Standard_EXPORT static void HyperbolaD3(const Standard_Real U,
+                                          const gp_Ax2&       Pos,
+                                          const Standard_Real MajorRadius,
+                                          const Standard_Real MinorRadius,
+                                          gp_Pnt&             P,
+                                          gp_Vec&             V1,
+                                          gp_Vec&             V2,
+                                          gp_Vec&             V3);
 
   //! In the following functions N is the order of derivation
   //! and should be greater than 0
-  Standard_EXPORT static gp_Vec LineDN (const Standard_Real U, const gp_Ax1& Pos, const Standard_Integer N);
-  
-  Standard_EXPORT static gp_Vec CircleDN (const Standard_Real U, const gp_Ax2& Pos, const Standard_Real Radius, const Standard_Integer N);
-  
-  Standard_EXPORT static gp_Vec EllipseDN (const Standard_Real U, const gp_Ax2& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, const Standard_Integer N);
-  
-  Standard_EXPORT static gp_Vec HyperbolaDN (const Standard_Real U, const gp_Ax2& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, const Standard_Integer N);
-  
-  Standard_EXPORT static gp_Vec ParabolaDN (const Standard_Real U, const gp_Ax2& Pos, const Standard_Real Focal, const Standard_Integer N);
-  
-  Standard_EXPORT static gp_Pnt2d LineValue (const Standard_Real U, const gp_Ax2d& Pos);
-  
-  Standard_EXPORT static gp_Pnt2d CircleValue (const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real Radius);
-  
-  Standard_EXPORT static gp_Pnt2d EllipseValue (const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius);
-  
-  Standard_EXPORT static gp_Pnt2d HyperbolaValue (const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius);
-  
-  Standard_EXPORT static gp_Pnt2d ParabolaValue (const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real Focal);
-  
-  Standard_EXPORT static void LineD1 (const Standard_Real U, const gp_Ax2d& Pos, gp_Pnt2d& P, gp_Vec2d& V1);
-  
-  Standard_EXPORT static void CircleD1 (const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real Radius, gp_Pnt2d& P, gp_Vec2d& V1);
-  
-  Standard_EXPORT static void EllipseD1 (const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, gp_Pnt2d& P, gp_Vec2d& V1);
-  
-  Standard_EXPORT static void HyperbolaD1 (const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, gp_Pnt2d& P, gp_Vec2d& V1);
-  
-  Standard_EXPORT static void ParabolaD1 (const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real Focal, gp_Pnt2d& P, gp_Vec2d& V1);
-  
-  Standard_EXPORT static void CircleD2 (const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real Radius, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2);
-  
-  Standard_EXPORT static void EllipseD2 (const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2);
-  
-  Standard_EXPORT static void HyperbolaD2 (const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2);
-  
-  Standard_EXPORT static void ParabolaD2 (const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real Focal, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2);
-  
-  Standard_EXPORT static void CircleD3 (const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real Radius, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3);
-  
-  Standard_EXPORT static void EllipseD3 (const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3);
-  
+  Standard_EXPORT static gp_Vec LineDN(const Standard_Real    U,
+                                       const gp_Ax1&          Pos,
+                                       const Standard_Integer N);
+
+  Standard_EXPORT static gp_Vec CircleDN(const Standard_Real    U,
+                                         const gp_Ax2&          Pos,
+                                         const Standard_Real    Radius,
+                                         const Standard_Integer N);
+
+  Standard_EXPORT static gp_Vec EllipseDN(const Standard_Real    U,
+                                          const gp_Ax2&          Pos,
+                                          const Standard_Real    MajorRadius,
+                                          const Standard_Real    MinorRadius,
+                                          const Standard_Integer N);
+
+  Standard_EXPORT static gp_Vec HyperbolaDN(const Standard_Real    U,
+                                            const gp_Ax2&          Pos,
+                                            const Standard_Real    MajorRadius,
+                                            const Standard_Real    MinorRadius,
+                                            const Standard_Integer N);
+
+  Standard_EXPORT static gp_Vec ParabolaDN(const Standard_Real    U,
+                                           const gp_Ax2&          Pos,
+                                           const Standard_Real    Focal,
+                                           const Standard_Integer N);
+
+  Standard_EXPORT static gp_Pnt2d LineValue(const Standard_Real U, const gp_Ax2d& Pos);
+
+  Standard_EXPORT static gp_Pnt2d CircleValue(const Standard_Real U,
+                                              const gp_Ax22d&     Pos,
+                                              const Standard_Real Radius);
+
+  Standard_EXPORT static gp_Pnt2d EllipseValue(const Standard_Real U,
+                                               const gp_Ax22d&     Pos,
+                                               const Standard_Real MajorRadius,
+                                               const Standard_Real MinorRadius);
+
+  Standard_EXPORT static gp_Pnt2d HyperbolaValue(const Standard_Real U,
+                                                 const gp_Ax22d&     Pos,
+                                                 const Standard_Real MajorRadius,
+                                                 const Standard_Real MinorRadius);
+
+  Standard_EXPORT static gp_Pnt2d ParabolaValue(const Standard_Real U,
+                                                const gp_Ax22d&     Pos,
+                                                const Standard_Real Focal);
+
+  Standard_EXPORT static void LineD1(const Standard_Real U,
+                                     const gp_Ax2d&      Pos,
+                                     gp_Pnt2d&           P,
+                                     gp_Vec2d&           V1);
+
+  Standard_EXPORT static void CircleD1(const Standard_Real U,
+                                       const gp_Ax22d&     Pos,
+                                       const Standard_Real Radius,
+                                       gp_Pnt2d&           P,
+                                       gp_Vec2d&           V1);
+
+  Standard_EXPORT static void EllipseD1(const Standard_Real U,
+                                        const gp_Ax22d&     Pos,
+                                        const Standard_Real MajorRadius,
+                                        const Standard_Real MinorRadius,
+                                        gp_Pnt2d&           P,
+                                        gp_Vec2d&           V1);
+
+  Standard_EXPORT static void HyperbolaD1(const Standard_Real U,
+                                          const gp_Ax22d&     Pos,
+                                          const Standard_Real MajorRadius,
+                                          const Standard_Real MinorRadius,
+                                          gp_Pnt2d&           P,
+                                          gp_Vec2d&           V1);
+
+  Standard_EXPORT static void ParabolaD1(const Standard_Real U,
+                                         const gp_Ax22d&     Pos,
+                                         const Standard_Real Focal,
+                                         gp_Pnt2d&           P,
+                                         gp_Vec2d&           V1);
+
+  Standard_EXPORT static void CircleD2(const Standard_Real U,
+                                       const gp_Ax22d&     Pos,
+                                       const Standard_Real Radius,
+                                       gp_Pnt2d&           P,
+                                       gp_Vec2d&           V1,
+                                       gp_Vec2d&           V2);
+
+  Standard_EXPORT static void EllipseD2(const Standard_Real U,
+                                        const gp_Ax22d&     Pos,
+                                        const Standard_Real MajorRadius,
+                                        const Standard_Real MinorRadius,
+                                        gp_Pnt2d&           P,
+                                        gp_Vec2d&           V1,
+                                        gp_Vec2d&           V2);
+
+  Standard_EXPORT static void HyperbolaD2(const Standard_Real U,
+                                          const gp_Ax22d&     Pos,
+                                          const Standard_Real MajorRadius,
+                                          const Standard_Real MinorRadius,
+                                          gp_Pnt2d&           P,
+                                          gp_Vec2d&           V1,
+                                          gp_Vec2d&           V2);
+
+  Standard_EXPORT static void ParabolaD2(const Standard_Real U,
+                                         const gp_Ax22d&     Pos,
+                                         const Standard_Real Focal,
+                                         gp_Pnt2d&           P,
+                                         gp_Vec2d&           V1,
+                                         gp_Vec2d&           V2);
+
+  Standard_EXPORT static void CircleD3(const Standard_Real U,
+                                       const gp_Ax22d&     Pos,
+                                       const Standard_Real Radius,
+                                       gp_Pnt2d&           P,
+                                       gp_Vec2d&           V1,
+                                       gp_Vec2d&           V2,
+                                       gp_Vec2d&           V3);
+
+  Standard_EXPORT static void EllipseD3(const Standard_Real U,
+                                        const gp_Ax22d&     Pos,
+                                        const Standard_Real MajorRadius,
+                                        const Standard_Real MinorRadius,
+                                        gp_Pnt2d&           P,
+                                        gp_Vec2d&           V1,
+                                        gp_Vec2d&           V2,
+                                        gp_Vec2d&           V3);
 
   //! In the following functions N is the order of derivation
   //! and should be greater than 0
-  Standard_EXPORT static void HyperbolaD3 (const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3);
-  
-  Standard_EXPORT static gp_Vec2d LineDN (const Standard_Real U, const gp_Ax2d& Pos, const Standard_Integer N);
-  
-  Standard_EXPORT static gp_Vec2d CircleDN (const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real Radius, const Standard_Integer N);
-  
-  Standard_EXPORT static gp_Vec2d EllipseDN (const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, const Standard_Integer N);
-  
-  Standard_EXPORT static gp_Vec2d HyperbolaDN (const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, const Standard_Integer N);
-  
+  Standard_EXPORT static void HyperbolaD3(const Standard_Real U,
+                                          const gp_Ax22d&     Pos,
+                                          const Standard_Real MajorRadius,
+                                          const Standard_Real MinorRadius,
+                                          gp_Pnt2d&           P,
+                                          gp_Vec2d&           V1,
+                                          gp_Vec2d&           V2,
+                                          gp_Vec2d&           V3);
+
+  Standard_EXPORT static gp_Vec2d LineDN(const Standard_Real    U,
+                                         const gp_Ax2d&         Pos,
+                                         const Standard_Integer N);
+
+  Standard_EXPORT static gp_Vec2d CircleDN(const Standard_Real    U,
+                                           const gp_Ax22d&        Pos,
+                                           const Standard_Real    Radius,
+                                           const Standard_Integer N);
+
+  Standard_EXPORT static gp_Vec2d EllipseDN(const Standard_Real    U,
+                                            const gp_Ax22d&        Pos,
+                                            const Standard_Real    MajorRadius,
+                                            const Standard_Real    MinorRadius,
+                                            const Standard_Integer N);
+
+  Standard_EXPORT static gp_Vec2d HyperbolaDN(const Standard_Real    U,
+                                              const gp_Ax22d&        Pos,
+                                              const Standard_Real    MajorRadius,
+                                              const Standard_Real    MinorRadius,
+                                              const Standard_Integer N);
 
   //! The following functions compute the parametric value corresponding
   //! to a given point on a elementary curve. The point should be on the
   //! curve.
-  Standard_EXPORT static gp_Vec2d ParabolaDN (const Standard_Real U, const gp_Ax22d& Pos, const Standard_Real Focal, const Standard_Integer N);
-  
+  Standard_EXPORT static gp_Vec2d ParabolaDN(const Standard_Real    U,
+                                             const gp_Ax22d&        Pos,
+                                             const Standard_Real    Focal,
+                                             const Standard_Integer N);
 
   //! Computes the parameter value of the point P on the given curve.
   //! Note: In its local coordinate system, the parametric
@@ -336,79 +559,91 @@ public:
   //! The point P must be on the curve. These functions are
   //! not protected, however, and if point P is not on the
   //! curve, an exception may be raised.
-  static Standard_Real Parameter (const gp_Lin& L, const gp_Pnt& P);
-  
+  static Standard_Real Parameter(const gp_Lin& L, const gp_Pnt& P);
+
   //! parametrization
   //! P (U) = L.Location() + U * L.Direction()
-    static Standard_Real Parameter (const gp_Lin2d& L, const gp_Pnt2d& P);
-  
-    static Standard_Real Parameter (const gp_Circ& C, const gp_Pnt& P);
-  
+  static Standard_Real Parameter(const gp_Lin2d& L, const gp_Pnt2d& P);
+
+  static Standard_Real Parameter(const gp_Circ& C, const gp_Pnt& P);
+
   //! parametrization
   //! In the local coordinate system of the circle
   //! X (U) = Radius * Cos (U)
   //! Y (U) = Radius * Sin (U)
-    static Standard_Real Parameter (const gp_Circ2d& C, const gp_Pnt2d& P);
-  
-    static Standard_Real Parameter (const gp_Elips& E, const gp_Pnt& P);
-  
+  static Standard_Real Parameter(const gp_Circ2d& C, const gp_Pnt2d& P);
+
+  static Standard_Real Parameter(const gp_Elips& E, const gp_Pnt& P);
+
   //! parametrization
   //! In the local coordinate system of the Ellipse
   //! X (U) = MajorRadius * Cos (U)
   //! Y (U) = MinorRadius * Sin (U)
-    static Standard_Real Parameter (const gp_Elips2d& E, const gp_Pnt2d& P);
-  
-    static Standard_Real Parameter (const gp_Hypr& H, const gp_Pnt& P);
-  
+  static Standard_Real Parameter(const gp_Elips2d& E, const gp_Pnt2d& P);
+
+  static Standard_Real Parameter(const gp_Hypr& H, const gp_Pnt& P);
+
   //! parametrization
   //! In the local coordinate system of the Hyperbola
   //! X (U) = MajorRadius * Ch (U)
   //! Y (U) = MinorRadius * Sh (U)
-    static Standard_Real Parameter (const gp_Hypr2d& H, const gp_Pnt2d& P);
-  
-    static Standard_Real Parameter (const gp_Parab& Prb, const gp_Pnt& P);
-  
+  static Standard_Real Parameter(const gp_Hypr2d& H, const gp_Pnt2d& P);
+
+  static Standard_Real Parameter(const gp_Parab& Prb, const gp_Pnt& P);
+
   //! parametrization
   //! In the local coordinate system of the parabola
   //! Y**2 = (2*P) * X where P is the distance between the focus
   //! and the directrix.
-    static Standard_Real Parameter (const gp_Parab2d& Prb, const gp_Pnt2d& P);
-  
-  Standard_EXPORT static Standard_Real LineParameter (const gp_Ax1& Pos, const gp_Pnt& P);
-  
+  static Standard_Real Parameter(const gp_Parab2d& Prb, const gp_Pnt2d& P);
+
+  Standard_EXPORT static Standard_Real LineParameter(const gp_Ax1& Pos, const gp_Pnt& P);
+
   //! parametrization
   //! P (U) = L.Location() + U * L.Direction()
-  Standard_EXPORT static Standard_Real LineParameter (const gp_Ax2d& Pos, const gp_Pnt2d& P);
-  
-  Standard_EXPORT static Standard_Real CircleParameter (const gp_Ax2& Pos, const gp_Pnt& P);
-  
+  Standard_EXPORT static Standard_Real LineParameter(const gp_Ax2d& Pos, const gp_Pnt2d& P);
+
+  Standard_EXPORT static Standard_Real CircleParameter(const gp_Ax2& Pos, const gp_Pnt& P);
+
   //! Pos is the Axis of the Circle
   //! parametrization
   //! In the local coordinate system of the circle
   //! X (U) = Radius * Cos (U)
   //! Y (U) = Radius * Sin (U)
-  Standard_EXPORT static Standard_Real CircleParameter (const gp_Ax22d& Pos, const gp_Pnt2d& P);
-  
-  Standard_EXPORT static Standard_Real EllipseParameter (const gp_Ax2& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, const gp_Pnt& P);
-  
+  Standard_EXPORT static Standard_Real CircleParameter(const gp_Ax22d& Pos, const gp_Pnt2d& P);
+
+  Standard_EXPORT static Standard_Real EllipseParameter(const gp_Ax2&       Pos,
+                                                        const Standard_Real MajorRadius,
+                                                        const Standard_Real MinorRadius,
+                                                        const gp_Pnt&       P);
+
   //! Pos is the Axis of the Ellipse
   //! parametrization
   //! In the local coordinate system of the Ellipse
   //! X (U) = MajorRadius * Cos (U)
   //! Y (U) = MinorRadius * Sin (U)
-  Standard_EXPORT static Standard_Real EllipseParameter (const gp_Ax22d& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, const gp_Pnt2d& P);
-  
-  Standard_EXPORT static Standard_Real HyperbolaParameter (const gp_Ax2& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, const gp_Pnt& P);
-  
+  Standard_EXPORT static Standard_Real EllipseParameter(const gp_Ax22d&     Pos,
+                                                        const Standard_Real MajorRadius,
+                                                        const Standard_Real MinorRadius,
+                                                        const gp_Pnt2d&     P);
+
+  Standard_EXPORT static Standard_Real HyperbolaParameter(const gp_Ax2&       Pos,
+                                                          const Standard_Real MajorRadius,
+                                                          const Standard_Real MinorRadius,
+                                                          const gp_Pnt&       P);
+
   //! Pos is the Axis of the Hyperbola
   //! parametrization
   //! In the local coordinate system of the Hyperbola
   //! X (U) = MajorRadius * Ch (U)
   //! Y (U) = MinorRadius * Sh (U)
-  Standard_EXPORT static Standard_Real HyperbolaParameter (const gp_Ax22d& Pos, const Standard_Real MajorRadius, const Standard_Real MinorRadius, const gp_Pnt2d& P);
-  
-  Standard_EXPORT static Standard_Real ParabolaParameter (const gp_Ax2& Pos, const gp_Pnt& P);
-  
+  Standard_EXPORT static Standard_Real HyperbolaParameter(const gp_Ax22d&     Pos,
+                                                          const Standard_Real MajorRadius,
+                                                          const Standard_Real MinorRadius,
+                                                          const gp_Pnt2d&     P);
+
+  Standard_EXPORT static Standard_Real ParabolaParameter(const gp_Ax2& Pos, const gp_Pnt& P);
+
   //! Pos is the mirror axis of the parabola
   //! parametrization
   //! In the local coordinate system of the parabola
@@ -416,55 +651,36 @@ public:
   //! and the directrix.
   //! The following functions build  a 3d curve from a
   //! 2d curve at a given position defined with an Ax2.
-  Standard_EXPORT static Standard_Real ParabolaParameter (const gp_Ax22d& Pos, const gp_Pnt2d& P);
-  
-  Standard_EXPORT static gp_Pnt To3d (const gp_Ax2& Pos, const gp_Pnt2d& P);
-  
-  Standard_EXPORT static gp_Vec To3d (const gp_Ax2& Pos, const gp_Vec2d& V);
-  
-  Standard_EXPORT static gp_Dir To3d (const gp_Ax2& Pos, const gp_Dir2d& V);
-  
-  Standard_EXPORT static gp_Ax1 To3d (const gp_Ax2& Pos, const gp_Ax2d& A);
-  
-  Standard_EXPORT static gp_Ax2 To3d (const gp_Ax2& Pos, const gp_Ax22d& A);
-  
-  Standard_EXPORT static gp_Lin To3d (const gp_Ax2& Pos, const gp_Lin2d& L);
-  
-  Standard_EXPORT static gp_Circ To3d (const gp_Ax2& Pos, const gp_Circ2d& C);
-  
-  Standard_EXPORT static gp_Elips To3d (const gp_Ax2& Pos, const gp_Elips2d& E);
-  
-  Standard_EXPORT static gp_Hypr To3d (const gp_Ax2& Pos, const gp_Hypr2d& H);
-  
+  Standard_EXPORT static Standard_Real ParabolaParameter(const gp_Ax22d& Pos, const gp_Pnt2d& P);
+
+  Standard_EXPORT static gp_Pnt To3d(const gp_Ax2& Pos, const gp_Pnt2d& P);
+
+  Standard_EXPORT static gp_Vec To3d(const gp_Ax2& Pos, const gp_Vec2d& V);
+
+  Standard_EXPORT static gp_Dir To3d(const gp_Ax2& Pos, const gp_Dir2d& V);
+
+  Standard_EXPORT static gp_Ax1 To3d(const gp_Ax2& Pos, const gp_Ax2d& A);
+
+  Standard_EXPORT static gp_Ax2 To3d(const gp_Ax2& Pos, const gp_Ax22d& A);
+
+  Standard_EXPORT static gp_Lin To3d(const gp_Ax2& Pos, const gp_Lin2d& L);
+
+  Standard_EXPORT static gp_Circ To3d(const gp_Ax2& Pos, const gp_Circ2d& C);
+
+  Standard_EXPORT static gp_Elips To3d(const gp_Ax2& Pos, const gp_Elips2d& E);
+
+  Standard_EXPORT static gp_Hypr To3d(const gp_Ax2& Pos, const gp_Hypr2d& H);
 
   //! These functions build a 3D geometric entity from a 2D geometric entity.
   //! The "X Axis" and the "Y Axis" of the global coordinate
   //! system (i.e. 2D space) are lined up respectively with the
   //! "X Axis" and "Y Axis" of the 3D coordinate system, Pos.
-  Standard_EXPORT static gp_Parab To3d (const gp_Ax2& Pos, const gp_Parab2d& Prb);
-
-
-
+  Standard_EXPORT static gp_Parab To3d(const gp_Ax2& Pos, const gp_Parab2d& Prb);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
 
-
 #include <ElCLib.lxx>
-
-
-
-
 
 #endif // _ElCLib_HeaderFile

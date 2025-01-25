@@ -26,25 +26,24 @@ class Standard_Transient;
 class StepVisual_DraughtingCallout;
 class StepVisual_StyledItem;
 
-class StepVisual_AnnotationPlaneElement  : public StepData_SelectType
+class StepVisual_AnnotationPlaneElement : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-  
+
   //! Returns a AnnotationPlaneElement select type
   Standard_EXPORT StepVisual_AnnotationPlaneElement();
-  
+
   //! Recognizes a IdAttributeSelect Kind Entity that is :
   //! 1 -> DraughtingCallout
   //! 2 -> StyledItem
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent)  const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a DraughtingCallout (Null if another type)
-  Standard_EXPORT Handle(StepVisual_DraughtingCallout) DraughtingCallout()  const;
-  
+  Standard_EXPORT Handle(StepVisual_DraughtingCallout) DraughtingCallout() const;
+
   //! returns Value as a StyledItem (Null if another type)
-  Standard_EXPORT Handle(StepVisual_StyledItem) StyledItem()  const;
+  Standard_EXPORT Handle(StepVisual_StyledItem) StyledItem() const;
 };
 #endif // StepVisual_AnnotationPlaneElement

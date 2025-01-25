@@ -28,7 +28,6 @@
 #include <TColStd_Array2OfReal.hxx>
 class Geom_BSplineSurface;
 
-
 //! This class is used to approximate or interpolate
 //! a BSplineSurface passing through an  Array2 of
 //! points, with a given continuity.
@@ -42,39 +41,37 @@ class Geom_BSplineSurface;
 //! for interpolation.
 //! First approximation algorithm is based on usual least square criterium:
 //! minimization of square distance between samplimg points and result surface.
-//! Second approximation algorithm uses least square criterium and additional 
+//! Second approximation algorithm uses least square criterium and additional
 //! minimization of some local characteristic of surface (first, second and third
-//! partial derivative), which allows managing shape of surface. 
+//! partial derivative), which allows managing shape of surface.
 //! Interpolation algorithm produces surface, which passes through sampling points.
 //!
 //! There is accordance between parametrization of result surface S(U, V) and
-//! indexes of array Points(i, j): first index corresponds U parameter of surface, 
+//! indexes of array Points(i, j): first index corresponds U parameter of surface,
 //! second - V parameter of surface.
 //! So, points of any j-th column Points(*, j) represent any V isoline of surface,
 //! points of any i-th row Point(i, *) represent any U isoline of surface.
-//! 
-//! For each sampling point parameters U, V are calculated according to 
-//! type of parametrization, which can be Approx_ChordLength, Approx_Centripetal 
+//!
+//! For each sampling point parameters U, V are calculated according to
+//! type of parametrization, which can be Approx_ChordLength, Approx_Centripetal
 //! or Approx_IsoParametric. Default value is Approx_ChordLength.
 //! For ChordLength parametrisation U(i) = U(i-1) + P(i).Distance(P(i-1)),
 //! For Centripetal type  U(i) = U(i-1) + Sqrt(P(i).Distance(P(i-1))).
 //! Centripetal type can get better result for irregular distances between points.
 //!
 //! Approximation and interpolation algorithms can build periodical surface along U
-//! direction, which corresponds columns of array Points(i, j), 
-//! if corresponding parameter (thePeriodic, see comments below) of called 
+//! direction, which corresponds columns of array Points(i, j),
+//! if corresponding parameter (thePeriodic, see comments below) of called
 //! methods is set to True. Algorithm uses first row Points(1, *) as periodic boundary,
-//! so to avoid getting wrong surface it is necessary to keep distance between 
+//! so to avoid getting wrong surface it is necessary to keep distance between
 //! corresponding points of first and last rows of Points:
 //! Points(1, *) != Points(Upper, *).
 
 class GeomAPI_PointsToBSplineSurface
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs an empty algorithm for
   //! approximation or interpolation of a surface.
   //! Use:
@@ -83,7 +80,7 @@ public:
   //! -   an Interpolate function to define and build
   //! the BSpline surface by interpolation.
   Standard_EXPORT GeomAPI_PointsToBSplineSurface();
-  
+
   //! Approximates  a BSpline  Surface passing  through  an
   //! array of  Points.  The resulting BSpline will  have
   //! the following properties:
@@ -92,10 +89,12 @@ public:
   //! 3- the distance from the point <Points> to the
   //! BSpline will be lower to Tol3D.
 
-  Standard_EXPORT GeomAPI_PointsToBSplineSurface(const TColgp_Array2OfPnt& Points, 
-    const Standard_Integer DegMin = 3, const Standard_Integer DegMax = 8, 
-    const GeomAbs_Shape Continuity = GeomAbs_C2, const Standard_Real Tol3D = 1.0e-3);
-  
+  Standard_EXPORT GeomAPI_PointsToBSplineSurface(const TColgp_Array2OfPnt& Points,
+                                                 const Standard_Integer    DegMin     = 3,
+                                                 const Standard_Integer    DegMax     = 8,
+                                                 const GeomAbs_Shape       Continuity = GeomAbs_C2,
+                                                 const Standard_Real       Tol3D      = 1.0e-3);
+
   //! Approximates  a BSpline  Surface passing  through  an
   //! array of  Points.  The resulting BSpline will  have
   //! the following properties:
@@ -104,21 +103,26 @@ public:
   //! 3- the distance from the point <Points> to the
   //! BSpline will be lower to Tol3D.
 
-  Standard_EXPORT GeomAPI_PointsToBSplineSurface(const TColgp_Array2OfPnt& Points, 
-    const Approx_ParametrizationType ParType, 
-    const Standard_Integer DegMin = 3, const Standard_Integer DegMax = 8, 
-    const GeomAbs_Shape Continuity = GeomAbs_C2, const Standard_Real Tol3D = 1.0e-3);
-  
+  Standard_EXPORT GeomAPI_PointsToBSplineSurface(const TColgp_Array2OfPnt&        Points,
+                                                 const Approx_ParametrizationType ParType,
+                                                 const Standard_Integer           DegMin = 3,
+                                                 const Standard_Integer           DegMax = 8,
+                                                 const GeomAbs_Shape Continuity = GeomAbs_C2,
+                                                 const Standard_Real Tol3D      = 1.0e-3);
+
   //! Approximates  a BSpline  Surface passing  through  an
   //! array of  points using variational smoothing algorithm,
   //! which tries to minimize additional criterium:
   //! Weight1*CurveLength + Weight2*Curvature + Weight3*Torsion.
 
-  Standard_EXPORT GeomAPI_PointsToBSplineSurface(const TColgp_Array2OfPnt& Points, 
-    const Standard_Real Weight1, const Standard_Real Weight2, const Standard_Real Weight3, 
-    const Standard_Integer DegMax = 8, const GeomAbs_Shape Continuity = GeomAbs_C2, 
-    const Standard_Real Tol3D = 1.0e-3);
-  
+  Standard_EXPORT GeomAPI_PointsToBSplineSurface(const TColgp_Array2OfPnt& Points,
+                                                 const Standard_Real       Weight1,
+                                                 const Standard_Real       Weight2,
+                                                 const Standard_Real       Weight3,
+                                                 const Standard_Integer    DegMax     = 8,
+                                                 const GeomAbs_Shape       Continuity = GeomAbs_C2,
+                                                 const Standard_Real       Tol3D      = 1.0e-3);
+
   //! Approximates  a BSpline  Surface passing  through  an
   //! array of  Points.
   //!
@@ -136,12 +140,16 @@ public:
   //! 4- the parametrization of the surface will verify:
   //! S->Value( U, V) = gp_Pnt( U, V, Z(U,V) );
 
-  Standard_EXPORT GeomAPI_PointsToBSplineSurface(const TColStd_Array2OfReal& ZPoints, 
-    const Standard_Real X0, const Standard_Real dX, 
-    const Standard_Real Y0, const Standard_Real dY,
-    const Standard_Integer DegMin = 3, const Standard_Integer DegMax = 8, 
-    const GeomAbs_Shape Continuity = GeomAbs_C2, const Standard_Real Tol3D = 1.0e-3);
-  
+  Standard_EXPORT GeomAPI_PointsToBSplineSurface(const TColStd_Array2OfReal& ZPoints,
+                                                 const Standard_Real         X0,
+                                                 const Standard_Real         dX,
+                                                 const Standard_Real         Y0,
+                                                 const Standard_Real         dY,
+                                                 const Standard_Integer      DegMin = 3,
+                                                 const Standard_Integer      DegMax = 8,
+                                                 const GeomAbs_Shape Continuity     = GeomAbs_C2,
+                                                 const Standard_Real Tol3D          = 1.0e-3);
+
   //! Approximates  a BSpline Surface passing  through  an
   //! array of  Point.  The resulting BSpline will  have
   //! the following properties:
@@ -150,28 +158,31 @@ public:
   //! 3- the distance from the point <Points> to the
   //! BSpline will be lower to Tol3D.
 
-  Standard_EXPORT void Init (const TColgp_Array2OfPnt& Points, 
-    const Standard_Integer DegMin = 3, const Standard_Integer DegMax = 8, 
-    const GeomAbs_Shape Continuity = GeomAbs_C2, const Standard_Real Tol3D = 1.0e-3);
-  
+  Standard_EXPORT void Init(const TColgp_Array2OfPnt& Points,
+                            const Standard_Integer    DegMin     = 3,
+                            const Standard_Integer    DegMax     = 8,
+                            const GeomAbs_Shape       Continuity = GeomAbs_C2,
+                            const Standard_Real       Tol3D      = 1.0e-3);
+
   //! Interpolates  a BSpline Surface passing  through  an
   //! array of  Point.  The resulting BSpline will  have
   //! the following properties:
   //! 1- his degree will be 3.
   //! 2- his  continuity will be  C2.
 
-  Standard_EXPORT void Interpolate (const TColgp_Array2OfPnt& Points,  
-                                    const Standard_Boolean thePeriodic = Standard_False);
-  
+  Standard_EXPORT void Interpolate(const TColgp_Array2OfPnt& Points,
+                                   const Standard_Boolean    thePeriodic = Standard_False);
+
   //! Interpolates  a BSpline Surface passing  through  an
   //! array of  Point.  The resulting BSpline will  have
   //! the following properties:
   //! 1- his degree will be 3.
   //! 2- his  continuity will be  C2.
 
-  Standard_EXPORT void Interpolate (const TColgp_Array2OfPnt& Points, const Approx_ParametrizationType ParType,
-                                    const Standard_Boolean thePeriodic = Standard_False);
-  
+  Standard_EXPORT void Interpolate(const TColgp_Array2OfPnt&        Points,
+                                   const Approx_ParametrizationType ParType,
+                                   const Standard_Boolean           thePeriodic = Standard_False);
+
   //! Approximates  a BSpline  Surface passing  through  an
   //! array of  Points.
   //!
@@ -189,12 +200,16 @@ public:
   //! 4- the parametrization of the surface will verify:
   //! S->Value( U, V) = gp_Pnt( U, V, Z(U,V) );
 
-  Standard_EXPORT void Init (const TColStd_Array2OfReal& ZPoints, 
-    const Standard_Real X0, const Standard_Real dX, 
-    const Standard_Real Y0, const Standard_Real dY, 
-    const Standard_Integer DegMin = 3, const Standard_Integer DegMax = 8, 
-    const GeomAbs_Shape Continuity = GeomAbs_C2, const Standard_Real Tol3D = 1.0e-3);
-  
+  Standard_EXPORT void Init(const TColStd_Array2OfReal& ZPoints,
+                            const Standard_Real         X0,
+                            const Standard_Real         dX,
+                            const Standard_Real         Y0,
+                            const Standard_Real         dY,
+                            const Standard_Integer      DegMin     = 3,
+                            const Standard_Integer      DegMax     = 8,
+                            const GeomAbs_Shape         Continuity = GeomAbs_C2,
+                            const Standard_Real         Tol3D      = 1.0e-3);
+
   //! Interpolates  a BSpline  Surface passing  through  an
   //! array of  Points.
   //!
@@ -210,9 +225,12 @@ public:
   //! 4- the parametrization of the surface will verify:
   //! S->Value( U, V) = gp_Pnt( U, V, Z(U,V) );
 
-  Standard_EXPORT void Interpolate (const TColStd_Array2OfReal& ZPoints, 
-    const Standard_Real X0, const Standard_Real dX, const Standard_Real Y0, const Standard_Real dY);
-  
+  Standard_EXPORT void Interpolate(const TColStd_Array2OfReal& ZPoints,
+                                   const Standard_Real         X0,
+                                   const Standard_Real         dX,
+                                   const Standard_Real         Y0,
+                                   const Standard_Real         dY);
+
   //! Approximates  a BSpline Surface passing  through  an
   //! array of  Point.  The resulting BSpline will  have
   //! the following properties:
@@ -221,51 +239,37 @@ public:
   //! 3- the distance from the point <Points> to the
   //! BSpline will be lower to Tol3D.
 
-  Standard_EXPORT void Init (const TColgp_Array2OfPnt& Points, 
-    const Approx_ParametrizationType ParType, 
-    const Standard_Integer DegMin = 3, const Standard_Integer DegMax = 8,
-    const GeomAbs_Shape Continuity = GeomAbs_C2, 
-    const Standard_Real Tol3D = 1.0e-3, const Standard_Boolean thePeriodic = Standard_False);
-  
+  Standard_EXPORT void Init(const TColgp_Array2OfPnt&        Points,
+                            const Approx_ParametrizationType ParType,
+                            const Standard_Integer           DegMin      = 3,
+                            const Standard_Integer           DegMax      = 8,
+                            const GeomAbs_Shape              Continuity  = GeomAbs_C2,
+                            const Standard_Real              Tol3D       = 1.0e-3,
+                            const Standard_Boolean           thePeriodic = Standard_False);
+
   //! Approximates  a BSpline Surface passing  through  an
   //! array of  point using variational smoothing algorithm,
   //! which tries to minimize additional criterium:
   //! Weight1*CurveLength + Weight2*Curvature + Weight3*Torsion.
 
-  Standard_EXPORT void Init (const TColgp_Array2OfPnt& Points, 
-    const Standard_Real Weight1, const Standard_Real Weight2, const Standard_Real Weight3, 
-    const Standard_Integer DegMax = 8, 
-    const GeomAbs_Shape Continuity = GeomAbs_C2, const Standard_Real Tol3D = 1.0e-3);
-  
+  Standard_EXPORT void Init(const TColgp_Array2OfPnt& Points,
+                            const Standard_Real       Weight1,
+                            const Standard_Real       Weight2,
+                            const Standard_Real       Weight3,
+                            const Standard_Integer    DegMax     = 8,
+                            const GeomAbs_Shape       Continuity = GeomAbs_C2,
+                            const Standard_Real       Tol3D      = 1.0e-3);
+
   //! Returns the approximate BSpline Surface
   Standard_EXPORT const Handle(Geom_BSplineSurface)& Surface() const;
-  Standard_EXPORT operator Handle(Geom_BSplineSurface)() const;
-  
+  Standard_EXPORT                                    operator Handle(Geom_BSplineSurface)() const;
+
   Standard_EXPORT Standard_Boolean IsDone() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Boolean myIsDone;
+  Standard_Boolean            myIsDone;
   Handle(Geom_BSplineSurface) mySurface;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeomAPI_PointsToBSplineSurface_HeaderFile

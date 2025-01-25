@@ -1,7 +1,7 @@
-// Created on: 2011-10-14 
+// Created on: 2011-10-14
 // Created by: Roman KOZLOV
-// Copyright (c) 2011-2014 OPEN CASCADE SAS 
-// 
+// Copyright (c) 2011-2014 OPEN CASCADE SAS
+//
 // This file is part of Open CASCADE Technology software library.
 //
 // This library is free software; you can redistribute it and/or modify it under
@@ -18,11 +18,11 @@
 #include <IVtkOCC_ShapeMesher.hxx>
 #include <IVtkTools_ShapeObject.hxx>
 
-// prevent disabling some MSVC warning messages by VTK headers 
+// prevent disabling some MSVC warning messages by VTK headers
 #ifdef _MSC_VER
-#pragma warning(push)
+  #pragma warning(push)
 #endif
-#include <vtkObjectFactory.h> 
+#include <vtkObjectFactory.h>
 #include <vtkCellData.h>
 #include <vtkIdTypeArray.h>
 #include <vtkInformation.h>
@@ -31,55 +31,48 @@
 #include <vtkTransform.h>
 #include <vtkTransformPolyDataFilter.h>
 #ifdef _MSC_VER
-#pragma warning(pop)
+  #pragma warning(pop)
 #endif
 
 vtkStandardNewMacro(IVtkTools_ShapeDataSource)
 
-//================================================================
-// Function : Constructor
-// Purpose  :
-//================================================================
-IVtkTools_ShapeDataSource::IVtkTools_ShapeDataSource()
-: myPolyData (new IVtkVTK_ShapeData()),
-  myIsFastTransformMode (Standard_False),
-  myIsTransformOnly (Standard_False)
+  //================================================================
+  // Function : Constructor
+  // Purpose  :
+  //================================================================
+  IVtkTools_ShapeDataSource::IVtkTools_ShapeDataSource()
+    : myPolyData(new IVtkVTK_ShapeData()),
+      myIsFastTransformMode(Standard_False),
+      myIsTransformOnly(Standard_False)
 {
   this->SetNumberOfInputPorts(0);
   this->SetNumberOfOutputPorts(1);
 }
 
-//================================================================
-// Function : Destructor
-// Purpose  :
-//================================================================
+//=================================================================================================
+
 IVtkTools_ShapeDataSource::~IVtkTools_ShapeDataSource()
 {
   //
 }
 
-//================================================================
-// Function : SetShape
-// Purpose  :
-//================================================================
-void IVtkTools_ShapeDataSource::SetShape (const IVtkOCC_Shape::Handle& theOccShape)
+//=================================================================================================
+
+void IVtkTools_ShapeDataSource::SetShape(const IVtkOCC_Shape::Handle& theOccShape)
 {
-  myIsTransformOnly = myIsFastTransformMode
-                  && !myOccShape.IsNull()
-                  &&  theOccShape->GetShape().IsPartner (myOccShape->GetShape());
+  myIsTransformOnly = myIsFastTransformMode && !myOccShape.IsNull()
+                      && theOccShape->GetShape().IsPartner(myOccShape->GetShape());
   myOccShape = theOccShape;
   this->Modified();
 }
 
-//================================================================
-// Function : RequestData
-// Purpose  :
-//================================================================
-int IVtkTools_ShapeDataSource::RequestData(vtkInformation        *vtkNotUsed(theRequest),
-                                           vtkInformationVector **vtkNotUsed(theInputVector),
-                                           vtkInformationVector  *theOutputVector)
+//=================================================================================================
+
+int IVtkTools_ShapeDataSource::RequestData(vtkInformation*        vtkNotUsed(theRequest),
+                                           vtkInformationVector** vtkNotUsed(theInputVector),
+                                           vtkInformationVector*  theOutputVector)
 {
-  vtkSmartPointer<vtkPolyData> aPolyData = vtkPolyData::GetData (theOutputVector);
+  vtkSmartPointer<vtkPolyData> aPolyData = vtkPolyData::GetData(theOutputVector);
   if (aPolyData.GetPointer() == NULL)
   {
     return 1;
@@ -87,17 +80,17 @@ int IVtkTools_ShapeDataSource::RequestData(vtkInformation        *vtkNotUsed(the
 
   aPolyData->Allocate();
   vtkSmartPointer<vtkPoints> aPts = vtkSmartPointer<vtkPoints>::New();
-  aPolyData->SetPoints (aPts);
+  aPolyData->SetPoints(aPts);
 
   vtkSmartPointer<vtkPolyData> aTransformedData;
-  TopoDS_Shape aShape = myOccShape->GetShape();
-  const TopLoc_Location aShapeLoc = aShape.Location();
+  TopoDS_Shape                 aShape    = myOccShape->GetShape();
+  const TopLoc_Location        aShapeLoc = aShape.Location();
   if (myIsTransformOnly)
   {
     vtkSmartPointer<vtkPolyData> aPrevData = myPolyData->getVtkPolyData();
     if (!aShapeLoc.IsIdentity())
     {
-      aTransformedData = this->transform (aPrevData, aShapeLoc);
+      aTransformedData = this->transform(aPrevData, aShapeLoc);
     }
     else
     {
@@ -107,24 +100,22 @@ int IVtkTools_ShapeDataSource::RequestData(vtkInformation        *vtkNotUsed(the
   else
   {
     IVtkOCC_Shape::Handle aShapeWrapperCopy = myOccShape;
-    if (myIsFastTransformMode
-    && !aShapeLoc.IsIdentity())
+    if (myIsFastTransformMode && !aShapeLoc.IsIdentity())
     {
       // Reset location before meshing
-      aShape.Location (TopLoc_Location());
-      aShapeWrapperCopy = new IVtkOCC_Shape (aShape);
-      aShapeWrapperCopy->SetAttributes (myOccShape->Attributes());
-      aShapeWrapperCopy->SetId (myOccShape->GetId());
+      aShape.Location(TopLoc_Location());
+      aShapeWrapperCopy = new IVtkOCC_Shape(aShape);
+      aShapeWrapperCopy->SetAttributes(myOccShape->Attributes());
+      aShapeWrapperCopy->SetId(myOccShape->GetId());
     }
 
-    myPolyData = new IVtkVTK_ShapeData();
+    myPolyData                          = new IVtkVTK_ShapeData();
     IVtkOCC_ShapeMesher::Handle aMesher = new IVtkOCC_ShapeMesher();
-    aMesher->Build (aShapeWrapperCopy, myPolyData);
+    aMesher->Build(aShapeWrapperCopy, myPolyData);
     vtkSmartPointer<vtkPolyData> aMeshData = myPolyData->getVtkPolyData();
-    if (myIsFastTransformMode
-    && !aShapeLoc.IsIdentity())
+    if (myIsFastTransformMode && !aShapeLoc.IsIdentity())
     {
-      aTransformedData = this->transform (aMeshData, aShapeLoc);
+      aTransformedData = this->transform(aMeshData, aShapeLoc);
     }
     else
     {
@@ -132,79 +123,72 @@ int IVtkTools_ShapeDataSource::RequestData(vtkInformation        *vtkNotUsed(the
     }
   }
 
-  aPolyData->CopyStructure  (aTransformedData); // Copy points and cells
-  aPolyData->CopyAttributes (aTransformedData); // Copy data arrays (sub-shapes IDs)
+  aPolyData->CopyStructure(aTransformedData);  // Copy points and cells
+  aPolyData->CopyAttributes(aTransformedData); // Copy data arrays (sub-shapes IDs)
 
   // We store the OccShape instance in a IVtkTools_ShapeObject
   // wrapper in vtkInformation object of vtkDataObject, then pass it
   // to the actors through pipelines, so selection logic can access
   // OccShape easily given the actor instance.
-  IVtkTools_ShapeObject::SetShapeSource (this, aPolyData);
-  aPolyData->GetAttributes (vtkDataObject::CELL)->SetPedigreeIds (SubShapeIDs());
+  IVtkTools_ShapeObject::SetShapeSource(this, aPolyData);
+  aPolyData->GetAttributes(vtkDataObject::CELL)->SetPedigreeIds(SubShapeIDs());
   return 1;
 }
 
-//================================================================
-// Function : SubShapeIDs
-// Purpose  :
-//================================================================
+//=================================================================================================
+
 vtkSmartPointer<vtkIdTypeArray> IVtkTools_ShapeDataSource::SubShapeIDs()
 {
-  vtkSmartPointer<vtkDataArray> anArr = GetOutput()->GetCellData()->GetArray(IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS());
-  return vtkSmartPointer<vtkIdTypeArray> (vtkIdTypeArray::SafeDownCast (anArr.GetPointer()));
+  vtkSmartPointer<vtkDataArray> anArr =
+    GetOutput()->GetCellData()->GetArray(IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS());
+  return vtkSmartPointer<vtkIdTypeArray>(vtkIdTypeArray::SafeDownCast(anArr.GetPointer()));
 }
 
-//================================================================
-// Function : GetId
-// Purpose  :
-//================================================================
+//=================================================================================================
+
 IVtk_IdType IVtkTools_ShapeDataSource::GetId() const
 {
   return myOccShape.IsNull() ? -1 : myOccShape->GetId();
 }
 
-//================================================================
-// Function : Contains
-// Purpose  :
-//================================================================
-Standard_Boolean IVtkTools_ShapeDataSource::Contains (const IVtkOCC_Shape::Handle& theShape) const
+//=================================================================================================
+
+Standard_Boolean IVtkTools_ShapeDataSource::Contains(const IVtkOCC_Shape::Handle& theShape) const
 {
   return myOccShape == theShape;
 }
 
-//================================================================
-// Function : transform
-// Purpose  :
-//================================================================
-vtkSmartPointer<vtkPolyData> IVtkTools_ShapeDataSource::transform (vtkPolyData* theSource,
-                                                                   const gp_Trsf& theTrsf) const
+//=================================================================================================
+
+vtkSmartPointer<vtkPolyData> IVtkTools_ShapeDataSource::transform(vtkPolyData*   theSource,
+                                                                  const gp_Trsf& theTrsf) const
 {
   vtkSmartPointer<vtkPolyData> aResult = vtkSmartPointer<vtkPolyData>::New();
   aResult->Allocate();
   vtkSmartPointer<vtkPoints> aPts = vtkSmartPointer<vtkPoints>::New();
-  aResult->SetPoints (aPts);
+  aResult->SetPoints(aPts);
 
   vtkSmartPointer<vtkTransform> aTransform = vtkSmartPointer<vtkTransform>::New();
-  vtkSmartPointer<vtkMatrix4x4> aMx = vtkSmartPointer<vtkMatrix4x4>::New();
+  vtkSmartPointer<vtkMatrix4x4> aMx        = vtkSmartPointer<vtkMatrix4x4>::New();
   for (Standard_Integer aRow = 0; aRow < 3; ++aRow)
   {
     for (Standard_Integer aCol = 0; aCol < 4; ++aCol)
     {
-      aMx->SetElement (aRow, aCol, theTrsf.Value (aRow + 1, aCol + 1) );
+      aMx->SetElement(aRow, aCol, theTrsf.Value(aRow + 1, aCol + 1));
     }
   }
 
-  aTransform->SetMatrix (aMx);
-  vtkSmartPointer<vtkTransformPolyDataFilter> aTrsfFilter
-    = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
+  aTransform->SetMatrix(aMx);
+  vtkSmartPointer<vtkTransformPolyDataFilter> aTrsfFilter =
+    vtkSmartPointer<vtkTransformPolyDataFilter>::New();
 
-  aTrsfFilter->SetTransform (aTransform);
-  aTrsfFilter->SetInputData (theSource);
+  aTrsfFilter->SetTransform(aTransform);
+  aTrsfFilter->SetInputData(theSource);
   aTrsfFilter->Update();
 
   vtkSmartPointer<vtkPolyData> aTransformed = aTrsfFilter->GetOutput();
-  aResult->CopyStructure (aTransformed);  // Copy points and cells
-  aResult->CopyAttributes (aTransformed); // Copy data arrays (sub-shapes ids)
+  aResult->CopyStructure(aTransformed);  // Copy points and cells
+  aResult->CopyAttributes(aTransformed); // Copy data arrays (sub-shapes ids)
 
   return aResult;
 }

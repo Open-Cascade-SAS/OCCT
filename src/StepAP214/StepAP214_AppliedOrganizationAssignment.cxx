@@ -11,44 +11,45 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepAP214_AppliedOrganizationAssignment.hxx>
 #include <StepAP214_OrganizationItem.hxx>
 #include <StepBasic_Organization.hxx>
 #include <StepBasic_OrganizationRole.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedOrganizationAssignment,StepBasic_OrganizationAssignment)
+IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedOrganizationAssignment,
+                           StepBasic_OrganizationAssignment)
 
-StepAP214_AppliedOrganizationAssignment::StepAP214_AppliedOrganizationAssignment ()  {}
+StepAP214_AppliedOrganizationAssignment::StepAP214_AppliedOrganizationAssignment() {}
 
 void StepAP214_AppliedOrganizationAssignment::Init(
-	const Handle(StepBasic_Organization)& aAssignedOrganization,
-	const Handle(StepBasic_OrganizationRole)& aRole,
-	const Handle(StepAP214_HArray1OfOrganizationItem)& aItems)
+  const Handle(StepBasic_Organization)&              aAssignedOrganization,
+  const Handle(StepBasic_OrganizationRole)&          aRole,
+  const Handle(StepAP214_HArray1OfOrganizationItem)& aItems)
 {
-	// --- classe own fields ---
-	items = aItems;
-	// --- classe inherited fields ---
-	StepBasic_OrganizationAssignment::Init(aAssignedOrganization, aRole);
+  // --- classe own fields ---
+  items = aItems;
+  // --- classe inherited fields ---
+  StepBasic_OrganizationAssignment::Init(aAssignedOrganization, aRole);
 }
 
-
-void StepAP214_AppliedOrganizationAssignment::SetItems(const Handle(StepAP214_HArray1OfOrganizationItem)& aItems)
+void StepAP214_AppliedOrganizationAssignment::SetItems(
+  const Handle(StepAP214_HArray1OfOrganizationItem)& aItems)
 {
-	items = aItems;
+  items = aItems;
 }
 
 Handle(StepAP214_HArray1OfOrganizationItem) StepAP214_AppliedOrganizationAssignment::Items() const
 {
-	return items;
+  return items;
 }
 
-StepAP214_OrganizationItem StepAP214_AppliedOrganizationAssignment::ItemsValue(const Standard_Integer num) const
+StepAP214_OrganizationItem StepAP214_AppliedOrganizationAssignment::ItemsValue(
+  const Standard_Integer num) const
 {
-	return items->Value(num);
+  return items->Value(num);
 }
 
-Standard_Integer StepAP214_AppliedOrganizationAssignment::NbItems () const
+Standard_Integer StepAP214_AppliedOrganizationAssignment::NbItems() const
 {
-	return items->Length();
+  return items->Length();
 }

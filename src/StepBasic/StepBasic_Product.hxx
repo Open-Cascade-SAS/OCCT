@@ -26,67 +26,51 @@
 class TCollection_HAsciiString;
 class StepBasic_ProductContext;
 
-
 class StepBasic_Product;
 DEFINE_STANDARD_HANDLE(StepBasic_Product, Standard_Transient)
-
 
 class StepBasic_Product : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a Product
   Standard_EXPORT StepBasic_Product();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aId, const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepBasic_HArray1OfProductContext)& aFrameOfReference);
-  
-  Standard_EXPORT void SetId (const Handle(TCollection_HAsciiString)& aId);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&          aId,
+                            const Handle(TCollection_HAsciiString)&          aName,
+                            const Handle(TCollection_HAsciiString)&          aDescription,
+                            const Handle(StepBasic_HArray1OfProductContext)& aFrameOfReference);
+
+  Standard_EXPORT void SetId(const Handle(TCollection_HAsciiString)& aId);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) Id() const;
-  
-  Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
-  
+
+  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
-  
-  Standard_EXPORT void SetDescription (const Handle(TCollection_HAsciiString)& aDescription);
-  
+
+  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& aDescription);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
-  
-  Standard_EXPORT void SetFrameOfReference (const Handle(StepBasic_HArray1OfProductContext)& aFrameOfReference);
-  
+
+  Standard_EXPORT void SetFrameOfReference(
+    const Handle(StepBasic_HArray1OfProductContext)& aFrameOfReference);
+
   Standard_EXPORT Handle(StepBasic_HArray1OfProductContext) FrameOfReference() const;
-  
-  Standard_EXPORT Handle(StepBasic_ProductContext) FrameOfReferenceValue (const Standard_Integer num) const;
-  
+
+  Standard_EXPORT Handle(StepBasic_ProductContext) FrameOfReferenceValue(
+    const Standard_Integer num) const;
+
   Standard_EXPORT Standard_Integer NbFrameOfReference() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_Product,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_Product, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(TCollection_HAsciiString) id;
-  Handle(TCollection_HAsciiString) name;
-  Handle(TCollection_HAsciiString) description;
+  Handle(TCollection_HAsciiString)          id;
+  Handle(TCollection_HAsciiString)          name;
+  Handle(TCollection_HAsciiString)          description;
   Handle(StepBasic_HArray1OfProductContext) frameOfReference;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_Product_HeaderFile

@@ -14,70 +14,45 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRepBuilderAPI_Command.hxx>
 #include <StdFail_NotDone.hxx>
 
-//=======================================================================
-//function : BRepBuilderAPI_Command
-//purpose  : 
-//=======================================================================
-BRepBuilderAPI_Command::BRepBuilderAPI_Command() :
-       myDone(Standard_False)
+//=================================================================================================
+
+BRepBuilderAPI_Command::BRepBuilderAPI_Command()
+    : myDone(Standard_False)
 {
 }
 
-//=======================================================================
-//function : ~BRepBuilderAPI_Command
-//purpose  : 
-//=======================================================================
-BRepBuilderAPI_Command::~BRepBuilderAPI_Command()
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : IsDone
-//purpose  : 
-//=======================================================================
+BRepBuilderAPI_Command::~BRepBuilderAPI_Command() {}
 
-Standard_Boolean  BRepBuilderAPI_Command::IsDone()const 
+//=================================================================================================
+
+Standard_Boolean BRepBuilderAPI_Command::IsDone() const
 {
   return myDone;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Check
-//purpose  : 
-//=======================================================================
-
-void  BRepBuilderAPI_Command::Check()const 
+void BRepBuilderAPI_Command::Check() const
 {
   if (!myDone)
     throw StdFail_NotDone("BRep_API: command not done");
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Done
-//purpose  : 
-//=======================================================================
-
-void  BRepBuilderAPI_Command::Done()
+void BRepBuilderAPI_Command::Done()
 {
   myDone = Standard_True;
 }
 
+//=================================================================================================
 
-
-//=======================================================================
-//function : NotDone
-//purpose  : 
-//=======================================================================
-
-void  BRepBuilderAPI_Command::NotDone()
+void BRepBuilderAPI_Command::NotDone()
 {
   myDone = Standard_False;
 }
-
-
-

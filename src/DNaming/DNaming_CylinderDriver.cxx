@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -37,25 +36,21 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Solid.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(DNaming_CylinderDriver,TFunction_Driver)
+IMPLEMENT_STANDARD_RTTIEXT(DNaming_CylinderDriver, TFunction_Driver)
+
+//=================================================================================================
+
+DNaming_CylinderDriver::DNaming_CylinderDriver() {}
 
 //=======================================================================
-//function : DNaming_CylinderDriver
-//purpose  : Constructor
+// function : Validate
+// purpose  : Validates labels of a function in <log>.
 //=======================================================================
-DNaming_CylinderDriver::DNaming_CylinderDriver()
-{}
+void DNaming_CylinderDriver::Validate(Handle(TFunction_Logbook)&) const {}
 
 //=======================================================================
-//function : Validate
-//purpose  : Validates labels of a function in <log>.
-//=======================================================================
-void DNaming_CylinderDriver::Validate(Handle(TFunction_Logbook)&) const
-{}
-
-//=======================================================================
-//function : MustExecute
-//purpose  : Analyse in <log> if the loaded function must be executed
+// function : MustExecute
+// purpose  : Analyse in <log> if the loaded function must be executed
 //=======================================================================
 Standard_Boolean DNaming_CylinderDriver::MustExecute(const Handle(TFunction_Logbook)&) const
 {
@@ -63,86 +58,97 @@ Standard_Boolean DNaming_CylinderDriver::MustExecute(const Handle(TFunction_Logb
 }
 
 //=======================================================================
-//function : Execute
-//purpose  : Execute the function and push in <log> the impacted labels
+// function : Execute
+// purpose  : Execute the function and push in <log> the impacted labels
 //=======================================================================
 Standard_Integer DNaming_CylinderDriver::Execute(Handle(TFunction_Logbook)& theLog) const
 {
   Handle(TFunction_Function) aFunction;
-  Label().FindAttribute(TFunction_Function::GetID(),aFunction);
-  if(aFunction.IsNull()) return -1;
+  Label().FindAttribute(TFunction_Function::GetID(), aFunction);
+  if (aFunction.IsNull())
+    return -1;
 
-
-
-  Standard_Real aRadius = DNaming::GetReal(aFunction,CYL_RADIUS)->Get();
-  Standard_Real aHeight = DNaming::GetReal(aFunction,CYL_HEIGHT)->Get();
-  Handle(TDataStd_UAttribute) anObject = DNaming::GetObjectArg(aFunction,CYL_AXIS);
-  Handle(TNaming_NamedShape) aNSAxis = DNaming::GetObjectValue(anObject);
-  if (aNSAxis->IsEmpty()) {
+  Standard_Real               aRadius  = DNaming::GetReal(aFunction, CYL_RADIUS)->Get();
+  Standard_Real               aHeight  = DNaming::GetReal(aFunction, CYL_HEIGHT)->Get();
+  Handle(TDataStd_UAttribute) anObject = DNaming::GetObjectArg(aFunction, CYL_AXIS);
+  Handle(TNaming_NamedShape)  aNSAxis  = DNaming::GetObjectValue(anObject);
+  if (aNSAxis->IsEmpty())
+  {
 #ifdef OCCT_DEBUG
-    std::cout<<"CylinderDriver:: Axis is empty"<<std::endl;
+    std::cout << "CylinderDriver:: Axis is empty" << std::endl;
 #endif
     aFunction->SetFailure(WRONG_AXIS);
     return -1;
   }
   TopoDS_Shape aTopoDSAxis = aNSAxis->Get();
-  if (aTopoDSAxis.IsNull()) {
+  if (aTopoDSAxis.IsNull())
+  {
 #ifdef OCCT_DEBUG
-    std::cout<<"CylinderDriver:: Axis is null"<<std::endl;
+    std::cout << "CylinderDriver:: Axis is null" << std::endl;
 #endif
     aFunction->SetFailure(WRONG_AXIS);
     return -1;
   }
   // Creation of gp axis (gp_Ax2):
-  if (aTopoDSAxis.ShapeType() != TopAbs_EDGE && aTopoDSAxis.ShapeType() != TopAbs_WIRE) {
+  if (aTopoDSAxis.ShapeType() != TopAbs_EDGE && aTopoDSAxis.ShapeType() != TopAbs_WIRE)
+  {
 #ifdef OCCT_DEBUG
-    std::cout<<"CylinderDriver:: Wrong axis, ShapeType = " << aTopoDSAxis.ShapeType() <<std::endl;
-#endif    
+    std::cout << "CylinderDriver:: Wrong axis, ShapeType = " << aTopoDSAxis.ShapeType()
+              << std::endl;
+#endif
     aFunction->SetFailure(WRONG_AXIS);
     return -1;
   }
 
   gp_Ax2 anAxis;
-  if (aTopoDSAxis.ShapeType() == TopAbs_WIRE) {
+  if (aTopoDSAxis.ShapeType() == TopAbs_WIRE)
+  {
     TopExp_Explorer anExplorer(aTopoDSAxis, TopAbs_EDGE);
     aTopoDSAxis = anExplorer.Current();
   }
 
   BRepAdaptor_Curve aCurveAda(TopoDS::Edge(aTopoDSAxis));
-  if (aCurveAda.GetType() == GeomAbs_Line) {
+  if (aCurveAda.GetType() == GeomAbs_Line)
+  {
     gp_Lin aLin = aCurveAda.Line();
-    anAxis = gp_Ax2(aLin.Location(), aLin.Direction());
-    if(!aTopoDSAxis.Infinite()) {
+    anAxis      = gp_Ax2(aLin.Location(), aLin.Direction());
+    if (!aTopoDSAxis.Infinite())
+    {
       TopoDS_Vertex V1, V2;
       TopExp::Vertices(TopoDS::Edge(aTopoDSAxis), V1, V2);
       gp_Pnt aP1 = BRep_Tool::Pnt(V1);
       anAxis.SetLocation(aP1);
     }
-  } else {
+  }
+  else
+  {
 #ifdef OCCT_DEBUG
-    std::cout<<"CylinderDriver:: I don't support wires for a while"<<std::endl;
-#endif    
+    std::cout << "CylinderDriver:: I don't support wires for a while" << std::endl;
+#endif
     aFunction->SetFailure(WRONG_AXIS);
     return -1;
   }
-  
+
   Handle(TNaming_NamedShape) aPrevCyl = DNaming::GetFunctionResult(aFunction);
-// Save location
+  // Save location
   TopLoc_Location aLocation;
-  if (!aPrevCyl.IsNull() && !aPrevCyl->IsEmpty()) {
+  if (!aPrevCyl.IsNull() && !aPrevCyl->IsEmpty())
+  {
     aLocation = aPrevCyl->Get().Location();
   }
 
-  BRepPrimAPI_MakeCylinder aMakeCylinder(anAxis, aRadius, aHeight);  
+  BRepPrimAPI_MakeCylinder aMakeCylinder(anAxis, aRadius, aHeight);
   aMakeCylinder.Build();
-  if (!aMakeCylinder.IsDone()) {
+  if (!aMakeCylinder.IsDone())
+  {
     aFunction->SetFailure(ALGO_FAILED);
     return -1;
   }
 
-  TopoDS_Shape aResult = aMakeCylinder.Solid();
+  TopoDS_Shape       aResult = aMakeCylinder.Solid();
   BRepCheck_Analyzer aCheck(aResult);
-  if (!aCheck.IsValid(aResult)) {
+  if (!aCheck.IsValid(aResult))
+  {
     aFunction->SetFailure(RESULT_NOT_VALID);
     return -1;
   }
@@ -151,51 +157,50 @@ Standard_Integer DNaming_CylinderDriver::Execute(Handle(TFunction_Logbook)& theL
   LoadNamingDS(RESPOSITION(aFunction), aMakeCylinder);
 
   // restore location
-  if(!aLocation.IsIdentity()) 
+  if (!aLocation.IsIdentity())
     TNaming::Displace(RESPOSITION(aFunction), aLocation, Standard_True);
 
-  theLog->SetValid(RESPOSITION(aFunction), Standard_True);  
+  theLog->SetValid(RESPOSITION(aFunction), Standard_True);
   aFunction->SetFailure(DONE);
   return 0;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : LoadAndName
-//purpose  : 
-//=======================================================================
-void DNaming_CylinderDriver::LoadNamingDS (const TDF_Label& theResultLabel, 
-					   BRepPrimAPI_MakeCylinder& MS) const 
+void DNaming_CylinderDriver::LoadNamingDS(const TDF_Label&          theResultLabel,
+                                          BRepPrimAPI_MakeCylinder& MS) const
 {
-  TNaming_Builder Builder (theResultLabel);
-  Builder.Generated (MS.Solid());
+  TNaming_Builder Builder(theResultLabel);
+  Builder.Generated(MS.Solid());
 
   BRepPrim_Cylinder& S = MS.Cylinder();
 
-  //Load faces of the Cyl :
-  if (S.HasBottom()) {
-    TopoDS_Face BottomFace = S.BottomFace ();
-    TNaming_Builder BOF (theResultLabel.FindChild(1,Standard_True)); 
-    BOF.Generated (BottomFace);
+  // Load faces of the Cyl :
+  if (S.HasBottom())
+  {
+    TopoDS_Face     BottomFace = S.BottomFace();
+    TNaming_Builder BOF(theResultLabel.FindChild(1, Standard_True));
+    BOF.Generated(BottomFace);
   }
 
-  if (S.HasTop()) { 
-    TopoDS_Face TopFace = S.TopFace ();
-    TNaming_Builder TOF (theResultLabel.FindChild(2,Standard_True)); 
-    TOF.Generated (TopFace);
+  if (S.HasTop())
+  {
+    TopoDS_Face     TopFace = S.TopFace();
+    TNaming_Builder TOF(theResultLabel.FindChild(2, Standard_True));
+    TOF.Generated(TopFace);
   }
 
-  TopoDS_Face LateralFace = S.LateralFace();
-  TNaming_Builder LOF (theResultLabel.FindChild(3,Standard_True)); 
-  LOF.Generated(LateralFace); 
+  TopoDS_Face     LateralFace = S.LateralFace();
+  TNaming_Builder LOF(theResultLabel.FindChild(3, Standard_True));
+  LOF.Generated(LateralFace);
 
-  if (S.HasSides()) {
-    TopoDS_Face StartFace = S.StartFace();
-    TNaming_Builder SF(theResultLabel.FindChild(4,Standard_True)); 
-    SF.Generated(StartFace); 
-    TopoDS_Face EndFace = S.EndFace();
-    TNaming_Builder EF(theResultLabel.FindChild(5,Standard_True)); 
-    EF.Generated(EndFace); 
+  if (S.HasSides())
+  {
+    TopoDS_Face     StartFace = S.StartFace();
+    TNaming_Builder SF(theResultLabel.FindChild(4, Standard_True));
+    SF.Generated(StartFace);
+    TopoDS_Face     EndFace = S.EndFace();
+    TNaming_Builder EF(theResultLabel.FindChild(5, Standard_True));
+    EF.Generated(EndFace);
   }
-
 }

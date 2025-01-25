@@ -11,12 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IGESData_ViewKindEntity.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESData_ViewKindEntity,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_ViewKindEntity, IGESData_IGESEntity)
 
 // ViewKindEntity ne sert qu'au controle de type (entite View du directory part
 // qui peut etre une Vue Simple ou une Liste de Vue

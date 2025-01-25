@@ -27,7 +27,6 @@ class gp_Lin2d;
 class gp_Dir2d;
 class gp_Pnt2d;
 
-
 //! The Hatcher   is  an algorithm  to   compute cross
 //! hatchings in a 2d plane. It is mainly dedicated to
 //! display purpose.
@@ -61,26 +60,25 @@ class gp_Pnt2d;
 //!
 //! *   The "UnOriented"  mode,  where  the  hatch are
 //! always finite.
-class Hatch_Hatcher 
+class Hatch_Hatcher
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a empty  hatcher.  <Tol> is the  tolerance
   //! for intersections.
-  Standard_EXPORT Hatch_Hatcher(const Standard_Real Tol, const Standard_Boolean Oriented = Standard_True);
-  
-    void Tolerance (const Standard_Real Tol);
-  
-    Standard_Real Tolerance() const;
-  
+  Standard_EXPORT Hatch_Hatcher(const Standard_Real    Tol,
+                                const Standard_Boolean Oriented = Standard_True);
+
+  void Tolerance(const Standard_Real Tol);
+
+  Standard_Real Tolerance() const;
+
   //! Add a line <L>  to  be trimmed.   <T> the  type is
   //! only kept from information. It is not used  in the
   //! computation.
-  Standard_EXPORT void AddLine (const gp_Lin2d& L, const Hatch_LineForm T = Hatch_ANYLINE);
-  
+  Standard_EXPORT void AddLine(const gp_Lin2d& L, const Hatch_LineForm T = Hatch_ANYLINE);
+
   //! Add an infinite line on  direction <D> at distance
   //! <Dist> from the origin  to be  trimmed. <Dist> may
   //! be negative.
@@ -92,96 +90,89 @@ public:
   //! OP dot V = Dist
   //! The parameter of P on the line is
   //! OP dot D
-  Standard_EXPORT void AddLine (const gp_Dir2d& D, const Standard_Real Dist);
-  
+  Standard_EXPORT void AddLine(const gp_Dir2d& D, const Standard_Real Dist);
+
   //! Add an infinite line   parallel to the Y-axis   at
   //! abciss <X>.
-  Standard_EXPORT void AddXLine (const Standard_Real X);
-  
+  Standard_EXPORT void AddXLine(const Standard_Real X);
+
   //! Add an infinite line   parallel to the X-axis   at
   //! ordinate <Y>.
-  Standard_EXPORT void AddYLine (const Standard_Real Y);
-  
+  Standard_EXPORT void AddYLine(const Standard_Real Y);
+
   //! Trims the lines at intersections with  <L>.
-  Standard_EXPORT void Trim (const gp_Lin2d& L, const Standard_Integer Index = 0);
-  
+  Standard_EXPORT void Trim(const gp_Lin2d& L, const Standard_Integer Index = 0);
+
   //! Trims the lines at intersections  with <L>  in the
   //! parameter range <Start>, <End>
-  Standard_EXPORT void Trim (const gp_Lin2d& L, const Standard_Real Start, const Standard_Real End, const Standard_Integer Index = 0);
-  
+  Standard_EXPORT void Trim(const gp_Lin2d&        L,
+                            const Standard_Real    Start,
+                            const Standard_Real    End,
+                            const Standard_Integer Index = 0);
+
   //! Trims the line at  intersection with  the oriented
   //! segment P1,P2.
-  Standard_EXPORT void Trim (const gp_Pnt2d& P1, const gp_Pnt2d& P2, const Standard_Integer Index = 0);
-  
+  Standard_EXPORT void Trim(const gp_Pnt2d&        P1,
+                            const gp_Pnt2d&        P2,
+                            const Standard_Integer Index = 0);
+
   //! Returns the total number  of intervals on  all the
   //! lines.
   Standard_EXPORT Standard_Integer NbIntervals() const;
-  
+
   //! Returns the number of lines.
   Standard_EXPORT Standard_Integer NbLines() const;
-  
+
   //! Returns the line of index <I>.
-  Standard_EXPORT const gp_Lin2d& Line (const Standard_Integer I) const;
-  
+  Standard_EXPORT const gp_Lin2d& Line(const Standard_Integer I) const;
+
   //! Returns  the type of the  line   of  index <I>.
-  Standard_EXPORT Hatch_LineForm LineForm (const Standard_Integer I) const;
-  
+  Standard_EXPORT Hatch_LineForm LineForm(const Standard_Integer I) const;
+
   //! Returns  True if the  line   of  index <I>  has  a
   //! constant X value.
-    Standard_Boolean IsXLine (const Standard_Integer I) const;
-  
+  Standard_Boolean IsXLine(const Standard_Integer I) const;
+
   //! Returns  True if the  line   of  index <I>  has  a
   //! constant Y value.
-    Standard_Boolean IsYLine (const Standard_Integer I) const;
-  
+  Standard_Boolean IsYLine(const Standard_Integer I) const;
+
   //! Returns the X or Y coordinate of the line of index
   //! <I> if it is a X or a Y line.
-  Standard_EXPORT Standard_Real Coordinate (const Standard_Integer I) const;
-  
+  Standard_EXPORT Standard_Real Coordinate(const Standard_Integer I) const;
+
   //! Returns the number of intervals on line of index <I>.
-  Standard_EXPORT Standard_Integer NbIntervals (const Standard_Integer I) const;
-  
+  Standard_EXPORT Standard_Integer NbIntervals(const Standard_Integer I) const;
+
   //! Returns the first   parameter of  interval <J>  on
   //! line  <I>.
-  Standard_EXPORT Standard_Real Start (const Standard_Integer I, const Standard_Integer J) const;
-  
+  Standard_EXPORT Standard_Real Start(const Standard_Integer I, const Standard_Integer J) const;
+
   //! Returns the first Index and Par2 of  interval <J>  on
   //! line  <I>.
-  Standard_EXPORT void StartIndex (const Standard_Integer I, const Standard_Integer J, Standard_Integer& Index, Standard_Real& Par2) const;
-  
+  Standard_EXPORT void StartIndex(const Standard_Integer I,
+                                  const Standard_Integer J,
+                                  Standard_Integer&      Index,
+                                  Standard_Real&         Par2) const;
+
   //! Returns the last   parameter of  interval <J>  on
   //! line  <I>.
-  Standard_EXPORT Standard_Real End (const Standard_Integer I, const Standard_Integer J) const;
-  
+  Standard_EXPORT Standard_Real End(const Standard_Integer I, const Standard_Integer J) const;
+
   //! Returns the last Index and Par2 of  interval <J>  on
   //! line  <I>.
-  Standard_EXPORT void EndIndex (const Standard_Integer I, const Standard_Integer J, Standard_Integer& Index, Standard_Real& Par2) const;
-
-
-
+  Standard_EXPORT void EndIndex(const Standard_Integer I,
+                                const Standard_Integer J,
+                                Standard_Integer&      Index,
+                                Standard_Real&         Par2) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Real myToler;
+  Standard_Real        myToler;
   Hatch_SequenceOfLine myLines;
-  Standard_Boolean myOrient;
-
-
+  Standard_Boolean     myOrient;
 };
 
-
 #include <Hatch_Hatcher.lxx>
-
-
-
-
 
 #endif // _Hatch_Hatcher_HeaderFile

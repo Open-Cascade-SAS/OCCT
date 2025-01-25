@@ -33,13 +33,13 @@ class StdStorage_RootData;
 //! -   Storage mechanism: create an empty
 //! StdStorage_Data object, then add successively
 //! persistent objects (roots) to be stored using
-//! the StdStorage_RootData's function AddRoot. When the set of 
+//! the StdStorage_RootData's function AddRoot. When the set of
 //! data is complete, write it to a container using the
 //! function Write in your StdStorage algorithm.
 //! -   Retrieval mechanism: a StdStorage_Data
 //! object is returned by the Read function from
-//! your StdStorage algorithm. Use the StdStorage_RootData's 
-//! functions NumberOfRoots and Roots to find the roots which 
+//! your StdStorage algorithm. Use the StdStorage_RootData's
+//! functions NumberOfRoots and Roots to find the roots which
 //! were stored in the read container.
 //! The roots of a StdStorage_Data object may share
 //! references on objects. The shared internal
@@ -50,22 +50,20 @@ class StdStorage_RootData;
 //! are not maintained by the storage/retrieval
 //! mechanism: external references are not
 //! supported by Storage_Schema algorithm
-class StdStorage_Data
-  : public Standard_Transient
+class StdStorage_Data : public Standard_Transient
 {
 
 public:
-
   //! Creates an empty set of data.
   //! You explicitly create a StdStorage_Data object
   //! when preparing the set of objects to be stored
   //! together in a container (for example, in a file).
-  //! Then use the function StdStorage_RootData's AddRoot 
+  //! Then use the function StdStorage_RootData's AddRoot
   //! to add persistent objects to the set of data.
   //! A StdStorage_Data object is also returned by the
-  //! Read function of a StdStorage algorithm. Use the 
-  //! StdStorage_RootData's functions NumberOfRoots and 
-  //! Roots to find the roots which were stored in the 
+  //! Read function of a StdStorage algorithm. Use the
+  //! StdStorage_RootData's functions NumberOfRoots and
+  //! Roots to find the roots which were stored in the
   //! read container.
   Standard_EXPORT StdStorage_Data();
 
@@ -76,17 +74,15 @@ public:
   Handle(StdStorage_HeaderData) HeaderData() { return myHeaderData; }
 
   //! Returns the type data section
-  Handle(StdStorage_TypeData)   TypeData() { return myTypeData; }
+  Handle(StdStorage_TypeData) TypeData() { return myTypeData; }
 
   //! Returns the root data section
-  Handle(StdStorage_RootData)   RootData() { return myRootData; }
+  Handle(StdStorage_RootData) RootData() { return myRootData; }
 
 private:
-
   Handle(StdStorage_HeaderData) myHeaderData;
   Handle(StdStorage_TypeData)   myTypeData;
   Handle(StdStorage_RootData)   myRootData;
-
 };
 
 #endif // _StdStorage_Data_HeaderFile

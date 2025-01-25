@@ -15,157 +15,172 @@
 #include <BOPDS_PaveBlock.hxx>
 
 //=======================================================================
-//function : 
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
-  inline BOPDS_Curve::BOPDS_Curve()
-:
-  myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
-  myPaveBlocks(myAllocator),
-  myTechnoVertices(myAllocator),
-  myTolerance(0.)
+inline BOPDS_Curve::BOPDS_Curve()
+    : myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
+      myPaveBlocks(myAllocator),
+      myTechnoVertices(myAllocator),
+      myTolerance(0.)
 {
 }
+
 //=======================================================================
-//function : 
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
-  inline BOPDS_Curve::BOPDS_Curve(const Handle(NCollection_BaseAllocator)& theAllocator)
-:
-  myAllocator(theAllocator),
-  myPaveBlocks(myAllocator),
-  myTechnoVertices(myAllocator),
-  myTolerance(0.)
+inline BOPDS_Curve::BOPDS_Curve(const Handle(NCollection_BaseAllocator)& theAllocator)
+    : myAllocator(theAllocator),
+      myPaveBlocks(myAllocator),
+      myTechnoVertices(myAllocator),
+      myTolerance(0.)
 {
 }
+
 //=======================================================================
-//function : 
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
-  inline BOPDS_Curve::~BOPDS_Curve()
+inline BOPDS_Curve::~BOPDS_Curve() {}
+
+//=======================================================================
+// function : SetCurve
+// purpose  :
+//=======================================================================
+inline void BOPDS_Curve::SetCurve(const IntTools_Curve& theCurve)
 {
+  myCurve = theCurve;
 }
+
 //=======================================================================
-//function : SetCurve
-//purpose  : 
+// function : Curve
+// purpose  :
 //=======================================================================
-  inline void BOPDS_Curve::SetCurve(const IntTools_Curve& theCurve)
-{
-  myCurve=theCurve;
-}
-//=======================================================================
-//function : Curve
-//purpose  : 
-//=======================================================================
-  inline const IntTools_Curve& BOPDS_Curve::Curve()const
+inline const IntTools_Curve& BOPDS_Curve::Curve() const
 {
   return myCurve;
 }
+
 //=======================================================================
-//function : SetPaveBlocks
-//purpose  : 
+// function : SetPaveBlocks
+// purpose  :
 //=======================================================================
-  inline void BOPDS_Curve::SetPaveBlocks(const BOPDS_ListOfPaveBlock& theLPB)
+inline void BOPDS_Curve::SetPaveBlocks(const BOPDS_ListOfPaveBlock& theLPB)
 {
   BOPDS_ListIteratorOfListOfPaveBlock aIt;
   //
   myPaveBlocks.Clear();
   aIt.Initialize(theLPB);
-  for (; aIt.More(); aIt.Next()) {
+  for (; aIt.More(); aIt.Next())
+  {
     myPaveBlocks.Append(aIt.Value());
   }
 }
+
 //=======================================================================
-//function : PaveBlocks
-//purpose  : 
+// function : PaveBlocks
+// purpose  :
 //=======================================================================
-  inline const BOPDS_ListOfPaveBlock& BOPDS_Curve::PaveBlocks()const
+inline const BOPDS_ListOfPaveBlock& BOPDS_Curve::PaveBlocks() const
 {
   return myPaveBlocks;
 }
+
 //=======================================================================
-//function : ChangePaveBlocks
-//purpose  : 
+// function : ChangePaveBlocks
+// purpose  :
 //=======================================================================
-  inline BOPDS_ListOfPaveBlock& BOPDS_Curve::ChangePaveBlocks()
+inline BOPDS_ListOfPaveBlock& BOPDS_Curve::ChangePaveBlocks()
 {
   return myPaveBlocks;
 }
+
 //=======================================================================
-//function : InitPaveBlock1
-//purpose  : 
+// function : InitPaveBlock1
+// purpose  :
 //=======================================================================
-  inline void BOPDS_Curve::InitPaveBlock1()
+inline void BOPDS_Curve::InitPaveBlock1()
 {
-  if (!myPaveBlocks.Extent()) {
-    Handle(BOPDS_PaveBlock) aPB=new BOPDS_PaveBlock;
+  if (!myPaveBlocks.Extent())
+  {
+    Handle(BOPDS_PaveBlock) aPB = new BOPDS_PaveBlock;
     myPaveBlocks.Append(aPB);
   }
 }
+
 //=======================================================================
-//function : ChangePaveBlock1
-//purpose  : 
+// function : ChangePaveBlock1
+// purpose  :
 //=======================================================================
-  inline Handle(BOPDS_PaveBlock)& BOPDS_Curve::ChangePaveBlock1()
+inline Handle(BOPDS_PaveBlock)& BOPDS_Curve::ChangePaveBlock1()
 {
-  Handle(BOPDS_PaveBlock)* pPB=(Handle(BOPDS_PaveBlock)*)&myPaveBlocks.First();
+  Handle(BOPDS_PaveBlock)* pPB = (Handle(BOPDS_PaveBlock)*)&myPaveBlocks.First();
   return *pPB;
 }
+
 //=======================================================================
-//function : TechnoVertices
-//purpose  : 
+// function : TechnoVertices
+// purpose  :
 //=======================================================================
-  inline const TColStd_ListOfInteger& BOPDS_Curve::TechnoVertices()const
+inline const TColStd_ListOfInteger& BOPDS_Curve::TechnoVertices() const
 {
   return myTechnoVertices;
 }
+
 //=======================================================================
-//function : ChangeTechnoVertices
-//purpose  : 
+// function : ChangeTechnoVertices
+// purpose  :
 //=======================================================================
-  inline TColStd_ListOfInteger& BOPDS_Curve::ChangeTechnoVertices()
+inline TColStd_ListOfInteger& BOPDS_Curve::ChangeTechnoVertices()
 {
   return myTechnoVertices;
 }
+
 //=======================================================================
-//function : SetBox
-//purpose  : 
+// function : SetBox
+// purpose  :
 //=======================================================================
-  inline void BOPDS_Curve::SetBox(const Bnd_Box& theBox)
+inline void BOPDS_Curve::SetBox(const Bnd_Box& theBox)
 {
-  myBox=theBox;
+  myBox = theBox;
 }
+
 //=======================================================================
-//function : Box
-//purpose  : 
+// function : Box
+// purpose  :
 //=======================================================================
-  inline const Bnd_Box& BOPDS_Curve::Box()const
+inline const Bnd_Box& BOPDS_Curve::Box() const
 {
   return myBox;
 }
+
 //=======================================================================
-//function : ChangeBox
-//purpose  : 
+// function : ChangeBox
+// purpose  :
 //=======================================================================
-  inline Bnd_Box& BOPDS_Curve::ChangeBox()
+inline Bnd_Box& BOPDS_Curve::ChangeBox()
 {
   return myBox;
 }
+
 //=======================================================================
-//function : HasEdge
-//purpose  : 
+// function : HasEdge
+// purpose  :
 //=======================================================================
-  inline Standard_Boolean BOPDS_Curve::HasEdge()const
+inline Standard_Boolean BOPDS_Curve::HasEdge() const
 {
-  Standard_Boolean bFlag;
+  Standard_Boolean                    bFlag;
   BOPDS_ListIteratorOfListOfPaveBlock aItPB;
   //
-  bFlag=Standard_False;
+  bFlag = Standard_False;
   aItPB.Initialize(myPaveBlocks);
-  for (; aItPB.More(); aItPB.Next()) {
-    const Handle(BOPDS_PaveBlock)& aPB=aItPB.Value();
-    bFlag=aPB->HasEdge();
-    if (bFlag) {
+  for (; aItPB.More(); aItPB.Next())
+  {
+    const Handle(BOPDS_PaveBlock)& aPB = aItPB.Value();
+    bFlag                              = aPB->HasEdge();
+    if (bFlag)
+    {
       break;
     }
   }

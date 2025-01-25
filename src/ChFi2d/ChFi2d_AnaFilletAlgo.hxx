@@ -25,7 +25,6 @@
 class ChFi2d_AnaFilletAlgo
 {
 public:
-
   //! An empty constructor.
   //! Use the method Init() to initialize the class.
   Standard_EXPORT ChFi2d_AnaFilletAlgo();
@@ -34,23 +33,23 @@ public:
   //! It expects a wire consisting of two edges of type (any combination of):
   //! - segment
   //! - arc of circle.
-  Standard_EXPORT ChFi2d_AnaFilletAlgo(const TopoDS_Wire& theWire, 
-                                       const gp_Pln& thePlane);
+  Standard_EXPORT ChFi2d_AnaFilletAlgo(const TopoDS_Wire& theWire, const gp_Pln& thePlane);
 
   //! A constructor.
   //! It expects two edges having a common point of type:
   //! - segment
   //! - arc of circle.
-  Standard_EXPORT ChFi2d_AnaFilletAlgo(const TopoDS_Edge& theEdge1, 
+  Standard_EXPORT ChFi2d_AnaFilletAlgo(const TopoDS_Edge& theEdge1,
                                        const TopoDS_Edge& theEdge2,
-                                       const gp_Pln& thePlane);
+                                       const gp_Pln&      thePlane);
 
   //! Initializes the class by a wire consisting of two edges.
   Standard_EXPORT void Init(const TopoDS_Wire& theWire, const gp_Pln& thePlane);
 
   //! Initializes the class by two edges.
-  Standard_EXPORT void Init(const TopoDS_Edge& theEdge1, const TopoDS_Edge& theEdge2, 
-                            const gp_Pln& thePlane);
+  Standard_EXPORT void Init(const TopoDS_Edge& theEdge1,
+                            const TopoDS_Edge& theEdge2,
+                            const gp_Pln&      thePlane);
 
   //! Calculates a fillet.
   Standard_EXPORT Standard_Boolean Perform(const Standard_Real radius);
@@ -59,31 +58,38 @@ public:
   Standard_EXPORT const TopoDS_Edge& Result(TopoDS_Edge& e1, TopoDS_Edge& e2);
 
 private:
-
   // WW5 method to compute fillet.
   // It returns a constructed fillet definition:
   //     center point (xc, yc)
   //     point on the 1st segment (xstart, ystart)
   //     point on the 2nd segment (xend, yend)
   //     is the arc of fillet clockwise (cw = true) or counterclockwise (cw = false).
-  Standard_Boolean SegmentFilletSegment(const Standard_Real radius, 
-                                        Standard_Real& xc, Standard_Real& yc, 
-                                        Standard_Boolean& cw,
-                                        Standard_Real& start, Standard_Real& end);
+  Standard_Boolean SegmentFilletSegment(const Standard_Real radius,
+                                        Standard_Real&      xc,
+                                        Standard_Real&      yc,
+                                        Standard_Boolean&   cw,
+                                        Standard_Real&      start,
+                                        Standard_Real&      end);
 
   // A function constructs a fillet between a segment and an arc.
-  Standard_Boolean SegmentFilletArc(const Standard_Real radius, 
-                                    Standard_Real& xc, Standard_Real& yc, 
-                                    Standard_Boolean& cw,
-                                    Standard_Real& start, Standard_Real& end, 
-                                    Standard_Real& xend, Standard_Real& yend);
+  Standard_Boolean SegmentFilletArc(const Standard_Real radius,
+                                    Standard_Real&      xc,
+                                    Standard_Real&      yc,
+                                    Standard_Boolean&   cw,
+                                    Standard_Real&      start,
+                                    Standard_Real&      end,
+                                    Standard_Real&      xend,
+                                    Standard_Real&      yend);
 
   // A function constructs a fillet between an arc and a segment.
-  Standard_Boolean ArcFilletSegment(const Standard_Real radius, 
-                                    Standard_Real& xc, Standard_Real& yc, 
-                                    Standard_Boolean& cw,
-                                    Standard_Real& start, Standard_Real& end, 
-                                    Standard_Real& xstart, Standard_Real& ystart);
+  Standard_Boolean ArcFilletSegment(const Standard_Real radius,
+                                    Standard_Real&      xc,
+                                    Standard_Real&      yc,
+                                    Standard_Boolean&   cw,
+                                    Standard_Real&      start,
+                                    Standard_Real&      end,
+                                    Standard_Real&      xstart,
+                                    Standard_Real&      ystart);
 
   // WW5 method to compute fillet: arc - arc.
   // It returns a constructed fillet definition:
@@ -91,16 +97,18 @@ private:
   //     shrinking parameter of the 1st circle (start)
   //     shrinking parameter of the 2nd circle (end)
   //     if the arc of fillet clockwise (cw = true) or counterclockwise (cw = false).
-  Standard_Boolean ArcFilletArc(const Standard_Real radius, 
-                                Standard_Real& xc, Standard_Real& yc, 
-                                Standard_Boolean& cw,
-                                Standard_Real& start, Standard_Real& end);
+  Standard_Boolean ArcFilletArc(const Standard_Real radius,
+                                Standard_Real&      xc,
+                                Standard_Real&      yc,
+                                Standard_Boolean&   cw,
+                                Standard_Real&      start,
+                                Standard_Real&      end);
 
   // Cuts intersecting edges of a contour.
   Standard_Boolean Cut(const gp_Pln& plane, TopoDS_Edge& e1, TopoDS_Edge& e2);
 
   // Plane.
-  gp_Pln           plane;
+  gp_Pln plane;
 
   // Left neighbour.
   TopoDS_Edge      e1;

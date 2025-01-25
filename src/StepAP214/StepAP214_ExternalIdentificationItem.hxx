@@ -40,16 +40,14 @@ class StepBasic_DateAndTimeAssignment;
 class StepBasic_DateAssignment;
 
 //! Representation of STEP SELECT type ExternalIdentificationItem
-class StepAP214_ExternalIdentificationItem  : public StepData_SelectType
+class StepAP214_ExternalIdentificationItem : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_EXPORT StepAP214_ExternalIdentificationItem();
-  
+
   //! Recognizes a kind of ExternalIdentificationItem select type
   //! 1 -> DocumentFile from StepBasic
   //! 2 -> ExternallyDefinedClass from StepAP214
@@ -67,25 +65,28 @@ public:
   //! 14 -> DateAndTimeAssignment from StepBasic
   //! 15 -> DateAssignment from StepBasic
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! Returns Value as DocumentFile (or Null if another type)
   Standard_EXPORT Handle(StepBasic_DocumentFile) DocumentFile() const;
-  
+
   //! Returns Value as ExternallyDefinedClass (or Null if another type)
   Standard_EXPORT Handle(StepAP214_ExternallyDefinedClass) ExternallyDefinedClass() const;
-  
+
   //! Returns Value as ExternallyDefinedGeneralProperty (or Null if another type)
-  Standard_EXPORT Handle(StepAP214_ExternallyDefinedGeneralProperty) ExternallyDefinedGeneralProperty() const;
-  
+  Standard_EXPORT Handle(StepAP214_ExternallyDefinedGeneralProperty)
+    ExternallyDefinedGeneralProperty() const;
+
   //! Returns Value as ProductDefinition (or Null if another type)
   Standard_EXPORT Handle(StepBasic_ProductDefinition) ProductDefinition() const;
 
   //! Returns Value as AppliedOrganizationAssignment (or Null if another type)
-  Standard_EXPORT Handle(StepAP214_AppliedOrganizationAssignment) AppliedOrganizationAssignment() const;
+  Standard_EXPORT Handle(StepAP214_AppliedOrganizationAssignment) AppliedOrganizationAssignment()
+    const;
 
   //! Returns Value as AppliedPersonAndOrganizationAssignment (or Null if another type)
-  Standard_EXPORT Handle(StepAP214_AppliedPersonAndOrganizationAssignment) AppliedPersonAndOrganizationAssignment() const;
+  Standard_EXPORT Handle(StepAP214_AppliedPersonAndOrganizationAssignment)
+    AppliedPersonAndOrganizationAssignment() const;
 
   //! Returns Value as Approval (or Null if another type)
   Standard_EXPORT Handle(StepBasic_Approval) Approval() const;
@@ -115,23 +116,7 @@ public:
   Standard_EXPORT Handle(StepBasic_DateAssignment) DateAssignment() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepAP214_ExternalIdentificationItem_HeaderFile

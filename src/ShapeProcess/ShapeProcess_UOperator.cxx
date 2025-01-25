@@ -13,27 +13,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <ShapeProcess_UOperator.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ShapeProcess_UOperator,ShapeProcess_Operator)
+IMPLEMENT_STANDARD_RTTIEXT(ShapeProcess_UOperator, ShapeProcess_Operator)
 
-//=======================================================================
-//function : ShapeProcess_UOperator
-//purpose  : 
-//=======================================================================
-ShapeProcess_UOperator::ShapeProcess_UOperator (const ShapeProcess_OperFunc func) : myFunc(func)
+//=================================================================================================
+
+ShapeProcess_UOperator::ShapeProcess_UOperator(const ShapeProcess_OperFunc func)
+    : myFunc(func)
 {
 }
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean ShapeProcess_UOperator::Perform (const Handle(ShapeProcess_Context)& context,
-                                                  const Message_ProgressRange& theProgress)
+Standard_Boolean ShapeProcess_UOperator::Perform(const Handle(ShapeProcess_Context)& context,
+                                                 const Message_ProgressRange&        theProgress)
 {
   return myFunc(context, theProgress);
 }

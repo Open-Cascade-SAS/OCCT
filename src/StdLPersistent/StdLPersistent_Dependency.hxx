@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _StdLPersistent_Dependency_HeaderFile
 #define _StdLPersistent_Dependency_HeaderFile
 
@@ -21,7 +20,6 @@
 
 #include <TDataStd_Relation.hxx>
 
-
 class StdLPersistent_Dependency
 {
   template <class AttribClass>
@@ -29,22 +27,26 @@ class StdLPersistent_Dependency
   {
   public:
     //! Read persistent data from a file.
-    inline void Read (StdObjMgt_ReadData& theReadData)
-      { theReadData >> myName >> myVariables; }
+    inline void Read(StdObjMgt_ReadData& theReadData) { theReadData >> myName >> myVariables; }
+
     //! Write persistent data to a file.
-    inline void Write (StdObjMgt_WriteData& theWriteData) const
-      { theWriteData << myName << myVariables; }
+    inline void Write(StdObjMgt_WriteData& theWriteData) const
+    {
+      theWriteData << myName << myVariables;
+    }
+
     //! Gets persistent child objects
     inline void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
     {
       theChildren.Append(myName);
       theChildren.Append(myVariables);
     }
+
     //! Returns persistent type name
     Standard_CString PName() const;
 
     //! Import transient attribute from the persistent data.
-    void Import (const Handle(AttribClass)& theAttribute) const;
+    void Import(const Handle(AttribClass)& theAttribute) const;
 
   private:
     Handle(StdLPersistent_HString::Extended)   myName;
@@ -56,12 +58,16 @@ public:
   typedef instance<TDataStd_Relation>   Relation;
 };
 
-template<>
+template <>
 inline Standard_CString StdLPersistent_Dependency::instance<TDataStd_Expression>::PName() const
-  { return "PDataStd_Expression"; }
+{
+  return "PDataStd_Expression";
+}
 
-template<>
+template <>
 inline Standard_CString StdLPersistent_Dependency::instance<TDataStd_Relation>::PName() const
-  { return "PDataStd_Relation"; }
+{
+  return "PDataStd_Relation";
+}
 
 #endif

@@ -17,132 +17,134 @@
 #include <IntPatch_Point.hxx>
 #include <Geom_Surface.hxx>
 
-
 //=======================================================================
-//function : GeomInt_IntSS
-//purpose  : 
+// function : GeomInt_IntSS
+// purpose  :
 //=======================================================================
-inline GeomInt_IntSS::GeomInt_IntSS ()
- : myNbrestr(0),
-   myTolReached2d(0.0),
-   myTolReached3d(0.0),
-   myTolCheck(1.e-7),
-   myTolAngCheck(1.e-6)
-{}
-
-//=======================================================================
-//function : GeomInt_IntSS
-//purpose  : 
-//=======================================================================
-  inline GeomInt_IntSS::GeomInt_IntSS (const Handle(Geom_Surface)& S1,
-                                       const Handle(Geom_Surface)& S2,
-                                       const Standard_Real Tol,
-                                       const Standard_Boolean Approx,
-                                       const Standard_Boolean ApproxS1,
-                                       const Standard_Boolean ApproxS2)
- : myNbrestr(0),
-   myTolReached2d(0.0),
-   myTolReached3d(0.0),
-   myTolCheck(1.e-7),
-   myTolAngCheck(1.e-6)
+inline GeomInt_IntSS::GeomInt_IntSS()
+    : myNbrestr(0),
+      myTolReached2d(0.0),
+      myTolReached3d(0.0),
+      myTolCheck(1.e-7),
+      myTolAngCheck(1.e-6)
 {
-  Perform(S1,S2,Tol,Approx,ApproxS1,ApproxS2);
 }
 
 //=======================================================================
-//function : Perform
-//purpose  : Intersection of Adapted surfaces
+// function : GeomInt_IntSS
+// purpose  :
 //=======================================================================
-  inline void GeomInt_IntSS::Perform(const Handle(GeomAdaptor_Surface)& HS1,
-                                     const Handle(GeomAdaptor_Surface)& HS2,
-                                     const Standard_Real Tol,
-                                     const Standard_Boolean Approx,
-                                     const Standard_Boolean ApproxS1,
-                                     const Standard_Boolean ApproxS2)
+inline GeomInt_IntSS::GeomInt_IntSS(const Handle(Geom_Surface)& S1,
+                                    const Handle(Geom_Surface)& S2,
+                                    const Standard_Real         Tol,
+                                    const Standard_Boolean      Approx,
+                                    const Standard_Boolean      ApproxS1,
+                                    const Standard_Boolean      ApproxS2)
+    : myNbrestr(0),
+      myTolReached2d(0.0),
+      myTolReached3d(0.0),
+      myTolCheck(1.e-7),
+      myTolAngCheck(1.e-6)
 {
-  myHS1 = HS1;
-  myHS2 = HS2;
-  InternalPerform(Tol,Approx,ApproxS1,ApproxS2,Standard_False,0.,0.,0.,0.);
+  Perform(S1, S2, Tol, Approx, ApproxS1, ApproxS2);
 }
 
 //=======================================================================
-//function : Perform
-//purpose  : Intersection of Adapted surfaces with a Starting Point
+// function : Perform
+// purpose  : Intersection of Adapted surfaces
 //=======================================================================
-  inline void GeomInt_IntSS::Perform(const Handle(GeomAdaptor_Surface)& HS1,
-                                     const Handle(GeomAdaptor_Surface)& HS2,
-                                     const Standard_Real Tol,
-                                     const Standard_Real U1, const Standard_Real V1,
-                                     const Standard_Real U2, const Standard_Real V2,
-                                     const Standard_Boolean Approx,
-                                     const Standard_Boolean ApproxS1,
-                                     const Standard_Boolean ApproxS2)
+inline void GeomInt_IntSS::Perform(const Handle(GeomAdaptor_Surface)& HS1,
+                                   const Handle(GeomAdaptor_Surface)& HS2,
+                                   const Standard_Real                Tol,
+                                   const Standard_Boolean             Approx,
+                                   const Standard_Boolean             ApproxS1,
+                                   const Standard_Boolean             ApproxS2)
 {
   myHS1 = HS1;
   myHS2 = HS2;
-  InternalPerform(Tol,Approx,ApproxS1,ApproxS2,Standard_True,U1,V1,U2,V2);
+  InternalPerform(Tol, Approx, ApproxS1, ApproxS2, Standard_False, 0., 0., 0., 0.);
 }
 
 //=======================================================================
-//function : IsDone
-//purpose  : 
+// function : Perform
+// purpose  : Intersection of Adapted surfaces with a Starting Point
 //=======================================================================
-  inline Standard_Boolean GeomInt_IntSS::IsDone () const
+inline void GeomInt_IntSS::Perform(const Handle(GeomAdaptor_Surface)& HS1,
+                                   const Handle(GeomAdaptor_Surface)& HS2,
+                                   const Standard_Real                Tol,
+                                   const Standard_Real                U1,
+                                   const Standard_Real                V1,
+                                   const Standard_Real                U2,
+                                   const Standard_Real                V2,
+                                   const Standard_Boolean             Approx,
+                                   const Standard_Boolean             ApproxS1,
+                                   const Standard_Boolean             ApproxS2)
+{
+  myHS1 = HS1;
+  myHS2 = HS2;
+  InternalPerform(Tol, Approx, ApproxS1, ApproxS2, Standard_True, U1, V1, U2, V2);
+}
+
+//=======================================================================
+// function : IsDone
+// purpose  :
+//=======================================================================
+inline Standard_Boolean GeomInt_IntSS::IsDone() const
 {
   return myIntersector.IsDone();
 }
 
 //=======================================================================
-//function : TolReached2d
-//purpose  : 
+// function : TolReached2d
+// purpose  :
 //=======================================================================
-  inline Standard_Real GeomInt_IntSS::TolReached2d () const
+inline Standard_Real GeomInt_IntSS::TolReached2d() const
 {
   return myTolReached2d;
 }
 
 //=======================================================================
-//function : TolReached3d
-//purpose  : 
+// function : TolReached3d
+// purpose  :
 //=======================================================================
-  inline Standard_Real GeomInt_IntSS::TolReached3d () const
+inline Standard_Real GeomInt_IntSS::TolReached3d() const
 {
   return myTolReached3d;
 }
 
 //=======================================================================
-//function : NbLines
-//purpose  : 
+// function : NbLines
+// purpose  :
 //=======================================================================
-  inline Standard_Integer GeomInt_IntSS::NbLines () const
+inline Standard_Integer GeomInt_IntSS::NbLines() const
 {
-  return sline.Length()-myNbrestr;
+  return sline.Length() - myNbrestr;
 }
 
 //=======================================================================
-//function : NbBoundaries
-//purpose  : 
+// function : NbBoundaries
+// purpose  :
 //=======================================================================
-  inline Standard_Integer GeomInt_IntSS::NbBoundaries () const
+inline Standard_Integer GeomInt_IntSS::NbBoundaries() const
 {
-  StdFail_NotDone_Raise_if (!myIntersector.IsDone(), "GeomInt_IntSS::NbBoundaries() - no result");
+  StdFail_NotDone_Raise_if(!myIntersector.IsDone(), "GeomInt_IntSS::NbBoundaries() - no result");
   return myNbrestr;
 }
 
 //=======================================================================
-//function : NbPoints
-//purpose  : 
+// function : NbPoints
+// purpose  :
 //=======================================================================
-  inline Standard_Integer GeomInt_IntSS::NbPoints () const
+inline Standard_Integer GeomInt_IntSS::NbPoints() const
 {
   return myIntersector.NbPnts();
 }
 
 //=======================================================================
-//function : Point
-//purpose  : 
+// function : Point
+// purpose  :
 //=======================================================================
-  inline gp_Pnt GeomInt_IntSS::Point (const Standard_Integer Index) const
+inline gp_Pnt GeomInt_IntSS::Point(const Standard_Integer Index) const
 {
   return myIntersector.Point(Index).Value();
 }

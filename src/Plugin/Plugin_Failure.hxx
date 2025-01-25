@@ -26,8 +26,9 @@ class Plugin_Failure;
 DEFINE_STANDARD_HANDLE(Plugin_Failure, Standard_Failure)
 
 #if !defined No_Exception && !defined No_Plugin_Failure
-  #define Plugin_Failure_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Plugin_Failure(MESSAGE);
+  #define Plugin_Failure_Raise_if(CONDITION, MESSAGE)                                              \
+    if (CONDITION)                                                                                 \
+      throw Plugin_Failure(MESSAGE);
 #else
   #define Plugin_Failure_Raise_if(CONDITION, MESSAGE)
 #endif

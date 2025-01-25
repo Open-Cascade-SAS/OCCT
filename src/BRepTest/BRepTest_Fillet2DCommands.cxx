@@ -19,7 +19,6 @@
 //              status = ChFi2d_NotAuthorized if edges are not
 //              lines or circles  (BUC60288) + partial_result
 
-
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <BRepTest.hxx>
 #include <DBRep.hxx>
@@ -43,149 +42,174 @@
 #include <BRep_Builder.hxx>
 
 //=======================================================================
-//function : chfi2d
-//purpose  : 2d fillets and chamfers
+// function : chfi2d
+// purpose  : 2d fillets and chamfers
 //=======================================================================
 
 static Standard_Integer chfi2d(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n < 3) {
+  if (n < 3)
+  {
     di << "chfi2d : not enough args";
     return 1;
   }
 
   // set up the algorithm
-  TopoDS_Shape F = DBRep::Get(a[2],TopAbs_FACE);
-  if (F.IsNull()) {
-    di << "chfi2d : "<< a[2] << " not a face";
+  TopoDS_Shape F = DBRep::Get(a[2], TopAbs_FACE);
+  if (F.IsNull())
+  {
+    di << "chfi2d : " << a[2] << " not a face";
     return 1;
   }
 
   BRepFilletAPI_MakeFillet2d MF(TopoDS::Face(F));
-  if (MF.Status() == ChFi2d_NotPlanar) {
+  if (MF.Status() == ChFi2d_NotPlanar)
+  {
     di << "chfi2d : not a planar face";
     return 1;
   }
 
-  TopoDS_Shape res;
+  TopoDS_Shape     res;
   Standard_Boolean partial_result = Standard_False;
-  Standard_Integer i = 3;
-  while (i+1 < n) {
-    
-    TopoDS_Shape aLocalEdge(DBRep::Get(a[i],TopAbs_EDGE));
-    TopoDS_Edge E1 = TopoDS::Edge(aLocalEdge);
-    aLocalEdge = DBRep::Get(a[i+1],TopAbs_EDGE);
-    TopoDS_Edge E2 = TopoDS::Edge(aLocalEdge);
-//    TopoDS_Edge E1 = TopoDS::Edge(DBRep::Get(a[i],TopAbs_EDGE));
-//    TopoDS_Edge E2 = TopoDS::Edge(DBRep::Get(a[i+1],TopAbs_EDGE));
+  Standard_Integer i              = 3;
+  while (i + 1 < n)
+  {
 
-    if (E1.IsNull() || E2.IsNull()) {
-      di << "chfi2d : " << a[i] << " or " << a[i+1] << " not an edge";
-      if (partial_result) {
-	di <<" WARNING : this is a partial result ";
-	DBRep::Set(a[1],res);
+    TopoDS_Shape aLocalEdge(DBRep::Get(a[i], TopAbs_EDGE));
+    TopoDS_Edge  E1 = TopoDS::Edge(aLocalEdge);
+    aLocalEdge      = DBRep::Get(a[i + 1], TopAbs_EDGE);
+    TopoDS_Edge E2  = TopoDS::Edge(aLocalEdge);
+    //    TopoDS_Edge E1 = TopoDS::Edge(DBRep::Get(a[i],TopAbs_EDGE));
+    //    TopoDS_Edge E2 = TopoDS::Edge(DBRep::Get(a[i+1],TopAbs_EDGE));
+
+    if (E1.IsNull() || E2.IsNull())
+    {
+      di << "chfi2d : " << a[i] << " or " << a[i + 1] << " not an edge";
+      if (partial_result)
+      {
+        di << " WARNING : this is a partial result ";
+        DBRep::Set(a[1], res);
       }
       return 1;
     }
 
     TopoDS_Vertex V;
-    if (!TopExp::CommonVertex(E1,E2,V)) {
-      di << "chfi2d " <<  a[i] << " and " << a[i+1] << " does not share a vertex";
-      if (partial_result) {
-	di <<" WARNING : this is a partial result ";
-	DBRep::Set(a[1],res);
+    if (!TopExp::CommonVertex(E1, E2, V))
+    {
+      di << "chfi2d " << a[i] << " and " << a[i + 1] << " does not share a vertex";
+      if (partial_result)
+      {
+        di << " WARNING : this is a partial result ";
+        DBRep::Set(a[1], res);
       }
       return 1;
     }
 
     i += 2;
-    if (i+1 >= n) {
+    if (i + 1 >= n)
+    {
       di << "chfi2d : not enough args";
-      if (partial_result) {
-	di <<" WARNING : this is a partial result ";
-	DBRep::Set(a[1],res);
+      if (partial_result)
+      {
+        di << " WARNING : this is a partial result ";
+        DBRep::Set(a[1], res);
       }
       return 1;
     }
 
-    Standard_Real p1 = Draw::Atof(a[i+1]);
-    if (*a[i] == 'F') {
-      MF.AddFillet(V,p1);
+    Standard_Real p1 = Draw::Atof(a[i + 1]);
+    if (*a[i] == 'F')
+    {
+      MF.AddFillet(V, p1);
     }
-    else {
-      if (i+2 >= n) {
-	di << "chfi2d : not enough args";
-	if (partial_result) {
-	  di <<" WARNING : this is a partial result ";
-	  DBRep::Set(a[1],res);
-	}
-	return 1;
+    else
+    {
+      if (i + 2 >= n)
+      {
+        di << "chfi2d : not enough args";
+        if (partial_result)
+        {
+          di << " WARNING : this is a partial result ";
+          DBRep::Set(a[1], res);
+        }
+        return 1;
       }
-      Standard_Real p2 = Draw::Atof(a[i+2]);
-      if (a[i][2] == 'D') {
-	MF.AddChamfer(E1,E2,p1,p2);
+      Standard_Real p2 = Draw::Atof(a[i + 2]);
+      if (a[i][2] == 'D')
+      {
+        MF.AddChamfer(E1, E2, p1, p2);
       }
-      else {
-	MF.AddChamfer(E1,V,p1,p2 * (M_PI / 180.0));
+      else
+      {
+        MF.AddChamfer(E1, V, p1, p2 * (M_PI / 180.0));
       }
     }
 
-    if (MF.Status() == ChFi2d_TangencyError) {
-      di << "chfi2d : " <<  a[i-2] << " and " << a[i-1] << " are tangent ";
-      if (partial_result) {
-	di <<" WARNING : this is a partial result ";
-	DBRep::Set(a[1],res);
+    if (MF.Status() == ChFi2d_TangencyError)
+    {
+      di << "chfi2d : " << a[i - 2] << " and " << a[i - 1] << " are tangent ";
+      if (partial_result)
+      {
+        di << " WARNING : this is a partial result ";
+        DBRep::Set(a[1], res);
       }
       return 1;
     }
 
-    if (MF.Status() == ChFi2d_NotAuthorized) {
-      di << "chfi2d : " <<  a[i-2] << " or " << a[i-1] << " is not a line or a circle ";
-      if (partial_result) {
-	di <<" WARNING : this is a partial result ";
-	DBRep::Set(a[1],res);
+    if (MF.Status() == ChFi2d_NotAuthorized)
+    {
+      di << "chfi2d : " << a[i - 2] << " or " << a[i - 1] << " is not a line or a circle ";
+      if (partial_result)
+      {
+        di << " WARNING : this is a partial result ";
+        DBRep::Set(a[1], res);
       }
       return 1;
     }
 
-    if (MF.Status() != ChFi2d_IsDone) {
-      di << "chfi2d : operation failed on " << a[i-2];
-      if (partial_result) {
-	di <<" WARNING : this is a partial result ";
-	DBRep::Set(a[1],res);
+    if (MF.Status() != ChFi2d_IsDone)
+    {
+      di << "chfi2d : operation failed on " << a[i - 2];
+      if (partial_result)
+      {
+        di << " WARNING : this is a partial result ";
+        DBRep::Set(a[1], res);
       }
       return 1;
     }
-    else {
+    else
+    {
       partial_result = Standard_True;
       MF.Build();
       res = MF.Shape();
     }
-    
-    if (*a[i] == 'F') {
-      i +=2;
+
+    if (*a[i] == 'F')
+    {
+      i += 2;
     }
-    else {
-      i +=3;
+    else
+    {
+      i += 3;
     }
   }
-  
+
   MF.Build();
-  DBRep::Set(a[1],MF);
+  DBRep::Set(a[1], MF);
 
   return 0;
 }
 
 //=======================================================================
-//function : fillet2d
-//purpose  : A method to find a plane for 2 edges.
+// function : fillet2d
+// purpose  : A method to find a plane for 2 edges.
 //         : It may return a NULL object of the plane is not found
 //         : (the edge are located not in a plane).
 //=======================================================================
 
 static Handle(Geom_Plane) findPlane(const TopoDS_Shape& S)
 {
-  Handle(Geom_Plane) plane;
+  Handle(Geom_Plane)       plane;
   BRepBuilderAPI_FindPlane planeFinder(S);
   if (planeFinder.Found())
     plane = planeFinder.Plane();
@@ -194,7 +218,7 @@ static Handle(Geom_Plane) findPlane(const TopoDS_Shape& S)
 
 static Handle(Geom_Plane) findPlane(const TopoDS_Shape& E1, const TopoDS_Shape& E2)
 {
-  BRep_Builder B;
+  BRep_Builder    B;
   TopoDS_Compound C;
   B.MakeCompound(C);
   B.Add(C, E1);
@@ -203,8 +227,8 @@ static Handle(Geom_Plane) findPlane(const TopoDS_Shape& E1, const TopoDS_Shape& 
 }
 
 //=======================================================================
-//function : findCommonPoint
-//purpose  : Find a common (or the most close) point of two edges.
+// function : findCommonPoint
+// purpose  : Find a common (or the most close) point of two edges.
 //=======================================================================
 
 static gp_Pnt findCommonPoint(const TopoDS_Shape& E1, const TopoDS_Shape& E2)
@@ -218,7 +242,7 @@ static gp_Pnt findCommonPoint(const TopoDS_Shape& E1, const TopoDS_Shape& E2)
   gp_Pnt p21 = BRep_Tool::Pnt(v21);
   gp_Pnt p22 = BRep_Tool::Pnt(v22);
 
-  gp_Pnt common;
+  gp_Pnt       common;
   const double d1121 = p11.SquareDistance(p21);
   const double d1122 = p11.SquareDistance(p22);
   const double d1221 = p12.SquareDistance(p21);
@@ -231,7 +255,7 @@ static gp_Pnt findCommonPoint(const TopoDS_Shape& E1, const TopoDS_Shape& E2)
     common = p12;
   else if (d1222 < d1121 && d1222 < d1122 && d1222 < d1221)
     common = p12;
-  
+
   return common;
 }
 
@@ -240,7 +264,7 @@ static gp_Pnt findCommonPoint(const TopoDS_Shape& W)
   // The common point for two edges inside a wire
   // is a sharing vertex of two edges.
   TopTools_MapOfShape vertices;
-  TopExp_Explorer aExp(W, TopAbs_VERTEX);
+  TopExp_Explorer     aExp(W, TopAbs_VERTEX);
   for (; aExp.More(); aExp.Next())
   {
     if (!vertices.Add(aExp.Current()))
@@ -252,14 +276,14 @@ static gp_Pnt findCommonPoint(const TopoDS_Shape& W)
 }
 
 //=======================================================================
-//function : fillet2d
-//purpose  : Fillet 2d based on Newton method (recursive, iteration)
-//usage    : fillet2d result wire (or edge1 edge2) radius
+// function : fillet2d
+// purpose  : Fillet 2d based on Newton method (recursive, iteration)
+// usage    : fillet2d result wire (or edge1 edge2) radius
 //=======================================================================
 
 static Standard_Integer fillet2d(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n != 4 && n != 5) 
+  if (n != 4 && n != 5)
   {
     di << "Usage : fillet2d result wire (or edge1 edge2) radius";
     return 1;
@@ -291,7 +315,7 @@ static Standard_Integer fillet2d(Draw_Interpretor& di, Standard_Integer n, const
 
   // Algo.
   ChFi2d_FilletAPI algo;
-  gp_Pln plane = hPlane->Pln();
+  gp_Pln           plane = hPlane->Pln();
   if (n == 5)
   {
     const TopoDS_Edge& e1 = TopoDS::Edge(E1);
@@ -351,14 +375,14 @@ static Standard_Integer fillet2d(Draw_Interpretor& di, Standard_Integer n, const
 }
 
 //=======================================================================
-//function : chamfer2d
-//purpose  : Chamfer 2d.
-//usage    : chamfer2d result wire (or edge1 edge2) length1 length2
+// function : chamfer2d
+// purpose  : Chamfer 2d.
+// usage    : chamfer2d result wire (or edge1 edge2) length1 length2
 //=======================================================================
 
 static Standard_Integer chamfer2d(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n != 5 && n != 6) 
+  if (n != 5 && n != 6)
   {
     di << "Usage : chamfer2d result wire (or edge1 edge2) length1 length2";
     return 1;
@@ -372,7 +396,7 @@ static Standard_Integer chamfer2d(Draw_Interpretor& di, Standard_Integer n, cons
     E1 = DBRep::Get(a[2], TopAbs_EDGE, Standard_True);
     E2 = DBRep::Get(a[3], TopAbs_EDGE, Standard_True);
   }
-  else 
+  else
   {
     W = DBRep::Get(a[2], TopAbs_WIRE, Standard_True);
   }
@@ -411,7 +435,7 @@ static Standard_Integer chamfer2d(Draw_Interpretor& di, Standard_Integer n, cons
   {
     // Set result for DRAW.
     DBRep::Set(a[1], chamfer);
-    
+
     // Update neighbour edges in DRAW.
     DBRep::Set(a[2], M1);
     DBRep::Set(a[3], M2);
@@ -428,22 +452,32 @@ static Standard_Integer chamfer2d(Draw_Interpretor& di, Standard_Integer n, cons
   return 0;
 }
 
-//=======================================================================
-//function : Fillet2DCommands
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void  BRepTest::Fillet2DCommands(Draw_Interpretor& theCommands)
+void BRepTest::Fillet2DCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
-  if (done) return;
+  if (done)
+    return;
   done = Standard_True;
 
   DBRep::BasicCommands(theCommands);
 
   const char* g = "TOPOLOGY Fillet2D construction commands";
-   
-  theCommands.Add("chfi2d","chfi2d result face [edge1 edge2 (F radius/CDD d1 d2/CDA d ang) ....]",__FILE__,chfi2d,g);
-  theCommands.Add("fillet2d","fillet2d result wire (or edge1 edge2) radius",__FILE__,fillet2d,g);
-  theCommands.Add("chamfer2d","chamfer2d result wire (or edge1 edge2) length1 length2",__FILE__,chamfer2d,g);
+
+  theCommands.Add("chfi2d",
+                  "chfi2d result face [edge1 edge2 (F radius/CDD d1 d2/CDA d ang) ....]",
+                  __FILE__,
+                  chfi2d,
+                  g);
+  theCommands.Add("fillet2d",
+                  "fillet2d result wire (or edge1 edge2) radius",
+                  __FILE__,
+                  fillet2d,
+                  g);
+  theCommands.Add("chamfer2d",
+                  "chamfer2d result wire (or edge1 edge2) length1 length2",
+                  __FILE__,
+                  chamfer2d,
+                  g);
 }

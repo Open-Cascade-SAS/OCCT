@@ -23,7 +23,6 @@
 #include <GccInt_Bisec.hxx>
 #include <GccInt_IType.hxx>
 
-
 class GccInt_BHyper;
 DEFINE_STANDARD_HANDLE(GccInt_BHyper, GccInt_Bisec)
 
@@ -33,40 +32,20 @@ class GccInt_BHyper : public GccInt_Bisec
 {
 
 public:
-
-  
-
   //! Constructs a bisecting curve whose geometry is the 2D hyperbola Hyper.
   Standard_EXPORT GccInt_BHyper(const gp_Hypr2d& Hyper);
-  
+
   //! Returns a 2D hyperbola which is the geometry of this bisecting curve.
   Standard_EXPORT virtual gp_Hypr2d Hyperbola() const Standard_OVERRIDE;
-  
+
   //! Returns GccInt_Hpr, which is the type of any GccInt_BHyper bisecting curve.
   Standard_EXPORT GccInt_IType ArcType() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(GccInt_BHyper,GccInt_Bisec)
+  DEFINE_STANDARD_RTTIEXT(GccInt_BHyper, GccInt_Bisec)
 
 protected:
-
-
-
-
 private:
-
-
   gp_Hypr2d hyp;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GccInt_BHyper_HeaderFile

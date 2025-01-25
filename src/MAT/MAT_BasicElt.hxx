@@ -24,7 +24,6 @@
 #include <Standard_Transient.hxx>
 class MAT_Arc;
 
-
 class MAT_BasicElt;
 DEFINE_STANDARD_HANDLE(MAT_BasicElt, Standard_Transient)
 
@@ -34,58 +33,39 @@ class MAT_BasicElt : public Standard_Transient
 {
 
 public:
-
-  
   //! Constructor, <anInteger> is the <index> of <me>.
   Standard_EXPORT MAT_BasicElt(const Standard_Integer anInteger);
-  
+
   //! Return <startArcLeft> or <startArcRight> corresponding
   //! to <aSide>.
   Standard_EXPORT Handle(MAT_Arc) StartArc() const;
-  
+
   //! Return <endArcLeft> or <endArcRight> corresponding
   //! to <aSide>.
   Standard_EXPORT Handle(MAT_Arc) EndArc() const;
-  
+
   //! Return the <index> of <me> in Graph.TheBasicElts.
   Standard_EXPORT Standard_Integer Index() const;
-  
+
   //! Return the <GeomIndex> of <me>.
   Standard_EXPORT Standard_Integer GeomIndex() const;
-  
-  Standard_EXPORT void SetStartArc (const Handle(MAT_Arc)& anArc);
-  
-  Standard_EXPORT void SetEndArc (const Handle(MAT_Arc)& anArc);
-  
-  Standard_EXPORT void SetIndex (const Standard_Integer anInteger);
-  
-  Standard_EXPORT void SetGeomIndex (const Standard_Integer anInteger);
 
+  Standard_EXPORT void SetStartArc(const Handle(MAT_Arc)& anArc);
 
+  Standard_EXPORT void SetEndArc(const Handle(MAT_Arc)& anArc);
 
+  Standard_EXPORT void SetIndex(const Standard_Integer anInteger);
 
-  DEFINE_STANDARD_RTTIEXT(MAT_BasicElt,Standard_Transient)
+  Standard_EXPORT void SetGeomIndex(const Standard_Integer anInteger);
+
+  DEFINE_STANDARD_RTTIEXT(MAT_BasicElt, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Address startLeftArc;
   Standard_Address endLeftArc;
   Standard_Integer index;
   Standard_Integer geomIndex;
-
-
 };
-
-
-
-
-
-
 
 #endif // _MAT_BasicElt_HeaderFile

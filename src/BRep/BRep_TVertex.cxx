@@ -14,53 +14,44 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRep_TVertex.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRep_TVertex,TopoDS_TVertex)
+IMPLEMENT_STANDARD_RTTIEXT(BRep_TVertex, TopoDS_TVertex)
 
-//=======================================================================
-//function : BRep_TVertex
-//purpose  : 
-//=======================================================================
-BRep_TVertex::BRep_TVertex() :
-       TopoDS_TVertex(),
-       myTolerance(RealEpsilon())
+//=================================================================================================
+
+BRep_TVertex::BRep_TVertex()
+    : TopoDS_TVertex(),
+      myTolerance(RealEpsilon())
 {
 }
 
-//=======================================================================
-//function : EmptyCopy
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(TopoDS_TShape) BRep_TVertex::EmptyCopy() const
 {
-  Handle(BRep_TVertex) TV = 
-    new BRep_TVertex();
+  Handle(BRep_TVertex) TV = new BRep_TVertex();
   TV->Pnt(myPnt);
   TV->Tolerance(myTolerance);
   return TV;
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void BRep_TVertex::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+//=================================================================================================
+
+void BRep_TVertex::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TopoDS_TVertex)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TopoDS_TVertex)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPnt)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTolerance)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myPnt)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myTolerance)
   for (BRep_ListIteratorOfListOfPointRepresentation itr(myPoints); itr.More(); itr.Next())
   {
     const Handle(BRep_PointRepresentation)& aPointRepresentation = itr.Value();
-    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aPointRepresentation.get())
+    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aPointRepresentation.get())
   }
 }

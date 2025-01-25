@@ -17,12 +17,11 @@
 #ifndef _Storage_SolveMode_HeaderFile
 #define _Storage_SolveMode_HeaderFile
 
-
 enum Storage_SolveMode
 {
-Storage_AddSolve,
-Storage_WriteSolve,
-Storage_ReadSolve
+  Storage_AddSolve,
+  Storage_WriteSolve,
+  Storage_ReadSolve
 };
 
 #endif // _Storage_SolveMode_HeaderFile

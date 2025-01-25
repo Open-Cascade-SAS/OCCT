@@ -30,56 +30,52 @@
 
 class Geom2d_Curve;
 
-
 //! Stores a set of Curves from Geom2d in binary format
-class BinTools_Curve2dSet 
+class BinTools_Curve2dSet
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns an empty set of Curves.
   Standard_EXPORT BinTools_Curve2dSet();
-  
+
   //! Clears the content of the set.
   Standard_EXPORT void Clear();
-  
+
   //! Incorporate a new Curve in the  set and returns
   //! its index.
-  Standard_EXPORT Standard_Integer Add (const Handle(Geom2d_Curve)& C);
-  
+  Standard_EXPORT Standard_Integer Add(const Handle(Geom2d_Curve)& C);
+
   //! Returns the Curve of index <I>.
-  Standard_EXPORT Handle(Geom2d_Curve) Curve2d (const Standard_Integer I) const;
-  
+  Standard_EXPORT Handle(Geom2d_Curve) Curve2d(const Standard_Integer I) const;
+
   //! Returns the index of <L>.
-  Standard_EXPORT Standard_Integer Index (const Handle(Geom2d_Curve)& C) const;
-  
+  Standard_EXPORT Standard_Integer Index(const Handle(Geom2d_Curve)& C) const;
+
   //! Dumps the content of me on the stream <OS>.
-  Standard_EXPORT void Dump (Standard_OStream& OS) const;
-  
+  Standard_EXPORT void Dump(Standard_OStream& OS) const;
+
   //! Writes the content of  me  on the stream <OS> in a
   //! format that can be read back by Read.
-  Standard_EXPORT void Write (Standard_OStream& OS,
-                              const Message_ProgressRange& theRange = Message_ProgressRange()) const;
-  
+  Standard_EXPORT void Write(Standard_OStream&            OS,
+                             const Message_ProgressRange& theRange = Message_ProgressRange()) const;
+
   //! Reads the content of me from the  stream  <IS>. me
   //! is first cleared.
-  Standard_EXPORT void Read (Standard_IStream& IS,
-                             const Message_ProgressRange& theRange = Message_ProgressRange());
-  
+  Standard_EXPORT void Read(Standard_IStream&            IS,
+                            const Message_ProgressRange& theRange = Message_ProgressRange());
+
   //! Dumps the curve on the binary stream, that can be read back.
   Standard_EXPORT static void WriteCurve2d(const Handle(Geom2d_Curve)& C, BinTools_OStream& OS);
-  
+
   //! Reads the curve  from  the stream.  The  curve  is
   //! assumed   to have  been  written  with  the Write
   //! method.
-  Standard_EXPORT static Standard_IStream& ReadCurve2d (Standard_IStream& IS, Handle(Geom2d_Curve)& C);
+  Standard_EXPORT static Standard_IStream& ReadCurve2d(Standard_IStream&     IS,
+                                                       Handle(Geom2d_Curve)& C);
 
 private:
-
   TColStd_IndexedMapOfTransient myMap;
-
 };
 
 #endif // _BinTools_Curve2dSet_HeaderFile

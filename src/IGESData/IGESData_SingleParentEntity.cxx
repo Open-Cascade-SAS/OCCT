@@ -11,12 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IGESData_SingleParentEntity.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESData_SingleParentEntity,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_SingleParentEntity, IGESData_IGESEntity)
 
 // SingleParentEntity sert a decrire des entites "associativite parent"
 // (methode Parent a definir)

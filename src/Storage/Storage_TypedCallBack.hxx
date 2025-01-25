@@ -25,57 +25,37 @@
 #include <Standard_Transient.hxx>
 class Storage_CallBack;
 
-
 class Storage_TypedCallBack;
 DEFINE_STANDARD_HANDLE(Storage_TypedCallBack, Standard_Transient)
-
 
 class Storage_TypedCallBack : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT Storage_TypedCallBack();
-  
-  Standard_EXPORT Storage_TypedCallBack(const TCollection_AsciiString& aTypeName, const Handle(Storage_CallBack)& aCallBack);
-  
-  Standard_EXPORT void SetType (const TCollection_AsciiString& aType);
-  
+
+  Standard_EXPORT Storage_TypedCallBack(const TCollection_AsciiString&  aTypeName,
+                                        const Handle(Storage_CallBack)& aCallBack);
+
+  Standard_EXPORT void SetType(const TCollection_AsciiString& aType);
+
   Standard_EXPORT TCollection_AsciiString Type() const;
-  
-  Standard_EXPORT void SetCallBack (const Handle(Storage_CallBack)& aCallBack);
-  
+
+  Standard_EXPORT void SetCallBack(const Handle(Storage_CallBack)& aCallBack);
+
   Standard_EXPORT Handle(Storage_CallBack) CallBack() const;
-  
-  Standard_EXPORT void SetIndex (const Standard_Integer anIndex);
-  
+
+  Standard_EXPORT void SetIndex(const Standard_Integer anIndex);
+
   Standard_EXPORT Standard_Integer Index() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Storage_TypedCallBack,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Storage_TypedCallBack, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  TCollection_AsciiString myType;
+  TCollection_AsciiString  myType;
   Handle(Storage_CallBack) myCallBack;
-  Standard_Integer myIndex;
-
-
+  Standard_Integer         myIndex;
 };
-
-
-
-
-
-
 
 #endif // _Storage_TypedCallBack_HeaderFile

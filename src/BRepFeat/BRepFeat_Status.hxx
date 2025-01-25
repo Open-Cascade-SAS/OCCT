@@ -17,12 +17,11 @@
 #ifndef _BRepFeat_Status_HeaderFile
 #define _BRepFeat_Status_HeaderFile
 
-
 enum BRepFeat_Status
 {
-BRepFeat_NoError,
-BRepFeat_InvalidPlacement,
-BRepFeat_HoleTooLong
+  BRepFeat_NoError,
+  BRepFeat_InvalidPlacement,
+  BRepFeat_HoleTooLong
 };
 
 #endif // _BRepFeat_Status_HeaderFile

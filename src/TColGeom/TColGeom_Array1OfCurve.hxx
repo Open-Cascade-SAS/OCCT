@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(Geom_Curve)> TColGeom_Array1OfCurve;
 
-
 #endif

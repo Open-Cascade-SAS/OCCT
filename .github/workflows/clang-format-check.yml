@@ -1,0 +1,84 @@
+# This workflow checks the code formatting of changed files in a pull request using clang-format.
+# It is triggered on pull requests to the master branch.
+# The workflow verifies that the clang-format version matches 18.1.8,
+# checks formatting of modified files, and if formatting issues are found,
+# creates a patch file that can be applied to fix the formatting.
+
+name: Clang-Format Check
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  format-check:
+    name: Check code formatting
+    runs-on: windows-2022
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+      with:
+        fetch-depth: 0
+
+    - name: Check clang-format version
+      run: |
+        $version = clang-format --version
+        Write-Output "Detected clang-format version: $version"
+        $version | Select-String "18.1.8" >$null
+        if ($LASTEXITCODE -ne 0) {
+          echo "::error::Wrong clang-format version. Expected 18.1.8"
+          Write-Output "Error: Version mismatch - expected 18.1.8"
+          exit 1
+        }
+      shell: pwsh
+
+    - name: Get changed files
+      id: changed-files
+      run: |
+        $changedFiles = git diff --name-only origin/${{ github.base_ref }} HEAD |
+          Where-Object { $_ -match '^(src|tools)/' -and $_ -match '\.(cpp|hxx|cxx|lxx|h|pxx|hpp)$' }
+        $changedFiles | Set-Content "changed_files.txt"
+        if ($changedFiles.Count -gt 0) {
+          echo "has_files=true" >> $env:GITHUB_OUTPUT
+        }
+      shell: pwsh
+
+    - name: Check formatting
+      id: check
+      if: steps.changed-files.outputs.has_files == 'true'
+      run: |
+        $files = Get-Content "changed_files.txt"
+        $files | ForEach-Object -ThrottleLimit 8 -Parallel {
+          clang-format -i -style=file $_
+        }
+      shell: pwsh
+
+    - name: Check git status
+      id: git-check
+      if: steps.changed-files.outputs.has_files == 'true'
+      run: |
+        git diff > format.patch
+        if ((Get-Item format.patch).length -gt 0) {
+          echo "has_changes=true" >> $env:GITHUB_OUTPUT
+        }
+      shell: pwsh
+
+    - name: Upload patch
+      if: steps.git-check.outputs.has_changes == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: format-patch
+        path: format.patch
+
+    - name: Fail with instructions
+      if: steps.git-check.outputs.has_changes == 'true'
+      run: |
+        echo "::error::Files need formatting. To fix: 1. Download format.patch 2. "git apply format.patch" 3. Commit and push"
+        exit 1
+      shell: pwsh

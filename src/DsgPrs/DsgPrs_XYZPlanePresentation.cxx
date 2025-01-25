@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <DsgPrs_XYZPlanePresentation.hxx>
 #include <gp_Pnt.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
@@ -22,16 +21,13 @@
 #include <Prs3d_PlaneAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 
-//=======================================================================
-//function : Add
-//purpose  : 
-//=======================================================================
-void DsgPrs_XYZPlanePresentation::Add(
-		       const Handle(Prs3d_Presentation)& aPresentation,
-		       const Handle(Prs3d_Drawer)& aDrawer,	     
-		       const gp_Pnt& aPt1, 
-		       const gp_Pnt& aPt2,
-		       const gp_Pnt& aPt3)
+//=================================================================================================
+
+void DsgPrs_XYZPlanePresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
+                                      const Handle(Prs3d_Drawer)&       aDrawer,
+                                      const gp_Pnt&                     aPt1,
+                                      const gp_Pnt&                     aPt2,
+                                      const gp_Pnt&                     aPt3)
 {
   Handle(Graphic3d_Group) TheGroup = aPresentation->CurrentGroup();
   TheGroup->SetPrimitivesAspect(aDrawer->PlaneAspect()->EdgesAspect()->Aspect());

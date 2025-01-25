@@ -28,50 +28,28 @@ class gp_Dir2d;
 class Geom_Direction;
 class Geom2d_Direction;
 
-
 //! This class implements the mapping between classes
 //! Direction from Geom, Geom2d and Dir, Dir2d from gp, and the
 //! class Direction from StepGeom which describes a direction
 //! from Prostep.
-class GeomToStep_MakeDirection  : public GeomToStep_Root
+class GeomToStep_MakeDirection : public GeomToStep_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT GeomToStep_MakeDirection(const gp_Dir& D);
-  
+
   Standard_EXPORT GeomToStep_MakeDirection(const gp_Dir2d& D);
-  
+
   Standard_EXPORT GeomToStep_MakeDirection(const Handle(Geom_Direction)& D);
-  
+
   Standard_EXPORT GeomToStep_MakeDirection(const Handle(Geom2d_Direction)& D);
-  
+
   Standard_EXPORT const Handle(StepGeom_Direction)& Value() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(StepGeom_Direction) theDirection;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeomToStep_MakeDirection_HeaderFile

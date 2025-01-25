@@ -20,27 +20,22 @@
 #include <StepRepr_ProductConcept.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ProductConcept,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ProductConcept, Standard_Transient)
 
-//=======================================================================
-//function : StepRepr_ProductConcept
-//purpose  : 
-//=======================================================================
-StepRepr_ProductConcept::StepRepr_ProductConcept ()
+//=================================================================================================
+
+StepRepr_ProductConcept::StepRepr_ProductConcept()
 {
   defDescription = Standard_False;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepRepr_ProductConcept::Init (const Handle(TCollection_HAsciiString) &aId,
-                                    const Handle(TCollection_HAsciiString) &aName,
-                                    const Standard_Boolean hasDescription,
-                                    const Handle(TCollection_HAsciiString) &aDescription,
-                                    const Handle(StepBasic_ProductConceptContext) &aMarketContext)
+void StepRepr_ProductConcept::Init(const Handle(TCollection_HAsciiString)&        aId,
+                                   const Handle(TCollection_HAsciiString)&        aName,
+                                   const Standard_Boolean                         hasDescription,
+                                   const Handle(TCollection_HAsciiString)&        aDescription,
+                                   const Handle(StepBasic_ProductConceptContext)& aMarketContext)
 {
 
   theId = aId;
@@ -48,100 +43,76 @@ void StepRepr_ProductConcept::Init (const Handle(TCollection_HAsciiString) &aId,
   theName = aName;
 
   defDescription = hasDescription;
-  if (defDescription) {
+  if (defDescription)
+  {
     theDescription = aDescription;
   }
-  else theDescription.Nullify();
+  else
+    theDescription.Nullify();
 
   theMarketContext = aMarketContext;
 }
 
-//=======================================================================
-//function : Id
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_ProductConcept::Id () const
+Handle(TCollection_HAsciiString) StepRepr_ProductConcept::Id() const
 {
   return theId;
 }
 
-//=======================================================================
-//function : SetId
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepRepr_ProductConcept::SetId (const Handle(TCollection_HAsciiString) &aId)
+void StepRepr_ProductConcept::SetId(const Handle(TCollection_HAsciiString)& aId)
 {
   theId = aId;
 }
 
-//=======================================================================
-//function : Name
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_ProductConcept::Name () const
+Handle(TCollection_HAsciiString) StepRepr_ProductConcept::Name() const
 {
   return theName;
 }
 
-//=======================================================================
-//function : SetName
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepRepr_ProductConcept::SetName (const Handle(TCollection_HAsciiString) &aName)
+void StepRepr_ProductConcept::SetName(const Handle(TCollection_HAsciiString)& aName)
 {
   theName = aName;
 }
 
-//=======================================================================
-//function : Description
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_ProductConcept::Description () const
+Handle(TCollection_HAsciiString) StepRepr_ProductConcept::Description() const
 {
   return theDescription;
 }
 
-//=======================================================================
-//function : SetDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepRepr_ProductConcept::SetDescription (const Handle(TCollection_HAsciiString) &aDescription)
+void StepRepr_ProductConcept::SetDescription(const Handle(TCollection_HAsciiString)& aDescription)
 {
   theDescription = aDescription;
 }
 
-//=======================================================================
-//function : HasDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean StepRepr_ProductConcept::HasDescription () const
+Standard_Boolean StepRepr_ProductConcept::HasDescription() const
 {
   return defDescription;
 }
 
-//=======================================================================
-//function : MarketContext
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_ProductConceptContext) StepRepr_ProductConcept::MarketContext () const
+Handle(StepBasic_ProductConceptContext) StepRepr_ProductConcept::MarketContext() const
 {
   return theMarketContext;
 }
 
-//=======================================================================
-//function : SetMarketContext
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepRepr_ProductConcept::SetMarketContext (const Handle(StepBasic_ProductConceptContext) &aMarketContext)
+void StepRepr_ProductConcept::SetMarketContext(
+  const Handle(StepBasic_ProductConceptContext)& aMarketContext)
 {
   theMarketContext = aMarketContext;
 }

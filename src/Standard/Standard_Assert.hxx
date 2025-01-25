@@ -48,11 +48,11 @@
 //! The mode is triggered by preprocessor macro _DEBUG: if it is defined,
 //! Debug mode is assumed, Release otherwise.
 //!
-//! In debug mode, if condition is not satisfied the macros call 
+//! In debug mode, if condition is not satisfied the macros call
 //! Standard_ASSERT_INVOKE_ which:
-//! - on Windows (under VC++), stops code execution and prompts to attach 
+//! - on Windows (under VC++), stops code execution and prompts to attach
 //!   debugger to the process immediately.
-//! - on POSIX systems, prints message to cerr and raises signal SIGTRAP to stop 
+//! - on POSIX systems, prints message to cerr and raises signal SIGTRAP to stop
 //!   execution when under debugger (may terminate the process if not under debugger).
 //!
 //! The second argument (message) should be string constant ("...").
@@ -66,7 +66,7 @@
 //!
 //! The macros are formed as functions and require semicolon at the end.
 
-// Stub function used to make macros complete C++ operator 
+// Stub function used to make macros complete C++ operator
 inline void Standard_ASSERT_DO_NOTHING() {}
 
 // User messages are activated in debug mode only
@@ -91,70 +91,90 @@ inline void Standard_ASSERT_DO_NOTHING() {}
 
   #if defined(_MSC_VER)
     #include <crtdbg.h>
-    // use debug CRT built-in function that show up message box to user
-    // with formatted assert description and 3 possible actions
-    inline Standard_Boolean Standard_ASSERT_REPORT_ (const char* theFile,
-                                                     const int   theLine,
-                                                     const char* theExpr,
-                                                     const char* theDesc)
-    {
-      // 1 means user pressed Retry button
-      return _CrtDbgReport (_CRT_ASSERT, theFile, theLine, NULL,
-                            "%s\n(Condition: \"%s\")\n", theDesc, theExpr) == 1;
-    }
-  #else
-    // just log assertion description into standard error stream
-    inline Standard_Boolean Standard_ASSERT_REPORT_ (const char* theFile,
-                                                     const int   theLine,
-                                                     const char* theExpr,
-                                                     const char* theDesc)
-    {
-      std::cerr << "ERROR: statement '" << theExpr << "' is not TRUE!\n"
-                << "\nFile: '"   << theFile << "'"
-                << "\nLine: "    << theLine << "\n";
-      if (theDesc != NULL && *theDesc != '\0')
-        std::cerr << "Description: " << theDesc << "\n";
 
-      std::cerr << std::flush;
-      return Standard_True;
-    }
+// use debug CRT built-in function that show up message box to user
+// with formatted assert description and 3 possible actions
+inline Standard_Boolean Standard_ASSERT_REPORT_(const char* theFile,
+                                                const int   theLine,
+                                                const char* theExpr,
+                                                const char* theDesc)
+{
+  // 1 means user pressed Retry button
+  return _CrtDbgReport(_CRT_ASSERT,
+                       theFile,
+                       theLine,
+                       NULL,
+                       "%s\n(Condition: \"%s\")\n",
+                       theDesc,
+                       theExpr)
+         == 1;
+}
+  #else
+// just log assertion description into standard error stream
+inline Standard_Boolean Standard_ASSERT_REPORT_(const char* theFile,
+                                                const int   theLine,
+                                                const char* theExpr,
+                                                const char* theDesc)
+{
+  std::cerr << "ERROR: statement '" << theExpr << "' is not TRUE!\n"
+            << "\nFile: '" << theFile << "'"
+            << "\nLine: " << theLine << "\n";
+  if (theDesc != NULL && *theDesc != '\0')
+    std::cerr << "Description: " << theDesc << "\n";
+
+  std::cerr << std::flush;
+  return Standard_True;
+}
   #endif
 
   // report issue and add debug breakpoint or abort execution
-  #define Standard_ASSERT_INVOKE_(theExpr, theDesc) \
-    if (Standard_ASSERT_REPORT_ (__FILE__, __LINE__, #theExpr, theDesc)) { Standard_ASSERT_DBGBREAK_(); } \
-    else Standard_ASSERT_DO_NOTHING()
+  #define Standard_ASSERT_INVOKE_(theExpr, theDesc)                                                \
+    if (Standard_ASSERT_REPORT_(__FILE__, __LINE__, #theExpr, theDesc))                            \
+    {                                                                                              \
+      Standard_ASSERT_DBGBREAK_();                                                                 \
+    }                                                                                              \
+    else                                                                                           \
+      Standard_ASSERT_DO_NOTHING()
 
   // Basic ASSERT macros
-  #define Standard_ASSERT(theExpr, theDesc, theAction)                        \
-    if (!(theExpr)) { Standard_ASSERT_INVOKE_(theExpr, theDesc); theAction; } \
-    else Standard_ASSERT_DO_NOTHING()
-  #define Standard_ASSERT_SKIP(theExpr, theDesc) \
-    Standard_ASSERT(theExpr, theDesc,)
-  #define Standard_ASSERT_VOID(theExpr, theDesc) \
-    Standard_ASSERT(theExpr, theDesc,)
+  #define Standard_ASSERT(theExpr, theDesc, theAction)                                             \
+    if (!(theExpr))                                                                                \
+    {                                                                                              \
+      Standard_ASSERT_INVOKE_(theExpr, theDesc);                                                   \
+      theAction;                                                                                   \
+    }                                                                                              \
+    else                                                                                           \
+      Standard_ASSERT_DO_NOTHING()
+  #define Standard_ASSERT_SKIP(theExpr, theDesc) Standard_ASSERT(theExpr, theDesc, )
+  #define Standard_ASSERT_VOID(theExpr, theDesc) Standard_ASSERT(theExpr, theDesc, )
 #else
 
   // dummy block
   #define Standard_ASSERT_INVOKE_(theExpr, theDesc) Standard_ASSERT_DO_NOTHING()
 
   // Basic ASSERT macros
-  #define Standard_ASSERT(theExpr, theDesc, theAction) \
-    if (!(theExpr)) { theAction; }                     \
-    else Standard_ASSERT_DO_NOTHING()
+  #define Standard_ASSERT(theExpr, theDesc, theAction)                                             \
+    if (!(theExpr))                                                                                \
+    {                                                                                              \
+      theAction;                                                                                   \
+    }                                                                                              \
+    else                                                                                           \
+      Standard_ASSERT_DO_NOTHING()
   #define Standard_ASSERT_SKIP(theExpr, theDesc) theExpr
   #define Standard_ASSERT_VOID(theExpr, theDesc) Standard_ASSERT_DO_NOTHING()
 
 #endif
 
 //! Raise exception (Standard_ProgramError) with the provided message
-#define Standard_ASSERT_RAISE(theExpr, theDesc)                                  \
-  Standard_ASSERT(theExpr, theDesc, throw Standard_ProgramError(                \
-      "*** ERROR: ASSERT in file '" __FILE__ "': \n" theDesc " (" #theExpr ")" ) )
+#define Standard_ASSERT_RAISE(theExpr, theDesc)                                                    \
+  Standard_ASSERT(theExpr,                                                                         \
+                  theDesc,                                                                         \
+                  throw Standard_ProgramError("*** ERROR: ASSERT in file '" __FILE__               \
+                                              "': \n" theDesc " (" #theExpr ")"))
 
 //! Return from the current function with specified value (empty
 //! if the function returns void)
-#define Standard_ASSERT_RETURN(theExpr, theDesc, theReturnValue) \
+#define Standard_ASSERT_RETURN(theExpr, theDesc, theReturnValue)                                   \
   Standard_ASSERT(theExpr, theDesc, return theReturnValue)
 
 //! Raise debug message
@@ -162,8 +182,10 @@ inline void Standard_ASSERT_DO_NOTHING() {}
 
 //! Static assert --
 //! empty default template
-template <bool condition> 
-struct Standard_Static_Assert { };
+template <bool condition>
+struct Standard_Static_Assert
+{
+};
 
 //! Static assert -- specialization for condition being true
 template <>
@@ -174,11 +196,10 @@ struct Standard_Static_Assert<true>
 
 //! Cause compiler error if argument is not constant expression or
 //! evaluates to false
-#define Standard_STATIC_ASSERT(theExpr)     \
-        Standard_Static_Assert<theExpr>::assert_ok();
+#define Standard_STATIC_ASSERT(theExpr) Standard_Static_Assert<theExpr>::assert_ok();
 
 #endif // Standard_Assert_HeaderFile
 
 #ifdef _MSC_VER
-  #pragma once
+#pragma once
 #endif

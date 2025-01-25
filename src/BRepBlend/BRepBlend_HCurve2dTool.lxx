@@ -24,139 +24,172 @@
 #include <gp_Parab2d.hxx>
 #include <gp_Hypr2d.hxx>
 
-
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 
 #include <TColStd_Array1OfReal.hxx>
 
 //============================================================
-inline Standard_Real BRepBlend_HCurve2dTool::FirstParameter (const Handle(Adaptor2d_Curve2d)& C) {
-  return(C->FirstParameter());
+inline Standard_Real BRepBlend_HCurve2dTool::FirstParameter(const Handle(Adaptor2d_Curve2d)& C)
+{
+  return (C->FirstParameter());
 }
+
 //============================================================
-inline Standard_Real BRepBlend_HCurve2dTool::LastParameter (const Handle(Adaptor2d_Curve2d)& C) {
-  return(C->LastParameter());
+inline Standard_Real BRepBlend_HCurve2dTool::LastParameter(const Handle(Adaptor2d_Curve2d)& C)
+{
+  return (C->LastParameter());
 }
+
 //============================================================
-inline GeomAbs_Shape BRepBlend_HCurve2dTool::Continuity (const Handle(Adaptor2d_Curve2d)& C) {
-  return(C->Continuity());
+inline GeomAbs_Shape BRepBlend_HCurve2dTool::Continuity(const Handle(Adaptor2d_Curve2d)& C)
+{
+  return (C->Continuity());
 }
+
 //============================================================
-inline Standard_Integer BRepBlend_HCurve2dTool::NbIntervals(const Handle(Adaptor2d_Curve2d)& C,const GeomAbs_Shape Sh) {
-  return(C->NbIntervals(Sh));
+inline Standard_Integer BRepBlend_HCurve2dTool::NbIntervals(const Handle(Adaptor2d_Curve2d)& C,
+                                                            const GeomAbs_Shape              Sh)
+{
+  return (C->NbIntervals(Sh));
 }
+
 //============================================================
 inline void BRepBlend_HCurve2dTool::Intervals(const Handle(Adaptor2d_Curve2d)& C,
-							     TColStd_Array1OfReal& Tab,
-							     const GeomAbs_Shape Sh) {
-  C->Intervals(Tab,Sh);
+                                              TColStd_Array1OfReal&            Tab,
+                                              const GeomAbs_Shape              Sh)
+{
+  C->Intervals(Tab, Sh);
 }
+
 //============================================================
-inline Standard_Boolean BRepBlend_HCurve2dTool::IsClosed(const Handle(Adaptor2d_Curve2d)& C) {
-  return(C->IsClosed());
+inline Standard_Boolean BRepBlend_HCurve2dTool::IsClosed(const Handle(Adaptor2d_Curve2d)& C)
+{
+  return (C->IsClosed());
 }
+
 //============================================================
-inline Standard_Boolean BRepBlend_HCurve2dTool::IsPeriodic(const Handle(Adaptor2d_Curve2d)& C) {
-  return(C->IsPeriodic());
+inline Standard_Boolean BRepBlend_HCurve2dTool::IsPeriodic(const Handle(Adaptor2d_Curve2d)& C)
+{
+  return (C->IsPeriodic());
 }
+
 //============================================================
-inline Standard_Real BRepBlend_HCurve2dTool::Period(const Handle(Adaptor2d_Curve2d)& C) {
-  return(C->Period());
+inline Standard_Real BRepBlend_HCurve2dTool::Period(const Handle(Adaptor2d_Curve2d)& C)
+{
+  return (C->Period());
 }
+
 //============================================================
-inline gp_Pnt2d BRepBlend_HCurve2dTool::Value (const Handle(Adaptor2d_Curve2d)& C,
-						const Standard_Real U) {
-  return(C->Value(U));
+inline gp_Pnt2d BRepBlend_HCurve2dTool::Value(const Handle(Adaptor2d_Curve2d)& C,
+                                              const Standard_Real              U)
+{
+  return (C->Value(U));
 }
+
 //============================================================
 inline void BRepBlend_HCurve2dTool::D0(const Handle(Adaptor2d_Curve2d)& C,
-					  const Standard_Real U,
-					  gp_Pnt2d& P) {
-  C->D0(U,P);
+                                       const Standard_Real              U,
+                                       gp_Pnt2d&                        P)
+{
+  C->D0(U, P);
 }
+
 //============================================================
-inline void BRepBlend_HCurve2dTool::D1 (const Handle(Adaptor2d_Curve2d)& C,
-					   const Standard_Real U,
-					   gp_Pnt2d& P,
-					   gp_Vec2d& T) {
-  C->D1(U,P,T);
+inline void BRepBlend_HCurve2dTool::D1(const Handle(Adaptor2d_Curve2d)& C,
+                                       const Standard_Real              U,
+                                       gp_Pnt2d&                        P,
+                                       gp_Vec2d&                        T)
+{
+  C->D1(U, P, T);
 }
+
 //============================================================
-inline void BRepBlend_HCurve2dTool::D2 (const Handle(Adaptor2d_Curve2d)& C,
-					   const Standard_Real U,
-					   gp_Pnt2d& P,
-					   gp_Vec2d& T,
-					   gp_Vec2d& N) {
-  
-  C->D2(U,P,T,N);
+inline void BRepBlend_HCurve2dTool::D2(const Handle(Adaptor2d_Curve2d)& C,
+                                       const Standard_Real              U,
+                                       gp_Pnt2d&                        P,
+                                       gp_Vec2d&                        T,
+                                       gp_Vec2d&                        N)
+{
+
+  C->D2(U, P, T, N);
 }
+
 //============================================================
-inline void BRepBlend_HCurve2dTool::D3 (const Handle(Adaptor2d_Curve2d)& C,
-					   const Standard_Real U,
-					   gp_Pnt2d& P,
-					   gp_Vec2d& V1,
-					   gp_Vec2d& V2,
-					   gp_Vec2d& V3) {
-  
-  C->D3(U,P,V1,V2,V3);
+inline void BRepBlend_HCurve2dTool::D3(const Handle(Adaptor2d_Curve2d)& C,
+                                       const Standard_Real              U,
+                                       gp_Pnt2d&                        P,
+                                       gp_Vec2d&                        V1,
+                                       gp_Vec2d&                        V2,
+                                       gp_Vec2d&                        V3)
+{
+
+  C->D3(U, P, V1, V2, V3);
 }
+
 //============================================================
-inline gp_Vec2d BRepBlend_HCurve2dTool::DN (const Handle(Adaptor2d_Curve2d)& C,
-					     const Standard_Real U,
-					     const Standard_Integer N) { 
-  
-  return(C->DN(U,N));
+inline gp_Vec2d BRepBlend_HCurve2dTool::DN(const Handle(Adaptor2d_Curve2d)& C,
+                                           const Standard_Real              U,
+                                           const Standard_Integer           N)
+{
+
+  return (C->DN(U, N));
 }
+
 //============================================================
 inline Standard_Real BRepBlend_HCurve2dTool::Resolution(const Handle(Adaptor2d_Curve2d)& C,
-							   const Standard_Real R3d) {
-  return(C->Resolution(R3d));
+                                                        const Standard_Real              R3d)
+{
+  return (C->Resolution(R3d));
 }
+
 //============================================================
-inline GeomAbs_CurveType BRepBlend_HCurve2dTool::GetType(const Handle(Adaptor2d_Curve2d)& C) {
-  return(C->GetType());
+inline GeomAbs_CurveType BRepBlend_HCurve2dTool::GetType(const Handle(Adaptor2d_Curve2d)& C)
+{
+  return (C->GetType());
 }
+
 //============================================================
-inline gp_Lin2d BRepBlend_HCurve2dTool::Line (const Handle(Adaptor2d_Curve2d)& C) {
-  return(C->Line());
+inline gp_Lin2d BRepBlend_HCurve2dTool::Line(const Handle(Adaptor2d_Curve2d)& C)
+{
+  return (C->Line());
 }
+
 //============================================================
-inline gp_Circ2d BRepBlend_HCurve2dTool::Circle (const Handle(Adaptor2d_Curve2d)& C) {
-  return(C->Circle());
+inline gp_Circ2d BRepBlend_HCurve2dTool::Circle(const Handle(Adaptor2d_Curve2d)& C)
+{
+  return (C->Circle());
 }
+
 //============================================================
-inline gp_Elips2d BRepBlend_HCurve2dTool::Ellipse (const Handle(Adaptor2d_Curve2d)& C) {
-  return(C->Ellipse());
+inline gp_Elips2d BRepBlend_HCurve2dTool::Ellipse(const Handle(Adaptor2d_Curve2d)& C)
+{
+  return (C->Ellipse());
 }
+
 //============================================================
-inline gp_Parab2d BRepBlend_HCurve2dTool::Parabola (const Handle(Adaptor2d_Curve2d)& C) {
-  return(C->Parabola());
+inline gp_Parab2d BRepBlend_HCurve2dTool::Parabola(const Handle(Adaptor2d_Curve2d)& C)
+{
+  return (C->Parabola());
 }
+
 //============================================================
-inline gp_Hypr2d BRepBlend_HCurve2dTool::Hyperbola (const Handle(Adaptor2d_Curve2d)& C) {
-  return(C->Hyperbola());
+inline gp_Hypr2d BRepBlend_HCurve2dTool::Hyperbola(const Handle(Adaptor2d_Curve2d)& C)
+{
+  return (C->Hyperbola());
 }
+
 //============================================================
-inline Handle(Geom2d_BezierCurve) BRepBlend_HCurve2dTool::Bezier (const Handle(Adaptor2d_Curve2d)& C) {
-  return(C->Bezier());
+inline Handle(Geom2d_BezierCurve) BRepBlend_HCurve2dTool::Bezier(const Handle(Adaptor2d_Curve2d)& C)
+{
+  return (C->Bezier());
 }
+
 //============================================================
-inline Handle(Geom2d_BSplineCurve) BRepBlend_HCurve2dTool::BSpline (const Handle(Adaptor2d_Curve2d)& C) {
-  return(C->BSpline());
+inline Handle(Geom2d_BSplineCurve) BRepBlend_HCurve2dTool::BSpline(
+  const Handle(Adaptor2d_Curve2d)& C)
+{
+  return (C->BSpline());
 }
+
 //============================================================
-
-
-
-
-
-
-
-
-
-
-
-
-
-

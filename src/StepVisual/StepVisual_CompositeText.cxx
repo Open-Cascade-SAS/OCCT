@@ -11,42 +11,42 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepVisual_CompositeText.hxx>
 #include <StepVisual_TextOrCharacter.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CompositeText,StepGeom_GeometricRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CompositeText, StepGeom_GeometricRepresentationItem)
 
-StepVisual_CompositeText::StepVisual_CompositeText ()  {}
+StepVisual_CompositeText::StepVisual_CompositeText() {}
 
 void StepVisual_CompositeText::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepVisual_HArray1OfTextOrCharacter)& aCollectedText)
+  const Handle(TCollection_HAsciiString)&            aName,
+  const Handle(StepVisual_HArray1OfTextOrCharacter)& aCollectedText)
 {
-	// --- classe own fields ---
-	collectedText = aCollectedText;
-	// --- classe inherited fields ---
-	StepRepr_RepresentationItem::Init(aName);
+  // --- classe own fields ---
+  collectedText = aCollectedText;
+  // --- classe inherited fields ---
+  StepRepr_RepresentationItem::Init(aName);
 }
 
-
-void StepVisual_CompositeText::SetCollectedText(const Handle(StepVisual_HArray1OfTextOrCharacter)& aCollectedText)
+void StepVisual_CompositeText::SetCollectedText(
+  const Handle(StepVisual_HArray1OfTextOrCharacter)& aCollectedText)
 {
-	collectedText = aCollectedText;
+  collectedText = aCollectedText;
 }
 
 Handle(StepVisual_HArray1OfTextOrCharacter) StepVisual_CompositeText::CollectedText() const
 {
-	return collectedText;
+  return collectedText;
 }
 
-StepVisual_TextOrCharacter StepVisual_CompositeText::CollectedTextValue(const Standard_Integer num) const
+StepVisual_TextOrCharacter StepVisual_CompositeText::CollectedTextValue(
+  const Standard_Integer num) const
 {
-	return collectedText->Value(num);
+  return collectedText->Value(num);
 }
 
-Standard_Integer StepVisual_CompositeText::NbCollectedText () const
+Standard_Integer StepVisual_CompositeText::NbCollectedText() const
 {
-	return collectedText->Length();
+  return collectedText->Length();
 }

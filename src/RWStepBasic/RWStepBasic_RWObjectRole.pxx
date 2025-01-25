@@ -27,48 +27,31 @@ class StepBasic_ObjectRole;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write tool for ObjectRole
-class RWStepBasic_RWObjectRole 
+class RWStepBasic_RWObjectRole
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_HIDDEN RWStepBasic_RWObjectRole();
-  
+
   //! Reads ObjectRole
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepBasic_ObjectRole)& ent) const;
-  
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& data,
+                                const Standard_Integer                 num,
+                                Handle(Interface_Check)&               ach,
+                                const Handle(StepBasic_ObjectRole)&    ent) const;
+
   //! Writes ObjectRole
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepBasic_ObjectRole)& ent) const;
-  
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                SW,
+                                 const Handle(StepBasic_ObjectRole)& ent) const;
+
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepBasic_ObjectRole)& ent, Interface_EntityIterator& iter) const;
-
-
-
+  Standard_HIDDEN void Share(const Handle(StepBasic_ObjectRole)& ent,
+                             Interface_EntityIterator&           iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepBasic_RWObjectRole_HeaderFile

@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -16,12 +16,12 @@
 
 #include <StepKinematics_KinematicLinkRepresentationAssociation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicLinkRepresentationAssociation, StepRepr_RepresentationRelationship)
+IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicLinkRepresentationAssociation,
+                           StepRepr_RepresentationRelationship)
 
-//=======================================================================
-//function : StepKinematics_KinematicLinkRepresentationAssociation
-//purpose  :
-//=======================================================================
-StepKinematics_KinematicLinkRepresentationAssociation::StepKinematics_KinematicLinkRepresentationAssociation ()
+//=================================================================================================
+
+StepKinematics_KinematicLinkRepresentationAssociation::
+  StepKinematics_KinematicLinkRepresentationAssociation()
 {
 }

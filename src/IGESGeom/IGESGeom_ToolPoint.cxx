@@ -37,12 +37,11 @@
 #include <Standard_DomainError.hxx>
 
 // MGE 28/07/98
-IGESGeom_ToolPoint::IGESGeom_ToolPoint ()    {  }
+IGESGeom_ToolPoint::IGESGeom_ToolPoint() {}
 
-
-void IGESGeom_ToolPoint::ReadOwnParams
-  (const Handle(IGESGeom_Point)& ent,
-   const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const
+void IGESGeom_ToolPoint::ReadOwnParams(const Handle(IGESGeom_Point)&          ent,
+                                       const Handle(IGESData_IGESReaderData)& IR,
+                                       IGESData_ParamReader&                  PR) const
 {
   // MGE 28/07/98
   // Building of messages
@@ -50,49 +49,59 @@ void IGESGeom_ToolPoint::ReadOwnParams
   Message_Msg Msg73("XSTEP_73");
   //==================================
 
-  gp_XYZ aPoint;
+  gp_XYZ                         aPoint;
   Handle(IGESBasic_SubfigureDef) aSymbol;
-  IGESData_Status aStatus;
-  //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  IGESData_Status                aStatus;
+  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
 
-  PR.ReadXYZ(PR.CurrentList(1, 3), Msg73, aPoint); //szv#4:S4163:12Mar99 `st=` not needed
-  //st = PR.ReadXYZ(PR.CurrentList(1, 3), "Point", aPoint);
+  PR.ReadXYZ(PR.CurrentList(1, 3), Msg73, aPoint); // szv#4:S4163:12Mar99 `st=` not needed
+  // st = PR.ReadXYZ(PR.CurrentList(1, 3), "Point", aPoint);
 
-  if (PR.DefinedElseSkip()){
-    if (!PR.ReadEntity(IR, PR.Current(), aStatus,
-		  STANDARD_TYPE(IGESBasic_SubfigureDef), aSymbol, Standard_True)){
+  if (PR.DefinedElseSkip())
+  {
+    if (!PR.ReadEntity(IR,
+                       PR.Current(),
+                       aStatus,
+                       STANDARD_TYPE(IGESBasic_SubfigureDef),
+                       aSymbol,
+                       Standard_True))
+    {
       Message_Msg Msg74("XSTEP_74");
-      switch(aStatus) {
-      case IGESData_ReferenceError: {  
-	Message_Msg Msg216 ("IGES_216");
-	Msg74.Arg(Msg216.Value());
-	PR.SendFail(Msg74);
-	break; }
-      case IGESData_EntityError: {
-	Message_Msg Msg217 ("IGES_217");
-	Msg74.Arg(Msg217.Value());
-	PR.SendFail(Msg74);
-	break; }
-      case IGESData_TypeError: {
-	Message_Msg Msg218 ("IGES_218");
-	Msg74.Arg(Msg218.Value());
-	PR.SendFail(Msg74);
-	break; }
-      default:{
-      }
+      switch (aStatus)
+      {
+        case IGESData_ReferenceError: {
+          Message_Msg Msg216("IGES_216");
+          Msg74.Arg(Msg216.Value());
+          PR.SendFail(Msg74);
+          break;
+        }
+        case IGESData_EntityError: {
+          Message_Msg Msg217("IGES_217");
+          Msg74.Arg(Msg217.Value());
+          PR.SendFail(Msg74);
+          break;
+        }
+        case IGESData_TypeError: {
+          Message_Msg Msg218("IGES_218");
+          Msg74.Arg(Msg218.Value());
+          PR.SendFail(Msg74);
+          break;
+        }
+        default: {
+        }
       }
     }
- //szv#4:S4163:12Mar99 `st=` not needed
+    // szv#4:S4163:12Mar99 `st=` not needed
   }
-   // st = PR.ReadEntity(IR, PR.Current(), "Display Symbol",
-//		       STANDARD_TYPE(IGESBasic_SubfigureDef), aSymbol, Standard_True);
+  // st = PR.ReadEntity(IR, PR.Current(), "Display Symbol",
+  //		       STANDARD_TYPE(IGESBasic_SubfigureDef), aSymbol, Standard_True);
 
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(aPoint, aSymbol);
 }
 
-void IGESGeom_ToolPoint::WriteOwnParams
-  (const Handle(IGESGeom_Point)& ent, IGESData_IGESWriter& IW)  const
+void IGESGeom_ToolPoint::WriteOwnParams(const Handle(IGESGeom_Point)& ent,
+                                        IGESData_IGESWriter&          IW) const
 {
   IW.Send(ent->Value().X());
   IW.Send(ent->Value().Y());
@@ -100,53 +109,51 @@ void IGESGeom_ToolPoint::WriteOwnParams
   IW.Send(ent->DisplaySymbol());
 }
 
-void  IGESGeom_ToolPoint::OwnShared
-  (const Handle(IGESGeom_Point)& ent, Interface_EntityIterator& iter) const
+void IGESGeom_ToolPoint::OwnShared(const Handle(IGESGeom_Point)& ent,
+                                   Interface_EntityIterator&     iter) const
 {
   iter.GetOneItem(ent->DisplaySymbol());
 }
 
-void IGESGeom_ToolPoint::OwnCopy
-  (const Handle(IGESGeom_Point)& another,
-   const Handle(IGESGeom_Point)& ent, Interface_CopyTool& TC) const
+void IGESGeom_ToolPoint::OwnCopy(const Handle(IGESGeom_Point)& another,
+                                 const Handle(IGESGeom_Point)& ent,
+                                 Interface_CopyTool&           TC) const
 {
   gp_XYZ aPoint = (another->Value()).XYZ();
 
-  DeclareAndCast(IGESBasic_SubfigureDef, aSymbol, 
-                 TC.Transferred(another->DisplaySymbol()));
+  DeclareAndCast(IGESBasic_SubfigureDef, aSymbol, TC.Transferred(another->DisplaySymbol()));
   ent->Init(aPoint, aSymbol);
 }
 
-
-IGESData_DirChecker IGESGeom_ToolPoint::DirChecker
-  (const Handle(IGESGeom_Point)& ent )   const
+IGESData_DirChecker IGESGeom_ToolPoint::DirChecker(const Handle(IGESGeom_Point)& ent) const
 {
-  IGESData_DirChecker DC(116,0);
+  IGESData_DirChecker DC(116, 0);
   DC.Structure(IGESData_DefVoid);
   if (ent->HasDisplaySymbol())
-    {
-      DC.LineFont(IGESData_DefAny);
-      DC.LineWeight(IGESData_DefValue);
-    }
+  {
+    DC.LineFont(IGESData_DefAny);
+    DC.LineWeight(IGESData_DefValue);
+  }
   DC.Color(IGESData_DefAny);
   return DC;
 }
 
-void IGESGeom_ToolPoint::OwnCheck
-  (const Handle(IGESGeom_Point)& /* ent */,
-   const Interface_ShareTool& , Handle(Interface_Check)& /* ach */)  const
+void IGESGeom_ToolPoint::OwnCheck(const Handle(IGESGeom_Point)& /* ent */,
+                                  const Interface_ShareTool&,
+                                  Handle(Interface_Check)& /* ach */) const
 {
 }
 
-void IGESGeom_ToolPoint::OwnDump
-  (const Handle(IGESGeom_Point)& ent, const IGESData_IGESDumper& dumper,
-   Standard_OStream& S, const Standard_Integer level)  const
+void IGESGeom_ToolPoint::OwnDump(const Handle(IGESGeom_Point)& ent,
+                                 const IGESData_IGESDumper&    dumper,
+                                 Standard_OStream&             S,
+                                 const Standard_Integer        level) const
 {
   S << "IGESGeom_Point\n"
     << " Value         : ";
-  IGESData_DumpXYZL(S,level, ent->Value(), ent->Location());
+  IGESData_DumpXYZL(S, level, ent->Value(), ent->Location());
   S << "\n"
     << " Display Symbol : ";
-  dumper.Dump(ent->DisplaySymbol(),S, (level <= 4) ? 0 : 1);
+  dumper.Dump(ent->DisplaySymbol(), S, (level <= 4) ? 0 : 1);
   S << std::endl;
 }

@@ -19,12 +19,11 @@
 // Purpose  : Constructor.
 //=======================================================================
 
-inline Geom2dHatch_Intersector::Geom2dHatch_Intersector
-  (const Standard_Real Confusion,
-   const Standard_Real Tangency) :
-       Geom2dInt_GInter () ,
-       myConfusionTolerance (Confusion) ,
-       myTangencyTolerance  (Tangency)
+inline Geom2dHatch_Intersector::Geom2dHatch_Intersector(const Standard_Real Confusion,
+                                                        const Standard_Real Tangency)
+    : Geom2dInt_GInter(),
+      myConfusionTolerance(Confusion),
+      myTangencyTolerance(Tangency)
 {
 }
 
@@ -33,10 +32,9 @@ inline Geom2dHatch_Intersector::Geom2dHatch_Intersector
 // Purpose  : Returns the confusion tolerance of the intersector.
 //=======================================================================
 
-inline Standard_Real Geom2dHatch_Intersector::ConfusionTolerance
-  () const
+inline Standard_Real Geom2dHatch_Intersector::ConfusionTolerance() const
 {
-  return myConfusionTolerance ;
+  return myConfusionTolerance;
 }
 
 //=======================================================================
@@ -44,10 +42,9 @@ inline Standard_Real Geom2dHatch_Intersector::ConfusionTolerance
 // Purpose  : Sets the confusion tolerance of the intersector.
 //=======================================================================
 
-inline void Geom2dHatch_Intersector::SetConfusionTolerance
-  (const Standard_Real Confusion)
+inline void Geom2dHatch_Intersector::SetConfusionTolerance(const Standard_Real Confusion)
 {
-  myConfusionTolerance = Confusion ;
+  myConfusionTolerance = Confusion;
 }
 
 //=======================================================================
@@ -55,10 +52,9 @@ inline void Geom2dHatch_Intersector::SetConfusionTolerance
 // Purpose  : Returns the tangency tolerance of the intersector.
 //=======================================================================
 
-inline Standard_Real Geom2dHatch_Intersector::TangencyTolerance
-  () const
+inline Standard_Real Geom2dHatch_Intersector::TangencyTolerance() const
 {
-  return myTangencyTolerance ;
+  return myTangencyTolerance;
 }
 
 //=======================================================================
@@ -66,10 +62,9 @@ inline Standard_Real Geom2dHatch_Intersector::TangencyTolerance
 // Purpose  : Sets the tangency tolerance of the intersector.
 //=======================================================================
 
-inline void Geom2dHatch_Intersector::SetTangencyTolerance
-  (const Standard_Real Tangency)
+inline void Geom2dHatch_Intersector::SetTangencyTolerance(const Standard_Real Tangency)
 {
-  myTangencyTolerance = Tangency ;
+  myTangencyTolerance = Tangency;
 }
 
 //=======================================================================
@@ -79,12 +74,8 @@ inline void Geom2dHatch_Intersector::SetTangencyTolerance
 #include <Adaptor2d_Curve2d.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 
-inline void Geom2dHatch_Intersector::Intersect
-  (const Geom2dAdaptor_Curve& C1,
-   const Geom2dAdaptor_Curve& C2)
+inline void Geom2dHatch_Intersector::Intersect(const Geom2dAdaptor_Curve& C1,
+                                               const Geom2dAdaptor_Curve& C2)
 {
-     Geom2dInt_GInter::Perform(C1, 
-			    C2, 
-			    myConfusionTolerance, myTangencyTolerance) ; 
-  
+  Geom2dInt_GInter::Perform(C1, C2, myConfusionTolerance, myTangencyTolerance);
 }

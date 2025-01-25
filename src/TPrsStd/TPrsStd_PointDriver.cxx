@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_Point.hxx>
@@ -23,45 +22,43 @@
 #include <TDF_Label.hxx>
 #include <TPrsStd_PointDriver.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_PointDriver,TPrsStd_Driver)
+IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_PointDriver, TPrsStd_Driver)
 
-//#include <TDataStd_Datum.hxx>
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-TPrsStd_PointDriver::TPrsStd_PointDriver()
-{
-}
+// #include <TDataStd_Datum.hxx>
+//=================================================================================================
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-Standard_Boolean TPrsStd_PointDriver::Update (const TDF_Label& aLabel,
-					     Handle(AIS_InteractiveObject)& anAISObject) 
+TPrsStd_PointDriver::TPrsStd_PointDriver() {}
+
+//=================================================================================================
+
+Standard_Boolean TPrsStd_PointDriver::Update(const TDF_Label&               aLabel,
+                                             Handle(AIS_InteractiveObject)& anAISObject)
 {
   Handle(TDataXtd_Point) appoint;
 
-  if ( !aLabel.FindAttribute(TDataXtd_Point::GetID(), appoint) ) {
+  if (!aLabel.FindAttribute(TDataXtd_Point::GetID(), appoint))
+  {
     return Standard_False;
   }
- 
+
   gp_Pnt pnt;
-  if (!TDataXtd_Geometry::Point(aLabel,pnt)) {
+  if (!TDataXtd_Geometry::Point(aLabel, pnt))
+  {
     return Standard_False;
   }
   Handle(Geom_CartesianPoint) apt = new Geom_CartesianPoint(pnt);
-  
+
   //  Update de l'AIS
   Handle(AIS_Point) aistrihed;
   if (anAISObject.IsNull())
     aistrihed = new AIS_Point(apt);
-  else {
+  else
+  {
     aistrihed = Handle(AIS_Point)::DownCast(anAISObject);
-    if (aistrihed.IsNull()) 
+    if (aistrihed.IsNull())
       aistrihed = new AIS_Point(apt);
-    else {
+    else
+    {
       aistrihed->SetComponent(apt);
       aistrihed->ResetTransformation();
       aistrihed->SetToUpdate();
@@ -71,4 +68,3 @@ Standard_Boolean TPrsStd_PointDriver::Update (const TDF_Label& aLabel,
   anAISObject = aistrihed;
   return Standard_True;
 }
-

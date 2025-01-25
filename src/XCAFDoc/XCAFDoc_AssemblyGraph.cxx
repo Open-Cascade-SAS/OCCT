@@ -73,8 +73,8 @@ Standard_Boolean XCAFDoc_AssemblyGraph::IsDirectLink(const Standard_Integer theN
 // purpose  : Returns node type
 // =======================================================================
 
-XCAFDoc_AssemblyGraph::NodeType 
-XCAFDoc_AssemblyGraph::GetNodeType(const Standard_Integer theNode) const
+XCAFDoc_AssemblyGraph::NodeType XCAFDoc_AssemblyGraph::GetNodeType(
+  const Standard_Integer theNode) const
 {
   const NodeType* typePtr = myNodeTypes.Seek(theNode);
   if (typePtr == NULL)
@@ -100,7 +100,7 @@ Standard_Integer XCAFDoc_AssemblyGraph::NbLinks() const
 
 // =======================================================================
 // function : GetUsageOccurrenceQuantity
-// purpose  : 
+// purpose  :
 // =======================================================================
 
 Standard_Integer XCAFDoc_AssemblyGraph::NbOccurrences(const Standard_Integer theNode) const
@@ -265,6 +265,6 @@ XCAFDoc_AssemblyGraph::Iterator::Iterator(const Handle(XCAFDoc_AssemblyGraph)& t
   Standard_NullObject_Raise_if(theGraph.IsNull(), "Null assembly graph!");
   Standard_NullObject_Raise_if(theNode < 1, "Node ID must be positive one-based integer!");
 
-  myGraph = theGraph;
+  myGraph        = theGraph;
   myCurrentIndex = theNode;
 }

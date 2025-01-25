@@ -15,36 +15,33 @@
 #define Cocoa_LocalPool_HeaderFile
 
 #if defined(__clang__) && (__clang_major__ >= 4)
-#if __has_feature(objc_arc)
-  #define HAVE_OBJC_ARC
-#endif
+  #if __has_feature(objc_arc)
+    #define HAVE_OBJC_ARC
+  #endif
 #endif
 
 #ifdef HAVE_OBJC_ARC
 
-// @autoreleasepool should be used within ARC
+  // @autoreleasepool should be used within ARC
 
 #else
 
-#ifdef __OBJC__
-  @class NSAutoreleasePool;
-#else
-  struct NSAutoreleasePool;
-#endif
+  #ifdef __OBJC__
+@class NSAutoreleasePool;
+  #else
+struct NSAutoreleasePool;
+  #endif
 
 //! Auxiliary class to create local pool.
 class Cocoa_LocalPool
 {
 
 public:
-
   Cocoa_LocalPool();
   ~Cocoa_LocalPool();
 
 private:
-
   NSAutoreleasePool* myPoolObj;
-
 };
 
 #endif // ARC

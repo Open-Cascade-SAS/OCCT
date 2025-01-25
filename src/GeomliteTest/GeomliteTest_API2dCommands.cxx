@@ -16,7 +16,6 @@
 
 // modified : pmn 11/04/97 : mis dans GeomliteTest
 
-
 #include <GeomliteTest.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Draw_Interpretor.hxx>
@@ -53,12 +52,9 @@
 Standard_IMPORT Draw_Viewer dout;
 #endif
 
-//=======================================================================
-//function : proj
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const char** a)
+static Standard_Integer proj(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n != 4)
   {
@@ -73,22 +69,22 @@ static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const ch
     return 1;
   }
 
-  const gp_Pnt2d P (Draw::Atof (a[2]), Draw::Atof (a[3]));
-  Geom2dAPI_ProjectPointOnCurve proj(P,GC,GC->FirstParameter(), GC->LastParameter());
+  const gp_Pnt2d                P(Draw::Atof(a[2]), Draw::Atof(a[3]));
+  Geom2dAPI_ProjectPointOnCurve proj(P, GC, GC->FirstParameter(), GC->LastParameter());
   for (Standard_Integer i = 1; i <= proj.NbPoints(); i++)
   {
-    gp_Pnt2d aP1 = proj.Point(i);
-    const Standard_Real aDist = P.Distance(aP1);
-    const TCollection_AsciiString aName = TCollection_AsciiString ("ext_") + i;
+    gp_Pnt2d                      aP1   = proj.Point(i);
+    const Standard_Real           aDist = P.Distance(aP1);
+    const TCollection_AsciiString aName = TCollection_AsciiString("ext_") + i;
     if (aDist > Precision::PConfusion())
     {
-      Handle(Geom2d_Line) L = new Geom2d_Line(P, gp_Dir2d(aP1.XY() - P.XY()));
+      Handle(Geom2d_Line)         L  = new Geom2d_Line(P, gp_Dir2d(aP1.XY() - P.XY()));
       Handle(Geom2d_TrimmedCurve) CT = new Geom2d_TrimmedCurve(L, 0., aDist);
-      DrawTrSurf::Set (aName.ToCString(), CT);
+      DrawTrSurf::Set(aName.ToCString(), CT);
     }
     else
     {
-      DrawTrSurf::Set (aName.ToCString(), aP1);
+      DrawTrSurf::Set(aName.ToCString(), aP1);
     }
 
     di << aName << " ";
@@ -97,10 +93,7 @@ static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const ch
   return 0;
 }
 
-//=======================================================================
-//function : appro
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 static Standard_Integer appro(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
@@ -110,15 +103,15 @@ static Standard_Integer appro(Draw_Interpretor& di, Standard_Integer n, const ch
   //     - affiche la tolerance
   // 2dappro tol
   //     - change la tolerance
-  // 2dappro result nbpoint 
+  // 2dappro result nbpoint
   //     - saisie interactive
-  // 2dappro result nbpoint curve 
+  // 2dappro result nbpoint curve
   //     - calcule des points sur la courbe
-  // 2dappro result nbpoint x1 y1 x2 y2 .. 
+  // 2dappro result nbpoint x1 y1 x2 y2 ..
   //     - tableau de points
   // 2dappro result nbpoint x1 dx y1 y2 ..
   //     - tableau de points (x1,y1) (x1+dx,y2) ... avec x = t
-  
+
   static Standard_Real Tol2d = 1.e-6;
   if (n < 3)
   {
@@ -126,100 +119,109 @@ static Standard_Integer appro(Draw_Interpretor& di, Standard_Integer n, const ch
     {
       Tol2d = Draw::Atof(a[1]);
     }
-    
-    di << "Tolerance for 2d approx : "<< Tol2d << "\n";
+
+    di << "Tolerance for 2d approx : " << Tol2d << "\n";
     return 0;
   }
 
   Standard_Integer i, Nb = Draw::Atoi(a[2]);
-  
-  Standard_Boolean hasPoints = Standard_True;
+
+  Standard_Boolean     hasPoints = Standard_True;
   TColgp_Array1OfPnt2d Points(1, Nb);
-  TColStd_Array1OfReal YValues(1,Nb);
-  Standard_Real X0=0,DX=0;
-  
+  TColStd_Array1OfReal YValues(1, Nb);
+  Standard_Real        X0 = 0, DX = 0;
+
   Handle(Draw_Marker2D) mark;
-  
-  if (n == 3)  {
+
+  if (n == 3)
+  {
     // saisie interactive
-    Standard_Integer id,XX,YY,b;
-    dout.Select(id,XX,YY,b);
+    Standard_Integer id, XX, YY, b;
+    dout.Select(id, XX, YY, b);
     Standard_Real zoom = dout.Zoom(id);
 
-    Points(1) = gp_Pnt2d( ((Standard_Real)XX)/zoom, 
-		          ((Standard_Real)YY)/zoom );
-    
-    mark = new Draw_Marker2D( Points(1), Draw_X, Draw_vert); 
-    
+    Points(1) = gp_Pnt2d(((Standard_Real)XX) / zoom, ((Standard_Real)YY) / zoom);
+
+    mark = new Draw_Marker2D(Points(1), Draw_X, Draw_vert);
+
     dout << mark;
-    
-    for (i = 2; i<=Nb; i++) {
-      dout.Select(id,XX,YY,b);
-      Points(i) = gp_Pnt2d( ((Standard_Real)XX)/zoom, 
-			    ((Standard_Real)YY)/zoom );
-      mark = new Draw_Marker2D( Points(i), Draw_X, Draw_vert); 
+
+    for (i = 2; i <= Nb; i++)
+    {
+      dout.Select(id, XX, YY, b);
+      Points(i) = gp_Pnt2d(((Standard_Real)XX) / zoom, ((Standard_Real)YY) / zoom);
+      mark      = new Draw_Marker2D(Points(i), Draw_X, Draw_vert);
       dout << mark;
     }
-  }    
-  else {
-    if ( n == 4) {
-    // points sur courbe
+  }
+  else
+  {
+    if (n == 4)
+    {
+      // points sur courbe
       Handle(Geom2d_Curve) GC = DrawTrSurf::GetCurve2d(a[3]);
-      if ( GC.IsNull()) 
-	return 1;
+      if (GC.IsNull())
+        return 1;
 
       Standard_Real U, U1, U2;
-      U1 = GC->FirstParameter();
-      U2 = GC->LastParameter();
-      Standard_Real Delta = ( U2 - U1) / (Nb-1);
-      for ( i = 1 ; i <= Nb; i++) {
-	U = U1 + (i-1) * Delta;
-	Points(i) = GC->Value(U);
+      U1                  = GC->FirstParameter();
+      U2                  = GC->LastParameter();
+      Standard_Real Delta = (U2 - U1) / (Nb - 1);
+      for (i = 1; i <= Nb; i++)
+      {
+        U         = U1 + (i - 1) * Delta;
+        Points(i) = GC->Value(U);
       }
     }
 
-    else {
+    else
+    {
       // test points ou ordonnees
       Standard_Integer nc = n - 3;
-      if (nc == 2 * Nb) {
-	// points
-	nc = 3;
-	for (i = 1; i <= Nb; i++) {
-	  Points(i).SetCoord(Draw::Atof(a[nc]),Draw::Atof(a[nc+1]));
-	  nc += 2;
-	}
+      if (nc == 2 * Nb)
+      {
+        // points
+        nc = 3;
+        for (i = 1; i <= Nb; i++)
+        {
+          Points(i).SetCoord(Draw::Atof(a[nc]), Draw::Atof(a[nc + 1]));
+          nc += 2;
+        }
       }
-      else if (nc - 2 == Nb) {
-	// YValues
+      else if (nc - 2 == Nb)
+      {
+        // YValues
         hasPoints = Standard_False;
-	nc = 5;
-	X0 = Draw::Atof(a[3]);
-	DX = Draw::Atof(a[4]);
-      	for (i = 1; i <= Nb; i++) {
-	  YValues(i) = Draw::Atof(a[nc]);
-	  Points(i).SetCoord(X0+(i-1)*DX,YValues(i));
-	  nc++;
-	}
+        nc        = 5;
+        X0        = Draw::Atof(a[3]);
+        DX        = Draw::Atof(a[4]);
+        for (i = 1; i <= Nb; i++)
+        {
+          YValues(i) = Draw::Atof(a[nc]);
+          Points(i).SetCoord(X0 + (i - 1) * DX, YValues(i));
+          nc++;
+        }
       }
       else
-	return 1;
+        return 1;
     }
     // display the points
-    for ( i = 1 ; i <= Nb; i++) {
-      mark = new Draw_Marker2D( Points(i), Draw_X, Draw_vert); 
+    for (i = 1; i <= Nb; i++)
+    {
+      mark = new Draw_Marker2D(Points(i), Draw_X, Draw_vert);
       dout << mark;
     }
   }
   dout.Flush();
   Standard_Integer Dmin = 3;
   Standard_Integer Dmax = 8;
-  
+
   Handle(Geom2d_BSplineCurve) TheCurve;
   if (hasPoints)
   {
-    if (!strcmp (a[0], "2dinterpole"))
+    if (!strcmp(a[0], "2dinterpole"))
     {
-      Geom2dAPI_Interpolate anInterpol (new TColgp_HArray1OfPnt2d(Points), Standard_False, Tol2d);
+      Geom2dAPI_Interpolate anInterpol(new TColgp_HArray1OfPnt2d(Points), Standard_False, Tol2d);
       anInterpol.Perform();
       if (!anInterpol.IsDone())
       {
@@ -228,9 +230,9 @@ static Standard_Integer appro(Draw_Interpretor& di, Standard_Integer n, const ch
       }
       TheCurve = anInterpol.Curve();
     }
-  else
+    else
     {
-      Geom2dAPI_PointsToBSpline anApprox (Points, Dmin, Dmax, GeomAbs_C2, Tol2d);
+      Geom2dAPI_PointsToBSpline anApprox(Points, Dmin, Dmax, GeomAbs_C2, Tol2d);
       if (!anApprox.IsDone())
       {
         di << "not done";
@@ -241,12 +243,12 @@ static Standard_Integer appro(Draw_Interpretor& di, Standard_Integer n, const ch
   }
   else
   {
-    if (!strcmp (a[0], "2dinterpole"))
+    if (!strcmp(a[0], "2dinterpole"))
     {
       di << "incorrect usage";
       return 1;
     }
-    Geom2dAPI_PointsToBSpline anApprox (YValues, X0, DX, Dmin, Dmax, GeomAbs_C2, Tol2d);
+    Geom2dAPI_PointsToBSpline anApprox(YValues, X0, DX, Dmin, Dmax, GeomAbs_C2, Tol2d);
     if (!anApprox.IsDone())
     {
       di << "not done";
@@ -254,16 +256,13 @@ static Standard_Integer appro(Draw_Interpretor& di, Standard_Integer n, const ch
     }
     TheCurve = anApprox.Curve();
   }
-  
+
   DrawTrSurf::Set(a[1], TheCurve);
   di << a[1];
   return 0;
 }
 
-//=======================================================================
-//function : extrema
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
@@ -273,14 +272,14 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
     return 1;
   }
 
-  Handle(Geom2d_Curve) GC1 = DrawTrSurf::GetCurve2d (a[1]);
-  Handle(Geom2d_Curve) GC2 = DrawTrSurf::GetCurve2d (a[2]);
-  if ( GC1.IsNull())
+  Handle(Geom2d_Curve) GC1 = DrawTrSurf::GetCurve2d(a[1]);
+  Handle(Geom2d_Curve) GC2 = DrawTrSurf::GetCurve2d(a[2]);
+  if (GC1.IsNull())
   {
     di << "Syntax error: '" << a[1] << "' is NULL";
     return 1;
   }
-  if ( GC2.IsNull())
+  if (GC2.IsNull())
   {
     di << "Syntax error: '" << a[2] << "' is NULL";
     return 1;
@@ -291,15 +290,15 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
   const Standard_Real U2f = GC2->FirstParameter();
   const Standard_Real U2l = GC2->LastParameter();
 
-  Geom2dAPI_ExtremaCurveCurve Ex(GC1,GC2,U1f,U1l,U2f,U2l);
-  Standard_Boolean isInfinitySolutions = Ex.Extrema().IsParallel();
-  const Standard_Integer aNExtr = Ex.NbExtrema();
+  Geom2dAPI_ExtremaCurveCurve Ex(GC1, GC2, U1f, U1l, U2f, U2l);
+  Standard_Boolean            isInfinitySolutions = Ex.Extrema().IsParallel();
+  const Standard_Integer      aNExtr              = Ex.NbExtrema();
 
   if (aNExtr == 0 || isInfinitySolutions)
   {
-    // Infinity solutions flag may be set with 0 number of 
+    // Infinity solutions flag may be set with 0 number of
     // solutions in analytic extrema Curve/Curve.
-    if (isInfinitySolutions) 
+    if (isInfinitySolutions)
       di << "Infinite number of extremas, distance = " << Ex.LowerDistance() << "\n";
     else
       di << "No solutions!\n";
@@ -307,13 +306,13 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
 
   for (Standard_Integer i = 1; i <= aNExtr; i++)
   {
-    gp_Pnt2d P1,P2;
-    Ex.Points(i,P1,P2);
+    gp_Pnt2d P1, P2;
+    Ex.Points(i, P1, P2);
     di << "dist " << i << ": " << Ex.Distance(i) << "  ";
     const TCollection_AsciiString aName = TCollection_AsciiString("ext_") + i;
     if (Ex.Distance(i) <= Precision::PConfusion())
     {
-      Handle(Draw_Marker2D) mark = new Draw_Marker2D( P1, Draw_X, Draw_vert); 
+      Handle(Draw_Marker2D) mark = new Draw_Marker2D(P1, Draw_X, Draw_vert);
       dout << mark;
       dout.Flush();
       const char* temp = aName.ToCString();
@@ -321,9 +320,9 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
     }
     else
     {
-      Handle(Geom2d_Line) L = new Geom2d_Line(P1,gp_Vec2d(P1,P2));
-      Handle(Geom2d_TrimmedCurve) CT = new Geom2d_TrimmedCurve(L, 0., P1.Distance(P2));
-      const char* temp = aName.ToCString();
+      Handle(Geom2d_Line)         L    = new Geom2d_Line(P1, gp_Vec2d(P1, P2));
+      Handle(Geom2d_TrimmedCurve) CT   = new Geom2d_TrimmedCurve(L, 0., P1.Distance(P2));
+      const char*                 temp = aName.ToCString();
       DrawTrSurf::Set(temp, CT);
     }
     di << aName << "\n";
@@ -332,15 +331,13 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
   return 0;
 }
 
-//=======================================================================
-//function : intersect
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer intersect(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   Handle(Geom2d_Curve) C1, C2;
-  Standard_Real Tol = 0.001;
-  Standard_Boolean bPrintState = Standard_False;
+  Standard_Real        Tol         = 0.001;
+  Standard_Boolean     bPrintState = Standard_False;
 
   // Retrieve other parameters if any
   for (Standard_Integer i = 1; i < n; ++i)
@@ -355,7 +352,7 @@ static Standard_Integer intersect(Draw_Interpretor& di, Standard_Integer n, cons
     }
     else if (C1.IsNull())
     {
-      C1 = DrawTrSurf::GetCurve2d (a[i]);
+      C1 = DrawTrSurf::GetCurve2d(a[i]);
       if (C1.IsNull())
       {
         di << "Syntax error: curve '" << a[i] << "' is null";
@@ -375,7 +372,7 @@ static Standard_Integer intersect(Draw_Interpretor& di, Standard_Integer n, cons
     {
       di << "Syntax error at '" << a[i] << "'";
       return 1;
-  }
+    }
   }
   if (C1.IsNull())
   {
@@ -419,35 +416,32 @@ static Standard_Integer intersect(Draw_Interpretor& di, Standard_Integer n, cons
     di << " parameter on the second: " << aPInt.ParamOnSecond() << "\n";
     if (bPrintState)
     {
-      di << "Intersection type: " <<
-        (aPInt.TransitionOfFirst().IsTangent() ? "TOUCH" : "INTERSECTION") << "\n";
+      di << "Intersection type: "
+         << (aPInt.TransitionOfFirst().IsTangent() ? "TOUCH" : "INTERSECTION") << "\n";
     }
     Handle(Draw_Marker2D) mark = new Draw_Marker2D(P, Draw_X, Draw_vert);
     dout << mark;
   }
   dout.Flush();
 
-  Handle(Geom2d_Curve) S1, S2;
+  Handle(Geom2d_Curve)       S1, S2;
   Handle(DrawTrSurf_Curve2d) CD;
-  Standard_Integer aNbSegments = Intersector.NbSegments();
+  Standard_Integer           aNbSegments = Intersector.NbSegments();
   for (Standard_Integer i = 1; i <= aNbSegments; i++)
   {
     di << "Segment #" << i << " found.\n";
-    Intersector.Segment(i,S1,S2);
+    Intersector.Segment(i, S1, S2);
     CD = new DrawTrSurf_Curve2d(S1, Draw_bleu, 30);
     dout << CD;
     CD = new DrawTrSurf_Curve2d(S2, Draw_violet, 30);
     dout << CD;
   }
-  
+
   dout.Flush();
   return 0;
 }
 
-//=======================================================================
-//function : intersect_ana
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 static Standard_Integer intersect_ana(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
@@ -457,8 +451,8 @@ static Standard_Integer intersect_ana(Draw_Interpretor& di, Standard_Integer n, 
     return 1;
   }
 
-  Handle(Geom2d_Curve) C1 = DrawTrSurf::GetCurve2d(a[1]);
-  Handle(Geom2d_Curve) C2 = DrawTrSurf::GetCurve2d(a[2]);
+  Handle(Geom2d_Curve)  C1    = DrawTrSurf::GetCurve2d(a[1]);
+  Handle(Geom2d_Curve)  C2    = DrawTrSurf::GetCurve2d(a[2]);
   Handle(Geom2d_Circle) aCir1 = Handle(Geom2d_Circle)::DownCast(C1);
   Handle(Geom2d_Circle) aCir2 = Handle(Geom2d_Circle)::DownCast(C2);
   if (aCir1.IsNull() || aCir2.IsNull())
@@ -481,10 +475,7 @@ static Standard_Integer intersect_ana(Draw_Interpretor& di, Standard_Integer n, 
   return 0;
 }
 
-//=======================================================================
-//function : intconcon
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 static Standard_Integer intconcon(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
@@ -493,7 +484,7 @@ static Standard_Integer intconcon(Draw_Interpretor& di, Standard_Integer n, cons
     di << "Syntax error: wrong number of arguments";
     return 1;
   }
-  
+
   Handle(Geom2d_Curve) C1 = DrawTrSurf::GetCurve2d(a[1]);
   if (C1.IsNull())
   {
@@ -508,39 +499,33 @@ static Standard_Integer intconcon(Draw_Interpretor& di, Standard_Integer n, cons
     return 1;
   }
 
-  Geom2dAdaptor_Curve AC1(C1), AC2(C2);
-  GeomAbs_CurveType T1 = AC1.GetType(), T2 = AC2.GetType();
+  Geom2dAdaptor_Curve                        AC1(C1), AC2(C2);
+  GeomAbs_CurveType                          T1 = AC1.GetType(), T2 = AC2.GetType();
   Handle(NCollection_Shared<IntAna2d_Conic>) pCon;
   switch (T2)
   {
-    case GeomAbs_Line:
-    {
-        pCon.reset (new NCollection_Shared<IntAna2d_Conic>(AC2.Line()));
+    case GeomAbs_Line: {
+      pCon.reset(new NCollection_Shared<IntAna2d_Conic>(AC2.Line()));
       break;
     }
-    case GeomAbs_Circle:
-    {
-        pCon.reset (new NCollection_Shared<IntAna2d_Conic>(AC2.Circle()));
+    case GeomAbs_Circle: {
+      pCon.reset(new NCollection_Shared<IntAna2d_Conic>(AC2.Circle()));
       break;
     }
-    case GeomAbs_Ellipse:
-    {
-        pCon.reset (new NCollection_Shared<IntAna2d_Conic>(AC2.Ellipse()));
+    case GeomAbs_Ellipse: {
+      pCon.reset(new NCollection_Shared<IntAna2d_Conic>(AC2.Ellipse()));
       break;
     }
-    case GeomAbs_Hyperbola:
-    {
-        pCon.reset (new NCollection_Shared<IntAna2d_Conic>(AC2.Hyperbola()));
+    case GeomAbs_Hyperbola: {
+      pCon.reset(new NCollection_Shared<IntAna2d_Conic>(AC2.Hyperbola()));
       break;
     }
-    case GeomAbs_Parabola:
-    {
-        pCon.reset (new NCollection_Shared<IntAna2d_Conic>(AC2.Parabola()));
+    case GeomAbs_Parabola: {
+      pCon.reset(new NCollection_Shared<IntAna2d_Conic>(AC2.Parabola()));
       break;
     }
-    default:
-      {
-        di << "Syntax error: '" << a[2] << "' is not conic";
+    default: {
+      di << "Syntax error: '" << a[2] << "' is not conic";
       return 1;
     }
   }
@@ -548,30 +533,30 @@ static Standard_Integer intconcon(Draw_Interpretor& di, Standard_Integer n, cons
   IntAna2d_AnaIntersection Intersector;
   switch (T1)
   {
-  case GeomAbs_Line:
-    Intersector.Perform(AC1.Line(), *pCon);
-    break;
-  case GeomAbs_Circle:
-    Intersector.Perform(AC1.Circle(), *pCon);
-    break;
-  case GeomAbs_Ellipse:
-    Intersector.Perform(AC1.Ellipse(), *pCon);
-    break;
-  case GeomAbs_Hyperbola:
-    Intersector.Perform(AC1.Hyperbola(), *pCon);
-    break;
-  case GeomAbs_Parabola:
-    Intersector.Perform(AC1.Parabola(), *pCon);
-    break;
-  default:
+    case GeomAbs_Line:
+      Intersector.Perform(AC1.Line(), *pCon);
+      break;
+    case GeomAbs_Circle:
+      Intersector.Perform(AC1.Circle(), *pCon);
+      break;
+    case GeomAbs_Ellipse:
+      Intersector.Perform(AC1.Ellipse(), *pCon);
+      break;
+    case GeomAbs_Hyperbola:
+      Intersector.Perform(AC1.Hyperbola(), *pCon);
+      break;
+    case GeomAbs_Parabola:
+      Intersector.Perform(AC1.Parabola(), *pCon);
+      break;
+    default:
       di << "Syntax error: '" << a[1] << "' is not conic";
-    return 1;
+      return 1;
   }
-  
+
   for (Standard_Integer i = 1; i <= Intersector.NbPoints(); i++)
   {
     gp_Pnt2d P = Intersector.Point(i).Value();
-    di<<"Intersection point "<<i<<" : "<<P.X()<<" "<<P.Y()<<"\n";
+    di << "Intersection point " << i << " : " << P.X() << " " << P.Y() << "\n";
     di << "parameter on the fist: " << Intersector.Point(i).ParamOnFirst();
     if (!Intersector.Point(i).SecondIsImplicit())
     {
@@ -581,18 +566,18 @@ static Standard_Integer intconcon(Draw_Interpretor& di, Standard_Integer n, cons
     {
       di << "\n";
     }
-    Handle(Draw_Marker2D) mark = new Draw_Marker2D( P, Draw_X, Draw_vert); 
+    Handle(Draw_Marker2D) mark = new Draw_Marker2D(P, Draw_X, Draw_vert);
     dout << mark;
   }
   dout.Flush();
   return 0;
 }
 
-//=======================================================================
-//function : deviation
-//purpose  : 
-//=======================================================================
-static Standard_Integer deviation(Draw_Interpretor& theDI, Standard_Integer theNArg, const char** theArgv)
+//=================================================================================================
+
+static Standard_Integer deviation(Draw_Interpretor& theDI,
+                                  Standard_Integer  theNArg,
+                                  const char**      theArgv)
 {
   if (theNArg < 3)
   {
@@ -610,12 +595,11 @@ static Standard_Integer deviation(Draw_Interpretor& theDI, Standard_Integer theN
 
   Geom2dAdaptor_Curve anAC(aC);
 
-  Standard_Integer aNbInterv = 2;
-  Standard_Real aU0 = RealLast();
-  Standard_Integer aNbApprox = 10;
-  Standard_Integer aNbExact = 100;
+  Standard_Integer aNbInterv      = 2;
+  Standard_Real    aU0            = RealLast();
+  Standard_Integer aNbApprox      = 10;
+  Standard_Integer aNbExact       = 100;
   Standard_Boolean anIsApproxOnly = Standard_False;
-
 
   for (Standard_Integer aCurrArg = 3; aCurrArg < theNArg; aCurrArg++)
   {
@@ -651,18 +635,17 @@ static Standard_Integer deviation(Draw_Interpretor& theDI, Standard_Integer theN
 
   const Standard_Real aU1 = anAC.FirstParameter();
   const Standard_Real aU2 = anAC.LastParameter();
-  
+
   Standard_Real aRetCurvParam = aU0;
-  gp_Pnt2d aPtOnCurv;
-  gp_Vec2d aRetVec;
-  gp_Lin2d aLinSegm;
+  gp_Pnt2d      aPtOnCurv;
+  gp_Vec2d      aRetVec;
+  gp_Lin2d      aLinSegm;
 
   Standard_Real aDefl = RealLast();
 
   if (aU0 == RealLast() || anIsApproxOnly)
   {
-    aDefl = GeomLib_Tool::ComputeDeviation(anAC, aU1, aU2,
-                                           aNbInterv, aNbApprox, &aU0);
+    aDefl = GeomLib_Tool::ComputeDeviation(anAC, aU1, aU2, aNbInterv, aNbApprox, &aU0);
 
     if (aDefl < 0.0)
     {
@@ -672,9 +655,15 @@ static Standard_Integer deviation(Draw_Interpretor& theDI, Standard_Integer theN
   }
   if (!anIsApproxOnly)
   {
-    aDefl = GeomLib_Tool::ComputeDeviation(anAC, aU1, aU2, aU0, aNbExact,
-                                           &aRetCurvParam, &aPtOnCurv,
-                                           &aRetVec, &aLinSegm);
+    aDefl = GeomLib_Tool::ComputeDeviation(anAC,
+                                           aU1,
+                                           aU2,
+                                           aU0,
+                                           aNbExact,
+                                           &aRetCurvParam,
+                                           &aPtOnCurv,
+                                           &aRetVec,
+                                           &aLinSegm);
   }
   if (aDefl < 0.0)
   {
@@ -683,17 +672,17 @@ static Standard_Integer deviation(Draw_Interpretor& theDI, Standard_Integer theN
   }
   theDI << "Computed value is: " << aDefl << "\n";
   TCollection_AsciiString anArgString = theArgv[1];
-  TCollection_AsciiString aPntString = anArgString + "_pnt";
+  TCollection_AsciiString aPntString  = anArgString + "_pnt";
   DrawTrSurf::Set(aPntString.ToCString(), aPtOnCurv);
   theDI << "From point " << aPntString << " (with parameter " << aRetCurvParam << ") to ";
 
-  Handle(Geom2d_Curve) aLine = new Geom2d_Line(aLinSegm);
+  Handle(Geom2d_Curve)    aLine      = new Geom2d_Line(aLinSegm);
   TCollection_AsciiString aLinString = anArgString + "_lin";
   DrawTrSurf::Set(aLinString.ToCString(), aLine);
   theDI << "the line " << aLinString << ".\n";
 
-  aLine = new Geom2d_Line(aPtOnCurv, aRetVec);
-  aLine = new Geom2d_TrimmedCurve(aLine, 0.0, aDefl);
+  aLine                               = new Geom2d_Line(aPtOnCurv, aRetVec);
+  aLine                               = new Geom2d_TrimmedCurve(aLine, 0.0, aDefl);
   TCollection_AsciiString aNormString = anArgString + "_norm";
   DrawTrSurf::Set(aNormString.ToCString(), aLine);
   theDI << "The deflection is measured along the line " << aNormString << ".\n";
@@ -704,45 +693,61 @@ static Standard_Integer deviation(Draw_Interpretor& theDI, Standard_Integer theN
 void GeomliteTest::API2dCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
-  if (done) return;
+  if (done)
+    return;
 
-  const char *g;
+  const char* g;
 
   done = Standard_True;
-  g = "GEOMETRY curves and surfaces analysis";
+  g    = "GEOMETRY curves and surfaces analysis";
 
-  theCommands.Add("2dproj", "proj curve x y",__FILE__, proj,g);
+  theCommands.Add("2dproj", "proj curve x y", __FILE__, proj, g);
 
   g = "GEOMETRY approximations";
 
-  theCommands.Add("2dapprox", "2dapprox result nbpoint [curve] [[x] y [x] y...]",__FILE__, 
-		  appro,g);
-  theCommands.Add("2dinterpole", "2dinterpole result nbpoint [curve] [[x] y [x] y ...]",__FILE__, 
-		  appro,g);
+  theCommands.Add("2dapprox",
+                  "2dapprox result nbpoint [curve] [[x] y [x] y...]",
+                  __FILE__,
+                  appro,
+                  g);
+  theCommands.Add("2dinterpole",
+                  "2dinterpole result nbpoint [curve] [[x] y [x] y ...]",
+                  __FILE__,
+                  appro,
+                  g);
 
   g = "GEOMETRY curves and surfaces analysis";
 
-  theCommands.Add("2dextrema", "extrema curve curve",__FILE__,
-		  extrema,g);
+  theCommands.Add("2dextrema", "extrema curve curve", __FILE__, extrema, g);
 
   g = "GEOMETRY intersections";
 
-  theCommands.Add("2dintersect", "2dintersect curve1 [curve2] [-tol tol] [-state]\n"
-                   "Intersects the given 2d curve(s)."
-                   "If only one curve is given, it will be checked on self-intersection.\n"
-                   "Options:\n"
-                   " -tol - allows changing the intersection tolerance (default value is 1.e-3);\n"
-                   " -state - allows printing the intersection state for each point.",
-                   __FILE__, intersect, g);
+  theCommands.Add("2dintersect",
+                  "2dintersect curve1 [curve2] [-tol tol] [-state]\n"
+                  "Intersects the given 2d curve(s)."
+                  "If only one curve is given, it will be checked on self-intersection.\n"
+                  "Options:\n"
+                  " -tol - allows changing the intersection tolerance (default value is 1.e-3);\n"
+                  " -state - allows printing the intersection state for each point.",
+                  __FILE__,
+                  intersect,
+                  g);
 
-  theCommands.Add("2dintanalytical", "2dintanalytical circle1 circle2"
+  theCommands.Add("2dintanalytical",
+                  "2dintanalytical circle1 circle2"
                   "Intersect circle1 and circle2 using IntAna2d_AnaIntersection.",
-                  __FILE__, intersect_ana, g);
-  theCommands.Add("intconcon", "intconcon curve1 curve2"
+                  __FILE__,
+                  intersect_ana,
+                  g);
+  theCommands.Add("intconcon",
+                  "intconcon curve1 curve2"
                   "Intersect conic curve1 and conic curve2 using IntAna2d_AnaIntersection",
-                  __FILE__, intconcon, g);
+                  __FILE__,
+                  intconcon,
+                  g);
 
-  theCommands.Add("2ddeviation", "2ddeviation result curve [-i U0] [-d N] [-Napprox N] [-Nexact N] [-approxOnly]\n"
+  theCommands.Add("2ddeviation",
+                  "2ddeviation result curve [-i U0] [-d N] [-Napprox N] [-Nexact N] [-approxOnly]\n"
                   "-i - sets an initial parameter for computation by iterative method;\n"
                   "-d - sets number of sub-intervals for searching. Default value is 2.\n"
                   "-Napprox - sets number of iteration for approx deviation computing,\n"
@@ -751,6 +756,7 @@ void GeomliteTest::API2dCommands(Draw_Interpretor& theCommands)
                   "          defauilt value is 100"
                   "-approxOnly - to find deviation with approx method only,\n"
                   "              the exact method is used if this parameter is not specified",
-                  __FILE__, deviation, g);
-
+                  __FILE__,
+                  deviation,
+                  g);
 }

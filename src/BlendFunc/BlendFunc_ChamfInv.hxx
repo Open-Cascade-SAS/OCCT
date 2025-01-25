@@ -26,58 +26,41 @@ class math_Matrix;
 
 //! Class for a function used to compute a chamfer with two constant distances
 //! on a surface's boundary
-class BlendFunc_ChamfInv  : public BlendFunc_GenChamfInv
+class BlendFunc_ChamfInv : public BlendFunc_GenChamfInv
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT BlendFunc_ChamfInv(const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_Surface)& S2, const Handle(Adaptor3d_Curve)& C);
-  
-  Standard_EXPORT Standard_Boolean IsSolution (const math_Vector& Sol, const Standard_Real Tol) Standard_OVERRIDE;
-  
+  Standard_EXPORT BlendFunc_ChamfInv(const Handle(Adaptor3d_Surface)& S1,
+                                     const Handle(Adaptor3d_Surface)& S2,
+                                     const Handle(Adaptor3d_Curve)&   C);
+
+  Standard_EXPORT Standard_Boolean IsSolution(const math_Vector&  Sol,
+                                              const Standard_Real Tol) Standard_OVERRIDE;
+
   //! computes the values <F> of the Functions for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Value (const math_Vector& X, math_Vector& F) Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F) Standard_OVERRIDE;
+
   //! returns the values <D> of the derivatives for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Derivatives (const math_Vector& X, math_Matrix& D) Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& X,
+                                               math_Matrix&       D) Standard_OVERRIDE;
 
   using Blend_FuncInv::Set;
-  
-  Standard_EXPORT virtual void Set (const Standard_Real Dist1,
-                                    const Standard_Real Dist2,
-                                    const Standard_Integer Choix) Standard_OVERRIDE;
 
-
-
+  Standard_EXPORT virtual void Set(const Standard_Real    Dist1,
+                                   const Standard_Real    Dist2,
+                                   const Standard_Integer Choix) Standard_OVERRIDE;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   BlendFunc_Corde corde1;
   BlendFunc_Corde corde2;
-
-
 };
-
-
-
-
-
-
 
 #endif // _BlendFunc_ChamfInv_HeaderFile

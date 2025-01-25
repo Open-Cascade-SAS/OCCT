@@ -16,29 +16,32 @@
 
 #include <IntPatch_Line.hxx>
 
-
 //=======================================================================
-//function : TopOpeBRep_LineInter
-//purpose  : 
+// function : TopOpeBRep_LineInter
+// purpose  :
 //=======================================================================
 
-inline TopOpeBRep_LineInter::TopOpeBRep_LineInter() :
-  myOK(Standard_True),
-  myIndex(0), myNbVPoint(0),
-  myIsVClosed(Standard_False),
-  myHasVPonR(Standard_False),
-  myINL(Standard_False),
-  myVPBDefined(Standard_False),
-  myVPF(0), myVPL(0), myVPN(0),
-  myTypeLineCurve(TopOpeBRep_OTHERTYPE),
-  myexF1(0),myexF2(0)
-  //myLineTonF1, myLineTonF2
+inline TopOpeBRep_LineInter::TopOpeBRep_LineInter()
+    : myOK(Standard_True),
+      myIndex(0),
+      myNbVPoint(0),
+      myIsVClosed(Standard_False),
+      myHasVPonR(Standard_False),
+      myINL(Standard_False),
+      myVPBDefined(Standard_False),
+      myVPF(0),
+      myVPL(0),
+      myVPN(0),
+      myTypeLineCurve(TopOpeBRep_OTHERTYPE),
+      myexF1(0),
+      myexF2(0)
+// myLineTonF1, myLineTonF2
 {
 }
 
 //=======================================================================
-//function : SetFaces
-//purpose  : 
+// function : SetFaces
+// purpose  :
 //=======================================================================
 
 inline void TopOpeBRep_LineInter::SetFaces(const TopoDS_Face& F1, const TopoDS_Face& F2)
@@ -48,8 +51,8 @@ inline void TopOpeBRep_LineInter::SetFaces(const TopoDS_Face& F1, const TopoDS_F
 }
 
 //=======================================================================
-//function : TypeLineCurve
-//purpose  : 
+// function : TypeLineCurve
+// purpose  :
 //=======================================================================
 
 inline TopOpeBRep_TypeLineCurve TopOpeBRep_LineInter::TypeLineCurve() const
@@ -58,18 +61,18 @@ inline TopOpeBRep_TypeLineCurve TopOpeBRep_LineInter::TypeLineCurve() const
 }
 
 //=======================================================================
-//function : NbVPoint
-//purpose  : 
+// function : NbVPoint
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer TopOpeBRep_LineInter::NbVPoint() const 
+inline Standard_Integer TopOpeBRep_LineInter::NbVPoint() const
 {
   return myNbVPoint;
 }
 
 //=======================================================================
-//function : INL
-//purpose  : 
+// function : INL
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean TopOpeBRep_LineInter::INL() const
@@ -78,8 +81,8 @@ inline Standard_Boolean TopOpeBRep_LineInter::INL() const
 }
 
 //=======================================================================
-//function : IsVClosed
-//purpose  : 
+// function : IsVClosed
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean TopOpeBRep_LineInter::IsVClosed() const
@@ -88,8 +91,8 @@ inline Standard_Boolean TopOpeBRep_LineInter::IsVClosed() const
 }
 
 //=======================================================================
-//function : HasVPonR
-//purpose  : 
+// function : HasVPonR
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean TopOpeBRep_LineInter::HasVPonR() const
@@ -98,8 +101,8 @@ inline Standard_Boolean TopOpeBRep_LineInter::HasVPonR() const
 }
 
 //=======================================================================
-//function : TransitionOnS1
-//purpose  : 
+// function : TransitionOnS1
+// purpose  :
 //=======================================================================
 
 inline IntSurf_TypeTrans TopOpeBRep_LineInter::TransitionOnS1() const
@@ -108,8 +111,8 @@ inline IntSurf_TypeTrans TopOpeBRep_LineInter::TransitionOnS1() const
 }
 
 //=======================================================================
-//function : TransitionOnS2
-//purpose  : 
+// function : TransitionOnS2
+// purpose  :
 //=======================================================================
 
 inline IntSurf_TypeTrans TopOpeBRep_LineInter::TransitionOnS2() const
@@ -118,8 +121,8 @@ inline IntSurf_TypeTrans TopOpeBRep_LineInter::TransitionOnS2() const
 }
 
 //=======================================================================
-//function : SituationS1
-//purpose  : 
+// function : SituationS1
+// purpose  :
 //=======================================================================
 
 inline IntSurf_Situation TopOpeBRep_LineInter::SituationS1() const
@@ -128,8 +131,8 @@ inline IntSurf_Situation TopOpeBRep_LineInter::SituationS1() const
 }
 
 //=======================================================================
-//function : SituationS2
-//purpose  : 
+// function : SituationS2
+// purpose  :
 //=======================================================================
 
 inline IntSurf_Situation TopOpeBRep_LineInter::SituationS2() const
@@ -138,8 +141,8 @@ inline IntSurf_Situation TopOpeBRep_LineInter::SituationS2() const
 }
 
 //=======================================================================
-//function : LineW
-//purpose  : 
+// function : LineW
+// purpose  :
 //=======================================================================
 
 inline const Handle(IntPatch_WLine)& TopOpeBRep_LineInter::LineW() const
@@ -148,8 +151,8 @@ inline const Handle(IntPatch_WLine)& TopOpeBRep_LineInter::LineW() const
 }
 
 //=======================================================================
-//function : LineG
-//purpose  : 
+// function : LineG
+// purpose  :
 //=======================================================================
 
 inline const Handle(IntPatch_GLine)& TopOpeBRep_LineInter::LineG() const
@@ -158,8 +161,8 @@ inline const Handle(IntPatch_GLine)& TopOpeBRep_LineInter::LineG() const
 }
 
 //=======================================================================
-//function : LineR
-//purpose  : 
+// function : LineR
+// purpose  :
 //=======================================================================
 
 inline const Handle(IntPatch_RLine)& TopOpeBRep_LineInter::LineR() const
@@ -168,8 +171,8 @@ inline const Handle(IntPatch_RLine)& TopOpeBRep_LineInter::LineR() const
 }
 
 //=======================================================================
-//function : Index
-//purpose  : trace
+// function : Index
+// purpose  : trace
 //=======================================================================
 
 inline void TopOpeBRep_LineInter::Index(const Standard_Integer I)
@@ -178,8 +181,8 @@ inline void TopOpeBRep_LineInter::Index(const Standard_Integer I)
 }
 
 //=======================================================================
-//function : Index
-//purpose  : trace
+// function : Index
+// purpose  : trace
 //=======================================================================
 
 inline Standard_Integer TopOpeBRep_LineInter::Index() const
@@ -188,8 +191,8 @@ inline Standard_Integer TopOpeBRep_LineInter::Index() const
 }
 
 //=======================================================================
-//function : OK
-//purpose  : 
+// function : OK
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean TopOpeBRep_LineInter::OK() const

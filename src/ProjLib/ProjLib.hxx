@@ -42,8 +42,8 @@ class ProjLib_ProjectedCurve;
 //! The ProjLib package first provides projection of curves on a plane along a given Direction.
 //! The result will be a 3D curve.
 //!
-//! The ProjLib package provides projection of curves on surfaces to compute the curve in the parametric space.
-//! It is assumed that the curve is on the surface.
+//! The ProjLib package provides projection of curves on surfaces to compute the curve in the
+//! parametric space. It is assumed that the curve is on the surface.
 //!
 //! It provides:
 //!
@@ -60,54 +60,51 @@ class ProjLib_ProjectedCurve;
 //!  - Torus.
 //!
 //! * A generic class to handle a Adaptor3d_Curve on a Adaptor3d_Surface.
-class ProjLib 
+class ProjLib
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-  
-  Standard_EXPORT static gp_Pnt2d Project (const gp_Pln& Pl, const gp_Pnt& P);
 
-  Standard_EXPORT static gp_Lin2d Project (const gp_Pln& Pl, const gp_Lin& L);
+  Standard_EXPORT static gp_Pnt2d Project(const gp_Pln& Pl, const gp_Pnt& P);
 
-  Standard_EXPORT static gp_Circ2d Project (const gp_Pln& Pl, const gp_Circ& C);
+  Standard_EXPORT static gp_Lin2d Project(const gp_Pln& Pl, const gp_Lin& L);
 
-  Standard_EXPORT static gp_Elips2d Project (const gp_Pln& Pl, const gp_Elips& E);
+  Standard_EXPORT static gp_Circ2d Project(const gp_Pln& Pl, const gp_Circ& C);
 
-  Standard_EXPORT static gp_Parab2d Project (const gp_Pln& Pl, const gp_Parab& P);
+  Standard_EXPORT static gp_Elips2d Project(const gp_Pln& Pl, const gp_Elips& E);
 
-  Standard_EXPORT static gp_Hypr2d Project (const gp_Pln& Pl, const gp_Hypr& H);
+  Standard_EXPORT static gp_Parab2d Project(const gp_Pln& Pl, const gp_Parab& P);
 
-  Standard_EXPORT static gp_Pnt2d Project (const gp_Cylinder& Cy, const gp_Pnt& P);
+  Standard_EXPORT static gp_Hypr2d Project(const gp_Pln& Pl, const gp_Hypr& H);
 
-  Standard_EXPORT static gp_Lin2d Project (const gp_Cylinder& Cy, const gp_Lin& L);
+  Standard_EXPORT static gp_Pnt2d Project(const gp_Cylinder& Cy, const gp_Pnt& P);
 
-  Standard_EXPORT static gp_Lin2d Project (const gp_Cylinder& Cy, const gp_Circ& Ci);
+  Standard_EXPORT static gp_Lin2d Project(const gp_Cylinder& Cy, const gp_Lin& L);
 
-  Standard_EXPORT static gp_Pnt2d Project (const gp_Cone& Co, const gp_Pnt& P);
+  Standard_EXPORT static gp_Lin2d Project(const gp_Cylinder& Cy, const gp_Circ& Ci);
 
-  Standard_EXPORT static gp_Lin2d Project (const gp_Cone& Co, const gp_Lin& L);
+  Standard_EXPORT static gp_Pnt2d Project(const gp_Cone& Co, const gp_Pnt& P);
 
-  Standard_EXPORT static gp_Lin2d Project (const gp_Cone& Co, const gp_Circ& Ci);
+  Standard_EXPORT static gp_Lin2d Project(const gp_Cone& Co, const gp_Lin& L);
 
-  Standard_EXPORT static gp_Pnt2d Project (const gp_Sphere& Sp, const gp_Pnt& P);
+  Standard_EXPORT static gp_Lin2d Project(const gp_Cone& Co, const gp_Circ& Ci);
 
-  Standard_EXPORT static gp_Lin2d Project (const gp_Sphere& Sp, const gp_Circ& Ci);
+  Standard_EXPORT static gp_Pnt2d Project(const gp_Sphere& Sp, const gp_Pnt& P);
 
-  Standard_EXPORT static gp_Pnt2d Project (const gp_Torus& To, const gp_Pnt& P);
+  Standard_EXPORT static gp_Lin2d Project(const gp_Sphere& Sp, const gp_Circ& Ci);
 
-  Standard_EXPORT static gp_Lin2d Project (const gp_Torus& To, const gp_Circ& Ci);
+  Standard_EXPORT static gp_Pnt2d Project(const gp_Torus& To, const gp_Pnt& P);
+
+  Standard_EXPORT static gp_Lin2d Project(const gp_Torus& To, const gp_Circ& Ci);
 
   //! Make empty  P-Curve <aC> of relevant to <PC> type
-  Standard_EXPORT static void MakePCurveOfType (const ProjLib_ProjectedCurve& PC,
-                                                Handle(Geom2d_Curve)& aC);
+  Standard_EXPORT static void MakePCurveOfType(const ProjLib_ProjectedCurve& PC,
+                                               Handle(Geom2d_Curve)&         aC);
 
   //! Returns "true" if surface is analytical, that is it can be
   //! Plane, Cylinder, Cone, Sphere, Torus.
   //! For all other types of surface method returns "false".
-  Standard_EXPORT static Standard_Boolean IsAnaSurf
-                                           (const Handle(Adaptor3d_Surface)& theAS);
-
+  Standard_EXPORT static Standard_Boolean IsAnaSurf(const Handle(Adaptor3d_Surface)& theAS);
 };
 
 #endif // _ProjLib_HeaderFile

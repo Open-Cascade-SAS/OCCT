@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(IGESAppli_Flow)> IGESAppli_Array1OfFlow;
 
-
 #endif

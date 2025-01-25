@@ -14,10 +14,10 @@
 // commercial license or contractual agreement.
 
 //              11/97 ; CAL : retrait des DataStructure
-//-Version	
-//-Design	
-//-Warning	
-//-References	
+//-Version
+//-Design
+//-Warning
+//-References
 //-Language	C++ 2.0
 //-Declarations
 // for the class
@@ -26,19 +26,16 @@
 #include <Standard_Dump.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_DataStructureManager,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_DataStructureManager, Standard_Transient)
 
 //-Aliases
 //-Global data definitions
 //-Constructors
-Graphic3d_DataStructureManager::Graphic3d_DataStructureManager () {
-}
+Graphic3d_DataStructureManager::Graphic3d_DataStructureManager() {}
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void Graphic3d_DataStructureManager::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+//=================================================================================================
+
+void Graphic3d_DataStructureManager::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 }

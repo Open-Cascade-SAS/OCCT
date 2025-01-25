@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
 #include <Standard_Type.hxx>
@@ -20,38 +19,29 @@
 #include <Transfer_TransientProcess.hxx>
 #include <XSControl_TransferReader.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_SelectForTransfer,XSControl_SelectForTransfer)
+IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_SelectForTransfer, XSControl_SelectForTransfer)
 
-//=======================================================================
-//function : STEPSelections_SelectForTransfer
-//purpose  : 
-//=======================================================================
-STEPSelections_SelectForTransfer::STEPSelections_SelectForTransfer()
-{
-  
-}
-//=======================================================================
-//function : STEPSelections_SelectForTransfer
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-STEPSelections_SelectForTransfer::STEPSelections_SelectForTransfer(const Handle(XSControl_TransferReader)& TR)
+STEPSelections_SelectForTransfer::STEPSelections_SelectForTransfer() {}
+
+//=================================================================================================
+
+STEPSelections_SelectForTransfer::STEPSelections_SelectForTransfer(
+  const Handle(XSControl_TransferReader)& TR)
 {
   SetReader(TR);
 }
 
-//=======================================================================
-//function : RootResult
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- Interface_EntityIterator STEPSelections_SelectForTransfer::RootResult(const Interface_Graph& /*G*/) const
+Interface_EntityIterator STEPSelections_SelectForTransfer::RootResult(
+  const Interface_Graph& /*G*/) const
 {
-  Interface_EntityIterator iter;
+  Interface_EntityIterator             iter;
   Handle(TColStd_HSequenceOfTransient) roots = Reader()->TransientProcess()->RootsForTransfer();
-  Standard_Integer nb = roots->Length();
-    for(Standard_Integer i = 1; i <= nb ; i++) 
-      iter.GetOneItem(roots->Value(i));
+  Standard_Integer                     nb    = roots->Length();
+  for (Standard_Integer i = 1; i <= nb; i++)
+    iter.GetOneItem(roots->Value(i));
   return iter;
 }
-

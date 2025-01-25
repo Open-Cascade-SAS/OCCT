@@ -20,8 +20,9 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,Handle(SelectMgr_EntityOwner)> MeshVS_DataMapOfIntegerOwner;
-typedef NCollection_DataMap<Standard_Integer,Handle(SelectMgr_EntityOwner)>::Iterator MeshVS_DataMapIteratorOfDataMapOfIntegerOwner;
-
+typedef NCollection_DataMap<Standard_Integer, Handle(SelectMgr_EntityOwner)>
+  MeshVS_DataMapOfIntegerOwner;
+typedef NCollection_DataMap<Standard_Integer, Handle(SelectMgr_EntityOwner)>::Iterator
+  MeshVS_DataMapIteratorOfDataMapOfIntegerOwner;
 
 #endif

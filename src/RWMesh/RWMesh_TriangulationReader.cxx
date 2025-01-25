@@ -20,54 +20,63 @@ IMPLEMENT_STANDARD_RTTIEXT(RWMesh_TriangulationReader, Standard_Transient)
 
 namespace
 {
-  //! Forms string with loading statistic.
-  static TCollection_AsciiString loadingStatistic (const TCollection_AsciiString& thePrefix,
-                                                   const Standard_Integer theExpectedNodesNb,
-                                                   const Standard_Integer theLoadedNodesNb,
-                                                   const Standard_Integer theExpectedTrianglesNb,
-                                                   const Standard_Integer theDegeneratedTrianglesNb,
-                                                   const Standard_Integer theLoadedTrianglesNb)
+//! Forms string with loading statistic.
+static TCollection_AsciiString loadingStatistic(const TCollection_AsciiString& thePrefix,
+                                                const Standard_Integer         theExpectedNodesNb,
+                                                const Standard_Integer         theLoadedNodesNb,
+                                                const Standard_Integer theExpectedTrianglesNb,
+                                                const Standard_Integer theDegeneratedTrianglesNb,
+                                                const Standard_Integer theLoadedTrianglesNb)
+{
+  TCollection_AsciiString aNodesInfo;
+  if (theExpectedNodesNb != theLoadedNodesNb)
   {
-    TCollection_AsciiString aNodesInfo;
-    if (theExpectedNodesNb != theLoadedNodesNb)
-    {
-      aNodesInfo = TCollection_AsciiString("Nodes: ") + theExpectedNodesNb + " expected / ";
-      aNodesInfo += TCollection_AsciiString(theLoadedNodesNb) + " loaded.";
-    }
-    TCollection_AsciiString aTrianglesInfo;
-    if (theExpectedTrianglesNb != theLoadedTrianglesNb)
-    {
-      if (!aNodesInfo.IsEmpty())
-      {
-        aNodesInfo += " ";
-      }
-      aTrianglesInfo = TCollection_AsciiString("Triangles: ") + theExpectedTrianglesNb + " expected / ";
-      if (theDegeneratedTrianglesNb != 0)
-      {
-        aTrianglesInfo += TCollection_AsciiString(theDegeneratedTrianglesNb) + " skipped degenerated / ";
-      }
-      aTrianglesInfo += TCollection_AsciiString(theLoadedTrianglesNb) + " loaded.";
-    }
-    if (aNodesInfo.IsEmpty() && aTrianglesInfo.IsEmpty())
-    {
-      return TCollection_AsciiString();
-    }
-    return thePrefix + ("Disconformity of the expected number of nodes/triangles for deferred mesh to the loaded amount. ")
-           + aNodesInfo + aTrianglesInfo;
+    aNodesInfo = TCollection_AsciiString("Nodes: ") + theExpectedNodesNb + " expected / ";
+    aNodesInfo += TCollection_AsciiString(theLoadedNodesNb) + " loaded.";
   }
+  TCollection_AsciiString aTrianglesInfo;
+  if (theExpectedTrianglesNb != theLoadedTrianglesNb)
+  {
+    if (!aNodesInfo.IsEmpty())
+    {
+      aNodesInfo += " ";
+    }
+    aTrianglesInfo =
+      TCollection_AsciiString("Triangles: ") + theExpectedTrianglesNb + " expected / ";
+    if (theDegeneratedTrianglesNb != 0)
+    {
+      aTrianglesInfo +=
+        TCollection_AsciiString(theDegeneratedTrianglesNb) + " skipped degenerated / ";
+    }
+    aTrianglesInfo += TCollection_AsciiString(theLoadedTrianglesNb) + " loaded.";
+  }
+  if (aNodesInfo.IsEmpty() && aTrianglesInfo.IsEmpty())
+  {
+    return TCollection_AsciiString();
+  }
+  return thePrefix
+         + ("Disconformity of the expected number of nodes/triangles for deferred mesh to the "
+            "loaded amount. ")
+         + aNodesInfo + aTrianglesInfo;
 }
+} // namespace
 
 // =======================================================================
 // function : PrintStatistic
 // purpose  :
 // =======================================================================
-void RWMesh_TriangulationReader::LoadingStatistic::PrintStatistic (const TCollection_AsciiString& thePrefix) const
+void RWMesh_TriangulationReader::LoadingStatistic::PrintStatistic(
+  const TCollection_AsciiString& thePrefix) const
 {
-  TCollection_AsciiString aStatisticInfo = loadingStatistic (thePrefix, ExpectedNodesNb, LoadedNodesNb,
-                                                             ExpectedTrianglesNb, DegeneratedTrianglesNb, LoadedTrianglesNb);
+  TCollection_AsciiString aStatisticInfo = loadingStatistic(thePrefix,
+                                                            ExpectedNodesNb,
+                                                            LoadedNodesNb,
+                                                            ExpectedTrianglesNb,
+                                                            DegeneratedTrianglesNb,
+                                                            LoadedTrianglesNb);
   if (!aStatisticInfo.IsEmpty())
   {
-    Message::SendWarning (aStatisticInfo);
+    Message::SendWarning(aStatisticInfo);
   }
 }
 
@@ -76,10 +85,10 @@ void RWMesh_TriangulationReader::LoadingStatistic::PrintStatistic (const TCollec
 // purpose  :
 // =======================================================================
 RWMesh_TriangulationReader::RWMesh_TriangulationReader()
-: myLoadingStatistic(NULL),
-  myIsDoublePrecision(false),
-  myToSkipDegenerateTris(false),
-  myToPrintDebugMessages(false)
+    : myLoadingStatistic(NULL),
+      myIsDoublePrecision(false),
+      myToSkipDegenerateTris(false),
+      myToPrintDebugMessages(false)
 {
 }
 
@@ -96,20 +105,22 @@ RWMesh_TriangulationReader::~RWMesh_TriangulationReader()
 // function : Load
 // purpose  :
 // =======================================================================
-bool RWMesh_TriangulationReader::Load (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
-                                       const Handle(Poly_Triangulation)& theDestMesh,
-                                       const Handle(OSD_FileSystem)& theFileSystem) const
+bool RWMesh_TriangulationReader::Load(const Handle(RWMesh_TriangulationSource)& theSourceMesh,
+                                      const Handle(Poly_Triangulation)&         theDestMesh,
+                                      const Handle(OSD_FileSystem)&             theFileSystem) const
 {
-  Standard_ASSERT_RETURN (!theDestMesh.IsNull(), "The destination mesh should be initialized before loading data to it", false);
+  Standard_ASSERT_RETURN(!theDestMesh.IsNull(),
+                         "The destination mesh should be initialized before loading data to it",
+                         false);
   theDestMesh->Clear();
-  theDestMesh->SetDoublePrecision (myIsDoublePrecision);
+  theDestMesh->SetDoublePrecision(myIsDoublePrecision);
 
-  if (!load (theSourceMesh, theDestMesh, theFileSystem))
+  if (!load(theSourceMesh, theDestMesh, theFileSystem))
   {
     theDestMesh->Clear();
     return false;
   }
-  if (!finalizeLoading (theSourceMesh, theDestMesh))
+  if (!finalizeLoading(theSourceMesh, theDestMesh))
   {
     theDestMesh->Clear();
     return false;
@@ -121,12 +132,13 @@ bool RWMesh_TriangulationReader::Load (const Handle(RWMesh_TriangulationSource)&
 // function : finalizeLoading
 // purpose  :
 // =======================================================================
-bool RWMesh_TriangulationReader::finalizeLoading (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
-                                                  const Handle(Poly_Triangulation)& theDestMesh) const
+bool RWMesh_TriangulationReader::finalizeLoading(
+  const Handle(RWMesh_TriangulationSource)& theSourceMesh,
+  const Handle(Poly_Triangulation)&         theDestMesh) const
 {
   if (!theSourceMesh->CachedMinMax().IsVoid())
   {
-    theDestMesh->SetCachedMinMax (theSourceMesh->CachedMinMax());
+    theDestMesh->SetCachedMinMax(theSourceMesh->CachedMinMax());
   }
   if (myLoadingStatistic)
   {
@@ -139,11 +151,14 @@ bool RWMesh_TriangulationReader::finalizeLoading (const Handle(RWMesh_Triangulat
   }
   else if (myToPrintDebugMessages)
   {
-    TCollection_AsciiString aStatisticInfo = loadingStatistic (TCollection_AsciiString("[Mesh reader. File '") + myFileName + "']. ",
-                                                               theSourceMesh->NbDeferredNodes(), theDestMesh->NbNodes(),
-                                                               theSourceMesh->NbDeferredTriangles(), theSourceMesh->DegeneratedTriNb(),
-                                                               theDestMesh->NbTriangles());
-    Message::SendTrace (aStatisticInfo);
+    TCollection_AsciiString aStatisticInfo =
+      loadingStatistic(TCollection_AsciiString("[Mesh reader. File '") + myFileName + "']. ",
+                       theSourceMesh->NbDeferredNodes(),
+                       theDestMesh->NbNodes(),
+                       theSourceMesh->NbDeferredTriangles(),
+                       theSourceMesh->DegeneratedTriNb(),
+                       theDestMesh->NbTriangles());
+    Message::SendTrace(aStatisticInfo);
   }
   return true;
 }

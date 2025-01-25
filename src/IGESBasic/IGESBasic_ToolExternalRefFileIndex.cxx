@@ -36,80 +36,85 @@
 #include <Standard_DomainError.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESBasic_ToolExternalRefFileIndex::IGESBasic_ToolExternalRefFileIndex ()  {  }
+IGESBasic_ToolExternalRefFileIndex::IGESBasic_ToolExternalRefFileIndex() {}
 
-
-void  IGESBasic_ToolExternalRefFileIndex::ReadOwnParams
-  (const Handle(IGESBasic_ExternalRefFileIndex)& ent,
-   const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const
+void IGESBasic_ToolExternalRefFileIndex::ReadOwnParams(
+  const Handle(IGESBasic_ExternalRefFileIndex)& ent,
+  const Handle(IGESData_IGESReaderData)&        IR,
+  IGESData_ParamReader&                         PR) const
 {
-  //Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
-  Standard_Integer num, i;
+  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
+  Standard_Integer                        num, i;
   Handle(Interface_HArray1OfHAsciiString) tempNames;
-  Handle(IGESData_HArray1OfIGESEntity) tempEntities;
+  Handle(IGESData_HArray1OfIGESEntity)    tempEntities;
   Standard_Boolean st = PR.ReadInteger(PR.Current(), "Number of index entries", num);
   if (st && num > 0)
-    {
-      tempNames = new Interface_HArray1OfHAsciiString(1, num);
-      tempEntities = new IGESData_HArray1OfIGESEntity(1, num);
-    }
-  else  PR.AddFail("Number of index entries: Not Positive");
+  {
+    tempNames    = new Interface_HArray1OfHAsciiString(1, num);
+    tempEntities = new IGESData_HArray1OfIGESEntity(1, num);
+  }
+  else
+    PR.AddFail("Number of index entries: Not Positive");
   if (!tempNames.IsNull() && !tempEntities.IsNull())
-    for ( i = 1; i <= num; i++ )
-      {
-	Handle(TCollection_HAsciiString) tempNam;
-	if (PR.ReadText(PR.Current(), "External Reference Entity", tempNam)) //szv#4:S4163:12Mar99 `st=` not needed
-	  tempNames->SetValue(i, tempNam);
-	Handle(IGESData_IGESEntity) tempEnt;
-	if (PR.ReadEntity(IR, PR.Current(), "Internal Entity", tempEnt)) //szv#4:S4163:12Mar99 `st=` not needed
-	  tempEntities->SetValue(i, tempEnt);
-      }
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
+    for (i = 1; i <= num; i++)
+    {
+      Handle(TCollection_HAsciiString) tempNam;
+      if (PR.ReadText(PR.Current(),
+                      "External Reference Entity",
+                      tempNam)) // szv#4:S4163:12Mar99 `st=` not needed
+        tempNames->SetValue(i, tempNam);
+      Handle(IGESData_IGESEntity) tempEnt;
+      if (PR.ReadEntity(IR,
+                        PR.Current(),
+                        "Internal Entity",
+                        tempEnt)) // szv#4:S4163:12Mar99 `st=` not needed
+        tempEntities->SetValue(i, tempEnt);
+    }
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempNames, tempEntities);
 }
 
-void  IGESBasic_ToolExternalRefFileIndex::WriteOwnParams
-  (const Handle(IGESBasic_ExternalRefFileIndex)& ent, IGESData_IGESWriter& IW) const
+void IGESBasic_ToolExternalRefFileIndex::WriteOwnParams(
+  const Handle(IGESBasic_ExternalRefFileIndex)& ent,
+  IGESData_IGESWriter&                          IW) const
 {
   Standard_Integer i, num;
   IW.Send(ent->NbEntries());
-  for ( num = ent->NbEntries(), i = 1; i <= num; i++ )
-    {
-      IW.Send(ent->Name(i));
-      IW.Send(ent->Entity(i));
-    }
+  for (num = ent->NbEntries(), i = 1; i <= num; i++)
+  {
+    IW.Send(ent->Name(i));
+    IW.Send(ent->Entity(i));
+  }
 }
 
-void  IGESBasic_ToolExternalRefFileIndex::OwnShared
-  (const Handle(IGESBasic_ExternalRefFileIndex)& ent, Interface_EntityIterator& iter) const
+void IGESBasic_ToolExternalRefFileIndex::OwnShared(
+  const Handle(IGESBasic_ExternalRefFileIndex)& ent,
+  Interface_EntityIterator&                     iter) const
 {
   Standard_Integer i, num;
-  for ( num = ent->NbEntries(), i = 1; i <= num; i++ )
+  for (num = ent->NbEntries(), i = 1; i <= num; i++)
     iter.GetOneItem(ent->Entity(i));
 }
 
-void  IGESBasic_ToolExternalRefFileIndex::OwnCopy
-  (const Handle(IGESBasic_ExternalRefFileIndex)& another,
-   const Handle(IGESBasic_ExternalRefFileIndex)& ent, Interface_CopyTool& TC) const
+void IGESBasic_ToolExternalRefFileIndex::OwnCopy(
+  const Handle(IGESBasic_ExternalRefFileIndex)& another,
+  const Handle(IGESBasic_ExternalRefFileIndex)& ent,
+  Interface_CopyTool&                           TC) const
 {
-  Standard_Integer num = another->NbEntries();
-  Handle(Interface_HArray1OfHAsciiString) tempNames =
-    new Interface_HArray1OfHAsciiString(1, num);
-  Handle(IGESData_HArray1OfIGESEntity) tempEntities =
-    new IGESData_HArray1OfIGESEntity(1, num);
-  for ( Standard_Integer i = 1; i <= num; i++ )
-    {
-      tempNames->SetValue(i, new TCollection_HAsciiString
-			  (another->Name(i)));
-      DeclareAndCast(IGESData_IGESEntity, new_item,
-		     TC.Transferred(another->Entity(i)));
-      tempEntities->SetValue(i, new_item);
-    }
+  Standard_Integer                        num       = another->NbEntries();
+  Handle(Interface_HArray1OfHAsciiString) tempNames = new Interface_HArray1OfHAsciiString(1, num);
+  Handle(IGESData_HArray1OfIGESEntity)    tempEntities = new IGESData_HArray1OfIGESEntity(1, num);
+  for (Standard_Integer i = 1; i <= num; i++)
+  {
+    tempNames->SetValue(i, new TCollection_HAsciiString(another->Name(i)));
+    DeclareAndCast(IGESData_IGESEntity, new_item, TC.Transferred(another->Entity(i)));
+    tempEntities->SetValue(i, new_item);
+  }
   ent->Init(tempNames, tempEntities);
 }
 
-IGESData_DirChecker  IGESBasic_ToolExternalRefFileIndex::DirChecker
-  (const Handle(IGESBasic_ExternalRefFileIndex)& /* ent */ ) const
+IGESData_DirChecker IGESBasic_ToolExternalRefFileIndex::DirChecker(
+  const Handle(IGESBasic_ExternalRefFileIndex)& /* ent */) const
 {
   IGESData_DirChecker DC(402, 12);
   DC.Structure(IGESData_DefVoid);
@@ -123,31 +128,33 @@ IGESData_DirChecker  IGESBasic_ToolExternalRefFileIndex::DirChecker
   return DC;
 }
 
-void  IGESBasic_ToolExternalRefFileIndex::OwnCheck
-  (const Handle(IGESBasic_ExternalRefFileIndex)& /* ent */,
-   const Interface_ShareTool& , Handle(Interface_Check)& /* ach */) const
+void IGESBasic_ToolExternalRefFileIndex::OwnCheck(
+  const Handle(IGESBasic_ExternalRefFileIndex)& /* ent */,
+  const Interface_ShareTool&,
+  Handle(Interface_Check)& /* ach */) const
 {
 }
 
-void  IGESBasic_ToolExternalRefFileIndex::OwnDump
-  (const Handle(IGESBasic_ExternalRefFileIndex)& ent, const IGESData_IGESDumper& dumper,
-   Standard_OStream& S, const Standard_Integer level) const
+void IGESBasic_ToolExternalRefFileIndex::OwnDump(const Handle(IGESBasic_ExternalRefFileIndex)& ent,
+                                                 const IGESData_IGESDumper& dumper,
+                                                 Standard_OStream&          S,
+                                                 const Standard_Integer     level) const
 {
   Standard_Integer i, num;
   S << "IGESBasic_ExternalRefFileIndex\n"
     << "External Reference Names :\n"
     << "Internal Entities : ";
-  IGESData_DumpEntities(S,dumper,-level,1, ent->NbEntries(),ent->Entity);
+  IGESData_DumpEntities(S, dumper, -level, 1, ent->NbEntries(), ent->Entity);
   S << "\n";
   if (level > 4)
-    for ( num = ent->NbEntries(), i = 1; i <= num; i++ )
-      {
-	S << "[" << i << "]: "
-	  << "External Reference Name : ";
-	IGESData_DumpString(S,ent->Name(i));
-	S << "  Internal Entity : ";
-	dumper.Dump (ent->Entity(i),S, 1);
-	S << "\n";
-      }
+    for (num = ent->NbEntries(), i = 1; i <= num; i++)
+    {
+      S << "[" << i << "]: "
+        << "External Reference Name : ";
+      IGESData_DumpString(S, ent->Name(i));
+      S << "  Internal Entity : ";
+      dumper.Dump(ent->Entity(i), S, 1);
+      S << "\n";
+    }
   S << std::endl;
 }

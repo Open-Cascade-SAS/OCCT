@@ -14,16 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <HLRTopoBRep_VData.hxx>
 #include <TopoDS_Shape.hxx>
 
-//=======================================================================
-//function : HLRTopoBRep_VData
-//purpose  : 
-//=======================================================================
-HLRTopoBRep_VData::HLRTopoBRep_VData(const Standard_Real P, 
-				     const TopoDS_Shape& V) :
-				     myParameter(P),myVertex(V)
-{}
+//=================================================================================================
 
+HLRTopoBRep_VData::HLRTopoBRep_VData(const Standard_Real P, const TopoDS_Shape& V)
+    : myParameter(P),
+      myVertex(V)
+{
+}

@@ -17,12 +17,11 @@
 #ifndef _LocOpe_Operation_HeaderFile
 #define _LocOpe_Operation_HeaderFile
 
-
 enum LocOpe_Operation
 {
-LocOpe_FUSE,
-LocOpe_CUT,
-LocOpe_INVALID
+  LocOpe_FUSE,
+  LocOpe_CUT,
+  LocOpe_INVALID
 };
 
 #endif // _LocOpe_Operation_HeaderFile

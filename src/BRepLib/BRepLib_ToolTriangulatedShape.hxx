@@ -24,16 +24,14 @@ class Poly_Triangulation;
 class BRepLib_ToolTriangulatedShape
 {
 public:
-
   //! Computes nodal normals for Poly_Triangulation structure using UV coordinates and surface.
   //! Does nothing if triangulation already defines normals.
   //! @param[in] theFace the face
   //! @param[in] theTris the definition of a face triangulation
-  static void ComputeNormals (const TopoDS_Face& theFace,
-                              const Handle(Poly_Triangulation)& theTris)
+  static void ComputeNormals(const TopoDS_Face& theFace, const Handle(Poly_Triangulation)& theTris)
   {
     Poly_Connect aPolyConnect;
-    ComputeNormals (theFace, theTris, aPolyConnect);
+    ComputeNormals(theFace, theTris, aPolyConnect);
   }
 
   //! Computes nodal normals for Poly_Triangulation structure using UV coordinates and surface.
@@ -41,10 +39,9 @@ public:
   //! @param[in] theFace the face
   //! @param[in] theTris the definition of a face triangulation
   //! @param[in,out] thePolyConnect optional, initialized tool for exploring triangulation
-  Standard_EXPORT static void ComputeNormals (const TopoDS_Face& theFace,
-                                              const Handle(Poly_Triangulation)& theTris,
-                                              Poly_Connect& thePolyConnect);
-
+  Standard_EXPORT static void ComputeNormals(const TopoDS_Face&                theFace,
+                                             const Handle(Poly_Triangulation)& theTris,
+                                             Poly_Connect&                     thePolyConnect);
 };
 
 #endif

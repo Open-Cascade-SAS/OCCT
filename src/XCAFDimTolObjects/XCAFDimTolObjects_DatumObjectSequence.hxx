@@ -13,14 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef XCAFDimTolObjects_DatumObjectSequence_HeaderFile
 #define XCAFDimTolObjects_DatumObjectSequence_HeaderFile
 
 #include <NCollection_Sequence.hxx>
 
 class XCAFDimTolObjects_DatumObject;
-typedef NCollection_Sequence<Handle(XCAFDimTolObjects_DatumObject)> XCAFDimTolObjects_DatumObjectSequence;
+typedef NCollection_Sequence<Handle(XCAFDimTolObjects_DatumObject)>
+  XCAFDimTolObjects_DatumObjectSequence;
 
 #endif
-

@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowserPane_TDataStdTreeNode_H
 #define DFBrowserPane_TDataStdTreeNode_H
@@ -28,7 +28,6 @@ class QTreeView;
 class DFBrowserPane_TDataStdTreeNode : public DFBrowserPane_AttributePane
 {
 public:
-
   //! Constructor
   Standard_EXPORT DFBrowserPane_TDataStdTreeNode();
 
@@ -38,36 +37,40 @@ public:
   //! Creates table view and call create widget of array table helper
   //! \param theParent a parent widget
   //! \return a new widget
-  Standard_EXPORT virtual QWidget* CreateWidget (QWidget* theParent) Standard_OVERRIDE;
+  Standard_EXPORT virtual QWidget* CreateWidget(QWidget* theParent) Standard_OVERRIDE;
 
   //! Initializes the content of the pane by the parameter attribute
   //! \param theAttribute an OCAF attribute
-  Standard_EXPORT virtual void Init (const Handle(TDF_Attribute)& theAttribute) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Init(const Handle(TDF_Attribute)& theAttribute) Standard_OVERRIDE;
 
   //! Returns brief attribute information. In general case, it returns GetValues() result.
   //! \param theAttribute a current attribute
   //! \param theValues a result list of values
-  Standard_EXPORT virtual void GetShortAttributeInfo (const Handle(TDF_Attribute)& theAttribute,
-                                                      QList<QVariant>& theValues) Standard_OVERRIDE;
+  Standard_EXPORT virtual void GetShortAttributeInfo(const Handle(TDF_Attribute)& theAttribute,
+                                                     QList<QVariant>& theValues) Standard_OVERRIDE;
 
   //! Returns values to fill the table view model
   //! \param theAttribute a current attribute
   //! \param theValues a container of values
-  virtual void GetValues (const Handle(TDF_Attribute)& theAttribute, QList<QVariant>& theValues) Standard_OVERRIDE
-  { (void)theAttribute; (void)theValues; }
+  virtual void GetValues(const Handle(TDF_Attribute)& theAttribute,
+                         QList<QVariant>&             theValues) Standard_OVERRIDE
+  {
+    (void)theAttribute;
+    (void)theValues;
+  }
 
   //! Returns container of Label references to the attribute
   //! \param theAttribute a current attribute
   //! \param theRefLabels a container of label references, to be selected in tree view
   //! \param theRefPresentation handle of presentation for the references, to be visualized
-  Standard_EXPORT virtual void GetReferences (const Handle(TDF_Attribute)& theAttribute,
-                                              NCollection_List<TDF_Label>& theRefLabels,
-                                              Handle(Standard_Transient)& theRefPresentation) Standard_OVERRIDE;
+  Standard_EXPORT virtual void GetReferences(const Handle(TDF_Attribute)& theAttribute,
+                                             NCollection_List<TDF_Label>& theRefLabels,
+                                             Handle(Standard_Transient)&  theRefPresentation)
+    Standard_OVERRIDE;
 
 private:
-
   DFBrowserPane_TDataStdTreeNodeModel* myModel;
-  QTreeView* myTreeNodeView;
+  QTreeView*                           myTreeNodeView;
 };
 
 #endif

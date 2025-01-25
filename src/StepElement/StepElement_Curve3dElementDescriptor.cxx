@@ -18,24 +18,18 @@
 #include <StepElement_Curve3dElementDescriptor.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepElement_Curve3dElementDescriptor,StepElement_ElementDescriptor)
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_Curve3dElementDescriptor, StepElement_ElementDescriptor)
 
-//=======================================================================
-//function : StepElement_Curve3dElementDescriptor
-//purpose  : 
-//=======================================================================
-StepElement_Curve3dElementDescriptor::StepElement_Curve3dElementDescriptor ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepElement_Curve3dElementDescriptor::StepElement_Curve3dElementDescriptor() {}
 
-void StepElement_Curve3dElementDescriptor::Init (const StepElement_ElementOrder aElementDescriptor_TopologyOrder,
-                                                 const Handle(TCollection_HAsciiString) &aElementDescriptor_Description,
-                                                 const Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember) &aPurpose)
+//=================================================================================================
+
+void StepElement_Curve3dElementDescriptor::Init(
+  const StepElement_ElementOrder          aElementDescriptor_TopologyOrder,
+  const Handle(TCollection_HAsciiString)& aElementDescriptor_Description,
+  const Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember)& aPurpose)
 {
   StepElement_ElementDescriptor::Init(aElementDescriptor_TopologyOrder,
                                       aElementDescriptor_Description);
@@ -43,22 +37,18 @@ void StepElement_Curve3dElementDescriptor::Init (const StepElement_ElementOrder 
   thePurpose = aPurpose;
 }
 
-//=======================================================================
-//function : Purpose
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember) StepElement_Curve3dElementDescriptor::Purpose () const
+Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember)
+  StepElement_Curve3dElementDescriptor::Purpose() const
 {
   return thePurpose;
 }
 
-//=======================================================================
-//function : SetPurpose
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepElement_Curve3dElementDescriptor::SetPurpose (const Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember) &aPurpose)
+void StepElement_Curve3dElementDescriptor::SetPurpose(
+  const Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember)& aPurpose)
 {
   thePurpose = aPurpose;
 }

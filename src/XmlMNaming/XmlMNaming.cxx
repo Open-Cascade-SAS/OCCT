@@ -20,13 +20,11 @@
 #include <XmlMNaming_NamedShapeDriver.hxx>
 #include <XmlMNaming_NamingDriver.hxx>
 
-//=======================================================================
-//function : AddStorageDrivers
-//purpose  : 
-//=======================================================================
-void XmlMNaming::AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable,
-                             const Handle(Message_Messenger)&   aMessageDriver)
+//=================================================================================================
+
+void XmlMNaming::AddDrivers(const Handle(XmlMDF_ADriverTable)& aDriverTable,
+                            const Handle(Message_Messenger)&   aMessageDriver)
 {
-  aDriverTable->AddDriver (new XmlMNaming_NamedShapeDriver(aMessageDriver));
-  aDriverTable->AddDriver (new XmlMNaming_NamingDriver(aMessageDriver));
+  aDriverTable->AddDriver(new XmlMNaming_NamedShapeDriver(aMessageDriver));
+  aDriverTable->AddDriver(new XmlMNaming_NamingDriver(aMessageDriver));
 }

@@ -40,66 +40,84 @@ static Standard_Integer ClearRepetitions(Draw_Interpretor&, Standard_Integer, co
 
 namespace
 {
-  static BOPAlgo_MakeConnected& getMakeConnectedTool()
-  {
-    static BOPAlgo_MakeConnected TheMakeConnectedTool;
-    return TheMakeConnectedTool;
-  }
+static BOPAlgo_MakeConnected& getMakeConnectedTool()
+{
+  static BOPAlgo_MakeConnected TheMakeConnectedTool;
+  return TheMakeConnectedTool;
 }
+} // namespace
 
-//=======================================================================
-//function : MkConnectedCommands
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BOPTest::MkConnectedCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
-  if (done) return;
+  if (done)
+    return;
   done = Standard_True;
   // Chapter's name
   const char* group = "BOPTest commands";
   // Commands
-  theCommands.Add("makeconnected", "makeconnected result shape1 shape2 ...\n"
+  theCommands.Add("makeconnected",
+                  "makeconnected result shape1 shape2 ...\n"
                   "\t\tMake the given shapes connected (glued).",
-                  __FILE__, MakeConnected, group);
+                  __FILE__,
+                  MakeConnected,
+                  group);
 
-  theCommands.Add("cmakeperiodic", "cmakeperiodic result [-x/y/z period [-trim first]]\n"
+  theCommands.Add("cmakeperiodic",
+                  "cmakeperiodic result [-x/y/z period [-trim first]]\n"
                   "\t\tMake the connected shape periodic in the required directions.\n"
                   "\t\tresult        - resulting periodic shape;\n"
                   "\t\t-x/y/z period - option to make the shape periodic in X, Y or Z\n "
                   "\t\t                direction with the given period;\n"
                   "\t\t-trim first   - option to trim the shape to fit the required period,\n"
                   "\t\t                starting the period in first.",
-                  __FILE__, MakePeriodic, group);
+                  __FILE__,
+                  MakePeriodic,
+                  group);
 
-  theCommands.Add("cmaterialson", "cmaterialson result +/- shape\n"
-                  "\t\tReturns the original shapes located on the required side of a shape:\n"
-                  "\t\t'+' - on a positive side of a shape (containing the shape with orientation FORWARD)\n"
-                  "\t\t'-' - on a negative side of a shape (containing the shape with orientation REVERSED).",
-                  __FILE__, MaterialsOn, group);
+  theCommands.Add(
+    "cmaterialson",
+    "cmaterialson result +/- shape\n"
+    "\t\tReturns the original shapes located on the required side of a shape:\n"
+    "\t\t'+' - on a positive side of a shape (containing the shape with orientation FORWARD)\n"
+    "\t\t'-' - on a negative side of a shape (containing the shape with orientation REVERSED).",
+    __FILE__,
+    MaterialsOn,
+    group);
 
-  theCommands.Add("crepeatshape", "crepeatshape result -x/y/z times\n"
-                  "\t\tRepeats the periodic connected shape in periodic directions required number of times.\n"
-                  "\t\tresult       - resulting shape;\n"
-                  "\t\t-x/y/z times - direction for repetition and number of repetitions.",
-                  __FILE__, RepeatShape, group);
+  theCommands.Add(
+    "crepeatshape",
+    "crepeatshape result -x/y/z times\n"
+    "\t\tRepeats the periodic connected shape in periodic directions required number of times.\n"
+    "\t\tresult       - resulting shape;\n"
+    "\t\t-x/y/z times - direction for repetition and number of repetitions.",
+    __FILE__,
+    RepeatShape,
+    group);
 
-  theCommands.Add("cperiodictwins", "cperiodictwins twins shape\n"
-                  "\t\tReturns the twins for the shape located on the opposite side of the periodic shape.",
-                  __FILE__, GetTwins, group);
+  theCommands.Add(
+    "cperiodictwins",
+    "cperiodictwins twins shape\n"
+    "\t\tReturns the twins for the shape located on the opposite side of the periodic shape.",
+    __FILE__,
+    GetTwins,
+    group);
 
-    theCommands.Add("cclearrepetitions", "cclearrepetitions [result]\n"
+  theCommands.Add("cclearrepetitions",
+                  "cclearrepetitions [result]\n"
                   "\t\tClears all previous repetitions of the periodic shape.",
-                  __FILE__, ClearRepetitions, group);
+                  __FILE__,
+                  ClearRepetitions,
+                  group);
 }
 
-//=======================================================================
-//function : MakeConnected
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer MakeConnected(Draw_Interpretor& theDI,
                                Standard_Integer  theArgc,
-                               const char ** theArgv)
+                               const char**      theArgv)
 {
   if (theArgc < 3)
   {
@@ -140,13 +158,11 @@ Standard_Integer MakeConnected(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : MakePeriodic
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
                               Standard_Integer  theArgc,
-                              const char ** theArgv)
+                              const char**      theArgv)
 {
   if (theArgc < 4)
   {
@@ -191,7 +207,7 @@ Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
     }
 
     aParams.myPeriodic[aDirID] = Standard_True;
-    aParams.myPeriod[aDirID] = aPeriod;
+    aParams.myPeriod[aDirID]   = aPeriod;
 
     ++i;
     if (theArgc > i + 1)
@@ -206,7 +222,7 @@ Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
         }
         Standard_Real aFirst = Draw::Atof(theArgv[++i]);
 
-        aParams.myIsTrimmed[aDirID] = Standard_False;
+        aParams.myIsTrimmed[aDirID]   = Standard_False;
         aParams.myPeriodFirst[aDirID] = aFirst;
         ++i;
       }
@@ -231,13 +247,11 @@ Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : RepeatShape
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer RepeatShape(Draw_Interpretor& theDI,
                              Standard_Integer  theArgc,
-                             const char ** theArgv)
+                             const char**      theArgv)
 {
   if (theArgc < 4)
   {
@@ -298,13 +312,11 @@ Standard_Integer RepeatShape(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : MaterialsOn
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer MaterialsOn(Draw_Interpretor& theDI,
                              Standard_Integer  theArgc,
-                             const char ** theArgv)
+                             const char**      theArgv)
 {
   if (theArgc != 4)
   {
@@ -333,9 +345,9 @@ Standard_Integer MaterialsOn(Draw_Interpretor& theDI,
     return 1;
   }
 
-  const TopTools_ListOfShape& aLS = bPositive ?
-    getMakeConnectedTool().MaterialsOnPositiveSide(aShape) :
-    getMakeConnectedTool().MaterialsOnNegativeSide(aShape);
+  const TopTools_ListOfShape& aLS = bPositive
+                                      ? getMakeConnectedTool().MaterialsOnPositiveSide(aShape)
+                                      : getMakeConnectedTool().MaterialsOnNegativeSide(aShape);
 
   TopoDS_Shape aResult;
   if (aLS.IsEmpty())
@@ -354,13 +366,9 @@ Standard_Integer MaterialsOn(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : GetTwin
-//purpose  : 
-//=======================================================================
-Standard_Integer GetTwins(Draw_Interpretor& theDI,
-                          Standard_Integer  theArgc,
-                          const char ** theArgv)
+//=================================================================================================
+
+Standard_Integer GetTwins(Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
 {
   if (theArgc != 3)
   {
@@ -395,13 +403,9 @@ Standard_Integer GetTwins(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : ClearRepetitions
-//purpose  : 
-//=======================================================================
-Standard_Integer ClearRepetitions(Draw_Interpretor&,
-                                  Standard_Integer theArgc,
-                                  const char **theArgv)
+//=================================================================================================
+
+Standard_Integer ClearRepetitions(Draw_Interpretor&, Standard_Integer theArgc, const char** theArgv)
 {
   // Clear all previous repetitions
   getMakeConnectedTool().ClearRepetitions();

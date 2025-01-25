@@ -14,38 +14,37 @@
 // commercial license or contractual agreement.
 
 #ifndef _StepVisual_TessellatedGeometricSet_HeaderFile
-#define  _StepVisual_TessellatedGeometricSet_HeaderFile
+#define _StepVisual_TessellatedGeometricSet_HeaderFile
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
 #include <StepVisual_TessellatedItem.hxx>
 #include <NCollection_Array1.hxx>
-//#include <NCollection_DefineHArray1.hxx>
+// #include <NCollection_DefineHArray1.hxx>
 #include <NCollection_Handle.hxx>
-
 
 typedef NCollection_Array1<Handle(StepVisual_TessellatedItem)> StepVisual_Array1OfTessellatedItem;
 
 DEFINE_STANDARD_HANDLE(StepVisual_TessellatedGeometricSet, StepVisual_TessellatedItem)
-class StepVisual_TessellatedGeometricSet  : public StepVisual_TessellatedItem
+
+class StepVisual_TessellatedGeometricSet : public StepVisual_TessellatedItem
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-  
+
   //! Returns a DraughtingCalloutElement select type
   Standard_EXPORT StepVisual_TessellatedGeometricSet();
 
-   Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theName, const NCollection_Handle<StepVisual_Array1OfTessellatedItem>& theItems);
-  
-   Standard_EXPORT NCollection_Handle<StepVisual_Array1OfTessellatedItem> Items() const;
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&                       theName,
+                            const NCollection_Handle<StepVisual_Array1OfTessellatedItem>& theItems);
+
+  Standard_EXPORT NCollection_Handle<StepVisual_Array1OfTessellatedItem> Items() const;
 
 private:
   NCollection_Handle<StepVisual_Array1OfTessellatedItem> myItems;
 
 public:
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedGeometricSet,StepVisual_TessellatedItem)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedGeometricSet, StepVisual_TessellatedItem)
 };
 #endif // StepVisual_TessellatedGeometricSet

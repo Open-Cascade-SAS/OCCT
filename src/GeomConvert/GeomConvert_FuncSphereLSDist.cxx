@@ -14,38 +14,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GeomConvert_FuncSphereLSDist.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <math_Vector.hxx>
 
-//=======================================================================
-//function : GeomConvert_FuncSphereLSDist
-//purpose  : 
-//=======================================================================
-GeomConvert_FuncSphereLSDist::GeomConvert_FuncSphereLSDist(const Handle(TColgp_HArray1OfXYZ)& thePoints):
-  myPoints(thePoints)
+//=================================================================================================
+
+GeomConvert_FuncSphereLSDist::GeomConvert_FuncSphereLSDist(
+  const Handle(TColgp_HArray1OfXYZ)& thePoints)
+    : myPoints(thePoints)
 {
 }
 
-//=======================================================================
-//function : NbVariables
-//purpose  : 
-//=======================================================================
-Standard_Integer GeomConvert_FuncSphereLSDist::NbVariables () const
+//=================================================================================================
+
+Standard_Integer GeomConvert_FuncSphereLSDist::NbVariables() const
 {
   return 4;
 }
 
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
-Standard_Boolean GeomConvert_FuncSphereLSDist::Value(const math_Vector& X,Standard_Real& F)
+//=================================================================================================
+
+Standard_Boolean GeomConvert_FuncSphereLSDist::Value(const math_Vector& X, Standard_Real& F)
 {
-  gp_XYZ aLoc(X(1), X(2), X(3));
-  Standard_Real anR2 = X(4)*X(4);
+  gp_XYZ        aLoc(X(1), X(2), X(3));
+  Standard_Real anR2 = X(4) * X(4);
 
   F = 0.;
   Standard_Integer i;
@@ -58,22 +52,20 @@ Standard_Boolean GeomConvert_FuncSphereLSDist::Value(const math_Vector& X,Standa
   return Standard_True;
 }
 
-//=======================================================================
-//function : Gradient
-//purpose  : 
-//=======================================================================
-Standard_Boolean GeomConvert_FuncSphereLSDist::Gradient(const math_Vector& X,math_Vector& G)
+//=================================================================================================
+
+Standard_Boolean GeomConvert_FuncSphereLSDist::Gradient(const math_Vector& X, math_Vector& G)
 
 {
-  gp_XYZ aLoc(X(1), X(2), X(3));
+  gp_XYZ        aLoc(X(1), X(2), X(3));
   Standard_Real anR = X(4), anR2 = anR * anR;
 
   G.Init(0.);
   Standard_Integer i;
   for (i = myPoints->Lower(); i <= myPoints->Upper(); ++i)
   {
-    gp_XYZ dLoc = myPoints->Value(i) - aLoc;
-    Standard_Real d = dLoc.SquareModulus() - anR2;
+    gp_XYZ        dLoc = myPoints->Value(i) - aLoc;
+    Standard_Real d    = dLoc.SquareModulus() - anR2;
     G(1) += d * dLoc.X();
     G(2) += d * dLoc.Y();
     G(3) += d * dLoc.Z();
@@ -85,13 +77,13 @@ Standard_Boolean GeomConvert_FuncSphereLSDist::Gradient(const math_Vector& X,mat
   return Standard_True;
 }
 
-//=======================================================================
-//function : Values
-//purpose  : 
-//=======================================================================
-Standard_Boolean GeomConvert_FuncSphereLSDist::Values(const math_Vector& X,Standard_Real& F,math_Vector& G)
+//=================================================================================================
+
+Standard_Boolean GeomConvert_FuncSphereLSDist::Values(const math_Vector& X,
+                                                      Standard_Real&     F,
+                                                      math_Vector&       G)
 {
-  gp_XYZ aLoc(X(1), X(2), X(3));
+  gp_XYZ        aLoc(X(1), X(2), X(3));
   Standard_Real anR = X(4), anR2 = anR * anR;
 
   G.Init(0.);
@@ -99,8 +91,8 @@ Standard_Boolean GeomConvert_FuncSphereLSDist::Values(const math_Vector& X,Stand
   Standard_Integer i;
   for (i = myPoints->Lower(); i <= myPoints->Upper(); ++i)
   {
-    gp_XYZ dLoc = myPoints->Value(i) - aLoc;
-    Standard_Real d = dLoc.SquareModulus() - anR2;
+    gp_XYZ        dLoc = myPoints->Value(i) - aLoc;
+    Standard_Real d    = dLoc.SquareModulus() - anR2;
     G(1) += d * dLoc.X();
     G(2) += d * dLoc.Y();
     G(3) += d * dLoc.Z();
@@ -112,4 +104,3 @@ Standard_Boolean GeomConvert_FuncSphereLSDist::Values(const math_Vector& X,Stand
 
   return true;
 }
-

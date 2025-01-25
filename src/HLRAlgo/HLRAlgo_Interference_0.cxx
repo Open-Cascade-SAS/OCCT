@@ -18,7 +18,6 @@
 
 #include <HLRAlgo_Intersection.hxx>
 #include <HLRAlgo_Coincidence.hxx>
- 
 
 #define TheSubShape HLRAlgo_Intersection
 #define TheSubShape_hxx <HLRAlgo_Intersection.hxx>
@@ -27,4 +26,3 @@
 #define TopBas_Interference HLRAlgo_Interference
 #define TopBas_Interference_hxx <HLRAlgo_Interference.hxx>
 #include "../TopBas/TopBas_Interference.gxx"
-

@@ -17,33 +17,21 @@
 
 #include <TObj_LabelIterator.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TObj_LabelIterator, TObj_ObjectIterator)
 
-IMPLEMENT_STANDARD_RTTIEXT(TObj_LabelIterator,TObj_ObjectIterator)
+//=================================================================================================
 
-//=======================================================================
-//function : TObj_LabelIterator
-//purpose  : 
-//=======================================================================
+TObj_LabelIterator::TObj_LabelIterator() {}
 
-TObj_LabelIterator::TObj_LabelIterator()
+//=================================================================================================
+
+TObj_LabelIterator::TObj_LabelIterator(const TDF_Label&       theLabel,
+                                       const Standard_Boolean isRecursive)
 {
+  Init(theLabel, isRecursive);
 }
-     
-//=======================================================================
-//function : TObj_LabelIterator
-//purpose  : 
-//=======================================================================
 
-TObj_LabelIterator::TObj_LabelIterator(const TDF_Label& theLabel,
-                                               const Standard_Boolean isRecursive)
-{
-  Init(theLabel,isRecursive);
-}
-     
-//=======================================================================
-//function : Next
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TObj_LabelIterator::Next()
 {

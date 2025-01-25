@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(StepShape_HArray1OfOrientedClosedShell, StepShape_Array1OfOrientedClosedShell)
 
-
 #endif

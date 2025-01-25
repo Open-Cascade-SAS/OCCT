@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:16 2020 
+// Created on : Sat May 02 12:41:16 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -18,42 +18,33 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_UnconstrainedPairValue, StepKinematics_PairValue)
 
-//=======================================================================
-//function : StepKinematics_UnconstrainedPairValue
-//purpose  :
-//=======================================================================
-StepKinematics_UnconstrainedPairValue::StepKinematics_UnconstrainedPairValue ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_UnconstrainedPairValue::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                                  const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                                                  const Handle(StepGeom_Axis2Placement3d)& theActualPlacement)
+StepKinematics_UnconstrainedPairValue::StepKinematics_UnconstrainedPairValue() {}
+
+//=================================================================================================
+
+void StepKinematics_UnconstrainedPairValue::Init(
+  const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
+  const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
+  const Handle(StepGeom_Axis2Placement3d)&    theActualPlacement)
 {
-  StepKinematics_PairValue::Init(theRepresentationItem_Name,
-                                 thePairValue_AppliesToPair);
+  StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
   myActualPlacement = theActualPlacement;
 }
 
-//=======================================================================
-//function : ActualPlacement
-//purpose  :
-//=======================================================================
-Handle(StepGeom_Axis2Placement3d) StepKinematics_UnconstrainedPairValue::ActualPlacement () const
+//=================================================================================================
+
+Handle(StepGeom_Axis2Placement3d) StepKinematics_UnconstrainedPairValue::ActualPlacement() const
 {
   return myActualPlacement;
 }
 
-//=======================================================================
-//function : SetActualPlacement
-//purpose  :
-//=======================================================================
-void StepKinematics_UnconstrainedPairValue::SetActualPlacement (const Handle(StepGeom_Axis2Placement3d)& theActualPlacement)
+//=================================================================================================
+
+void StepKinematics_UnconstrainedPairValue::SetActualPlacement(
+  const Handle(StepGeom_Axis2Placement3d)& theActualPlacement)
 {
   myActualPlacement = theActualPlacement;
 }

@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IGESData_IGESEntity.hxx>
 #include <IGESSelect_SelectVisibleStatus.hxx>
 #include <Interface_InterfaceModel.hxx>
@@ -20,21 +19,22 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectVisibleStatus,IFSelect_SelectExtract)
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectVisibleStatus, IFSelect_SelectExtract)
 
-IGESSelect_SelectVisibleStatus::IGESSelect_SelectVisibleStatus ()    {  }
+IGESSelect_SelectVisibleStatus::IGESSelect_SelectVisibleStatus() {}
 
-
-    Standard_Boolean  IGESSelect_SelectVisibleStatus::Sort
-  (const Standard_Integer /*rank*/, 
-   const Handle(Standard_Transient)& ent,
-   const Handle(Interface_InterfaceModel)& /*model*/) const
+Standard_Boolean IGESSelect_SelectVisibleStatus::Sort(
+  const Standard_Integer /*rank*/,
+  const Handle(Standard_Transient)& ent,
+  const Handle(Interface_InterfaceModel)& /*model*/) const
 {
-  DeclareAndCast(IGESData_IGESEntity,igesent,ent);
-  if (igesent.IsNull()) return Standard_False;
+  DeclareAndCast(IGESData_IGESEntity, igesent, ent);
+  if (igesent.IsNull())
+    return Standard_False;
   return (igesent->BlankStatus() == 0);
 }
 
-    TCollection_AsciiString  IGESSelect_SelectVisibleStatus::ExtractLabel
-  () const
-      {  return TCollection_AsciiString ("IGES Entity, Status Visible");  }
+TCollection_AsciiString IGESSelect_SelectVisibleStatus::ExtractLabel() const
+{
+  return TCollection_AsciiString("IGES Entity, Status Visible");
+}

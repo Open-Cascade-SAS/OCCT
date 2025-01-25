@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:16 2020 
+// Created on : Sat May 02 12:41:16 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -18,10 +18,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_RollingSurfacePair, StepKinematics_SurfacePair)
 
-//=======================================================================
-//function : StepKinematics_RollingSurfacePair
-//purpose  :
-//=======================================================================
-StepKinematics_RollingSurfacePair::StepKinematics_RollingSurfacePair ()
-{
-}
+//=================================================================================================
+
+StepKinematics_RollingSurfacePair::StepKinematics_RollingSurfacePair() {}

@@ -36,23 +36,20 @@
 
 #include <stdio.h>
 
-//=======================================================================
-//function : QATestExtremaSS
-//purpose  :
-//=======================================================================
-static Standard_Integer QATestExtremaSS (Draw_Interpretor& theInterpretor,
-                                         Standard_Integer  theArgNb,
-                                         const char**      theArgs)
+//=================================================================================================
+
+static Standard_Integer QATestExtremaSS(Draw_Interpretor& theInterpretor,
+                                        Standard_Integer  theArgNb,
+                                        const char**      theArgs)
 {
-  if (theArgNb < 3
-   || theArgNb > 4)
+  if (theArgNb < 3 || theArgNb > 4)
   {
     std::cerr << "Usage: type help " << theArgs[0] << std::endl;
     return 1;
   }
 
   // Get target shape
-  TopoDS_Shape aShape = DBRep::Get (theArgs[1]);
+  TopoDS_Shape aShape = DBRep::Get(theArgs[1]);
   if (aShape.IsNull())
   {
     std::cerr << "Error: " << theArgs[1] << " shape is null\n";
@@ -60,7 +57,7 @@ static Standard_Integer QATestExtremaSS (Draw_Interpretor& theInterpretor,
   }
 
   // Get step value
-  const Standard_Real aStep = Draw::Atof (theArgs[2]);
+  const Standard_Real aStep = Draw::Atof(theArgs[2]);
   if (aStep <= 1e-5)
   {
     std::cerr << "Error: Step " << aStep << " is too small\n";
@@ -70,7 +67,7 @@ static Standard_Integer QATestExtremaSS (Draw_Interpretor& theInterpretor,
   Extrema_ExtFlag aFlag = Extrema_ExtFlag_MIN;
   if (theArgNb > 3)
   {
-    Standard_Integer aVal = Draw::Atoi (theArgs[3]);
+    Standard_Integer aVal = Draw::Atoi(theArgs[3]);
     if (aVal > 0)
     {
       aFlag = aVal == 1 ? Extrema_ExtFlag_MAX : Extrema_ExtFlag_MINMAX;
@@ -79,12 +76,11 @@ static Standard_Integer QATestExtremaSS (Draw_Interpretor& theInterpretor,
 
   // Get bounding box of the shape
   Bnd_Box aBounds;
-  BRepBndLib::Add (aShape, aBounds);
+  BRepBndLib::Add(aShape, aBounds);
 
   Standard_Real aXmin, aYmin, aZmin;
   Standard_Real aXmax, aYmax, aZmax;
-  aBounds.Get (aXmin, aYmin, aZmin,
-               aXmax, aYmax, aZmax);
+  aBounds.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
   const Standard_Real aScaleFactor = 1.5;
   aXmin *= aScaleFactor;
@@ -100,20 +96,20 @@ static Standard_Integer QATestExtremaSS (Draw_Interpretor& theInterpretor,
   {
     for (Standard_Real aY = aYmin + 0.5 * aStep; aY < aYmax; aY += aStep)
     {
-      aList.Append (BRepBuilderAPI_MakeVertex (gp_Pnt (aX, aY, aZmin)));
-      aList.Append (BRepBuilderAPI_MakeVertex (gp_Pnt (aX, aY, aZmax)));
+      aList.Append(BRepBuilderAPI_MakeVertex(gp_Pnt(aX, aY, aZmin)));
+      aList.Append(BRepBuilderAPI_MakeVertex(gp_Pnt(aX, aY, aZmax)));
 
-      aPoints.Append (gp_XYZ (aX, aY, aZmin));
-      aPoints.Append (gp_XYZ (aX, aY, aZmax));
+      aPoints.Append(gp_XYZ(aX, aY, aZmin));
+      aPoints.Append(gp_XYZ(aX, aY, aZmax));
     }
 
     for (Standard_Real aZ = aZmin + 0.5 * aStep; aZ < aZmax; aZ += aStep)
     {
-      aList.Append (BRepBuilderAPI_MakeVertex (gp_Pnt (aX, aYmin, aZ)));
-      aList.Append (BRepBuilderAPI_MakeVertex (gp_Pnt (aX, aYmax, aZ)));
+      aList.Append(BRepBuilderAPI_MakeVertex(gp_Pnt(aX, aYmin, aZ)));
+      aList.Append(BRepBuilderAPI_MakeVertex(gp_Pnt(aX, aYmax, aZ)));
 
-      aPoints.Append (gp_XYZ (aX, aYmin, aZ));
-      aPoints.Append (gp_XYZ (aX, aYmax, aZ));
+      aPoints.Append(gp_XYZ(aX, aYmin, aZ));
+      aPoints.Append(gp_XYZ(aX, aYmax, aZ));
     }
   }
 
@@ -121,11 +117,11 @@ static Standard_Integer QATestExtremaSS (Draw_Interpretor& theInterpretor,
   {
     for (Standard_Real aZ = aZmin + 0.5 * aStep; aZ < aZmax; aZ += aStep)
     {
-      aList.Append (BRepBuilderAPI_MakeVertex (gp_Pnt (aXmin, aY, aZ)));
-      aList.Append (BRepBuilderAPI_MakeVertex (gp_Pnt (aXmax, aY, aZ)));
+      aList.Append(BRepBuilderAPI_MakeVertex(gp_Pnt(aXmin, aY, aZ)));
+      aList.Append(BRepBuilderAPI_MakeVertex(gp_Pnt(aXmax, aY, aZ)));
 
-      aPoints.Append (gp_XYZ (aXmin, aY, aZ));
-      aPoints.Append (gp_XYZ (aXmax, aY, aZ));
+      aPoints.Append(gp_XYZ(aXmin, aY, aZ));
+      aPoints.Append(gp_XYZ(aXmax, aY, aZ));
     }
   }
 
@@ -138,11 +134,11 @@ static Standard_Integer QATestExtremaSS (Draw_Interpretor& theInterpretor,
 
   // Perform projection using standard method
   BRepExtrema_DistShapeShape aTool;
-  aTool.SetFlag (aFlag);
-  aTool.LoadS1 (aShape);
+  aTool.SetFlag(aFlag);
+  aTool.LoadS1(aShape);
   for (Standard_Integer anIdx = 1; anIdx <= aNbPoints; ++anIdx)
   {
-    aTool.LoadS2 (aList (anIdx));
+    aTool.LoadS2(aList(anIdx));
     aTool.Perform();
   }
 
@@ -151,22 +147,21 @@ static Standard_Integer QATestExtremaSS (Draw_Interpretor& theInterpretor,
   return 0;
 }
 
-//=======================================================================
-//function : CommonCommands
-//purpose  :
-//=======================================================================
-void QADraw::CommonCommands (Draw_Interpretor& theCommands)
+//=================================================================================================
+
+void QADraw::CommonCommands(Draw_Interpretor& theCommands)
 {
   const char* group = "QA_Commands";
 
-  theCommands.Add ("QATestExtremaSS",
-                   "QATestExtremaSS Shape Step [Flag { MIN = 0 | MAX = 1 | MINMAX = 2 }]",
-                   __FILE__,
-                   QATestExtremaSS,
-                   group);
+  theCommands.Add("QATestExtremaSS",
+                  "QATestExtremaSS Shape Step [Flag { MIN = 0 | MAX = 1 | MINMAX = 2 }]",
+                  __FILE__,
+                  QATestExtremaSS,
+                  group);
 
-// adding commands "rename" leads to the fact that QA commands doesn't work properly OCC23410, use function "renamevar"
-// theCommands.Add("rename","rename name1 toname1 name2 toname2 ...",__FILE__,QArename,group);
+  // adding commands "rename" leads to the fact that QA commands doesn't work properly OCC23410, use
+  // function "renamevar" theCommands.Add("rename","rename name1 toname1 name2 toname2
+  // ...",__FILE__,QArename,group);
 }
 
 //==============================================================================

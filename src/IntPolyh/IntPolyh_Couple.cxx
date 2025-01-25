@@ -14,14 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IntPolyh_Couple.hxx>
 #include <stdio.h>
 
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-void IntPolyh_Couple::Dump(const Standard_Integer i) const{
+//=================================================================================================
+
+void IntPolyh_Couple::Dump(const Standard_Integer i) const
+{
   printf("\nCouple(%3d) : %5d %5d %3d %5f\n", i, myIndex1, myIndex2, myAnalyzed, myAngle);
 }

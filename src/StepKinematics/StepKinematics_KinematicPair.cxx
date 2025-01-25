@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -18,69 +18,58 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicPair, StepGeom_GeometricRepresentationItem)
 
-//=======================================================================
-//function : StepKinematics_KinematicPair
-//purpose  :
-//=======================================================================
-StepKinematics_KinematicPair::StepKinematics_KinematicPair ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_KinematicPair::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                         const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Name,
-                                         const Standard_Boolean /*hasItemDefinedTransformation_Description*/,
-                                         const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Description,
-                                         const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem1,
-                                         const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem2,
-                                         const Handle(StepKinematics_KinematicJoint)& theJoint)
+StepKinematics_KinematicPair::StepKinematics_KinematicPair() {}
+
+//=================================================================================================
+
+void StepKinematics_KinematicPair::Init(
+  const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
+  const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Name,
+  const Standard_Boolean /*hasItemDefinedTransformation_Description*/,
+  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
+  const Handle(StepKinematics_KinematicJoint)& theJoint)
 {
   StepGeom_GeometricRepresentationItem::Init(theRepresentationItem_Name);
   myItemDefinedTransformation = new StepRepr_ItemDefinedTransformation;
   myItemDefinedTransformation->Init(theItemDefinedTransformation_Name,
-                                     /*hasItemDefinedTransformation_Description,*/
-                                     theItemDefinedTransformation_Description,
-                                     theItemDefinedTransformation_TransformItem1,
-                                     theItemDefinedTransformation_TransformItem2);
+                                    /*hasItemDefinedTransformation_Description,*/
+                                    theItemDefinedTransformation_Description,
+                                    theItemDefinedTransformation_TransformItem1,
+                                    theItemDefinedTransformation_TransformItem2);
 
   myJoint = theJoint;
 }
 
-//=======================================================================
-//function : ItemDefinedTransformation
-//purpose  :
-//=======================================================================
-Handle(StepRepr_ItemDefinedTransformation) StepKinematics_KinematicPair::ItemDefinedTransformation () const
+//=================================================================================================
+
+Handle(StepRepr_ItemDefinedTransformation) StepKinematics_KinematicPair::ItemDefinedTransformation()
+  const
 {
   return myItemDefinedTransformation;
 }
 
-//=======================================================================
-//function : SetItemDefinedTransformation
-//purpose  :
-//=======================================================================
-void StepKinematics_KinematicPair::SetItemDefinedTransformation (const Handle(StepRepr_ItemDefinedTransformation)& theItemDefinedTransformation)
+//=================================================================================================
+
+void StepKinematics_KinematicPair::SetItemDefinedTransformation(
+  const Handle(StepRepr_ItemDefinedTransformation)& theItemDefinedTransformation)
 {
   myItemDefinedTransformation = theItemDefinedTransformation;
 }
 
-//=======================================================================
-//function : Joint
-//purpose  :
-//=======================================================================
-Handle(StepKinematics_KinematicJoint) StepKinematics_KinematicPair::Joint () const
+//=================================================================================================
+
+Handle(StepKinematics_KinematicJoint) StepKinematics_KinematicPair::Joint() const
 {
   return myJoint;
 }
 
-//=======================================================================
-//function : SetJoint
-//purpose  :
-//=======================================================================
-void StepKinematics_KinematicPair::SetJoint (const Handle(StepKinematics_KinematicJoint)& theJoint)
+//=================================================================================================
+
+void StepKinematics_KinematicPair::SetJoint(const Handle(StepKinematics_KinematicJoint)& theJoint)
 {
   myJoint = theJoint;
 }

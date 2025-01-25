@@ -19,25 +19,19 @@
 #include <StepRepr_RepresentationContext.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_ElementRepresentation,StepRepr_Representation)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_ElementRepresentation, StepRepr_Representation)
 
-//=======================================================================
-//function : StepFEA_ElementRepresentation
-//purpose  : 
-//=======================================================================
-StepFEA_ElementRepresentation::StepFEA_ElementRepresentation ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepFEA_ElementRepresentation::StepFEA_ElementRepresentation() {}
 
-void StepFEA_ElementRepresentation::Init (const Handle(TCollection_HAsciiString) &aRepresentation_Name,
-                                          const Handle(StepRepr_HArray1OfRepresentationItem) &aRepresentation_Items,
-                                          const Handle(StepRepr_RepresentationContext) &aRepresentation_ContextOfItems,
-                                          const Handle(StepFEA_HArray1OfNodeRepresentation) &aNodeList)
+//=================================================================================================
+
+void StepFEA_ElementRepresentation::Init(
+  const Handle(TCollection_HAsciiString)&             aRepresentation_Name,
+  const Handle(StepRepr_HArray1OfRepresentationItem)& aRepresentation_Items,
+  const Handle(StepRepr_RepresentationContext)&       aRepresentation_ContextOfItems,
+  const Handle(StepFEA_HArray1OfNodeRepresentation)&  aNodeList)
 {
   StepRepr_Representation::Init(aRepresentation_Name,
                                 aRepresentation_Items,
@@ -46,22 +40,17 @@ void StepFEA_ElementRepresentation::Init (const Handle(TCollection_HAsciiString)
   theNodeList = aNodeList;
 }
 
-//=======================================================================
-//function : NodeList
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepFEA_HArray1OfNodeRepresentation) StepFEA_ElementRepresentation::NodeList () const
+Handle(StepFEA_HArray1OfNodeRepresentation) StepFEA_ElementRepresentation::NodeList() const
 {
   return theNodeList;
 }
 
-//=======================================================================
-//function : SetNodeList
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_ElementRepresentation::SetNodeList (const Handle(StepFEA_HArray1OfNodeRepresentation) &aNodeList)
+void StepFEA_ElementRepresentation::SetNodeList(
+  const Handle(StepFEA_HArray1OfNodeRepresentation)& aNodeList)
 {
   theNodeList = aNodeList;
 }

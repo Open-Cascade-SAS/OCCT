@@ -20,25 +20,19 @@
 #include <StepRepr_RepresentationContext.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_NodeRepresentation,StepRepr_Representation)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_NodeRepresentation, StepRepr_Representation)
 
-//=======================================================================
-//function : StepFEA_NodeRepresentation
-//purpose  : 
-//=======================================================================
-StepFEA_NodeRepresentation::StepFEA_NodeRepresentation ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepFEA_NodeRepresentation::StepFEA_NodeRepresentation() {}
 
-void StepFEA_NodeRepresentation::Init (const Handle(TCollection_HAsciiString) &aRepresentation_Name,
-                                       const Handle(StepRepr_HArray1OfRepresentationItem) &aRepresentation_Items,
-                                       const Handle(StepRepr_RepresentationContext) &aRepresentation_ContextOfItems,
-                                       const Handle(StepFEA_FeaModel) &aModelRef)
+//=================================================================================================
+
+void StepFEA_NodeRepresentation::Init(
+  const Handle(TCollection_HAsciiString)&             aRepresentation_Name,
+  const Handle(StepRepr_HArray1OfRepresentationItem)& aRepresentation_Items,
+  const Handle(StepRepr_RepresentationContext)&       aRepresentation_ContextOfItems,
+  const Handle(StepFEA_FeaModel)&                     aModelRef)
 {
   StepRepr_Representation::Init(aRepresentation_Name,
                                 aRepresentation_Items,
@@ -47,22 +41,16 @@ void StepFEA_NodeRepresentation::Init (const Handle(TCollection_HAsciiString) &a
   theModelRef = aModelRef;
 }
 
-//=======================================================================
-//function : ModelRef
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepFEA_FeaModel) StepFEA_NodeRepresentation::ModelRef () const
+Handle(StepFEA_FeaModel) StepFEA_NodeRepresentation::ModelRef() const
 {
   return theModelRef;
 }
 
-//=======================================================================
-//function : SetModelRef
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_NodeRepresentation::SetModelRef (const Handle(StepFEA_FeaModel) &aModelRef)
+void StepFEA_NodeRepresentation::SetModelRef(const Handle(StepFEA_FeaModel)& aModelRef)
 {
   theModelRef = aModelRef;
 }

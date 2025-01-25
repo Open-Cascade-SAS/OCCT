@@ -21,8 +21,8 @@
 #include <MAT_Bisector.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,Handle(MAT_Bisector)> MAT_DataMapOfIntegerBisector;
-typedef NCollection_DataMap<Standard_Integer,Handle(MAT_Bisector)>::Iterator MAT_DataMapIteratorOfDataMapOfIntegerBisector;
-
+typedef NCollection_DataMap<Standard_Integer, Handle(MAT_Bisector)> MAT_DataMapOfIntegerBisector;
+typedef NCollection_DataMap<Standard_Integer, Handle(MAT_Bisector)>::Iterator
+  MAT_DataMapIteratorOfDataMapOfIntegerBisector;
 
 #endif

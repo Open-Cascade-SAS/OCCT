@@ -19,5 +19,6 @@
 #include <StepDimTol_Array1OfDatumReferenceCompartment.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepDimTol_HArray1OfDatumReferenceCompartment, StepDimTol_Array1OfDatumReferenceCompartment)
+DEFINE_HARRAY1(StepDimTol_HArray1OfDatumReferenceCompartment,
+               StepDimTol_Array1OfDatumReferenceCompartment)
 #endif // _StepDimTol_HArray1OfDatumReferenceCompartment_HeaderFile

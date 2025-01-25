@@ -21,7 +21,6 @@
 #include <BRepApprox_ParLeastSquareOfMyGradientbisOfTheComputeLineOfApprox.hxx>
 #include <BRepApprox_ResConstraintOfMyGradientbisOfTheComputeLineOfApprox.hxx>
 #include <AppParCurves_MultiCurve.hxx>
- 
 
 #define MultiLine BRepApprox_TheMultiLineOfApprox
 #define MultiLine_hxx <BRepApprox_TheMultiLineOfApprox.hxx>
@@ -32,6 +31,6 @@
 #define ResolCons BRepApprox_ResConstraintOfMyGradientbisOfTheComputeLineOfApprox
 #define ResolCons_hxx <BRepApprox_ResConstraintOfMyGradientbisOfTheComputeLineOfApprox.hxx>
 #define AppParCurves_Function BRepApprox_ParFunctionOfMyGradientbisOfTheComputeLineOfApprox
-#define AppParCurves_Function_hxx <BRepApprox_ParFunctionOfMyGradientbisOfTheComputeLineOfApprox.hxx>
+#define AppParCurves_Function_hxx                                                                  \
+  <BRepApprox_ParFunctionOfMyGradientbisOfTheComputeLineOfApprox.hxx>
 #include "../AppParCurves/AppParCurves_Function.gxx"
-

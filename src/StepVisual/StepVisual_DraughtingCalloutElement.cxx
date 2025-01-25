@@ -20,36 +20,48 @@
 #include <StepVisual_AnnotationTextOccurrence.hxx>
 #include <StepVisual_TessellatedAnnotationOccurrence.hxx>
 
-//=======================================================================
-//function : StepVisual_DraughtingCalloutElement
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepVisual_DraughtingCalloutElement::StepVisual_DraughtingCalloutElement () {  }
+StepVisual_DraughtingCalloutElement::StepVisual_DraughtingCalloutElement() {}
 
-//=======================================================================
-//function : CaseNum
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer StepVisual_DraughtingCalloutElement::CaseNum(const Handle(Standard_Transient)& ent) const
+Standard_Integer StepVisual_DraughtingCalloutElement::CaseNum(
+  const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepVisual_AnnotationCurveOccurrence))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepVisual_AnnotationTextOccurrence))) return 2;
-  if (ent->IsKind(STANDARD_TYPE(StepVisual_TessellatedAnnotationOccurrence))) return 3;
-  if (ent->IsKind(STANDARD_TYPE(StepVisual_AnnotationFillAreaOccurrence))) return 4;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepVisual_AnnotationCurveOccurrence)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepVisual_AnnotationTextOccurrence)))
+    return 2;
+  if (ent->IsKind(STANDARD_TYPE(StepVisual_TessellatedAnnotationOccurrence)))
+    return 3;
+  if (ent->IsKind(STANDARD_TYPE(StepVisual_AnnotationFillAreaOccurrence)))
+    return 4;
   return 0;
 }
 
-Handle(StepVisual_AnnotationCurveOccurrence) StepVisual_DraughtingCalloutElement::AnnotationCurveOccurrence() const
-{  return GetCasted(StepVisual_AnnotationCurveOccurrence,Value());  }
+Handle(StepVisual_AnnotationCurveOccurrence) StepVisual_DraughtingCalloutElement::
+  AnnotationCurveOccurrence() const
+{
+  return GetCasted(StepVisual_AnnotationCurveOccurrence, Value());
+}
 
-Handle(StepVisual_TessellatedAnnotationOccurrence) StepVisual_DraughtingCalloutElement::TessellatedAnnotationOccurrence()  const
-{  return GetCasted(StepVisual_TessellatedAnnotationOccurrence,Value()); } 
+Handle(StepVisual_TessellatedAnnotationOccurrence) StepVisual_DraughtingCalloutElement::
+  TessellatedAnnotationOccurrence() const
+{
+  return GetCasted(StepVisual_TessellatedAnnotationOccurrence, Value());
+}
 
-Handle(StepVisual_AnnotationTextOccurrence) StepVisual_DraughtingCalloutElement::AnnotationTextOccurrence()  const
-{  return GetCasted(StepVisual_AnnotationTextOccurrence, Value()); }
+Handle(StepVisual_AnnotationTextOccurrence) StepVisual_DraughtingCalloutElement::
+  AnnotationTextOccurrence() const
+{
+  return GetCasted(StepVisual_AnnotationTextOccurrence, Value());
+}
 
-Handle(StepVisual_AnnotationFillAreaOccurrence) StepVisual_DraughtingCalloutElement::AnnotationFillAreaOccurrence()  const
-{ return GetCasted(StepVisual_AnnotationFillAreaOccurrence, Value()); }
+Handle(StepVisual_AnnotationFillAreaOccurrence) StepVisual_DraughtingCalloutElement::
+  AnnotationFillAreaOccurrence() const
+{
+  return GetCasted(StepVisual_AnnotationFillAreaOccurrence, Value());
+}

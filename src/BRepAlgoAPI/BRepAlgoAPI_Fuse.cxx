@@ -14,60 +14,47 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <TopoDS_Shape.hxx>
 
-//=======================================================================
-//function : BRepAlgoAPI_Fuse
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 BRepAlgoAPI_Fuse::BRepAlgoAPI_Fuse()
-:
-  BRepAlgoAPI_BooleanOperation()
+    : BRepAlgoAPI_BooleanOperation()
 {
-  myOperation=BOPAlgo_FUSE;
+  myOperation = BOPAlgo_FUSE;
 }
-//=======================================================================
-//function : BRepAlgoAPI_Fuse
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
 BRepAlgoAPI_Fuse::BRepAlgoAPI_Fuse(const BOPAlgo_PaveFiller& aPF)
-:
-  BRepAlgoAPI_BooleanOperation(aPF)
+    : BRepAlgoAPI_BooleanOperation(aPF)
 {
-  myOperation=BOPAlgo_FUSE;
+  myOperation = BOPAlgo_FUSE;
 }
-//=======================================================================
-//function : ~BRepAlgoAPI_Fuse
-//purpose  : 
-//=======================================================================
-BRepAlgoAPI_Fuse::~BRepAlgoAPI_Fuse()
-{
-}
-//=======================================================================
-//function : BRepAlgoAPI_Fuse
-//purpose  : 
-//=======================================================================
-BRepAlgoAPI_Fuse::BRepAlgoAPI_Fuse(const TopoDS_Shape& S1, 
-                                   const TopoDS_Shape& S2, 
+
+//=================================================================================================
+
+BRepAlgoAPI_Fuse::~BRepAlgoAPI_Fuse() {}
+
+//=================================================================================================
+
+BRepAlgoAPI_Fuse::BRepAlgoAPI_Fuse(const TopoDS_Shape&          S1,
+                                   const TopoDS_Shape&          S2,
                                    const Message_ProgressRange& theRange)
-: 
-  BRepAlgoAPI_BooleanOperation(S1, S2, BOPAlgo_FUSE)
+    : BRepAlgoAPI_BooleanOperation(S1, S2, BOPAlgo_FUSE)
 {
   Build(theRange);
 }
-//=======================================================================
-//function : BRepAlgoAPI_Fuse
-//purpose  : 
-//=======================================================================
-BRepAlgoAPI_Fuse::BRepAlgoAPI_Fuse(const TopoDS_Shape& S1, 
-                                   const TopoDS_Shape& S2,
-                                   const BOPAlgo_PaveFiller& aDSF,
+
+//=================================================================================================
+
+BRepAlgoAPI_Fuse::BRepAlgoAPI_Fuse(const TopoDS_Shape&          S1,
+                                   const TopoDS_Shape&          S2,
+                                   const BOPAlgo_PaveFiller&    aDSF,
                                    const Message_ProgressRange& theRange)
-: 
-  BRepAlgoAPI_BooleanOperation(S1, S2, aDSF, BOPAlgo_FUSE)
+    : BRepAlgoAPI_BooleanOperation(S1, S2, aDSF, BOPAlgo_FUSE)
 {
   Build(theRange);
 }

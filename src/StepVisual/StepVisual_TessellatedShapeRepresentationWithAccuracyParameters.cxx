@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -16,26 +16,23 @@
 
 #include <StepVisual_TessellatedShapeRepresentationWithAccuracyParameters.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedShapeRepresentationWithAccuracyParameters, StepVisual_TessellatedShapeRepresentation)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedShapeRepresentationWithAccuracyParameters,
+                           StepVisual_TessellatedShapeRepresentation)
 
-//=======================================================================
-//function : StepVisual_TessellatedShapeRepresentationWithAccuracyParameters
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepVisual_TessellatedShapeRepresentationWithAccuracyParameters::StepVisual_TessellatedShapeRepresentationWithAccuracyParameters ()
+StepVisual_TessellatedShapeRepresentationWithAccuracyParameters::
+  StepVisual_TessellatedShapeRepresentationWithAccuracyParameters()
 {
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedShapeRepresentationWithAccuracyParameters::Init (const Handle(TCollection_HAsciiString)& theRepresentation_Name,
-                                                                            const Handle(StepRepr_HArray1OfRepresentationItem)& theRepresentation_Items,
-                                                                            const Handle(StepRepr_RepresentationContext)& theRepresentation_ContextOfItems,
-                                                                            const Handle(TColStd_HArray1OfReal)& theTessellationAccuracyParameters)
+void StepVisual_TessellatedShapeRepresentationWithAccuracyParameters::Init(
+  const Handle(TCollection_HAsciiString)&             theRepresentation_Name,
+  const Handle(StepRepr_HArray1OfRepresentationItem)& theRepresentation_Items,
+  const Handle(StepRepr_RepresentationContext)&       theRepresentation_ContextOfItems,
+  const Handle(TColStd_HArray1OfReal)&                theTessellationAccuracyParameters)
 {
   StepVisual_TessellatedShapeRepresentation::Init(theRepresentation_Name,
                                                   theRepresentation_Items,
@@ -44,33 +41,27 @@ void StepVisual_TessellatedShapeRepresentationWithAccuracyParameters::Init (cons
   myTessellationAccuracyParameters = theTessellationAccuracyParameters;
 }
 
-//=======================================================================
-//function : TessellationAccuracyParameters
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TColStd_HArray1OfReal) StepVisual_TessellatedShapeRepresentationWithAccuracyParameters::TessellationAccuracyParameters () const
+Handle(TColStd_HArray1OfReal) StepVisual_TessellatedShapeRepresentationWithAccuracyParameters::
+  TessellationAccuracyParameters() const
 {
   return myTessellationAccuracyParameters;
 }
 
-//=======================================================================
-//function : SetTessellationAccuracyParameters
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedShapeRepresentationWithAccuracyParameters::SetTessellationAccuracyParameters(const Handle(TColStd_HArray1OfReal)& theTessellationAccuracyParameters)
+void StepVisual_TessellatedShapeRepresentationWithAccuracyParameters::
+  SetTessellationAccuracyParameters(
+    const Handle(TColStd_HArray1OfReal)& theTessellationAccuracyParameters)
 {
   myTessellationAccuracyParameters = theTessellationAccuracyParameters;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : NbTessellationAccuracyParameters
-//purpose  : 
-//=======================================================================
-
-Standard_Integer StepVisual_TessellatedShapeRepresentationWithAccuracyParameters::NbTessellationAccuracyParameters() const
+Standard_Integer StepVisual_TessellatedShapeRepresentationWithAccuracyParameters::
+  NbTessellationAccuracyParameters() const
 {
   if (myTessellationAccuracyParameters.IsNull())
   {
@@ -79,13 +70,10 @@ Standard_Integer StepVisual_TessellatedShapeRepresentationWithAccuracyParameters
   return myTessellationAccuracyParameters->Length();
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : TessellationAccuracyParametersValue
-//purpose  : 
-//=======================================================================
-
-const Standard_Real& StepVisual_TessellatedShapeRepresentationWithAccuracyParameters::TessellationAccuracyParametersValue(const Standard_Integer theNum) const
+const Standard_Real& StepVisual_TessellatedShapeRepresentationWithAccuracyParameters::
+  TessellationAccuracyParametersValue(const Standard_Integer theNum) const
 {
   return myTessellationAccuracyParameters->Value(theNum);
 }

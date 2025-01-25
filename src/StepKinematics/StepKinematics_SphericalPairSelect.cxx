@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:14 2020 
+// Created on : Sat May 02 12:41:14 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -18,40 +18,35 @@
 #include <StepKinematics_SphericalPair.hxx>
 #include <StepKinematics_SphericalPairWithPin.hxx>
 
-//=======================================================================
-//function : StepKinematics_SphericalPairSelect
-//purpose  :
-//=======================================================================
-StepKinematics_SphericalPairSelect::StepKinematics_SphericalPairSelect ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : CaseNum
-//purpose  :
-//=======================================================================
-Standard_Integer StepKinematics_SphericalPairSelect::CaseNum (const Handle(Standard_Transient)& ent) const
+StepKinematics_SphericalPairSelect::StepKinematics_SphericalPairSelect() {}
+
+//=================================================================================================
+
+Standard_Integer StepKinematics_SphericalPairSelect::CaseNum(
+  const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepKinematics_SphericalPair))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepKinematics_SphericalPairWithPin))) return 2;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepKinematics_SphericalPair)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepKinematics_SphericalPairWithPin)))
+    return 2;
   return 0;
 }
 
-//=======================================================================
-//function : SphericalPair
-//purpose  :
-//=======================================================================
-Handle(StepKinematics_SphericalPair) StepKinematics_SphericalPairSelect::SphericalPair () const
+//=================================================================================================
+
+Handle(StepKinematics_SphericalPair) StepKinematics_SphericalPairSelect::SphericalPair() const
 {
   return Handle(StepKinematics_SphericalPair)::DownCast(Value());
 }
 
-//=======================================================================
-//function : SphericalPairWithPin
-//purpose  :
-//=======================================================================
-Handle(StepKinematics_SphericalPairWithPin) StepKinematics_SphericalPairSelect::SphericalPairWithPin () const
+//=================================================================================================
+
+Handle(StepKinematics_SphericalPairWithPin) StepKinematics_SphericalPairSelect::
+  SphericalPairWithPin() const
 {
   return Handle(StepKinematics_SphericalPairWithPin)::DownCast(Value());
 }

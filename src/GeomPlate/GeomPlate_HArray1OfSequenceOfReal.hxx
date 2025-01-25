@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY1(GeomPlate_HArray1OfSequenceOfReal, GeomPlate_Array1OfSequenceOfReal)
 
-
 #endif

@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<StepGeom_SurfaceBoundary> StepGeom_Array1OfSurfaceBoundary;
 
-
 #endif

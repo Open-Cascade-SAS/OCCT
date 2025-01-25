@@ -15,42 +15,51 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : OriginalShape
-//purpose  : 
+// function : OriginalShape
+// purpose  :
 //=======================================================================
 
 inline void HLRTopoBRep_OutLiner::OriginalShape(const TopoDS_Shape& OriS)
-{ myOriginalShape = OriS; }
+{
+  myOriginalShape = OriS;
+}
 
 //=======================================================================
-//function : OriginalShape
-//purpose  : 
+// function : OriginalShape
+// purpose  :
 //=======================================================================
 
-inline TopoDS_Shape & HLRTopoBRep_OutLiner::OriginalShape()
-{ return myOriginalShape; }
+inline TopoDS_Shape& HLRTopoBRep_OutLiner::OriginalShape()
+{
+  return myOriginalShape;
+}
 
 //=======================================================================
-//function : OutLinedShape
-//purpose  : 
+// function : OutLinedShape
+// purpose  :
 //=======================================================================
 
 inline void HLRTopoBRep_OutLiner::OutLinedShape(const TopoDS_Shape& OutS)
-{ myOutLinedShape = OutS; }
+{
+  myOutLinedShape = OutS;
+}
 
 //=======================================================================
-//function : OutLinedShape
-//purpose  : 
+// function : OutLinedShape
+// purpose  :
 //=======================================================================
 
-inline TopoDS_Shape & HLRTopoBRep_OutLiner::OutLinedShape()
-{ return myOutLinedShape; }
+inline TopoDS_Shape& HLRTopoBRep_OutLiner::OutLinedShape()
+{
+  return myOutLinedShape;
+}
 
 //=======================================================================
-//function : DataStructure
-//purpose  : 
+// function : DataStructure
+// purpose  :
 //=======================================================================
 
-inline HLRTopoBRep_Data & HLRTopoBRep_OutLiner::DataStructure()
-{ return myDS; }
-
+inline HLRTopoBRep_Data& HLRTopoBRep_OutLiner::DataStructure()
+{
+  return myDS;
+}

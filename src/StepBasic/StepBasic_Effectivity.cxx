@@ -11,19 +11,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepBasic_Effectivity.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Effectivity,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Effectivity, Standard_Transient)
 
-StepBasic_Effectivity::StepBasic_Effectivity  ()    {  }
+StepBasic_Effectivity::StepBasic_Effectivity() {}
 
-void  StepBasic_Effectivity::Init (const Handle(TCollection_HAsciiString)& aid)
-{  theid = aid;  }
+void StepBasic_Effectivity::Init(const Handle(TCollection_HAsciiString)& aid)
+{
+  theid = aid;
+}
 
-Handle(TCollection_HAsciiString)  StepBasic_Effectivity::Id () const
-{  return theid;  }
+Handle(TCollection_HAsciiString) StepBasic_Effectivity::Id() const
+{
+  return theid;
+}
 
-void  StepBasic_Effectivity::SetId (const Handle(TCollection_HAsciiString)& aid)
-{  theid = aid;  }
+void StepBasic_Effectivity::SetId(const Handle(TCollection_HAsciiString)& aid)
+{
+  theid = aid;
+}

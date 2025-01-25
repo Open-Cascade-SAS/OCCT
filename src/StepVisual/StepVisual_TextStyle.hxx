@@ -24,53 +24,34 @@
 class TCollection_HAsciiString;
 class StepVisual_TextStyleForDefinedFont;
 
-
 class StepVisual_TextStyle;
 DEFINE_STANDARD_HANDLE(StepVisual_TextStyle, Standard_Transient)
-
 
 class StepVisual_TextStyle : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a TextStyle
   Standard_EXPORT StepVisual_TextStyle();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_TextStyleForDefinedFont)& aCharacterAppearance);
-  
-  Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&           aName,
+                            const Handle(StepVisual_TextStyleForDefinedFont)& aCharacterAppearance);
+
+  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
-  
-  Standard_EXPORT void SetCharacterAppearance (const Handle(StepVisual_TextStyleForDefinedFont)& aCharacterAppearance);
-  
+
+  Standard_EXPORT void SetCharacterAppearance(
+    const Handle(StepVisual_TextStyleForDefinedFont)& aCharacterAppearance);
+
   Standard_EXPORT Handle(StepVisual_TextStyleForDefinedFont) CharacterAppearance() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_TextStyle,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_TextStyle, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(TCollection_HAsciiString) name;
+  Handle(TCollection_HAsciiString)           name;
   Handle(StepVisual_TextStyleForDefinedFont) characterAppearance;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_TextStyle_HeaderFile

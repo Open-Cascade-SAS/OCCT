@@ -15,7 +15,7 @@
 
 //      	----------------------
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Sep  8 1997	Creation
 
 #include <TDF_AttributeDelta.hxx>
@@ -28,71 +28,57 @@
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDF_AttributeDelta,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(TDF_AttributeDelta, Standard_Transient)
 
-//=======================================================================
-//function : TDF_AttributeDelta
-//purpose  : 
-//=======================================================================
-TDF_AttributeDelta::TDF_AttributeDelta
-(const Handle(TDF_Attribute)& anAttribute)
-: myAttribute(anAttribute),
-  myLabel(anAttribute->Label())
-{}
+//=================================================================================================
 
+TDF_AttributeDelta::TDF_AttributeDelta(const Handle(TDF_Attribute)& anAttribute)
+    : myAttribute(anAttribute),
+      myLabel(anAttribute->Label())
+{
+}
 
-//=======================================================================
-//function : Label
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TDF_Label TDF_AttributeDelta::Label() const
-{ return myLabel; }
+{
+  return myLabel;
+}
 
-
-//=======================================================================
-//function : Attribute
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(TDF_Attribute) TDF_AttributeDelta::Attribute() const
-{ return myAttribute; }
+{
+  return myAttribute;
+}
 
-
-//=======================================================================
-//function : ID
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_GUID TDF_AttributeDelta::ID() const
-{ return myAttribute->ID(); }
+{
+  return myAttribute->ID();
+}
 
-
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_OStream& TDF_AttributeDelta::Dump(Standard_OStream& OS) const
 {
   static TCollection_AsciiString entry;
-  TDF_Tool::Entry(Label(),entry);
-  OS<<this->DynamicType()->Name()<<" at "<<entry;
-  OS<<" on "<<Attribute()->DynamicType()->Name();
+  TDF_Tool::Entry(Label(), entry);
+  OS << this->DynamicType()->Name() << " at " << entry;
+  OS << " on " << Attribute()->DynamicType()->Name();
   return OS;
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void TDF_AttributeDelta::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+//=================================================================================================
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAttribute.get())
+void TDF_AttributeDelta::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myAttribute.get())
 
   TCollection_AsciiString aStrForTDF_Label;
-  TDF_Tool::Entry (myLabel, aStrForTDF_Label);
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aStrForTDF_Label)
+  TDF_Tool::Entry(myLabel, aStrForTDF_Label);
+  OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aStrForTDF_Label)
 }

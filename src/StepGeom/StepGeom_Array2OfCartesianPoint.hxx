@@ -22,5 +22,4 @@
 
 typedef NCollection_Array2<Handle(StepGeom_CartesianPoint)> StepGeom_Array2OfCartesianPoint;
 
-
 #endif

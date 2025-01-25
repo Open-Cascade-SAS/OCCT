@@ -17,12 +17,8 @@
 
 #include <StepRepr_MaterialProperty.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_MaterialProperty,StepRepr_PropertyDefinition)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_MaterialProperty, StepRepr_PropertyDefinition)
 
-//=======================================================================
-//function : StepRepr_MaterialProperty
-//purpose  : 
-//=======================================================================
-StepRepr_MaterialProperty::StepRepr_MaterialProperty ()
-{
-}
+//=================================================================================================
+
+StepRepr_MaterialProperty::StepRepr_MaterialProperty() {}

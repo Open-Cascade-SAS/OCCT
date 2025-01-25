@@ -16,99 +16,78 @@
 #include <Standard_OutOfMemory.hxx>
 
 #ifdef min
-#undef min
+  #undef min
 #endif
 
 #include <algorithm>
 #include <stdlib.h>
 
-IMPLEMENT_STANDARD_RTTIEXT(Standard_OutOfMemory,Standard_ProgramError)
+IMPLEMENT_STANDARD_RTTIEXT(Standard_OutOfMemory, Standard_ProgramError)
 
-//=======================================================================
-//function : Standard_OutOfMemory
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
 Standard_OutOfMemory::Standard_OutOfMemory(const Standard_CString theMessage)
 {
   // call explicitly own method (non-virtual call)
-  Standard_OutOfMemory::SetMessageString (theMessage);
+  Standard_OutOfMemory::SetMessageString(theMessage);
 }
 
-//=======================================================================
-//function : GetMessageString
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
 Standard_CString Standard_OutOfMemory::GetMessageString() const
 {
   return myBuffer;
 }
-  
-//=======================================================================
-//function : SetMessageString
-//purpose  :
-//=======================================================================
 
-void Standard_OutOfMemory::SetMessageString (const Standard_CString theMessage)
+//=================================================================================================
+
+void Standard_OutOfMemory::SetMessageString(const Standard_CString theMessage)
 {
   // restrict length of the message by buffer size
-  size_t n = (theMessage ? std::min (strlen (theMessage), sizeof(myBuffer) - 1) : 0);
+  size_t n = (theMessage ? std::min(strlen(theMessage), sizeof(myBuffer) - 1) : 0);
 
   // first set line end symbol to be safe in case of concurrent call
   myBuffer[n] = '\0';
   if (n > 0)
-    memcpy (myBuffer, theMessage, n);
+    memcpy(myBuffer, theMessage, n);
 }
 
-//=======================================================================
-//function : Raise
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
 void Standard_OutOfMemory::Raise(const Standard_CString theMessage)
 {
   NewInstance(theMessage)->Reraise();
 }
 
-//=======================================================================
-//function : Raise
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
 void Standard_OutOfMemory::Raise(Standard_SStream& theMessage)
 {
   NewInstance(theMessage.str().c_str())->Reraise();
 }
 
-//=======================================================================
-//function : NewInstance
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
 // global instance must be allocated at load-time
 static Handle(Standard_OutOfMemory) anOutOfMemInstance = new Standard_OutOfMemory;
 
-Handle(Standard_OutOfMemory) Standard_OutOfMemory::NewInstance (Standard_CString theMessage)
+Handle(Standard_OutOfMemory) Standard_OutOfMemory::NewInstance(Standard_CString theMessage)
 {
-  anOutOfMemInstance->SetMessageString (theMessage);
+  anOutOfMemInstance->SetMessageString(theMessage);
   return anOutOfMemInstance;
 }
 
-Handle(Standard_OutOfMemory) Standard_OutOfMemory::NewInstance (Standard_CString theMessage,
-                                                                Standard_CString theStackTrace)
+Handle(Standard_OutOfMemory) Standard_OutOfMemory::NewInstance(Standard_CString theMessage,
+                                                               Standard_CString theStackTrace)
 {
-  anOutOfMemInstance->SetMessageString (theMessage);
-  anOutOfMemInstance->SetStackString (theStackTrace);
+  anOutOfMemInstance->SetMessageString(theMessage);
+  anOutOfMemInstance->SetStackString(theStackTrace);
   return anOutOfMemInstance;
 }
 
-//=======================================================================
-//function : Throw
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
-void Standard_OutOfMemory::Throw () const
+void Standard_OutOfMemory::Throw() const
 {
   throw *this;
 }

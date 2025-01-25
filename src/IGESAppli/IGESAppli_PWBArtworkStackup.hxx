@@ -24,7 +24,6 @@
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 
-
 class IGESAppli_PWBArtworkStackup;
 DEFINE_STANDARD_HANDLE(IGESAppli_PWBArtworkStackup, IGESData_IGESEntity)
 
@@ -40,54 +39,37 @@ class IGESAppli_PWBArtworkStackup : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESAppli_PWBArtworkStackup();
-  
+
   //! This method is used to set the fields of the class
   //! PWBArtworkStackup
   //! - nbPropVal    : number of property values
   //! - anArtIdent   : Artwork Stackup Identification
   //! - allLevelNums : Level Numbers
-  Standard_EXPORT void Init (const Standard_Integer nbPropVal, const Handle(TCollection_HAsciiString)& anArtIdent, const Handle(TColStd_HArray1OfInteger)& allLevelNums);
-  
+  Standard_EXPORT void Init(const Standard_Integer                  nbPropVal,
+                            const Handle(TCollection_HAsciiString)& anArtIdent,
+                            const Handle(TColStd_HArray1OfInteger)& allLevelNums);
+
   //! returns number of property values
   Standard_EXPORT Standard_Integer NbPropertyValues() const;
-  
+
   //! returns Artwork Stackup Identification
   Standard_EXPORT Handle(TCollection_HAsciiString) Identification() const;
-  
+
   //! returns total number of Level Numbers
   Standard_EXPORT Standard_Integer NbLevelNumbers() const;
-  
+
   //! returns Level Number
   //! raises exception if Index <= 0 or Index > NbLevelNumbers
-  Standard_EXPORT Standard_Integer LevelNumber (const Standard_Integer Index) const;
+  Standard_EXPORT Standard_Integer LevelNumber(const Standard_Integer Index) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESAppli_PWBArtworkStackup,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESAppli_PWBArtworkStackup, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-  Standard_Integer theNbPropertyValues;
+  Standard_Integer                 theNbPropertyValues;
   Handle(TCollection_HAsciiString) theArtworkStackupIdent;
   Handle(TColStd_HArray1OfInteger) theLevelNumbers;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESAppli_PWBArtworkStackup_HeaderFile

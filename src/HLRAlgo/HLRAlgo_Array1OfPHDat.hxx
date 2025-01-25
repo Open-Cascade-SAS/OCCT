@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<HLRAlgo_PolyHidingData> HLRAlgo_Array1OfPHDat;
 
-
 #endif

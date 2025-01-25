@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(Geom2d_BezierCurve)> TColGeom2d_Array1OfBezierCurve;
 
-
 #endif

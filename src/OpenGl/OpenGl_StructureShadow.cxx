@@ -18,25 +18,23 @@
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Standard_ProgramError.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_StructureShadow,OpenGl_Structure)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_StructureShadow, OpenGl_Structure)
 
-//=======================================================================
-//function : OpenGl_StructureShadow
-//purpose  :
-//=======================================================================
-OpenGl_StructureShadow::OpenGl_StructureShadow (const Handle(Graphic3d_StructureManager)& theManager,
-                                                const Handle(OpenGl_Structure)&           theStructure)
-: OpenGl_Structure (theManager)
+//=================================================================================================
+
+OpenGl_StructureShadow::OpenGl_StructureShadow(const Handle(Graphic3d_StructureManager)& theManager,
+                                               const Handle(OpenGl_Structure)& theStructure)
+    : OpenGl_Structure(theManager)
 {
-  Handle(OpenGl_StructureShadow) aShadow = Handle(OpenGl_StructureShadow)::DownCast (theStructure);
-  myParent = aShadow.IsNull() ? theStructure : aShadow->myParent;
+  Handle(OpenGl_StructureShadow) aShadow = Handle(OpenGl_StructureShadow)::DownCast(theStructure);
+  myParent                               = aShadow.IsNull() ? theStructure : aShadow->myParent;
 
-  IsInfinite    = myParent->IsInfinite;
-  myBndBox      = myParent->BoundingBox();
+  IsInfinite = myParent->IsInfinite;
+  myBndBox   = myParent->BoundingBox();
 
-  OpenGl_Structure::SetTransformation (myParent->Transformation());
-  myInstancedStructure = const_cast<OpenGl_Structure*> (myParent->InstancedStructure());
-  myTrsfPers = myParent->TransformPersistence();
+  OpenGl_Structure::SetTransformation(myParent->Transformation());
+  myInstancedStructure = const_cast<OpenGl_Structure*>(myParent->InstancedStructure());
+  myTrsfPers           = myParent->TransformPersistence();
 
   // reuse instanced structure API
   myInstancedStructure = myParent.operator->();
@@ -46,7 +44,7 @@ OpenGl_StructureShadow::OpenGl_StructureShadow (const Handle(Graphic3d_Structure
 // function : Connect
 // purpose  :
 // =======================================================================
-void OpenGl_StructureShadow::Connect (Graphic3d_CStructure& )
+void OpenGl_StructureShadow::Connect(Graphic3d_CStructure&)
 {
   throw Standard_ProgramError("Error! OpenGl_StructureShadow::Connect() should not be called!");
 }
@@ -55,7 +53,7 @@ void OpenGl_StructureShadow::Connect (Graphic3d_CStructure& )
 // function : Disconnect
 // purpose  :
 // =======================================================================
-void OpenGl_StructureShadow::Disconnect (Graphic3d_CStructure& )
+void OpenGl_StructureShadow::Disconnect(Graphic3d_CStructure&)
 {
   throw Standard_ProgramError("Error! OpenGl_StructureShadow::Disconnect() should not be called!");
 }

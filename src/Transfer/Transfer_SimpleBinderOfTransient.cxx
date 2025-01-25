@@ -11,60 +11,64 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_TransferFailure.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Transfer_SimpleBinderOfTransient,Transfer_Binder)
+IMPLEMENT_STANDARD_RTTIEXT(Transfer_SimpleBinderOfTransient, Transfer_Binder)
 
 //  "Handle(Standard_Transient)" : la classe de base pour le Resultat
-Transfer_SimpleBinderOfTransient::Transfer_SimpleBinderOfTransient () { }
-
+Transfer_SimpleBinderOfTransient::Transfer_SimpleBinderOfTransient() {}
 
 //    Standard_Boolean  Transfer_SimpleBinderOfTransient::IsMultiple() const
 //      {  return Standard_False;  }
 
-
-    Handle(Standard_Type)  Transfer_SimpleBinderOfTransient::ResultType () const
+Handle(Standard_Type) Transfer_SimpleBinderOfTransient::ResultType() const
 {
-  if (!HasResult() || theres.IsNull()) return STANDARD_TYPE(Standard_Transient);
+  if (!HasResult() || theres.IsNull())
+    return STANDARD_TYPE(Standard_Transient);
   return Result()->DynamicType();
 }
 
-    Standard_CString  Transfer_SimpleBinderOfTransient::ResultTypeName () const
+Standard_CString Transfer_SimpleBinderOfTransient::ResultTypeName() const
 {
-  if (!HasResult() || theres.IsNull()) return "(void)";
+  if (!HasResult() || theres.IsNull())
+    return "(void)";
   return Result()->DynamicType()->Name();
 }
 
-
-    void  Transfer_SimpleBinderOfTransient::SetResult
-  (const Handle(Standard_Transient)& res)
+void Transfer_SimpleBinderOfTransient::SetResult(const Handle(Standard_Transient)& res)
 {
   SetResultPresent();
   theres = res;
 }
 
-
-    const Handle(Standard_Transient)&  Transfer_SimpleBinderOfTransient::Result () const
-      {  return theres;  }
-
-    Standard_Boolean  Transfer_SimpleBinderOfTransient::GetTypedResult
-  (const Handle(Transfer_Binder)& bnd, const Handle(Standard_Type)& atype,
-   Handle(Standard_Transient)& res)
+const Handle(Standard_Transient)& Transfer_SimpleBinderOfTransient::Result() const
 {
-  if (atype.IsNull()) return Standard_False;
+  return theres;
+}
+
+Standard_Boolean Transfer_SimpleBinderOfTransient::GetTypedResult(
+  const Handle(Transfer_Binder)& bnd,
+  const Handle(Standard_Type)&   atype,
+  Handle(Standard_Transient)&    res)
+{
+  if (atype.IsNull())
+    return Standard_False;
   Handle(Transfer_Binder) bn = bnd;
-  while (!bn.IsNull()) {
+  while (!bn.IsNull())
+  {
     Handle(Transfer_SimpleBinderOfTransient) trb =
       Handle(Transfer_SimpleBinderOfTransient)::DownCast(bn);
     bn = bn->NextResult();
-    if (trb.IsNull()) continue;
+    if (trb.IsNull())
+      continue;
     const Handle(Standard_Transient)& rs = trb->Result();
-    if (rs.IsNull()) continue;
-    if (!rs->IsKind(atype)) continue;
+    if (rs.IsNull())
+      continue;
+    if (!rs->IsKind(atype))
+      continue;
     res = rs;
     return Standard_True;
   }

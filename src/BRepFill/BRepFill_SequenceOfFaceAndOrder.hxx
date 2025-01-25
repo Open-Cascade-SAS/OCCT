@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<BRepFill_FaceAndOrder> BRepFill_SequenceOfFaceAndOrder;
 
-
 #endif

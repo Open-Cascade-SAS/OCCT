@@ -19,45 +19,34 @@
 #include <StepAP203_CcDesignCertification.hxx>
 #include <StepBasic_Certification.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignCertification,StepBasic_CertificationAssignment)
+IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignCertification, StepBasic_CertificationAssignment)
 
-//=======================================================================
-//function : StepAP203_CcDesignCertification
-//purpose  : 
-//=======================================================================
-StepAP203_CcDesignCertification::StepAP203_CcDesignCertification ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepAP203_CcDesignCertification::StepAP203_CcDesignCertification() {}
 
-void StepAP203_CcDesignCertification::Init (const Handle(StepBasic_Certification) &aCertificationAssignment_AssignedCertification,
-                                            const Handle(StepAP203_HArray1OfCertifiedItem) &aItems)
+//=================================================================================================
+
+void StepAP203_CcDesignCertification::Init(
+  const Handle(StepBasic_Certification)&          aCertificationAssignment_AssignedCertification,
+  const Handle(StepAP203_HArray1OfCertifiedItem)& aItems)
 {
   StepBasic_CertificationAssignment::Init(aCertificationAssignment_AssignedCertification);
 
   theItems = aItems;
 }
 
-//=======================================================================
-//function : Items
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepAP203_HArray1OfCertifiedItem) StepAP203_CcDesignCertification::Items () const
+Handle(StepAP203_HArray1OfCertifiedItem) StepAP203_CcDesignCertification::Items() const
 {
   return theItems;
 }
 
-//=======================================================================
-//function : SetItems
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepAP203_CcDesignCertification::SetItems (const Handle(StepAP203_HArray1OfCertifiedItem) &aItems)
+void StepAP203_CcDesignCertification::SetItems(
+  const Handle(StepAP203_HArray1OfCertifiedItem)& aItems)
 {
   theItems = aItems;
 }

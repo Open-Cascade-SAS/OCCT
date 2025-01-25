@@ -28,10 +28,10 @@
 //! The parameters given to limit the surface are out of its bounds.
 enum BRepBuilderAPI_ShellError
 {
-BRepBuilderAPI_ShellDone,
-BRepBuilderAPI_EmptyShell,
-BRepBuilderAPI_DisconnectedShell,
-BRepBuilderAPI_ShellParametersOutOfRange
+  BRepBuilderAPI_ShellDone,
+  BRepBuilderAPI_EmptyShell,
+  BRepBuilderAPI_DisconnectedShell,
+  BRepBuilderAPI_ShellParametersOutOfRange
 };
 
 #endif // _BRepBuilderAPI_ShellError_HeaderFile

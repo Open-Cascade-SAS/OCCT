@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Poly_Triangle> Poly_Array1OfTriangle;
 
-
 #endif

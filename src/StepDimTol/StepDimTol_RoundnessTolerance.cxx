@@ -17,12 +17,8 @@
 
 #include <StepDimTol_RoundnessTolerance.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_RoundnessTolerance,StepDimTol_GeometricTolerance)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_RoundnessTolerance, StepDimTol_GeometricTolerance)
 
-//=======================================================================
-//function : StepDimTol_RoundnessTolerance
-//purpose  : 
-//=======================================================================
-StepDimTol_RoundnessTolerance::StepDimTol_RoundnessTolerance ()
-{
-}
+//=================================================================================================
+
+StepDimTol_RoundnessTolerance::StepDimTol_RoundnessTolerance() {}

@@ -21,7 +21,6 @@
 
 #include <IGESData_IGESEntity.hxx>
 
-
 class IGESData_ColorEntity;
 DEFINE_STANDARD_HANDLE(IGESData_ColorEntity, IGESData_IGESEntity)
 
@@ -31,29 +30,10 @@ class IGESData_ColorEntity : public IGESData_IGESEntity
 {
 
 public:
-
-
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESData_ColorEntity,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESData_ColorEntity, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESData_ColorEntity_HeaderFile

@@ -22,5 +22,4 @@
 
 typedef NCollection_IndexedMap<Handle(Expr_NamedUnknown)> Expr_MapOfNamedUnknown;
 
-
 #endif

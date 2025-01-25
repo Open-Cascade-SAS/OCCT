@@ -24,7 +24,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
 #include <LProp3d_CurveTool.hxx>
- 
 
 #define Curve Handle(Adaptor3d_Curve)
 #define Curve_hxx <Adaptor3d_Curve.hxx>
@@ -39,4 +38,3 @@
 #define LProp_CLProps LProp3d_CLProps
 #define LProp_CLProps_hxx <LProp3d_CLProps.hxx>
 #include "../LProp/LProp_CLProps.gxx"
-

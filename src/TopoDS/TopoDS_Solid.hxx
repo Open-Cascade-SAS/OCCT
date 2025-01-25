@@ -27,10 +27,9 @@
 //! - has an orientation for the underlying shape, in
 //! terms of its geometry (as opposed to orientation in
 //! relation to other shapes).
-class TopoDS_Solid  : public TopoDS_Shape
+class TopoDS_Solid : public TopoDS_Shape
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Constructs an Undefined Solid.
@@ -39,14 +38,14 @@ public:
 
 namespace std
 {
-  template <>
-  struct hash<TopoDS_Solid>
+template <>
+struct hash<TopoDS_Solid>
+{
+  size_t operator()(const TopoDS_Solid& theShape) const
   {
-    size_t operator()(const TopoDS_Solid& theShape) const
-    {
-      return std::hash<TopoDS_Shape>{}(theShape);
-    }
-  };
-}
+    return std::hash<TopoDS_Shape>{}(theShape);
+  }
+};
+} // namespace std
 
 #endif // _TopoDS_Solid_HeaderFile

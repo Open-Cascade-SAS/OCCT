@@ -21,43 +21,46 @@
 #include <StepRepr_Apex.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
 
-//=======================================================================
-//function : RWStepRepr_RWApex
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-RWStepRepr_RWApex::RWStepRepr_RWApex ()
-{
-}
+RWStepRepr_RWApex::RWStepRepr_RWApex() {}
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepRepr_RWApex::ReadStep (const Handle(StepData_StepReaderData)& data,
-                                  const Standard_Integer num,
-                                  Handle(Interface_Check)& ach,
-                                  const Handle(StepRepr_Apex) &ent) const
+void RWStepRepr_RWApex::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                 const Standard_Integer                 num,
+                                 Handle(Interface_Check)&               ach,
+                                 const Handle(StepRepr_Apex)&           ent) const
 {
   // Check number of parameters
-  if ( ! data->CheckNbParams(num,4,ach,"apex") ) return;
+  if (!data->CheckNbParams(num, 4, ach, "apex"))
+    return;
 
   // Inherited fields of ShapeAspect
 
   Handle(TCollection_HAsciiString) aShapeAspect_Name;
-  data->ReadString (num, 1, "shape_aspect.name", ach, aShapeAspect_Name);
+  data->ReadString(num, 1, "shape_aspect.name", ach, aShapeAspect_Name);
 
   Handle(TCollection_HAsciiString) aShapeAspect_Description;
-  if ( data->IsParamDefined (num,2) ) {
-    data->ReadString (num, 2, "shape_aspect.description", ach, aShapeAspect_Description);
+  if (data->IsParamDefined(num, 2))
+  {
+    data->ReadString(num, 2, "shape_aspect.description", ach, aShapeAspect_Description);
   }
 
   Handle(StepRepr_ProductDefinitionShape) aShapeAspect_OfShape;
-  data->ReadEntity (num, 3, "shape_aspect.of_shape", ach, STANDARD_TYPE(StepRepr_ProductDefinitionShape), aShapeAspect_OfShape);
+  data->ReadEntity(num,
+                   3,
+                   "shape_aspect.of_shape",
+                   ach,
+                   STANDARD_TYPE(StepRepr_ProductDefinitionShape),
+                   aShapeAspect_OfShape);
 
   StepData_Logical aShapeAspect_ProductDefinitional;
-  data->ReadLogical (num, 4, "shape_aspect.product_definitional", ach, aShapeAspect_ProductDefinitional);
+  data->ReadLogical(num,
+                    4,
+                    "shape_aspect.product_definitional",
+                    ach,
+                    aShapeAspect_ProductDefinitional);
 
   // Initialize entity
   ent->Init(aShapeAspect_Name,
@@ -66,36 +69,29 @@ void RWStepRepr_RWApex::ReadStep (const Handle(StepData_StepReaderData)& data,
             aShapeAspect_ProductDefinitional);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepRepr_RWApex::WriteStep (StepData_StepWriter& SW,
-                                   const Handle(StepRepr_Apex) &ent) const
+void RWStepRepr_RWApex::WriteStep(StepData_StepWriter& SW, const Handle(StepRepr_Apex)& ent) const
 {
 
   // Inherited fields of ShapeAspect
 
-  SW.Send (ent->Name());
+  SW.Send(ent->Name());
 
-  SW.Send (ent->Description());
+  SW.Send(ent->Description());
 
-  SW.Send (ent->OfShape());
+  SW.Send(ent->OfShape());
 
-  SW.SendLogical (ent->ProductDefinitional());
+  SW.SendLogical(ent->ProductDefinitional());
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepRepr_RWApex::Share (const Handle(StepRepr_Apex) &ent,
-                               Interface_EntityIterator& iter) const
+void RWStepRepr_RWApex::Share(const Handle(StepRepr_Apex)& ent,
+                              Interface_EntityIterator&    iter) const
 {
 
   // Inherited fields of ShapeAspect
 
-  iter.AddItem (ent->OfShape());
+  iter.AddItem(ent->OfShape());
 }

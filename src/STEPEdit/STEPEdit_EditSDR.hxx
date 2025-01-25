@@ -28,7 +28,6 @@ class TCollection_HAsciiString;
 class Standard_Transient;
 class Interface_InterfaceModel;
 
-
 class STEPEdit_EditSDR;
 DEFINE_STANDARD_HANDLE(STEPEdit_EditSDR, IFSelect_Editor)
 
@@ -38,41 +37,31 @@ class STEPEdit_EditSDR : public IFSelect_Editor
 {
 
 public:
-
-  
   Standard_EXPORT STEPEdit_EditSDR();
-  
+
   Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
-  
-  Standard_EXPORT Standard_Boolean Recognize (const Handle(IFSelect_EditForm)& form) const Standard_OVERRIDE;
-  
-  Standard_EXPORT Handle(TCollection_HAsciiString) StringValue (const Handle(IFSelect_EditForm)& form, const Standard_Integer num) const Standard_OVERRIDE;
-  
-  Standard_EXPORT Standard_Boolean Apply (const Handle(IFSelect_EditForm)& form, const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
-  
-  Standard_EXPORT Standard_Boolean Load (const Handle(IFSelect_EditForm)& form, const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
 
+  Standard_EXPORT Standard_Boolean
+    Recognize(const Handle(IFSelect_EditForm)& form) const Standard_OVERRIDE;
 
+  Standard_EXPORT Handle(TCollection_HAsciiString) StringValue(
+    const Handle(IFSelect_EditForm)& form,
+    const Standard_Integer           num) const Standard_OVERRIDE;
 
+  Standard_EXPORT Standard_Boolean
+    Apply(const Handle(IFSelect_EditForm)&        form,
+          const Handle(Standard_Transient)&       ent,
+          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(STEPEdit_EditSDR,IFSelect_Editor)
+  Standard_EXPORT Standard_Boolean
+    Load(const Handle(IFSelect_EditForm)&        form,
+         const Handle(Standard_Transient)&       ent,
+         const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+
+  DEFINE_STANDARD_RTTIEXT(STEPEdit_EditSDR, IFSelect_Editor)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _STEPEdit_EditSDR_HeaderFile

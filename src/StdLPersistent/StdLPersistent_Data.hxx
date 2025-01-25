@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _StdLPersistent_Data_HeaderFile
 #define _StdLPersistent_Data_HeaderFile
 
@@ -19,28 +18,29 @@
 
 class TDF_Data;
 
-
 class StdLPersistent_Data : public StdObjMgt_Persistent
 {
 public:
   //! Empty constructor.
   StdLPersistent_Data()
-  : myVersion(0)
+      : myVersion(0)
   {
   }
+
   //! Read persistent data from a file.
-  Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
+  Standard_EXPORT virtual void Read(StdObjMgt_ReadData& theReadData);
   //! Write persistent data to a file.
-  Standard_EXPORT virtual void Write (StdObjMgt_WriteData& theWriteData) const;
+  Standard_EXPORT virtual void Write(StdObjMgt_WriteData& theWriteData) const;
+
   //! Gets persistent child objects
   virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
   {
     theChildren.Append(myLabels);
     theChildren.Append(myAttributes);
   }
+
   //! Returns persistent type name
-  virtual Standard_CString PName() const
-    { return "PDF_Data"; }
+  virtual Standard_CString PName() const { return "PDF_Data"; }
 
   //! Import transient data from the persistent data.
   Standard_EXPORT Handle(TDF_Data) Import() const;

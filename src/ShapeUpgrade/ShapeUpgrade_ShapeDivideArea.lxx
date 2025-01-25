@@ -11,30 +11,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline Standard_Real& ShapeUpgrade_ShapeDivideArea::MaxArea() 
+inline Standard_Real& ShapeUpgrade_ShapeDivideArea::MaxArea()
 {
   return myMaxArea;
 }
 
-inline Standard_Integer& ShapeUpgrade_ShapeDivideArea::NbParts() 
+inline Standard_Integer& ShapeUpgrade_ShapeDivideArea::NbParts()
 {
   return myNbParts;
 }
 
-inline void ShapeUpgrade_ShapeDivideArea::SetSplittingByNumber(const Standard_Boolean theIsSplittingByNumber)
+inline void ShapeUpgrade_ShapeDivideArea::SetSplittingByNumber(
+  const Standard_Boolean theIsSplittingByNumber)
 {
   myIsSplittingByNumber = theIsSplittingByNumber;
   if (myIsSplittingByNumber)
     myMaxArea = -1;
 }
- 
+
 inline void ShapeUpgrade_ShapeDivideArea::SetNumbersUVSplits(const Standard_Integer theNbUsplits,
                                                              const Standard_Integer theNbVsplits)
 {
   myIsSplittingByNumber = Standard_True;
-  myMaxArea = -1;
-  myUnbSplit = theNbUsplits;
-  myVnbSplit = theNbVsplits;
+  myMaxArea             = -1;
+  myUnbSplit            = theNbUsplits;
+  myVnbSplit            = theNbVsplits;
   if (myUnbSplit > 0 && myVnbSplit > 0)
-    myNbParts  = myUnbSplit * myVnbSplit;
+    myNbParts = myUnbSplit * myVnbSplit;
 }

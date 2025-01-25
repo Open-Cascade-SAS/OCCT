@@ -21,5 +21,4 @@
 
 typedef BlendFunc_ConstRadInv BRepBlend_ConstRadInv;
 
-
 #endif // _BRepBlend_ConstRadInv_HeaderFile

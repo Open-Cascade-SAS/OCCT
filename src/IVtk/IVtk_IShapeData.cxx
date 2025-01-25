@@ -1,7 +1,7 @@
 // Created on: 2011-10-12
 // Created by: Roman KOZLOV
-// Copyright (c) 2011-2014 OPEN CASCADE SAS 
-// 
+// Copyright (c) 2011-2014 OPEN CASCADE SAS
+//
 // This file is part of Open CASCADE Technology software library.
 //
 // This library is free software; you can redistribute it and/or modify it under
@@ -15,8 +15,6 @@
 
 #include <IVtk_IShapeData.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IVtk_IShapeData,IVtk_Interface)
+IMPLEMENT_STANDARD_RTTIEXT(IVtk_IShapeData, IVtk_Interface)
 
 // Handle implementation
-
-

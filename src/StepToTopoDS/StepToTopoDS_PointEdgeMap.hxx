@@ -21,8 +21,8 @@
 #include <TopoDS_Edge.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<StepToTopoDS_PointPair,TopoDS_Edge> StepToTopoDS_PointEdgeMap;
-typedef NCollection_DataMap<StepToTopoDS_PointPair,TopoDS_Edge>::Iterator StepToTopoDS_DataMapIteratorOfPointEdgeMap;
-
+typedef NCollection_DataMap<StepToTopoDS_PointPair, TopoDS_Edge> StepToTopoDS_PointEdgeMap;
+typedef NCollection_DataMap<StepToTopoDS_PointPair, TopoDS_Edge>::Iterator
+  StepToTopoDS_DataMapIteratorOfPointEdgeMap;
 
 #endif

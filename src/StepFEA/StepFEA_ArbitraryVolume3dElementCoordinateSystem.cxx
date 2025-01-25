@@ -19,45 +19,38 @@
 #include <StepFEA_FeaAxis2Placement3d.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_ArbitraryVolume3dElementCoordinateSystem,StepFEA_FeaRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_ArbitraryVolume3dElementCoordinateSystem,
+                           StepFEA_FeaRepresentationItem)
 
-//=======================================================================
-//function : StepFEA_ArbitraryVolume3dElementCoordinateSystem
-//purpose  : 
-//=======================================================================
-StepFEA_ArbitraryVolume3dElementCoordinateSystem::StepFEA_ArbitraryVolume3dElementCoordinateSystem ()
+//=================================================================================================
+
+StepFEA_ArbitraryVolume3dElementCoordinateSystem::StepFEA_ArbitraryVolume3dElementCoordinateSystem()
 {
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_ArbitraryVolume3dElementCoordinateSystem::Init (const Handle(TCollection_HAsciiString) &aRepresentationItem_Name,
-                                                             const Handle(StepFEA_FeaAxis2Placement3d) &aCoordinateSystem)
+void StepFEA_ArbitraryVolume3dElementCoordinateSystem::Init(
+  const Handle(TCollection_HAsciiString)&    aRepresentationItem_Name,
+  const Handle(StepFEA_FeaAxis2Placement3d)& aCoordinateSystem)
 {
   StepFEA_FeaRepresentationItem::Init(aRepresentationItem_Name);
 
   theCoordinateSystem = aCoordinateSystem;
 }
 
-//=======================================================================
-//function : CoordinateSystem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepFEA_FeaAxis2Placement3d) StepFEA_ArbitraryVolume3dElementCoordinateSystem::CoordinateSystem () const
+Handle(StepFEA_FeaAxis2Placement3d) StepFEA_ArbitraryVolume3dElementCoordinateSystem::
+  CoordinateSystem() const
 {
   return theCoordinateSystem;
 }
 
-//=======================================================================
-//function : SetCoordinateSystem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_ArbitraryVolume3dElementCoordinateSystem::SetCoordinateSystem (const Handle(StepFEA_FeaAxis2Placement3d) &aCoordinateSystem)
+void StepFEA_ArbitraryVolume3dElementCoordinateSystem::SetCoordinateSystem(
+  const Handle(StepFEA_FeaAxis2Placement3d)& aCoordinateSystem)
 {
   theCoordinateSystem = aCoordinateSystem;
 }

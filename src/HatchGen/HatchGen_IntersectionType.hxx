@@ -21,10 +21,10 @@
 //! element.
 enum HatchGen_IntersectionType
 {
-HatchGen_TRUE,
-HatchGen_TOUCH,
-HatchGen_TANGENT,
-HatchGen_UNDETERMINED
+  HatchGen_TRUE,
+  HatchGen_TOUCH,
+  HatchGen_TANGENT,
+  HatchGen_UNDETERMINED
 };
 
 #endif // _HatchGen_IntersectionType_HeaderFile

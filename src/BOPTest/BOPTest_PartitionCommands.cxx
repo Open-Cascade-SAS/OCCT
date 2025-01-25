@@ -12,7 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPAlgo_BOP.hxx>
 #include <BOPAlgo_Builder.hxx>
 #include <BOPAlgo_Operation.hxx>
@@ -33,109 +32,130 @@
 #include <string.h>
 //
 //
-static Standard_Integer bfillds  (Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bbuild   (Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bbop     (Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bsplit   (Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer buildbop (Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer bfillds(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer bbuild(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer bbop(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer bsplit(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer buildbop(Draw_Interpretor&, Standard_Integer, const char**);
 
-//=======================================================================
-//function : PartitionCommands
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BOPTest::PartitionCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
-  if (done) return;
+  if (done)
+    return;
   done = Standard_True;
   // Chapter's name
   const char* g = "BOPTest commands";
-  // Commands  
-  theCommands.Add("bfillds", "Performs intersection of the arguments added for the operation by baddobjects and baddtools commands.\n"
+  // Commands
+  theCommands.Add("bfillds",
+                  "Performs intersection of the arguments added for the operation by baddobjects "
+                  "and baddtools commands.\n"
                   "\t\tUsage: bfillds [-t]\n"
-                  "\t\tWhere: -t is the optional parameter for enabling timer and showing elapsed time of the operation",
-                  __FILE__, bfillds, g);
+                  "\t\tWhere: -t is the optional parameter for enabling timer and showing elapsed "
+                  "time of the operation",
+                  __FILE__,
+                  bfillds,
+                  g);
 
-  theCommands.Add("bbuild" , "Builds the result of General Fuse operation. Intersection (bfillds) has to be already performed by this moment.\n"
-                  "\t\tUsage: bbuild result [-t]\n"
-                  "\t\tWhere:\n"
-                  "\t\tresult - name of the result shape\n"
-                  "\t\t-t is the optional parameter for enabling timer and showing elapsed time of the operation",
-                  __FILE__, bbuild, g);
+  theCommands.Add(
+    "bbuild",
+    "Builds the result of General Fuse operation. Intersection (bfillds) has to be already "
+    "performed by this moment.\n"
+    "\t\tUsage: bbuild result [-t]\n"
+    "\t\tWhere:\n"
+    "\t\tresult - name of the result shape\n"
+    "\t\t-t is the optional parameter for enabling timer and showing elapsed time of the operation",
+    __FILE__,
+    bbuild,
+    g);
 
-  theCommands.Add("bbop"   , "Builds the result of Boolean operation. Intersection (bfillds) has to be already performed by this moment.\n"
-                  "\t\tUsage: bbop result op [-t]\n"
-                  "\t\tWhere:\n"
-                  "\t\tresult - name of the result shape\n"
-                  "\t\top - type of Boolean operation. Possible values:\n"
-                  "\t\t     - 0/common - for Common operation\n"
-                  "\t\t     - 1/fuse - for Fuse operation\n"
-                  "\t\t     - 2/cut - for Cut operation\n"
-                  "\t\t     - 3/tuc/cut21 - for Cut21 operation\n"
-                  "\t\t     - 4/section - for Section operation\n"
-                  "\t\t-t - optional parameter for enabling timer and showing elapsed time of the operation",
-                  __FILE__, bbop, g);
+  theCommands.Add(
+    "bbop",
+    "Builds the result of Boolean operation. Intersection (bfillds) has to be already performed by "
+    "this moment.\n"
+    "\t\tUsage: bbop result op [-t]\n"
+    "\t\tWhere:\n"
+    "\t\tresult - name of the result shape\n"
+    "\t\top - type of Boolean operation. Possible values:\n"
+    "\t\t     - 0/common - for Common operation\n"
+    "\t\t     - 1/fuse - for Fuse operation\n"
+    "\t\t     - 2/cut - for Cut operation\n"
+    "\t\t     - 3/tuc/cut21 - for Cut21 operation\n"
+    "\t\t     - 4/section - for Section operation\n"
+    "\t\t-t - optional parameter for enabling timer and showing elapsed time of the operation",
+    __FILE__,
+    bbop,
+    g);
 
-  theCommands.Add("bsplit" , "Builds the result of Split operation. Intersection (bfillds) has to be already performed by this moment.\n"
-                  "\t\tUsage: bsplit result [-t]\n"
-                  "\t\tWhere:\n"
-                  "\t\tresult - name of the result shape\n"
-                  "\t\t-t is the optional parameter for enabling timer and showing elapsed time of the operation",
-                  __FILE__, bsplit, g);
+  theCommands.Add(
+    "bsplit",
+    "Builds the result of Split operation. Intersection (bfillds) has to be already performed by "
+    "this moment.\n"
+    "\t\tUsage: bsplit result [-t]\n"
+    "\t\tWhere:\n"
+    "\t\tresult - name of the result shape\n"
+    "\t\t-t is the optional parameter for enabling timer and showing elapsed time of the operation",
+    __FILE__,
+    bsplit,
+    g);
 
-  theCommands.Add("buildbop", "Builds the result of BOP basing on the GF, thus bbuild command has to be already performed\n"
-                  "\t\tThe command uses classification approach for building the result of BOP\n"
-                  "\t\t(thus it operates on solids only and can be used on open solids):\n"
-                  "\t\t - FUSE is built from the faces OUT of all arguments\n"
-                  "\t\t - COMMON is built from the faces IN any of the object/tools\n"
-                  "\t\t - CUT is built from the objects faces OUT of the tools and tools faces IN the objects.\n"
-                  "\t\tPlease note that history for solids will not be available.\n\n"
-                  "\t\tUsage: buildbop result -o s1 [s2 ...] -t s3 [s4 ...] -op operation (common/fuse/cut/tuc)\n"
-                  "\t\tWhere:\n"
-                  "\t\tresult      - result shape of the operation\n"
-                  "\t\ts1 s2 s3 s4 - arguments (solids) of the GF operation\n"
-                  "\t\toperation   - type of boolean operation",
-                  __FILE__, buildbop, g);
+  theCommands.Add(
+    "buildbop",
+    "Builds the result of BOP basing on the GF, thus bbuild command has to be already performed\n"
+    "\t\tThe command uses classification approach for building the result of BOP\n"
+    "\t\t(thus it operates on solids only and can be used on open solids):\n"
+    "\t\t - FUSE is built from the faces OUT of all arguments\n"
+    "\t\t - COMMON is built from the faces IN any of the object/tools\n"
+    "\t\t - CUT is built from the objects faces OUT of the tools and tools faces IN the objects.\n"
+    "\t\tPlease note that history for solids will not be available.\n\n"
+    "\t\tUsage: buildbop result -o s1 [s2 ...] -t s3 [s4 ...] -op operation (common/fuse/cut/tuc)\n"
+    "\t\tWhere:\n"
+    "\t\tresult      - result shape of the operation\n"
+    "\t\ts1 s2 s3 s4 - arguments (solids) of the GF operation\n"
+    "\t\toperation   - type of boolean operation",
+    __FILE__,
+    buildbop,
+    g);
 }
 
-//=======================================================================
-//function : bfillds
-//purpose  : 
-//=======================================================================
-Standard_Integer bfillds(Draw_Interpretor& di, 
-                         Standard_Integer n, 
-                         const char** a) 
-{ 
-  if (n > 2) {
+//=================================================================================================
+
+Standard_Integer bfillds(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n > 2)
+  {
     di.PrintHelp(a[0]);
     return 1;
   }
   //
-  char buf[32];
-  Standard_Boolean bRunParallel, bNonDestructive, bShowTime;
-  Standard_Integer aNbS;
-  Standard_Real aTol;
+  char                               buf[32];
+  Standard_Boolean                   bRunParallel, bNonDestructive, bShowTime;
+  Standard_Integer                   aNbS;
+  Standard_Real                      aTol;
   TopTools_ListIteratorOfListOfShape aIt;
-  TopTools_ListOfShape aLC;
-  TopTools_ListOfShape& aLS=BOPTest_Objects::Shapes();
-  aNbS=aLS.Extent();
-  if (!aNbS) {
+  TopTools_ListOfShape               aLC;
+  TopTools_ListOfShape&              aLS = BOPTest_Objects::Shapes();
+  aNbS                                   = aLS.Extent();
+  if (!aNbS)
+  {
     di << "No objects to process\n";
     return 0;
   }
   //
   bShowTime = Standard_False;
   //
-  bRunParallel=BOPTest_Objects::RunParallel();
-  bNonDestructive = BOPTest_Objects::NonDestructive();
-  aTol = BOPTest_Objects::FuzzyValue();
+  bRunParallel           = BOPTest_Objects::RunParallel();
+  bNonDestructive        = BOPTest_Objects::NonDestructive();
+  aTol                   = BOPTest_Objects::FuzzyValue();
   BOPAlgo_GlueEnum aGlue = BOPTest_Objects::Glue();
   //
   if (n == 2)
   {
     if (!strcmp(a[1], "-t"))
     {
-      bShowTime=Standard_True;
+      bShowTime = Standard_True;
     }
     else
     {
@@ -143,21 +163,23 @@ Standard_Integer bfillds(Draw_Interpretor& di,
     }
   }
   //
-  TopTools_ListOfShape& aLT=BOPTest_Objects::Tools();
+  TopTools_ListOfShape& aLT = BOPTest_Objects::Tools();
   //
   aIt.Initialize(aLS);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aS=aIt.Value();
+  for (; aIt.More(); aIt.Next())
+  {
+    const TopoDS_Shape& aS = aIt.Value();
     aLC.Append(aS);
   }
   //
   aIt.Initialize(aLT);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aS=aIt.Value();
-     aLC.Append(aS);
+  for (; aIt.More(); aIt.Next())
+  {
+    const TopoDS_Shape& aS = aIt.Value();
+    aLC.Append(aS);
   }
   //
-  BOPAlgo_PaveFiller& aPF=BOPTest_Objects::PaveFiller();
+  BOPAlgo_PaveFiller& aPF = BOPTest_Objects::PaveFiller();
   //
   aPF.SetArguments(aLC);
   aPF.SetRunParallel(bRunParallel);
@@ -172,7 +194,8 @@ Standard_Integer bfillds(Draw_Interpretor& di,
   Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
   aPF.Perform(aProgress->Start());
   BOPTest::ReportAlerts(aPF.GetReport());
-  if (aPF.HasErrors()) {
+  if (aPF.HasErrors())
+  {
     return 0;
   }
   //
@@ -186,57 +209,58 @@ Standard_Integer bfillds(Draw_Interpretor& di,
   //
   return 0;
 }
-//=======================================================================
-//function : bbuild
-//purpose  : 
-//=======================================================================
-Standard_Integer bbuild(Draw_Interpretor& di,
-                        Standard_Integer n, 
-                        const char** a) 
-{ 
-  if (n < 2 || n > 3) {
+
+//=================================================================================================
+
+Standard_Integer bbuild(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n < 2 || n > 3)
+  {
     di.PrintHelp(a[0]);
     return 1;
   }
   //
-  BOPDS_PDS pDS=BOPTest_Objects::PDS();
-  if (!pDS) {
+  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  if (!pDS)
+  {
     di << "Prepare PaveFiller first\n";
     return 0;
   }
   //
-  char buf[128];
+  char             buf[128];
   Standard_Boolean bRunParallel, bShowTime;
 
   TopTools_ListIteratorOfListOfShape aIt;
   //
-  BOPAlgo_PaveFiller& aPF=BOPTest_Objects::PaveFiller();
+  BOPAlgo_PaveFiller& aPF = BOPTest_Objects::PaveFiller();
   //
   BOPTest_Objects::SetBuilderDefault();
-  BOPAlgo_Builder& aBuilder=BOPTest_Objects::Builder();
+  BOPAlgo_Builder& aBuilder = BOPTest_Objects::Builder();
   aBuilder.Clear();
   //
-  TopTools_ListOfShape& aLSObj=BOPTest_Objects::Shapes();
+  TopTools_ListOfShape& aLSObj = BOPTest_Objects::Shapes();
   aIt.Initialize(aLSObj);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aS=aIt.Value();
+  for (; aIt.More(); aIt.Next())
+  {
+    const TopoDS_Shape& aS = aIt.Value();
     aBuilder.AddArgument(aS);
   }
   //
-  TopTools_ListOfShape& aLSTool=BOPTest_Objects::Tools();
+  TopTools_ListOfShape& aLSTool = BOPTest_Objects::Tools();
   aIt.Initialize(aLSTool);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aS=aIt.Value();
+  for (; aIt.More(); aIt.Next())
+  {
+    const TopoDS_Shape& aS = aIt.Value();
     aBuilder.AddArgument(aS);
   }
   //
-  bShowTime=Standard_False;
-  bRunParallel=BOPTest_Objects::RunParallel();
+  bShowTime    = Standard_False;
+  bRunParallel = BOPTest_Objects::RunParallel();
   if (n == 3)
   {
     if (!strcmp(a[2], "-t"))
     {
-      bShowTime=Standard_True;
+      bShowTime = Standard_True;
     }
     else
     {
@@ -252,14 +276,15 @@ Standard_Integer bbuild(Draw_Interpretor& di,
   OSD_Timer aTimer;
   aTimer.Start();
   //
-  aBuilder.PerformWithFiller(aPF, aProgress->Start()); 
+  aBuilder.PerformWithFiller(aPF, aProgress->Start());
   BOPTest::ReportAlerts(aBuilder.GetReport());
 
   // Set history of GF operation into the session
   if (BRepTest_Objects::IsHistoryNeeded())
     BRepTest_Objects::SetHistory(aPF.Arguments(), aBuilder);
 
-  if (aBuilder.HasErrors()) {
+  if (aBuilder.HasErrors())
+  {
     return 0;
   }
   //
@@ -271,8 +296,9 @@ Standard_Integer bbuild(Draw_Interpretor& di,
     di << buf;
   }
   //
-  const TopoDS_Shape& aR=aBuilder.Shape();
-  if (aR.IsNull()) {
+  const TopoDS_Shape& aR = aBuilder.Shape();
+  if (aR.IsNull())
+  {
     di << "Result is a null shape\n";
     return 0;
   }
@@ -280,21 +306,20 @@ Standard_Integer bbuild(Draw_Interpretor& di,
   DBRep::Set(a[1], aR);
   return 0;
 }
-//=======================================================================
-//function : bbop
-//purpose  : 
-//=======================================================================
-Standard_Integer bbop(Draw_Interpretor& di, 
-                      Standard_Integer n, 
-                      const char** a) 
-{ 
-  if (n < 3 || n > 4) {
+
+//=================================================================================================
+
+Standard_Integer bbop(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n < 3 || n > 4)
+  {
     di.PrintHelp(a[0]);
     return 1;
   }
   //
-  BOPDS_PDS pDS=BOPTest_Objects::PDS();
-  if (!pDS) {
+  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  if (!pDS)
+  {
     di << "Prepare PaveFiller first\n";
     return 0;
   }
@@ -306,13 +331,13 @@ Standard_Integer bbop(Draw_Interpretor& di,
     return 0;
   }
 
-  Standard_Boolean bShowTime=Standard_False;
-  Standard_Boolean bRunParallel=BOPTest_Objects::RunParallel();
+  Standard_Boolean bShowTime    = Standard_False;
+  Standard_Boolean bRunParallel = BOPTest_Objects::RunParallel();
   if (n == 4)
   {
     if (!strcmp(a[3], "-t"))
     {
-      bShowTime=Standard_True;
+      bShowTime = Standard_True;
     }
     else
     {
@@ -320,43 +345,50 @@ Standard_Integer bbop(Draw_Interpretor& di,
     }
   }
   //
-  BOPAlgo_PaveFiller& aPF=BOPTest_Objects::PaveFiller();
+  BOPAlgo_PaveFiller& aPF = BOPTest_Objects::PaveFiller();
   //
-  BOPAlgo_Builder *pBuilder=NULL;
-  
-  if (anOp!=BOPAlgo_SECTION) { 
-    pBuilder=&BOPTest_Objects::BOP();
-  } 
-  else {
-    pBuilder=&BOPTest_Objects::Section();
+  BOPAlgo_Builder* pBuilder = NULL;
+
+  if (anOp != BOPAlgo_SECTION)
+  {
+    pBuilder = &BOPTest_Objects::BOP();
+  }
+  else
+  {
+    pBuilder = &BOPTest_Objects::Section();
   }
   //
   pBuilder->Clear();
   //
-  TopTools_ListOfShape& aLSObj=BOPTest_Objects::Shapes();
+  TopTools_ListOfShape&              aLSObj = BOPTest_Objects::Shapes();
   TopTools_ListIteratorOfListOfShape aIt(aLSObj);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aS=aIt.Value();
+  for (; aIt.More(); aIt.Next())
+  {
+    const TopoDS_Shape& aS = aIt.Value();
     pBuilder->AddArgument(aS);
   }
   //
-  if (anOp!=BOPAlgo_SECTION) {
-    BOPAlgo_BOP *pBOP=(BOPAlgo_BOP *)pBuilder;
+  if (anOp != BOPAlgo_SECTION)
+  {
+    BOPAlgo_BOP* pBOP = (BOPAlgo_BOP*)pBuilder;
     //
-    TopTools_ListOfShape& aLSTools=BOPTest_Objects::Tools();
+    TopTools_ListOfShape& aLSTools = BOPTest_Objects::Tools();
     aIt.Initialize(aLSTools);
-    for (; aIt.More(); aIt.Next()) {
-      const TopoDS_Shape& aS=aIt.Value();
+    for (; aIt.More(); aIt.Next())
+    {
+      const TopoDS_Shape& aS = aIt.Value();
       pBOP->AddTool(aS);
     }
     //
     pBOP->SetOperation(anOp);
   }
-  else {
-    TopTools_ListOfShape& aLSTools=BOPTest_Objects::Tools();
+  else
+  {
+    TopTools_ListOfShape& aLSTools = BOPTest_Objects::Tools();
     aIt.Initialize(aLSTools);
-    for (; aIt.More(); aIt.Next()) {
-      const TopoDS_Shape& aS=aIt.Value();
+    for (; aIt.More(); aIt.Next())
+    {
+      const TopoDS_Shape& aS = aIt.Value();
       pBuilder->AddArgument(aS);
     }
   }
@@ -377,20 +409,23 @@ Standard_Integer bbop(Draw_Interpretor& di,
   if (BRepTest_Objects::IsHistoryNeeded())
     BRepTest_Objects::SetHistory(aPF.Arguments(), *pBuilder);
 
-  if (pBuilder->HasErrors()) {
+  if (pBuilder->HasErrors())
+  {
     return 0;
   }
   //
   aTimer.Stop();
   //
-  if (bShowTime) {
+  if (bShowTime)
+  {
     char buf[32];
     Sprintf(buf, "  Tps: %7.2lf\n", aTimer.ElapsedTime());
     di << buf;
   }
   //
-  const TopoDS_Shape& aR=pBuilder->Shape();
-  if (aR.IsNull()) {
+  const TopoDS_Shape& aR = pBuilder->Shape();
+  if (aR.IsNull())
+  {
     di << "Result is a null shape\n";
     return 0;
   }
@@ -401,21 +436,19 @@ Standard_Integer bbop(Draw_Interpretor& di,
   return 0;
 }
 
-//=======================================================================
-//function : bsplit
-//purpose  : 
-//=======================================================================
-Standard_Integer bsplit(Draw_Interpretor& di,
-                        Standard_Integer n,
-                        const char** a)
-{ 
-  if (n < 2 || n > 3) {
+//=================================================================================================
+
+Standard_Integer bsplit(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n < 2 || n > 3)
+  {
     di.PrintHelp(a[0]);
     return 1;
   }
   //
   BOPDS_PDS pDS = BOPTest_Objects::PDS();
-  if (!pDS) {
+  if (!pDS)
+  {
     di << "Prepare PaveFiller first\n";
     return 0;
   }
@@ -455,7 +488,8 @@ Standard_Integer bsplit(Draw_Interpretor& di,
   if (BRepTest_Objects::IsHistoryNeeded())
     BRepTest_Objects::SetHistory(aPF.Arguments(), *pSplitter);
 
-  if (pSplitter->HasErrors()) {
+  if (pSplitter->HasErrors())
+  {
     return 0;
   }
   //
@@ -478,7 +512,8 @@ Standard_Integer bsplit(Draw_Interpretor& di,
   BOPTest_Objects::SetBuilder(pSplitter);
   //
   const TopoDS_Shape& aR = pSplitter->Shape();
-  if (aR.IsNull()) {
+  if (aR.IsNull())
+  {
     di << " null shape\n";
     return 0;
   }
@@ -487,13 +522,9 @@ Standard_Integer bsplit(Draw_Interpretor& di,
   return 0;
 }
 
-//=======================================================================
-//function : buildbop
-//purpose  : 
-//=======================================================================
-Standard_Integer buildbop(Draw_Interpretor& di,
-                          Standard_Integer n,
-                          const char** a)
+//=================================================================================================
+
+Standard_Integer buildbop(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n < 3)
   {
@@ -508,15 +539,14 @@ Standard_Integer buildbop(Draw_Interpretor& di,
     return 1;
   }
 
-  BOPAlgo_Builder *pBuilder = &BOPTest_Objects::Builder();
+  BOPAlgo_Builder* pBuilder = &BOPTest_Objects::Builder();
   if (pBuilder->HasErrors())
   {
     di << "Error: there were problems during GF";
     return 0;
   }
 
-  if (pBuilder->Arguments().IsEmpty() ||
-      pBuilder->Shape().IsNull())
+  if (pBuilder->Arguments().IsEmpty() || pBuilder->Shape().IsNull())
   {
     di << "Error: it seems the GF has not been yet performed";
     return 1;
@@ -524,7 +554,7 @@ Standard_Integer buildbop(Draw_Interpretor& di,
 
   // Get arguments and operation
   TopTools_ListOfShape aLObjects, aLTools;
-  BOPAlgo_Operation anOp = BOPAlgo_UNKNOWN;
+  BOPAlgo_Operation    anOp = BOPAlgo_UNKNOWN;
 
   for (Standard_Integer i = 2; i < n; ++i)
   {
@@ -537,7 +567,7 @@ Standard_Integer buildbop(Draw_Interpretor& di,
       }
 
       TopTools_ListOfShape& aList = !strcmp(a[i], "-o") ? aLObjects : aLTools;
-      Standard_Integer j = i + 1;
+      Standard_Integer      j     = i + 1;
       for (; j < n; ++j)
       {
         if (a[j][0] == '-')
@@ -569,7 +599,8 @@ Standard_Integer buildbop(Draw_Interpretor& di,
         }
       }
       // End of arguments is reached
-      if (j == n) break;
+      if (j == n)
+        break;
     }
     else if (!strcmp(a[i], "-op"))
     {
@@ -616,7 +647,7 @@ Standard_Integer buildbop(Draw_Interpretor& di,
   }
 
   // Create new report for the operation
-  Handle(Message_Report) aReport = new Message_Report;
+  Handle(Message_Report)         aReport   = new Message_Report;
   Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
   // Build specific operation
   pBuilder->BuildBOP(aLObjects, aLTools, anOp, aProgress->Start(), aReport);

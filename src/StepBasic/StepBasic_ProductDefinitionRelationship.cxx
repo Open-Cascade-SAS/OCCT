@@ -19,28 +19,24 @@
 #include <StepBasic_ProductDefinitionRelationship.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinitionRelationship,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinitionRelationship, Standard_Transient)
 
-//=======================================================================
-//function : StepBasic_ProductDefinitionRelationship
-//purpose  : 
-//=======================================================================
-StepBasic_ProductDefinitionRelationship::StepBasic_ProductDefinitionRelationship ()
+//=================================================================================================
+
+StepBasic_ProductDefinitionRelationship::StepBasic_ProductDefinitionRelationship()
 {
   defDescription = Standard_False;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ProductDefinitionRelationship::Init (const Handle(TCollection_HAsciiString) &aId,
-                                                    const Handle(TCollection_HAsciiString) &aName,
-                                                    const Standard_Boolean hasDescription,
-                                                    const Handle(TCollection_HAsciiString) &aDescription,
-                                                    const Handle(StepBasic_ProductDefinition) &aRelatingProductDefinition,
-                                                    const Handle(StepBasic_ProductDefinition) &aRelatedProductDefinition)
+void StepBasic_ProductDefinitionRelationship::Init(
+  const Handle(TCollection_HAsciiString)&    aId,
+  const Handle(TCollection_HAsciiString)&    aName,
+  const Standard_Boolean                     hasDescription,
+  const Handle(TCollection_HAsciiString)&    aDescription,
+  const Handle(StepBasic_ProductDefinition)& aRelatingProductDefinition,
+  const Handle(StepBasic_ProductDefinition)& aRelatedProductDefinition)
 {
 
   theId = aId;
@@ -48,186 +44,152 @@ void StepBasic_ProductDefinitionRelationship::Init (const Handle(TCollection_HAs
   theName = aName;
 
   defDescription = hasDescription;
-  if (defDescription) {
+  if (defDescription)
+  {
     theDescription = aDescription;
   }
-  else theDescription.Nullify();
+  else
+    theDescription.Nullify();
 
   theRelatingProductDefinition.SetValue(aRelatingProductDefinition);
 
   theRelatedProductDefinition.SetValue(aRelatedProductDefinition);
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ProductDefinitionRelationship::Init (const Handle(TCollection_HAsciiString) &aId,
-                                                    const Handle(TCollection_HAsciiString) &aName,
-                                                    const Standard_Boolean hasDescription,
-                                                    const Handle(TCollection_HAsciiString) &aDescription,
-                                                    const StepBasic_ProductDefinitionOrReference &aRelatingProductDefinition,
-                                                    const StepBasic_ProductDefinitionOrReference &aRelatedProductDefinition)
+void StepBasic_ProductDefinitionRelationship::Init(
+  const Handle(TCollection_HAsciiString)&       aId,
+  const Handle(TCollection_HAsciiString)&       aName,
+  const Standard_Boolean                        hasDescription,
+  const Handle(TCollection_HAsciiString)&       aDescription,
+  const StepBasic_ProductDefinitionOrReference& aRelatingProductDefinition,
+  const StepBasic_ProductDefinitionOrReference& aRelatedProductDefinition)
 {
 
-  theId = aId;
-  theName = aName;
+  theId          = aId;
+  theName        = aName;
   defDescription = hasDescription;
-  if (defDescription) {
+  if (defDescription)
+  {
     theDescription = aDescription;
   }
-  else theDescription.Nullify();
+  else
+    theDescription.Nullify();
   theRelatingProductDefinition = aRelatingProductDefinition;
-  theRelatedProductDefinition = aRelatedProductDefinition;
+  theRelatedProductDefinition  = aRelatedProductDefinition;
 }
 
-//=======================================================================
-//function : Id
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ProductDefinitionRelationship::Id () const
+Handle(TCollection_HAsciiString) StepBasic_ProductDefinitionRelationship::Id() const
 {
   return theId;
 }
 
-//=======================================================================
-//function : SetId
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ProductDefinitionRelationship::SetId (const Handle(TCollection_HAsciiString) &aId)
+void StepBasic_ProductDefinitionRelationship::SetId(const Handle(TCollection_HAsciiString)& aId)
 {
   theId = aId;
 }
 
-//=======================================================================
-//function : Name
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ProductDefinitionRelationship::Name () const
+Handle(TCollection_HAsciiString) StepBasic_ProductDefinitionRelationship::Name() const
 {
   return theName;
 }
 
-//=======================================================================
-//function : SetName
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ProductDefinitionRelationship::SetName (const Handle(TCollection_HAsciiString) &aName)
+void StepBasic_ProductDefinitionRelationship::SetName(const Handle(TCollection_HAsciiString)& aName)
 {
   theName = aName;
 }
 
-//=======================================================================
-//function : Description
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_ProductDefinitionRelationship::Description () const
+Handle(TCollection_HAsciiString) StepBasic_ProductDefinitionRelationship::Description() const
 {
   return theDescription;
 }
 
-//=======================================================================
-//function : SetDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ProductDefinitionRelationship::SetDescription (const Handle(TCollection_HAsciiString) &aDescription)
+void StepBasic_ProductDefinitionRelationship::SetDescription(
+  const Handle(TCollection_HAsciiString)& aDescription)
 {
   theDescription = aDescription;
 }
 
-//=======================================================================
-//function : HasDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean StepBasic_ProductDefinitionRelationship::HasDescription () const
+Standard_Boolean StepBasic_ProductDefinitionRelationship::HasDescription() const
 {
   return defDescription;
 }
 
-//=======================================================================
-//function : RelatingProductDefinition
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_ProductDefinition) StepBasic_ProductDefinitionRelationship::RelatingProductDefinition () const
+Handle(StepBasic_ProductDefinition) StepBasic_ProductDefinitionRelationship::
+  RelatingProductDefinition() const
 {
-    return theRelatingProductDefinition.ProductDefinition();
+  return theRelatingProductDefinition.ProductDefinition();
 }
 
-//=======================================================================
-//function : RelatingProductDefinitionAP242
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepBasic_ProductDefinitionOrReference StepBasic_ProductDefinitionRelationship::RelatingProductDefinitionAP242 () const
+StepBasic_ProductDefinitionOrReference StepBasic_ProductDefinitionRelationship::
+  RelatingProductDefinitionAP242() const
 {
   return theRelatingProductDefinition;
 }
 
-//=======================================================================
-//function : SetRelatingProductDefinition
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ProductDefinitionRelationship::SetRelatingProductDefinition (const Handle(StepBasic_ProductDefinition) &aRelatingProductDefinition)
+void StepBasic_ProductDefinitionRelationship::SetRelatingProductDefinition(
+  const Handle(StepBasic_ProductDefinition)& aRelatingProductDefinition)
 {
-    theRelatingProductDefinition.SetValue(aRelatingProductDefinition);
+  theRelatingProductDefinition.SetValue(aRelatingProductDefinition);
 }
 
-//=======================================================================
-//function : SetRelatingProductDefinition
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ProductDefinitionRelationship::SetRelatingProductDefinition (const StepBasic_ProductDefinitionOrReference &aRelatingProductDefinition)
+void StepBasic_ProductDefinitionRelationship::SetRelatingProductDefinition(
+  const StepBasic_ProductDefinitionOrReference& aRelatingProductDefinition)
 {
   theRelatingProductDefinition = aRelatingProductDefinition;
 }
 
-//=======================================================================
-//function : RelatedProductDefinition
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_ProductDefinition) StepBasic_ProductDefinitionRelationship::RelatedProductDefinition () const
+Handle(StepBasic_ProductDefinition) StepBasic_ProductDefinitionRelationship::
+  RelatedProductDefinition() const
 {
-    return theRelatedProductDefinition.ProductDefinition();
+  return theRelatedProductDefinition.ProductDefinition();
 }
 
-//=======================================================================
-//function : RelatedProductDefinitionAP242
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepBasic_ProductDefinitionOrReference StepBasic_ProductDefinitionRelationship::RelatedProductDefinitionAP242 () const
+StepBasic_ProductDefinitionOrReference StepBasic_ProductDefinitionRelationship::
+  RelatedProductDefinitionAP242() const
 {
   return theRelatedProductDefinition;
 }
 
-//=======================================================================
-//function : SetRelatedProductDefinition
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ProductDefinitionRelationship::SetRelatedProductDefinition (const Handle(StepBasic_ProductDefinition) &aRelatedProductDefinition)
+void StepBasic_ProductDefinitionRelationship::SetRelatedProductDefinition(
+  const Handle(StepBasic_ProductDefinition)& aRelatedProductDefinition)
 {
-    theRelatedProductDefinition.SetValue(aRelatedProductDefinition);
+  theRelatedProductDefinition.SetValue(aRelatedProductDefinition);
 }
 
-//=======================================================================
-//function : SetRelatedProductDefinition
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ProductDefinitionRelationship::SetRelatedProductDefinition (const StepBasic_ProductDefinitionOrReference &aRelatedProductDefinition)
+void StepBasic_ProductDefinitionRelationship::SetRelatedProductDefinition(
+  const StepBasic_ProductDefinitionOrReference& aRelatedProductDefinition)
 {
-    theRelatedProductDefinition = aRelatedProductDefinition;
+  theRelatedProductDefinition = aRelatedProductDefinition;
 }

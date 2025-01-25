@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -18,42 +18,32 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_GearPairValue, StepKinematics_PairValue)
 
-//=======================================================================
-//function : StepKinematics_GearPairValue
-//purpose  :
-//=======================================================================
-StepKinematics_GearPairValue::StepKinematics_GearPairValue ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_GearPairValue::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                         const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                                         const Standard_Real theActualRotation1)
+StepKinematics_GearPairValue::StepKinematics_GearPairValue() {}
+
+//=================================================================================================
+
+void StepKinematics_GearPairValue::Init(
+  const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
+  const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
+  const Standard_Real                         theActualRotation1)
 {
-  StepKinematics_PairValue::Init(theRepresentationItem_Name,
-                                 thePairValue_AppliesToPair);
+  StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
   myActualRotation1 = theActualRotation1;
 }
 
-//=======================================================================
-//function : ActualRotation1
-//purpose  :
-//=======================================================================
-Standard_Real StepKinematics_GearPairValue::ActualRotation1 () const
+//=================================================================================================
+
+Standard_Real StepKinematics_GearPairValue::ActualRotation1() const
 {
   return myActualRotation1;
 }
 
-//=======================================================================
-//function : SetActualRotation1
-//purpose  :
-//=======================================================================
-void StepKinematics_GearPairValue::SetActualRotation1 (const Standard_Real theActualRotation1)
+//=================================================================================================
+
+void StepKinematics_GearPairValue::SetActualRotation1(const Standard_Real theActualRotation1)
 {
   myActualRotation1 = theActualRotation1;
 }

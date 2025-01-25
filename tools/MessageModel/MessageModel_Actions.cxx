@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/MessageModel_Actions.hxx>
 
@@ -46,71 +46,81 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-MessageModel_Actions::MessageModel_Actions (QWidget* theParent,
-                                            MessageModel_TreeModel* theTreeModel,
-                                            QItemSelectionModel* theModel)
-: QObject (theParent), myTreeModel (theTreeModel), mySelectionModel (theModel)
+MessageModel_Actions::MessageModel_Actions(QWidget*                theParent,
+                                           MessageModel_TreeModel* theTreeModel,
+                                           QItemSelectionModel*    theModel)
+    : QObject(theParent),
+      myTreeModel(theTreeModel),
+      mySelectionModel(theModel)
 {
-  myActions.insert (MessageModel_ActionType_Activate,
-                    ViewControl_Tools::CreateAction (tr ("Activate"), SLOT (OnActivateReport()), parent(), this));
-  myActions.insert (MessageModel_ActionType_Deactivate,
-                    ViewControl_Tools::CreateAction (tr ("Deactivate"), SLOT (OnDeactivateReport()), parent(), this));
-  myActions.insert (MessageModel_ActionType_Clear,
-                    ViewControl_Tools::CreateAction (tr ("Clear"), SLOT (OnClearReport()), parent(), this));
-  myActions.insert (MessageModel_ActionType_ExportToShapeView,
-                    ViewControl_Tools::CreateAction (tr ("Export to ShapeView"), SLOT (OnExportToShapeView()), parent(), this));
+  myActions.insert(
+    MessageModel_ActionType_Activate,
+    ViewControl_Tools::CreateAction(tr("Activate"), SLOT(OnActivateReport()), parent(), this));
+  myActions.insert(
+    MessageModel_ActionType_Deactivate,
+    ViewControl_Tools::CreateAction(tr("Deactivate"), SLOT(OnDeactivateReport()), parent(), this));
+  myActions.insert(
+    MessageModel_ActionType_Clear,
+    ViewControl_Tools::CreateAction(tr("Clear"), SLOT(OnClearReport()), parent(), this));
+  myActions.insert(MessageModel_ActionType_ExportToShapeView,
+                   ViewControl_Tools::CreateAction(tr("Export to ShapeView"),
+                                                   SLOT(OnExportToShapeView()),
+                                                   parent(),
+                                                   this));
 }
 
 // =======================================================================
 // function : GetAction
 // purpose :
 // =======================================================================
-QAction* MessageModel_Actions::GetAction (const MessageModel_ActionType& theType)
+QAction* MessageModel_Actions::GetAction(const MessageModel_ActionType& theType)
 {
-  return myActions.contains (theType) ? myActions[theType] : 0;
+  return myActions.contains(theType) ? myActions[theType] : 0;
 }
 
 // =======================================================================
 // function : AddMenuActions
 // purpose :
 // =======================================================================
-void MessageModel_Actions::AddMenuActions (const QModelIndexList& theSelectedIndices, QMenu* theMenu)
+void MessageModel_Actions::AddMenuActions(const QModelIndexList& theSelectedIndices, QMenu* theMenu)
 {
-  MessageModel_ItemRootPtr aRootItem;
+  MessageModel_ItemRootPtr   aRootItem;
   MessageModel_ItemReportPtr aReportItem;
-  MessageModel_ItemAlertPtr anAlertItem;
-  for (QModelIndexList::const_iterator aSelIt = theSelectedIndices.begin(); aSelIt != theSelectedIndices.end(); aSelIt++)
+  MessageModel_ItemAlertPtr  anAlertItem;
+  for (QModelIndexList::const_iterator aSelIt = theSelectedIndices.begin();
+       aSelIt != theSelectedIndices.end();
+       aSelIt++)
   {
     QModelIndex anIndex = *aSelIt;
     if (anIndex.column() != 0)
       continue;
 
-    TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (anIndex);
+    TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex(anIndex);
     if (!anItemBase)
       continue;
 
-    aRootItem = itemDynamicCast<MessageModel_ItemRoot> (anItemBase);
+    aRootItem = itemDynamicCast<MessageModel_ItemRoot>(anItemBase);
     if (aRootItem)
       break;
 
-    aReportItem = itemDynamicCast<MessageModel_ItemReport> (anItemBase);
+    aReportItem = itemDynamicCast<MessageModel_ItemReport>(anItemBase);
     if (aReportItem)
       break;
 
-    anAlertItem = itemDynamicCast<MessageModel_ItemAlert> (anItemBase);
+    anAlertItem = itemDynamicCast<MessageModel_ItemAlert>(anItemBase);
     if (anAlertItem)
       break;
   }
 
   if (aReportItem && !aReportItem->GetReport().IsNull())
   {
-    theMenu->addAction (myActions[MessageModel_ActionType_Deactivate]);
-    theMenu->addAction (myActions[MessageModel_ActionType_Activate]);
-    theMenu->addAction (myActions[MessageModel_ActionType_Clear]);
+    theMenu->addAction(myActions[MessageModel_ActionType_Deactivate]);
+    theMenu->addAction(myActions[MessageModel_ActionType_Activate]);
+    theMenu->addAction(myActions[MessageModel_ActionType_Clear]);
   }
   else if (anAlertItem)
   {
-    theMenu->addAction (myActions[MessageModel_ActionType_ExportToShapeView]);
+    theMenu->addAction(myActions[MessageModel_ActionType_ExportToShapeView]);
   }
 
   theMenu->addSeparator();
@@ -120,21 +130,23 @@ void MessageModel_Actions::AddMenuActions (const QModelIndexList& theSelectedInd
 // function : getSelectedReport
 // purpose :
 // =======================================================================
-Handle(Message_Report) MessageModel_Actions::getSelectedReport (QModelIndex& theReportIndex) const
+Handle(Message_Report) MessageModel_Actions::getSelectedReport(QModelIndex& theReportIndex) const
 {
   MessageModel_ItemReportPtr aReportItem;
-  QModelIndexList aSelectedIndices = mySelectionModel->selectedIndexes();
-  for (QModelIndexList::const_iterator aSelIt = aSelectedIndices.begin(); aSelIt != aSelectedIndices.end(); aSelIt++)
+  QModelIndexList            aSelectedIndices = mySelectionModel->selectedIndexes();
+  for (QModelIndexList::const_iterator aSelIt = aSelectedIndices.begin();
+       aSelIt != aSelectedIndices.end();
+       aSelIt++)
   {
     QModelIndex anIndex = *aSelIt;
     if (anIndex.column() != 0)
       continue;
 
-    TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (anIndex);
+    TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex(anIndex);
     if (!anItemBase)
       continue;
 
-    aReportItem = itemDynamicCast<MessageModel_ItemReport> (anItemBase);
+    aReportItem    = itemDynamicCast<MessageModel_ItemReport>(anItemBase);
     theReportIndex = anIndex;
     if (aReportItem)
       break;
@@ -150,7 +162,7 @@ Handle(Message_Report) MessageModel_Actions::getSelectedReport (QModelIndex& the
 // purpose :
 // =======================================================================
 static Handle(Message_PrinterToReport) MyPrinterToReport;
-static Message_SequenceOfPrinters MyDeactivatedPrinters;
+static Message_SequenceOfPrinters      MyDeactivatedPrinters;
 
 void MessageModel_Actions::OnActivateReport()
 {
@@ -163,7 +175,7 @@ void MessageModel_Actions::OnActivateReport()
   MyDeactivatedPrinters = Message::DefaultMessenger()->Printers();
   Message::DefaultMessenger()->ChangePrinters().Clear();
 
-  Message::DefaultMessenger()->AddPrinter (MyPrinterToReport);
+  Message::DefaultMessenger()->AddPrinter(MyPrinterToReport);
   Message::DefaultReport()->UpdateActiveInMessenger();
 
   myTreeModel->UpdateTreeModel();
@@ -178,8 +190,8 @@ void MessageModel_Actions::OnDeactivateReport()
   if (MyPrinterToReport.IsNull() || !MyPrinterToReport->Report()->IsActiveInMessenger())
     return;
 
-  Message::DefaultMessenger()->RemovePrinter (MyPrinterToReport);
-  Message::DefaultMessenger()->ChangePrinters().Assign (MyDeactivatedPrinters);
+  Message::DefaultMessenger()->RemovePrinter(MyPrinterToReport);
+  Message::DefaultMessenger()->ChangePrinters().Assign(MyDeactivatedPrinters);
 
   myTreeModel->UpdateTreeModel();
 }
@@ -190,8 +202,8 @@ void MessageModel_Actions::OnDeactivateReport()
 // =======================================================================
 void MessageModel_Actions::OnClearReport()
 {
-  QModelIndex aReportIndex;
-  Handle(Message_Report) aReport = getSelectedReport (aReportIndex);
+  QModelIndex            aReportIndex;
+  Handle(Message_Report) aReport = getSelectedReport(aReportIndex);
   if (aReport.IsNull())
     return;
 
@@ -205,28 +217,30 @@ void MessageModel_Actions::OnClearReport()
 // =======================================================================
 void MessageModel_Actions::OnExportToShapeView()
 {
-  TCollection_AsciiString aPluginName ("TKShapeView");
+  TCollection_AsciiString aPluginName("TKShapeView");
 
   NCollection_List<Handle(Standard_Transient)> aPluginParameters;
-  if (myParameters->FindParameters (aPluginName))
-    aPluginParameters = myParameters->Parameters (aPluginName);
+  if (myParameters->FindParameters(aPluginName))
+    aPluginParameters = myParameters->Parameters(aPluginName);
   NCollection_List<TCollection_AsciiString> anItemNames;
-  if (myParameters->FindSelectedNames (aPluginName))
-    anItemNames = myParameters->GetSelectedNames (aPluginName);
+  if (myParameters->FindSelectedNames(aPluginName))
+    anItemNames = myParameters->GetSelectedNames(aPluginName);
 
   QModelIndexList aSelectedIndices = mySelectionModel->selectedIndexes();
-  QStringList anExportedPointers;
-  for (QModelIndexList::const_iterator aSelIt = aSelectedIndices.begin(); aSelIt != aSelectedIndices.end(); aSelIt++)
+  QStringList     anExportedPointers;
+  for (QModelIndexList::const_iterator aSelIt = aSelectedIndices.begin();
+       aSelIt != aSelectedIndices.end();
+       aSelIt++)
   {
     QModelIndex anIndex = *aSelIt;
     if (anIndex.column() != 0)
       continue;
 
-    TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (anIndex);
+    TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex(anIndex);
     if (!anItemBase)
       continue;
 
-    MessageModel_ItemAlertPtr anAlertItem = itemDynamicCast<MessageModel_ItemAlert> (anItemBase);
+    MessageModel_ItemAlertPtr anAlertItem = itemDynamicCast<MessageModel_ItemAlert>(anItemBase);
     if (!anAlertItem)
       continue;
 
@@ -234,7 +248,7 @@ void MessageModel_Actions::OnExportToShapeView()
     if (anAlert.IsNull())
       continue;
 
-    Handle(Message_AlertExtended) anExtAlert = Handle(Message_AlertExtended)::DownCast (anAlert);
+    Handle(Message_AlertExtended) anExtAlert = Handle(Message_AlertExtended)::DownCast(anAlert);
     if (anExtAlert.IsNull())
       continue;
 
@@ -242,22 +256,25 @@ void MessageModel_Actions::OnExportToShapeView()
     if (anAttribute.IsNull())
       continue;
 
-    if (!anAttribute->IsKind (STANDARD_TYPE (TopoDS_AlertAttribute)))
+    if (!anAttribute->IsKind(STANDARD_TYPE(TopoDS_AlertAttribute)))
       continue;
 
-    const TopoDS_Shape aShape = Handle(TopoDS_AlertAttribute)::DownCast (anAttribute)->GetShape();
+    const TopoDS_Shape aShape = Handle(TopoDS_AlertAttribute)::DownCast(anAttribute)->GetShape();
     if (aShape.IsNull())
       continue;
-    aPluginParameters.Append (aShape.TShape());
-    anItemNames.Append (TInspectorAPI_PluginParameters::ParametersToString (aShape));
+    aPluginParameters.Append(aShape.TShape());
+    anItemNames.Append(TInspectorAPI_PluginParameters::ParametersToString(aShape));
 
-    anExportedPointers.append (Standard_Dump::GetPointerInfo (aShape.TShape(), true).ToCString());
+    anExportedPointers.append(Standard_Dump::GetPointerInfo(aShape.TShape(), true).ToCString());
   }
 
   if (anExportedPointers.empty())
-      return;
-  myParameters->SetSelectedNames (aPluginName, anItemNames);
-  myParameters->SetParameters (aPluginName, aPluginParameters);
-  QMessageBox::information (0, "Information", QString ("TShapes '%1' are sent to %2 tool.")
-    .arg (anExportedPointers.join (", ")).arg (QString (aPluginName.ToCString())));
+    return;
+  myParameters->SetSelectedNames(aPluginName, anItemNames);
+  myParameters->SetParameters(aPluginName, aPluginParameters);
+  QMessageBox::information(0,
+                           "Information",
+                           QString("TShapes '%1' are sent to %2 tool.")
+                             .arg(anExportedPointers.join(", "))
+                             .arg(QString(aPluginName.ToCString())));
 }

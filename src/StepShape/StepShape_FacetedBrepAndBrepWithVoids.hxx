@@ -29,63 +29,48 @@ class TCollection_HAsciiString;
 class StepShape_ClosedShell;
 class StepShape_OrientedClosedShell;
 
-
 class StepShape_FacetedBrepAndBrepWithVoids;
 DEFINE_STANDARD_HANDLE(StepShape_FacetedBrepAndBrepWithVoids, StepShape_ManifoldSolidBrep)
-
 
 class StepShape_FacetedBrepAndBrepWithVoids : public StepShape_ManifoldSolidBrep
 {
 
 public:
-
-  
   //! Returns a FacetedBrepAndBrepWithVoids
   Standard_EXPORT StepShape_FacetedBrepAndBrepWithVoids();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_ClosedShell)& aOuter, const Handle(StepShape_FacetedBrep)& aFacetedBrep, const Handle(StepShape_BrepWithVoids)& aBrepWithVoids);
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_ClosedShell)& aOuter, const Handle(StepShape_HArray1OfOrientedClosedShell)& aVoids);
-  
-  Standard_EXPORT void SetFacetedBrep (const Handle(StepShape_FacetedBrep)& aFacetedBrep);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Handle(StepShape_ClosedShell)&    aOuter,
+                            const Handle(StepShape_FacetedBrep)&    aFacetedBrep,
+                            const Handle(StepShape_BrepWithVoids)&  aBrepWithVoids);
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&               aName,
+                            const Handle(StepShape_ClosedShell)&                  aOuter,
+                            const Handle(StepShape_HArray1OfOrientedClosedShell)& aVoids);
+
+  Standard_EXPORT void SetFacetedBrep(const Handle(StepShape_FacetedBrep)& aFacetedBrep);
+
   Standard_EXPORT Handle(StepShape_FacetedBrep) FacetedBrep() const;
-  
-  Standard_EXPORT void SetBrepWithVoids (const Handle(StepShape_BrepWithVoids)& aBrepWithVoids);
-  
+
+  Standard_EXPORT void SetBrepWithVoids(const Handle(StepShape_BrepWithVoids)& aBrepWithVoids);
+
   Standard_EXPORT Handle(StepShape_BrepWithVoids) BrepWithVoids() const;
-  
-  Standard_EXPORT void SetVoids (const Handle(StepShape_HArray1OfOrientedClosedShell)& aVoids);
-  
+
+  Standard_EXPORT void SetVoids(const Handle(StepShape_HArray1OfOrientedClosedShell)& aVoids);
+
   Standard_EXPORT Handle(StepShape_HArray1OfOrientedClosedShell) Voids() const;
-  
-  Standard_EXPORT Handle(StepShape_OrientedClosedShell) VoidsValue (const Standard_Integer num) const;
-  
+
+  Standard_EXPORT Handle(StepShape_OrientedClosedShell) VoidsValue(
+    const Standard_Integer num) const;
+
   Standard_EXPORT Standard_Integer NbVoids() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_FacetedBrepAndBrepWithVoids,StepShape_ManifoldSolidBrep)
+  DEFINE_STANDARD_RTTIEXT(StepShape_FacetedBrepAndBrepWithVoids, StepShape_ManifoldSolidBrep)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(StepShape_FacetedBrep) facetedBrep;
+  Handle(StepShape_FacetedBrep)   facetedBrep;
   Handle(StepShape_BrepWithVoids) brepWithVoids;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_FacetedBrepAndBrepWithVoids_HeaderFile

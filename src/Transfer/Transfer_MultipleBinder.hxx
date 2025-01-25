@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 class Standard_Transient;
 
-
 class Transfer_MultipleBinder;
 DEFINE_STANDARD_HANDLE(Transfer_MultipleBinder, Transfer_Binder)
 
@@ -51,61 +50,42 @@ class Transfer_MultipleBinder : public Transfer_Binder
 {
 
 public:
-
-  
   //! normal standard constructor, creates an empty MultipleBinder
   Standard_EXPORT Transfer_MultipleBinder();
-  
+
   //! Returns True if a starting object is bound with SEVERAL
   //! results : Here, returns always True
   Standard_EXPORT virtual Standard_Boolean IsMultiple() const Standard_OVERRIDE;
-  
+
   //! Returns the Type permitted for Results, i.e. here Transient
   Standard_EXPORT Handle(Standard_Type) ResultType() const Standard_OVERRIDE;
-  
+
   //! Returns the Name of the Type which characterizes the Result
   //! Here, returns "(list)"
   Standard_EXPORT Standard_CString ResultTypeName() const Standard_OVERRIDE;
-  
+
   //! Adds a new Item to the Multiple Result
-  Standard_EXPORT void AddResult (const Handle(Standard_Transient)& res);
-  
+  Standard_EXPORT void AddResult(const Handle(Standard_Transient)& res);
+
   //! Returns the actual count of recorded (Transient) results
   Standard_EXPORT Standard_Integer NbResults() const;
-  
+
   //! Returns the value of the recorded result n0 <num>
-  Standard_EXPORT Handle(Standard_Transient) ResultValue (const Standard_Integer num) const;
-  
+  Standard_EXPORT Handle(Standard_Transient) ResultValue(const Standard_Integer num) const;
+
   //! Returns the Multiple Result, if it is defined (at least one
   //! Item). Else, returns a Null Handle
   Standard_EXPORT Handle(TColStd_HSequenceOfTransient) MultipleResult() const;
-  
+
   //! Defines a Binding with a Multiple Result, given as a Sequence
   //! Error if a Unique Result has yet been defined
-  Standard_EXPORT void SetMultipleResult (const Handle(TColStd_HSequenceOfTransient)& mulres);
+  Standard_EXPORT void SetMultipleResult(const Handle(TColStd_HSequenceOfTransient)& mulres);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Transfer_MultipleBinder,Transfer_Binder)
+  DEFINE_STANDARD_RTTIEXT(Transfer_MultipleBinder, Transfer_Binder)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TColStd_HSequenceOfTransient) themulres;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Transfer_MultipleBinder_HeaderFile

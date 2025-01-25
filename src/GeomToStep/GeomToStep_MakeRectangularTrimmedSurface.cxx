@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_Plane.hxx>
@@ -34,10 +33,9 @@
 // Creation d' une rectangular_trimmed_surface de STEP
 // a partir d' une RectangularTrimmedSurface de Geom
 //=============================================================================
-GeomToStep_MakeRectangularTrimmedSurface::
-  GeomToStep_MakeRectangularTrimmedSurface( const
-    Handle(Geom_RectangularTrimmedSurface)& RTSurf,
-    const StepData_Factors& theLocalFactors)
+GeomToStep_MakeRectangularTrimmedSurface::GeomToStep_MakeRectangularTrimmedSurface(
+  const Handle(Geom_RectangularTrimmedSurface)& RTSurf,
+  const StepData_Factors&                       theLocalFactors)
 {
 
   Handle(StepGeom_RectangularTrimmedSurface) StepRTS = new StepGeom_RectangularTrimmedSurface;
@@ -45,47 +43,52 @@ GeomToStep_MakeRectangularTrimmedSurface::
   Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString("");
 
   GeomToStep_MakeSurface mkSurf(RTSurf->BasisSurface(), theLocalFactors);
-  if (!mkSurf.IsDone()) {
+  if (!mkSurf.IsDone())
+  {
     done = Standard_False;
     return;
   }
   const Handle(StepGeom_Surface)& StepSurf = mkSurf.Value();
 
-  Standard_Real U1,U2,V1,V2;
+  Standard_Real U1, U2, V1, V2;
   RTSurf->Bounds(U1, U2, V1, V2);
-  
+
   // -----------------------------------------
   // Modification of the Trimming Parameters ?
   // -----------------------------------------
 
-  Standard_Real AngleFact = 180./M_PI;
-  Standard_Real uFact = 1.;
-  Standard_Real vFact = 1.;
-  Standard_Real LengthFact  = theLocalFactors.LengthFactor();
-  Handle(Geom_Surface) theSurf = RTSurf->BasisSurface();
-  if (theSurf->IsKind(STANDARD_TYPE(Geom_CylindricalSurface))) {
+  Standard_Real        AngleFact  = 180. / M_PI;
+  Standard_Real        uFact      = 1.;
+  Standard_Real        vFact      = 1.;
+  Standard_Real        LengthFact = theLocalFactors.LengthFactor();
+  Handle(Geom_Surface) theSurf    = RTSurf->BasisSurface();
+  if (theSurf->IsKind(STANDARD_TYPE(Geom_CylindricalSurface)))
+  {
     uFact = AngleFact;
     vFact = 1. / LengthFact;
   }
-  else if (theSurf->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution))) {
+  else if (theSurf->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution)))
+  {
     uFact = AngleFact;
   }
-  else if (theSurf->IsKind(STANDARD_TYPE(Geom_ToroidalSurface)) ||
-	   theSurf->IsKind(STANDARD_TYPE(Geom_SphericalSurface))) {
+  else if (theSurf->IsKind(STANDARD_TYPE(Geom_ToroidalSurface))
+           || theSurf->IsKind(STANDARD_TYPE(Geom_SphericalSurface)))
+  {
     uFact = AngleFact;
     vFact = AngleFact;
   }
-  else if (theSurf->IsKind(STANDARD_TYPE(Geom_ConicalSurface))) {
-    Handle(Geom_ConicalSurface) conicS = 
-      Handle(Geom_ConicalSurface)::DownCast(theSurf);
-    Standard_Real semAng = conicS->SemiAngle();
-    uFact = AngleFact;
-    vFact = Cos(semAng) / LengthFact;
+  else if (theSurf->IsKind(STANDARD_TYPE(Geom_ConicalSurface)))
+  {
+    Handle(Geom_ConicalSurface) conicS = Handle(Geom_ConicalSurface)::DownCast(theSurf);
+    Standard_Real               semAng = conicS->SemiAngle();
+    uFact                              = AngleFact;
+    vFact                              = Cos(semAng) / LengthFact;
   }
-  else if (theSurf->IsKind(STANDARD_TYPE(Geom_Plane))) {
+  else if (theSurf->IsKind(STANDARD_TYPE(Geom_Plane)))
+  {
     uFact = vFact = 1. / LengthFact;
   }
-  
+
   U1 = U1 * uFact;
   U2 = U2 * uFact;
   V1 = V1 * vFact;
@@ -93,16 +96,16 @@ GeomToStep_MakeRectangularTrimmedSurface::
 
   StepRTS->Init(aName, StepSurf, U1, U2, V1, V2, Standard_True, Standard_True);
   theRectangularTrimmedSurface = StepRTS;
-  done = Standard_True;
+  done                         = Standard_True;
 }
 
 //=============================================================================
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_RectangularTrimmedSurface) &
-      GeomToStep_MakeRectangularTrimmedSurface::Value() const
+const Handle(StepGeom_RectangularTrimmedSurface)& GeomToStep_MakeRectangularTrimmedSurface::Value()
+  const
 {
-  StdFail_NotDone_Raise_if (!done, "GeomToStep_MakeRectangularTrimmedSurface::Value() - no result");
+  StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeRectangularTrimmedSurface::Value() - no result");
   return theRectangularTrimmedSurface;
 }

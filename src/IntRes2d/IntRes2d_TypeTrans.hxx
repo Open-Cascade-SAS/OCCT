@@ -17,13 +17,12 @@
 #ifndef _IntRes2d_TypeTrans_HeaderFile
 #define _IntRes2d_TypeTrans_HeaderFile
 
-
 enum IntRes2d_TypeTrans
 {
-IntRes2d_In,
-IntRes2d_Out,
-IntRes2d_Touch,
-IntRes2d_Undecided
+  IntRes2d_In,
+  IntRes2d_Out,
+  IntRes2d_Touch,
+  IntRes2d_Undecided
 };
 
 #endif // _IntRes2d_TypeTrans_HeaderFile

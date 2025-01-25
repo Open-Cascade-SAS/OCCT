@@ -17,56 +17,56 @@
 #include <TCollection_HExtendedString.hxx>
 
 //=======================================================================
-//function : SetStatus
-//purpose  :
+// function : SetStatus
+// purpose  :
 //=======================================================================
 
-inline void Message_Algorithm::SetStatus (const Message_Status& theStat, 
-                                          const Standard_CString theStr,
-                                          const Standard_Boolean noRepetitions)
+inline void Message_Algorithm::SetStatus(const Message_Status&  theStat,
+                                         const Standard_CString theStr,
+                                         const Standard_Boolean noRepetitions)
 {
-  SetStatus ( theStat, new TCollection_HExtendedString ( theStr ), noRepetitions );
+  SetStatus(theStat, new TCollection_HExtendedString(theStr), noRepetitions);
 }
 
 //=======================================================================
-//function : SetStatus
-//purpose  :
+// function : SetStatus
+// purpose  :
 //=======================================================================
 
-inline void Message_Algorithm::SetStatus (const Message_Status& theStat, 
-                                          const TCollection_AsciiString &theStr,
-                                          const Standard_Boolean noRepetitions)
+inline void Message_Algorithm::SetStatus(const Message_Status&          theStat,
+                                         const TCollection_AsciiString& theStr,
+                                         const Standard_Boolean         noRepetitions)
 {
-  SetStatus ( theStat, new TCollection_HExtendedString ( theStr ), noRepetitions );
+  SetStatus(theStat, new TCollection_HExtendedString(theStr), noRepetitions);
 }
 
 //=======================================================================
-//function : SetStatus
-//purpose  :
+// function : SetStatus
+// purpose  :
 //=======================================================================
 
-inline void Message_Algorithm::SetStatus (const Message_Status& theStat, 
-					  const Handle(TCollection_HAsciiString) &theStr,
-					  const Standard_Boolean noRepetitions)
+inline void Message_Algorithm::SetStatus(const Message_Status&                   theStat,
+                                         const Handle(TCollection_HAsciiString)& theStr,
+                                         const Standard_Boolean                  noRepetitions)
 {
-  SetStatus ( theStat, new TCollection_HExtendedString ( theStr ), noRepetitions );
+  SetStatus(theStat, new TCollection_HExtendedString(theStr), noRepetitions);
 }
 
 //=======================================================================
-//function : SetStatus
-//purpose  :
+// function : SetStatus
+// purpose  :
 //=======================================================================
 
-inline void Message_Algorithm::SetStatus (const Message_Status& theStat, 
-					  const TCollection_ExtendedString &theStr,
-					  const Standard_Boolean noRepetitions)
+inline void Message_Algorithm::SetStatus(const Message_Status&             theStat,
+                                         const TCollection_ExtendedString& theStr,
+                                         const Standard_Boolean            noRepetitions)
 {
-  SetStatus ( theStat, new TCollection_HExtendedString ( theStr ), noRepetitions );
+  SetStatus(theStat, new TCollection_HExtendedString(theStr), noRepetitions);
 }
 
 //=======================================================================
-//function : GetStatus
-//purpose  :
+// function : GetStatus
+// purpose  :
 //=======================================================================
 
 inline const Message_ExecStatus& Message_Algorithm::GetStatus() const
@@ -75,8 +75,8 @@ inline const Message_ExecStatus& Message_Algorithm::GetStatus() const
 }
 
 //=======================================================================
-//function : ChangeStatus
-//purpose  :
+// function : ChangeStatus
+// purpose  :
 //=======================================================================
 
 inline Message_ExecStatus& Message_Algorithm::ChangeStatus()
@@ -85,12 +85,11 @@ inline Message_ExecStatus& Message_Algorithm::ChangeStatus()
 }
 
 //=======================================================================
-//function : GetMessenger
-//purpose  :
+// function : GetMessenger
+// purpose  :
 //=======================================================================
 
 inline Handle(Message_Messenger) Message_Algorithm::GetMessenger() const
 {
   return myMessenger;
 }
-

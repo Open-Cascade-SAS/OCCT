@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(TColgp_HArray1OfPnt)> Convert_SequenceOfArray1OfPoles;
 
-
 #endif

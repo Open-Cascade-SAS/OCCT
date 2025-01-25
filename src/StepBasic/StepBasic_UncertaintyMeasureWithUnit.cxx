@@ -11,75 +11,57 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepBasic_MeasureValueMember.hxx>
 #include <StepBasic_UncertaintyMeasureWithUnit.hxx>
 #include <StepBasic_Unit.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_UncertaintyMeasureWithUnit,StepBasic_MeasureWithUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_UncertaintyMeasureWithUnit, StepBasic_MeasureWithUnit)
 
-//=======================================================================
-//function : StepBasic_UncertaintyMeasureWithUnit
-//purpose  : 
-//=======================================================================
-StepBasic_UncertaintyMeasureWithUnit::StepBasic_UncertaintyMeasureWithUnit ()  {}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepBasic_UncertaintyMeasureWithUnit::StepBasic_UncertaintyMeasureWithUnit() {}
+
+//=================================================================================================
 
 void StepBasic_UncertaintyMeasureWithUnit::Init(
-	const Handle(StepBasic_MeasureValueMember)& aValueComponent,
-	const StepBasic_Unit& aUnitComponent,
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(TCollection_HAsciiString)& aDescription)
+  const Handle(StepBasic_MeasureValueMember)& aValueComponent,
+  const StepBasic_Unit&                       aUnitComponent,
+  const Handle(TCollection_HAsciiString)&     aName,
+  const Handle(TCollection_HAsciiString)&     aDescription)
 {
-	// --- classe own fields ---
-	name = aName;
-	description = aDescription;
-	// --- classe inherited fields ---
-	StepBasic_MeasureWithUnit::Init(aValueComponent, aUnitComponent);
+  // --- classe own fields ---
+  name        = aName;
+  description = aDescription;
+  // --- classe inherited fields ---
+  StepBasic_MeasureWithUnit::Init(aValueComponent, aUnitComponent);
 }
 
-
-//=======================================================================
-//function : SetName
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void StepBasic_UncertaintyMeasureWithUnit::SetName(const Handle(TCollection_HAsciiString)& aName)
 {
-	name = aName;
+  name = aName;
 }
 
-//=======================================================================
-//function : Name
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(TCollection_HAsciiString) StepBasic_UncertaintyMeasureWithUnit::Name() const
 {
-	return name;
+  return name;
 }
 
-//=======================================================================
-//function : SetDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_UncertaintyMeasureWithUnit::SetDescription(const Handle(TCollection_HAsciiString)& aDescription)
+void StepBasic_UncertaintyMeasureWithUnit::SetDescription(
+  const Handle(TCollection_HAsciiString)& aDescription)
 {
-	description = aDescription;
+  description = aDescription;
 }
 
-//=======================================================================
-//function : Description
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(TCollection_HAsciiString) StepBasic_UncertaintyMeasureWithUnit::Description() const
 {
-	return description;
+  return description;
 }

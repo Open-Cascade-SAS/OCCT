@@ -24,53 +24,33 @@
 class StepBasic_Person;
 class StepBasic_Organization;
 
-
 class StepBasic_PersonAndOrganization;
 DEFINE_STANDARD_HANDLE(StepBasic_PersonAndOrganization, Standard_Transient)
-
 
 class StepBasic_PersonAndOrganization : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a PersonAndOrganization
   Standard_EXPORT StepBasic_PersonAndOrganization();
-  
-  Standard_EXPORT void Init (const Handle(StepBasic_Person)& aThePerson, const Handle(StepBasic_Organization)& aTheOrganization);
-  
-  Standard_EXPORT void SetThePerson (const Handle(StepBasic_Person)& aThePerson);
-  
+
+  Standard_EXPORT void Init(const Handle(StepBasic_Person)&       aThePerson,
+                            const Handle(StepBasic_Organization)& aTheOrganization);
+
+  Standard_EXPORT void SetThePerson(const Handle(StepBasic_Person)& aThePerson);
+
   Standard_EXPORT Handle(StepBasic_Person) ThePerson() const;
-  
-  Standard_EXPORT void SetTheOrganization (const Handle(StepBasic_Organization)& aTheOrganization);
-  
+
+  Standard_EXPORT void SetTheOrganization(const Handle(StepBasic_Organization)& aTheOrganization);
+
   Standard_EXPORT Handle(StepBasic_Organization) TheOrganization() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_PersonAndOrganization,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_PersonAndOrganization, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(StepBasic_Person) thePerson;
+  Handle(StepBasic_Person)       thePerson;
   Handle(StepBasic_Organization) theOrganization;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_PersonAndOrganization_HeaderFile

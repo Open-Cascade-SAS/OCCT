@@ -24,9 +24,9 @@
 //! -   GeomFill_Curved - the style with the most rounded patches.
 enum GeomFill_FillingStyle
 {
-GeomFill_StretchStyle,
-GeomFill_CoonsStyle,
-GeomFill_CurvedStyle
+  GeomFill_StretchStyle,
+  GeomFill_CoonsStyle,
+  GeomFill_CurvedStyle
 };
 
 #endif // _GeomFill_FillingStyle_HeaderFile

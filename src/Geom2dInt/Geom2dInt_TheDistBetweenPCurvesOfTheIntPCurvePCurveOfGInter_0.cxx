@@ -19,13 +19,12 @@
 #include <Adaptor2d_Curve2d.hxx>
 #include <Geom2dInt_Geom2dCurveTool.hxx>
 #include <math_Matrix.hxx>
- 
 
 #define TheCurve Adaptor2d_Curve2d
 #define TheCurve_hxx <Adaptor2d_Curve2d.hxx>
 #define TheCurveTool Geom2dInt_Geom2dCurveTool
 #define TheCurveTool_hxx <Geom2dInt_Geom2dCurveTool.hxx>
 #define IntCurve_DistBetweenPCurvesGen Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter
-#define IntCurve_DistBetweenPCurvesGen_hxx <Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter.hxx>
+#define IntCurve_DistBetweenPCurvesGen_hxx                                                         \
+  <Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter.hxx>
 #include "../IntCurve/IntCurve_DistBetweenPCurvesGen.gxx"
-

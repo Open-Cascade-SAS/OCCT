@@ -17,11 +17,14 @@
 #include <IntPolyh_Edge.hxx>
 #include <stdio.h>
 
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-void IntPolyh_Edge::Dump(const Standard_Integer i) const{ 
+//=================================================================================================
+
+void IntPolyh_Edge::Dump(const Standard_Integer i) const
+{
   printf("\nEdge(%3d) : P1:%5d   P2:%5d   T1:%5d   T2:%5d\n",
-         i, myPoint1, myPoint2, myTriangle1, myTriangle2);
+         i,
+         myPoint1,
+         myPoint2,
+         myTriangle1,
+         myTriangle2);
 }

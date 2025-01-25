@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -25,23 +25,17 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Standard_Integer.hxx>
 
-//=======================================================================
-//function : RWStepVisual_RWTessellatedEdge
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 RWStepVisual_RWTessellatedEdge::RWStepVisual_RWTessellatedEdge() {}
 
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
-
-void RWStepVisual_RWTessellatedEdge::ReadStep (const Handle(StepData_StepReaderData)& theData,
-                                               const Standard_Integer theNum,
-                                               Handle(Interface_Check)& theCheck,
-                                               const Handle(StepVisual_TessellatedEdge)& theEnt) const
+void RWStepVisual_RWTessellatedEdge::ReadStep(
+  const Handle(StepData_StepReaderData)&    theData,
+  const Standard_Integer                    theNum,
+  Handle(Interface_Check)&                  theCheck,
+  const Handle(StepVisual_TessellatedEdge)& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theCheck, "tessellated_edge"))
@@ -57,11 +51,15 @@ void RWStepVisual_RWTessellatedEdge::ReadStep (const Handle(StepData_StepReaderD
   // Own fields of TessellatedEdge
 
   Handle(StepVisual_CoordinatesList) aCoordinates;
-  theData->ReadEntity(theNum, 2, "coordinates", theCheck,
-    STANDARD_TYPE(StepVisual_CoordinatesList), aCoordinates);
+  theData->ReadEntity(theNum,
+                      2,
+                      "coordinates",
+                      theCheck,
+                      STANDARD_TYPE(StepVisual_CoordinatesList),
+                      aCoordinates);
 
   StepVisual_EdgeOrCurve aGeometricLink;
-  Standard_Boolean hasGeometricLink = Standard_True;
+  Standard_Boolean       hasGeometricLink = Standard_True;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadEntity(theNum, 3, "geometric_link", theCheck, aGeometricLink);
@@ -69,15 +67,15 @@ void RWStepVisual_RWTessellatedEdge::ReadStep (const Handle(StepData_StepReaderD
   else
   {
     hasGeometricLink = Standard_False;
-    aGeometricLink = StepVisual_EdgeOrCurve();
+    aGeometricLink   = StepVisual_EdgeOrCurve();
   }
 
   Handle(TColStd_HArray1OfInteger) aLineStrip;
-  Standard_Integer sub4 = 0;
+  Standard_Integer                 sub4 = 0;
   if (theData->ReadSubList(theNum, 4, "line_strip", theCheck, sub4))
   {
-    Standard_Integer nb0 = theData->NbParams(sub4);
-    aLineStrip = new TColStd_HArray1OfInteger(1, nb0);
+    Standard_Integer nb0  = theData->NbParams(sub4);
+    aLineStrip            = new TColStd_HArray1OfInteger(1, nb0);
     Standard_Integer num2 = sub4;
     for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
     {
@@ -88,16 +86,18 @@ void RWStepVisual_RWTessellatedEdge::ReadStep (const Handle(StepData_StepReaderD
   }
 
   // Initialize entity
-  theEnt->Init(aRepresentationItem_Name, aCoordinates, hasGeometricLink, aGeometricLink, aLineStrip);
+  theEnt->Init(aRepresentationItem_Name,
+               aCoordinates,
+               hasGeometricLink,
+               aGeometricLink,
+               aLineStrip);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepVisual_RWTessellatedEdge::WriteStep (StepData_StepWriter& theSW,
-                                                const Handle(StepVisual_TessellatedEdge)& theEnt) const
+void RWStepVisual_RWTessellatedEdge::WriteStep(
+  StepData_StepWriter&                      theSW,
+  const Handle(StepVisual_TessellatedEdge)& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -126,13 +126,10 @@ void RWStepVisual_RWTessellatedEdge::WriteStep (StepData_StepWriter& theSW,
   theSW.CloseSub();
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepVisual_RWTessellatedEdge::Share (const Handle(StepVisual_TessellatedEdge)&theEnt,
-                                            Interface_EntityIterator& theIter) const
+void RWStepVisual_RWTessellatedEdge::Share(const Handle(StepVisual_TessellatedEdge)& theEnt,
+                                           Interface_EntityIterator&                 theIter) const
 {
 
   // Inherited fields of RepresentationItem

@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Bnd_Sphere> Bnd_Array1OfSphere;
 
-
 #endif

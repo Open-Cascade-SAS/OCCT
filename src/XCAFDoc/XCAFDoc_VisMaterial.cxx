@@ -21,108 +21,89 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_VisMaterial, TDF_Attribute)
 
-//=======================================================================
-//function : GetID
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 const Standard_GUID& XCAFDoc_VisMaterial::GetID()
 {
-  static Standard_GUID THE_VIS_MAT_ID ("EBB00255-03A0-4845-BD3B-A70EEDEEFA78");
+  static Standard_GUID THE_VIS_MAT_ID("EBB00255-03A0-4845-BD3B-A70EEDEEFA78");
   return THE_VIS_MAT_ID;
 }
 
-//=======================================================================
-//function : Constructor
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 XCAFDoc_VisMaterial::XCAFDoc_VisMaterial()
-: myAlphaMode (Graphic3d_AlphaMode_BlendAuto),
-  myAlphaCutOff (0.5f),
-  myFaceCulling (Graphic3d_TypeOfBackfacingModel_Auto)
+    : myAlphaMode(Graphic3d_AlphaMode_BlendAuto),
+      myAlphaCutOff(0.5f),
+      myFaceCulling(Graphic3d_TypeOfBackfacingModel_Auto)
 {
-  myPbrMat   .IsDefined = false;
+  myPbrMat.IsDefined    = false;
   myCommonMat.IsDefined = false;
 }
 
-//=======================================================================
-//function : SetMetalRougnessMaterial
-//purpose  :
-//=======================================================================
-void XCAFDoc_VisMaterial::SetPbrMaterial (const XCAFDoc_VisMaterialPBR& theMaterial)
+//=================================================================================================
+
+void XCAFDoc_VisMaterial::SetPbrMaterial(const XCAFDoc_VisMaterialPBR& theMaterial)
 {
   Backup();
   myPbrMat = theMaterial;
 }
 
-//=======================================================================
-//function : SetCommonMaterial
-//purpose  :
-//=======================================================================
-void XCAFDoc_VisMaterial::SetCommonMaterial (const XCAFDoc_VisMaterialCommon& theMaterial)
+//=================================================================================================
+
+void XCAFDoc_VisMaterial::SetCommonMaterial(const XCAFDoc_VisMaterialCommon& theMaterial)
 {
   Backup();
   myCommonMat = theMaterial;
 }
 
-//=======================================================================
-//function : SetAlphaMode
-//purpose  :
-//=======================================================================
-void XCAFDoc_VisMaterial::SetAlphaMode (Graphic3d_AlphaMode theMode,
-                                        Standard_ShortReal  theCutOff)
+//=================================================================================================
+
+void XCAFDoc_VisMaterial::SetAlphaMode(Graphic3d_AlphaMode theMode, Standard_ShortReal theCutOff)
 {
   Backup();
   myAlphaMode   = theMode;
   myAlphaCutOff = theCutOff;
 }
 
-//=======================================================================
-//function : SetFaceCulling
-//purpose  :
-//=======================================================================
-void XCAFDoc_VisMaterial::SetFaceCulling (Graphic3d_TypeOfBackfacingModel theFaceCulling)
+//=================================================================================================
+
+void XCAFDoc_VisMaterial::SetFaceCulling(Graphic3d_TypeOfBackfacingModel theFaceCulling)
 {
   Backup();
   myFaceCulling = theFaceCulling;
 }
 
-//=======================================================================
-//function : Restore
-//purpose  :
-//=======================================================================
-void XCAFDoc_VisMaterial::Restore (const Handle(TDF_Attribute)& theWith)
+//=================================================================================================
+
+void XCAFDoc_VisMaterial::Restore(const Handle(TDF_Attribute)& theWith)
 {
-  XCAFDoc_VisMaterial* anOther = dynamic_cast<XCAFDoc_VisMaterial* >(theWith.get());
-  myPbrMat        = anOther->myPbrMat;
-  myCommonMat     = anOther->myCommonMat;
-  myAlphaMode     = anOther->myAlphaMode;
-  myAlphaCutOff   = anOther->myAlphaCutOff;
-  myFaceCulling   = anOther->myFaceCulling;
+  XCAFDoc_VisMaterial* anOther = dynamic_cast<XCAFDoc_VisMaterial*>(theWith.get());
+  myPbrMat                     = anOther->myPbrMat;
+  myCommonMat                  = anOther->myCommonMat;
+  myAlphaMode                  = anOther->myAlphaMode;
+  myAlphaCutOff                = anOther->myAlphaCutOff;
+  myFaceCulling                = anOther->myFaceCulling;
 }
 
-//=======================================================================
-//function : NewEmpty
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Handle(TDF_Attribute) XCAFDoc_VisMaterial::NewEmpty() const
 {
   return new XCAFDoc_VisMaterial();
 }
 
-//=======================================================================
-//function : Paste
-//purpose  :
-//=======================================================================
-void XCAFDoc_VisMaterial::Paste (const Handle(TDF_Attribute)& theInto,
-                                 const Handle(TDF_RelocationTable)& ) const
+//=================================================================================================
+
+void XCAFDoc_VisMaterial::Paste(const Handle(TDF_Attribute)& theInto,
+                                const Handle(TDF_RelocationTable)&) const
 {
-  XCAFDoc_VisMaterial* anOther = dynamic_cast<XCAFDoc_VisMaterial* >(theInto.get());
+  XCAFDoc_VisMaterial* anOther = dynamic_cast<XCAFDoc_VisMaterial*>(theInto.get());
   anOther->Backup();
-  anOther->myPbrMat        = myPbrMat;
-  anOther->myCommonMat     = myCommonMat;
-  anOther->myAlphaMode     = myAlphaMode;
-  anOther->myAlphaCutOff   = myAlphaCutOff;
-  anOther->myFaceCulling   = myFaceCulling;
+  anOther->myPbrMat      = myPbrMat;
+  anOther->myCommonMat   = myCommonMat;
+  anOther->myAlphaMode   = myAlphaMode;
+  anOther->myAlphaCutOff = myAlphaCutOff;
+  anOther->myFaceCulling = myFaceCulling;
 }
 
 // =======================================================================
@@ -137,15 +118,13 @@ Quantity_ColorRGBA XCAFDoc_VisMaterial::BaseColor() const
   }
   else if (myCommonMat.IsDefined)
   {
-    return Quantity_ColorRGBA (myCommonMat.DiffuseColor, 1.0f - myCommonMat.Transparency);
+    return Quantity_ColorRGBA(myCommonMat.DiffuseColor, 1.0f - myCommonMat.Transparency);
   }
-  return Quantity_ColorRGBA (Quantity_NOC_WHITE);
+  return Quantity_ColorRGBA(Quantity_NOC_WHITE);
 }
 
-//=======================================================================
-//function : ConvertToCommonMaterial
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 XCAFDoc_VisMaterialCommon XCAFDoc_VisMaterial::ConvertToCommonMaterial()
 {
   if (myCommonMat.IsDefined)
@@ -159,23 +138,21 @@ XCAFDoc_VisMaterialCommon XCAFDoc_VisMaterial::ConvertToCommonMaterial()
 
   // convert metal-roughness into common
   XCAFDoc_VisMaterialCommon aComMat;
-  aComMat.IsDefined = true;
+  aComMat.IsDefined      = true;
   aComMat.DiffuseTexture = myPbrMat.BaseColorTexture;
-  aComMat.DiffuseColor  = myPbrMat.BaseColor.GetRGB();
-  aComMat.SpecularColor = Quantity_Color (Graphic3d_Vec3 (myPbrMat.Metallic));
-  aComMat.Transparency = 1.0f - myPbrMat.BaseColor.Alpha();
-  aComMat.Shininess    = 1.0f - myPbrMat.Roughness;
+  aComMat.DiffuseColor   = myPbrMat.BaseColor.GetRGB();
+  aComMat.SpecularColor  = Quantity_Color(Graphic3d_Vec3(myPbrMat.Metallic));
+  aComMat.Transparency   = 1.0f - myPbrMat.BaseColor.Alpha();
+  aComMat.Shininess      = 1.0f - myPbrMat.Roughness;
   if (myPbrMat.EmissiveTexture.IsNull())
   {
-    aComMat.EmissiveColor = Quantity_Color (myPbrMat.EmissiveFactor.cwiseMin (Graphic3d_Vec3 (1.0f)));
+    aComMat.EmissiveColor = Quantity_Color(myPbrMat.EmissiveFactor.cwiseMin(Graphic3d_Vec3(1.0f)));
   }
   return aComMat;
 }
 
-//=======================================================================
-//function : ConvertToPbrMaterial
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 XCAFDoc_VisMaterialPBR XCAFDoc_VisMaterial::ConvertToPbrMaterial()
 {
   if (myPbrMat.IsDefined)
@@ -188,46 +165,46 @@ XCAFDoc_VisMaterialPBR XCAFDoc_VisMaterial::ConvertToPbrMaterial()
   }
 
   XCAFDoc_VisMaterialPBR aPbrMat;
-  aPbrMat.IsDefined = true;
+  aPbrMat.IsDefined        = true;
   aPbrMat.BaseColorTexture = myCommonMat.DiffuseTexture;
-  aPbrMat.BaseColor.SetRGB (myCommonMat.DiffuseColor);
-  aPbrMat.BaseColor.SetAlpha (1.0f - myCommonMat.Transparency);
-  aPbrMat.Metallic  = myCommonMat.Transparency <= ShortRealEpsilon()
-                    ? Graphic3d_PBRMaterial::MetallicFromSpecular (myCommonMat.SpecularColor)
-                    : 0.0f;
-  aPbrMat.Roughness = Graphic3d_PBRMaterial::RoughnessFromSpecular (myCommonMat.SpecularColor, myCommonMat.Shininess);
+  aPbrMat.BaseColor.SetRGB(myCommonMat.DiffuseColor);
+  aPbrMat.BaseColor.SetAlpha(1.0f - myCommonMat.Transparency);
+  aPbrMat.Metallic = myCommonMat.Transparency <= ShortRealEpsilon()
+                       ? Graphic3d_PBRMaterial::MetallicFromSpecular(myCommonMat.SpecularColor)
+                       : 0.0f;
+  aPbrMat.Roughness =
+    Graphic3d_PBRMaterial::RoughnessFromSpecular(myCommonMat.SpecularColor, myCommonMat.Shininess);
   aPbrMat.EmissiveFactor = myCommonMat.EmissiveColor;
   return aPbrMat;
 }
 
-//=======================================================================
-//function : FillMaterialAspect
-//purpose  :
-//=======================================================================
-void XCAFDoc_VisMaterial::FillMaterialAspect (Graphic3d_MaterialAspect& theAspect) const
+//=================================================================================================
+
+void XCAFDoc_VisMaterial::FillMaterialAspect(Graphic3d_MaterialAspect& theAspect) const
 {
   if (myCommonMat.IsDefined)
   {
-    theAspect = Graphic3d_MaterialAspect (Graphic3d_NameOfMaterial_UserDefined);
-    theAspect.SetAmbientColor (myCommonMat.AmbientColor);
-    theAspect.SetDiffuseColor (myCommonMat.DiffuseColor);
+    theAspect = Graphic3d_MaterialAspect(Graphic3d_NameOfMaterial_UserDefined);
+    theAspect.SetAmbientColor(myCommonMat.AmbientColor);
+    theAspect.SetDiffuseColor(myCommonMat.DiffuseColor);
     theAspect.SetSpecularColor(myCommonMat.SpecularColor);
     theAspect.SetEmissiveColor(myCommonMat.EmissiveColor);
-    theAspect.SetTransparency (myCommonMat.Transparency);
-    theAspect.SetShininess    (myCommonMat.Shininess);
+    theAspect.SetTransparency(myCommonMat.Transparency);
+    theAspect.SetShininess(myCommonMat.Shininess);
 
     // convert common into metal-roughness
     if (!myPbrMat.IsDefined)
     {
       Graphic3d_PBRMaterial aPbr;
-      aPbr.SetColor (myCommonMat.DiffuseColor);
-      aPbr.SetMetallic (myCommonMat.Transparency <= ShortRealEpsilon()
-                      ? Graphic3d_PBRMaterial::MetallicFromSpecular (myCommonMat.SpecularColor)
-                      : 0.0f);
-      aPbr.SetRoughness (Graphic3d_PBRMaterial::RoughnessFromSpecular (myCommonMat.SpecularColor, myCommonMat.Shininess));
-      aPbr.SetEmission (myCommonMat.EmissiveColor);
-      theAspect.SetPBRMaterial (aPbr);
-      theAspect.SetBSDF (Graphic3d_BSDF::CreateMetallicRoughness (aPbr));
+      aPbr.SetColor(myCommonMat.DiffuseColor);
+      aPbr.SetMetallic(myCommonMat.Transparency <= ShortRealEpsilon()
+                         ? Graphic3d_PBRMaterial::MetallicFromSpecular(myCommonMat.SpecularColor)
+                         : 0.0f);
+      aPbr.SetRoughness(Graphic3d_PBRMaterial::RoughnessFromSpecular(myCommonMat.SpecularColor,
+                                                                     myCommonMat.Shininess));
+      aPbr.SetEmission(myCommonMat.EmissiveColor);
+      theAspect.SetPBRMaterial(aPbr);
+      theAspect.SetBSDF(Graphic3d_BSDF::CreateMetallicRoughness(aPbr));
     }
   }
 
@@ -236,36 +213,35 @@ void XCAFDoc_VisMaterial::FillMaterialAspect (Graphic3d_MaterialAspect& theAspec
     if (!myCommonMat.IsDefined)
     {
       // convert metal-roughness into common
-      theAspect = Graphic3d_MaterialAspect (Graphic3d_NameOfMaterial_UserDefined);
-      theAspect.SetDiffuseColor (myPbrMat.BaseColor.GetRGB());
-      theAspect.SetAlpha        (myPbrMat.BaseColor.Alpha());
-      theAspect.SetSpecularColor(Quantity_Color (Graphic3d_Vec3 (myPbrMat.Metallic)));
-      theAspect.SetShininess    (1.0f - myPbrMat.Roughness);
+      theAspect = Graphic3d_MaterialAspect(Graphic3d_NameOfMaterial_UserDefined);
+      theAspect.SetDiffuseColor(myPbrMat.BaseColor.GetRGB());
+      theAspect.SetAlpha(myPbrMat.BaseColor.Alpha());
+      theAspect.SetSpecularColor(Quantity_Color(Graphic3d_Vec3(myPbrMat.Metallic)));
+      theAspect.SetShininess(1.0f - myPbrMat.Roughness);
       if (theAspect.Shininess() < 0.01f)
       {
         // clamp too small shininess values causing visual artifacts on corner view angles
-        theAspect.SetShininess (0.01f);
+        theAspect.SetShininess(0.01f);
       }
-      theAspect.SetEmissiveColor (Quantity_Color (myPbrMat.EmissiveFactor.cwiseMin (Graphic3d_Vec3 (1.0f))));
+      theAspect.SetEmissiveColor(
+        Quantity_Color(myPbrMat.EmissiveFactor.cwiseMin(Graphic3d_Vec3(1.0f))));
     }
 
     Graphic3d_PBRMaterial aPbr;
-    aPbr.SetColor    (myPbrMat.BaseColor);
-    aPbr.SetMetallic (myPbrMat.Metallic);
+    aPbr.SetColor(myPbrMat.BaseColor);
+    aPbr.SetMetallic(myPbrMat.Metallic);
     aPbr.SetRoughness(myPbrMat.Roughness);
-    aPbr.SetEmission (myPbrMat.EmissiveFactor);
-    aPbr.SetIOR      (myPbrMat.RefractionIndex);
-    theAspect.SetRefractionIndex (myPbrMat.RefractionIndex);
-    theAspect.SetPBRMaterial (aPbr);
-    theAspect.SetBSDF (Graphic3d_BSDF::CreateMetallicRoughness (aPbr));
+    aPbr.SetEmission(myPbrMat.EmissiveFactor);
+    aPbr.SetIOR(myPbrMat.RefractionIndex);
+    theAspect.SetRefractionIndex(myPbrMat.RefractionIndex);
+    theAspect.SetPBRMaterial(aPbr);
+    theAspect.SetBSDF(Graphic3d_BSDF::CreateMetallicRoughness(aPbr));
   }
 }
 
-//=======================================================================
-//function : FillAspect
-//purpose  :
-//=======================================================================
-void XCAFDoc_VisMaterial::FillAspect (const Handle(Graphic3d_Aspects)& theAspect) const
+//=================================================================================================
+
+void XCAFDoc_VisMaterial::FillAspect(const Handle(Graphic3d_Aspects)& theAspect) const
 {
   if (IsEmpty())
   {
@@ -273,66 +249,89 @@ void XCAFDoc_VisMaterial::FillAspect (const Handle(Graphic3d_Aspects)& theAspect
   }
 
   Graphic3d_MaterialAspect aMaterial;
-  FillMaterialAspect (aMaterial);
-  theAspect->SetFrontMaterial (aMaterial);
-  theAspect->SetAlphaMode (myAlphaMode , myAlphaCutOff);
-  theAspect->SetFaceCulling (myFaceCulling);
+  FillMaterialAspect(aMaterial);
+  theAspect->SetFrontMaterial(aMaterial);
+  theAspect->SetAlphaMode(myAlphaMode, myAlphaCutOff);
+  theAspect->SetFaceCulling(myFaceCulling);
 
-  const Handle(Image_Texture)& aColorTexture = !myPbrMat.BaseColorTexture.IsNull() ? myPbrMat.BaseColorTexture : myCommonMat.DiffuseTexture;
+  const Handle(Image_Texture)& aColorTexture =
+    !myPbrMat.BaseColorTexture.IsNull() ? myPbrMat.BaseColorTexture : myCommonMat.DiffuseTexture;
   Standard_Integer aNbTexUnits = 0;
-  if (!aColorTexture.IsNull())             { ++aNbTexUnits; }
-  if (!myPbrMat.EmissiveTexture.IsNull())  { ++aNbTexUnits; }
-  if (!myPbrMat.NormalTexture.IsNull())    { ++aNbTexUnits; }
-  if (!myPbrMat.OcclusionTexture.IsNull()) { ++aNbTexUnits; }
-  if (!myPbrMat.MetallicRoughnessTexture.IsNull()) { ++aNbTexUnits; }
+  if (!aColorTexture.IsNull())
+  {
+    ++aNbTexUnits;
+  }
+  if (!myPbrMat.EmissiveTexture.IsNull())
+  {
+    ++aNbTexUnits;
+  }
+  if (!myPbrMat.NormalTexture.IsNull())
+  {
+    ++aNbTexUnits;
+  }
+  if (!myPbrMat.OcclusionTexture.IsNull())
+  {
+    ++aNbTexUnits;
+  }
+  if (!myPbrMat.MetallicRoughnessTexture.IsNull())
+  {
+    ++aNbTexUnits;
+  }
   if (aNbTexUnits == 0)
   {
     return;
   }
 
-  Standard_Integer aTexIter = 0;
-  Handle(Graphic3d_TextureSet) aTextureSet = new Graphic3d_TextureSet (aNbTexUnits);
+  Standard_Integer             aTexIter    = 0;
+  Handle(Graphic3d_TextureSet) aTextureSet = new Graphic3d_TextureSet(aNbTexUnits);
   if (!aColorTexture.IsNull())
   {
-    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (aColorTexture, Graphic3d_TextureUnit_BaseColor));
+    aTextureSet->SetValue(aTexIter++,
+                          new XCAFPrs_Texture(aColorTexture, Graphic3d_TextureUnit_BaseColor));
   }
   if (!myPbrMat.EmissiveTexture.IsNull())
   {
-    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (myPbrMat.EmissiveTexture, Graphic3d_TextureUnit_Emissive));
+    aTextureSet->SetValue(
+      aTexIter++,
+      new XCAFPrs_Texture(myPbrMat.EmissiveTexture, Graphic3d_TextureUnit_Emissive));
   }
   if (!myPbrMat.OcclusionTexture.IsNull())
   {
-    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (myPbrMat.OcclusionTexture, Graphic3d_TextureUnit_Occlusion));
+    aTextureSet->SetValue(
+      aTexIter++,
+      new XCAFPrs_Texture(myPbrMat.OcclusionTexture, Graphic3d_TextureUnit_Occlusion));
   }
   if (!myPbrMat.NormalTexture.IsNull())
   {
-    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (myPbrMat.NormalTexture, Graphic3d_TextureUnit_Normal));
+    aTextureSet->SetValue(
+      aTexIter++,
+      new XCAFPrs_Texture(myPbrMat.NormalTexture, Graphic3d_TextureUnit_Normal));
   }
   if (!myPbrMat.MetallicRoughnessTexture.IsNull())
   {
-    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (myPbrMat.MetallicRoughnessTexture, Graphic3d_TextureUnit_MetallicRoughness));
+    aTextureSet->SetValue(aTexIter++,
+                          new XCAFPrs_Texture(myPbrMat.MetallicRoughnessTexture,
+                                              Graphic3d_TextureUnit_MetallicRoughness));
   }
 
-  theAspect->SetTextureSet (aTextureSet);
-  theAspect->SetTextureMapOn (true);
+  theAspect->SetTextureSet(aTextureSet);
+  theAspect->SetTextureMapOn(true);
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void XCAFDoc_VisMaterial::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+//=================================================================================================
+
+void XCAFDoc_VisMaterial::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDF_Attribute)
 
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myRawName.get())
+  OCCT_DUMP_FIELD_VALUE_STRING(theOStream, myRawName.get())
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPbrMat)
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myCommonMat)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myPbrMat)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myCommonMat)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAlphaMode)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAlphaCutOff)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFaceCulling)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myAlphaMode)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myAlphaCutOff)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myFaceCulling)
 }

@@ -84,20 +84,21 @@
 //! Example of usage of the algorithm:
 //! ~~~~
 //! TopoDS_Shape aShape = ...;                 // The shape to make periodic
-//! Standard_Boolean bMakeXPeriodic = ...;     // Flag for making or not the shape periodic in X direction
-//! Standard_Real aXPeriod = ...;              // X period for the shape
-//! Standard_Boolean isXTrimmed = ...;         // Flag defining whether it is necessary to trimming
+//! Standard_Boolean bMakeXPeriodic = ...;     // Flag for making or not the shape periodic in X
+//! direction Standard_Real aXPeriod = ...;              // X period for the shape Standard_Boolean
+//! isXTrimmed = ...;         // Flag defining whether it is necessary to trimming
 //!                                            // the shape to fit to X period
 //! Standard_Real aXFirst = ...;               // Start of the X period
-//!                                            // (really necessary only if the trimming is requested)
+//!                                            // (really necessary only if the trimming is
+//!                                            requested)
 //! Standard_Boolean bRunParallel = ...;       // Parallel processing mode or single
 //!
 //! BOPAlgo_MakePeriodic aPeriodicityMaker;                   // Periodicity maker
 //! aPeriodicityMaker.SetShape(aShape);                       // Set the shape
-//! aPeriodicityMaker.MakeXPeriodic(bMakePeriodic, aXPeriod); // Making the shape periodic in X direction
-//! aPeriodicityMaker.SetTrimmed(isXTrimmed, aXFirst);        // Trim the shape to fit X period
-//! aPeriodicityMaker.SetRunParallel(bRunParallel);           // Set the parallel processing mode
-//! aPeriodicityMaker.Perform();                              // Performing the operation
+//! aPeriodicityMaker.MakeXPeriodic(bMakePeriodic, aXPeriod); // Making the shape periodic in X
+//! direction aPeriodicityMaker.SetTrimmed(isXTrimmed, aXFirst);        // Trim the shape to fit X
+//! period aPeriodicityMaker.SetRunParallel(bRunParallel);           // Set the parallel processing
+//! mode aPeriodicityMaker.Perform();                              // Performing the operation
 //!
 //! if (aPeriodicityMaker.HasErrors())                        // Check for the errors
 //! {
@@ -123,37 +124,26 @@
 class BOPAlgo_MakePeriodic : public BOPAlgo_Options
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
 public: //! @name Constructor
-
   //! Empty constructor
-  BOPAlgo_MakePeriodic() : BOPAlgo_Options()
+  BOPAlgo_MakePeriodic()
+      : BOPAlgo_Options()
   {
     myRepeatPeriod[0] = myRepeatPeriod[1] = myRepeatPeriod[2] = 0.0;
   }
 
-
 public: //! @name Setting the shape to make it periodic
-
   //! Sets the shape to make it periodic.
   //! @param[in] theShape  The shape to make periodic.
-  void SetShape(const TopoDS_Shape& theShape)
-  {
-    myInputShape = theShape;
-  }
-
+  void SetShape(const TopoDS_Shape& theShape) { myInputShape = theShape; }
 
 public: //! @name Definition of the structure to keep all periodicity parameters
-
   //! Structure to keep all periodicity parameters:
   struct PeriodicityParams
   {
-    PeriodicityParams()
-    {
-      Clear();
-    }
+    PeriodicityParams() { Clear(); }
 
     //! Returns all previously set parameters to default values
     void Clear()
@@ -164,21 +154,19 @@ public: //! @name Definition of the structure to keep all periodicity parameters
       myPeriodFirst[0] = myPeriodFirst[1] = myPeriodFirst[2] = 0.0;
     }
 
-    Standard_Boolean myPeriodic[3];  //!< Array of flags defining whether the shape should be
-                                     //! periodic in XYZ directions
-    Standard_Real myPeriod[3];       //!< Array of XYZ period values. Defining the period for any
-                                     //! direction the corresponding flag for that direction in
-                                     //! myPeriodic should be set to true
-// clang-format off
+    Standard_Boolean myPeriodic[3]; //!< Array of flags defining whether the shape should be
+                                    //! periodic in XYZ directions
+    Standard_Real myPeriod[3];      //!< Array of XYZ period values. Defining the period for any
+                                    //! direction the corresponding flag for that direction in
+                                    //! myPeriodic should be set to true
+                                    // clang-format off
     Standard_Boolean myIsTrimmed[3]; //!< Array of flags defining whether the input shape has to be
                                      //! trimmed to fit the required period in the required direction
     Standard_Real myPeriodFirst[3];  //!< Array of start parameters of the XYZ periods: required for trimming
-// clang-format on
+                                    // clang-format on
   };
 
-
 public: //! @name Setters/Getters for periodicity parameters structure
-
   //! Sets the periodicity parameters.
   //! @param[in] theParams  Periodicity parameters
   void SetPeriodicityParameters(const PeriodicityParams& theParams)
@@ -186,14 +174,9 @@ public: //! @name Setters/Getters for periodicity parameters structure
     myPeriodicityParams = theParams;
   }
 
-  const PeriodicityParams& PeriodicityParameters() const
-  {
-    return myPeriodicityParams;
-  }
-
+  const PeriodicityParams& PeriodicityParameters() const { return myPeriodicityParams; }
 
 public: //! @name Methods for setting/getting periodicity info using ID as a direction
-
   //! Sets the flag to make the shape periodic in specified direction:
   //! - 0 - X direction;
   //! - 1 - Y direction;
@@ -204,11 +187,11 @@ public: //! @name Methods for setting/getting periodicity info using ID as a dir
   //! @param[in] thePeriod  Required period in given direction.
   void MakePeriodic(const Standard_Integer theDirectionID,
                     const Standard_Boolean theIsPeriodic,
-                    const Standard_Real thePeriod = 0.0)
+                    const Standard_Real    thePeriod = 0.0)
   {
-    Standard_Integer id = ToDirectionID(theDirectionID);
+    Standard_Integer id                = ToDirectionID(theDirectionID);
     myPeriodicityParams.myPeriodic[id] = theIsPeriodic;
-    myPeriodicityParams.myPeriod[id] = theIsPeriodic ? thePeriod : 0.0;
+    myPeriodicityParams.myPeriod[id]   = theIsPeriodic ? thePeriod : 0.0;
   }
 
   //! Returns the info about Periodicity of the shape in specified direction.
@@ -226,14 +209,11 @@ public: //! @name Methods for setting/getting periodicity info using ID as a dir
     return myPeriodicityParams.myPeriodic[id] ? myPeriodicityParams.myPeriod[id] : 0.0;
   }
 
-
 public: //! @name Named methods for setting/getting info about shape's periodicity
-
   //! Sets the flag to make the shape periodic in X direction.
   //! @param[in] theIsPeriodic  Flag defining periodicity in X direction;
   //! @param[in] thePeriod  Required period in X direction.
-  void MakeXPeriodic(const Standard_Boolean theIsPeriodic,
-                     const Standard_Real thePeriod = 0.0)
+  void MakeXPeriodic(const Standard_Boolean theIsPeriodic, const Standard_Real thePeriod = 0.0)
   {
     MakePeriodic(0, theIsPeriodic, thePeriod);
   }
@@ -247,8 +227,7 @@ public: //! @name Named methods for setting/getting info about shape's periodici
   //! Sets the flag to make the shape periodic in Y direction.
   //! @param[in] theIsPeriodic  Flag defining periodicity in Y direction;
   //! @param[in] thePeriod  Required period in Y direction.
-  void MakeYPeriodic(const Standard_Boolean theIsPeriodic,
-                     const Standard_Real thePeriod = 0.0)
+  void MakeYPeriodic(const Standard_Boolean theIsPeriodic, const Standard_Real thePeriod = 0.0)
   {
     MakePeriodic(1, theIsPeriodic, thePeriod);
   }
@@ -262,8 +241,7 @@ public: //! @name Named methods for setting/getting info about shape's periodici
   //! Sets the flag to make the shape periodic in Z direction.
   //! @param[in] theIsPeriodic  Flag defining periodicity in Z direction;
   //! @param[in] thePeriod  Required period in Z direction.
-  void MakeZPeriodic(const Standard_Boolean theIsPeriodic,
-                     const Standard_Real thePeriod = 0.0)
+  void MakeZPeriodic(const Standard_Boolean theIsPeriodic, const Standard_Real thePeriod = 0.0)
   {
     MakePeriodic(2, theIsPeriodic, thePeriod);
   }
@@ -274,9 +252,7 @@ public: //! @name Named methods for setting/getting info about shape's periodici
   //! Returns the ZPeriod of the shape.
   Standard_Real ZPeriod() const { return Period(2); }
 
-
 public: //! @name Methods for setting/getting trimming info taking Direction ID as a parameter
-
   //! Defines whether the input shape is already trimmed in specified direction
   //! to fit the period in this direction.
   //! Direction is defined by an ID:
@@ -295,12 +271,12 @@ public: //! @name Methods for setting/getting trimming info taking Direction ID 
   //! @param[in] theFirst  The first periodic parameter in the given direction.
   void SetTrimmed(const Standard_Integer theDirectionID,
                   const Standard_Boolean theIsTrimmed,
-                  const Standard_Real theFirst = 0.0)
+                  const Standard_Real    theFirst = 0.0)
   {
     Standard_Integer id = ToDirectionID(theDirectionID);
     if (IsPeriodic(id))
     {
-      myPeriodicityParams.myIsTrimmed[id] = theIsTrimmed;
+      myPeriodicityParams.myIsTrimmed[id]   = theIsTrimmed;
       myPeriodicityParams.myPeriodFirst[id] = !theIsTrimmed ? theFirst : 0.0;
     }
   }
@@ -320,9 +296,7 @@ public: //! @name Methods for setting/getting trimming info taking Direction ID 
     return !myPeriodicityParams.myIsTrimmed[id] ? myPeriodicityParams.myPeriodFirst[id] : 0.0;
   }
 
-
 public: //! @name Named methods for setting/getting trimming info
-
   //! Defines whether the input shape is already trimmed in X direction
   //! to fit the X period. If the shape is not trimmed it is required
   //! to set the first parameter for the X period.
@@ -333,23 +307,16 @@ public: //! @name Named methods for setting/getting trimming info
   //! @param[in] theIsTrimmed  Flag defining whether the shape is already trimmed
   //!                          in X direction to fit the X period;
   //! @param[in] theFirst  The first X periodic parameter.
-  void SetXTrimmed(const Standard_Boolean theIsTrimmed,
-                   const Standard_Boolean theFirst = 0.0)
+  void SetXTrimmed(const Standard_Boolean theIsTrimmed, const Standard_Boolean theFirst = 0.0)
   {
     SetTrimmed(0, theIsTrimmed, theFirst);
   }
 
   //! Returns whether the input shape was already trimmed for X period.
-  Standard_Boolean IsInputXTrimmed() const
-  {
-    return IsInputTrimmed(0);
-  }
+  Standard_Boolean IsInputXTrimmed() const { return IsInputTrimmed(0); }
 
   //! Returns the first parameter for the X period.
-  Standard_Real XPeriodFirst() const
-  {
-    return PeriodFirst(0);
-  }
+  Standard_Real XPeriodFirst() const { return PeriodFirst(0); }
 
   //! Defines whether the input shape is already trimmed in Y direction
   //! to fit the Y period. If the shape is not trimmed it is required
@@ -361,23 +328,16 @@ public: //! @name Named methods for setting/getting trimming info
   //! @param[in] theIsTrimmed  Flag defining whether the shape is already trimmed
   //!                          in Y direction to fit the Y period;
   //! @param[in] theFirst  The first Y periodic parameter.
-  void SetYTrimmed(const Standard_Boolean theIsTrimmed,
-                   const Standard_Boolean theFirst = 0.0)
+  void SetYTrimmed(const Standard_Boolean theIsTrimmed, const Standard_Boolean theFirst = 0.0)
   {
     SetTrimmed(1, theIsTrimmed, theFirst);
   }
 
   //! Returns whether the input shape was already trimmed for Y period.
-  Standard_Boolean IsInputYTrimmed() const
-  {
-    return IsInputTrimmed(1);
-  }
+  Standard_Boolean IsInputYTrimmed() const { return IsInputTrimmed(1); }
 
   //! Returns the first parameter for the Y period.
-  Standard_Real YPeriodFirst() const
-  {
-    return PeriodFirst(1);
-  }
+  Standard_Real YPeriodFirst() const { return PeriodFirst(1); }
 
   //! Defines whether the input shape is already trimmed in Z direction
   //! to fit the Z period. If the shape is not trimmed it is required
@@ -389,32 +349,22 @@ public: //! @name Named methods for setting/getting trimming info
   //! @param[in] theIsTrimmed  Flag defining whether the shape is already trimmed
   //!                          in Z direction to fit the Z period;
   //! @param[in] theFirst  The first Z periodic parameter.
-  void SetZTrimmed(const Standard_Boolean theIsTrimmed,
-                   const Standard_Boolean theFirst = 0.0)
+  void SetZTrimmed(const Standard_Boolean theIsTrimmed, const Standard_Boolean theFirst = 0.0)
   {
     SetTrimmed(2, theIsTrimmed, theFirst);
   }
 
   //! Returns whether the input shape was already trimmed for Z period.
-  Standard_Boolean IsInputZTrimmed() const
-  {
-    return IsInputTrimmed(2);
-  }
+  Standard_Boolean IsInputZTrimmed() const { return IsInputTrimmed(2); }
 
   //! Returns the first parameter for the Z period.
-  Standard_Real ZPeriodFirst() const
-  {
-    return PeriodFirst(2);
-  }
+  Standard_Real ZPeriodFirst() const { return PeriodFirst(2); }
 
 public: //! @name Performing  the operation
-
   //! Makes the shape periodic in necessary directions
   Standard_EXPORT void Perform();
 
-
 public: //! @name Using the algorithm to repeat the shape
-
   //! Performs repetition of the shape in specified direction
   //! required number of times.
   //! Negative value of times means that the repetition should
@@ -432,10 +382,7 @@ public: //! @name Using the algorithm to repeat the shape
   //! Makes the repeated shape a base for following repetitions.
   //!
   //! @param[in] theTimes  Requested number of repetitions.
-  const TopoDS_Shape& XRepeat(const Standard_Integer theTimes)
-  {
-    return RepeatShape(0, theTimes);
-  }
+  const TopoDS_Shape& XRepeat(const Standard_Integer theTimes) { return RepeatShape(0, theTimes); }
 
   //! Repeats the shape in Y direction specified number of times.
   //! Negative value of times means that the repetition should be
@@ -443,10 +390,7 @@ public: //! @name Using the algorithm to repeat the shape
   //! Makes the repeated shape a base for following repetitions.
   //!
   //! @param[in] theTimes  Requested number of repetitions.
-  const TopoDS_Shape& YRepeat(const Standard_Integer theTimes)
-  {
-    return RepeatShape(1, theTimes);
-  }
+  const TopoDS_Shape& YRepeat(const Standard_Integer theTimes) { return RepeatShape(1, theTimes); }
 
   //! Repeats the shape in Z direction specified number of times.
   //! Negative value of times means that the repetition should be
@@ -454,14 +398,9 @@ public: //! @name Using the algorithm to repeat the shape
   //! Makes the repeated shape a base for following repetitions.
   //!
   //! @param[in] theTimes  Requested number of repetitions.
-  const TopoDS_Shape& ZRepeat(const Standard_Integer theTimes)
-  {
-    return RepeatShape(2, theTimes);
-  }
-
+  const TopoDS_Shape& ZRepeat(const Standard_Integer theTimes) { return RepeatShape(2, theTimes); }
 
 public: //! @name Starting the repetitions over
-
   //! Returns the repeated shape
   const TopoDS_Shape& RepeatedShape() const { return myRepeatedShape; }
 
@@ -481,13 +420,10 @@ public: //! @name Starting the repetitions over
   }
 
 public: //! @name Obtaining the result shape
-
   //! Returns the resulting periodic shape
   const TopoDS_Shape& Shape() const { return myShape; }
 
-
 public: //! @name Getting the identical shapes
-
   //! Returns the identical shapes for the given shape located
   //! on the opposite periodic side.
   //! Returns empty list in case the shape has no twin.
@@ -501,17 +437,11 @@ public: //! @name Getting the identical shapes
     return (aTwins ? *aTwins : empty);
   }
 
-
 public: //! @name Getting the History of the algorithm
-
   //! Returns the History of the algorithm
-  const Handle(BRepTools_History)& History() const
-  {
-    return myHistory;
-  }
+  const Handle(BRepTools_History)& History() const { return myHistory; }
 
 public: //! @name Clearing the algorithm from previous runs
-
   //! Clears the algorithm from previous runs
   void Clear()
   {
@@ -526,18 +456,14 @@ public: //! @name Clearing the algorithm from previous runs
     ClearRepetitions();
   }
 
-
 public: //! @name Conversion of the integer to ID of periodic direction
-
   //! Converts the integer to ID of periodic direction
   static Standard_Integer ToDirectionID(const Standard_Integer theDirectionID)
   {
     return Abs(theDirectionID % 3);
   }
 
-
 protected: //! @name Protected methods performing the operation
-
   //! Checks the validity of input data
   Standard_EXPORT void CheckData();
 
@@ -566,8 +492,8 @@ protected: //! @name Protected methods performing the operation
   //! @param[out] theSplitShapeHistory  The history of shape split
   //! @param[out] theSplitToolsHistory  The history of tools modifications during the split
   Standard_EXPORT void SplitShape(const TopTools_ListOfShape& theTools,
-                                  Handle(BRepTools_History) theSplitShapeHistory = NULL,
-                                  Handle(BRepTools_History) theSplitToolsHistory = NULL);
+                                  Handle(BRepTools_History)   theSplitShapeHistory = NULL,
+                                  Handle(BRepTools_History)   theSplitToolsHistory = NULL);
 
   //! Updates the map of twins after periodic shape repetition.
   //! @param[in] theTranslationHistory  The history of translation of the periodic shape.
@@ -575,33 +501,30 @@ protected: //! @name Protected methods performing the operation
   Standard_EXPORT void UpdateTwins(const BRepTools_History& theTranslationHistory,
                                    const BRepTools_History& theGluingHistory);
 
-
 protected: //! @name Fields
-
   // Inputs
-  TopoDS_Shape myInputShape;         //!< Input shape to make periodic
+  TopoDS_Shape myInputShape; //!< Input shape to make periodic
 
   PeriodicityParams myPeriodicityParams; //!< Periodicity parameters
 
   // Results
-  TopoDS_Shape myShape;                //!< Resulting periodic shape (base for repetitions)
-  TopoDS_Shape myRepeatedShape;        //!< Resulting shape after making repetitions of the base
-  Standard_Real myRepeatPeriod[3];     //!< XYZ repeat period
-// clang-format off
+  TopoDS_Shape  myShape;           //!< Resulting periodic shape (base for repetitions)
+  TopoDS_Shape  myRepeatedShape;   //!< Resulting shape after making repetitions of the base
+  Standard_Real myRepeatPeriod[3]; //!< XYZ repeat period
+                                   // clang-format off
   TopTools_DataMapOfShapeListOfShape myRepeatedTwins; //!< Map of associations of the identical sub-shapes
                                                       //! after repetition of the periodic shape
-// clang-format on
+                                   // clang-format on
 
   // Twins
   TopTools_DataMapOfShapeListOfShape myTwins; //!< Map of associations of the identical sub-shapes
                                               //! located on the opposite sides of the shape
 
   // History
-  Handle(BRepTools_History) mySplitHistory;  //!< Split history - history of shapes modification
-                                             //! after the split for making the shape periodic
-  Handle(BRepTools_History) myHistory;       //!< Final history of shapes modifications
-                                             //! (to include the history of shape repetition)
-
+  Handle(BRepTools_History) mySplitHistory; //!< Split history - history of shapes modification
+                                            //! after the split for making the shape periodic
+  Handle(BRepTools_History) myHistory;      //!< Final history of shapes modifications
+                                            //! (to include the history of shape repetition)
 };
 
 #endif // _BOPAlgo_MakePeriodic_HeaderFile

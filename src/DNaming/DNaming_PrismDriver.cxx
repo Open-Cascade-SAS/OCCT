@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepCheck_Analyzer.hxx>
@@ -46,27 +45,23 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(DNaming_PrismDriver,TFunction_Driver)
+IMPLEMENT_STANDARD_RTTIEXT(DNaming_PrismDriver, TFunction_Driver)
 
 // OCC
 // OCAF
-//=======================================================================
-//function : DNaming_PrismDriver
-//purpose  : Constructor
-//=======================================================================
-DNaming_PrismDriver::DNaming_PrismDriver()
-{}
+//=================================================================================================
+
+DNaming_PrismDriver::DNaming_PrismDriver() {}
 
 //=======================================================================
-//function : Validate
-//purpose  : Validates labels of a function in <theLog>.
+// function : Validate
+// purpose  : Validates labels of a function in <theLog>.
 //=======================================================================
-void DNaming_PrismDriver::Validate(Handle(TFunction_Logbook)&) const
-{}
+void DNaming_PrismDriver::Validate(Handle(TFunction_Logbook)&) const {}
 
 //=======================================================================
-//function : MustExecute
-//purpose  : Analyses in <theLog> if the loaded function must be executed
+// function : MustExecute
+// purpose  : Analyses in <theLog> if the loaded function must be executed
 //=======================================================================
 Standard_Boolean DNaming_PrismDriver::MustExecute(const Handle(TFunction_Logbook)&) const
 {
@@ -74,98 +69,112 @@ Standard_Boolean DNaming_PrismDriver::MustExecute(const Handle(TFunction_Logbook
 }
 
 #ifdef OCCT_DEBUG
-#include <BRepTools.hxx>
-static void Write(const TopoDS_Shape& shape,
-		      const Standard_CString filename) 
+  #include <BRepTools.hxx>
+
+static void Write(const TopoDS_Shape& shape, const Standard_CString filename)
 {
   std::ofstream save;
   save.open(filename);
   save << "DBRep_DrawableShape" << std::endl << std::endl;
-  if(!shape.IsNull()) BRepTools::Write(shape, save);
+  if (!shape.IsNull())
+    BRepTools::Write(shape, save);
   save.close();
 }
 #endif
 //=======================================================================
-//function : Execute
-//purpose  : Executes the function 
+// function : Execute
+// purpose  : Executes the function
 //=======================================================================
-Standard_Integer DNaming_PrismDriver::Execute(Handle(TFunction_Logbook)& theLog) const {
+Standard_Integer DNaming_PrismDriver::Execute(Handle(TFunction_Logbook)& theLog) const
+{
   Handle(TFunction_Function) aFunction;
   Label().FindAttribute(TFunction_Function::GetID(), aFunction);
-  if(aFunction.IsNull()) return -1;
+  if (aFunction.IsNull())
+    return -1;
 
   // Save location
   Handle(TNaming_NamedShape) aPrevPrism = DNaming::GetFunctionResult(aFunction);
-  TopLoc_Location aLocation;
-  if (!aPrevPrism.IsNull() && !aPrevPrism->IsEmpty()) {
+  TopLoc_Location            aLocation;
+  if (!aPrevPrism.IsNull() && !aPrevPrism->IsEmpty())
+  {
     aLocation = aPrevPrism->Get().Location();
   }
 
-  //Basis for IPrism
-  Handle(TDataStd_UAttribute) aBasObject = DNaming::GetObjectArg(aFunction,PRISM_BASIS);
-  Handle(TNaming_NamedShape) aBasisNS = DNaming::GetObjectValue(aBasObject);
-  if(aBasisNS.IsNull() || aBasisNS->IsEmpty()) {
-    aFunction->SetFailure(WRONG_ARGUMENT);
-    return -1;
-  }
- 
-  const TopoDS_Shape& aBasis = aBasisNS->Get(); 
-  TopoDS_Shape aBASIS;
-  if(aBasis.ShapeType() == TopAbs_WIRE) {
-    Handle(BRepCheck_Wire) aCheck = new BRepCheck_Wire(TopoDS::Wire(aBasis));
-    if(aCheck->Closed(Standard_True) == BRepCheck_NoError) {
-      BRepBuilderAPI_MakeFace aMaker (TopoDS::Wire(aBasis), Standard_True); //Makes planar face
-      if(aMaker.IsDone()) 
-	aBASIS = aMaker.Face();//aMaker.Face();           
-    }
-  } else if(aBasis.ShapeType() == TopAbs_FACE)
-    aBASIS = aBasis;
-  if(aBASIS.IsNull()) {
+  // Basis for IPrism
+  Handle(TDataStd_UAttribute) aBasObject = DNaming::GetObjectArg(aFunction, PRISM_BASIS);
+  Handle(TNaming_NamedShape)  aBasisNS   = DNaming::GetObjectValue(aBasObject);
+  if (aBasisNS.IsNull() || aBasisNS->IsEmpty())
+  {
     aFunction->SetFailure(WRONG_ARGUMENT);
     return -1;
   }
 
+  const TopoDS_Shape& aBasis = aBasisNS->Get();
+  TopoDS_Shape        aBASIS;
+  if (aBasis.ShapeType() == TopAbs_WIRE)
+  {
+    Handle(BRepCheck_Wire) aCheck = new BRepCheck_Wire(TopoDS::Wire(aBasis));
+    if (aCheck->Closed(Standard_True) == BRepCheck_NoError)
+    {
+      BRepBuilderAPI_MakeFace aMaker(TopoDS::Wire(aBasis), Standard_True); // Makes planar face
+      if (aMaker.IsDone())
+        aBASIS = aMaker.Face(); // aMaker.Face();
+    }
+  }
+  else if (aBasis.ShapeType() == TopAbs_FACE)
+    aBASIS = aBasis;
+  if (aBASIS.IsNull())
+  {
+    aFunction->SetFailure(WRONG_ARGUMENT);
+    return -1;
+  }
 
   Handle(TNaming_NamedShape) aContextOfBasis;
-  Standard_Boolean anIsAttachment = Standard_False;
-  if(DNaming::IsAttachment(aBasObject)) {
+  Standard_Boolean           anIsAttachment = Standard_False;
+  if (DNaming::IsAttachment(aBasObject))
+  {
     aContextOfBasis = DNaming::GetAttachmentsContext(aBasObject); // a Context of Prism basis
-    if(aContextOfBasis.IsNull() || aContextOfBasis->IsEmpty()) {
+    if (aContextOfBasis.IsNull() || aContextOfBasis->IsEmpty())
+    {
       aFunction->SetFailure(WRONG_ARGUMENT);
       return -1;
     }
     anIsAttachment = Standard_True;
   }
 
-// Height
-  Standard_Real aHeight = DNaming::GetReal(aFunction,PRISM_HEIGHT)->Get();
-  if(aHeight <= Precision::Confusion()) {
+  // Height
+  Standard_Real aHeight = DNaming::GetReal(aFunction, PRISM_HEIGHT)->Get();
+  if (aHeight <= Precision::Confusion())
+  {
     aFunction->SetFailure(WRONG_ARGUMENT);
     return -1;
   }
 
   // Direction
-  gp_Ax1 anAxis;  
+  gp_Ax1 anAxis;
   DNaming::ComputeSweepDir(aBasis, anAxis);
-    
+
   // Reverse
-  Standard_Integer aRev = DNaming::GetInteger(aFunction,PRISM_DIR)->Get();
-  if(aRev) anAxis.Reverse();
+  Standard_Integer aRev = DNaming::GetInteger(aFunction, PRISM_DIR)->Get();
+  if (aRev)
+    anAxis.Reverse();
 
   // Calculate Vec - direction of extrusion
   gp_Vec aVEC(anAxis.Direction());
-  aVEC = aVEC*aHeight;
-  
-  BRepPrimAPI_MakePrism aMakePrism(aBASIS, aVEC, Standard_True);  
+  aVEC = aVEC * aHeight;
+
+  BRepPrimAPI_MakePrism aMakePrism(aBASIS, aVEC, Standard_True);
   aMakePrism.Build();
-  if (!aMakePrism.IsDone()) {
+  if (!aMakePrism.IsDone())
+  {
     aFunction->SetFailure(ALGO_FAILED);
     return -1;
   }
-  
+
   const TopoDS_Shape& aResult = aMakePrism.Shape();
-  BRepCheck_Analyzer aCheckAnalyzer(aResult);
-  if (!aCheckAnalyzer.IsValid(aResult)) {
+  BRepCheck_Analyzer  aCheckAnalyzer(aResult);
+  if (!aCheckAnalyzer.IsValid(aResult))
+  {
     aFunction->SetFailure(RESULT_NOT_VALID);
 #ifdef OCCT_DEBUG
     Standard_CString aFileName = "PrismResult.brep";
@@ -175,109 +184,129 @@ Standard_Integer DNaming_PrismDriver::Execute(Handle(TFunction_Logbook)& theLog)
   }
   Standard_Boolean aVol = Standard_False;
 
-  if(aResult.ShapeType() == TopAbs_SOLID) aVol = Standard_True;
-  else if(aResult.ShapeType() == TopAbs_SHELL) {
+  if (aResult.ShapeType() == TopAbs_SOLID)
+    aVol = Standard_True;
+  else if (aResult.ShapeType() == TopAbs_SHELL)
+  {
     Handle(BRepCheck_Shell) aCheck = new BRepCheck_Shell(TopoDS::Shell(aResult));
-    if(aCheck->Closed() == BRepCheck_NoError) 
+    if (aCheck->Closed() == BRepCheck_NoError)
       aVol = Standard_True;
-  } 
+  }
 
-  if(aVol) {
+  if (aVol)
+  {
     GProp_GProps aGProp;
     BRepGProp::VolumeProperties(aResult, aGProp);
-    if(aGProp.Mass() <= Precision::Confusion()) {
+    if (aGProp.Mass() <= Precision::Confusion())
+    {
       aFunction->SetFailure(RESULT_NOT_VALID);
       return -1;
     }
   }
 
-  // Naming  
-  if(anIsAttachment)
+  // Naming
+  if (anIsAttachment)
     LoadNamingDS(RESPOSITION(aFunction), aMakePrism, aBASIS, aContextOfBasis->Get());
   else
     LoadNamingDS(RESPOSITION(aFunction), aMakePrism, aBASIS, aBASIS);
 
   // restore location
-  if(!aLocation.IsIdentity()) 
+  if (!aLocation.IsIdentity())
     TNaming::Displace(RESPOSITION(aFunction), aLocation, Standard_True);
 
-  theLog->SetValid(RESPOSITION(aFunction),Standard_True);  
+  theLog->SetValid(RESPOSITION(aFunction), Standard_True);
   aFunction->SetFailure(DONE);
   return 0;
 }
 
-//=======================================================================
-//function : LoadAndName
-//purpose  : 
-//=======================================================================
-void DNaming_PrismDriver::LoadNamingDS (const TDF_Label& theResultLabel, 
-					   BRepPrimAPI_MakePrism& MS,
-					   const TopoDS_Shape& Basis,
-					   const TopoDS_Shape& Context
-					   ) const 
+//=================================================================================================
+
+void DNaming_PrismDriver::LoadNamingDS(const TDF_Label&       theResultLabel,
+                                       BRepPrimAPI_MakePrism& MS,
+                                       const TopoDS_Shape&    Basis,
+                                       const TopoDS_Shape&    Context) const
 {
 
   TopTools_DataMapOfShapeShape SubShapes;
-  for (TopExp_Explorer Exp(MS.Shape(),TopAbs_FACE); Exp.More(); Exp.Next()) {
-    SubShapes.Bind(Exp.Current(),Exp.Current());
+  for (TopExp_Explorer Exp(MS.Shape(), TopAbs_FACE); Exp.More(); Exp.Next())
+  {
+    SubShapes.Bind(Exp.Current(), Exp.Current());
   }
-  
+
   Handle(TDF_TagSource) Tagger = TDF_TagSource::Set(theResultLabel);
-  if (Tagger.IsNull()) return;
+  if (Tagger.IsNull())
+    return;
   Tagger->Set(0);
 
-  TNaming_Builder Builder (theResultLabel);
-  if(Basis.IsEqual(Context))
+  TNaming_Builder Builder(theResultLabel);
+  if (Basis.IsEqual(Context))
     Builder.Generated(MS.Shape());
   else
     Builder.Generated(Context, MS.Shape());
- 
-  //Insert lateral face : Face from Edge
-  TNaming_Builder  LateralFaceBuilder(theResultLabel.NewChild());   
+
+  // Insert lateral face : Face from Edge
+  TNaming_Builder LateralFaceBuilder(theResultLabel.NewChild());
   DNaming::LoadAndOrientGeneratedShapes(MS, Basis, TopAbs_EDGE, LateralFaceBuilder, SubShapes);
 
   Standard_Boolean makeTopBottom = Standard_True;
-  if (Basis.ShapeType() == TopAbs_COMPOUND) {
+  if (Basis.ShapeType() == TopAbs_COMPOUND)
+  {
     TopoDS_Iterator itr(Basis);
-    if (itr.More() && itr.Value().ShapeType() == TopAbs_WIRE) makeTopBottom = Standard_False;
-  } else if (Basis.ShapeType() == TopAbs_WIRE) {
+    if (itr.More() && itr.Value().ShapeType() == TopAbs_WIRE)
+      makeTopBottom = Standard_False;
+  }
+  else if (Basis.ShapeType() == TopAbs_WIRE)
+  {
     makeTopBottom = Standard_False;
   }
-  if (makeTopBottom) {
-    //Insert bottom face
+  if (makeTopBottom)
+  {
+    // Insert bottom face
     TopoDS_Shape BottomFace = MS.FirstShape();
-    if (!BottomFace.IsNull()) {
-      if (BottomFace.ShapeType() != TopAbs_COMPOUND) {
-	TNaming_Builder BottomBuilder(theResultLabel.NewChild());  //2
-	if (SubShapes.IsBound(BottomFace)) {
-	  BottomFace = SubShapes(BottomFace);
-	}
-	BottomBuilder.Generated(BottomFace);
-      } else {
-	TopoDS_Iterator itr(BottomFace);
-	for (; itr.More(); itr.Next()) {
-	  TNaming_Builder BottomBuilder(theResultLabel.NewChild());  
-	  BottomBuilder.Generated(itr.Value());
-	}
+    if (!BottomFace.IsNull())
+    {
+      if (BottomFace.ShapeType() != TopAbs_COMPOUND)
+      {
+        TNaming_Builder BottomBuilder(theResultLabel.NewChild()); // 2
+        if (SubShapes.IsBound(BottomFace))
+        {
+          BottomFace = SubShapes(BottomFace);
+        }
+        BottomBuilder.Generated(BottomFace);
+      }
+      else
+      {
+        TopoDS_Iterator itr(BottomFace);
+        for (; itr.More(); itr.Next())
+        {
+          TNaming_Builder BottomBuilder(theResultLabel.NewChild());
+          BottomBuilder.Generated(itr.Value());
+        }
       }
     }
-    
-    //Insert top face
+
+    // Insert top face
     TopoDS_Shape TopFace = MS.LastShape();
-    if (!TopFace.IsNull()) {
-      if (TopFace.ShapeType() != TopAbs_COMPOUND) {
-	TNaming_Builder TopBuilder(theResultLabel.NewChild()); //3
-	if (SubShapes.IsBound(TopFace)) {
-	  TopFace = SubShapes(TopFace);
-	}
-	TopBuilder.Generated(TopFace);
-      } else {
-	TopoDS_Iterator itr(TopFace);
-	for (; itr.More(); itr.Next()) {
-	  TNaming_Builder TopBuilder(theResultLabel.NewChild());  
-	  TopBuilder.Generated(itr.Value());
-	}
+    if (!TopFace.IsNull())
+    {
+      if (TopFace.ShapeType() != TopAbs_COMPOUND)
+      {
+        TNaming_Builder TopBuilder(theResultLabel.NewChild()); // 3
+        if (SubShapes.IsBound(TopFace))
+        {
+          TopFace = SubShapes(TopFace);
+        }
+        TopBuilder.Generated(TopFace);
+      }
+      else
+      {
+        TopoDS_Iterator itr(TopFace);
+        for (; itr.More(); itr.Next())
+        {
+          TNaming_Builder TopBuilder(theResultLabel.NewChild());
+          TopBuilder.Generated(itr.Value());
+        }
       }
     }
-  }   
+  }
 }

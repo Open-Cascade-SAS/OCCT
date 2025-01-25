@@ -25,30 +25,26 @@ private:
   typedef OpenGl_GlCore30 theBaseClass_t;
 
 public: //! @name GL_ARB_uniform_buffer_object (added to OpenGL 3.1 core)
-
-  using theBaseClass_t::glGetUniformIndices;
-  using theBaseClass_t::glGetActiveUniformsiv;
-  using theBaseClass_t::glGetUniformBlockIndex;
   using theBaseClass_t::glGetActiveUniformBlockiv;
   using theBaseClass_t::glGetActiveUniformBlockName;
+  using theBaseClass_t::glGetActiveUniformsiv;
+  using theBaseClass_t::glGetUniformBlockIndex;
+  using theBaseClass_t::glGetUniformIndices;
   using theBaseClass_t::glUniformBlockBinding;
 #if !defined(GL_ES_VERSION_2_0)
   using theBaseClass_t::glGetActiveUniformName; // undefined in OpenGL ES
 #endif
 
 public: //! @name GL_ARB_copy_buffer (added to OpenGL 3.1 core)
-
   using theBaseClass_t::glCopyBufferSubData;
 
 public: //! @name OpenGL 3.1 additives to 3.0
-
   using theBaseClass_t::glDrawArraysInstanced;
   using theBaseClass_t::glDrawElementsInstanced;
 #if !defined(GL_ES_VERSION_2_0)
-  using theBaseClass_t::glTexBuffer; // added in OpenGL ES 3.2
   using theBaseClass_t::glPrimitiveRestartIndex; // undefined in OpenGL ES
+  using theBaseClass_t::glTexBuffer;             // added in OpenGL ES 3.2
 #endif
-
 };
 
 #endif // _OpenGl_GlCore31_Header

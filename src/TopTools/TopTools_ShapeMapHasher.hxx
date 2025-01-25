@@ -25,7 +25,6 @@
 class TopTools_ShapeMapHasher
 {
 public:
-
   DEFINE_STANDARD_ALLOC;
 
   size_t operator()(const TopoDS_Shape& theShape) const noexcept

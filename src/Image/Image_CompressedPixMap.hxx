@@ -26,24 +26,23 @@ class Image_CompressedPixMap : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Image_CompressedPixMap, Standard_Transient)
 public:
-
   //! Return base (uncompressed) pixel format.
   Image_Format BaseFormat() const { return myBaseFormat; }
 
   //! Set base (uncompressed) pixel format.
-  void SetBaseFormat (Image_Format theFormat) { myBaseFormat = theFormat; }
+  void SetBaseFormat(Image_Format theFormat) { myBaseFormat = theFormat; }
 
   //! Return compressed format.
   Image_CompressedFormat CompressedFormat() const { return myFormat; }
 
   //! Set compressed format.
-  void SetCompressedFormat (Image_CompressedFormat theFormat) { myFormat = theFormat; }
+  void SetCompressedFormat(Image_CompressedFormat theFormat) { myFormat = theFormat; }
 
   //! Return raw (compressed) data.
   const Handle(NCollection_Buffer)& FaceData() const { return myFaceData; }
 
   //! Set raw (compressed) data.
-  void SetFaceData (const Handle(NCollection_Buffer)& theBuffer) { myFaceData = theBuffer; }
+  void SetFaceData(const Handle(NCollection_Buffer)& theBuffer) { myFaceData = theBuffer; }
 
   //! Return Array of mipmap sizes, including base level.
   const NCollection_Array1<Standard_Integer>& MipMaps() const { return myMipMaps; }
@@ -55,13 +54,13 @@ public:
   Standard_Boolean IsCompleteMipMapSet() const { return myIsCompleteMips; }
 
   //! Set if complete mip map level set (up to 1x1 resolution).
-  void SetCompleteMipMapSet (Standard_Boolean theIsComplete) { myIsCompleteMips = theIsComplete; }
+  void SetCompleteMipMapSet(Standard_Boolean theIsComplete) { myIsCompleteMips = theIsComplete; }
 
   //! Return surface length in bytes.
   Standard_Size FaceBytes() const { return myFaceBytes; }
 
   //! Set surface length in bytes.
-  void SetFaceBytes (Standard_Size theSize) { myFaceBytes = theSize; }
+  void SetFaceBytes(Standard_Size theSize) { myFaceBytes = theSize; }
 
   //! Return surface width.
   Standard_Integer SizeX() const { return mySizeX; }
@@ -70,7 +69,7 @@ public:
   Standard_Integer SizeY() const { return mySizeY; }
 
   //! Set surface width x height.
-  void SetSize (Standard_Integer theSizeX, Standard_Integer theSizeY)
+  void SetSize(Standard_Integer theSizeX, Standard_Integer theSizeY)
   {
     mySizeX = theSizeX;
     mySizeY = theSizeY;
@@ -83,28 +82,33 @@ public:
   Standard_Integer NbFaces() const { return myNbFaces; }
 
   //! Set number of faces in the file.
-  void SetNbFaces (Standard_Integer theSize) { myNbFaces = theSize; }
+  void SetNbFaces(Standard_Integer theSize) { myNbFaces = theSize; }
 
 public:
-
   //! Empty constructor.
   Image_CompressedPixMap()
-  : myFaceBytes (0), myNbFaces (0), mySizeX (0), mySizeY (0), myBaseFormat (Image_Format_UNKNOWN), myFormat (Image_CompressedFormat_UNKNOWN), myIsCompleteMips (false)  {}
+      : myFaceBytes(0),
+        myNbFaces(0),
+        mySizeX(0),
+        mySizeY(0),
+        myBaseFormat(Image_Format_UNKNOWN),
+        myFormat(Image_CompressedFormat_UNKNOWN),
+        myIsCompleteMips(false)
+  {
+  }
 
 protected:
-
-  NCollection_Array1<Standard_Integer> myMipMaps; //!< Array of mipmap sizes, including base level
-  Handle(NCollection_Buffer) myFaceData;          //!< raw compressed data
-  Standard_Size              myFaceBytes;         //!< surface length in bytes
-  Standard_Integer           myNbFaces;           //!< number of faces in the file
-  Standard_Integer           mySizeX;             //!< surface width
-  Standard_Integer           mySizeY;             //!< surface height
-  Image_Format               myBaseFormat;        //!< base (uncompressed) pixel format
-  Image_CompressedFormat     myFormat;            //!< compressed format
-// clang-format off
+  NCollection_Array1<Standard_Integer> myMipMaps;   //!< Array of mipmap sizes, including base level
+  Handle(NCollection_Buffer)           myFaceData;  //!< raw compressed data
+  Standard_Size                        myFaceBytes; //!< surface length in bytes
+  Standard_Integer                     myNbFaces;   //!< number of faces in the file
+  Standard_Integer                     mySizeX;     //!< surface width
+  Standard_Integer                     mySizeY;     //!< surface height
+  Image_Format                         myBaseFormat; //!< base (uncompressed) pixel format
+  Image_CompressedFormat               myFormat;     //!< compressed format
+  // clang-format off
   Standard_Boolean           myIsCompleteMips;    //!< flag indicating complete mip map level set (up to 1x1 resolution)
-// clang-format on
-
+  // clang-format on
 };
 
 #endif // _Image_CompressedPixMap_HeaderFile

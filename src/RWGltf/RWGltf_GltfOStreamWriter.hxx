@@ -25,8 +25,10 @@ class RWGltf_GltfOStreamWriter : public rapidjson::Writer<rapidjson::OStreamWrap
 {
 public:
   //! Main constructor.
-  RWGltf_GltfOStreamWriter (rapidjson::OStreamWrapper& theOStream)
-  : rapidjson::Writer<rapidjson::OStreamWrapper> (theOStream) {}
+  RWGltf_GltfOStreamWriter(rapidjson::OStreamWrapper& theOStream)
+      : rapidjson::Writer<rapidjson::OStreamWrapper>(theOStream)
+  {
+  }
 };
 
 #endif // _RWGltf_GltfOStreamWriter_HeaderFile

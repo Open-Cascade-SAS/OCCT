@@ -23,15 +23,14 @@
 
 class StepRepr_Apex;
 DEFINE_STANDARD_HANDLE(StepRepr_Apex, StepRepr_DerivedShapeAspect)
+
 //! Added for Dimensional Tolerances
 class StepRepr_Apex : public StepRepr_DerivedShapeAspect
 {
 
 public:
-  
   Standard_EXPORT StepRepr_Apex();
 
-  DEFINE_STANDARD_RTTIEXT(StepRepr_Apex,StepRepr_DerivedShapeAspect)
-
+  DEFINE_STANDARD_RTTIEXT(StepRepr_Apex, StepRepr_DerivedShapeAspect)
 };
 #endif // _StepRepr_Apex_HeaderFile

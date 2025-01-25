@@ -21,14 +21,14 @@
 // Purpose  :
 // ================================================================
 RWMesh_CoordinateSystemConverter::RWMesh_CoordinateSystemConverter()
-: myInputLengthUnit (-1.0),
-  myOutputLengthUnit(-1.0),
-  myHasInputAx3 (Standard_False),
-  myHasOutputAx3(Standard_False),
-  //
-  myUnitFactor (1),
-  myHasScale (Standard_False),
-  myIsEmpty  (Standard_True)
+    : myInputLengthUnit(-1.0),
+      myOutputLengthUnit(-1.0),
+      myHasInputAx3(Standard_False),
+      myHasOutputAx3(Standard_False),
+      //
+      myUnitFactor(1),
+      myHasScale(Standard_False),
+      myIsEmpty(Standard_True)
 {
   //
 }
@@ -37,34 +37,32 @@ RWMesh_CoordinateSystemConverter::RWMesh_CoordinateSystemConverter()
 // Function : Init
 // Purpose  :
 // ================================================================
-void RWMesh_CoordinateSystemConverter::Init (const gp_Ax3& theInputSystem,
-                                             Standard_Real theInputLengthUnit,
-                                             const gp_Ax3& theOutputSystem,
-                                             Standard_Real theOutputLengthUnit)
+void RWMesh_CoordinateSystemConverter::Init(const gp_Ax3& theInputSystem,
+                                            Standard_Real theInputLengthUnit,
+                                            const gp_Ax3& theOutputSystem,
+                                            Standard_Real theOutputLengthUnit)
 {
   myInputLengthUnit  = theInputLengthUnit;
   myOutputLengthUnit = theOutputLengthUnit;
   myInputAx3         = theInputSystem;
   myOutputAx3        = theOutputSystem;
-  if (theInputLengthUnit  > 0.0
-   && theOutputLengthUnit > 0.0)
+  if (theInputLengthUnit > 0.0 && theOutputLengthUnit > 0.0)
   {
     myUnitFactor = theInputLengthUnit / theOutputLengthUnit;
-    myHasScale = Abs(myUnitFactor - 1.0) > gp::Resolution();
+    myHasScale   = Abs(myUnitFactor - 1.0) > gp::Resolution();
   }
   else
   {
     myUnitFactor = 1.0;
-    myHasScale = Standard_False;
+    myHasScale   = Standard_False;
   }
 
   gp_Trsf aTrsf;
-  if (myHasInputAx3
-   && myHasOutputAx3)
+  if (myHasInputAx3 && myHasOutputAx3)
   {
-    aTrsf.SetTransformation (theOutputSystem, theInputSystem);
-    if (aTrsf.TranslationPart().IsEqual (gp_XYZ (0.0, 0.0, 0.0), gp::Resolution())
-     && aTrsf.GetRotation().IsEqual (gp_Quaternion()))
+    aTrsf.SetTransformation(theOutputSystem, theInputSystem);
+    if (aTrsf.TranslationPart().IsEqual(gp_XYZ(0.0, 0.0, 0.0), gp::Resolution())
+        && aTrsf.GetRotation().IsEqual(gp_Quaternion()))
     {
       aTrsf = gp_Trsf();
     }
@@ -72,6 +70,6 @@ void RWMesh_CoordinateSystemConverter::Init (const gp_Ax3& theInputSystem,
 
   myTrsf    = aTrsf;
   myTrsfInv = aTrsf.Inverted();
-  myTrsf.GetMat4 (myNormTrsf);
+  myTrsf.GetMat4(myNormTrsf);
   myIsEmpty = !myHasScale && myTrsf.Form() == gp_Identity;
 }

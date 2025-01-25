@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(Bnd_HArray1OfSphere, Bnd_Array1OfSphere)
 
-
 #endif

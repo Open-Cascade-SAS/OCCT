@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -16,12 +16,12 @@
 
 #include <StepKinematics_KinematicPropertyDefinitionRepresentation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicPropertyDefinitionRepresentation, StepRepr_PropertyDefinitionRepresentation)
+IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicPropertyDefinitionRepresentation,
+                           StepRepr_PropertyDefinitionRepresentation)
 
-//=======================================================================
-//function : StepKinematics_KinematicPropertyDefinitionRepresentation
-//purpose  :
-//=======================================================================
-StepKinematics_KinematicPropertyDefinitionRepresentation::StepKinematics_KinematicPropertyDefinitionRepresentation ()
+//=================================================================================================
+
+StepKinematics_KinematicPropertyDefinitionRepresentation::
+  StepKinematics_KinematicPropertyDefinitionRepresentation()
 {
 }

@@ -27,7 +27,6 @@ class GeomFill_Boundary;
 class Law_Function;
 class gp_Vec;
 
-
 class GeomFill_CoonsAlgPatch;
 DEFINE_STANDARD_HANDLE(GeomFill_CoonsAlgPatch, Standard_Transient)
 
@@ -38,67 +37,51 @@ class GeomFill_CoonsAlgPatch : public Standard_Transient
 {
 
 public:
-
-  
   //! Constructs the  algorithmic   patch. By   Default  the
   //! constructed blending functions are linear.
   //! Warning: No control is done on the bounds.
   //! B1/B3 and B2/B4 must be same range and well oriented.
-  Standard_EXPORT GeomFill_CoonsAlgPatch(const Handle(GeomFill_Boundary)& B1, const Handle(GeomFill_Boundary)& B2, const Handle(GeomFill_Boundary)& B3, const Handle(GeomFill_Boundary)& B4);
-  
+  Standard_EXPORT GeomFill_CoonsAlgPatch(const Handle(GeomFill_Boundary)& B1,
+                                         const Handle(GeomFill_Boundary)& B2,
+                                         const Handle(GeomFill_Boundary)& B3,
+                                         const Handle(GeomFill_Boundary)& B4);
+
   //! Give the blending functions.
-  Standard_EXPORT void Func (Handle(Law_Function)& f1, Handle(Law_Function)& f2) const;
-  
+  Standard_EXPORT void Func(Handle(Law_Function)& f1, Handle(Law_Function)& f2) const;
+
   //! Set the blending functions.
-  Standard_EXPORT void SetFunc (const Handle(Law_Function)& f1, const Handle(Law_Function)& f2);
-  
+  Standard_EXPORT void SetFunc(const Handle(Law_Function)& f1, const Handle(Law_Function)& f2);
+
   //! Computes  the  value   on the  algorithmic    patch at
   //! parameters U and V.
-  Standard_EXPORT gp_Pnt Value (const Standard_Real U, const Standard_Real V) const;
-  
+  Standard_EXPORT gp_Pnt Value(const Standard_Real U, const Standard_Real V) const;
+
   //! Computes   the  d/dU   partial   derivative  on    the
   //! algorithmic patch at parameters U and V.
-  Standard_EXPORT gp_Vec D1U (const Standard_Real U, const Standard_Real V) const;
-  
+  Standard_EXPORT gp_Vec D1U(const Standard_Real U, const Standard_Real V) const;
+
   //! Computes    the  d/dV    partial    derivative on  the
   //! algorithmic patch at parameters U and V.
-  Standard_EXPORT gp_Vec D1V (const Standard_Real U, const Standard_Real V) const;
-  
+  Standard_EXPORT gp_Vec D1V(const Standard_Real U, const Standard_Real V) const;
+
   //! Computes the   d2/dUdV  partial  derivative   on   the
   //! algorithmic  patch made with linear blending functions
   //! at parameter U and V.
-  Standard_EXPORT gp_Vec DUV (const Standard_Real U, const Standard_Real V) const;
-  
-  Standard_EXPORT const gp_Pnt& Corner (const Standard_Integer I) const;
-  
-  Standard_EXPORT const Handle(GeomFill_Boundary)& Bound (const Standard_Integer I) const;
-  
-  Standard_EXPORT const Handle(Law_Function)& Func (const Standard_Integer I) const;
+  Standard_EXPORT gp_Vec DUV(const Standard_Real U, const Standard_Real V) const;
 
+  Standard_EXPORT const gp_Pnt& Corner(const Standard_Integer I) const;
 
+  Standard_EXPORT const Handle(GeomFill_Boundary)& Bound(const Standard_Integer I) const;
 
+  Standard_EXPORT const Handle(Law_Function)& Func(const Standard_Integer I) const;
 
-  DEFINE_STANDARD_RTTIEXT(GeomFill_CoonsAlgPatch,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_CoonsAlgPatch, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(GeomFill_Boundary) bound[4];
-  gp_Pnt c[4];
-  Handle(Law_Function) a[2];
-
-
+  gp_Pnt                    c[4];
+  Handle(Law_Function)      a[2];
 };
-
-
-
-
-
-
 
 #endif // _GeomFill_CoonsAlgPatch_HeaderFile

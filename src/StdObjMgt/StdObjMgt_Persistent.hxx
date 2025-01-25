@@ -14,7 +14,6 @@
 #ifndef _StdObjMgt_Persistent_HeaderFile
 #define _StdObjMgt_Persistent_HeaderFile
 
-
 #include <Standard.hxx>
 #include <Standard_Handle.hxx>
 #include <Standard_Transient.hxx>
@@ -30,7 +29,6 @@ class TDF_Data;
 class TCollection_HAsciiString;
 class TCollection_HExtendedString;
 
-
 //! Root class for a temporary persistent object that reads data from a file
 //! and then creates transient object using the data.
 class StdObjMgt_Persistent : public Standard_Transient
@@ -44,18 +42,20 @@ public:
   //! Create a derived class instance.
   template <class Persistent>
   static Handle(StdObjMgt_Persistent) Instantiate()
-    { return new Persistent; }
+  {
+    return new Persistent;
+  }
 
   //! Read persistent data from a file.
-  virtual void Read (StdObjMgt_ReadData& theReadData) = 0;
+  virtual void Read(StdObjMgt_ReadData& theReadData) = 0;
 
   //! Write persistent data to a file.
-  virtual void Write (StdObjMgt_WriteData& theWriteData) const = 0;
+  virtual void Write(StdObjMgt_WriteData& theWriteData) const = 0;
 
   typedef NCollection_Sequence<Handle(StdObjMgt_Persistent)> SequenceOfPersistent;
 
   //! Gets persistent child objects
-  virtual void PChildren (SequenceOfPersistent&) const = 0;
+  virtual void PChildren(SequenceOfPersistent&) const = 0;
 
   //! Returns persistent type name
   virtual Standard_CString PName() const = 0;
@@ -63,8 +63,7 @@ public:
   //! Import transient document from the persistent data
   //! (to be overridden by document class;
   //! does nothing by default for other classes).
-  Standard_EXPORT virtual void ImportDocument
-    (const Handle(TDocStd_Document)& theDocument) const;
+  Standard_EXPORT virtual void ImportDocument(const Handle(TDocStd_Document)& theDocument) const;
 
   //! Create an empty transient attribute
   //! (to be overridden by attribute classes;
@@ -94,7 +93,7 @@ public:
   //! Get a label expressed by referenced extended string
   //! (to be overridden by extended string class;
   //! returns a null label by default for other classes).
-  Standard_EXPORT virtual TDF_Label Label (const Handle(TDF_Data)& theDF) const;
+  Standard_EXPORT virtual TDF_Label Label(const Handle(TDF_Data)& theDF) const;
 
   //! Returns the assigned persistent type number
   Standard_Integer TypeNum() const { return myTypeNum; }

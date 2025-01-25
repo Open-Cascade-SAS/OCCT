@@ -21,8 +21,9 @@
 #include <TopTools_ListOfShape.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TopoDS_Shape,TopTools_ListOfShape> BRepFill_DataMapOfOrientedShapeListOfShape;
-typedef NCollection_DataMap<TopoDS_Shape,TopTools_ListOfShape>::Iterator BRepFill_DataMapIteratorOfDataMapOfOrientedShapeListOfShape;
-
+typedef NCollection_DataMap<TopoDS_Shape, TopTools_ListOfShape>
+  BRepFill_DataMapOfOrientedShapeListOfShape;
+typedef NCollection_DataMap<TopoDS_Shape, TopTools_ListOfShape>::Iterator
+  BRepFill_DataMapIteratorOfDataMapOfOrientedShapeListOfShape;
 
 #endif

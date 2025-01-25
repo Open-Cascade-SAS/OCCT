@@ -25,8 +25,9 @@ class Geom2dGcc_IsParallel;
 DEFINE_STANDARD_HANDLE(Geom2dGcc_IsParallel, Standard_DomainError)
 
 #if !defined No_Exception && !defined No_Geom2dGcc_IsParallel
-  #define Geom2dGcc_IsParallel_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Geom2dGcc_IsParallel(MESSAGE);
+  #define Geom2dGcc_IsParallel_Raise_if(CONDITION, MESSAGE)                                        \
+    if (CONDITION)                                                                                 \
+      throw Geom2dGcc_IsParallel(MESSAGE);
 #else
   #define Geom2dGcc_IsParallel_Raise_if(CONDITION, MESSAGE)
 #endif

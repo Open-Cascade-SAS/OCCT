@@ -15,6 +15,6 @@
 
 #include <StepRepr_ContinuosShapeAspect.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ContinuosShapeAspect,StepRepr_CompositeShapeAspect)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ContinuosShapeAspect, StepRepr_CompositeShapeAspect)
 
-StepRepr_ContinuosShapeAspect::StepRepr_ContinuosShapeAspect ()    {  }
+StepRepr_ContinuosShapeAspect::StepRepr_ContinuosShapeAspect() {}

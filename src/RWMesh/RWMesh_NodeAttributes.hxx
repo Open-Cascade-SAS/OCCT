@@ -30,6 +30,8 @@ struct RWMesh_NodeAttributes
   Handle(TDataStd_NamedData) NamedData; //!< optional metadata
   XCAFPrs_Style              Style;     //!< presentation style
 };
-typedef NCollection_DataMap<TopoDS_Shape, RWMesh_NodeAttributes, TopTools_ShapeMapHasher> RWMesh_NodeAttributeMap;
+
+typedef NCollection_DataMap<TopoDS_Shape, RWMesh_NodeAttributes, TopTools_ShapeMapHasher>
+  RWMesh_NodeAttributeMap;
 
 #endif // _RWMesh_NodeAttributes_HeaderFile

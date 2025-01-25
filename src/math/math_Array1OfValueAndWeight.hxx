@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<math_ValueAndWeight> math_Array1OfValueAndWeight;
 
-
 #endif

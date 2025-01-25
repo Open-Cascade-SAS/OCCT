@@ -18,19 +18,14 @@
 
 #include <TopTools_ShapeSet.hxx>
 
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-void  TopTools::Dump(const TopoDS_Shape& Sh, Standard_OStream& S)
+//=================================================================================================
+
+void TopTools::Dump(const TopoDS_Shape& Sh, Standard_OStream& S)
 {
   TopTools_ShapeSet SSet;
   SSet.Add(Sh);
-  SSet.Dump(Sh,S);
+  SSet.Dump(Sh, S);
   SSet.Dump(S);
 }
 
-
-void TopTools::Dummy(const Standard_Integer)
-{
-}
+void TopTools::Dummy(const Standard_Integer) {}

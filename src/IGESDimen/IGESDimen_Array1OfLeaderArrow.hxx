@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(IGESDimen_LeaderArrow)> IGESDimen_Array1OfLeaderArrow;
 
-
 #endif

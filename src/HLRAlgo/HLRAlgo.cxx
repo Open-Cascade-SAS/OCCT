@@ -14,46 +14,42 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <HLRAlgo.hxx>
 
-static const Standard_Real cosu0 = cos(0.*M_PI/14.);
-static const Standard_Real sinu0 = sin(0.*M_PI/14.);
-static const Standard_Real cosu1 = cos(1.*M_PI/14.);
-static const Standard_Real sinu1 = sin(1.*M_PI/14.);
-static const Standard_Real cosu2 = cos(2.*M_PI/14.);
-static const Standard_Real sinu2 = sin(2.*M_PI/14.);
-static const Standard_Real cosu3 = cos(3.*M_PI/14.);
-static const Standard_Real sinu3 = sin(3.*M_PI/14.);
-static const Standard_Real cosu4 = cos(4.*M_PI/14.);
-static const Standard_Real sinu4 = sin(4.*M_PI/14.);
-static const Standard_Real cosu5 = cos(5.*M_PI/14.);
-static const Standard_Real sinu5 = sin(5.*M_PI/14.);
-static const Standard_Real cosu6 = cos(6.*M_PI/14.);
-static const Standard_Real sinu6 = sin(6.*M_PI/14.);
+static const Standard_Real cosu0 = cos(0. * M_PI / 14.);
+static const Standard_Real sinu0 = sin(0. * M_PI / 14.);
+static const Standard_Real cosu1 = cos(1. * M_PI / 14.);
+static const Standard_Real sinu1 = sin(1. * M_PI / 14.);
+static const Standard_Real cosu2 = cos(2. * M_PI / 14.);
+static const Standard_Real sinu2 = sin(2. * M_PI / 14.);
+static const Standard_Real cosu3 = cos(3. * M_PI / 14.);
+static const Standard_Real sinu3 = sin(3. * M_PI / 14.);
+static const Standard_Real cosu4 = cos(4. * M_PI / 14.);
+static const Standard_Real sinu4 = sin(4. * M_PI / 14.);
+static const Standard_Real cosu5 = cos(5. * M_PI / 14.);
+static const Standard_Real sinu5 = sin(5. * M_PI / 14.);
+static const Standard_Real cosu6 = cos(6. * M_PI / 14.);
+static const Standard_Real sinu6 = sin(6. * M_PI / 14.);
 
-//=======================================================================
-//function : UpdateMinMax
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void HLRAlgo::UpdateMinMax (const Standard_Real x,
-                            const Standard_Real y,
-                            const Standard_Real z,
-                            Standard_Real Min[16],
-                            Standard_Real Max[16])
+void HLRAlgo::UpdateMinMax(const Standard_Real x,
+                           const Standard_Real y,
+                           const Standard_Real z,
+                           Standard_Real       Min[16],
+                           Standard_Real       Max[16])
 {
   Standard_Real d[16];
-  d[ 0] = cosu0 * x + sinu0 * y;
-  d[ 1] = sinu0 * x - cosu0 * y;
-  d[ 2] = cosu1 * x + sinu1 * y;
-  d[ 3] = sinu1 * x - cosu1 * y;
-  d[ 4] = cosu2 * x + sinu2 * y;
-  d[ 5] = sinu2 * x - cosu2 * y;
-  d[ 6] = cosu3 * x + sinu3 * y;
-  d[ 7] = sinu3 * x - cosu3 * y;
-  d[ 8] = cosu4 * x + sinu4 * y;
-  d[ 9] = sinu4 * x - cosu4 * y;
+  d[0]  = cosu0 * x + sinu0 * y;
+  d[1]  = sinu0 * x - cosu0 * y;
+  d[2]  = cosu1 * x + sinu1 * y;
+  d[3]  = sinu1 * x - cosu1 * y;
+  d[4]  = cosu2 * x + sinu2 * y;
+  d[5]  = sinu2 * x - cosu2 * y;
+  d[6]  = cosu3 * x + sinu3 * y;
+  d[7]  = sinu3 * x - cosu3 * y;
+  d[8]  = cosu4 * x + sinu4 * y;
+  d[9]  = sinu4 * x - cosu4 * y;
   d[10] = cosu5 * x + sinu5 * y;
   d[11] = sinu5 * x - cosu5 * y;
   d[12] = cosu6 * x + sinu6 * y;
@@ -74,14 +70,9 @@ void HLRAlgo::UpdateMinMax (const Standard_Real x,
   }
 }
 
-//=======================================================================
-//function : EnlargeMinMax
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void HLRAlgo::EnlargeMinMax (const Standard_Real tol,
-                             Standard_Real Min[16],
-                             Standard_Real Max[16])
+void HLRAlgo::EnlargeMinMax(const Standard_Real tol, Standard_Real Min[16], Standard_Real Max[16])
 {
   Standard_Integer i = 0;
   while (i < 16)
@@ -92,71 +83,60 @@ void HLRAlgo::EnlargeMinMax (const Standard_Real tol,
   }
 }
 
-//=======================================================================
-//function :InitMinMax
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void HLRAlgo::InitMinMax (const Standard_Real Big,
-                          Standard_Real Min[16],
-                          Standard_Real Max[16])
+void HLRAlgo::InitMinMax(const Standard_Real Big, Standard_Real Min[16], Standard_Real Max[16])
 {
   Standard_Integer i = 0;
   while (i < 16)
   {
-    Min[i] =  Big;
+    Min[i] = Big;
     Max[i] = -Big;
     i++;
   }
 }
 
-//=======================================================================
-//function : EncodeMinMax
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void HLRAlgo::EncodeMinMax (HLRAlgo_EdgesBlock::MinMaxIndices& Min,
-                            HLRAlgo_EdgesBlock::MinMaxIndices& Max,
-                            HLRAlgo_EdgesBlock::MinMaxIndices& MM)
+void HLRAlgo::EncodeMinMax(HLRAlgo_EdgesBlock::MinMaxIndices& Min,
+                           HLRAlgo_EdgesBlock::MinMaxIndices& Max,
+                           HLRAlgo_EdgesBlock::MinMaxIndices& MM)
 {
-  MM.Min[0] =  Min.Min[1] & 0x00007fff;
-  MM.Max[0] =  Max.Min[1] & 0x00007fff;
+  MM.Min[0] = Min.Min[1] & 0x00007fff;
+  MM.Max[0] = Max.Min[1] & 0x00007fff;
   MM.Min[0] += (Min.Min[0] & 0x00007fff) << 16;
-  MM.Max[0] += (Max.Min[0] & 0x00007fff) <<16;
-  MM.Min[1] =  Min.Min[3] & 0x00007fff;
-  MM.Max[1] =  Max.Min[3] & 0x00007fff;
+  MM.Max[0] += (Max.Min[0] & 0x00007fff) << 16;
+  MM.Min[1] = Min.Min[3] & 0x00007fff;
+  MM.Max[1] = Max.Min[3] & 0x00007fff;
   MM.Min[1] += (Min.Min[2] & 0x00007fff) << 16;
   MM.Max[1] += (Max.Min[2] & 0x00007fff) << 16;
-  MM.Min[2] =  Min.Min[5] & 0x00007fff;
-  MM.Max[2] =  Max.Min[5] & 0x00007fff;
+  MM.Min[2] = Min.Min[5] & 0x00007fff;
+  MM.Max[2] = Max.Min[5] & 0x00007fff;
   MM.Min[2] += (Min.Min[4] & 0x00007fff) << 16;
   MM.Max[2] += (Max.Min[4] & 0x00007fff) << 16;
-  MM.Min[3] =  Min.Min[7] & 0x00007fff;
-  MM.Max[3] =  Max.Min[7] & 0x00007fff;
+  MM.Min[3] = Min.Min[7] & 0x00007fff;
+  MM.Max[3] = Max.Min[7] & 0x00007fff;
   MM.Min[3] += (Min.Min[6] & 0x00007fff) << 16;
   MM.Max[3] += (Max.Min[6] & 0x00007fff) << 16;
-  MM.Min[4] =  Min.Max[1] & 0x00007fff;
-  MM.Max[4] =  Max.Max[1] & 0x00007fff;
+  MM.Min[4] = Min.Max[1] & 0x00007fff;
+  MM.Max[4] = Max.Max[1] & 0x00007fff;
   MM.Min[4] += (Min.Max[0] & 0x00007fff) << 16;
   MM.Max[4] += (Max.Max[0] & 0x00007fff) << 16;
-  MM.Min[5] =  Min.Max[3] & 0x00007fff;
-  MM.Max[5] =  Max.Max[3] & 0x00007fff;
+  MM.Min[5] = Min.Max[3] & 0x00007fff;
+  MM.Max[5] = Max.Max[3] & 0x00007fff;
   MM.Min[5] += (Min.Max[2] & 0x00007fff) << 16;
   MM.Max[5] += (Max.Max[2] & 0x00007fff) << 16;
-  MM.Min[6] =  Min.Max[5] & 0x00007fff;
-  MM.Max[6] =  Max.Max[5] & 0x00007fff;
+  MM.Min[6] = Min.Max[5] & 0x00007fff;
+  MM.Max[6] = Max.Max[5] & 0x00007fff;
   MM.Min[6] += (Min.Max[4] & 0x00007fff) << 16;
   MM.Max[6] += (Max.Max[4] & 0x00007fff) << 16;
-  MM.Min[7] =  Min.Max[7] & 0x00007fff;
-  MM.Max[7] =  Max.Max[7] & 0x00007fff;
+  MM.Min[7] = Min.Max[7] & 0x00007fff;
+  MM.Max[7] = Max.Max[7] & 0x00007fff;
   MM.Min[7] += (Min.Max[6] & 0x00007fff) << 16;
   MM.Max[7] += (Max.Max[6] & 0x00007fff) << 16;
 }
 
-//=======================================================================
-//function : SizeBox
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Real HLRAlgo::SizeBox(HLRAlgo_EdgesBlock::MinMaxIndices& Min,
                                HLRAlgo_EdgesBlock::MinMaxIndices& Max)
@@ -173,58 +153,52 @@ Standard_Real HLRAlgo::SizeBox(HLRAlgo_EdgesBlock::MinMaxIndices& Min,
   return s;
 }
 
-//=======================================================================
-//function : DecodeMinMax
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void HLRAlgo::DecodeMinMax (const HLRAlgo_EdgesBlock::MinMaxIndices& MM,
-                            HLRAlgo_EdgesBlock::MinMaxIndices& Min,
-                            HLRAlgo_EdgesBlock::MinMaxIndices& Max)
+void HLRAlgo::DecodeMinMax(const HLRAlgo_EdgesBlock::MinMaxIndices& MM,
+                           HLRAlgo_EdgesBlock::MinMaxIndices&       Min,
+                           HLRAlgo_EdgesBlock::MinMaxIndices&       Max)
 {
-  Min.Min[0] =(MM.Min[0] & 0x7fff0000)>>16;
-  Max.Min[0] =(MM.Max[0] & 0x7fff0000)>>16;
+  Min.Min[0] = (MM.Min[0] & 0x7fff0000) >> 16;
+  Max.Min[0] = (MM.Max[0] & 0x7fff0000) >> 16;
   Min.Min[1] = MM.Min[0] & 0x00007fff;
   Max.Min[1] = MM.Max[0] & 0x00007fff;
-  Min.Min[2] =(MM.Min[1] & 0x7fff0000)>>16;
-  Max.Min[2] =(MM.Max[1] & 0x7fff0000)>>16;
+  Min.Min[2] = (MM.Min[1] & 0x7fff0000) >> 16;
+  Max.Min[2] = (MM.Max[1] & 0x7fff0000) >> 16;
   Min.Min[3] = MM.Min[1] & 0x00007fff;
   Max.Min[3] = MM.Max[1] & 0x00007fff;
-  Min.Min[4] =(MM.Min[2] & 0x7fff0000)>>16;
-  Max.Min[4] =(MM.Max[2] & 0x7fff0000)>>16;
+  Min.Min[4] = (MM.Min[2] & 0x7fff0000) >> 16;
+  Max.Min[4] = (MM.Max[2] & 0x7fff0000) >> 16;
   Min.Min[5] = MM.Min[2] & 0x00007fff;
   Max.Min[5] = MM.Max[2] & 0x00007fff;
-  Min.Min[6] =(MM.Min[3] & 0x7fff0000)>>16;
-  Max.Min[6] =(MM.Max[3] & 0x7fff0000)>>16;
+  Min.Min[6] = (MM.Min[3] & 0x7fff0000) >> 16;
+  Max.Min[6] = (MM.Max[3] & 0x7fff0000) >> 16;
   Min.Min[7] = MM.Min[3] & 0x00007fff;
   Max.Min[7] = MM.Max[3] & 0x00007fff;
-  Min.Max[0] =(MM.Min[4] & 0x7fff0000)>>16;
-  Max.Max[0] =(MM.Max[4] & 0x7fff0000)>>16;
+  Min.Max[0] = (MM.Min[4] & 0x7fff0000) >> 16;
+  Max.Max[0] = (MM.Max[4] & 0x7fff0000) >> 16;
   Min.Max[1] = MM.Min[4] & 0x00007fff;
   Max.Max[1] = MM.Max[4] & 0x00007fff;
-  Min.Max[2] =(MM.Min[5] & 0x7fff0000)>>16;
-  Max.Max[2] =(MM.Max[5] & 0x7fff0000)>>16;
+  Min.Max[2] = (MM.Min[5] & 0x7fff0000) >> 16;
+  Max.Max[2] = (MM.Max[5] & 0x7fff0000) >> 16;
   Min.Max[3] = MM.Min[5] & 0x00007fff;
   Max.Max[3] = MM.Max[5] & 0x00007fff;
-  Min.Max[4] =(MM.Min[6] & 0x7fff0000)>>16;
-  Max.Max[4] =(MM.Max[6] & 0x7fff0000)>>16;
+  Min.Max[4] = (MM.Min[6] & 0x7fff0000) >> 16;
+  Max.Max[4] = (MM.Max[6] & 0x7fff0000) >> 16;
   Min.Max[5] = MM.Min[6] & 0x00007fff;
   Max.Max[5] = MM.Max[6] & 0x00007fff;
-  Min.Max[6] =(MM.Min[7] & 0x7fff0000)>>16;
-  Max.Max[6] =(MM.Max[7] & 0x7fff0000)>>16;
+  Min.Max[6] = (MM.Min[7] & 0x7fff0000) >> 16;
+  Max.Max[6] = (MM.Max[7] & 0x7fff0000) >> 16;
   Min.Max[7] = MM.Min[7] & 0x00007fff;
   Max.Max[7] = MM.Max[7] & 0x00007fff;
 }
 
-//=======================================================================
-//function :AddMinMax
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void HLRAlgo::AddMinMax (HLRAlgo_EdgesBlock::MinMaxIndices& IMin,
-                         HLRAlgo_EdgesBlock::MinMaxIndices& IMax,
-                         HLRAlgo_EdgesBlock::MinMaxIndices& OMin,
-                         HLRAlgo_EdgesBlock::MinMaxIndices& OMax)
+void HLRAlgo::AddMinMax(HLRAlgo_EdgesBlock::MinMaxIndices& IMin,
+                        HLRAlgo_EdgesBlock::MinMaxIndices& IMax,
+                        HLRAlgo_EdgesBlock::MinMaxIndices& OMin,
+                        HLRAlgo_EdgesBlock::MinMaxIndices& OMax)
 {
   OMin.Minimize(IMin);
   OMax.Maximize(IMax);

@@ -23,15 +23,16 @@
 // intended for use from debugger prompt (Command Window in Visual Studio)
 
 //! Save shape to file
-const char* BRepTools_Write (const char* theFileStr, void* theShapePtr)
+const char* BRepTools_Write(const char* theFileStr, void* theShapePtr)
 {
   if (theFileStr == 0 || theShapePtr == 0)
   {
     return "Error: name or shape is null";
   }
-  try {
+  try
+  {
     OCC_CATCH_SIGNALS
-    if (BRepTools::Write (*(TopoDS_Shape*)theShapePtr, theFileStr))
+    if (BRepTools::Write(*(TopoDS_Shape*)theShapePtr, theFileStr))
       return theFileStr;
     else
       return "Error: write failed";
@@ -43,17 +44,18 @@ const char* BRepTools_Write (const char* theFileStr, void* theShapePtr)
 }
 
 //! Dump shape to cout
-const char* BRepTools_Dump (void* theShapePtr)
+const char* BRepTools_Dump(void* theShapePtr)
 {
   if (theShapePtr == 0)
   {
     return "Error: name or shape is null";
   }
-  try {
+  try
+  {
     OCC_CATCH_SIGNALS
 
-    std::cout <<"\n\n";
-    BRepTools::Dump (*(TopoDS_Shape*)theShapePtr, std::cout);
+    std::cout << "\n\n";
+    BRepTools::Dump(*(TopoDS_Shape*)theShapePtr, std::cout);
     std::cout << std::endl;
 
     return "Shape dumped to std::cout";
@@ -65,20 +67,21 @@ const char* BRepTools_Dump (void* theShapePtr)
 }
 
 //! Dump shape location to cout
-const char* BRepTools_DumpLoc (void* theLocationPtr)
+const char* BRepTools_DumpLoc(void* theLocationPtr)
 {
   if (theLocationPtr == 0)
   {
     return "Error: name or shape is null";
   }
-  try {
+  try
+  {
     OCC_CATCH_SIGNALS
 
-      std::cout <<"\n\n";
+    std::cout << "\n\n";
     TopTools_LocationSet LS;
     LS.Add(*(TopLoc_Location*)theLocationPtr);
     LS.Dump(std::cout);
-    std::cout <<std::endl;
+    std::cout << std::endl;
 
     return "Location dumped to std::cout";
   }
@@ -88,25 +91,25 @@ const char* BRepTools_DumpLoc (void* theLocationPtr)
   }
 }
 
-// MSVC debugger cannot deal correctly with functions whose argunments 
+// MSVC debugger cannot deal correctly with functions whose argunments
 // have non-standard types. Here we define alternative to the above functions
 // with good types with the hope that GDB on Linux or other debugger could
 // work with them (DBX could, on SUN Solaris).
 #ifndef _MSC_VER
 
-const char* BRepTools_Write (const char* theFileNameStr, const TopoDS_Shape& theShape)
+const char* BRepTools_Write(const char* theFileNameStr, const TopoDS_Shape& theShape)
 {
-  return BRepTools_Write (theFileNameStr, (void*)&theShape);
+  return BRepTools_Write(theFileNameStr, (void*)&theShape);
 }
 
-const char* BRepTools_Dump (const TopoDS_Shape& theShape)
+const char* BRepTools_Dump(const TopoDS_Shape& theShape)
 {
-  return BRepTools_Dump ((void*)&theShape);
+  return BRepTools_Dump((void*)&theShape);
 }
 
-const char* BRepTools_DumpLoc (const TopoDS_Shape& theShape)
+const char* BRepTools_DumpLoc(const TopoDS_Shape& theShape)
 {
-  return BRepTools_DumpLoc ((void*)&theShape);
+  return BRepTools_DumpLoc((void*)&theShape);
 }
 
 #endif

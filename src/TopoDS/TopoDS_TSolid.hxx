@@ -31,7 +31,11 @@ class TopoDS_TSolid : public TopoDS_TShape
 {
 public:
   //! Creates an empty TSolid.
-  TopoDS_TSolid() : TopoDS_TShape() { Orientable(Standard_False); }
+  TopoDS_TSolid()
+      : TopoDS_TShape()
+  {
+    Orientable(Standard_False);
+  }
 
   //! returns SOLID.
   Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;

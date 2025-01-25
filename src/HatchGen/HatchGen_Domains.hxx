@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<HatchGen_Domain> HatchGen_Domains;
 
-
 #endif

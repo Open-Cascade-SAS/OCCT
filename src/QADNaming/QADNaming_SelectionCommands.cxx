@@ -38,300 +38,323 @@
 #include <DBRep_DrawableShape.hxx>
 #include <stdio.h>
 
-//=======================================================================
-//function : Display
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-static void Display (const Standard_CString Name, const TopoDS_Shape& S)
-{  
-  //char* name = Name;
+static void Display(const Standard_CString Name, const TopoDS_Shape& S)
+{
+  // char* name = Name;
   static Standard_Integer nbIsos  = 2;
-  static Standard_Real size    = 100.;
+  static Standard_Real    size    = 100.;
   static Standard_Integer discret = 30;
 
-  Handle(DBRep_DrawableShape) D = new DBRep_DrawableShape(S,
-							  Draw_jaune,
-							  Draw_vert,
-							  Draw_bleu,
-							  Draw_rouge,
-							  size,
-							  nbIsos,
-							  discret);
-  Draw::Set(Name,D);
+  Handle(DBRep_DrawableShape) D =
+    new DBRep_DrawableShape(S, Draw_jaune, Draw_vert, Draw_bleu, Draw_rouge, size, nbIsos, discret);
+  Draw::Set(Name, D);
 }
 
-//=======================================================================
-//function : DumpNaming
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-static void DumpNaming (const Handle(TNaming_Naming)& naming, Draw_Interpretor& di) 
+static void DumpNaming(const Handle(TNaming_Naming)& naming, Draw_Interpretor& di)
 {
   TCollection_AsciiString Entry;
-  const TNaming_Name& AName = naming->GetName();
+  const TNaming_Name&     AName = naming->GetName();
 
-  //TNaming::Print(AName.Type(),std::cout);
+  // TNaming::Print(AName.Type(),std::cout);
   Standard_SStream aSStream1;
-  TNaming::Print(AName.Type(),aSStream1);
+  TNaming::Print(AName.Type(), aSStream1);
   di << aSStream1;
   di << " ";
 
-  //TopAbs::Print(AName.ShapeType(),std::cout);
+  // TopAbs::Print(AName.ShapeType(),std::cout);
   Standard_SStream aSStream2;
-  TopAbs::Print(AName.ShapeType(),aSStream2);
+  TopAbs::Print(AName.ShapeType(), aSStream2);
   di << aSStream2;
 
   const TNaming_ListOfNamedShape& NSS = AName.Arguments();
-  for (TNaming_ListIteratorOfListOfNamedShape it(NSS); it.More(); it.Next()) {
-    TDF_Tool::Entry(it.Value()->Label(),Entry); 
+  for (TNaming_ListIteratorOfListOfNamedShape it(NSS); it.More(); it.Next())
+  {
+    TDF_Tool::Entry(it.Value()->Label(), Entry);
     di << " " << Entry.ToCString();
   }
-  if(!AName.StopNamedShape().IsNull()) {
-    TDF_Tool::Entry(AName.StopNamedShape()->Label(),Entry); 
+  if (!AName.StopNamedShape().IsNull())
+  {
+    TDF_Tool::Entry(AName.StopNamedShape()->Label(), Entry);
     di << " Stop " << Entry.ToCString();
   }
 }
 
 //=======================================================================
-//function : SelectShape ou SelectGeometry
-//purpose  : "Select DF entry shape [context]", 
+// function : SelectShape ou SelectGeometry
+// purpose  : "Select DF entry shape [context]",
 //=======================================================================
 
-static Standard_Integer QADNaming_Select (Draw_Interpretor& di, Standard_Integer n, const char** a)
+static Standard_Integer QADNaming_Select(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n == 4 || n == 5) {
-    Standard_Boolean geometry = (strcmp(a[0],"SelectGeometry")==0?1:0); 
+  if (n == 4 || n == 5)
+  {
+    Standard_Boolean geometry = (strcmp(a[0], "SelectGeometry") == 0 ? 1 : 0);
     Handle(TDF_Data) DF;
-    if(!DDF::GetDF(a[1], DF))  return 1;
+    if (!DDF::GetDF(a[1], DF))
+      return 1;
     TDF_Label L;
-    DDF::AddLabel(DF,a[2],L);
-    TNaming_Selector SL (L);
-    if (n == 4) {
-      TopoDS_Shape S = DBRep::Get(a[3], TopAbs_SHAPE);  
-      SL.Select (S, geometry); 
+    DDF::AddLabel(DF, a[2], L);
+    TNaming_Selector SL(L);
+    if (n == 4)
+    {
+      TopoDS_Shape S = DBRep::Get(a[3], TopAbs_SHAPE);
+      SL.Select(S, geometry);
     }
-    if (n == 5) {  
+    if (n == 5)
+    {
       TopoDS_Shape S = DBRep::Get(a[3], TopAbs_SHAPE);
       TopoDS_Shape C = DBRep::Get(a[4], TopAbs_SHAPE);
-      SL.Select (S, C, geometry); 
+      SL.Select(S, C, geometry);
     }
-    return 0;  
+    return 0;
   }
   di << "QADNaming_Select : Error\n";
   return 1;
 }
 
 //=======================================================================
-//function : SolveSelection
-//purpose  : "SolveSelection DF entry", 
+// function : SolveSelection
+// purpose  : "SolveSelection DF entry",
 //=======================================================================
 
-static Standard_Integer QADNaming_SolveSelection (Draw_Interpretor& di, Standard_Integer n, const char** a)
+static Standard_Integer QADNaming_SolveSelection(Draw_Interpretor& di,
+                                                 Standard_Integer  n,
+                                                 const char**      a)
 {
-  if (n >= 3) {
+  if (n >= 3)
+  {
     TDF_Label aLabel;
-    if (!QADNaming::Entry(a, aLabel)) return 1;
-    char name[100];
-    TNaming_Selector SL (aLabel);
-    TDF_LabelMap valid;
+    if (!QADNaming::Entry(a, aLabel))
+      return 1;
+    char             name[100];
+    TNaming_Selector SL(aLabel);
+    TDF_LabelMap     valid;
     Standard_Integer i;
-    for(i=3;i<n;i++) {
+    for (i = 3; i < n; i++)
+    {
       TDF_Label aValidLab;
-      if (!DDF::FindLabel(aLabel.Data(),a[i],aValidLab)) di<<"Warning: label "<<a[i]<<" not exists\n";
-      else valid.Add(aValidLab);
+      if (!DDF::FindLabel(aLabel.Data(), a[i], aValidLab))
+        di << "Warning: label " << a[i] << " not exists\n";
+      else
+        valid.Add(aValidLab);
     }
     Standard_Boolean done = SL.Solve(valid);
-    TopoDS_Shape Res = TNaming_Tool::CurrentShape(SL.NamedShape());
-    //TopoDS_Shape Res = TNaming_Tool::CurrentShape(NS);
-    Sprintf (name,"%s_%s","new",a[2]);
-    Display (name,Res);
-    return done?0:1;
+    TopoDS_Shape     Res  = TNaming_Tool::CurrentShape(SL.NamedShape());
+    // TopoDS_Shape Res = TNaming_Tool::CurrentShape(NS);
+    Sprintf(name, "%s_%s", "new", a[2]);
+    Display(name, Res);
+    return done ? 0 : 1;
   }
   di << "Usage:  DumpSelection DF entry [validlabel1 validlabel2 ...]\n";
   return 1;
 }
 
 //=======================================================================
-//function : DumpSelection
-//purpose  : DumpSelection DF entry (R)
+// function : DumpSelection
+// purpose  : DumpSelection DF entry (R)
 //=======================================================================
 
-static Standard_Integer QADNaming_DumpSelection (Draw_Interpretor& di, 
-					      Standard_Integer n, const char** a)
+static Standard_Integer QADNaming_DumpSelection(Draw_Interpretor& di,
+                                                Standard_Integer  n,
+                                                const char**      a)
 {
-  if (n == 3 || n == 4) { 
+  if (n == 3 || n == 4)
+  {
     Handle(TDF_Data) DF;
-    if (!DDF::GetDF(a[1],DF)) return 1;  
+    if (!DDF::GetDF(a[1], DF))
+      return 1;
     TDF_Label L;
-    if (!DDF::FindLabel(DF,a[2],L)) return 1;
+    if (!DDF::FindLabel(DF, a[2], L))
+      return 1;
     Handle(TNaming_Naming) naming;
-    if (!L.FindAttribute(TNaming_Naming::GetID(),naming)) {  
-      di <<"QADNaming_DumpSelection : not a selection\n";
+    if (!L.FindAttribute(TNaming_Naming::GetID(), naming))
+    {
+      di << "QADNaming_DumpSelection : not a selection\n";
       return 1;
     }
     DumpNaming(naming, di);
     di << "\n";
-    if (n == 4) { 
-      Standard_Integer depth = L.Depth();  
-      Standard_Integer curdepth = 0;
+    if (n == 4)
+    {
+      Standard_Integer        depth    = L.Depth();
+      Standard_Integer        curdepth = 0;
       TCollection_AsciiString Entry;
-      TDF_ChildIterator it (naming->Label(),Standard_True);
-      for (;it.More();it.Next()) {
-	if (it.Value().FindAttribute(TNaming_Naming::GetID(),naming)) { 
-	  curdepth = (naming->Label().Depth()- depth);
-	  for (Standard_Integer i = 1; i <= curdepth; i++) di << " ";    
-	  TDF_Tool::Entry (naming->Label(),Entry); 
-	  di << Entry.ToCString() << " "; 
-	  DumpNaming(naming, di);
-	  di << "\n";
-	}
+      TDF_ChildIterator       it(naming->Label(), Standard_True);
+      for (; it.More(); it.Next())
+      {
+        if (it.Value().FindAttribute(TNaming_Naming::GetID(), naming))
+        {
+          curdepth = (naming->Label().Depth() - depth);
+          for (Standard_Integer i = 1; i <= curdepth; i++)
+            di << " ";
+          TDF_Tool::Entry(naming->Label(), Entry);
+          di << Entry.ToCString() << " ";
+          DumpNaming(naming, di);
+          di << "\n";
+        }
       }
     }
     return 0;
   }
   di << "QADNaming_DumpSelection : Error\n";
-  return 1;  
+  return 1;
 }
 
 //=======================================================================
-//function : ArgsSelection
-//purpose  : ArgsSelection DF entry
+// function : ArgsSelection
+// purpose  : ArgsSelection DF entry
 //=======================================================================
 
-static Standard_Integer QADNaming_ArgsSelection (Draw_Interpretor& di, 
-					      Standard_Integer n, const char** a)
+static Standard_Integer QADNaming_ArgsSelection(Draw_Interpretor& di,
+                                                Standard_Integer  n,
+                                                const char**      a)
 {
-  if (n == 3) { 
+  if (n == 3)
+  {
     Handle(TDF_Data) DF;
-    if (!DDF::GetDF(a[1],DF)) return 1;  
-    TDF_Label L;
-    if (!DDF::FindLabel(DF,a[2],L)) return 1;
-    Handle(TNaming_Naming) naming;
-    if (!L.FindAttribute(TNaming_Naming::GetID(),naming)) {  
-      di <<"QADNaming_DumpSelection : not a selection\n";
+    if (!DDF::GetDF(a[1], DF))
       return 1;
-    }  
+    TDF_Label L;
+    if (!DDF::FindLabel(DF, a[2], L))
+      return 1;
+    Handle(TNaming_Naming) naming;
+    if (!L.FindAttribute(TNaming_Naming::GetID(), naming))
+    {
+      di << "QADNaming_DumpSelection : not a selection\n";
+      return 1;
+    }
     TCollection_AsciiString Entry;
-    TNaming_Selector SL (L);
-    di <<" Selection Arguments : ";
+    TNaming_Selector        SL(L);
+    di << " Selection Arguments : ";
     TDF_AttributeMap args;
     SL.Arguments(args);
-    for (TDF_MapIteratorOfAttributeMap it(args); it.More(); it.Next()) {
-      TDF_Tool::Entry(it.Key()->Label(),Entry); 
+    for (TDF_MapIteratorOfAttributeMap it(args); it.More(); it.Next())
+    {
+      TDF_Tool::Entry(it.Key()->Label(), Entry);
       di << Entry.ToCString() << " ";
     }
     di << "\n";
     return 0;
   }
   di << "QADNaming_ArgsSelection : Error\n";
-  return 1;  
+  return 1;
 }
 
-//=======================================================================
-//function : CollectAttachment
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-static void CollectAttachment (const TDF_Label& root,
-			       const Handle(TNaming_Naming)& naming, 
-			       TNaming_MapOfNamedShape& attachment)
+static void CollectAttachment(const TDF_Label&              root,
+                              const Handle(TNaming_Naming)& naming,
+                              TNaming_MapOfNamedShape&      attachment)
 {
   TNaming_ListIteratorOfListOfNamedShape itarg;
-  const TNaming_ListOfNamedShape& args = naming->GetName().Arguments();
-  for (itarg.Initialize(args);itarg.More();itarg.Next()) {
-    if (!itarg.Value()->Label().IsDescendant(root)) attachment.Add(itarg.Value());
-  }  
-  Handle(TNaming_Naming) subnaming; 
-  for (TDF_ChildIterator it(naming->Label(),Standard_True);it.More();it.Next()) {
-    if (it.Value().FindAttribute(TNaming_Naming::GetID(),subnaming)) {   
+  const TNaming_ListOfNamedShape&        args = naming->GetName().Arguments();
+  for (itarg.Initialize(args); itarg.More(); itarg.Next())
+  {
+    if (!itarg.Value()->Label().IsDescendant(root))
+      attachment.Add(itarg.Value());
+  }
+  Handle(TNaming_Naming) subnaming;
+  for (TDF_ChildIterator it(naming->Label(), Standard_True); it.More(); it.Next())
+  {
+    if (it.Value().FindAttribute(TNaming_Naming::GetID(), subnaming))
+    {
       const TNaming_ListOfNamedShape& subargs = subnaming->GetName().Arguments();
-      for (itarg.Initialize(subargs);itarg.More();itarg.Next()) {
-	if (!itarg.Value()->Label().IsDescendant(root)) attachment.Add(itarg.Value());
+      for (itarg.Initialize(subargs); itarg.More(); itarg.Next())
+      {
+        if (!itarg.Value()->Label().IsDescendant(root))
+          attachment.Add(itarg.Value());
       }
     }
   }
-}  
-
+}
 
 //=======================================================================
-//function : Attachment
-//purpose  : Attachment DF entry
+// function : Attachment
+// purpose  : Attachment DF entry
 //=======================================================================
 
-static Standard_Integer QADNaming_Attachment (Draw_Interpretor& di, 
-					    Standard_Integer n, 
-					    const char** a)
+static Standard_Integer QADNaming_Attachment(Draw_Interpretor& di,
+                                             Standard_Integer  n,
+                                             const char**      a)
 {
-  if (n == 3) { 
+  if (n == 3)
+  {
     Handle(TDF_Data) DF;
-    if (!DDF::GetDF(a[1],DF)) return 1;  
+    if (!DDF::GetDF(a[1], DF))
+      return 1;
     TDF_Label L;
-    if (!DDF::FindLabel(DF,a[2],L)) return 1;  
-    Handle(TNaming_Naming) naming; 
+    if (!DDF::FindLabel(DF, a[2], L))
+      return 1;
+    Handle(TNaming_Naming)  naming;
     TNaming_MapOfNamedShape attachment;
-    if (L.FindAttribute(TNaming_Naming::GetID(),naming)) {
-      CollectAttachment (L,naming,attachment);
+    if (L.FindAttribute(TNaming_Naming::GetID(), naming))
+    {
+      CollectAttachment(L, naming, attachment);
     }
-    else {
-      for (TDF_ChildIterator it (L,Standard_True); it.More();it.Next()) {
-	if (it.Value().FindAttribute(TNaming_Naming::GetID(),naming)) {
-	  CollectAttachment (L,naming,attachment);
-	  it.NextBrother();
-	}
+    else
+    {
+      for (TDF_ChildIterator it(L, Standard_True); it.More(); it.Next())
+      {
+        if (it.Value().FindAttribute(TNaming_Naming::GetID(), naming))
+        {
+          CollectAttachment(L, naming, attachment);
+          it.NextBrother();
+        }
       }
     }
-    TCollection_AsciiString Entry;   
-    TDF_Tool::Entry(L,Entry); 
+    TCollection_AsciiString Entry;
+    TDF_Tool::Entry(L, Entry);
     di << " Attachment of " << Entry.ToCString();
     di << "\n";
-    for (TNaming_MapIteratorOfMapOfNamedShape ita (attachment); ita.More(); ita.Next()) {
-      TDF_Tool::Entry (ita.Key()->Label(),Entry); 
+    for (TNaming_MapIteratorOfMapOfNamedShape ita(attachment); ita.More(); ita.Next())
+    {
+      TDF_Tool::Entry(ita.Key()->Label(), Entry);
       di << Entry.ToCString() << " ";
     }
     di << "\n";
     return 0;
   }
   di << "QADNaming_Attachment : Error\n";
-  return 1;  
+  return 1;
 }
 
-//=======================================================================
-//function : SelectionCommands
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void QADNaming::SelectionCommands(Draw_Interpretor& theCommands) 
+void QADNaming::SelectionCommands(Draw_Interpretor& theCommands)
 {
-  
+
   static Standard_Boolean done = Standard_False;
-  if (done) return;
+  if (done)
+    return;
   done = Standard_True;
-  
+
   const char* g = "Naming data commands";
 
   theCommands.Add("SelectShape",
-		  "SelectShape DF entry shape [context]", 
-		  __FILE__, QADNaming_Select, g);
-  
+                  "SelectShape DF entry shape [context]",
+                  __FILE__,
+                  QADNaming_Select,
+                  g);
+
   theCommands.Add("SelectGeometry",
-		  "SelectGeometry DF entry shape [context]", 
-		  __FILE__, QADNaming_Select, g);
-  
-  theCommands.Add("DumpSelection",         
-		  "DumpSelected DF entry", 
-		  __FILE__, QADNaming_DumpSelection, g);    
+                  "SelectGeometry DF entry shape [context]",
+                  __FILE__,
+                  QADNaming_Select,
+                  g);
 
-  theCommands.Add("ArgsSelection",         
-		  "ArgsSelection DF entry", 
-		  __FILE__, QADNaming_ArgsSelection, g);  
+  theCommands.Add("DumpSelection", "DumpSelected DF entry", __FILE__, QADNaming_DumpSelection, g);
 
-  theCommands.Add("SolveSelection",         
-		  "DumpSelection DF entry [validlabel1 validlabel2 ...]", 
-		  __FILE__, QADNaming_SolveSelection, g);  
+  theCommands.Add("ArgsSelection", "ArgsSelection DF entry", __FILE__, QADNaming_ArgsSelection, g);
 
-  theCommands.Add("Attachment",         
-		  "Attachment DF entry", 
-		  __FILE__, QADNaming_Attachment, g);
+  theCommands.Add("SolveSelection",
+                  "DumpSelection DF entry [validlabel1 validlabel2 ...]",
+                  __FILE__,
+                  QADNaming_SolveSelection,
+                  g);
 
+  theCommands.Add("Attachment", "Attachment DF entry", __FILE__, QADNaming_Attachment, g);
 }

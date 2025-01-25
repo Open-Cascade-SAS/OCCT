@@ -26,8 +26,9 @@ class Storage_StreamFormatError;
 DEFINE_STANDARD_HANDLE(Storage_StreamFormatError, Standard_Failure)
 
 #if !defined No_Exception && !defined No_Storage_StreamFormatError
-  #define Storage_StreamFormatError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Storage_StreamFormatError(MESSAGE);
+  #define Storage_StreamFormatError_Raise_if(CONDITION, MESSAGE)                                   \
+    if (CONDITION)                                                                                 \
+      throw Storage_StreamFormatError(MESSAGE);
 #else
   #define Storage_StreamFormatError_Raise_if(CONDITION, MESSAGE)
 #endif

@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include "RWStepRepr_RWCompoundRepresentationItem.pxx"
@@ -22,44 +21,51 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepRepr_RWCompoundRepresentationItem::RWStepRepr_RWCompoundRepresentationItem  ()    {  }
+RWStepRepr_RWCompoundRepresentationItem::RWStepRepr_RWCompoundRepresentationItem() {}
 
-void  RWStepRepr_RWCompoundRepresentationItem::ReadStep
-  (const Handle(StepData_StepReaderData)& data,
-   const Standard_Integer num,
-   Handle(Interface_Check)& ach,
-   const Handle(StepRepr_CompoundRepresentationItem)& ent) const
+void RWStepRepr_RWCompoundRepresentationItem::ReadStep(
+  const Handle(StepData_StepReaderData)&             data,
+  const Standard_Integer                             num,
+  Handle(Interface_Check)&                           ach,
+  const Handle(StepRepr_CompoundRepresentationItem)& ent) const
 {
   // --- Number of Parameter Control ---
-  if (!data->CheckNbParams(num,2,ach,"compound_representation_item")) return;
+  if (!data->CheckNbParams(num, 2, ach, "compound_representation_item"))
+    return;
 
   // --- inherited field : name ---
 
   Handle(TCollection_HAsciiString) aName;
-  //szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-  data->ReadString (num,1,"name",ach,aName);
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : item_element
 
   Handle(StepRepr_HArray1OfRepresentationItem) aItems;
-  Handle(StepRepr_RepresentationItem) anent2;
-  Standard_Integer nsub2;
-  if (data->ReadSubList (num,2,"item_element",ach,nsub2)) {
+  Handle(StepRepr_RepresentationItem)          anent2;
+  Standard_Integer                             nsub2;
+  if (data->ReadSubList(num, 2, "item_element", ach, nsub2))
+  {
     Standard_Integer nb2 = data->NbParams(nsub2);
-    aItems = new StepRepr_HArray1OfRepresentationItem (1, nb2);
-    for (Standard_Integer i2 = 1; i2 <= nb2; i2 ++) {
-      if (data->ReadEntity(nsub2, i2,"representation_item", ach,
-			   STANDARD_TYPE(StepRepr_RepresentationItem), anent2))
-	aItems->SetValue(i2, anent2);
+    aItems               = new StepRepr_HArray1OfRepresentationItem(1, nb2);
+    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    {
+      if (data->ReadEntity(nsub2,
+                           i2,
+                           "representation_item",
+                           ach,
+                           STANDARD_TYPE(StepRepr_RepresentationItem),
+                           anent2))
+        aItems->SetValue(i2, anent2);
     }
   }
 
-  ent->Init (aName,aItems);
+  ent->Init(aName, aItems);
 }
 
-void  RWStepRepr_RWCompoundRepresentationItem::WriteStep
-  (StepData_StepWriter& SW,
-   const Handle(StepRepr_CompoundRepresentationItem)& ent) const
+void RWStepRepr_RWCompoundRepresentationItem::WriteStep(
+  StepData_StepWriter&                               SW,
+  const Handle(StepRepr_CompoundRepresentationItem)& ent) const
 {
   // --- inherited field : name ---
 
@@ -68,16 +74,18 @@ void  RWStepRepr_RWCompoundRepresentationItem::WriteStep
   // --- own field : items ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1;  i2 <= ent->NbItemElement();  i2 ++) {
+  for (Standard_Integer i2 = 1; i2 <= ent->NbItemElement(); i2++)
+  {
     SW.Send(ent->ItemElementValue(i2));
   }
   SW.CloseSub();
 }
 
-void  RWStepRepr_RWCompoundRepresentationItem::Share
-  (const Handle(StepRepr_CompoundRepresentationItem)& ent,
-   Interface_EntityIterator& iter) const
+void RWStepRepr_RWCompoundRepresentationItem::Share(
+  const Handle(StepRepr_CompoundRepresentationItem)& ent,
+  Interface_EntityIterator&                          iter) const
 {
   Standard_Integer i, nb = ent->NbItemElement();
-  for (i = 1; i <= nb; i ++)  iter.AddItem (ent->ItemElementValue(i));
+  for (i = 1; i <= nb; i++)
+    iter.AddItem(ent->ItemElementValue(i));
 }

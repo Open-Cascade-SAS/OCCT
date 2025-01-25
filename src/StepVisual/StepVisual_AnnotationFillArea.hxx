@@ -24,11 +24,10 @@
 class StepVisual_AnnotationFillArea;
 DEFINE_STANDARD_HANDLE(StepVisual_AnnotationFillArea, StepShape_GeometricCurveSet)
 
-
 class StepVisual_AnnotationFillArea : public StepShape_GeometricCurveSet
 {
 
-public:  
+public:
   //! Returns a AnnotationFillArea
   Standard_EXPORT StepVisual_AnnotationFillArea();
 

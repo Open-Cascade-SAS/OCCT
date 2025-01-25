@@ -14,22 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopOpeBRepDS_SolidSurfaceInterference.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_SolidSurfaceInterference,TopOpeBRepDS_Interference)
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_SolidSurfaceInterference, TopOpeBRepDS_Interference)
 
-//=======================================================================
-//function : TopOpeBRepDS_SolidSurfaceInterference
-//purpose  : 
-//=======================================================================
-TopOpeBRepDS_SolidSurfaceInterference::TopOpeBRepDS_SolidSurfaceInterference
-  (const TopOpeBRepDS_Transition& T,
-   const TopOpeBRepDS_Kind ST, 
-   const Standard_Integer S, 
-   const TopOpeBRepDS_Kind GT, 
-   const Standard_Integer G) :
-  TopOpeBRepDS_Interference(T,ST,S,GT,G)
+//=================================================================================================
+
+TopOpeBRepDS_SolidSurfaceInterference::TopOpeBRepDS_SolidSurfaceInterference(
+  const TopOpeBRepDS_Transition& T,
+  const TopOpeBRepDS_Kind        ST,
+  const Standard_Integer         S,
+  const TopOpeBRepDS_Kind        GT,
+  const Standard_Integer         G)
+    : TopOpeBRepDS_Interference(T, ST, S, GT, G)
 {
 }

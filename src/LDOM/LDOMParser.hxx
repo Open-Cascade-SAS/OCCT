@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//AGV 060302: Input from std::istream
+// AGV 060302: Input from std::istream
 
 #ifndef LDOMParser_HeaderFile
 #define LDOMParser_HeaderFile
@@ -22,37 +22,40 @@
 #include <LDOM_OSStream.hxx>
 
 class LDOM_XmlReader;
-//class std::istream;
+
+// class std::istream;
 
 //  Class LDOMParser
 //
 
 class LDOMParser
 {
- public:
+public:
   // ---------- PUBLIC METHODS ----------
 
-  LDOMParser () : myReader (NULL), myCurrentData (16384) {}
+  LDOMParser()
+      : myReader(NULL),
+        myCurrentData(16384)
+  {
+  }
+
   // Empty constructor
 
-  virtual Standard_EXPORT ~LDOMParser  ();
+  virtual Standard_EXPORT ~LDOMParser();
   // Destructor
 
-  Standard_EXPORT LDOM_Document
-                        getDocument    ();
+  Standard_EXPORT LDOM_Document getDocument();
   // Get the LDOM_Document
 
-  Standard_EXPORT Standard_Boolean
-                        parse           (const char * const aFileName);
+  Standard_EXPORT Standard_Boolean parse(const char* const aFileName);
   // Parse a file
   // Returns True if error occurred, then GetError() can be called
 
-  Standard_EXPORT Standard_Boolean
-                        parse           (std::istream& anInput,
+  Standard_EXPORT Standard_Boolean parse(std::istream&          anInput,
                                          const Standard_Boolean theTagPerStep  = Standard_False,
                                          const Standard_Boolean theWithoutRoot = Standard_False);
   // Parse a C++ stream
-  // theTagPerStep - if true - extract characters from anInput until '>' 
+  // theTagPerStep - if true - extract characters from anInput until '>'
   //                           extracted character and parse only these characters.
   //                 if false - extract until eof
   // theWithoutRoot - if true - create fictive "document" element before parsing
@@ -60,49 +63,46 @@ class LDOMParser
   //                - if false - parse a document as usual (parse header, document tag and etc)
   // Returns True if error occurred, then GetError() can be called
 
-  Standard_EXPORT const TCollection_AsciiString&
-                        GetError        (TCollection_AsciiString& aData) const;
+  Standard_EXPORT const TCollection_AsciiString& GetError(TCollection_AsciiString& aData) const;
   // Return text describing a parsing error, or Empty if no error occurred
 
   // Returns the byte order mask defined at the start of a stream
   Standard_EXPORT LDOM_OSStream::BOMType GetBOM() const;
 
- protected:
+protected:
   // ---------- PROTECTED METHODS ----------
 
-  Standard_EXPORT virtual Standard_Boolean
-                        startElement    ();
+  Standard_EXPORT virtual Standard_Boolean startElement();
   // virtual hook on 'StartElement' event for descendant classes
 
-  Standard_EXPORT virtual Standard_Boolean
-                        endElement      ();
+  Standard_EXPORT virtual Standard_Boolean endElement();
   // virtual hook on 'EndElement' event for descendant classes
 
-  Standard_EXPORT LDOM_Element
-                        getCurrentElement () const;
+  Standard_EXPORT LDOM_Element getCurrentElement() const;
   // to be called from startElement() and endElement()
 
- private:
+private:
   // ---------- PRIVATE METHODS ----------
-  Standard_Boolean      ParseDocument   (Standard_IStream& theIStream, const Standard_Boolean theWithoutRoot = Standard_False);
+  Standard_Boolean ParseDocument(Standard_IStream&      theIStream,
+                                 const Standard_Boolean theWithoutRoot = Standard_False);
 
-  Standard_Boolean      ParseElement    (Standard_IStream& theIStream, Standard_Boolean& theDocStart);
+  Standard_Boolean ParseElement(Standard_IStream& theIStream, Standard_Boolean& theDocStart);
 
   // ---------- PRIVATE (PROHIBITED) METHODS ----------
 
-  LDOMParser (const LDOMParser& theOther);
+  LDOMParser(const LDOMParser& theOther);
   // Copy constructor
 
-  LDOMParser& operator = (const LDOMParser& theOther);
+  LDOMParser& operator=(const LDOMParser& theOther);
   // Assignment
 
- private:
+private:
   // ---------- PRIVATE FIELDS ----------
 
-  LDOM_XmlReader                * myReader;
-  Handle(LDOM_MemManager)       myDocument;
-  LDOM_OSStream                 myCurrentData;
-  TCollection_AsciiString       myError;
+  LDOM_XmlReader*         myReader;
+  Handle(LDOM_MemManager) myDocument;
+  LDOM_OSStream           myCurrentData;
+  TCollection_AsciiString myError;
 };
 
 #endif

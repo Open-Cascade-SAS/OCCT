@@ -16,33 +16,39 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline Standard_Boolean Contap_Contour::IsDone () const
+inline Standard_Boolean Contap_Contour::IsDone() const
 {
   return done;
 }
 
-inline Standard_Boolean Contap_Contour::IsEmpty () const
+inline Standard_Boolean Contap_Contour::IsEmpty() const
 {
-  return NbLines()==0;
+  return NbLines() == 0;
 }
 
-inline Standard_Integer Contap_Contour::NbLines () const
+inline Standard_Integer Contap_Contour::NbLines() const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return slin.Length();
 }
 
-inline const Contap_Line & 
-Contap_Contour::Line (const Standard_Integer Index) const
+inline const Contap_Line& Contap_Contour::Line(const Standard_Integer Index) const
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return slin(Index);
 }
 
-inline Contap_SurfFunction & 
-Contap_Contour::SurfaceFunction ()
+inline Contap_SurfFunction& Contap_Contour::SurfaceFunction()
 {
-  if (!done) {throw StdFail_NotDone();}
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
   return mySFunc;
 }
-

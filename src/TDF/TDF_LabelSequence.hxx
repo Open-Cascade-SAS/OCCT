@@ -21,5 +21,4 @@
 
 typedef NCollection_Sequence<TDF_Label> TDF_LabelSequence;
 
-
 #endif

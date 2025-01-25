@@ -33,60 +33,62 @@
 // ErrorMessage
 //==========================================================
 
-static void DDocStd_StorageErrorMessage (Draw_Interpretor& theDI, const Storage_Error theStatus)
+static void DDocStd_StorageErrorMessage(Draw_Interpretor& theDI, const Storage_Error theStatus)
 {
-  switch (theStatus) {
-  case Storage_VSOk:
-    break;
-  case Storage_VSOpenError:
-    theDI << "Storage error: failed to open the stream";
-    break;
-  case Storage_VSModeError:
-    theDI << "Storage error: the stream is opened with a wrong mode for operation ";
-    break;
-  case Storage_VSCloseError:
-    theDI << "Storage error: failed to closing the stream";
-    break;
-  case Storage_VSAlreadyOpen:
-    theDI << "Storage error: stream is already opened";
-    break;
-  case Storage_VSNotOpen:
-    theDI << "Storage error: stream not opened";
-    break;
-  case Storage_VSSectionNotFound:
-    theDI << "Storage error: the section is not found";
-    break;
-  case Storage_VSWriteError:
-    theDI << "Storage error: error during writing";
-    break;
-  case Storage_VSFormatError:
-    theDI << "Storage error: wrong format error occurred while reading";
-    break;
-  case Storage_VSUnknownType:
-    theDI << "Storage error: try to read an unknown type";
-    break;
-  case Storage_VSTypeMismatch:
-    theDI << "Storage error: try to read a wrong primitive type (read a char while expecting a real)";
-    break;
-  case Storage_VSInternalError:
-    theDI << "Storage error: internal error";
-    break;
-  case Storage_VSExtCharParityError:
-    theDI << "Storage error: parity error";
-    break;
-  default:
-    theDI << "Storage error: unknown error code";
-    break;
+  switch (theStatus)
+  {
+    case Storage_VSOk:
+      break;
+    case Storage_VSOpenError:
+      theDI << "Storage error: failed to open the stream";
+      break;
+    case Storage_VSModeError:
+      theDI << "Storage error: the stream is opened with a wrong mode for operation ";
+      break;
+    case Storage_VSCloseError:
+      theDI << "Storage error: failed to closing the stream";
+      break;
+    case Storage_VSAlreadyOpen:
+      theDI << "Storage error: stream is already opened";
+      break;
+    case Storage_VSNotOpen:
+      theDI << "Storage error: stream not opened";
+      break;
+    case Storage_VSSectionNotFound:
+      theDI << "Storage error: the section is not found";
+      break;
+    case Storage_VSWriteError:
+      theDI << "Storage error: error during writing";
+      break;
+    case Storage_VSFormatError:
+      theDI << "Storage error: wrong format error occurred while reading";
+      break;
+    case Storage_VSUnknownType:
+      theDI << "Storage error: try to read an unknown type";
+      break;
+    case Storage_VSTypeMismatch:
+      theDI
+        << "Storage error: try to read a wrong primitive type (read a char while expecting a real)";
+      break;
+    case Storage_VSInternalError:
+      theDI << "Storage error: internal error";
+      break;
+    case Storage_VSExtCharParityError:
+      theDI << "Storage error: parity error";
+      break;
+    default:
+      theDI << "Storage error: unknown error code";
+      break;
   }
 }
 
 //=======================================================================
-//function : DDocStd_ShapeSchema_Write 
+// function : DDocStd_ShapeSchema_Write
 //=======================================================================
 
 static Standard_Integer DDocStd_fsdwrite(Draw_Interpretor& theDI,
-                                         Standard_Integer theArgNb,
-                                         const char** theArgs)
+                                         Standard_Integer  theArgNb,
+                                         const char**      theArgs)
 {
   if (theArgNb < 3)
   {
@@ -104,34 +106,36 @@ static Standard_Integer DDocStd_fsdwrite(Draw_Interpretor& theDI,
   Handle(Storage_BaseDriver) aFileDriver(new FSD_File);
 
   Standard_Boolean hasStorageDriver = Standard_False;
-  Standard_Integer iArgN = theArgNb - 1;
+  Standard_Integer iArgN            = theArgNb - 1;
 
   if (strncmp(theArgs[iArgN], "gen", 3) == 0)
   {
-    aFileDriver = new FSD_File;
+    aFileDriver      = new FSD_File;
     hasStorageDriver = Standard_True;
   }
   else if (strncmp(theArgs[iArgN], "cmp", 3) == 0)
   {
-    aFileDriver = new FSD_CmpFile;
+    aFileDriver      = new FSD_CmpFile;
     hasStorageDriver = Standard_True;
   }
   else if (strncmp(theArgs[iArgN], "bin", 3) == 0)
   {
-    aFileDriver = new FSD_BinaryFile;
+    aFileDriver      = new FSD_BinaryFile;
     hasStorageDriver = Standard_True;
   }
 
-  if (hasStorageDriver) --iArgN;
+  if (hasStorageDriver)
+    --iArgN;
 
   Storage_Error aStatus = aFileDriver->Open(theArgs[iArgN], Storage_VSWrite);
-  if (aStatus != Storage_VSOk) {
+  if (aStatus != Storage_VSOk)
+  {
     theDI << "Error: cannot  open file '" << "' for writing (" << aStatus << ")\n";
-    DDocStd_StorageErrorMessage (theDI, aStatus);
+    DDocStd_StorageErrorMessage(theDI, aStatus);
     return 0;
   }
 
-  TopTools_SequenceOfShape aShapes;
+  TopTools_SequenceOfShape                                       aShapes;
   NCollection_DataMap<TCollection_AsciiString, Standard_Integer> aShapeNames;
   for (Standard_Integer i = 1; i < iArgN; ++i)
   {
@@ -164,7 +168,7 @@ static Standard_Integer DDocStd_fsdwrite(Draw_Interpretor& theDI,
       theDI << "Error : couldn't translate shape " << theArgs[i] << "\n";
       return 1;
     }
-    
+
     TCollection_AsciiString aName = theArgs[i];
     if (aShapeNames.IsBound(aName))
     {
@@ -188,12 +192,12 @@ static Standard_Integer DDocStd_fsdwrite(Draw_Interpretor& theDI,
 }
 
 //=======================================================================
-//function : DDocStd_ShapeSchema_Read 
+// function : DDocStd_ShapeSchema_Read
 //=======================================================================
 
-static Standard_Integer DDocStd_fsdread(Draw_Interpretor& theDI, 
-                                        Standard_Integer theArgNb, 
-                                        const char** theArgs)
+static Standard_Integer DDocStd_fsdread(Draw_Interpretor& theDI,
+                                        Standard_Integer  theArgNb,
+                                        const char**      theArgs)
 {
   if (theArgNb < 3)
   {
@@ -209,10 +213,10 @@ static Standard_Integer DDocStd_fsdread(Draw_Interpretor& theDI,
     return 1;
   }
   Standard_Boolean rflag(Standard_False);
-  if (strcmp(theArgs[2],"restore_with_names") == 0) 
+  if (strcmp(theArgs[2], "restore_with_names") == 0)
     rflag = Standard_True;
   Handle(StdStorage_Data) aData;
-  Storage_Error anError = StdStorage::Read(TCollection_AsciiString(theArgs[1]), aData);
+  Storage_Error           anError = StdStorage::Read(TCollection_AsciiString(theArgs[1]), aData);
   if (anError != Storage_VSOk)
   {
     DDocStd_StorageErrorMessage(theDI, anError);
@@ -221,34 +225,38 @@ static Standard_Integer DDocStd_fsdread(Draw_Interpretor& theDI,
 
   TopTools_SequenceOfShape aShapes;
 
-  Handle(StdStorage_TypeData) aTypeData = aData->TypeData();
-  Handle(StdStorage_RootData) aRootData = aData->RootData();
-  Handle(StdStorage_HSequenceOfRoots) aRoots = aRootData->Roots();
+  Handle(StdStorage_TypeData)         aTypeData = aData->TypeData();
+  Handle(StdStorage_RootData)         aRootData = aData->RootData();
+  Handle(StdStorage_HSequenceOfRoots) aRoots    = aRootData->Roots();
   if (!aRoots.IsNull())
   {
     for (StdStorage_HSequenceOfRoots::Iterator anIt(*aRoots); anIt.More(); anIt.Next())
     {
-      Handle(StdStorage_Root)& aRoot = anIt.ChangeValue();
+      Handle(StdStorage_Root)&     aRoot    = anIt.ChangeValue();
       Handle(StdObjMgt_Persistent) aPObject = aRoot->Object();
       if (!aPObject.IsNull())
       {
-        Handle(ShapePersistent_TopoDS::HShape) aHShape = Handle(ShapePersistent_TopoDS::HShape)::DownCast(aPObject);
+        Handle(ShapePersistent_TopoDS::HShape) aHShape =
+          Handle(ShapePersistent_TopoDS::HShape)::DownCast(aPObject);
         if (aHShape) // shapes are expected
         {
           TopoDS_Shape aShape = aHShape->Import();
-          if(rflag) {
-            if(!aRoot->Name().IsEmpty())
+          if (rflag)
+          {
+            if (!aRoot->Name().IsEmpty())
               DBRep::Set(aRoot->Name().ToCString(), aShape);
-            else {
+            else
+            {
               TCollection_AsciiString aNam("name_");
               aNam += aRoot->Reference();
               DBRep::Set(aNam.ToCString(), aShape);
             }
 #ifdef DEBUG_FSDREAD
             Standard_Integer indx = aRoot->Reference();
-            theDI << "Ref indx = " <<indx << " Name = " << aRoot->Name().ToCString() << "\n";
+            theDI << "Ref indx = " << indx << " Name = " << aRoot->Name().ToCString() << "\n";
 #endif
-          } else
+          }
+          else
             aShapes.Append(aShape);
         }
       }
@@ -258,11 +266,12 @@ static Standard_Integer DDocStd_fsdread(Draw_Interpretor& theDI,
   theDI << "Info : " << aTypeData->NumberOfTypes() << " type(s)\n";
   theDI << "       " << aRoots->Length() << " root(s)\n";
 
-  if (!rflag) {
+  if (!rflag)
+  {
     if (aShapes.Length() > 1)
     {
       theDI << "       " << aShapes.Length() << " shape(s) translated\n";
-      BRep_Builder aB;
+      BRep_Builder    aB;
       TopoDS_Compound aC;
       aB.MakeCompound(aC);
       for (Standard_Integer i = 1; i <= aShapes.Length(); ++i)
@@ -276,24 +285,24 @@ static Standard_Integer DDocStd_fsdread(Draw_Interpretor& theDI,
 }
 
 //=======================================================================
-//function : ShapeSchemaCommands
-//purpose  : registers shape schema related commands in Draw interpreter
+// function : ShapeSchemaCommands
+// purpose  : registers shape schema related commands in Draw interpreter
 //=======================================================================
 
 void DDocStd::ShapeSchemaCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
-  if (done) return;
+  if (done)
+    return;
   done = Standard_True;
 
   const char* g = "Shape persistence commands";
 
-  theCommands.Add("fsdwrite",
-    "fsdrite shape filename [driver]",
-    __FILE__, DDocStd_fsdwrite, g);
+  theCommands.Add("fsdwrite", "fsdrite shape filename [driver]", __FILE__, DDocStd_fsdwrite, g);
 
   theCommands.Add("fsdread",
-    "fsdread filename shape [name | or key 'restore_with_names']",
-    __FILE__, DDocStd_fsdread, g);
-
+                  "fsdread filename shape [name | or key 'restore_with_names']",
+                  __FILE__,
+                  DDocStd_fsdread,
+                  g);
 }

@@ -26,7 +26,8 @@ enum Graphic3d_TypeOfShaderObject
   Graphic3d_TOS_GEOMETRY        = 0x08, //!< geometry shader object, optional
   Graphic3d_TOS_FRAGMENT        = 0x10, //!< fragment shader object, mandatory
   // general-purpose compute shader
-  Graphic3d_TOS_COMPUTE         = 0x20  //!< compute shader object, should be used as alternative to shader object types for rendering
+  Graphic3d_TOS_COMPUTE = 0x20 //!< compute shader object, should be used as alternative to shader
+                               //!< object types for rendering
 };
 
 #endif

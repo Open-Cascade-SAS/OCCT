@@ -20,5 +20,4 @@
 
 typedef NCollection_Sequence<TCollection_AsciiString> TColStd_SequenceOfAsciiString;
 
-
 #endif

@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -16,44 +16,42 @@
 
 #include <StepKinematics_KinematicPropertyMechanismRepresentation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicPropertyMechanismRepresentation, StepKinematics_KinematicPropertyDefinitionRepresentation)
+IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicPropertyMechanismRepresentation,
+                           StepKinematics_KinematicPropertyDefinitionRepresentation)
 
-//=======================================================================
-//function : StepKinematics_KinematicPropertyMechanismRepresentation
-//purpose  :
-//=======================================================================
-StepKinematics_KinematicPropertyMechanismRepresentation::StepKinematics_KinematicPropertyMechanismRepresentation ()
+//=================================================================================================
+
+StepKinematics_KinematicPropertyMechanismRepresentation::
+  StepKinematics_KinematicPropertyMechanismRepresentation()
 {
 }
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_KinematicPropertyMechanismRepresentation::Init (const StepRepr_RepresentedDefinition& thePropertyDefinitionRepresentation_Definition,
-                                                                    const Handle(StepRepr_Representation)& thePropertyDefinitionRepresentation_UsedRepresentation,
-                                                                    const Handle(StepKinematics_KinematicLinkRepresentation)& theBase)
+//=================================================================================================
+
+void StepKinematics_KinematicPropertyMechanismRepresentation::Init(
+  const StepRepr_RepresentedDefinition&  thePropertyDefinitionRepresentation_Definition,
+  const Handle(StepRepr_Representation)& thePropertyDefinitionRepresentation_UsedRepresentation,
+  const Handle(StepKinematics_KinematicLinkRepresentation)& theBase)
 {
-  StepKinematics_KinematicPropertyDefinitionRepresentation::Init(thePropertyDefinitionRepresentation_Definition,
-                                                                 thePropertyDefinitionRepresentation_UsedRepresentation);
+  StepKinematics_KinematicPropertyDefinitionRepresentation::Init(
+    thePropertyDefinitionRepresentation_Definition,
+    thePropertyDefinitionRepresentation_UsedRepresentation);
 
   myBase = theBase;
 }
 
-//=======================================================================
-//function : Base
-//purpose  :
-//=======================================================================
-Handle(StepKinematics_KinematicLinkRepresentation) StepKinematics_KinematicPropertyMechanismRepresentation::Base () const
+//=================================================================================================
+
+Handle(StepKinematics_KinematicLinkRepresentation)
+  StepKinematics_KinematicPropertyMechanismRepresentation::Base() const
 {
   return myBase;
 }
 
-//=======================================================================
-//function : SetBase
-//purpose  :
-//=======================================================================
-void StepKinematics_KinematicPropertyMechanismRepresentation::SetBase (const Handle(StepKinematics_KinematicLinkRepresentation)& theBase)
+//=================================================================================================
+
+void StepKinematics_KinematicPropertyMechanismRepresentation::SetBase(
+  const Handle(StepKinematics_KinematicLinkRepresentation)& theBase)
 {
   myBase = theBase;
 }

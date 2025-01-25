@@ -19,45 +19,33 @@
 #include <StepAP203_ChangeRequest.hxx>
 #include <StepBasic_VersionedActionRequest.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepAP203_ChangeRequest,StepBasic_ActionRequestAssignment)
+IMPLEMENT_STANDARD_RTTIEXT(StepAP203_ChangeRequest, StepBasic_ActionRequestAssignment)
 
-//=======================================================================
-//function : StepAP203_ChangeRequest
-//purpose  : 
-//=======================================================================
-StepAP203_ChangeRequest::StepAP203_ChangeRequest ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepAP203_ChangeRequest::StepAP203_ChangeRequest() {}
 
-void StepAP203_ChangeRequest::Init (const Handle(StepBasic_VersionedActionRequest) &aActionRequestAssignment_AssignedActionRequest,
-                                    const Handle(StepAP203_HArray1OfChangeRequestItem) &aItems)
+//=================================================================================================
+
+void StepAP203_ChangeRequest::Init(
+  const Handle(StepBasic_VersionedActionRequest)& aActionRequestAssignment_AssignedActionRequest,
+  const Handle(StepAP203_HArray1OfChangeRequestItem)& aItems)
 {
   StepBasic_ActionRequestAssignment::Init(aActionRequestAssignment_AssignedActionRequest);
 
   theItems = aItems;
 }
 
-//=======================================================================
-//function : Items
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepAP203_HArray1OfChangeRequestItem) StepAP203_ChangeRequest::Items () const
+Handle(StepAP203_HArray1OfChangeRequestItem) StepAP203_ChangeRequest::Items() const
 {
   return theItems;
 }
 
-//=======================================================================
-//function : SetItems
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepAP203_ChangeRequest::SetItems (const Handle(StepAP203_HArray1OfChangeRequestItem) &aItems)
+void StepAP203_ChangeRequest::SetItems(const Handle(StepAP203_HArray1OfChangeRequestItem)& aItems)
 {
   theItems = aItems;
 }

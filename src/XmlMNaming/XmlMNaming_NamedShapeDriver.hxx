@@ -30,52 +30,48 @@ class TDF_Attribute;
 class XmlObjMgt_Persistent;
 class TopTools_LocationSet;
 
-
 class XmlMNaming_NamedShapeDriver;
 DEFINE_STANDARD_HANDLE(XmlMNaming_NamedShapeDriver, XmlMDF_ADriver)
-
 
 class XmlMNaming_NamedShapeDriver : public XmlMDF_ADriver
 {
 public:
-
   Standard_EXPORT XmlMNaming_NamedShapeDriver(const Handle(Message_Messenger)& aMessageDriver);
-  
+
   Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_Boolean Paste
-                              (const XmlObjMgt_Persistent& theSource,
-                               const Handle(TDF_Attribute)& theTarget,
-                               XmlObjMgt_RRelocationTable& theRelocTable) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Paste
-                              (const Handle(TDF_Attribute)& theSource,
-                               XmlObjMgt_Persistent& theTarget,
-                               XmlObjMgt_SRelocationTable& theRelocTable) const Standard_OVERRIDE;
-  
+
+  Standard_EXPORT virtual Standard_Boolean Paste(const XmlObjMgt_Persistent&  theSource,
+                                                 const Handle(TDF_Attribute)& theTarget,
+                                                 XmlObjMgt_RRelocationTable&  theRelocTable) const
+    Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)& theSource,
+                                     XmlObjMgt_Persistent&        theTarget,
+                                     XmlObjMgt_SRelocationTable&  theRelocTable) const
+    Standard_OVERRIDE;
+
   //! Input the shapes from DOM element
-  Standard_EXPORT void ReadShapeSection (const XmlObjMgt_Element& anElement,
-                                         const Message_ProgressRange& theRange = Message_ProgressRange());
-  
+  Standard_EXPORT void ReadShapeSection(
+    const XmlObjMgt_Element&     anElement,
+    const Message_ProgressRange& theRange = Message_ProgressRange());
+
   //! Output the shapes into DOM element
-  Standard_EXPORT void WriteShapeSection (XmlObjMgt_Element& anElement,
-                                          TDocStd_FormatVersion theStorageFormatVersion,
-                                          const Message_ProgressRange& theRange = Message_ProgressRange());
-  
+  Standard_EXPORT void WriteShapeSection(
+    XmlObjMgt_Element&           anElement,
+    TDocStd_FormatVersion        theStorageFormatVersion,
+    const Message_ProgressRange& theRange = Message_ProgressRange());
+
   //! Clear myShapeSet
   Standard_EXPORT void Clear();
-  
-  //! get the format of topology
-    TopTools_LocationSet& GetShapesLocations();
 
-  DEFINE_STANDARD_RTTIEXT(XmlMNaming_NamedShapeDriver,XmlMDF_ADriver)
+  //! get the format of topology
+  TopTools_LocationSet& GetShapesLocations();
+
+  DEFINE_STANDARD_RTTIEXT(XmlMNaming_NamedShapeDriver, XmlMDF_ADriver)
 
 private:
-
   BRepTools_ShapeSet myShapeSet;
-
 };
-
 
 #include <XmlMNaming_NamedShapeDriver.lxx>
 

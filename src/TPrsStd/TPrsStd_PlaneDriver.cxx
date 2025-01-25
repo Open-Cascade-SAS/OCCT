@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_Plane.hxx>
@@ -24,32 +23,28 @@
 #include <TNaming_Tool.hxx>
 #include <TPrsStd_PlaneDriver.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_PlaneDriver,TPrsStd_Driver)
+IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_PlaneDriver, TPrsStd_Driver)
 
-//#include <TDataStd_Datum.hxx>
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-TPrsStd_PlaneDriver::TPrsStd_PlaneDriver()
-{
-}
+// #include <TDataStd_Datum.hxx>
+//=================================================================================================
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-Standard_Boolean TPrsStd_PlaneDriver::Update (const TDF_Label& aLabel,
-					     Handle(AIS_InteractiveObject)& anAISObject) 
+TPrsStd_PlaneDriver::TPrsStd_PlaneDriver() {}
+
+//=================================================================================================
+
+Standard_Boolean TPrsStd_PlaneDriver::Update(const TDF_Label&               aLabel,
+                                             Handle(AIS_InteractiveObject)& anAISObject)
 {
   Handle(TDataXtd_Plane) apPlane;
 
-  if ( !aLabel.FindAttribute(TDataXtd_Plane::GetID(), apPlane) ) {
+  if (!aLabel.FindAttribute(TDataXtd_Plane::GetID(), apPlane))
+  {
     return Standard_False;
-  }  
+  }
 
   gp_Pln pln;
-  if (!TDataXtd_Geometry::Plane(aLabel,pln)) {
+  if (!TDataXtd_Geometry::Plane(aLabel, pln))
+  {
     return Standard_False;
   }
   Handle(Geom_Plane) apt = new Geom_Plane(pln);
@@ -57,13 +52,15 @@ Standard_Boolean TPrsStd_PlaneDriver::Update (const TDF_Label& aLabel,
   //  Update AIS
   Handle(AIS_Plane) aisplane;
   if (anAISObject.IsNull())
-    aisplane = new AIS_Plane(apt,pln.Location());
-  else {
+    aisplane = new AIS_Plane(apt, pln.Location());
+  else
+  {
     aisplane = Handle(AIS_Plane)::DownCast(anAISObject);
-    if (aisplane.IsNull()) 
-      aisplane = new AIS_Plane(apt,pln.Location());
-    else {
-      aisplane->SetComponent(apt); 
+    if (aisplane.IsNull())
+      aisplane = new AIS_Plane(apt, pln.Location());
+    else
+    {
+      aisplane->SetComponent(apt);
       aisplane->SetCenter(pln.Location());
       aisplane->ResetTransformation();
       aisplane->SetToUpdate();
@@ -73,4 +70,3 @@ Standard_Boolean TPrsStd_PlaneDriver::Update (const TDF_Label& aLabel,
   anAISObject = aisplane;
   return Standard_True;
 }
-

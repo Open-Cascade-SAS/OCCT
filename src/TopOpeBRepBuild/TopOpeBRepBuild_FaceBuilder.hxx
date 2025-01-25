@@ -33,107 +33,90 @@ class TopOpeBRepBuild_WireEdgeSet;
 class TopoDS_Shape;
 class TopOpeBRepBuild_ShapeSet;
 
-
-
-class TopOpeBRepBuild_FaceBuilder 
+class TopOpeBRepBuild_FaceBuilder
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopOpeBRepBuild_FaceBuilder();
-  
+
   //! Create a FaceBuilder to build the faces on
   //! the shapes (wires, blocks of edge) described by <LS>.
-  Standard_EXPORT TopOpeBRepBuild_FaceBuilder(TopOpeBRepBuild_WireEdgeSet& ES, const TopoDS_Shape& F, const Standard_Boolean ForceClass = Standard_False);
-  
-  Standard_EXPORT void InitFaceBuilder (TopOpeBRepBuild_WireEdgeSet& ES, const TopoDS_Shape& F, const Standard_Boolean ForceClass);
-  
+  Standard_EXPORT TopOpeBRepBuild_FaceBuilder(TopOpeBRepBuild_WireEdgeSet& ES,
+                                              const TopoDS_Shape&          F,
+                                              const Standard_Boolean ForceClass = Standard_False);
+
+  Standard_EXPORT void InitFaceBuilder(TopOpeBRepBuild_WireEdgeSet& ES,
+                                       const TopoDS_Shape&          F,
+                                       const Standard_Boolean       ForceClass);
+
   //! Removes   are  non 3d-closed  wires.
   //! Fills  up maps <mapVVsameG> and  <mapVon1Edge>,  in order to
   //! correct 3d-closed but unclosed (topologic connexity) wires.
   //! modifies myBlockBuilder
-  Standard_EXPORT void DetectUnclosedWire (TopTools_IndexedDataMapOfShapeShape& mapVVsameG, TopTools_IndexedDataMapOfShapeShape& mapVon1Edge);
-  
+  Standard_EXPORT void DetectUnclosedWire(TopTools_IndexedDataMapOfShapeShape& mapVVsameG,
+                                          TopTools_IndexedDataMapOfShapeShape& mapVon1Edge);
+
   //! Using the given maps, change the topology of the 3d-closed
   //! wires, in order to get closed wires.
-  Standard_EXPORT void CorrectGclosedWire (const TopTools_IndexedDataMapOfShapeShape& mapVVref, const TopTools_IndexedDataMapOfShapeShape& mapVon1Edge);
-  
+  Standard_EXPORT void CorrectGclosedWire(const TopTools_IndexedDataMapOfShapeShape& mapVVref,
+                                          const TopTools_IndexedDataMapOfShapeShape& mapVon1Edge);
+
   //! Removes edges appearing twice (FORWARD,REVERSED) with a bounding
   //! vertex not connected to any other edge.
   //! mapE contains edges found.
   //! modifies myBlockBuilder.
-  Standard_EXPORT void DetectPseudoInternalEdge (TopTools_IndexedMapOfShape& mapE);
-  
+  Standard_EXPORT void DetectPseudoInternalEdge(TopTools_IndexedMapOfShape& mapE);
+
   //! return myFace
   Standard_EXPORT const TopoDS_Shape& Face() const;
-  
+
   Standard_EXPORT Standard_Integer InitFace();
-  
+
   Standard_EXPORT Standard_Boolean MoreFace() const;
-  
+
   Standard_EXPORT void NextFace();
-  
+
   Standard_EXPORT Standard_Integer InitWire();
-  
+
   Standard_EXPORT Standard_Boolean MoreWire() const;
-  
+
   Standard_EXPORT void NextWire();
-  
+
   Standard_EXPORT Standard_Boolean IsOldWire() const;
-  
+
   //! Returns current wire
   //! This wire may be :
   //! * an old wire OldWire(), which has not been reconstructed;
   //! * a new wire made of edges described by ...NewEdge() methods.
   Standard_EXPORT const TopoDS_Shape& OldWire() const;
-  
+
   //! Iterates on myBlockIterator until finding a valid element
   Standard_EXPORT void FindNextValidElement();
-  
+
   Standard_EXPORT Standard_Integer InitEdge();
-  
+
   Standard_EXPORT Standard_Boolean MoreEdge() const;
-  
+
   Standard_EXPORT void NextEdge();
-  
+
   //! Returns current new edge of current new wire.
   Standard_EXPORT const TopoDS_Shape& Edge() const;
-  
-  Standard_EXPORT Standard_Integer EdgeConnexity (const TopoDS_Shape& E) const;
-  
-  Standard_EXPORT Standard_Integer AddEdgeWire (const TopoDS_Shape& E, TopoDS_Shape& W) const;
 
+  Standard_EXPORT Standard_Integer EdgeConnexity(const TopoDS_Shape& E) const;
 
-
+  Standard_EXPORT Standard_Integer AddEdgeWire(const TopoDS_Shape& E, TopoDS_Shape& W) const;
 
 protected:
-
-
-
-
-
 private:
+  Standard_EXPORT void MakeLoops(TopOpeBRepBuild_ShapeSet& SS);
 
-  
-  Standard_EXPORT void MakeLoops (TopOpeBRepBuild_ShapeSet& SS);
-
-
-  TopoDS_Face myFace;
-  TopOpeBRepBuild_LoopSet myLoopSet;
-  TopOpeBRepBuild_BlockIterator myBlockIterator;
-  TopOpeBRepBuild_BlockBuilder myBlockBuilder;
+  TopoDS_Face                     myFace;
+  TopOpeBRepBuild_LoopSet         myLoopSet;
+  TopOpeBRepBuild_BlockIterator   myBlockIterator;
+  TopOpeBRepBuild_BlockBuilder    myBlockBuilder;
   TopOpeBRepBuild_FaceAreaBuilder myFaceAreaBuilder;
-  TopTools_DataMapOfShapeInteger myMOSI;
-
-
+  TopTools_DataMapOfShapeInteger  myMOSI;
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepBuild_FaceBuilder_HeaderFile

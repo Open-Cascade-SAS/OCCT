@@ -17,42 +17,40 @@
 #include <StdFail_NotDone.hxx>
 
 //=======================================================================
-//function : LocOpe_Generator
-//purpose  : 
+// function : LocOpe_Generator
+// purpose  :
 //=======================================================================
 
 inline LocOpe_Generator::LocOpe_Generator()
-: myDone(Standard_False)
+    : myDone(Standard_False)
 {
 }
 
-
 //=======================================================================
-//function : LocOpe_Generator
-//purpose  : 
+// function : LocOpe_Generator
+// purpose  :
 //=======================================================================
 
-inline LocOpe_Generator::LocOpe_Generator(const TopoDS_Shape& S):
-   myShape(S), myDone(Standard_False)
+inline LocOpe_Generator::LocOpe_Generator(const TopoDS_Shape& S)
+    : myShape(S),
+      myDone(Standard_False)
 {
 }
 
-
 //=======================================================================
-//function : Init
-//purpose  : 
+// function : Init
+// purpose  :
 //=======================================================================
 
 inline void LocOpe_Generator::Init(const TopoDS_Shape& S)
 {
   myShape = S;
-  myDone = Standard_False;
+  myDone  = Standard_False;
 }
 
-
 //=======================================================================
-//function : IsDone
-//purpose  : 
+// function : IsDone
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean LocOpe_Generator::IsDone() const
@@ -61,8 +59,8 @@ inline Standard_Boolean LocOpe_Generator::IsDone() const
 }
 
 //=======================================================================
-//function : Shape
-//purpose  : 
+// function : Shape
+// purpose  :
 //=======================================================================
 
 inline const TopoDS_Shape& LocOpe_Generator::Shape() const
@@ -70,16 +68,16 @@ inline const TopoDS_Shape& LocOpe_Generator::Shape() const
   return myShape;
 }
 
-
 //=======================================================================
-//function : ResultingShape
-//purpose  : 
+// function : ResultingShape
+// purpose  :
 //=======================================================================
 
 inline const TopoDS_Shape& LocOpe_Generator::ResultingShape() const
 {
-  if (!myDone) {throw StdFail_NotDone();}
+  if (!myDone)
+  {
+    throw StdFail_NotDone();
+  }
   return myRes;
 }
-
-

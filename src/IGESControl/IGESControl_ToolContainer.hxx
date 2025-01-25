@@ -22,44 +22,23 @@
 #include <IGESToBRep_ToolContainer.hxx>
 class IGESToBRep_IGESBoundary;
 
-
 class IGESControl_ToolContainer;
 DEFINE_STANDARD_HANDLE(IGESControl_ToolContainer, IGESToBRep_ToolContainer)
-
 
 class IGESControl_ToolContainer : public IGESToBRep_ToolContainer
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT IGESControl_ToolContainer();
-  
+
   //! Returns IGESControl_IGESBoundary
   Standard_EXPORT virtual Handle(IGESToBRep_IGESBoundary) IGESBoundary() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESControl_ToolContainer,IGESToBRep_ToolContainer)
+  DEFINE_STANDARD_RTTIEXT(IGESControl_ToolContainer, IGESToBRep_ToolContainer)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESControl_ToolContainer_HeaderFile

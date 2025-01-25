@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -16,24 +16,22 @@
 
 #include <StepKinematics_KinematicTopologyNetworkStructure.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicTopologyNetworkStructure, StepRepr_Representation)
+IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicTopologyNetworkStructure,
+                           StepRepr_Representation)
 
-//=======================================================================
-//function : StepKinematics_KinematicTopologyNetworkStructure
-//purpose  :
-//=======================================================================
-StepKinematics_KinematicTopologyNetworkStructure::StepKinematics_KinematicTopologyNetworkStructure ()
+//=================================================================================================
+
+StepKinematics_KinematicTopologyNetworkStructure::StepKinematics_KinematicTopologyNetworkStructure()
 {
 }
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_KinematicTopologyNetworkStructure::Init (const Handle(TCollection_HAsciiString)& theRepresentation_Name,
-                                                             const Handle(StepRepr_HArray1OfRepresentationItem)& theRepresentation_Items,
-                                                             const Handle(StepRepr_RepresentationContext)& theRepresentation_ContextOfItems,
-                                                             const Handle(StepKinematics_KinematicTopologyStructure)& theParent)
+//=================================================================================================
+
+void StepKinematics_KinematicTopologyNetworkStructure::Init(
+  const Handle(TCollection_HAsciiString)&                  theRepresentation_Name,
+  const Handle(StepRepr_HArray1OfRepresentationItem)&      theRepresentation_Items,
+  const Handle(StepRepr_RepresentationContext)&            theRepresentation_ContextOfItems,
+  const Handle(StepKinematics_KinematicTopologyStructure)& theParent)
 {
   StepRepr_Representation::Init(theRepresentation_Name,
                                 theRepresentation_Items,
@@ -42,20 +40,18 @@ void StepKinematics_KinematicTopologyNetworkStructure::Init (const Handle(TColle
   myParent = theParent;
 }
 
-//=======================================================================
-//function : Parent
-//purpose  :
-//=======================================================================
-Handle(StepKinematics_KinematicTopologyStructure) StepKinematics_KinematicTopologyNetworkStructure::Parent () const
+//=================================================================================================
+
+Handle(StepKinematics_KinematicTopologyStructure) StepKinematics_KinematicTopologyNetworkStructure::
+  Parent() const
 {
   return myParent;
 }
 
-//=======================================================================
-//function : SetParent
-//purpose  :
-//=======================================================================
-void StepKinematics_KinematicTopologyNetworkStructure::SetParent (const Handle(StepKinematics_KinematicTopologyStructure)& theParent)
+//=================================================================================================
+
+void StepKinematics_KinematicTopologyNetworkStructure::SetParent(
+  const Handle(StepKinematics_KinematicTopologyStructure)& theParent)
 {
   myParent = theParent;
 }

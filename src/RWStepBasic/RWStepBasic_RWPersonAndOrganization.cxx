@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_EntityIterator.hxx>
 #include "RWStepBasic_RWPersonAndOrganization.pxx"
 #include <StepBasic_Organization.hxx>
@@ -20,60 +19,61 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWPersonAndOrganization::RWStepBasic_RWPersonAndOrganization () {}
+RWStepBasic_RWPersonAndOrganization::RWStepBasic_RWPersonAndOrganization() {}
 
-void RWStepBasic_RWPersonAndOrganization::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepBasic_PersonAndOrganization)& ent) const
+void RWStepBasic_RWPersonAndOrganization::ReadStep(
+  const Handle(StepData_StepReaderData)&         data,
+  const Standard_Integer                         num,
+  Handle(Interface_Check)&                       ach,
+  const Handle(StepBasic_PersonAndOrganization)& ent) const
 {
 
+  // --- Number of Parameter Control ---
 
-	// --- Number of Parameter Control ---
+  if (!data->CheckNbParams(num, 2, ach, "person_and_organization"))
+    return;
 
-	if (!data->CheckNbParams(num,2,ach,"person_and_organization")) return;
+  // --- own field : thePerson ---
 
-	// --- own field : thePerson ---
+  Handle(StepBasic_Person) aThePerson;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadEntity(num, 1, "the_person", ach, STANDARD_TYPE(StepBasic_Person), aThePerson);
 
-	Handle(StepBasic_Person) aThePerson;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	data->ReadEntity(num, 1,"the_person", ach, STANDARD_TYPE(StepBasic_Person), aThePerson);
+  // --- own field : theOrganization ---
 
-	// --- own field : theOrganization ---
+  Handle(StepBasic_Organization) aTheOrganization;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadEntity(num,
+                   2,
+                   "the_organization",
+                   ach,
+                   STANDARD_TYPE(StepBasic_Organization),
+                   aTheOrganization);
 
-	Handle(StepBasic_Organization) aTheOrganization;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	data->ReadEntity(num, 2,"the_organization", ach, STANDARD_TYPE(StepBasic_Organization), aTheOrganization);
+  //--- Initialisation of the read entity ---
 
-	//--- Initialisation of the read entity ---
-
-
-	ent->Init(aThePerson, aTheOrganization);
+  ent->Init(aThePerson, aTheOrganization);
 }
 
-
-void RWStepBasic_RWPersonAndOrganization::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepBasic_PersonAndOrganization)& ent) const
+void RWStepBasic_RWPersonAndOrganization::WriteStep(
+  StepData_StepWriter&                           SW,
+  const Handle(StepBasic_PersonAndOrganization)& ent) const
 {
 
-	// --- own field : thePerson ---
+  // --- own field : thePerson ---
 
-	SW.Send(ent->ThePerson());
+  SW.Send(ent->ThePerson());
 
-	// --- own field : theOrganization ---
+  // --- own field : theOrganization ---
 
-	SW.Send(ent->TheOrganization());
+  SW.Send(ent->TheOrganization());
 }
 
-
-void RWStepBasic_RWPersonAndOrganization::Share(const Handle(StepBasic_PersonAndOrganization)& ent, Interface_EntityIterator& iter) const
+void RWStepBasic_RWPersonAndOrganization::Share(const Handle(StepBasic_PersonAndOrganization)& ent,
+                                                Interface_EntityIterator& iter) const
 {
 
-	iter.GetOneItem(ent->ThePerson());
+  iter.GetOneItem(ent->ThePerson());
 
-
-	iter.GetOneItem(ent->TheOrganization());
+  iter.GetOneItem(ent->TheOrganization());
 }
-

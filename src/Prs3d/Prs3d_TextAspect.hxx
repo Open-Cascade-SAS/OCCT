@@ -28,47 +28,55 @@ class Prs3d_TextAspect : public Prs3d_BasicAspect
 {
   DEFINE_STANDARD_RTTIEXT(Prs3d_TextAspect, Prs3d_BasicAspect)
 public:
-
   //! Constructs an empty framework for defining display attributes of text.
   Standard_EXPORT Prs3d_TextAspect();
-  
+
   Standard_EXPORT Prs3d_TextAspect(const Handle(Graphic3d_AspectText3d)& theAspect);
 
   //! Sets the color of the type used in text display.
-  void SetColor (const Quantity_Color& theColor) { myTextAspect->SetColor (theColor); }
+  void SetColor(const Quantity_Color& theColor) { myTextAspect->SetColor(theColor); }
 
   //! Sets the font used in text display.
-  void SetFont (const Standard_CString theFont) { myTextAspect->SetFont (theFont); }
+  void SetFont(const Standard_CString theFont) { myTextAspect->SetFont(theFont); }
 
   //! Sets the height of the text.
-  void SetHeight (const Standard_Real theHeight) { myHeight = theHeight; }
-  
+  void SetHeight(const Standard_Real theHeight) { myHeight = theHeight; }
+
   //! Sets the angle
-  void SetAngle (const Standard_Real theAngle) { myTextAspect->SetTextAngle (theAngle); }
-  
+  void SetAngle(const Standard_Real theAngle) { myTextAspect->SetTextAngle(theAngle); }
+
   //! Returns the height of the text box.
   Standard_Real Height() const { return myHeight; }
-  
+
   //! Returns the angle
   Standard_Real Angle() const { return myTextAspect->GetTextAngle(); }
-  
+
   //! Sets horizontal alignment of text.
-  void SetHorizontalJustification (const Graphic3d_HorizontalTextAlignment theJustification) { myHorizontalJustification = theJustification; }
-  
+  void SetHorizontalJustification(const Graphic3d_HorizontalTextAlignment theJustification)
+  {
+    myHorizontalJustification = theJustification;
+  }
+
   //! Sets the vertical alignment of text.
-  void SetVerticalJustification (const Graphic3d_VerticalTextAlignment theJustification) { myVerticalJustification = theJustification; }
-  
+  void SetVerticalJustification(const Graphic3d_VerticalTextAlignment theJustification)
+  {
+    myVerticalJustification = theJustification;
+  }
+
   //! Sets the orientation of text.
-  void SetOrientation (const Graphic3d_TextPath theOrientation) { myOrientation = theOrientation; }
-  
+  void SetOrientation(const Graphic3d_TextPath theOrientation) { myOrientation = theOrientation; }
+
   //! Returns the horizontal alignment of the text.
   //! The range of values includes:
   //! -   left
   //! -   center
   //! -   right, and
   //! -   normal (justified).
-  Graphic3d_HorizontalTextAlignment HorizontalJustification() const { return myHorizontalJustification; }
-  
+  Graphic3d_HorizontalTextAlignment HorizontalJustification() const
+  {
+    return myHorizontalJustification;
+  }
+
   //! Returns the vertical alignment of the text.
   //! The range of values includes:
   //! -   normal
@@ -78,7 +86,7 @@ public:
   //! -   base
   //! -   bottom
   Graphic3d_VerticalTextAlignment VerticalJustification() const { return myVerticalJustification; }
-  
+
   //! Returns the orientation of the text.
   //! Text can be displayed in the following directions:
   //! -   up
@@ -95,19 +103,18 @@ public:
   //! -   space between characters.
   const Handle(Graphic3d_AspectText3d)& Aspect() const { return myTextAspect; }
 
-  void SetAspect (const Handle(Graphic3d_AspectText3d)& theAspect) { myTextAspect = theAspect; }
+  void SetAspect(const Handle(Graphic3d_AspectText3d)& theAspect) { myTextAspect = theAspect; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 protected:
-
-  Handle(Graphic3d_AspectText3d) myTextAspect;
-  Standard_Real myHeight;
+  Handle(Graphic3d_AspectText3d)    myTextAspect;
+  Standard_Real                     myHeight;
   Graphic3d_HorizontalTextAlignment myHorizontalJustification;
-  Graphic3d_VerticalTextAlignment myVerticalJustification;
-  Graphic3d_TextPath myOrientation;
-
+  Graphic3d_VerticalTextAlignment   myVerticalJustification;
+  Graphic3d_TextPath                myOrientation;
 };
 
 DEFINE_STANDARD_HANDLE(Prs3d_TextAspect, Prs3d_BasicAspect)

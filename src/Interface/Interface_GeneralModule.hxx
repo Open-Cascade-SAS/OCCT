@@ -29,7 +29,6 @@ class Interface_Check;
 class Interface_CopyTool;
 class TCollection_HAsciiString;
 
-
 class Interface_GeneralModule;
 DEFINE_STANDARD_HANDLE(Interface_GeneralModule, Standard_Transient)
 
@@ -45,23 +44,27 @@ class Interface_GeneralModule : public Standard_Transient
 {
 
 public:
-
-  
   //! Specific filling of the list of Entities shared by an Entity
   //! <ent>, according a Case Number <CN> (formerly computed by
   //! CaseNum), considered in the context of a Model <model>
   //! Default calls FillSharedCase (i.e., ignores the model)
   //! Can be redefined to use the model for working
-  Standard_EXPORT virtual void FillShared (const Handle(Interface_InterfaceModel)& model, const Standard_Integer CN, const Handle(Standard_Transient)& ent, Interface_EntityIterator& iter) const;
-  
+  Standard_EXPORT virtual void FillShared(const Handle(Interface_InterfaceModel)& model,
+                                          const Standard_Integer                  CN,
+                                          const Handle(Standard_Transient)&       ent,
+                                          Interface_EntityIterator&               iter) const;
+
   //! Specific filling of the list of Entities shared by an Entity
   //! <ent>, according a Case Number <CN> (formerly computed by
   //! CaseNum). Can use the internal utility method Share, below
-  Standard_EXPORT virtual void FillSharedCase (const Standard_Integer CN, const Handle(Standard_Transient)& ent, Interface_EntityIterator& iter) const = 0;
-  
+  Standard_EXPORT virtual void FillSharedCase(const Standard_Integer            CN,
+                                              const Handle(Standard_Transient)& ent,
+                                              Interface_EntityIterator&         iter) const = 0;
+
   //! Adds an Entity to a Shared List (uses GetOneItem on <iter>)
-  Standard_EXPORT void Share (Interface_EntityIterator& iter, const Handle(Standard_Transient)& shared) const;
-  
+  Standard_EXPORT void Share(Interface_EntityIterator&         iter,
+                             const Handle(Standard_Transient)& shared) const;
+
   //! List the Implied References of <ent> considered in the context
   //! of a Model <model> : i.e. the Entities which are Referenced
   //! while not considered as Shared (not copied if <ent> is,
@@ -70,8 +73,11 @@ public:
   //! FillShared + ListImplied give the complete list of References
   //! Default calls ListImpliedCase (i.e. ignores the model)
   //! Can be redefined to use the model for working
-  Standard_EXPORT virtual void ListImplied (const Handle(Interface_InterfaceModel)& model, const Standard_Integer CN, const Handle(Standard_Transient)& ent, Interface_EntityIterator& iter) const;
-  
+  Standard_EXPORT virtual void ListImplied(const Handle(Interface_InterfaceModel)& model,
+                                           const Standard_Integer                  CN,
+                                           const Handle(Standard_Transient)&       ent,
+                                           Interface_EntityIterator&               iter) const;
+
   //! List the Implied References of <ent> (see above)
   //! are Referenced while not considered as Shared (not copied if
   //! <ent> is, references not renewed by CopyCase but by
@@ -80,18 +86,24 @@ public:
   //! Referenced Entities
   //! The provided default method does nothing (Implied References
   //! are specific of a little amount of Entity Classes).
-  Standard_EXPORT virtual void ListImpliedCase (const Standard_Integer CN, const Handle(Standard_Transient)& ent, Interface_EntityIterator& iter) const;
-  
+  Standard_EXPORT virtual void ListImpliedCase(const Standard_Integer            CN,
+                                               const Handle(Standard_Transient)& ent,
+                                               Interface_EntityIterator&         iter) const;
+
   //! Specific Checking of an Entity <ent>
   //! Can check context queried through a ShareTool, as required
-  Standard_EXPORT virtual void CheckCase (const Standard_Integer CN, const Handle(Standard_Transient)& ent, const Interface_ShareTool& shares, Handle(Interface_Check)& ach) const = 0;
-  
+  Standard_EXPORT virtual void CheckCase(const Standard_Integer            CN,
+                                         const Handle(Standard_Transient)& ent,
+                                         const Interface_ShareTool&        shares,
+                                         Handle(Interface_Check)&          ach) const = 0;
+
   //! Specific answer to the question "is Copy properly implemented"
   //! Remark that it should be in phase with the implementation of
   //! NewVoid+CopyCase/NewCopyCase
   //! Default returns always False, can be redefined
-  Standard_EXPORT virtual Standard_Boolean CanCopy (const Standard_Integer CN, const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT virtual Standard_Boolean CanCopy(const Standard_Integer            CN,
+                                                   const Handle(Standard_Transient)& ent) const;
+
   //! Dispatches an entity
   //! Returns True if it works by copy, False if it just duplicates
   //! the starting Handle
@@ -111,18 +123,25 @@ public:
   //!
   //! The provided default just duplicates the handle without
   //! copying, then returns False. Can be redefined
-  Standard_EXPORT virtual Standard_Boolean Dispatch (const Standard_Integer CN, const Handle(Standard_Transient)& entfrom, Handle(Standard_Transient)& entto, Interface_CopyTool& TC) const;
-  
+  Standard_EXPORT virtual Standard_Boolean Dispatch(const Standard_Integer            CN,
+                                                    const Handle(Standard_Transient)& entfrom,
+                                                    Handle(Standard_Transient)&       entto,
+                                                    Interface_CopyTool&               TC) const;
+
   //! Creates a new void entity <entto> according to a Case Number
   //! This entity remains to be filled, by reading from a file or
   //! by copying from another entity of same type (see CopyCase)
-  Standard_EXPORT virtual Standard_Boolean NewVoid (const Standard_Integer CN, Handle(Standard_Transient)& entto) const = 0;
-  
+  Standard_EXPORT virtual Standard_Boolean NewVoid(const Standard_Integer      CN,
+                                                   Handle(Standard_Transient)& entto) const = 0;
+
   //! Specific Copy ("Deep") from <entfrom> to <entto> (same type)
   //! by using a CopyTool which provides its working Map.
   //! Use method Transferred from CopyTool to work
-  Standard_EXPORT virtual void CopyCase (const Standard_Integer CN, const Handle(Standard_Transient)& entfrom, const Handle(Standard_Transient)& entto, Interface_CopyTool& TC) const = 0;
-  
+  Standard_EXPORT virtual void CopyCase(const Standard_Integer            CN,
+                                        const Handle(Standard_Transient)& entfrom,
+                                        const Handle(Standard_Transient)& entto,
+                                        Interface_CopyTool&               TC) const = 0;
+
   //! Specific operator (create+copy) defaulted to do nothing.
   //! It can be redefined : When it is not possible to work in two
   //! steps (NewVoid then CopyCase). This can occur when there is
@@ -130,14 +149,20 @@ public:
   //! created with an effective definition.
   //! Remark : if NewCopiedCase is defined, CopyCase has nothing to do
   //! Returns True if it has produced something, false else
-  Standard_EXPORT virtual Standard_Boolean NewCopiedCase (const Standard_Integer CN, const Handle(Standard_Transient)& entfrom, Handle(Standard_Transient)& entto, Interface_CopyTool& TC) const;
-  
+  Standard_EXPORT virtual Standard_Boolean NewCopiedCase(const Standard_Integer            CN,
+                                                         const Handle(Standard_Transient)& entfrom,
+                                                         Handle(Standard_Transient)&       entto,
+                                                         Interface_CopyTool& TC) const;
+
   //! Specific Copying of Implied References
   //! A Default is provided which does nothing (must current case !)
   //! Already copied references (by CopyFrom) must remain unchanged
   //! Use method Search from CopyTool to work
-  Standard_EXPORT virtual void RenewImpliedCase (const Standard_Integer CN, const Handle(Standard_Transient)& entfrom, const Handle(Standard_Transient)& entto, const Interface_CopyTool& TC) const;
-  
+  Standard_EXPORT virtual void RenewImpliedCase(const Standard_Integer            CN,
+                                                const Handle(Standard_Transient)& entfrom,
+                                                const Handle(Standard_Transient)& entto,
+                                                const Interface_CopyTool&         TC) const;
+
   //! Prepares an entity to be deleted. What does it mean :
   //! Basically, any class of entity may define its own destructor
   //! By default, it does nothing but calling destructors on fields
@@ -162,14 +187,18 @@ public:
   //! If it doesn't (i.e. duplicates the handle) nothing to do
   //!
   //! If <dispatch> is False, normal deletion is to be performed
-  Standard_EXPORT virtual void WhenDeleteCase (const Standard_Integer CN, const Handle(Standard_Transient)& ent, const Standard_Boolean dispatched) const;
-  
+  Standard_EXPORT virtual void WhenDeleteCase(const Standard_Integer            CN,
+                                              const Handle(Standard_Transient)& ent,
+                                              const Standard_Boolean            dispatched) const;
+
   //! Returns a category number which characterizes an entity
   //! Category Numbers are managed by the class Category
   //! <shares> can be used to evaluate this number in the context
   //! Default returns 0 which means "unspecified"
-  Standard_EXPORT virtual Standard_Integer CategoryNumber (const Standard_Integer CN, const Handle(Standard_Transient)& ent, const Interface_ShareTool& shares) const;
-  
+  Standard_EXPORT virtual Standard_Integer CategoryNumber(const Standard_Integer            CN,
+                                                          const Handle(Standard_Transient)& ent,
+                                                          const Interface_ShareTool& shares) const;
+
   //! Determines if an entity brings a Name (or widerly, if a Name
   //! can be attached to it, through the ShareTool
   //! By default, returns a Null Handle (no name can be produced)
@@ -177,29 +206,15 @@ public:
   //!
   //! Warning : While this string may be edited on the spot, if it is a read
   //! field, the returned value must be copied before.
-  Standard_EXPORT virtual Handle(TCollection_HAsciiString) Name (const Standard_Integer CN, const Handle(Standard_Transient)& ent, const Interface_ShareTool& shares) const;
+  Standard_EXPORT virtual Handle(TCollection_HAsciiString) Name(
+    const Standard_Integer            CN,
+    const Handle(Standard_Transient)& ent,
+    const Interface_ShareTool&        shares) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Interface_GeneralModule,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Interface_GeneralModule, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Interface_GeneralModule_HeaderFile

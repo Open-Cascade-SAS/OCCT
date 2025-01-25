@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IntTools_BaseRangeSample.hxx>
 
 IntTools_BaseRangeSample::IntTools_BaseRangeSample()

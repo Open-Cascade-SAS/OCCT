@@ -18,28 +18,30 @@
 #include <StepVisual_DraughtingCallout.hxx>
 #include <StepVisual_StyledItem.hxx>
 
-//=======================================================================
-//function : StepVisual_AnnotationPlaneElement
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepVisual_AnnotationPlaneElement::StepVisual_AnnotationPlaneElement () {  }
+StepVisual_AnnotationPlaneElement::StepVisual_AnnotationPlaneElement() {}
 
-//=======================================================================
-//function : CaseNum
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer StepVisual_AnnotationPlaneElement::CaseNum(const Handle(Standard_Transient)& ent) const
+Standard_Integer StepVisual_AnnotationPlaneElement::CaseNum(
+  const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepVisual_DraughtingCallout))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepVisual_StyledItem))) return 2;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepVisual_DraughtingCallout)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepVisual_StyledItem)))
+    return 2;
   return 0;
 }
 
 Handle(StepVisual_DraughtingCallout) StepVisual_AnnotationPlaneElement::DraughtingCallout() const
-{  return GetCasted(StepVisual_DraughtingCallout,Value());  }
+{
+  return GetCasted(StepVisual_DraughtingCallout, Value());
+}
 
 Handle(StepVisual_StyledItem) StepVisual_AnnotationPlaneElement::StyledItem() const
-{  return GetCasted(StepVisual_StyledItem,Value());  }
+{
+  return GetCasted(StepVisual_StyledItem, Value());
+}

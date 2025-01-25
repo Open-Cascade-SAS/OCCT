@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Interface_FileParameter> Interface_Array1OfFileParameter;
 
-
 #endif

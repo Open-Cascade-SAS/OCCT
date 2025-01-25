@@ -24,53 +24,32 @@
 #include <Draw_Drawable3D.hxx>
 class Draw_Display;
 
-
 class Draw_Segment3D;
 DEFINE_STANDARD_HANDLE(Draw_Segment3D, Draw_Drawable3D)
-
 
 class Draw_Segment3D : public Draw_Drawable3D
 {
 
 public:
-
-  
   Standard_EXPORT Draw_Segment3D(const gp_Pnt& p1, const gp_Pnt& p2, const Draw_Color& col);
-  
-  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
-  
+
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+
   Standard_EXPORT const gp_Pnt& First() const;
-  
-  Standard_EXPORT void First (const gp_Pnt& P);
-  
+
+  Standard_EXPORT void First(const gp_Pnt& P);
+
   Standard_EXPORT const gp_Pnt& Last() const;
-  
-  Standard_EXPORT void Last (const gp_Pnt& P);
 
+  Standard_EXPORT void Last(const gp_Pnt& P);
 
-
-
-  DEFINE_STANDARD_RTTIEXT(Draw_Segment3D,Draw_Drawable3D)
+  DEFINE_STANDARD_RTTIEXT(Draw_Segment3D, Draw_Drawable3D)
 
 protected:
-
-
-
-
 private:
-
-
-  gp_Pnt myFirst;
-  gp_Pnt myLast;
+  gp_Pnt     myFirst;
+  gp_Pnt     myLast;
   Draw_Color myColor;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Draw_Segment3D_HeaderFile

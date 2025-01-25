@@ -18,6 +18,6 @@ class V3d_View;
 #include <NCollection_List.hxx>
 
 typedef NCollection_List<Handle(V3d_View)> V3d_ListOfView;
-typedef V3d_ListOfView::Iterator V3d_ListOfViewIterator;
+typedef V3d_ListOfView::Iterator           V3d_ListOfViewIterator;
 
 #endif // _V3d_ListOfView_HeaderFile

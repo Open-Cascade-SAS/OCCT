@@ -27,7 +27,6 @@ class TCollection_HAsciiString;
 class IGESGraph_TextDisplayTemplate;
 class IGESDraw_ConnectPoint;
 
-
 class IGESDraw_NetworkSubfigureDef;
 DEFINE_STANDARD_HANDLE(IGESDraw_NetworkSubfigureDef, IGESData_IGESEntity)
 
@@ -47,10 +46,8 @@ class IGESDraw_NetworkSubfigureDef : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESDraw_NetworkSubfigureDef();
-  
+
   //! This method is used to set fields of the class
   //! NetworkSubfigureDef
   //! - aDepth           : Depth of Subfigure
@@ -64,82 +61,71 @@ public:
   //! (Logical design or Physical design)
   //! - aDesignator      : Designator HAsciiString and its Template
   //! - allPointEntities : Associated Connect Point Entities
-  Standard_EXPORT void Init (const Standard_Integer aDepth, const Handle(TCollection_HAsciiString)& aName, const Handle(IGESData_HArray1OfIGESEntity)& allEntities, const Standard_Integer aTypeFlag, const Handle(TCollection_HAsciiString)& aDesignator, const Handle(IGESGraph_TextDisplayTemplate)& aTemplate, const Handle(IGESDraw_HArray1OfConnectPoint)& allPointEntities);
-  
+  Standard_EXPORT void Init(const Standard_Integer                        aDepth,
+                            const Handle(TCollection_HAsciiString)&       aName,
+                            const Handle(IGESData_HArray1OfIGESEntity)&   allEntities,
+                            const Standard_Integer                        aTypeFlag,
+                            const Handle(TCollection_HAsciiString)&       aDesignator,
+                            const Handle(IGESGraph_TextDisplayTemplate)&  aTemplate,
+                            const Handle(IGESDraw_HArray1OfConnectPoint)& allPointEntities);
+
   //! returns Depth of Subfigure(indication the amount of nesting)
   //! Note : The Depth is inclusive of both Network Subfigure Definition
   //! Entity and the Ordinary Subfigure Definition Entity.
   //! Thus, the two may be nested.
   Standard_EXPORT Standard_Integer Depth() const;
-  
+
   //! returns the Subfigure Name
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
-  
+
   //! returns Number of Associated(child) entries in subfigure exclusive
   //! of primary reference designator and Control Points
   Standard_EXPORT Standard_Integer NbEntities() const;
-  
+
   //! returns the Index'th IGESEntity in subfigure exclusive of primary
   //! reference designator and Control Points
   //! raises exception if Index  <=0 or Index > NbEntities()
-  Standard_EXPORT Handle(IGESData_IGESEntity) Entity (const Standard_Integer Index) const;
-  
+  Standard_EXPORT Handle(IGESData_IGESEntity) Entity(const Standard_Integer Index) const;
+
   //! return value = 0 : Not Specified
   //! = 1 : Logical  design
   //! = 2 : Physical design
   Standard_EXPORT Standard_Integer TypeFlag() const;
-  
+
   //! returns Primary Reference Designator
   Standard_EXPORT Handle(TCollection_HAsciiString) Designator() const;
-  
+
   //! returns True if Text Display Template is specified for
   //! primary designator else returns False
   Standard_EXPORT Standard_Boolean HasDesignatorTemplate() const;
-  
+
   //! if Text Display Template specified then return TextDisplayTemplate
   //! else return NULL Handle
   Standard_EXPORT Handle(IGESGraph_TextDisplayTemplate) DesignatorTemplate() const;
-  
+
   //! returns the Number Of Associated(child) Connect Point Entities
   Standard_EXPORT Standard_Integer NbPointEntities() const;
-  
+
   //! returns True is Index'th Associated Connect Point Entity is present
   //! else returns False
   //! raises exception if Index is out of bound
-  Standard_EXPORT Standard_Boolean HasPointEntity (const Standard_Integer Index) const;
-  
+  Standard_EXPORT Standard_Boolean HasPointEntity(const Standard_Integer Index) const;
+
   //! returns the Index'th Associated Connect Point Entity
   //! raises exception if Index <= 0 or Index > NbPointEntities()
-  Standard_EXPORT Handle(IGESDraw_ConnectPoint) PointEntity (const Standard_Integer Index) const;
+  Standard_EXPORT Handle(IGESDraw_ConnectPoint) PointEntity(const Standard_Integer Index) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESDraw_NetworkSubfigureDef,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDraw_NetworkSubfigureDef, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-  Standard_Integer theDepth;
-  Handle(TCollection_HAsciiString) theName;
-  Handle(IGESData_HArray1OfIGESEntity) theEntities;
-  Standard_Integer theTypeFlag;
-  Handle(TCollection_HAsciiString) theDesignator;
-  Handle(IGESGraph_TextDisplayTemplate) theDesignatorTemplate;
+  Standard_Integer                       theDepth;
+  Handle(TCollection_HAsciiString)       theName;
+  Handle(IGESData_HArray1OfIGESEntity)   theEntities;
+  Standard_Integer                       theTypeFlag;
+  Handle(TCollection_HAsciiString)       theDesignator;
+  Handle(IGESGraph_TextDisplayTemplate)  theDesignatorTemplate;
   Handle(IGESDraw_HArray1OfConnectPoint) thePointEntities;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESDraw_NetworkSubfigureDef_HeaderFile

@@ -21,60 +21,48 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-//=======================================================================
-//function : RWStepBasic_RWExternalSource
-//purpose  : 
-//=======================================================================
-RWStepBasic_RWExternalSource::RWStepBasic_RWExternalSource ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
+RWStepBasic_RWExternalSource::RWStepBasic_RWExternalSource() {}
 
-void RWStepBasic_RWExternalSource::ReadStep (const Handle(StepData_StepReaderData)& data,
-                                             const Standard_Integer num,
-                                             Handle(Interface_Check)& ach,
-                                             const Handle(StepBasic_ExternalSource) &ent) const
+//=================================================================================================
+
+void RWStepBasic_RWExternalSource::ReadStep(const Handle(StepData_StepReaderData)&  data,
+                                            const Standard_Integer                  num,
+                                            Handle(Interface_Check)&                ach,
+                                            const Handle(StepBasic_ExternalSource)& ent) const
 {
   // Check number of parameters
-  if ( ! data->CheckNbParams(num,1,ach,"external_source") ) return;
+  if (!data->CheckNbParams(num, 1, ach, "external_source"))
+    return;
 
   // Own fields of ExternalSource
 
   StepBasic_SourceItem aSourceId;
-  data->ReadEntity (num, 1, "source_id", ach, aSourceId);
+  data->ReadEntity(num, 1, "source_id", ach, aSourceId);
 
   // Initialize entity
   ent->Init(aSourceId);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepBasic_RWExternalSource::WriteStep (StepData_StepWriter& SW,
-                                              const Handle(StepBasic_ExternalSource) &ent) const
+void RWStepBasic_RWExternalSource::WriteStep(StepData_StepWriter&                    SW,
+                                             const Handle(StepBasic_ExternalSource)& ent) const
 {
 
   // Own fields of ExternalSource
 
-  SW.Send (ent->SourceId().Value());
+  SW.Send(ent->SourceId().Value());
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepBasic_RWExternalSource::Share (const Handle(StepBasic_ExternalSource) &ent,
-                                          Interface_EntityIterator& iter) const
+void RWStepBasic_RWExternalSource::Share(const Handle(StepBasic_ExternalSource)& ent,
+                                         Interface_EntityIterator&               iter) const
 {
 
   // Own fields of ExternalSource
 
-  iter.AddItem (ent->SourceId().Value());
+  iter.AddItem(ent->SourceId().Value());
 }

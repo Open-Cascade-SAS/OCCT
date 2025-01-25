@@ -11,66 +11,58 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_SiUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnit,StepBasic_NamedUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnit, StepBasic_NamedUnit)
 
-StepBasic_SiUnit::StepBasic_SiUnit ()  {}
+StepBasic_SiUnit::StepBasic_SiUnit() {}
 
-void StepBasic_SiUnit::Init(const Standard_Boolean hasAprefix,
-                            const StepBasic_SiPrefix aPrefix,
+void StepBasic_SiUnit::Init(const Standard_Boolean     hasAprefix,
+                            const StepBasic_SiPrefix   aPrefix,
                             const StepBasic_SiUnitName aName)
 {
   // --- classe own fields ---
   hasPrefix = hasAprefix;
-  prefix = aPrefix;
-  name = aName;
+  prefix    = aPrefix;
+  name      = aName;
   // --- classe inherited fields ---
   Handle(StepBasic_DimensionalExponents) aDimensions;
   aDimensions.Nullify();
   StepBasic_NamedUnit::Init(aDimensions);
 }
 
-
 void StepBasic_SiUnit::SetPrefix(const StepBasic_SiPrefix aPrefix)
 {
-  prefix = aPrefix;
+  prefix    = aPrefix;
   hasPrefix = Standard_True;
 }
-
 
 void StepBasic_SiUnit::UnSetPrefix()
 {
   hasPrefix = Standard_False;
 }
 
-
 StepBasic_SiPrefix StepBasic_SiUnit::Prefix() const
 {
   return prefix;
 }
-
 
 Standard_Boolean StepBasic_SiUnit::HasPrefix() const
 {
   return hasPrefix;
 }
 
-
 void StepBasic_SiUnit::SetName(const StepBasic_SiUnitName aName)
 {
   name = aName;
 }
 
-
 StepBasic_SiUnitName StepBasic_SiUnit::Name() const
 {
   return name;
 }
-
 
 void StepBasic_SiUnit::SetDimensions(const Handle(StepBasic_DimensionalExponents)& /*aDimensions*/)
 {
@@ -80,7 +72,6 @@ void StepBasic_SiUnit::SetDimensions(const Handle(StepBasic_DimensionalExponents
   std::cout << "Field is redefined, SetUp Forbidden" << std::endl;
 #endif
 }
-
 
 Handle(StepBasic_DimensionalExponents) StepBasic_SiUnit::Dimensions() const
 {
@@ -94,5 +85,4 @@ Handle(StepBasic_DimensionalExponents) StepBasic_SiUnit::Dimensions() const
   Handle(StepBasic_DimensionalExponents) aDimensions;
   aDimensions.Nullify();
   return aDimensions;
-
 }

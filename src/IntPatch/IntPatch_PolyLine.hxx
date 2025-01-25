@@ -30,57 +30,34 @@
 class IntPatch_WLine;
 class IntPatch_RLine;
 
-
-
-class IntPatch_PolyLine  : public IntPatch_Polygo
+class IntPatch_PolyLine : public IntPatch_Polygo
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT IntPatch_PolyLine();
-  
+
   Standard_EXPORT IntPatch_PolyLine(const Standard_Real InitDefle);
-  
-  Standard_EXPORT void SetWLine (const Standard_Boolean OnFirst, const Handle(IntPatch_WLine)& Line);
-  
-  Standard_EXPORT void SetRLine (const Standard_Boolean OnFirst, const Handle(IntPatch_RLine)& Line);
-  
+
+  Standard_EXPORT void SetWLine(const Standard_Boolean OnFirst, const Handle(IntPatch_WLine)& Line);
+
+  Standard_EXPORT void SetRLine(const Standard_Boolean OnFirst, const Handle(IntPatch_RLine)& Line);
+
   Standard_EXPORT void ResetError();
-  
+
   Standard_EXPORT Standard_Integer NbPoints() const;
-  
-  Standard_EXPORT gp_Pnt2d Point (const Standard_Integer Index) const;
 
-
-
+  Standard_EXPORT gp_Pnt2d Point(const Standard_Integer Index) const;
 
 protected:
-
-
-
-
-
 private:
-
-  
   Standard_EXPORT void Prepare();
 
-
-  gp_Pnt2d pnt;
-  IntPatch_IType typ;
-  Standard_Boolean onfirst;
+  gp_Pnt2d               pnt;
+  IntPatch_IType         typ;
+  Standard_Boolean       onfirst;
   Handle(IntPatch_WLine) wpoly;
   Handle(IntPatch_RLine) rpoly;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IntPatch_PolyLine_HeaderFile

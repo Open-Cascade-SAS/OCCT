@@ -26,47 +26,41 @@
 
 class StepDimTol_DatumReferenceModifierWithValue;
 DEFINE_STANDARD_HANDLE(StepDimTol_DatumReferenceModifierWithValue, Standard_Transient)
+
 //! Representation of STEP entity DatumReferenceModifierWithValue
 class StepDimTol_DatumReferenceModifierWithValue : public Standard_Transient
 {
 
 public:
-  
   //! Empty constructor
   Standard_EXPORT StepDimTol_DatumReferenceModifierWithValue();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT   void Init (const StepDimTol_DatumReferenceModifierType& theModifierType,
-                               const Handle(StepBasic_LengthMeasureWithUnit)& theModifierValue);
-  
+  Standard_EXPORT void Init(const StepDimTol_DatumReferenceModifierType&   theModifierType,
+                            const Handle(StepBasic_LengthMeasureWithUnit)& theModifierValue);
+
   //! Returns field ModifierType
-  inline StepDimTol_DatumReferenceModifierType ModifierType () const
-  {
-    return myModifierType;
-  }
-  
+  inline StepDimTol_DatumReferenceModifierType ModifierType() const { return myModifierType; }
+
   //! Set field ModifierType
-  inline void SetModifierType (const StepDimTol_DatumReferenceModifierType &theModifierType)
+  inline void SetModifierType(const StepDimTol_DatumReferenceModifierType& theModifierType)
   {
     myModifierType = theModifierType;
   }
-  
+
   //! Returns field ModifierValue
-  inline Handle(StepBasic_LengthMeasureWithUnit) ModifierValue()
-  {
-    return myModifierValue;
-  }
-  
+  inline Handle(StepBasic_LengthMeasureWithUnit) ModifierValue() { return myModifierValue; }
+
   //! Set field ModifierValue
   inline void SetModifierValue(const Handle(StepBasic_LengthMeasureWithUnit)& theModifierValue)
   {
     myModifierValue = theModifierValue;
   }
-  
-  DEFINE_STANDARD_RTTIEXT(StepDimTol_DatumReferenceModifierWithValue,Standard_Transient)
 
-private: 
-  StepDimTol_DatumReferenceModifierType myModifierType;
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_DatumReferenceModifierWithValue, Standard_Transient)
+
+private:
+  StepDimTol_DatumReferenceModifierType   myModifierType;
   Handle(StepBasic_LengthMeasureWithUnit) myModifierValue;
 };
 #endif // _StepDimTol_DatumReferenceModifierWithValue_HeaderFile

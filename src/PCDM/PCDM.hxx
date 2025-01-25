@@ -22,14 +22,16 @@
 
 class TCollection_AsciiString;
 
-class PCDM 
+class PCDM
 {
 public:
-  Standard_EXPORT static PCDM_TypeOfFileDriver FileDriverType (const TCollection_AsciiString& aFileName, 
-                                                               Handle(Storage_BaseDriver)& aBaseDriver);
-  
-  Standard_EXPORT static PCDM_TypeOfFileDriver FileDriverType (Standard_IStream& theIStream, 
-                                                               Handle(Storage_BaseDriver)& theBaseDriver);
+  Standard_EXPORT static PCDM_TypeOfFileDriver FileDriverType(
+    const TCollection_AsciiString& aFileName,
+    Handle(Storage_BaseDriver)&    aBaseDriver);
+
+  Standard_EXPORT static PCDM_TypeOfFileDriver FileDriverType(
+    Standard_IStream&           theIStream,
+    Handle(Storage_BaseDriver)& theBaseDriver);
 
   DEFINE_STANDARD_ALLOC
 };

@@ -24,7 +24,6 @@
 //  in the static declaration, but must anyway be created, during main run,
 //  once before its first use : this is the initialization step.
 
-
 //  This set of macros allows user to simply declare and use "static" Handles.
 //  It is available once having included this file :
 //  ***************************************************
@@ -63,35 +62,53 @@
 //  or take it by the macro (which does not initialize it)
 //          UseHandle(pk_class,object);
 
-
 //  Declaration of a static Handle : first use for a given type
-#define StaticHandle(type,var) static struct type##_struc { Handle(type) H; } *var##_s = NULL
+#define StaticHandle(type, var)                                                                    \
+  static struct type##_struc                                                                       \
+  {                                                                                                \
+    Handle(type) H;                                                                                \
+  }* var##_s = NULL
 
 //  Another declaration for an already declared type (with StaticHandle)
-#define StaticHandleA(type,var) static struct type##_struc *var##_s = NULL
+#define StaticHandleA(type, var) static struct type##_struc* var##_s = NULL
 
 //  Using it (IT MUST HAVE BEEN FORMERLY INITIALIZED)
-#define UseHandle(type,var) Handle(type)& var = var##_s->H
+#define UseHandle(type, var) Handle(type)& var = var##_s->H
 
 //  Initializing it (as Null Handle)
-#define InitHandle(type,var) \
-if(!var##_s) { var##_s=new type##_struc;  }\
-Handle(type)& var = var##_s->H;
+#define InitHandle(type, var)                                                                      \
+  if (!var##_s)                                                                                    \
+  {                                                                                                \
+    var##_s = new type##_struc;                                                                    \
+  }                                                                                                \
+  Handle(type)& var = var##_s->H;
 
 //  Initializing it and Creating it by a Void Constructor
-#define InitHandleVoid(type,var) \
-if(!var##_s) { var##_s=new type##_struc; var##_s->H=new type; }\
-Handle(type)& var = var##_s->H;
+#define InitHandleVoid(type, var)                                                                  \
+  if (!var##_s)                                                                                    \
+  {                                                                                                \
+    var##_s    = new type##_struc;                                                                 \
+    var##_s->H = new type;                                                                         \
+  }                                                                                                \
+  Handle(type)& var = var##_s->H;
 
 //  Initializing it and Creating it by a Constructor with Arguments
 //    (give them grouped in their parentheses)
-#define InitHandleArgs(type,var,args) \
-if(!var##_s) { var##_s=new type##_struc; var##_s->H=new type args; }\
-Handle(type)& var = var##_s->H;
+#define InitHandleArgs(type, var, args)                                                            \
+  if (!var##_s)                                                                                    \
+  {                                                                                                \
+    var##_s    = new type##_struc;                                                                 \
+    var##_s->H = new type args;                                                                    \
+  }                                                                                                \
+  Handle(type)& var = var##_s->H;
 
 //  Initializing it from an already determined Value
-#define InitHandleVal(type,var,value) \
-if(!var##_s) { var##_s=new type##_struc; var##_s->H=value; }\
-Handle(type)& var = var##_s->H;
+#define InitHandleVal(type, var, value)                                                            \
+  if (!var##_s)                                                                                    \
+  {                                                                                                \
+    var##_s    = new type##_struc;                                                                 \
+    var##_s->H = value;                                                                            \
+  }                                                                                                \
+  Handle(type)& var = var##_s->H;
 
 #endif

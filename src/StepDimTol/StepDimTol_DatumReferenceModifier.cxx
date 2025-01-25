@@ -18,30 +18,32 @@
 #include <StepDimTol_DatumReferenceModifierWithValue.hxx>
 #include <StepDimTol_SimpleDatumReferenceModifierMember.hxx>
 
-//=======================================================================
-//function : StepDimTol_DatumReferenceModifier
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepDimTol_DatumReferenceModifier::StepDimTol_DatumReferenceModifier () {  }
+StepDimTol_DatumReferenceModifier::StepDimTol_DatumReferenceModifier() {}
 
-//=======================================================================
-//function : CaseNum
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer StepDimTol_DatumReferenceModifier::CaseNum(const Handle(Standard_Transient)& ent) const
+Standard_Integer StepDimTol_DatumReferenceModifier::CaseNum(
+  const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepDimTol_DatumReferenceModifierWithValue))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepDimTol_SimpleDatumReferenceModifierMember))) return 2;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepDimTol_DatumReferenceModifierWithValue)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepDimTol_SimpleDatumReferenceModifierMember)))
+    return 2;
   return 0;
 }
 
 Handle(StepDimTol_DatumReferenceModifierWithValue) StepDimTol_DatumReferenceModifier::
   DatumReferenceModifierWithValue() const
-{  return GetCasted(StepDimTol_DatumReferenceModifierWithValue,Value());  }
+{
+  return GetCasted(StepDimTol_DatumReferenceModifierWithValue, Value());
+}
 
 Handle(StepDimTol_SimpleDatumReferenceModifierMember) StepDimTol_DatumReferenceModifier::
   SimpleDatumReferenceModifierMember() const
-{  return GetCasted(StepDimTol_SimpleDatumReferenceModifierMember,Value());  }
+{
+  return GetCasted(StepDimTol_SimpleDatumReferenceModifierMember, Value());
+}

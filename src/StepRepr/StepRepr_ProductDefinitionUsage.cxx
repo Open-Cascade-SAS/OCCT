@@ -17,12 +17,8 @@
 
 #include <StepRepr_ProductDefinitionUsage.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ProductDefinitionUsage,StepBasic_ProductDefinitionRelationship)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ProductDefinitionUsage, StepBasic_ProductDefinitionRelationship)
 
-//=======================================================================
-//function : StepRepr_ProductDefinitionUsage
-//purpose  : 
-//=======================================================================
-StepRepr_ProductDefinitionUsage::StepRepr_ProductDefinitionUsage ()
-{
-}
+//=================================================================================================
+
+StepRepr_ProductDefinitionUsage::StepRepr_ProductDefinitionUsage() {}

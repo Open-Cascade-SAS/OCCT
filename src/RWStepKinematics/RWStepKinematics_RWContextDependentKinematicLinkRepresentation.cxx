@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -23,64 +23,74 @@
 #include <StepKinematics_KinematicLinkRepresentationAssociation.hxx>
 #include <StepKinematics_ProductDefinitionRelationshipKinematics.hxx>
 
-//=======================================================================
-//function : RWStepKinematics_RWContextDependentKinematicLinkRepresentation
-//purpose  :
-//=======================================================================
-RWStepKinematics_RWContextDependentKinematicLinkRepresentation::RWStepKinematics_RWContextDependentKinematicLinkRepresentation() {}
+//=================================================================================================
 
+RWStepKinematics_RWContextDependentKinematicLinkRepresentation::
+  RWStepKinematics_RWContextDependentKinematicLinkRepresentation()
+{
+}
 
-//=======================================================================
-//function : ReadStep
-//purpose  :
-//=======================================================================
-void RWStepKinematics_RWContextDependentKinematicLinkRepresentation::ReadStep (const Handle(StepData_StepReaderData)& theData,
-                                                                               const Standard_Integer theNum,
-                                                                               Handle(Interface_Check)& theArch,
-                                                                               const Handle(StepKinematics_ContextDependentKinematicLinkRepresentation)& theEnt) const
+//=================================================================================================
+
+void RWStepKinematics_RWContextDependentKinematicLinkRepresentation::ReadStep(
+  const Handle(StepData_StepReaderData)&                                    theData,
+  const Standard_Integer                                                    theNum,
+  Handle(Interface_Check)&                                                  theArch,
+  const Handle(StepKinematics_ContextDependentKinematicLinkRepresentation)& theEnt) const
 {
   // Check number of parameters
-  if ( ! theData->CheckNbParams(theNum,2,theArch,"context_dependent_kinematic_link_representation") ) return;
+  if (!theData->CheckNbParams(theNum,
+                              2,
+                              theArch,
+                              "context_dependent_kinematic_link_representation"))
+    return;
 
   // Own fields of ContextDependentKinematicLinkRepresentation
 
   Handle(StepKinematics_KinematicLinkRepresentationAssociation) aRepresentationRelation;
-  theData->ReadEntity (theNum, 1, "representation_relation", theArch, STANDARD_TYPE(StepKinematics_KinematicLinkRepresentationAssociation), aRepresentationRelation);
+  theData->ReadEntity(theNum,
+                      1,
+                      "representation_relation",
+                      theArch,
+                      STANDARD_TYPE(StepKinematics_KinematicLinkRepresentationAssociation),
+                      aRepresentationRelation);
 
   Handle(StepKinematics_ProductDefinitionRelationshipKinematics) aRepresentedProductRelation;
-  theData->ReadEntity (theNum, 2, "represented_product_relation", theArch, STANDARD_TYPE(StepKinematics_ProductDefinitionRelationshipKinematics), aRepresentedProductRelation);
+  theData->ReadEntity(theNum,
+                      2,
+                      "represented_product_relation",
+                      theArch,
+                      STANDARD_TYPE(StepKinematics_ProductDefinitionRelationshipKinematics),
+                      aRepresentedProductRelation);
 
   // Initialize entity
-  theEnt->Init(aRepresentationRelation,
-            aRepresentedProductRelation);
+  theEnt->Init(aRepresentationRelation, aRepresentedProductRelation);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  :
-//=======================================================================
-void RWStepKinematics_RWContextDependentKinematicLinkRepresentation::WriteStep (StepData_StepWriter& theSW,
-                                                                                const Handle(StepKinematics_ContextDependentKinematicLinkRepresentation)& theEnt) const
+//=================================================================================================
+
+void RWStepKinematics_RWContextDependentKinematicLinkRepresentation::WriteStep(
+  StepData_StepWriter&                                                      theSW,
+  const Handle(StepKinematics_ContextDependentKinematicLinkRepresentation)& theEnt) const
 {
 
   // Own fields of ContextDependentKinematicLinkRepresentation
 
-  theSW.Send (theEnt->RepresentationRelation());
+  theSW.Send(theEnt->RepresentationRelation());
 
-  theSW.Send (theEnt->RepresentedProductRelation());
+  theSW.Send(theEnt->RepresentedProductRelation());
 }
 
-//=======================================================================
-//function : Share
-//purpose  :
-//=======================================================================
-void RWStepKinematics_RWContextDependentKinematicLinkRepresentation::Share (const Handle(StepKinematics_ContextDependentKinematicLinkRepresentation)& theEnt,
-                                                                            Interface_EntityIterator& iter) const
+//=================================================================================================
+
+void RWStepKinematics_RWContextDependentKinematicLinkRepresentation::Share(
+  const Handle(StepKinematics_ContextDependentKinematicLinkRepresentation)& theEnt,
+  Interface_EntityIterator&                                                 iter) const
 {
 
   // Own fields of ContextDependentKinematicLinkRepresentation
 
-  iter.AddItem (theEnt->RepresentationRelation());
+  iter.AddItem(theEnt->RepresentationRelation());
 
-  iter.AddItem (theEnt->RepresentedProductRelation());
+  iter.AddItem(theEnt->RepresentedProductRelation());
 }

@@ -20,34 +20,28 @@
 
 namespace
 {
-  static Standard_CString TopAbs_Table_PrintShapeEnum[9] =
-  {
-    "COMPOUND","COMPSOLID","SOLID","SHELL","FACE","WIRE","EDGE","VERTEX","SHAPE"
-  };
+static Standard_CString TopAbs_Table_PrintShapeEnum[9] =
+  {"COMPOUND", "COMPSOLID", "SOLID", "SHELL", "FACE", "WIRE", "EDGE", "VERTEX", "SHAPE"};
 
-  static Standard_CString TopAbs_Table_PrintOrientation[4] =
-  {
-    "FORWARD","REVERSED","INTERNAL","EXTERNAL"
-  };
-}
+static Standard_CString TopAbs_Table_PrintOrientation[4] = {"FORWARD",
+                                                            "REVERSED",
+                                                            "INTERNAL",
+                                                            "EXTERNAL"};
+} // namespace
 
-//=======================================================================
-//function : ShapeTypeToString
-//purpose  :
-//=======================================================================
-Standard_CString TopAbs::ShapeTypeToString (TopAbs_ShapeEnum theType)
+//=================================================================================================
+
+Standard_CString TopAbs::ShapeTypeToString(TopAbs_ShapeEnum theType)
 {
   return TopAbs_Table_PrintShapeEnum[theType];
 }
 
-//=======================================================================
-//function : ShapeTypeFromString
-//purpose  :
-//=======================================================================
-Standard_Boolean TopAbs::ShapeTypeFromString (Standard_CString theTypeString,
-                                              TopAbs_ShapeEnum& theType)
+//=================================================================================================
+
+Standard_Boolean TopAbs::ShapeTypeFromString(Standard_CString  theTypeString,
+                                             TopAbs_ShapeEnum& theType)
 {
-  TCollection_AsciiString aName (theTypeString);
+  TCollection_AsciiString aName(theTypeString);
   aName.UpperCase();
   for (Standard_Integer aTypeIter = 0; aTypeIter <= TopAbs_SHAPE; ++aTypeIter)
   {
@@ -61,25 +55,22 @@ Standard_Boolean TopAbs::ShapeTypeFromString (Standard_CString theTypeString,
   return Standard_False;
 }
 
-//=======================================================================
-//function : ShapeOrientationToString
-//purpose  :
-//=======================================================================
-Standard_CString TopAbs::ShapeOrientationToString (TopAbs_Orientation theOrientation)
+//=================================================================================================
+
+Standard_CString TopAbs::ShapeOrientationToString(TopAbs_Orientation theOrientation)
 {
   return TopAbs_Table_PrintOrientation[theOrientation];
 }
 
-//=======================================================================
-//function : ShapeOrientationFromString
-//purpose  :
-//=======================================================================
-Standard_Boolean TopAbs::ShapeOrientationFromString (const Standard_CString theOrientationString,
-                                                     TopAbs_Orientation& theOrientation)
+//=================================================================================================
+
+Standard_Boolean TopAbs::ShapeOrientationFromString(const Standard_CString theOrientationString,
+                                                    TopAbs_Orientation&    theOrientation)
 {
-  TCollection_AsciiString aName (theOrientationString);
+  TCollection_AsciiString aName(theOrientationString);
   aName.UpperCase();
-  for (Standard_Integer anOrientationIter = 0; anOrientationIter <= TopAbs_EXTERNAL; ++anOrientationIter)
+  for (Standard_Integer anOrientationIter = 0; anOrientationIter <= TopAbs_EXTERNAL;
+       ++anOrientationIter)
   {
     Standard_CString anOrientationName = TopAbs_Table_PrintOrientation[anOrientationIter];
     if (aName == anOrientationName)
@@ -92,62 +83,55 @@ Standard_Boolean TopAbs::ShapeOrientationFromString (const Standard_CString theO
 }
 
 //=======================================================================
-//function : TopAbs_Compose
-//purpose  : Compose two orientations
+// function : TopAbs_Compose
+// purpose  : Compose two orientations
 //=======================================================================
-TopAbs_Orientation TopAbs::Compose(const TopAbs_Orientation O1,
-                                   const TopAbs_Orientation O2)
+TopAbs_Orientation TopAbs::Compose(const TopAbs_Orientation O1, const TopAbs_Orientation O2)
 {
   // see the composition table in the file TopAbs.cdl
-  static const TopAbs_Orientation TopAbs_Table_Compose[4][4] =
-  {
-    { TopAbs_FORWARD,  TopAbs_REVERSED, TopAbs_INTERNAL, TopAbs_EXTERNAL },
-    { TopAbs_REVERSED, TopAbs_FORWARD,  TopAbs_INTERNAL, TopAbs_EXTERNAL },
-    { TopAbs_INTERNAL, TopAbs_INTERNAL, TopAbs_INTERNAL, TopAbs_INTERNAL },
-    { TopAbs_EXTERNAL, TopAbs_EXTERNAL, TopAbs_EXTERNAL, TopAbs_EXTERNAL }
-  };
+  static const TopAbs_Orientation TopAbs_Table_Compose[4][4] = {
+    {TopAbs_FORWARD, TopAbs_REVERSED, TopAbs_INTERNAL, TopAbs_EXTERNAL},
+    {TopAbs_REVERSED, TopAbs_FORWARD, TopAbs_INTERNAL, TopAbs_EXTERNAL},
+    {TopAbs_INTERNAL, TopAbs_INTERNAL, TopAbs_INTERNAL, TopAbs_INTERNAL},
+    {TopAbs_EXTERNAL, TopAbs_EXTERNAL, TopAbs_EXTERNAL, TopAbs_EXTERNAL}};
   return TopAbs_Table_Compose[(Standard_Integer)O2][(Standard_Integer)O1];
 }
 
 //=======================================================================
-//function : TopAbs::Reverse
-//purpose  : reverse an Orientation
+// function : TopAbs::Reverse
+// purpose  : reverse an Orientation
 //=======================================================================
 
 TopAbs_Orientation TopAbs::Reverse(const TopAbs_Orientation Ori)
 {
-  static const TopAbs_Orientation TopAbs_Table_Reverse[4] =
-  {
-    TopAbs_REVERSED, TopAbs_FORWARD, TopAbs_INTERNAL, TopAbs_EXTERNAL
-  };
+  static const TopAbs_Orientation TopAbs_Table_Reverse[4] = {TopAbs_REVERSED,
+                                                             TopAbs_FORWARD,
+                                                             TopAbs_INTERNAL,
+                                                             TopAbs_EXTERNAL};
   return TopAbs_Table_Reverse[(Standard_Integer)Ori];
 }
 
 //=======================================================================
-//function : TopAbs::Complement
-//purpose  : complement an Orientation
+// function : TopAbs::Complement
+// purpose  : complement an Orientation
 //=======================================================================
 
 TopAbs_Orientation TopAbs::Complement(const TopAbs_Orientation Ori)
 {
-  static const TopAbs_Orientation TopAbs_Table_Complement[4] =
-  {
-    TopAbs_REVERSED, TopAbs_FORWARD, TopAbs_EXTERNAL, TopAbs_INTERNAL
-  };
+  static const TopAbs_Orientation TopAbs_Table_Complement[4] = {TopAbs_REVERSED,
+                                                                TopAbs_FORWARD,
+                                                                TopAbs_EXTERNAL,
+                                                                TopAbs_INTERNAL};
   return TopAbs_Table_Complement[(Standard_Integer)Ori];
 }
 
 //=======================================================================
-//function : TopAbs_Print
-//purpose  : print the name of a State on a stream.
+// function : TopAbs_Print
+// purpose  : print the name of a State on a stream.
 //=======================================================================
 
-Standard_OStream& TopAbs::Print(const TopAbs_State st,
-                                Standard_OStream& s)
+Standard_OStream& TopAbs::Print(const TopAbs_State st, Standard_OStream& s)
 {
-  static const Standard_CString TopAbs_Table_PrintState[4] =
-  {
-    "ON","IN","OUT","UNKNOWN"
-  };
+  static const Standard_CString TopAbs_Table_PrintState[4] = {"ON", "IN", "OUT", "UNKNOWN"};
   return (s << TopAbs_Table_PrintState[(Standard_Integer)st]);
 }

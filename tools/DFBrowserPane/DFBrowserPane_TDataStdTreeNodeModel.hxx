@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowserPane_TDataStdTreeNodeMode_H
 #define DFBrowserPane_TDataStdTreeNodeMode_H
@@ -33,9 +33,8 @@ class DFBrowserPane_TDataStdTreeNodeModel : public TreeModel_ModelBase
 {
   Q_OBJECT
 public:
-
   //! Constructor
-  Standard_EXPORT DFBrowserPane_TDataStdTreeNodeModel (QObject* theParent);
+  Standard_EXPORT DFBrowserPane_TDataStdTreeNodeModel(QObject* theParent);
 
   //! Destructor
   virtual ~DFBrowserPane_TDataStdTreeNodeModel() Standard_OVERRIDE {}
@@ -45,27 +44,31 @@ public:
 
   //! Initializes the tree model by the attribute
   //! \param theAttribute a current attribute
-  Standard_EXPORT void SetAttribute (const Handle(TDF_Attribute)& theAttribute);
+  Standard_EXPORT void SetAttribute(const Handle(TDF_Attribute)& theAttribute);
 
   //! Returns model index by the attribute. The method is recursive.
   //! \param theAttribute an attribute that is searched
   //! \param theParentIndex an index of the parent item
   //! \return the model index
-  QModelIndex FindIndex (const Handle(TDF_Attribute)& theAttribute, const QModelIndex theParentIndex);
+  QModelIndex FindIndex(const Handle(TDF_Attribute)& theAttribute,
+                        const QModelIndex            theParentIndex);
 
   //! Returns count of columns in the model.
   //! \param theParent an index of the parent item
   //! \return integer value
-  virtual int columnCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
-  { (void)theParent; return 1; }
+  virtual int columnCount(const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
+  {
+    (void)theParent;
+    return 1;
+  }
 
 protected:
   //! Creates root item
   //! \param theColumnId index of a column
-  Standard_EXPORT virtual TreeModel_ItemBasePtr createRootItem (const int theColumnId) Standard_OVERRIDE;
+  Standard_EXPORT virtual TreeModel_ItemBasePtr createRootItem(const int theColumnId)
+    Standard_OVERRIDE;
 
 private:
-
   Handle(TDF_Attribute) myAttribute; //! the parent attribute
 };
 

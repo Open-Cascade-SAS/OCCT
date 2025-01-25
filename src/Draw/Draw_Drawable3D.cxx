@@ -24,97 +24,86 @@
 IMPLEMENT_STANDARD_RTTIEXT(Draw_Drawable3D, Standard_Transient)
 
 //! Return the map of factory functions.
-static NCollection_DataMap<Standard_CString, Draw_Drawable3D::FactoryFunction_t, Standard_CStringHasher>& getFactoryMap()
+static NCollection_DataMap<Standard_CString,
+                           Draw_Drawable3D::FactoryFunction_t,
+                           Standard_CStringHasher>&
+  getFactoryMap()
 {
-  static NCollection_DataMap<Standard_CString, Draw_Drawable3D::FactoryFunction_t, Standard_CStringHasher> myToolMap;
+  static NCollection_DataMap<Standard_CString,
+                             Draw_Drawable3D::FactoryFunction_t,
+                             Standard_CStringHasher>
+    myToolMap;
   return myToolMap;
 }
 
-//=======================================================================
-//function : RegisterFactory
-//purpose  :
-//=======================================================================
-void Draw_Drawable3D::RegisterFactory (const Standard_CString theType,
-                                       const FactoryFunction_t& theFactory)
+//=================================================================================================
+
+void Draw_Drawable3D::RegisterFactory(const Standard_CString   theType,
+                                      const FactoryFunction_t& theFactory)
 {
-  getFactoryMap().Bind (theType, theFactory);
+  getFactoryMap().Bind(theType, theFactory);
 }
 
-//=======================================================================
-//function : Restore
-//purpose  :
-//=======================================================================
-Handle(Draw_Drawable3D) Draw_Drawable3D::Restore (const Standard_CString theType,
-                                                  Standard_IStream& theStream)
+//=================================================================================================
+
+Handle(Draw_Drawable3D) Draw_Drawable3D::Restore(const Standard_CString theType,
+                                                 Standard_IStream&      theStream)
 {
   FactoryFunction_t aFactory = NULL;
-  if (getFactoryMap().Find (theType, aFactory))
+  if (getFactoryMap().Find(theType, aFactory))
   {
-    return aFactory (theStream);
+    return aFactory(theStream);
   }
   return Handle(Draw_Drawable3D)();
 }
 
-//=======================================================================
-//function : Draw_Drawable3D
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Draw_Drawable3D::Draw_Drawable3D()
-: myXmin(0.0),
-  myXmax(0.0),
-  myYmin(0.0),
-  myYmax(0.0),
-  myName(NULL),
-  isVisible(Standard_False),
-  isProtected(Standard_False)
+    : myXmin(0.0),
+      myXmax(0.0),
+      myYmin(0.0),
+      myYmax(0.0),
+      myName(NULL),
+      isVisible(Standard_False),
+      isProtected(Standard_False)
 {
 }
 
-//=======================================================================
-//function : PickReject
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean Draw_Drawable3D::PickReject(const Standard_Real X,
-					     const Standard_Real Y,
-					     const Standard_Real Prec) const
+                                             const Standard_Real Y,
+                                             const Standard_Real Prec) const
 {
-  return ((X+Prec < myXmin) || (X-Prec > myXmax) ||
-	  (Y+Prec < myYmin) || (Y-Prec > myYmax));
+  return ((X + Prec < myXmin) || (X - Prec > myXmax) || (Y + Prec < myYmin) || (Y - Prec > myYmax));
 }
 
-//=======================================================================
-//function : Copy
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Handle(Draw_Drawable3D) Draw_Drawable3D::Copy() const
 {
   return this;
 }
 
-//=======================================================================
-//function : Dump
-//purpose  :
-//=======================================================================
-void Draw_Drawable3D::Dump (Standard_OStream& S) const
+//=================================================================================================
+
+void Draw_Drawable3D::Dump(Standard_OStream& S) const
 {
   S << myXmin << " " << myXmax << "\n";
   S << myYmin << " " << myYmax << "\n";
 }
 
-//=======================================================================
-//function : Save
-//purpose  :
-//=======================================================================
-void Draw_Drawable3D::Save (Standard_OStream& ) const
+//=================================================================================================
+
+void Draw_Drawable3D::Save(Standard_OStream&) const
 {
-  throw Standard_NotImplemented ("Draw_Drawable3D::Save() should be redefined in sub-class");
+  throw Standard_NotImplemented("Draw_Drawable3D::Save() should be redefined in sub-class");
 }
 
-//=======================================================================
-//function : Whatis
-//purpose  :
-//=======================================================================
-void  Draw_Drawable3D::Whatis(Draw_Interpretor& S) const
+//=================================================================================================
+
+void Draw_Drawable3D::Whatis(Draw_Interpretor& S) const
 {
   S << "drawable 3d";
 }

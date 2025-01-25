@@ -12,7 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_ErrorHandler.hxx>
 #include <Storage_HeaderData.hxx>
 #include <Storage_BaseDriver.hxx>
@@ -21,19 +20,20 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Storage_HeaderData,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Storage_HeaderData, Standard_Transient)
 
-Storage_HeaderData::Storage_HeaderData() : myNBObj(0), myErrorStatus(Storage_VSOk)
+Storage_HeaderData::Storage_HeaderData()
+    : myNBObj(0),
+      myErrorStatus(Storage_VSOk)
 {
 }
 
-Standard_Boolean Storage_HeaderData::Read (const Handle(Storage_BaseDriver)& theDriver)
+Standard_Boolean Storage_HeaderData::Read(const Handle(Storage_BaseDriver)& theDriver)
 {
   // Check driver open mode
-  if (theDriver->OpenMode() != Storage_VSRead
-   && theDriver->OpenMode() != Storage_VSReadWrite)
+  if (theDriver->OpenMode() != Storage_VSRead && theDriver->OpenMode() != Storage_VSReadWrite)
   {
-    myErrorStatus = Storage_VSModeError;
+    myErrorStatus    = Storage_VSModeError;
     myErrorStatusExt = "OpenMode";
     return Standard_False;
   }
@@ -50,18 +50,25 @@ Standard_Boolean Storage_HeaderData::Read (const Handle(Storage_BaseDriver)& the
     try
     {
       OCC_CATCH_SIGNALS
-      theDriver->ReadInfo (myNBObj, myStorageVersion, myDate, mySchemaName, mySchemaVersion,
-                          myApplicationName, myApplicationVersion, myDataType, myUserInfo);
+      theDriver->ReadInfo(myNBObj,
+                          myStorageVersion,
+                          myDate,
+                          mySchemaName,
+                          mySchemaVersion,
+                          myApplicationName,
+                          myApplicationVersion,
+                          myDataType,
+                          myUserInfo);
     }
     catch (Storage_StreamTypeMismatchError const&)
     {
-      myErrorStatus = Storage_VSTypeMismatch;
+      myErrorStatus    = Storage_VSTypeMismatch;
       myErrorStatusExt = "ReadInfo";
       return Standard_False;
     }
     catch (Storage_StreamExtCharParityError const&)
     {
-      myErrorStatus = Storage_VSExtCharParityError;
+      myErrorStatus    = Storage_VSExtCharParityError;
       myErrorStatusExt = "ReadInfo";
       return Standard_False;
     }
@@ -86,17 +93,17 @@ Standard_Boolean Storage_HeaderData::Read (const Handle(Storage_BaseDriver)& the
     try
     {
       OCC_CATCH_SIGNALS
-      theDriver->ReadComment (myComments);
+      theDriver->ReadComment(myComments);
     }
     catch (Storage_StreamTypeMismatchError const&)
     {
-      myErrorStatus = Storage_VSTypeMismatch;
+      myErrorStatus    = Storage_VSTypeMismatch;
       myErrorStatusExt = "ReadComment";
       return Standard_False;
     }
     catch (Storage_StreamExtCharParityError const&)
     {
-      myErrorStatus = Storage_VSExtCharParityError;
+      myErrorStatus    = Storage_VSExtCharParityError;
       myErrorStatusExt = "ReadComment";
       return Standard_False;
     }
@@ -117,7 +124,7 @@ TCollection_AsciiString Storage_HeaderData::CreationDate() const
   return myDate;
 }
 
-void Storage_HeaderData::SetSchemaVersion(const TCollection_AsciiString& aVersion) 
+void Storage_HeaderData::SetSchemaVersion(const TCollection_AsciiString& aVersion)
 {
   mySchemaVersion = aVersion;
 }
@@ -127,7 +134,7 @@ TCollection_AsciiString Storage_HeaderData::SchemaVersion() const
   return mySchemaVersion;
 }
 
-void Storage_HeaderData::SetSchemaName(const TCollection_AsciiString& aSchemaName) 
+void Storage_HeaderData::SetSchemaName(const TCollection_AsciiString& aSchemaName)
 {
   mySchemaName = aSchemaName;
 }
@@ -137,7 +144,7 @@ TCollection_AsciiString Storage_HeaderData::SchemaName() const
   return mySchemaName;
 }
 
-void Storage_HeaderData::SetApplicationVersion(const TCollection_AsciiString& aVersion) 
+void Storage_HeaderData::SetApplicationVersion(const TCollection_AsciiString& aVersion)
 {
   myApplicationVersion = aVersion;
 }
@@ -147,7 +154,7 @@ TCollection_AsciiString Storage_HeaderData::ApplicationVersion() const
   return myApplicationVersion;
 }
 
-void Storage_HeaderData::SetApplicationName(const TCollection_ExtendedString& aName) 
+void Storage_HeaderData::SetApplicationName(const TCollection_ExtendedString& aName)
 {
   myApplicationName = aName;
 }
@@ -157,7 +164,7 @@ TCollection_ExtendedString Storage_HeaderData::ApplicationName() const
   return myApplicationName;
 }
 
-void Storage_HeaderData::SetDataType(const TCollection_ExtendedString& aName) 
+void Storage_HeaderData::SetDataType(const TCollection_ExtendedString& aName)
 {
   myDataType = aName;
 }
@@ -167,7 +174,7 @@ TCollection_ExtendedString Storage_HeaderData::DataType() const
   return myDataType;
 }
 
-void Storage_HeaderData::AddToUserInfo(const TCollection_AsciiString& theUserInfo) 
+void Storage_HeaderData::AddToUserInfo(const TCollection_AsciiString& theUserInfo)
 {
   myUserInfo.Append(theUserInfo);
 }
@@ -177,7 +184,7 @@ const TColStd_SequenceOfAsciiString& Storage_HeaderData::UserInfo() const
   return myUserInfo;
 }
 
-void Storage_HeaderData::AddToComments(const TCollection_ExtendedString& aComments) 
+void Storage_HeaderData::AddToComments(const TCollection_ExtendedString& aComments)
 {
   myComments.Append(aComments);
 }
@@ -192,7 +199,7 @@ Standard_Integer Storage_HeaderData::NumberOfObjects() const
   return myNBObj;
 }
 
-void Storage_HeaderData::SetNumberOfObjects(const Standard_Integer anObjectNumber) 
+void Storage_HeaderData::SetNumberOfObjects(const Standard_Integer anObjectNumber)
 {
   myNBObj = anObjectNumber;
 }
@@ -212,7 +219,7 @@ TCollection_AsciiString Storage_HeaderData::StorageVersion() const
   return myStorageVersion;
 }
 
-Storage_Error  Storage_HeaderData::ErrorStatus() const
+Storage_Error Storage_HeaderData::ErrorStatus() const
 {
   return myErrorStatus;
 }
@@ -237,4 +244,3 @@ void Storage_HeaderData::ClearErrorStatus()
   myErrorStatus = Storage_VSOk;
   myErrorStatusExt.Clear();
 }
-

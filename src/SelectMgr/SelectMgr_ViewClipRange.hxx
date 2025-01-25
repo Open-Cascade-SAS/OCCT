@@ -33,49 +33,46 @@ class SelectMgr_ViewClipRange
 {
 public:
   //! Creates an empty clip range.
-  SelectMgr_ViewClipRange()
-  {
-    SetVoid();
-  }
+  SelectMgr_ViewClipRange() { SetVoid(); }
 
   //! Check if the given depth is not within clipping range(s),
   //! e.g. TRUE means depth is clipped.
-  Standard_Boolean IsClipped (const Standard_Real theDepth) const
+  Standard_Boolean IsClipped(const Standard_Real theDepth) const
   {
-    if (myUnclipRange.IsOut (theDepth))
+    if (myUnclipRange.IsOut(theDepth))
     {
       return Standard_True;
     }
     for (size_t aRangeIter = 0; aRangeIter < myClipRanges.size(); ++aRangeIter)
     {
-      if (!myClipRanges[aRangeIter].IsOut (theDepth))
+      if (!myClipRanges[aRangeIter].IsOut(theDepth))
       {
         return Standard_True;
       }
     }
     return Standard_False;
   }
-  
+
   //! Calculates the min not clipped value from the range.
   //! Returns FALSE if the whole range is clipped.
-  Standard_Boolean GetNearestDepth (const Bnd_Range& theRange, Standard_Real& theDepth) const
+  Standard_Boolean GetNearestDepth(const Bnd_Range& theRange, Standard_Real& theDepth) const
   {
-    if (!myUnclipRange.IsVoid() && myUnclipRange.IsOut (theRange))
+    if (!myUnclipRange.IsVoid() && myUnclipRange.IsOut(theRange))
     {
       return false;
     }
 
     Bnd_Range aCommonClipRange;
-    theRange.GetMin (theDepth);
+    theRange.GetMin(theDepth);
 
-    if (!myUnclipRange.IsVoid() && myUnclipRange.IsOut (theDepth))
+    if (!myUnclipRange.IsVoid() && myUnclipRange.IsOut(theDepth))
     {
-      myUnclipRange.GetMin (theDepth);
+      myUnclipRange.GetMin(theDepth);
     }
 
     for (size_t aRangeIter = 0; aRangeIter < myClipRanges.size(); ++aRangeIter)
     {
-      if (!myClipRanges[aRangeIter].IsOut (theDepth))
+      if (!myClipRanges[aRangeIter].IsOut(theDepth))
       {
         aCommonClipRange = myClipRanges[aRangeIter];
         break;
@@ -89,44 +86,41 @@ public:
 
     for (size_t aRangeIter = 0; aRangeIter < myClipRanges.size(); ++aRangeIter)
     {
-      if (!aCommonClipRange.IsOut (myClipRanges[aRangeIter]))
+      if (!aCommonClipRange.IsOut(myClipRanges[aRangeIter]))
       {
-        aCommonClipRange.Add (myClipRanges[aRangeIter]);
+        aCommonClipRange.Add(myClipRanges[aRangeIter]);
       }
     }
 
-    aCommonClipRange.GetMax (theDepth);
+    aCommonClipRange.GetMax(theDepth);
 
-    return !theRange.IsOut (theDepth);
+    return !theRange.IsOut(theDepth);
   }
 
 public:
-
   //! Clears clipping range.
   void SetVoid()
   {
-    myClipRanges.resize (0);
-    myUnclipRange = Bnd_Range (RealFirst(), RealLast());
+    myClipRanges.resize(0);
+    myUnclipRange = Bnd_Range(RealFirst(), RealLast());
   }
 
   //! Add clipping planes. Planes and picking ray should be defined in the same coordinate system.
-  Standard_EXPORT void AddClippingPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes,
-                                          const gp_Ax1& thePickRay);
+  Standard_EXPORT void AddClippingPlanes(const Graphic3d_SequenceOfHClipPlane& thePlanes,
+                                         const gp_Ax1&                         thePickRay);
 
   //! Returns the main unclipped range; [-inf, inf] by default.
   Bnd_Range& ChangeUnclipRange() { return myUnclipRange; }
 
   //! Adds a clipping sub-range (for clipping chains).
-  void AddClipSubRange (const Bnd_Range& theRange) { myClipRanges.push_back (theRange); }
+  void AddClipSubRange(const Bnd_Range& theRange) { myClipRanges.push_back(theRange); }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 private:
-
   std::vector<Bnd_Range> myClipRanges;
-  Bnd_Range myUnclipRange;
-
+  Bnd_Range              myUnclipRange;
 };
 
 #endif // _SelectMgr_ViewClipRange_HeaderFile

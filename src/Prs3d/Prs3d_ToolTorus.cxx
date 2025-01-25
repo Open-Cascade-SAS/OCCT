@@ -15,68 +15,59 @@
 
 #include <Prs3d_ToolTorus.hxx>
 
-//=======================================================================
-//function : init
-//purpose  :
-//=======================================================================
-void Prs3d_ToolTorus::init (const Standard_Real    theMajorRad,
-                            const Standard_Real    theMinorRad,
-                            const Standard_Real    theAngle1,
-                            const Standard_Real    theAngle2,
-                            const Standard_Real    theAngle,
-                            const Standard_Integer theNbSlices,
-                            const Standard_Integer theNbStacks)
+//=================================================================================================
+
+void Prs3d_ToolTorus::init(const Standard_Real    theMajorRad,
+                           const Standard_Real    theMinorRad,
+                           const Standard_Real    theAngle1,
+                           const Standard_Real    theAngle2,
+                           const Standard_Real    theAngle,
+                           const Standard_Integer theNbSlices,
+                           const Standard_Integer theNbStacks)
 {
   myMajorRadius = theMajorRad;
   myMinorRadius = theMinorRad;
-  myVMin = theAngle1;
-  myVMax = theAngle2;
-  myAngle = theAngle;
-  mySlicesNb = theNbSlices;
-  myStacksNb = theNbStacks;
+  myVMin        = theAngle1;
+  myVMax        = theAngle2;
+  myAngle       = theAngle;
+  mySlicesNb    = theNbSlices;
+  myStacksNb    = theNbStacks;
 }
 
-//=======================================================================
-//function : Vertex
-//purpose  :
-//=======================================================================
-gp_Pnt Prs3d_ToolTorus::Vertex (const Standard_Real theU, const Standard_Real theV) const
+//=================================================================================================
+
+gp_Pnt Prs3d_ToolTorus::Vertex(const Standard_Real theU, const Standard_Real theV) const
 {
   const Standard_Real aU = theU * myAngle;
   const Standard_Real aV = myVMin + theV * (myVMax - myVMin);
-  return gp_Pnt ((myMajorRadius + myMinorRadius * Cos (aV)) * Cos (aU),
-                 (myMajorRadius + myMinorRadius * Cos (aV)) * Sin (aU),
-                 myMinorRadius * Sin (aV));
+  return gp_Pnt((myMajorRadius + myMinorRadius * Cos(aV)) * Cos(aU),
+                (myMajorRadius + myMinorRadius * Cos(aV)) * Sin(aU),
+                myMinorRadius * Sin(aV));
 }
 
-//=======================================================================
-//function : Normal
-//purpose  :
-//=======================================================================
-gp_Dir Prs3d_ToolTorus::Normal (const Standard_Real theU, const Standard_Real theV) const
+//=================================================================================================
+
+gp_Dir Prs3d_ToolTorus::Normal(const Standard_Real theU, const Standard_Real theV) const
 {
   const Standard_Real aU = theU * myAngle;
   const Standard_Real aV = myVMin + theV * (myVMax - myVMin);
-  return gp_Dir (Cos (aU) * Cos (aV),
-                 Sin (aU) * Cos (aV),
-                 Sin (aV));
+  return gp_Dir(Cos(aU) * Cos(aV), Sin(aU) * Cos(aV), Sin(aV));
 }
 
-//=======================================================================
-//function : Create
-//purpose  :
-//=======================================================================
-Handle(Graphic3d_ArrayOfTriangles) Prs3d_ToolTorus::Create (const Standard_Real    theMajorRad,
-                                                            const Standard_Real    theMinorRad,
-                                                            const Standard_Real    theAngle1,
-                                                            const Standard_Real    theAngle2,
-                                                            const Standard_Real    theAngle,
-                                                            const Standard_Integer theNbSlices,
-                                                            const Standard_Integer theNbStacks,
-                                                            const gp_Trsf&         theTrsf)
+//=================================================================================================
+
+Handle(Graphic3d_ArrayOfTriangles) Prs3d_ToolTorus::Create(const Standard_Real    theMajorRad,
+                                                           const Standard_Real    theMinorRad,
+                                                           const Standard_Real    theAngle1,
+                                                           const Standard_Real    theAngle2,
+                                                           const Standard_Real    theAngle,
+                                                           const Standard_Integer theNbSlices,
+                                                           const Standard_Integer theNbStacks,
+                                                           const gp_Trsf&         theTrsf)
 {
   Handle(Graphic3d_ArrayOfTriangles) anArray;
-  Prs3d_ToolTorus aTool (theMajorRad, theMinorRad, theAngle1, theAngle2, theAngle, theNbSlices, theNbStacks);
-  aTool.FillArray (anArray, theTrsf);
+  Prs3d_ToolTorus
+    aTool(theMajorRad, theMinorRad, theAngle1, theAngle2, theAngle, theNbSlices, theNbStacks);
+  aTool.FillArray(anArray, theTrsf);
   return anArray;
 }

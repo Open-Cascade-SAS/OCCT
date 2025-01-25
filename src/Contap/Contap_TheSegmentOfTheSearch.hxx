@@ -24,61 +24,47 @@ class Standard_DomainError;
 class Adaptor3d_HVertex;
 class Contap_ThePathPointOfTheSearch;
 
-class Contap_TheSegmentOfTheSearch 
+class Contap_TheSegmentOfTheSearch
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor.
   Standard_EXPORT Contap_TheSegmentOfTheSearch();
-  
+
   //! Defines the concerned arc.
-    void SetValue (const Handle(Adaptor2d_Curve2d)& A);
-  
+  void SetValue(const Handle(Adaptor2d_Curve2d)& A);
+
   //! Defines the first point or the last point,
   //! depending on the value of the boolean First.
-  Standard_EXPORT void SetLimitPoint (const Contap_ThePathPointOfTheSearch& V, const Standard_Boolean First);
-  
+  Standard_EXPORT void SetLimitPoint(const Contap_ThePathPointOfTheSearch& V,
+                                     const Standard_Boolean                First);
+
   //! Returns the geometric curve on the surface 's domain
   //! which is solution.
-    const Handle(Adaptor2d_Curve2d)& Curve() const;
-  
+  const Handle(Adaptor2d_Curve2d)& Curve() const;
+
   //! Returns True if there is a vertex (ThePathPoint) defining
   //! the lowest valid parameter on the arc.
-    Standard_Boolean HasFirstPoint() const;
-  
+  Standard_Boolean HasFirstPoint() const;
+
   //! Returns the first point.
-    const Contap_ThePathPointOfTheSearch& FirstPoint() const;
-  
+  const Contap_ThePathPointOfTheSearch& FirstPoint() const;
+
   //! Returns True if there is a vertex (ThePathPoint) defining
   //! the greatest valid parameter on the arc.
-    Standard_Boolean HasLastPoint() const;
-  
+  Standard_Boolean HasLastPoint() const;
+
   //! Returns the last point.
-    const Contap_ThePathPointOfTheSearch& LastPoint() const;
-
-
-
+  const Contap_ThePathPointOfTheSearch& LastPoint() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Handle(Adaptor2d_Curve2d) arc;
-  Standard_Boolean hasfp;
+  Handle(Adaptor2d_Curve2d)      arc;
+  Standard_Boolean               hasfp;
   Contap_ThePathPointOfTheSearch thefp;
-  Standard_Boolean haslp;
+  Standard_Boolean               haslp;
   Contap_ThePathPointOfTheSearch thelp;
-
-
 };
 
 #define TheVertex Handle(Adaptor3d_HVertex)
@@ -100,8 +86,5 @@ private:
 #undef ThePathPoint_hxx
 #undef IntStart_Segment
 #undef IntStart_Segment_hxx
-
-
-
 
 #endif // _Contap_TheSegmentOfTheSearch_HeaderFile

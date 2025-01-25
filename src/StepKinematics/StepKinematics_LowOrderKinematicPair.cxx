@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -18,31 +18,26 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_LowOrderKinematicPair, StepKinematics_KinematicPair)
 
-//=======================================================================
-//function : StepKinematics_LowOrderKinematicPair
-//purpose  :
-//=======================================================================
-StepKinematics_LowOrderKinematicPair::StepKinematics_LowOrderKinematicPair ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_LowOrderKinematicPair::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                                 const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Name,
-                                                 const Standard_Boolean hasItemDefinedTransformation_Description,
-                                                 const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Description,
-                                                 const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem1,
-                                                 const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem2,
-                                                 const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-                                                 const Standard_Boolean theTX,
-                                                 const Standard_Boolean theTY,
-                                                 const Standard_Boolean theTZ,
-                                                 const Standard_Boolean theRX,
-                                                 const Standard_Boolean theRY,
-                                                 const Standard_Boolean theRZ)
+StepKinematics_LowOrderKinematicPair::StepKinematics_LowOrderKinematicPair() {}
+
+//=================================================================================================
+
+void StepKinematics_LowOrderKinematicPair::Init(
+  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
+  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
+  const Standard_Boolean                       hasItemDefinedTransformation_Description,
+  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
+  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
+  const Standard_Boolean                       theTX,
+  const Standard_Boolean                       theTY,
+  const Standard_Boolean                       theTZ,
+  const Standard_Boolean                       theRX,
+  const Standard_Boolean                       theRY,
+  const Standard_Boolean                       theRZ)
 {
   StepKinematics_KinematicPair::Init(theRepresentationItem_Name,
                                      theItemDefinedTransformation_Name,
@@ -65,110 +60,86 @@ void StepKinematics_LowOrderKinematicPair::Init (const Handle(TCollection_HAscii
   myRZ = theRZ;
 }
 
-//=======================================================================
-//function : TX
-//purpose  :
-//=======================================================================
-Standard_Boolean StepKinematics_LowOrderKinematicPair::TX () const
+//=================================================================================================
+
+Standard_Boolean StepKinematics_LowOrderKinematicPair::TX() const
 {
   return myTX;
 }
 
-//=======================================================================
-//function : SetTX
-//purpose  :
-//=======================================================================
-void StepKinematics_LowOrderKinematicPair::SetTX (const Standard_Boolean theTX)
+//=================================================================================================
+
+void StepKinematics_LowOrderKinematicPair::SetTX(const Standard_Boolean theTX)
 {
   myTX = theTX;
 }
 
-//=======================================================================
-//function : TY
-//purpose  :
-//=======================================================================
-Standard_Boolean StepKinematics_LowOrderKinematicPair::TY () const
+//=================================================================================================
+
+Standard_Boolean StepKinematics_LowOrderKinematicPair::TY() const
 {
   return myTY;
 }
 
-//=======================================================================
-//function : SetTY
-//purpose  :
-//=======================================================================
-void StepKinematics_LowOrderKinematicPair::SetTY (const Standard_Boolean theTY)
+//=================================================================================================
+
+void StepKinematics_LowOrderKinematicPair::SetTY(const Standard_Boolean theTY)
 {
   myTY = theTY;
 }
 
-//=======================================================================
-//function : TZ
-//purpose  :
-//=======================================================================
-Standard_Boolean StepKinematics_LowOrderKinematicPair::TZ () const
+//=================================================================================================
+
+Standard_Boolean StepKinematics_LowOrderKinematicPair::TZ() const
 {
   return myTZ;
 }
 
-//=======================================================================
-//function : SetTZ
-//purpose  :
-//=======================================================================
-void StepKinematics_LowOrderKinematicPair::SetTZ (const Standard_Boolean theTZ)
+//=================================================================================================
+
+void StepKinematics_LowOrderKinematicPair::SetTZ(const Standard_Boolean theTZ)
 {
   myTZ = theTZ;
 }
 
-//=======================================================================
-//function : RX
-//purpose  :
-//=======================================================================
-Standard_Boolean StepKinematics_LowOrderKinematicPair::RX () const
+//=================================================================================================
+
+Standard_Boolean StepKinematics_LowOrderKinematicPair::RX() const
 {
   return myRX;
 }
 
-//=======================================================================
-//function : SetRX
-//purpose  :
-//=======================================================================
-void StepKinematics_LowOrderKinematicPair::SetRX (const Standard_Boolean theRX)
+//=================================================================================================
+
+void StepKinematics_LowOrderKinematicPair::SetRX(const Standard_Boolean theRX)
 {
   myRX = theRX;
 }
 
-//=======================================================================
-//function : RY
-//purpose  :
-//=======================================================================
-Standard_Boolean StepKinematics_LowOrderKinematicPair::RY () const
+//=================================================================================================
+
+Standard_Boolean StepKinematics_LowOrderKinematicPair::RY() const
 {
   return myRY;
 }
 
-//=======================================================================
-//function : SetRY
-//purpose  :
-//=======================================================================
-void StepKinematics_LowOrderKinematicPair::SetRY (const Standard_Boolean theRY)
+//=================================================================================================
+
+void StepKinematics_LowOrderKinematicPair::SetRY(const Standard_Boolean theRY)
 {
   myRY = theRY;
 }
 
-//=======================================================================
-//function : RZ
-//purpose  :
-//=======================================================================
-Standard_Boolean StepKinematics_LowOrderKinematicPair::RZ () const
+//=================================================================================================
+
+Standard_Boolean StepKinematics_LowOrderKinematicPair::RZ() const
 {
   return myRZ;
 }
 
-//=======================================================================
-//function : SetRZ
-//purpose  :
-//=======================================================================
-void StepKinematics_LowOrderKinematicPair::SetRZ (const Standard_Boolean theRZ)
+//=================================================================================================
+
+void StepKinematics_LowOrderKinematicPair::SetRZ(const Standard_Boolean theRZ)
 {
   myRZ = theRZ;
 }

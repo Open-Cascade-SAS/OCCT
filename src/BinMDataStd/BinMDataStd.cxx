@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMDataStd.hxx>
 #include <BinMDataStd_AsciiStringDriver.hxx>
 #include <BinMDataStd_BooleanArrayDriver.hxx>
@@ -40,34 +39,31 @@
 #include <BinMDF_ADriverTable.hxx>
 #include <Message_Messenger.hxx>
 
-//=======================================================================
-//function : AddDrivers
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void BinMDataStd::AddDrivers (const Handle(BinMDF_ADriverTable)& theDriverTable,
-                              const Handle(Message_Messenger)&   theMsgDriver)
+void BinMDataStd::AddDrivers(const Handle(BinMDF_ADriverTable)& theDriverTable,
+                             const Handle(Message_Messenger)&   theMsgDriver)
 {
-  theDriverTable->AddDriver (new BinMDataStd_ExpressionDriver       (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_IntegerArrayDriver     (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_IntegerDriver          (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_GenericExtStringDriver (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_RealArrayDriver        (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_RealDriver             (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_TreeNodeDriver         (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_UAttributeDriver       (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_VariableDriver         (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_ExtStringArrayDriver   (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_GenericEmptyDriver     (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_IntegerListDriver      (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_RealListDriver         (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_ExtStringListDriver    (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_BooleanListDriver      (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_ReferenceListDriver    (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_BooleanArrayDriver     (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_ReferenceArrayDriver   (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_ByteArrayDriver        (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_NamedDataDriver        (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_AsciiStringDriver      (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataStd_IntPackedMapDriver     (theMsgDriver) );
+  theDriverTable->AddDriver(new BinMDataStd_ExpressionDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_IntegerArrayDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_IntegerDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_GenericExtStringDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_RealArrayDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_RealDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_TreeNodeDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_UAttributeDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_VariableDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_ExtStringArrayDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_GenericEmptyDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_IntegerListDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_RealListDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_ExtStringListDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_BooleanListDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_ReferenceListDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_BooleanArrayDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_ReferenceArrayDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_ByteArrayDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_NamedDataDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_AsciiStringDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataStd_IntPackedMapDriver(theMsgDriver));
 }

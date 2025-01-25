@@ -48,93 +48,63 @@ class TopoDS_Shape;
 //! Additionally to the errors of the base class the algorithm returns
 //! the following Errors:<br>
 //! - *BOPAlgo_AlertBOPNotSet* - in case the type of Boolean Operation is not set.<br>
-class BRepAlgoAPI_BooleanOperation  : public BRepAlgoAPI_BuilderAlgo
+class BRepAlgoAPI_BooleanOperation : public BRepAlgoAPI_BuilderAlgo
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
 public: //! @name Constructors
-
   //! Empty constructor
   Standard_EXPORT BRepAlgoAPI_BooleanOperation();
 
   //! Constructor with precomputed intersections of arguments.
   Standard_EXPORT BRepAlgoAPI_BooleanOperation(const BOPAlgo_PaveFiller& thePF);
 
-
 public: //! @name Setting/getting arguments
-
   //! Returns the first argument involved in this Boolean operation.
   //! Obsolete
-  const TopoDS_Shape& Shape1() const
-  {
-    return myArguments.First();
-  }
+  const TopoDS_Shape& Shape1() const { return myArguments.First(); }
 
   //! Returns the second argument involved in this Boolean operation.
   //! Obsolete
-  const TopoDS_Shape& Shape2() const
-  {
-    return myTools.First();
-  }
+  const TopoDS_Shape& Shape2() const { return myTools.First(); }
 
   //! Sets the Tool arguments
-  void SetTools(const TopTools_ListOfShape& theLS)
-  {
-    myTools = theLS;
-  }
+  void SetTools(const TopTools_ListOfShape& theLS) { myTools = theLS; }
 
   //! Returns the Tools arguments
-  const TopTools_ListOfShape& Tools() const
-  {
-    return myTools;
-  }
-
+  const TopTools_ListOfShape& Tools() const { return myTools; }
 
 public: //! @name Setting/Getting the type of Boolean operation
-
   //! Sets the type of Boolean operation
-  void SetOperation(const BOPAlgo_Operation theBOP)
-  {
-    myOperation = theBOP;
-  }
+  void SetOperation(const BOPAlgo_Operation theBOP) { myOperation = theBOP; }
 
   //! Returns the type of Boolean Operation
-  BOPAlgo_Operation Operation() const
-  {
-    return myOperation;
-  }
-
+  BOPAlgo_Operation Operation() const { return myOperation; }
 
 public: //! @name Performing the operation
-
   //! Performs the Boolean operation.
-  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
-
+  Standard_EXPORT virtual void Build(
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
 protected: //! @name Constructors
-
   //! Constructor to perform Boolean operation on only two arguments.
   //! Obsolete
-  Standard_EXPORT BRepAlgoAPI_BooleanOperation(const TopoDS_Shape& theS1,
-                                               const TopoDS_Shape& theS2,
+  Standard_EXPORT BRepAlgoAPI_BooleanOperation(const TopoDS_Shape&     theS1,
+                                               const TopoDS_Shape&     theS2,
                                                const BOPAlgo_Operation theOperation);
 
   //! Constructor to perform Boolean operation on only two arguments
   //! with precomputed intersection results.
   //! Obsolete
-  Standard_EXPORT BRepAlgoAPI_BooleanOperation(const TopoDS_Shape& theS1,
-                                               const TopoDS_Shape& theS2,
+  Standard_EXPORT BRepAlgoAPI_BooleanOperation(const TopoDS_Shape&       theS1,
+                                               const TopoDS_Shape&       theS2,
                                                const BOPAlgo_PaveFiller& thePF,
-                                               const BOPAlgo_Operation theOperation);
+                                               const BOPAlgo_Operation   theOperation);
 
-
-protected: //! @name Fields
-
-  TopTools_ListOfShape myTools;  //!< Tool arguments of operation
-  BOPAlgo_Operation myOperation; //!< Type of Boolean Operation
-
+protected:                          //! @name Fields
+  TopTools_ListOfShape myTools;     //!< Tool arguments of operation
+  BOPAlgo_Operation    myOperation; //!< Type of Boolean Operation
 };
 
 #endif // _BRepAlgoAPI_BooleanOperation_HeaderFile

@@ -25,42 +25,25 @@ class Standard_Transient;
 class Interface_InterfaceModel;
 class TCollection_AsciiString;
 
-
 class STEPSelections_SelectDerived;
 DEFINE_STANDARD_HANDLE(STEPSelections_SelectDerived, StepSelect_StepType)
-
 
 class STEPSelections_SelectDerived : public StepSelect_StepType
 {
 
 public:
-
-  
   Standard_EXPORT STEPSelections_SelectDerived();
-  
-  Standard_EXPORT virtual Standard_Boolean Matches (const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model, const TCollection_AsciiString& text, const Standard_Boolean exact) const Standard_OVERRIDE;
 
+  Standard_EXPORT virtual Standard_Boolean Matches(const Handle(Standard_Transient)&       ent,
+                                                   const Handle(Interface_InterfaceModel)& model,
+                                                   const TCollection_AsciiString&          text,
+                                                   const Standard_Boolean exact) const
+    Standard_OVERRIDE;
 
-
-
-  DEFINE_STANDARD_RTTIEXT(STEPSelections_SelectDerived,StepSelect_StepType)
+  DEFINE_STANDARD_RTTIEXT(STEPSelections_SelectDerived, StepSelect_StepType)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _STEPSelections_SelectDerived_HeaderFile

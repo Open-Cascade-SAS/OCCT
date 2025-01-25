@@ -13,21 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPAlgo_CheckResult.hxx>
 #include <TopoDS_Shape.hxx>
 
-//=======================================================================
-// function:  BOPAlgo_CheckResult()
-// purpose: 
-//=======================================================================
-BOPAlgo_CheckResult::BOPAlgo_CheckResult() 
-: 
-  myStatus(BOPAlgo_CheckUnknown),
-  myMaxDist1(0.),
-  myMaxDist2(0.),
-  myMaxPar1(0.),
-  myMaxPar2(0.)
+//=================================================================================================
+
+BOPAlgo_CheckResult::BOPAlgo_CheckResult()
+    : myStatus(BOPAlgo_CheckUnknown),
+      myMaxDist1(0.),
+      myMaxDist2(0.),
+      myMaxPar1(0.),
+      myMaxPar2(0.)
 {
 }
 
@@ -56,7 +52,7 @@ const TopoDS_Shape& BOPAlgo_CheckResult::GetShape1() const
   return myShape1;
 }
 
-const TopoDS_Shape & BOPAlgo_CheckResult::GetShape2() const
+const TopoDS_Shape& BOPAlgo_CheckResult::GetShape2() const
 {
   return myShape2;
 }

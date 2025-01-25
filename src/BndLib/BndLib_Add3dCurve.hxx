@@ -24,17 +24,14 @@
 class Adaptor3d_Curve;
 class Bnd_Box;
 
-
 //! Computes the bounding box for a curve in 3d.
 //! Functions to add a 3D curve to a bounding box.
 //! The 3D curve is defined from a Geom curve.
-class BndLib_Add3dCurve 
+class BndLib_Add3dCurve
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Adds to the bounding box B the curve C
   //! B is then enlarged by the tolerance value Tol.
   //! Note: depending on the type of curve, one of the following
@@ -61,8 +58,8 @@ public:
   //! -   a Geom_Hyperbola,
   //! and P1 and P2 are either two negative infinite real
   //! numbers, or two positive infinite real numbers.
-  Standard_EXPORT static void Add (const Adaptor3d_Curve& C, const Standard_Real Tol, Bnd_Box& B);
-  
+  Standard_EXPORT static void Add(const Adaptor3d_Curve& C, const Standard_Real Tol, Bnd_Box& B);
+
   //! Adds to the bounding box B the curve C
   //! the arc of the curve C limited by the two parameter values P1 and P2.
   //! Note: depending on the type of curve, one of the following
@@ -89,43 +86,35 @@ public:
   //! -   a Geom_Hyperbola,
   //! and P1 and P2 are either two negative infinite real
   //! numbers, or two positive infinite real numbers.
-  Standard_EXPORT static void Add (const Adaptor3d_Curve& C, const Standard_Real U1, const Standard_Real U2, const Standard_Real Tol, Bnd_Box& B);
+  Standard_EXPORT static void Add(const Adaptor3d_Curve& C,
+                                  const Standard_Real    U1,
+                                  const Standard_Real    U2,
+                                  const Standard_Real    Tol,
+                                  Bnd_Box&               B);
 
   //! Adds to the bounding box B the curve C
   //! These methods use more precise algorithms for building bnd box
   //! then methods Add(...)
-  Standard_EXPORT static void AddOptimal (const Adaptor3d_Curve& C, const Standard_Real Tol, Bnd_Box& B);
-  Standard_EXPORT static void AddOptimal (const Adaptor3d_Curve& C, 
-                                          const Standard_Real U1, const Standard_Real U2, 
-                                          const Standard_Real Tol, Bnd_Box& B);
+  Standard_EXPORT static void AddOptimal(const Adaptor3d_Curve& C,
+                                         const Standard_Real    Tol,
+                                         Bnd_Box&               B);
+  Standard_EXPORT static void AddOptimal(const Adaptor3d_Curve& C,
+                                         const Standard_Real    U1,
+                                         const Standard_Real    U2,
+                                         const Standard_Real    Tol,
+                                         Bnd_Box&               B);
   //! Adds to the bounding box B the curve C
   //! using numerical minimization algorithms
   //! This method is used in AddOptimal for not analytical curves.
   //! if Tol < Precision::Confusion(), Precision:;Confusion is used as computation tolerance
-  Standard_EXPORT static void AddGenCurv(const Adaptor3d_Curve& C, 
-                                         const Standard_Real UMin,
-                                         const Standard_Real UMax,
-                                         const Standard_Real Tol,
-                                         Bnd_Box& B);
+  Standard_EXPORT static void AddGenCurv(const Adaptor3d_Curve& C,
+                                         const Standard_Real    UMin,
+                                         const Standard_Real    UMax,
+                                         const Standard_Real    Tol,
+                                         Bnd_Box&               B);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BndLib_Add3dCurve_HeaderFile

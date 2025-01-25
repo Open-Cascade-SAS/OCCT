@@ -15,16 +15,11 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Surface
-//purpose  : 
+// function : Surface
+// purpose  :
 //=======================================================================
 
-inline const Handle(Geom_BezierSurface)&  GeomFill_BezierCurves::Surface() 
-     const 
+inline const Handle(Geom_BezierSurface)& GeomFill_BezierCurves::Surface() const
 {
   return mySurface;
 }
-
-
-
-

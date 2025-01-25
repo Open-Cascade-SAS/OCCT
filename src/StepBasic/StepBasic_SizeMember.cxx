@@ -11,19 +11,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_SizeMember.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SizeMember,StepData_SelectReal)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SizeMember, StepData_SelectReal)
 
-StepBasic_SizeMember::StepBasic_SizeMember  ()    {  }
+StepBasic_SizeMember::StepBasic_SizeMember() {}
 
-    Standard_Boolean  StepBasic_SizeMember::HasName () const
-      {  return Standard_True;  }
+Standard_Boolean StepBasic_SizeMember::HasName() const
+{
+  return Standard_True;
+}
 
-    Standard_CString  StepBasic_SizeMember::Name () const
-      {  return "POSITIVE_LENGTH_MEASURE";  }
+Standard_CString StepBasic_SizeMember::Name() const
+{
+  return "POSITIVE_LENGTH_MEASURE";
+}
 
-    Standard_Boolean  StepBasic_SizeMember::SetName (const Standard_CString /*name*/)
-      {  return Standard_True;  }
+Standard_Boolean StepBasic_SizeMember::SetName(const Standard_CString /*name*/)
+{
+  return Standard_True;
+}

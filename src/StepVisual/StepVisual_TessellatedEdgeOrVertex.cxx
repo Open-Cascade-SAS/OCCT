@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -18,44 +18,34 @@
 #include <StepVisual_TessellatedEdge.hxx>
 #include <StepVisual_TessellatedVertex.hxx>
 
-//=======================================================================
-//function : StepVisual_TessellatedEdgeOrVertex
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepVisual_TessellatedEdgeOrVertex::StepVisual_TessellatedEdgeOrVertex ()
+StepVisual_TessellatedEdgeOrVertex::StepVisual_TessellatedEdgeOrVertex() {}
+
+//=================================================================================================
+
+Standard_Integer StepVisual_TessellatedEdgeOrVertex::CaseNum(
+  const Handle(Standard_Transient)& ent) const
 {
-}
-
-//=======================================================================
-//function : CaseNum
-//purpose  : 
-//=======================================================================
-
-Standard_Integer StepVisual_TessellatedEdgeOrVertex::CaseNum (const Handle(Standard_Transient)& ent) const
-{
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepVisual_TessellatedEdge))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepVisual_TessellatedVertex))) return 2;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepVisual_TessellatedEdge)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepVisual_TessellatedVertex)))
+    return 2;
   return 0;
 }
 
-//=======================================================================
-//function : TessellatedEdge
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepVisual_TessellatedEdge) StepVisual_TessellatedEdgeOrVertex::TessellatedEdge () const
+Handle(StepVisual_TessellatedEdge) StepVisual_TessellatedEdgeOrVertex::TessellatedEdge() const
 {
   return Handle(StepVisual_TessellatedEdge)::DownCast(Value());
 }
 
-//=======================================================================
-//function : TessellatedVertex
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepVisual_TessellatedVertex) StepVisual_TessellatedEdgeOrVertex::TessellatedVertex () const
+Handle(StepVisual_TessellatedVertex) StepVisual_TessellatedEdgeOrVertex::TessellatedVertex() const
 {
   return Handle(StepVisual_TessellatedVertex)::DownCast(Value());
 }

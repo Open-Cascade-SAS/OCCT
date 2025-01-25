@@ -15,36 +15,40 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : GetSDR
-//purpose  : 
+// function : GetSDR
+// purpose  :
 //=======================================================================
 
-inline Handle(StepShape_ShapeDefinitionRepresentation) STEPSelections_AssemblyComponent::GetSDR() const
+inline Handle(StepShape_ShapeDefinitionRepresentation) STEPSelections_AssemblyComponent::GetSDR()
+  const
 {
   return mySDR;
 }
 
 //=======================================================================
-//function : GetList
-//purpose  : 
+// function : GetList
+// purpose  :
 //=======================================================================
 
-inline Handle(STEPSelections_HSequenceOfAssemblyLink) STEPSelections_AssemblyComponent::GetList() const
+inline Handle(STEPSelections_HSequenceOfAssemblyLink) STEPSelections_AssemblyComponent::GetList()
+  const
 {
   return myList;
 }
 
 //=======================================================================
-//function : SetSDR
-//purpose  : 
+// function : SetSDR
+// purpose  :
 //=======================================================================
 
-inline void STEPSelections_AssemblyComponent::SetSDR(const Handle(StepShape_ShapeDefinitionRepresentation)& sdr)
+inline void STEPSelections_AssemblyComponent::SetSDR(
+  const Handle(StepShape_ShapeDefinitionRepresentation)& sdr)
 {
   mySDR = sdr;
 }
 
-inline void STEPSelections_AssemblyComponent::SetList(const Handle(STEPSelections_HSequenceOfAssemblyLink)& list)
+inline void STEPSelections_AssemblyComponent::SetList(
+  const Handle(STEPSelections_HSequenceOfAssemblyLink)& list)
 {
   myList = list;
 }

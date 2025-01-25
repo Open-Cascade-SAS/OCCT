@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef IntTools_MapIteratorOfMapOfCurveSample_HeaderFile
 #define IntTools_MapIteratorOfMapOfCurveSample_HeaderFile
 

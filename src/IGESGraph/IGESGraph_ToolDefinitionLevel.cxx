@@ -31,14 +31,13 @@
 #include <Message_Messenger.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 
-IGESGraph_ToolDefinitionLevel::IGESGraph_ToolDefinitionLevel ()    {  }
+IGESGraph_ToolDefinitionLevel::IGESGraph_ToolDefinitionLevel() {}
 
-
-void IGESGraph_ToolDefinitionLevel::ReadOwnParams
-  (const Handle(IGESGraph_DefinitionLevel)& ent,
-   const Handle(IGESData_IGESReaderData)& /*IR*/, IGESData_ParamReader& PR) const
-{ 
-  //Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
+void IGESGraph_ToolDefinitionLevel::ReadOwnParams(const Handle(IGESGraph_DefinitionLevel)& ent,
+                                                  const Handle(IGESData_IGESReaderData)& /*IR*/,
+                                                  IGESData_ParamReader& PR) const
+{
+  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
   Standard_Integer nbval;
 
   Handle(TColStd_HArray1OfInteger) levelNumbers;
@@ -46,53 +45,54 @@ void IGESGraph_ToolDefinitionLevel::ReadOwnParams
   // Reading nbval(No. of Property Values)
   Standard_Boolean st = PR.ReadInteger(PR.Current(), "No. of Property Values", nbval);
   if (st && nbval > 0)
-    {
-      // Reading levelNumbers(HArray1OfInteger)
-//      levelNumbers = new TColStd_HArray1OfInteger(1, nbval);   done by :
-// clang-format off
+  {
+    // Reading levelNumbers(HArray1OfInteger)
+    //      levelNumbers = new TColStd_HArray1OfInteger(1, nbval);   done by :
+    // clang-format off
       PR.ReadInts(PR.CurrentList(nbval), "array levelNumbers", levelNumbers, 1); //szv#4:S4163:12Mar99 `st=` not needed
-// clang-format on
-    }
-  else  PR.AddFail("No. of Property Values : Not Positive");
+    // clang-format on
+  }
+  else
+    PR.AddFail("No. of Property Values : Not Positive");
 
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(levelNumbers);
 }
 
-void IGESGraph_ToolDefinitionLevel::WriteOwnParams
-  (const Handle(IGESGraph_DefinitionLevel)& ent, IGESData_IGESWriter& IW)  const
-{ 
-  Standard_Integer Up  = ent->NbPropertyValues();
-  IW.Send( Up );
-  for ( Standard_Integer i = 1; i <= Up; i++)
-    IW.Send( ent->LevelNumber(i) );
+void IGESGraph_ToolDefinitionLevel::WriteOwnParams(const Handle(IGESGraph_DefinitionLevel)& ent,
+                                                   IGESData_IGESWriter& IW) const
+{
+  Standard_Integer Up = ent->NbPropertyValues();
+  IW.Send(Up);
+  for (Standard_Integer i = 1; i <= Up; i++)
+    IW.Send(ent->LevelNumber(i));
 }
 
-void  IGESGraph_ToolDefinitionLevel::OwnShared
-  (const Handle(IGESGraph_DefinitionLevel)& /*ent*/, Interface_EntityIterator& /*iter*/) const
+void IGESGraph_ToolDefinitionLevel::OwnShared(const Handle(IGESGraph_DefinitionLevel)& /*ent*/,
+                                              Interface_EntityIterator& /*iter*/) const
 {
 }
 
-void IGESGraph_ToolDefinitionLevel::OwnCopy
-  (const Handle(IGESGraph_DefinitionLevel)& another,
-   const Handle(IGESGraph_DefinitionLevel)& ent, Interface_CopyTool& /*TC*/) const
-{ 
-  Standard_Integer nbval;
-  Handle(TColStd_HArray1OfInteger) levelNumbers; 
- 
+void IGESGraph_ToolDefinitionLevel::OwnCopy(const Handle(IGESGraph_DefinitionLevel)& another,
+                                            const Handle(IGESGraph_DefinitionLevel)& ent,
+                                            Interface_CopyTool& /*TC*/) const
+{
+  Standard_Integer                 nbval;
+  Handle(TColStd_HArray1OfInteger) levelNumbers;
+
   nbval = another->NbPropertyValues();
- 
+
   levelNumbers = new TColStd_HArray1OfInteger(1, nbval);
   for (Standard_Integer i = 1; i <= nbval; i++)
-    levelNumbers->SetValue( i, another->LevelNumber(i) );
+    levelNumbers->SetValue(i, another->LevelNumber(i));
 
   ent->Init(levelNumbers);
 }
 
-IGESData_DirChecker IGESGraph_ToolDefinitionLevel::DirChecker
-  (const Handle(IGESGraph_DefinitionLevel)& /*ent*/)  const
-{ 
-  IGESData_DirChecker DC (406, 1);
+IGESData_DirChecker IGESGraph_ToolDefinitionLevel::DirChecker(
+  const Handle(IGESGraph_DefinitionLevel)& /*ent*/) const
+{
+  IGESData_DirChecker DC(406, 1);
   DC.Structure(IGESData_DefVoid);
   DC.LineFont(IGESData_DefVoid);
   DC.LineWeight(IGESData_DefVoid);
@@ -103,19 +103,19 @@ IGESData_DirChecker IGESGraph_ToolDefinitionLevel::DirChecker
   return DC;
 }
 
-void IGESGraph_ToolDefinitionLevel::OwnCheck
-  (const Handle(IGESGraph_DefinitionLevel)& /*ent*/,
-   const Interface_ShareTool& , Handle(Interface_Check)& /*ach*/)  const
+void IGESGraph_ToolDefinitionLevel::OwnCheck(const Handle(IGESGraph_DefinitionLevel)& /*ent*/,
+                                             const Interface_ShareTool&,
+                                             Handle(Interface_Check)& /*ach*/) const
 {
 }
 
-void IGESGraph_ToolDefinitionLevel::OwnDump
-  (const Handle(IGESGraph_DefinitionLevel)& ent, const IGESData_IGESDumper& /*dumper*/,
-   Standard_OStream& S, const Standard_Integer level)  const
+void IGESGraph_ToolDefinitionLevel::OwnDump(const Handle(IGESGraph_DefinitionLevel)& ent,
+                                            const IGESData_IGESDumper& /*dumper*/,
+                                            Standard_OStream&      S,
+                                            const Standard_Integer level) const
 {
   S << "IGESGraph_DefinitionLevel\n"
     << "Level Numbers : ";
-  IGESData_DumpVals(S,level,1, ent->NbPropertyValues(),ent->LevelNumber);
+  IGESData_DumpVals(S, level, 1, ent->NbPropertyValues(), ent->LevelNumber);
   S << std::endl;
 }
-

@@ -20,56 +20,51 @@
 #include <TDocStd_ApplicationDelta.hxx>
 #include <TDocStd_Document.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDocStd_MultiTransactionManager,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(TDocStd_MultiTransactionManager, Standard_Transient)
 
-//=======================================================================
-//function : TDocStd_MultiTransactionManager
-//purpose  : Constructor
-//=======================================================================
-TDocStd_MultiTransactionManager::TDocStd_MultiTransactionManager ()
+//=================================================================================================
+
+TDocStd_MultiTransactionManager::TDocStd_MultiTransactionManager()
 {
-  myUndoLimit = 0;
-  myOpenTransaction = Standard_False;
-  myIsNestedTransactionMode = Standard_False;
+  myUndoLimit                   = 0;
+  myOpenTransaction             = Standard_False;
+  myIsNestedTransactionMode     = Standard_False;
   myOnlyTransactionModification = Standard_False;
 }
 
-//=======================================================================
-//function : SetUndoLimit
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TDocStd_MultiTransactionManager::SetUndoLimit(const Standard_Integer theLimit)
 {
   myUndoLimit = theLimit;
 
-  CommitCommand ();
-  
+  CommitCommand();
+
   Standard_Integer n = myUndos.Length() - myUndoLimit;
-  while (n > 0) {
+  while (n > 0)
+  {
     RemoveLastUndo();
     --n;
   }
 
   Standard_Integer i;
-  for(i = myDocuments.Length(); i > 0; i--)
+  for (i = myDocuments.Length(); i > 0; i--)
     myDocuments.Value(i)->SetUndoLimit(myUndoLimit);
-
 }
 
-//=======================================================================
-//function : Undo
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TDocStd_MultiTransactionManager::Undo()
 {
-  if (myUndos.IsEmpty()) return;
+  if (myUndos.IsEmpty())
+    return;
   const TDocStd_SequenceOfDocument& docs = myUndos.First()->GetDocuments();
-  Standard_Integer i;
-  for (i = docs.Length(); i > 0; i--) {
+  Standard_Integer                  i;
+  for (i = docs.Length(); i > 0; i--)
+  {
     Handle(TDocStd_Document) doc = docs.Value(i);
-    if (doc.IsNull() || doc->GetAvailableUndos() == 0) continue;
+    if (doc.IsNull() || doc->GetAvailableUndos() == 0)
+      continue;
     doc->Undo();
   }
   myRedos.Prepend(myUndos.First());
@@ -77,18 +72,19 @@ void TDocStd_MultiTransactionManager::Undo()
   myOpenTransaction = Standard_False;
 }
 
-//=======================================================================
-//function : Redo
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TDocStd_MultiTransactionManager::Redo() {
-  if (myRedos.IsEmpty()) return;
+void TDocStd_MultiTransactionManager::Redo()
+{
+  if (myRedos.IsEmpty())
+    return;
   const TDocStd_SequenceOfDocument& docs = myRedos.First()->GetDocuments();
-  Standard_Integer i;
-  for (i = docs.Length(); i > 0; i--) {
+  Standard_Integer                  i;
+  for (i = docs.Length(); i > 0; i--)
+  {
     Handle(TDocStd_Document) doc = docs.Value(i);
-    if (doc.IsNull() || doc->GetAvailableRedos() == 0) continue;
+    if (doc.IsNull() || doc->GetAvailableRedos() == 0)
+      continue;
     doc->Redo();
   }
   myUndos.Prepend(myRedos.First());
@@ -96,67 +92,68 @@ void TDocStd_MultiTransactionManager::Redo() {
   myOpenTransaction = Standard_False;
 }
 
-//=======================================================================
-//function : OpenCommand
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TDocStd_MultiTransactionManager::OpenCommand() {
-  if (myOpenTransaction) {
+void TDocStd_MultiTransactionManager::OpenCommand()
+{
+  if (myOpenTransaction)
+  {
 #ifdef OCCT_DEBUG
     std::cout << "TDocStd_MultiTransactionManager::OpenCommand(): "
-            "Can't start new application transaction while a "
-            "previous one is not committed or aborted" << std::endl;
+                 "Can't start new application transaction while a "
+                 "previous one is not committed or aborted"
+              << std::endl;
 #endif
     throw Standard_Failure("Can't start new application transaction"
-                            "while a previous one is not committed or aborted");
+                           "while a previous one is not committed or aborted");
   }
   myOpenTransaction = Standard_True;
   Standard_Integer i;
-  for(i = myDocuments.Length(); i > 0; i--) {
-    while(myDocuments.Value(i)->HasOpenCommand())
+  for (i = myDocuments.Length(); i > 0; i--)
+  {
+    while (myDocuments.Value(i)->HasOpenCommand())
       myDocuments.Value(i)->AbortCommand();
     myDocuments.Value(i)->OpenCommand();
   }
 }
 
-//=======================================================================
-//function : AbortCommand
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TDocStd_MultiTransactionManager::AbortCommand() {
+void TDocStd_MultiTransactionManager::AbortCommand()
+{
   myOpenTransaction = Standard_False;
   Standard_Integer i;
-  for(i = myDocuments.Length(); i > 0; i--) {
-    while(myDocuments.Value(i)->HasOpenCommand())
+  for (i = myDocuments.Length(); i > 0; i--)
+  {
+    while (myDocuments.Value(i)->HasOpenCommand())
       myDocuments.Value(i)->AbortCommand();
   }
 }
 
-//=======================================================================
-//function : CommitCommand
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean TDocStd_MultiTransactionManager::CommitCommand()
 {
-  Handle(TDocStd_ApplicationDelta) aDelta = new TDocStd_ApplicationDelta;
-  Standard_Boolean isCommited = Standard_False;
-  Standard_Integer i;
-  for(i = myDocuments.Length(); i > 0; i--) {
+  Handle(TDocStd_ApplicationDelta) aDelta     = new TDocStd_ApplicationDelta;
+  Standard_Boolean                 isCommited = Standard_False;
+  Standard_Integer                 i;
+  for (i = myDocuments.Length(); i > 0; i--)
+  {
     isCommited = Standard_False;
-    while(myDocuments.Value(i)->HasOpenCommand())
+    while (myDocuments.Value(i)->HasOpenCommand())
       if (myDocuments.Value(i)->CommitCommand())
         isCommited = Standard_True;
-    if(isCommited) {
+    if (isCommited)
+    {
       aDelta->GetDocuments().Append(myDocuments.Value(i));
     }
   }
-  
-  if (aDelta->GetDocuments().Length()) {
+
+  if (aDelta->GetDocuments().Length())
+  {
     myUndos.Prepend(aDelta);
-    if (myUndos.Length() > myUndoLimit) {
+    if (myUndos.Length() > myUndoLimit)
+    {
       RemoveLastUndo();
     }
     myRedos.Clear();
@@ -166,13 +163,10 @@ Standard_Boolean TDocStd_MultiTransactionManager::CommitCommand()
   return isCommited;
 }
 
-//=======================================================================
-//function : CommitCommand
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean TDocStd_MultiTransactionManager::CommitCommand
-                        (const TCollection_ExtendedString& theName)
+Standard_Boolean TDocStd_MultiTransactionManager::CommitCommand(
+  const TCollection_ExtendedString& theName)
 {
   Standard_Boolean isCommited = CommitCommand();
   if (isCommited && myUndos.Length())
@@ -180,29 +174,28 @@ Standard_Boolean TDocStd_MultiTransactionManager::CommitCommand
   return isCommited;
 }
 
-//=======================================================================
-//function : DumpTransaction
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TDocStd_MultiTransactionManager::DumpTransaction(Standard_OStream& anOS) const
 {
   Standard_Integer i;
-  if(myDocuments.Length() == 0)
+  if (myDocuments.Length() == 0)
     anOS << "Manager is empty" << std::endl;
-  else {
-    if(myDocuments.Length() == 1)
+  else
+  {
+    if (myDocuments.Length() == 1)
       anOS << "There is one document ( ";
     else
       anOS << "There are " << myDocuments.Length() << " documents ( ";
-    for(i = 1; i <= myDocuments.Length(); i++) {
-      Handle(Standard_Transient) aDoc (myDocuments.Value(i));
+    for (i = 1; i <= myDocuments.Length(); i++)
+    {
+      Handle(Standard_Transient) aDoc(myDocuments.Value(i));
       anOS << "\"" << aDoc.get();
       anOS << "\" ";
     }
-    anOS << ") in the manager "  << std::endl;
+    anOS << ") in the manager " << std::endl;
 
-    if(myIsNestedTransactionMode)
+    if (myIsNestedTransactionMode)
       anOS << "Nested transaction mode is on" << std::endl;
     else
       anOS << "Nested transaction mode is off" << std::endl;
@@ -210,146 +203,144 @@ void TDocStd_MultiTransactionManager::DumpTransaction(Standard_OStream& anOS) co
     anOS << " " << std::endl;
   }
 
-  for (i = myUndos.Length(); i > 0; i--) {
+  for (i = myUndos.Length(); i > 0; i--)
+  {
     Handle(TDocStd_ApplicationDelta) delta = myUndos.Value(i);
-    anOS<<" Undo: ";
+    anOS << " Undo: ";
     delta->Dump(anOS);
-    if (i == 1) {
-      anOS<<"  < Last action"<<std::endl;
-    } else {
-      anOS<<std::endl;
+    if (i == 1)
+    {
+      anOS << "  < Last action" << std::endl;
+    }
+    else
+    {
+      anOS << std::endl;
     }
   }
-  for (i = 1; i <= myRedos.Length(); i++) {
+  for (i = 1; i <= myRedos.Length(); i++)
+  {
     Handle(TDocStd_ApplicationDelta) delta = myRedos.Value(i);
-    anOS<<" Redo: ";
+    anOS << " Redo: ";
     delta->Dump(anOS);
-    anOS<<std::endl;
+    anOS << std::endl;
   }
 }
 
-//=======================================================================
-//function : RemoveLastUndo
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TDocStd_MultiTransactionManager::RemoveLastUndo()
 {
-  if(myUndos.Length() == 0) return;
+  if (myUndos.Length() == 0)
+    return;
   const TDocStd_SequenceOfDocument& docs = myUndos.Last()->GetDocuments();
-  Standard_Integer i;
-  for (i = 1; i <= docs.Length(); i++) {
+  Standard_Integer                  i;
+  for (i = 1; i <= docs.Length(); i++)
+  {
     docs.Value(i)->RemoveFirstUndo();
   }
   myUndos.Remove(myUndos.Length());
 }
 
-//=======================================================================
-//function : AddDocument
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TDocStd_MultiTransactionManager::AddDocument
-  (const Handle(TDocStd_Document)& theDoc)
+void TDocStd_MultiTransactionManager::AddDocument(const Handle(TDocStd_Document)& theDoc)
 {
   Standard_Integer i;
-  for(i = myDocuments.Length(); i > 0; i--)
-    if(myDocuments.Value(i) == theDoc)
+  for (i = myDocuments.Length(); i > 0; i--)
+    if (myDocuments.Value(i) == theDoc)
       return; // the document is already added to the list
 
-  if(theDoc->IsNestedTransactionMode() !=
-     myIsNestedTransactionMode)
+  if (theDoc->IsNestedTransactionMode() != myIsNestedTransactionMode)
     theDoc->SetNestedTransactionMode(myIsNestedTransactionMode);
 
   theDoc->SetModificationMode(myOnlyTransactionModification);
-  
+
   myDocuments.Append(theDoc);
   theDoc->SetUndoLimit(myUndoLimit);
-  if(myOpenTransaction) {
-    if(!theDoc->HasOpenCommand())
+  if (myOpenTransaction)
+  {
+    if (!theDoc->HasOpenCommand())
       theDoc->OpenCommand();
   }
-  else {
-    if(theDoc->HasOpenCommand())
+  else
+  {
+    if (theDoc->HasOpenCommand())
       theDoc->CommitCommand();
   }
   theDoc->ClearUndos();
   theDoc->ClearRedos();
 }
 
-//=======================================================================
-//function : RemoveDocument
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TDocStd_MultiTransactionManager::RemoveDocument
-  (const Handle(TDocStd_Document)& theDoc)
+void TDocStd_MultiTransactionManager::RemoveDocument(const Handle(TDocStd_Document)& theDoc)
 {
   Standard_Integer i;
-  for(i = myDocuments.Length(); i > 0; i--) {
-    if(myDocuments.Value(i) == theDoc)
+  for (i = myDocuments.Length(); i > 0; i--)
+  {
+    if (myDocuments.Value(i) == theDoc)
       myDocuments.Remove(i);
   }
-  for (i = myUndos.Length(); i > 0; i--) {
+  for (i = myUndos.Length(); i > 0; i--)
+  {
     Handle(TDocStd_ApplicationDelta) delta = myUndos.Value(i);
-    TDocStd_SequenceOfDocument& docs = delta->GetDocuments();
-    for(Standard_Integer j = docs.Length(); j > 0; j--) {
-      if(docs.Value(j) == theDoc) {
+    TDocStd_SequenceOfDocument&      docs  = delta->GetDocuments();
+    for (Standard_Integer j = docs.Length(); j > 0; j--)
+    {
+      if (docs.Value(j) == theDoc)
+      {
         docs.Remove(j);
-        if(docs.Length() == 0)
+        if (docs.Length() == 0)
           myUndos.Remove(i);
       }
     }
   }
-  for (i = myRedos.Length(); i > 0; i--) {
+  for (i = myRedos.Length(); i > 0; i--)
+  {
     Handle(TDocStd_ApplicationDelta) delta = myRedos.Value(i);
-    TDocStd_SequenceOfDocument& docs = delta->GetDocuments();
-    for(Standard_Integer j = docs.Length(); j > 0; j--) {
-      if(docs.Value(j) == theDoc) {
+    TDocStd_SequenceOfDocument&      docs  = delta->GetDocuments();
+    for (Standard_Integer j = docs.Length(); j > 0; j--)
+    {
+      if (docs.Value(j) == theDoc)
+      {
         docs.Remove(j);
-        if(docs.Length() == 0)
+        if (docs.Length() == 0)
           myRedos.Remove(i);
       }
     }
   }
 }
 
-//=======================================================================
-//function : SetNestedTransactionMode
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TDocStd_MultiTransactionManager::SetNestedTransactionMode
-  (const Standard_Boolean isAllowed)
+void TDocStd_MultiTransactionManager::SetNestedTransactionMode(const Standard_Boolean isAllowed)
 {
   myIsNestedTransactionMode = isAllowed;
   Standard_Integer i;
-  for(i = myDocuments.Length(); i > 0; i--) {
-    if(myDocuments.Value(i)->IsNestedTransactionMode() != myIsNestedTransactionMode)
+  for (i = myDocuments.Length(); i > 0; i--)
+  {
+    if (myDocuments.Value(i)->IsNestedTransactionMode() != myIsNestedTransactionMode)
       myDocuments.Value(i)->SetNestedTransactionMode(myIsNestedTransactionMode);
   }
 }
 
 //=======================================================================
-//function : SetModificationMode
-//purpose  : if theTransactionOnly is True changes is denied outside transactions
+// function : SetModificationMode
+// purpose  : if theTransactionOnly is True changes is denied outside transactions
 //=======================================================================
 
-void TDocStd_MultiTransactionManager::SetModificationMode
-  (const Standard_Boolean theTransactionOnly)
+void TDocStd_MultiTransactionManager::SetModificationMode(const Standard_Boolean theTransactionOnly)
 {
   myOnlyTransactionModification = theTransactionOnly;
 
   Standard_Integer i;
-  for(i = myDocuments.Length(); i > 0; i--) {
+  for (i = myDocuments.Length(); i > 0; i--)
+  {
     myDocuments.Value(i)->SetModificationMode(myOnlyTransactionModification);
   }
 }
 
-//=======================================================================
-//function : ClearUndos
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TDocStd_MultiTransactionManager::ClearUndos()
 {
@@ -357,15 +348,13 @@ void TDocStd_MultiTransactionManager::ClearUndos()
 
   myUndos.Clear();
   Standard_Integer i;
-  for(i = myDocuments.Length(); i > 0; i--) {
+  for (i = myDocuments.Length(); i > 0; i--)
+  {
     myDocuments.Value(i)->ClearUndos();
   }
 }
 
-//=======================================================================
-//function : ClearRedos
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TDocStd_MultiTransactionManager::ClearRedos()
 {
@@ -373,10 +362,8 @@ void TDocStd_MultiTransactionManager::ClearRedos()
 
   myRedos.Clear();
   Standard_Integer i;
-  for(i = myDocuments.Length(); i > 0; i--) {
+  for (i = myDocuments.Length(); i > 0; i--)
+  {
     myDocuments.Value(i)->ClearRedos();
   }
 }
-
-
-

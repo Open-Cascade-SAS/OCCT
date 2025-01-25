@@ -11,41 +11,38 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepBasic_Approval.hxx>
 #include <StepBasic_ApprovalStatus.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Approval,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Approval, Standard_Transient)
 
-StepBasic_Approval::StepBasic_Approval ()  {}
+StepBasic_Approval::StepBasic_Approval() {}
 
-void StepBasic_Approval::Init(
-	const Handle(StepBasic_ApprovalStatus)& aStatus,
-	const Handle(TCollection_HAsciiString)& aLevel)
+void StepBasic_Approval::Init(const Handle(StepBasic_ApprovalStatus)& aStatus,
+                              const Handle(TCollection_HAsciiString)& aLevel)
 {
-	// --- classe own fields ---
-	status = aStatus;
-	level = aLevel;
+  // --- classe own fields ---
+  status = aStatus;
+  level  = aLevel;
 }
-
 
 void StepBasic_Approval::SetStatus(const Handle(StepBasic_ApprovalStatus)& aStatus)
 {
-	status = aStatus;
+  status = aStatus;
 }
 
 Handle(StepBasic_ApprovalStatus) StepBasic_Approval::Status() const
 {
-	return status;
+  return status;
 }
 
 void StepBasic_Approval::SetLevel(const Handle(TCollection_HAsciiString)& aLevel)
 {
-	level = aLevel;
+  level = aLevel;
 }
 
 Handle(TCollection_HAsciiString) StepBasic_Approval::Level() const
 {
-	return level;
+  return level;
 }

@@ -22,9 +22,9 @@
 //! arcs of a contour parallel to a given contour.
 enum GeomAbs_JoinType
 {
-GeomAbs_Arc,
-GeomAbs_Tangent,
-GeomAbs_Intersection
+  GeomAbs_Arc,
+  GeomAbs_Tangent,
+  GeomAbs_Intersection
 };
 
 #endif // _GeomAbs_JoinType_HeaderFile

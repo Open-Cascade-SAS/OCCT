@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(IGESDefs_TabularData)> IGESDefs_Array1OfTabularData;
 
-
 #endif

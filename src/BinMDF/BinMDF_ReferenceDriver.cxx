@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMDF_ReferenceDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <Message_Messenger.hxx>
@@ -21,22 +20,16 @@
 #include <TDF_Attribute.hxx>
 #include <TDF_Reference.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMDF_ReferenceDriver,BinMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinMDF_ReferenceDriver, BinMDF_ADriver)
 
-//=======================================================================
-//function : BinMDF_ReferenceDriver
-//purpose  : Constructor
-//=======================================================================
-BinMDF_ReferenceDriver::BinMDF_ReferenceDriver
-                        (const Handle(Message_Messenger)& theMsgDriver)
-     : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDF_Reference)->Name())
+//=================================================================================================
+
+BinMDF_ReferenceDriver::BinMDF_ReferenceDriver(const Handle(Message_Messenger)& theMsgDriver)
+    : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDF_Reference)->Name())
 {
 }
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(TDF_Attribute) BinMDF_ReferenceDriver::NewEmpty() const
 {
@@ -44,14 +37,13 @@ Handle(TDF_Attribute) BinMDF_ReferenceDriver::NewEmpty() const
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMDF_ReferenceDriver::Paste
-                (const BinObjMgt_Persistent&   theSource,
-                 const Handle(TDF_Attribute)&  theTarget,
-                 BinObjMgt_RRelocationTable&   ) const
+Standard_Boolean BinMDF_ReferenceDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                               const Handle(TDF_Attribute)& theTarget,
+                                               BinObjMgt_RRelocationTable&) const
 {
   Handle(TDF_Reference) aRef = Handle(TDF_Reference)::DownCast(theTarget);
 
@@ -65,20 +57,23 @@ Standard_Boolean BinMDF_ReferenceDriver::Paste
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDF_ReferenceDriver::Paste (const Handle(TDF_Attribute)&  theSource,
-                                    BinObjMgt_Persistent&         theTarget,
-                                    BinObjMgt_SRelocationTable&   ) const
+void BinMDF_ReferenceDriver::Paste(const Handle(TDF_Attribute)& theSource,
+                                   BinObjMgt_Persistent&        theTarget,
+                                   BinObjMgt_SRelocationTable&) const
 {
   Handle(TDF_Reference) aRef = Handle(TDF_Reference)::DownCast(theSource);
-  if (!aRef.IsNull()) {
-    const TDF_Label& lab = aRef->Label();
+  if (!aRef.IsNull())
+  {
+    const TDF_Label& lab    = aRef->Label();
     const TDF_Label& refLab = aRef->Get();
-    if (!lab.IsNull() && !refLab.IsNull()) {
-      if (lab.IsDescendant(refLab.Root())) {   // Internal reference
+    if (!lab.IsNull() && !refLab.IsNull())
+    {
+      if (lab.IsDescendant(refLab.Root()))
+      { // Internal reference
         theTarget << refLab;
       }
     }

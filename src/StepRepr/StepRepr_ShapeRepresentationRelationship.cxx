@@ -12,10 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepRepr_ShapeRepresentationRelationship.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ShapeRepresentationRelationship,StepRepr_RepresentationRelationship)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ShapeRepresentationRelationship,
+                           StepRepr_RepresentationRelationship)
 
-StepRepr_ShapeRepresentationRelationship::StepRepr_ShapeRepresentationRelationship ()    {  }
+StepRepr_ShapeRepresentationRelationship::StepRepr_ShapeRepresentationRelationship() {}

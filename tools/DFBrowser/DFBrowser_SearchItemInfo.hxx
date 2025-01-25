@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowser_SearchItemInfo_H
 #define DFBrowser_SearchItemInfo_H
@@ -27,15 +27,19 @@
 class DFBrowser_SearchItemInfo
 {
 public:
-
   //! Constructor
   DFBrowser_SearchItemInfo() {}
 
   //! Constructor
-  DFBrowser_SearchItemInfo (const QVariant& theIcon, const QString& theName,
-                            const QStringList& thePath, const QString& theSeparator)
-  : myIcon (theIcon), myPath (thePath)
-  { myPathUnited = QString ("%1 \n%2").arg (theName).arg (myPath.join (theSeparator)); }
+  DFBrowser_SearchItemInfo(const QVariant&    theIcon,
+                           const QString&     theName,
+                           const QStringList& thePath,
+                           const QString&     theSeparator)
+      : myIcon(theIcon),
+        myPath(thePath)
+  {
+    myPathUnited = QString("%1 \n%2").arg(theName).arg(myPath.join(theSeparator));
+  }
 
   //! Destructor
   virtual ~DFBrowser_SearchItemInfo() {}
@@ -50,10 +54,9 @@ public:
   const QString& PathUnited() const { return myPathUnited; }
 
 private:
-
-  QVariant myIcon; //!< item icon
-  QStringList myPath; //!< item path
-  QString myPathUnited; //!< item name and item path
+  QVariant    myIcon;       //!< item icon
+  QStringList myPath;       //!< item path
+  QString     myPathUnited; //!< item name and item path
 };
 
 #endif

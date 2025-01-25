@@ -22,5 +22,4 @@
 class Expr_NamedUnknown;
 typedef NCollection_Array1<Handle(Expr_NamedUnknown)> Expr_Array1OfNamedUnknown;
 
-
 #endif

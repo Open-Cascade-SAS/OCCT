@@ -24,58 +24,40 @@
 class StepGeom_Axis1Placement;
 class TCollection_HAsciiString;
 
-
 class StepShape_Torus;
 DEFINE_STANDARD_HANDLE(StepShape_Torus, StepGeom_GeometricRepresentationItem)
-
 
 class StepShape_Torus : public StepGeom_GeometricRepresentationItem
 {
 
 public:
-
-  
   //! Returns a Torus
   Standard_EXPORT StepShape_Torus();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis1Placement)& aPosition, const Standard_Real aMajorRadius, const Standard_Real aMinorRadius);
-  
-  Standard_EXPORT void SetPosition (const Handle(StepGeom_Axis1Placement)& aPosition);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Handle(StepGeom_Axis1Placement)&  aPosition,
+                            const Standard_Real                     aMajorRadius,
+                            const Standard_Real                     aMinorRadius);
+
+  Standard_EXPORT void SetPosition(const Handle(StepGeom_Axis1Placement)& aPosition);
+
   Standard_EXPORT Handle(StepGeom_Axis1Placement) Position() const;
-  
-  Standard_EXPORT void SetMajorRadius (const Standard_Real aMajorRadius);
-  
+
+  Standard_EXPORT void SetMajorRadius(const Standard_Real aMajorRadius);
+
   Standard_EXPORT Standard_Real MajorRadius() const;
-  
-  Standard_EXPORT void SetMinorRadius (const Standard_Real aMinorRadius);
-  
+
+  Standard_EXPORT void SetMinorRadius(const Standard_Real aMinorRadius);
+
   Standard_EXPORT Standard_Real MinorRadius() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_Torus,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_Torus, StepGeom_GeometricRepresentationItem)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepGeom_Axis1Placement) position;
-  Standard_Real majorRadius;
-  Standard_Real minorRadius;
-
-
+  Standard_Real                   majorRadius;
+  Standard_Real                   minorRadius;
 };
-
-
-
-
-
-
 
 #endif // _StepShape_Torus_HeaderFile

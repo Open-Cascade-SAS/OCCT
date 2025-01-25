@@ -27,7 +27,6 @@
 class Geom2d_Curve;
 class gp_Pnt2d;
 
-
 //! Describes functions for computing all the extrema
 //! between two 2D curves.
 //! An ExtremaCurveCurve algorithm minimizes or
@@ -51,13 +50,11 @@ class gp_Pnt2d;
 //! -   its orthogonal projection on the other curve,
 //! -   a limit point of the other curve; or
 //! -   an intersection point between the two curves.
-class Geom2dAPI_ExtremaCurveCurve 
+class Geom2dAPI_ExtremaCurveCurve
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Computes the extrema between
   //! -   the portion of the curve C1 limited by the two
   //! points of parameter (U1min,U1max), and
@@ -66,13 +63,18 @@ public:
   //! Warning
   //! Use the function NbExtrema to obtain the number
   //! of solutions. If this algorithm fails, NbExtrema returns 0.
-  Standard_EXPORT Geom2dAPI_ExtremaCurveCurve(const Handle(Geom2d_Curve)& C1, const Handle(Geom2d_Curve)& C2, const Standard_Real U1min, const Standard_Real U1max, const Standard_Real U2min, const Standard_Real U2max);
-  
+  Standard_EXPORT Geom2dAPI_ExtremaCurveCurve(const Handle(Geom2d_Curve)& C1,
+                                              const Handle(Geom2d_Curve)& C2,
+                                              const Standard_Real         U1min,
+                                              const Standard_Real         U1max,
+                                              const Standard_Real         U2min,
+                                              const Standard_Real         U2max);
+
   //! Returns the number of extrema computed by this algorithm.
   //! Note: if this algorithm fails, NbExtrema returns 0.
   Standard_EXPORT Standard_Integer NbExtrema() const;
-Standard_EXPORT operator Standard_Integer() const;
-  
+  Standard_EXPORT                  operator Standard_Integer() const;
+
   //! Returns the points P1 on the first curve and P2 on
   //! the second curve, which are the ends of the
   //! extremum of index Index computed by this algorithm.
@@ -80,8 +82,8 @@ Standard_EXPORT operator Standard_Integer() const;
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT void Points (const Standard_Integer Index, gp_Pnt2d& P1, gp_Pnt2d& P2) const;
-  
+  Standard_EXPORT void Points(const Standard_Integer Index, gp_Pnt2d& P1, gp_Pnt2d& P2) const;
+
   //! Returns the parameters U1 of the point on the first
   //! curve and U2 of the point on the second curve, which
   //! are the ends of the extremum of index Index
@@ -90,64 +92,48 @@ Standard_EXPORT operator Standard_Integer() const;
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT void Parameters (const Standard_Integer Index, Standard_Real& U1, Standard_Real& U2) const;
-  
+  Standard_EXPORT void Parameters(const Standard_Integer Index,
+                                  Standard_Real&         U1,
+                                  Standard_Real&         U2) const;
+
   //! Computes the distance between the end points of the
   //! extremum of index Index computed by this algorithm.
   //! Exceptions
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT Standard_Real Distance (const Standard_Integer Index) const;
-  
+  Standard_EXPORT Standard_Real Distance(const Standard_Integer Index) const;
+
   //! Returns the points P1 on the first curve and P2 on
   //! the second curve, which are the ends of the shortest
   //! extremum computed by this algorithm.
   //! Exceptions StdFail_NotDone if this algorithm fails.
-  Standard_EXPORT void NearestPoints (gp_Pnt2d& P1, gp_Pnt2d& P2) const;
-  
+  Standard_EXPORT void NearestPoints(gp_Pnt2d& P1, gp_Pnt2d& P2) const;
+
   //! Returns the parameters U1 of the point on the first
   //! curve and U2 of the point on the second curve, which
   //! are the ends of the shortest extremum computed by this algorithm.
   //! Exceptions
   //! StdFail_NotDone if this algorithm fails.
-  Standard_EXPORT void LowerDistanceParameters (Standard_Real& U1, Standard_Real& U2) const;
-  
+  Standard_EXPORT void LowerDistanceParameters(Standard_Real& U1, Standard_Real& U2) const;
+
   //! Computes the distance between the end points of the
   //! shortest extremum computed by this algorithm.
   //! Exceptions - StdFail_NotDone if this algorithm fails.
   Standard_EXPORT Standard_Real LowerDistance() const;
-Standard_EXPORT operator Standard_Real() const;
-  
-    const Extrema_ExtCC2d& Extrema() const;
+  Standard_EXPORT               operator Standard_Real() const;
 
-
-
+  const Extrema_ExtCC2d& Extrema() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Boolean myIsDone;
-  Standard_Integer myIndex;
-  Extrema_ExtCC2d myExtCC;
+  Standard_Boolean    myIsDone;
+  Standard_Integer    myIndex;
+  Extrema_ExtCC2d     myExtCC;
   Geom2dAdaptor_Curve myC1;
   Geom2dAdaptor_Curve myC2;
-
-
 };
 
-
 #include <Geom2dAPI_ExtremaCurveCurve.lxx>
-
-
-
-
 
 #endif // _Geom2dAPI_ExtremaCurveCurve_HeaderFile

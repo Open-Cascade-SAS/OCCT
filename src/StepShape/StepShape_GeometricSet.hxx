@@ -25,52 +25,32 @@
 class TCollection_HAsciiString;
 class StepShape_GeometricSetSelect;
 
-
 class StepShape_GeometricSet;
 DEFINE_STANDARD_HANDLE(StepShape_GeometricSet, StepGeom_GeometricRepresentationItem)
-
 
 class StepShape_GeometricSet : public StepGeom_GeometricRepresentationItem
 {
 
 public:
-
-  
   //! Returns a GeometricSet
   Standard_EXPORT StepShape_GeometricSet();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfGeometricSetSelect)& aElements);
-  
-  Standard_EXPORT void SetElements (const Handle(StepShape_HArray1OfGeometricSetSelect)& aElements);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&              aName,
+                            const Handle(StepShape_HArray1OfGeometricSetSelect)& aElements);
+
+  Standard_EXPORT void SetElements(const Handle(StepShape_HArray1OfGeometricSetSelect)& aElements);
+
   Standard_EXPORT Handle(StepShape_HArray1OfGeometricSetSelect) Elements() const;
-  
-  Standard_EXPORT StepShape_GeometricSetSelect ElementsValue (const Standard_Integer num) const;
-  
+
+  Standard_EXPORT StepShape_GeometricSetSelect ElementsValue(const Standard_Integer num) const;
+
   Standard_EXPORT Standard_Integer NbElements() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_GeometricSet,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_GeometricSet, StepGeom_GeometricRepresentationItem)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepShape_HArray1OfGeometricSetSelect) elements;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_GeometricSet_HeaderFile

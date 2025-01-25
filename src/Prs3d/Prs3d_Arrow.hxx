@@ -25,7 +25,8 @@ class gp_Ax1;
 class gp_Pnt;
 class gp_Dir;
 
-//! Provides class methods to draw an arrow at a given location, along a given direction and using a given angle.
+//! Provides class methods to draw an arrow at a given location, along a given direction and using a
+//! given angle.
 class Prs3d_Arrow
 {
 public:
@@ -38,12 +39,13 @@ public:
   //! @param theConeRadius cone radius (arrow tip)
   //! @param theConeLength cone length (arrow tip)
   //! @param theNbFacettes tessellation quality for each part
-  Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) DrawShaded (const gp_Ax1&          theAxis,
-                                                                        const Standard_Real    theTubeRadius,
-                                                                        const Standard_Real    theAxisLength,
-                                                                        const Standard_Real    theConeRadius,
-                                                                        const Standard_Real    theConeLength,
-                                                                        const Standard_Integer theNbFacettes);
+  Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) DrawShaded(
+    const gp_Ax1&          theAxis,
+    const Standard_Real    theTubeRadius,
+    const Standard_Real    theAxisLength,
+    const Standard_Real    theConeRadius,
+    const Standard_Real    theConeLength,
+    const Standard_Integer theNbFacettes);
 
   //! Defines the representation of the arrow as a container of segments.
   //! @param theLocation   location of the arrow tip
@@ -51,11 +53,12 @@ public:
   //! @param theAngle      angle of opening of the arrow head
   //! @param theLength     length of the arrow (from the tip)
   //! @param theNbSegments count of points on polyline where location is connected
-  Standard_EXPORT static Handle(Graphic3d_ArrayOfSegments) DrawSegments (const gp_Pnt& theLocation,
-                                                                         const gp_Dir& theDir,
-                                                                         const Standard_Real theAngle,
-                                                                         const Standard_Real theLength,
-                                                                         const Standard_Integer theNbSegments);
+  Standard_EXPORT static Handle(Graphic3d_ArrayOfSegments) DrawSegments(
+    const gp_Pnt&          theLocation,
+    const gp_Dir&          theDir,
+    const Standard_Real    theAngle,
+    const Standard_Real    theLength,
+    const Standard_Integer theNbSegments);
 
   //! Defines the representation of the arrow.
   //! Note that this method does NOT assign any presentation aspects to the primitives group!
@@ -64,12 +67,11 @@ public:
   //! @param theDirection direction of the arrow
   //! @param theAngle     angle of opening of the arrow head
   //! @param theLength    length of the arrow (from the tip)
-  Standard_EXPORT static void Draw (const Handle(Graphic3d_Group)& theGroup,
-                                    const gp_Pnt& theLocation,
-                                    const gp_Dir& theDirection,
-                                    const Standard_Real theAngle,
-                                    const Standard_Real theLength);
-
+  Standard_EXPORT static void Draw(const Handle(Graphic3d_Group)& theGroup,
+                                   const gp_Pnt&                  theLocation,
+                                   const gp_Dir&                  theDirection,
+                                   const Standard_Real            theAngle,
+                                   const Standard_Real            theLength);
 };
 
 #endif // _Prs3d_Arrow_HeaderFile

@@ -15,25 +15,22 @@
 
 #include <BRepMesh_ExtrusionRangeSplitter.hxx>
 
-//=======================================================================
-// Function: getUndefinedIntervalNb
-// Purpose : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer BRepMesh_ExtrusionRangeSplitter::getUndefinedIntervalNb(
   const Handle(Adaptor3d_Surface)& theSurface,
-  const Standard_Boolean           /*isU*/,
-  const GeomAbs_Shape              theContinuity) const
+  const Standard_Boolean /*isU*/,
+  const GeomAbs_Shape theContinuity) const
 {
-  // Here we need just a regular grid along dimension with no 
+  // Here we need just a regular grid along dimension with no
   // geometrical data regarding intervals like extrusion surface.
-  const Handle(Adaptor3d_Curve) aCurve = theSurface->BasisCurve();
-  Standard_Integer aIntervalsNb = aCurve->NbIntervals(theContinuity);
+  const Handle(Adaptor3d_Curve) aCurve       = theSurface->BasisCurve();
+  Standard_Integer              aIntervalsNb = aCurve->NbIntervals(theContinuity);
   if (aIntervalsNb == 1)
   {
     const GeomAbs_CurveType aCurveType = aCurve->GetType();
-    const Standard_Boolean isBSplineCurve =
-      aCurveType == GeomAbs_BezierCurve ||
-      aCurveType == GeomAbs_BSplineCurve;
+    const Standard_Boolean  isBSplineCurve =
+      aCurveType == GeomAbs_BezierCurve || aCurveType == GeomAbs_BSplineCurve;
 
     if (isBSplineCurve)
     {

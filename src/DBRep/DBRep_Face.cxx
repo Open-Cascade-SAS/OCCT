@@ -14,26 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <DBRep_Face.hxx>
 #include <Draw_Color.hxx>
 #include <Standard_Type.hxx>
 #include <TopoDS_Face.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(DBRep_Face,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(DBRep_Face, Standard_Transient)
 
-//=======================================================================
-//function : DBRep_Face
-//purpose  : 
-//=======================================================================
-DBRep_Face::DBRep_Face(const TopoDS_Face& F, 
-		       const Standard_Integer N,
-		       const Draw_Color& C) :
-       myFace(F),
-       myColor(C),
-       myTypes(N ? 1 : 0,N),
-       myParams(N ? 1 : 0,3*N)
+//=================================================================================================
+
+DBRep_Face::DBRep_Face(const TopoDS_Face& F, const Standard_Integer N, const Draw_Color& C)
+    : myFace(F),
+      myColor(C),
+      myTypes(N ? 1 : 0, N),
+      myParams(N ? 1 : 0, 3 * N)
 {
 }
-
-

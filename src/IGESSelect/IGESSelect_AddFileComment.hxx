@@ -27,7 +27,6 @@ class IFSelect_ContextWrite;
 class IGESData_IGESWriter;
 class TCollection_AsciiString;
 
-
 class IGESSelect_AddFileComment;
 DEFINE_STANDARD_HANDLE(IGESSelect_AddFileComment, IGESSelect_FileModifier)
 
@@ -38,61 +37,43 @@ class IGESSelect_AddFileComment : public IGESSelect_FileModifier
 {
 
 public:
-
-  
   //! Creates a new empty AddFileComment. Use AddLine to complete it
   Standard_EXPORT IGESSelect_AddFileComment();
-  
+
   //! Clears the list of file comment lines already stored
   Standard_EXPORT void Clear();
-  
+
   //! Adds a line for file comment
   //! Remark : Lines are limited to 72 useful char.s . A line of more than
   //! 72 char.s will be splited into several ones of 72 max each.
-  Standard_EXPORT void AddLine (const Standard_CString line);
-  
+  Standard_EXPORT void AddLine(const Standard_CString line);
+
   //! Adds a list of lines for file comment
   //! Each of them must comply with demand of AddLine
-  Standard_EXPORT void AddLines (const Handle(TColStd_HSequenceOfHAsciiString)& lines);
-  
+  Standard_EXPORT void AddLines(const Handle(TColStd_HSequenceOfHAsciiString)& lines);
+
   //! Returns the count of stored lines
   Standard_EXPORT Standard_Integer NbLines() const;
-  
+
   //! Returns a stored line given its rank
-  Standard_EXPORT Standard_CString Line (const Standard_Integer num) const;
-  
+  Standard_EXPORT Standard_CString Line(const Standard_Integer num) const;
+
   //! Returns the complete list of lines in once
   Standard_EXPORT Handle(TColStd_HSequenceOfHAsciiString) Lines() const;
-  
+
   //! Sends the comment lines to the file (Start Section)
-  Standard_EXPORT void Perform (IFSelect_ContextWrite& ctx, IGESData_IGESWriter& writer) const Standard_OVERRIDE;
-  
+  Standard_EXPORT void Perform(IFSelect_ContextWrite& ctx,
+                               IGESData_IGESWriter&   writer) const Standard_OVERRIDE;
+
   //! Returns specific Label, which is
   //! "Add <nn> Comment Lines (Start Section)"
   Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSelect_AddFileComment,IGESSelect_FileModifier)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_AddFileComment, IGESSelect_FileModifier)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TColStd_HSequenceOfHAsciiString) thelist;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESSelect_AddFileComment_HeaderFile

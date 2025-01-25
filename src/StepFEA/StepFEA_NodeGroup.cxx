@@ -19,49 +19,34 @@
 #include <StepFEA_NodeGroup.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_NodeGroup,StepFEA_FeaGroup)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_NodeGroup, StepFEA_FeaGroup)
 
-//=======================================================================
-//function : StepFEA_NodeGroup
-//purpose  : 
-//=======================================================================
-StepFEA_NodeGroup::StepFEA_NodeGroup ()
+//=================================================================================================
+
+StepFEA_NodeGroup::StepFEA_NodeGroup() {}
+
+//=================================================================================================
+
+void StepFEA_NodeGroup::Init(const Handle(TCollection_HAsciiString)&            aGroup_Name,
+                             const Handle(TCollection_HAsciiString)&            aGroup_Description,
+                             const Handle(StepFEA_FeaModel)&                    aFeaGroup_ModelRef,
+                             const Handle(StepFEA_HArray1OfNodeRepresentation)& aNodes)
 {
-}
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void StepFEA_NodeGroup::Init (const Handle(TCollection_HAsciiString) &aGroup_Name,
-                              const Handle(TCollection_HAsciiString) &aGroup_Description,
-                              const Handle(StepFEA_FeaModel) &aFeaGroup_ModelRef,
-                              const Handle(StepFEA_HArray1OfNodeRepresentation) &aNodes)
-{
-  StepFEA_FeaGroup::Init(aGroup_Name,
-                         aGroup_Description,
-                         aFeaGroup_ModelRef);
+  StepFEA_FeaGroup::Init(aGroup_Name, aGroup_Description, aFeaGroup_ModelRef);
 
   theNodes = aNodes;
 }
 
-//=======================================================================
-//function : Nodes
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepFEA_HArray1OfNodeRepresentation) StepFEA_NodeGroup::Nodes () const
+Handle(StepFEA_HArray1OfNodeRepresentation) StepFEA_NodeGroup::Nodes() const
 {
   return theNodes;
 }
 
-//=======================================================================
-//function : SetNodes
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_NodeGroup::SetNodes (const Handle(StepFEA_HArray1OfNodeRepresentation) &aNodes)
+void StepFEA_NodeGroup::SetNodes(const Handle(StepFEA_HArray1OfNodeRepresentation)& aNodes)
 {
   theNodes = aNodes;
 }

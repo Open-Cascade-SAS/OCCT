@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IFSelect_Activator.hxx>
 #include <IFSelect_SessionPilot.hxx>
 #include <Interface_Macros.hxx>
@@ -21,23 +20,23 @@
 #include <TColStd_SequenceOfTransient.hxx>
 #include <NCollection_DataMap.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Activator,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Activator, Standard_Transient)
 
 static NCollection_DataMap<TCollection_AsciiString, Standard_Integer> thedico;
-static TColStd_SequenceOfInteger   thenums, themodes;
-static TColStd_SequenceOfTransient theacts;
+static TColStd_SequenceOfInteger                                      thenums, themodes;
+static TColStd_SequenceOfTransient                                    theacts;
 
-
-    void IFSelect_Activator::Adding
-  (const Handle(IFSelect_Activator)& actor,
-   const Standard_Integer number,
-   const Standard_CString command,
-   const Standard_Integer mode)
+void IFSelect_Activator::Adding(const Handle(IFSelect_Activator)& actor,
+                                const Standard_Integer            number,
+                                const Standard_CString            command,
+                                const Standard_Integer            mode)
 {
 #ifdef OCCT_DEBUG
-  if (thedico.IsBound(command)) {
-    std::cout << "****  XSTEP commands, name conflict on " << command << " first defined remains  ****" << std::endl;
-//    throw Standard_DomainError("IFSelect_Activator : Add");
+  if (thedico.IsBound(command))
+  {
+    std::cout << "****  XSTEP commands, name conflict on " << command
+              << " first defined remains  ****" << std::endl;
+    //    throw Standard_DomainError("IFSelect_Activator : Add");
   }
 #endif
 
@@ -48,71 +47,88 @@ static TColStd_SequenceOfTransient theacts;
   themodes.Append(mode);
 }
 
-    void IFSelect_Activator::Add
-  (const Standard_Integer number, const Standard_CString command) const
-      {  Adding (this,number,command,0);  }
+void IFSelect_Activator::Add(const Standard_Integer number, const Standard_CString command) const
+{
+  Adding(this, number, command, 0);
+}
 
-    void IFSelect_Activator::AddSet
-  (const Standard_Integer number, const Standard_CString command) const
-      {  Adding (this,number,command,1);  }
+void IFSelect_Activator::AddSet(const Standard_Integer number, const Standard_CString command) const
+{
+  Adding(this, number, command, 1);
+}
 
-    void IFSelect_Activator::Remove (const Standard_CString command)
-      {  thedico.UnBind(command);  }
+void IFSelect_Activator::Remove(const Standard_CString command)
+{
+  thedico.UnBind(command);
+}
 
-    Standard_Boolean IFSelect_Activator::Select
-  (const Standard_CString command, Standard_Integer& number,
-   Handle(IFSelect_Activator)& actor)
+Standard_Boolean IFSelect_Activator::Select(const Standard_CString      command,
+                                            Standard_Integer&           number,
+                                            Handle(IFSelect_Activator)& actor)
 {
   Standard_Integer num;
-  if (!thedico.Find(command, num)) return Standard_False;
+  if (!thedico.Find(command, num))
+    return Standard_False;
   number = thenums(num);
-  actor = Handle(IFSelect_Activator)::DownCast(theacts(num));
+  actor  = Handle(IFSelect_Activator)::DownCast(theacts(num));
   return Standard_True;
 }
 
-    Standard_Integer IFSelect_Activator::Mode
-  (const Standard_CString command)
+Standard_Integer IFSelect_Activator::Mode(const Standard_CString command)
 {
   Standard_Integer num;
-  if (!thedico.Find(command, num)) return -1;
+  if (!thedico.Find(command, num))
+    return -1;
   return themodes(num);
 }
 
-
-    Handle(TColStd_HSequenceOfAsciiString) IFSelect_Activator::Commands
-  (const Standard_Integer mode, const Standard_CString command)
+Handle(TColStd_HSequenceOfAsciiString) IFSelect_Activator::Commands(const Standard_Integer mode,
+                                                                    const Standard_CString command)
 {
-  Standard_Integer num;
+  Standard_Integer                                                         num;
   NCollection_DataMap<TCollection_AsciiString, Standard_Integer>::Iterator iter(thedico);
-  Handle(TColStd_HSequenceOfAsciiString) list =
-    new  TColStd_HSequenceOfAsciiString();
-  for (; iter.More(); iter.Next()) {
+  Handle(TColStd_HSequenceOfAsciiString) list = new TColStd_HSequenceOfAsciiString();
+  for (; iter.More(); iter.Next())
+  {
     if (!iter.Key().StartsWith(command))
       continue;
-    if (mode < 0) {
-      DeclareAndCast(IFSelect_Activator,acti,theacts(iter.Value()));
-      if (acti.IsNull()) continue;
-      if (command[0] == '\0' || !strcmp(command,acti->Group()) )
+    if (mode < 0)
+    {
+      DeclareAndCast(IFSelect_Activator, acti, theacts(iter.Value()));
+      if (acti.IsNull())
+        continue;
+      if (command[0] == '\0' || !strcmp(command, acti->Group()))
         list->Append(iter.Key());
-    } else {
+    }
+    else
+    {
       num = iter.Value();
-      if (themodes(num) == mode) list->Append(iter.Key());
+      if (themodes(num) == mode)
+        list->Append(iter.Key());
     }
   }
   return list;
 }
 
+IFSelect_Activator::IFSelect_Activator()
+    : thegroup("XSTEP")
+{
+}
 
-    IFSelect_Activator::IFSelect_Activator ()
-    : thegroup ("XSTEP")    {  }
+void IFSelect_Activator::SetForGroup(const Standard_CString group, const Standard_CString file)
+{
+  thegroup.Clear();
+  thegroup.AssignCat(group);
+  thefile.Clear();
+  thefile.AssignCat(file);
+}
 
-    void  IFSelect_Activator::SetForGroup
-  (const Standard_CString group, const Standard_CString file)
-    {  thegroup.Clear();  thegroup.AssignCat (group);
-       thefile.Clear();   thefile.AssignCat  (file);   }
+Standard_CString IFSelect_Activator::Group() const
+{
+  return thegroup.ToCString();
+}
 
-    Standard_CString  IFSelect_Activator::Group () const
-    {  return thegroup.ToCString();  }
-
-    Standard_CString  IFSelect_Activator::File  () const
-    {  return thefile.ToCString();   }
+Standard_CString IFSelect_Activator::File() const
+{
+  return thefile.ToCString();
+}

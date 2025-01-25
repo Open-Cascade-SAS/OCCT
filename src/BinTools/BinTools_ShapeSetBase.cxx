@@ -16,54 +16,44 @@
 #include <TopoDS_Shape.hxx>
 
 const Standard_CString BinTools_ShapeSetBase::THE_ASCII_VERSIONS[BinTools_FormatVersion_UPPER + 1] =
-{
-  "",
-  "Open CASCADE Topology V1 (c)",
-  "Open CASCADE Topology V2 (c)",
-  "Open CASCADE Topology V3 (c)",
-  "Open CASCADE Topology V4, (c) Open Cascade"
-};
+  {"",
+   "Open CASCADE Topology V1 (c)",
+   "Open CASCADE Topology V2 (c)",
+   "Open CASCADE Topology V3 (c)",
+   "Open CASCADE Topology V4, (c) Open Cascade"};
 
 //=======================================================================
-//function : operator << (gp_Pnt)
-//purpose  : 
+// function : operator << (gp_Pnt)
+// purpose  :
 //=======================================================================
-Standard_OStream& operator << (Standard_OStream& OS, const gp_Pnt& P)
+Standard_OStream& operator<<(Standard_OStream& OS, const gp_Pnt& P)
 {
-  BinTools::PutReal (OS, P.X());
-  BinTools::PutReal (OS, P.Y());
-  BinTools::PutReal (OS, P.Z());
+  BinTools::PutReal(OS, P.X());
+  BinTools::PutReal(OS, P.Y());
+  BinTools::PutReal(OS, P.Z());
   return OS;
 }
 
-//=======================================================================
-//function : BinTools_ShapeSetBase
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 BinTools_ShapeSetBase::BinTools_ShapeSetBase()
-  : myFormatNb (BinTools_FormatVersion_CURRENT),
-    myWithTriangles (Standard_False),
-    myWithNormals (Standard_False)
-{}
-
-//=======================================================================
-//function : ~BinTools_ShapeSetBase
-//purpose  : 
-//=======================================================================
-
-BinTools_ShapeSetBase::~BinTools_ShapeSetBase()
-{}
-
-//=======================================================================
-//function : SetFormatNb
-//purpose  : 
-//=======================================================================
-void BinTools_ShapeSetBase::SetFormatNb (const Standard_Integer theFormatNb)
+    : myFormatNb(BinTools_FormatVersion_CURRENT),
+      myWithTriangles(Standard_False),
+      myWithNormals(Standard_False)
 {
-  Standard_ASSERT_RETURN(theFormatNb >= BinTools_FormatVersion_LOWER &&
-                         theFormatNb <= BinTools_FormatVersion_UPPER,
-    "Error: unsupported BinTools version.", );
+}
+
+//=================================================================================================
+
+BinTools_ShapeSetBase::~BinTools_ShapeSetBase() {}
+
+//=================================================================================================
+
+void BinTools_ShapeSetBase::SetFormatNb(const Standard_Integer theFormatNb)
+{
+  Standard_ASSERT_RETURN(theFormatNb >= BinTools_FormatVersion_LOWER
+                           && theFormatNb <= BinTools_FormatVersion_UPPER,
+                         "Error: unsupported BinTools version.", );
 
   myFormatNb = theFormatNb;
 }

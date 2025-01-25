@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(StepVisual_HArray1OfCurveStyleFontPattern, StepVisual_Array1OfCurveStyleFontPattern)
 
-
 #endif

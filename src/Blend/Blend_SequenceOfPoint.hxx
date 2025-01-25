@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Blend_Point> Blend_SequenceOfPoint;
 
-
 #endif

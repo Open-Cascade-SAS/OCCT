@@ -24,35 +24,32 @@
 class BRepMeshData_Face : public IMeshData_Face
 {
 public:
-
   DEFINE_INC_ALLOC
 
   //! Constructor.
-  Standard_EXPORT BRepMeshData_Face (
-    const TopoDS_Face&                       theFace,
-    const Handle (NCollection_IncAllocator)& theAllocator);
+  Standard_EXPORT BRepMeshData_Face(const TopoDS_Face&                      theFace,
+                                    const Handle(NCollection_IncAllocator)& theAllocator);
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMeshData_Face ();
+  Standard_EXPORT virtual ~BRepMeshData_Face();
 
   //! Gets number of children.
-  Standard_EXPORT virtual Standard_Integer WiresNb () const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer WiresNb() const Standard_OVERRIDE;
 
   //! Gets wire with the given index.
-  Standard_EXPORT virtual const IMeshData::IWireHandle& GetWire (
+  Standard_EXPORT virtual const IMeshData::IWireHandle& GetWire(
     const Standard_Integer theIndex) const Standard_OVERRIDE;
 
   //! Adds wire to discrete model of face.
-  Standard_EXPORT virtual const IMeshData::IWireHandle& AddWire (
+  Standard_EXPORT virtual const IMeshData::IWireHandle& AddWire(
     const TopoDS_Wire&     theWire,
     const Standard_Integer theEdgeNb = 0) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(BRepMeshData_Face, IMeshData_Face)
 
 private:
-
-  Handle (NCollection_IncAllocator) myAllocator;
-  IMeshData::VectorOfIWireHandles   myDWires;
+  Handle(NCollection_IncAllocator) myAllocator;
+  IMeshData::VectorOfIWireHandles  myDWires;
 };
 
 #endif

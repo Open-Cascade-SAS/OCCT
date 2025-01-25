@@ -20,5 +20,4 @@
 
 typedef NCollection_IndexedMap<TDF_Label> TDF_LabelIndexedMap;
 
-
 #endif

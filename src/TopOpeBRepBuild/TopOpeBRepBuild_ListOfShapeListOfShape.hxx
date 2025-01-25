@@ -21,7 +21,7 @@
 #include <NCollection_List.hxx>
 
 typedef NCollection_List<TopOpeBRepBuild_ShapeListOfShape> TopOpeBRepBuild_ListOfShapeListOfShape;
-typedef NCollection_List<TopOpeBRepBuild_ShapeListOfShape>::Iterator TopOpeBRepBuild_ListIteratorOfListOfShapeListOfShape;
-
+typedef NCollection_List<TopOpeBRepBuild_ShapeListOfShape>::Iterator
+  TopOpeBRepBuild_ListIteratorOfListOfShapeListOfShape;
 
 #endif

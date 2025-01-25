@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Tool.hxx>
@@ -22,60 +21,55 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XmlMFunction_FunctionDriver,XmlMDF_ADriver)
-IMPLEMENT_DOMSTRING (GuidString, "guid")
-IMPLEMENT_DOMSTRING (FailureString, "failure")
+IMPLEMENT_STANDARD_RTTIEXT(XmlMFunction_FunctionDriver, XmlMDF_ADriver)
+IMPLEMENT_DOMSTRING(GuidString, "guid")
+IMPLEMENT_DOMSTRING(FailureString, "failure")
 
-//=======================================================================
-//function : XmlMFunction_FunctionDriver
-//purpose  : Constructor
-//=======================================================================
-XmlMFunction_FunctionDriver::XmlMFunction_FunctionDriver
-                        (const Handle(Message_Messenger)& theMsgDriver)
-      : XmlMDF_ADriver (theMsgDriver, NULL)
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+XmlMFunction_FunctionDriver::XmlMFunction_FunctionDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : XmlMDF_ADriver(theMsgDriver, NULL)
+{
+}
+
+//=================================================================================================
+
 Handle(TDF_Attribute) XmlMFunction_FunctionDriver::NewEmpty() const
 {
   return (new TFunction_Function());
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMFunction_FunctionDriver::Paste
-                (const XmlObjMgt_Persistent&  theSource,
-                 const Handle(TDF_Attribute)& theTarget,
-                 XmlObjMgt_RRelocationTable&  ) const
+Standard_Boolean XmlMFunction_FunctionDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                    const Handle(TDF_Attribute)& theTarget,
+                                                    XmlObjMgt_RRelocationTable&) const
 {
   Handle(TFunction_Function) aF = Handle(TFunction_Function)::DownCast(theTarget);
 
   // function GUID
-  XmlObjMgt_DOMString aGuidDomStr =
-    theSource.Element().getAttribute(::GuidString());
-  Standard_CString aGuidStr = (Standard_CString)aGuidDomStr.GetString();
+  XmlObjMgt_DOMString aGuidDomStr = theSource.Element().getAttribute(::GuidString());
+  Standard_CString    aGuidStr    = (Standard_CString)aGuidDomStr.GetString();
   if (aGuidStr[0] == '\0')
   {
-    myMessageDriver->Send ("error retrieving GUID for type TFunction_Function", Message_Fail);
+    myMessageDriver->Send("error retrieving GUID for type TFunction_Function", Message_Fail);
     return Standard_False;
   }
   aF->SetDriverGUID(aGuidStr);
 
   // failure
-  Standard_Integer aValue;
+  Standard_Integer    aValue;
   XmlObjMgt_DOMString aFStr = theSource.Element().getAttribute(::FailureString());
   if (!aFStr.GetInteger(aValue))
   {
     TCollection_ExtendedString aMessageString =
-      TCollection_ExtendedString
-        ("Cannot retrieve failure number for TFunction_Function attribute from \"")
-          + aFStr + "\"";
-    myMessageDriver->Send (aMessageString, Message_Fail);
+      TCollection_ExtendedString(
+        "Cannot retrieve failure number for TFunction_Function attribute from \"")
+      + aFStr + "\"";
+    myMessageDriver->Send(aMessageString, Message_Fail);
     return Standard_False;
   }
   aF->SetFailure(aValue);
@@ -84,26 +78,25 @@ Standard_Boolean XmlMFunction_FunctionDriver::Paste
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMFunction_FunctionDriver::Paste (const Handle(TDF_Attribute)& theSource,
-                                         XmlObjMgt_Persistent&        theTarget,
-                                         XmlObjMgt_SRelocationTable&  ) const
+void XmlMFunction_FunctionDriver::Paste(const Handle(TDF_Attribute)& theSource,
+                                        XmlObjMgt_Persistent&        theTarget,
+                                        XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TFunction_Function) aF =
-    Handle(TFunction_Function)::DownCast(theSource);
+  Handle(TFunction_Function) aF = Handle(TFunction_Function)::DownCast(theSource);
   if (!aF.IsNull())
   {
-    //convert GUID into attribute value
-    Standard_Character aGuidStr [40];
+    // convert GUID into attribute value
+    Standard_Character  aGuidStr[40];
     Standard_PCharacter pGuidStr;
     //
-    pGuidStr=aGuidStr;
+    pGuidStr = aGuidStr;
     aF->GetDriverGUID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::GuidString(), aGuidStr);
 
-    //integer value of failure
+    // integer value of failure
     theTarget.Element().setAttribute(::FailureString(), aF->GetFailure());
   }
 }

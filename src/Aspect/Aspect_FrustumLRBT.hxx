@@ -15,7 +15,7 @@
 #define _Aspect_FrustumLRBT_HeaderFile
 
 //! Structure defining frustum boundaries.
-template<typename Elem_t>
+template <typename Elem_t>
 struct Aspect_FrustumLRBT
 {
   Elem_t Left;
@@ -24,30 +24,38 @@ struct Aspect_FrustumLRBT
   Elem_t Top;
 
   //! Empty constructor.
-  Aspect_FrustumLRBT() : Left (0), Right (0), Bottom (0), Top (0) {}
+  Aspect_FrustumLRBT()
+      : Left(0),
+        Right(0),
+        Bottom(0),
+        Top(0)
+  {
+  }
 
   //! Copy/cast constructor.
-  template<typename Other_t>
-  explicit Aspect_FrustumLRBT (const Aspect_FrustumLRBT<Other_t>& theOther)
-  : Left  (static_cast<Elem_t> (theOther.Left)),
-    Right (static_cast<Elem_t> (theOther.Right)),
-    Bottom(static_cast<Elem_t> (theOther.Bottom)),
-    Top   (static_cast<Elem_t> (theOther.Top)) {}
+  template <typename Other_t>
+  explicit Aspect_FrustumLRBT(const Aspect_FrustumLRBT<Other_t>& theOther)
+      : Left(static_cast<Elem_t>(theOther.Left)),
+        Right(static_cast<Elem_t>(theOther.Right)),
+        Bottom(static_cast<Elem_t>(theOther.Bottom)),
+        Top(static_cast<Elem_t>(theOther.Top))
+  {
+  }
 
   //! Apply multiply factor.
-  void Multiply (Elem_t theScale)
+  void Multiply(Elem_t theScale)
   {
-    Left   *= theScale;
-    Right  *= theScale;
+    Left *= theScale;
+    Right *= theScale;
     Bottom *= theScale;
-    Top    *= theScale;
+    Top *= theScale;
   }
 
   //! Return multiplied frustum.
-  Aspect_FrustumLRBT<Elem_t> Multiplied (Elem_t theScale)
+  Aspect_FrustumLRBT<Elem_t> Multiplied(Elem_t theScale)
   {
-    Aspect_FrustumLRBT<Elem_t> aCopy (*this);
-    aCopy.Multiply (theScale);
+    Aspect_FrustumLRBT<Elem_t> aCopy(*this);
+    aCopy.Multiply(theScale);
     return aCopy;
   }
 };

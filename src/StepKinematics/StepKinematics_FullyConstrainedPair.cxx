@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -16,12 +16,9 @@
 
 #include <StepKinematics_FullyConstrainedPair.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_FullyConstrainedPair, StepKinematics_LowOrderKinematicPair)
+IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_FullyConstrainedPair,
+                           StepKinematics_LowOrderKinematicPair)
 
-//=======================================================================
-//function : StepKinematics_FullyConstrainedPair
-//purpose  :
-//=======================================================================
-StepKinematics_FullyConstrainedPair::StepKinematics_FullyConstrainedPair ()
-{
-}
+//=================================================================================================
+
+StepKinematics_FullyConstrainedPair::StepKinematics_FullyConstrainedPair() {}

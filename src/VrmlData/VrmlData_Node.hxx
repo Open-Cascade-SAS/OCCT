@@ -23,8 +23,7 @@
 #include <Standard_CStringHasher.hxx>
 #include <VrmlData_ErrorStatus.hxx>
 
-#define VRMLDATA_LCOMPARE(aa, bb) \
-((strncmp (aa, bb, sizeof(bb)-1)) ? 0L : (aa += sizeof(bb)-1))
+#define VRMLDATA_LCOMPARE(aa, bb) ((strncmp(aa, bb, sizeof(bb) - 1)) ? 0L : (aa += sizeof(bb) - 1))
 
 struct VrmlData_InBuffer;
 class VrmlData_Scene;
@@ -35,29 +34,28 @@ class TCollection_AsciiString;
  */
 class VrmlData_Node : public Standard_Transient
 {
- public:
+public:
   // ---------- PUBLIC METHODS ----------
 
   /**
    * Empty constructor
    */
-  Standard_EXPORT               VrmlData_Node   ();
+  Standard_EXPORT VrmlData_Node();
 
   /**
    * Destructor
    */
-  virtual                       ~VrmlData_Node  () {}
+  virtual ~VrmlData_Node() {}
 
   /**
    * Query the Scene that contains this Node
    */
-  inline const VrmlData_Scene&  Scene           () const
-  { return * myScene; }
+  inline const VrmlData_Scene& Scene() const { return *myScene; }
 
   /**
    * Query the name
    */
-  inline const char *           Name            () const { return myName; } 
+  inline const char* Name() const { return myName; }
 
   /**
    * Read a complete node definition from VRML stream
@@ -70,35 +68,29 @@ class VrmlData_Node : public Standard_Transient
    *   Otherwise the created node is matched and an error is returned if
    *   no match detected.
    */
-  Standard_EXPORT VrmlData_ErrorStatus
-                                ReadNode    (VrmlData_InBuffer&    theBuffer,
-                                             Handle(VrmlData_Node)&theNode,
-                                             const Handle(Standard_Type)& Type
-                                                = NULL);
+  Standard_EXPORT VrmlData_ErrorStatus ReadNode(VrmlData_InBuffer&           theBuffer,
+                                                Handle(VrmlData_Node)&       theNode,
+                                                const Handle(Standard_Type)& Type = NULL);
 
   /**
    * Read the Node from input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus
-                                Read        (VrmlData_InBuffer& theBuffer) = 0;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) = 0;
 
   /**
    * Write the Node to output stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus
-                                Write       (const char * thePrefix) const;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const;
 
   /**
    * Returns True if the node is default, then it would not be written.
    */
-  Standard_EXPORT virtual Standard_Boolean
-                                IsDefault   () const;
+  Standard_EXPORT virtual Standard_Boolean IsDefault() const;
 
   /**
    * Write the closing brace in the end of a node output.
    */
-  Standard_EXPORT VrmlData_ErrorStatus
-                                WriteClosing () const;
+  Standard_EXPORT VrmlData_ErrorStatus WriteClosing() const;
 
   /**
    * Create a copy of this node.
@@ -107,126 +99,120 @@ class VrmlData_Node : public Standard_Transient
    * This method nullifies the argument node if its member myScene differs
    * from that one of the current instance.
    */
-  Standard_EXPORT virtual Handle(VrmlData_Node)
-                                Clone       (const Handle(VrmlData_Node)&)const;
+  Standard_EXPORT virtual Handle(VrmlData_Node) Clone(const Handle(VrmlData_Node)&) const;
 
   /**
    * Read one boolean value (TRUE or FALSE).
    */
-  Standard_EXPORT static VrmlData_ErrorStatus
-                                ReadBoolean (VrmlData_InBuffer& theBuffer,
-                                             Standard_Boolean&  theResult);
+  Standard_EXPORT static VrmlData_ErrorStatus ReadBoolean(VrmlData_InBuffer& theBuffer,
+                                                          Standard_Boolean&  theResult);
 
   /**
    * Read one quoted string, the quotes are removed.
    */
-  Standard_EXPORT static VrmlData_ErrorStatus
-                                ReadString  (VrmlData_InBuffer& theBuffer,
-                                             TCollection_AsciiString& theRes);
+  Standard_EXPORT static VrmlData_ErrorStatus ReadString(VrmlData_InBuffer&       theBuffer,
+                                                         TCollection_AsciiString& theRes);
 
   /**
    * Read one quoted string, the quotes are removed.
    */
-  Standard_EXPORT static VrmlData_ErrorStatus
-                                ReadMultiString
-                        (VrmlData_InBuffer& theBuffer,
-                         NCollection_List<TCollection_AsciiString>& theRes);
+  Standard_EXPORT static VrmlData_ErrorStatus ReadMultiString(
+    VrmlData_InBuffer&                         theBuffer,
+    NCollection_List<TCollection_AsciiString>& theRes);
 
   /**
    * Read one integer value.
    */
-  Standard_EXPORT static VrmlData_ErrorStatus
-                                ReadInteger (VrmlData_InBuffer& theBuffer,
-                                             long&              theResult);
+  Standard_EXPORT static VrmlData_ErrorStatus ReadInteger(VrmlData_InBuffer& theBuffer,
+                                                          long&              theResult);
 
-  static inline Standard_Boolean OK (const VrmlData_ErrorStatus theStat)
-  { return theStat == VrmlData_StatusOK; }
+  static inline Standard_Boolean OK(const VrmlData_ErrorStatus theStat)
+  {
+    return theStat == VrmlData_StatusOK;
+  }
 
-  static inline Standard_Boolean OK (VrmlData_ErrorStatus&      outStat,
-                                     const VrmlData_ErrorStatus theStat)
-  { return (outStat = theStat) == VrmlData_StatusOK; }
+  static inline Standard_Boolean OK(VrmlData_ErrorStatus&      outStat,
+                                    const VrmlData_ErrorStatus theStat)
+  {
+    return (outStat = theStat) == VrmlData_StatusOK;
+  }
 
   /**
    * Define the common Indent in spaces, for writing all nodes.
-   */ 
-  static inline Standard_Integer GlobalIndent ()
-  { return 2; }
+   */
+  static inline Standard_Integer GlobalIndent() { return 2; }
 
- protected:
+protected:
   // ---------- PROTECTED METHODS ----------
 
   /**
    * Constructor
    */
-  Standard_EXPORT VrmlData_Node         (const VrmlData_Scene& theScene,
-                                         const char            * theName);
+  Standard_EXPORT VrmlData_Node(const VrmlData_Scene& theScene, const char* theName);
 
   /**
    * Read the closing brace. If successful, theBufrfer is incremented.
    * If no brace is found, theBuffer stays in untouched and the method returns
    * VrmlFormatError.
    */
-  Standard_EXPORT static VrmlData_ErrorStatus
-                                readBrace   (VrmlData_InBuffer& theBuffer);
+  Standard_EXPORT static VrmlData_ErrorStatus readBrace(VrmlData_InBuffer& theBuffer);
 
- private:
+private:
   // ---------- PRIVATE METHODS ----------
 
   /**
    * Method called from VrmlData_Scene when a name should be assigned
    * automatically.
    */
-  Standard_EXPORT void          setName (const char * theName,
-                                         const char * theSuffix = 0L);
+  Standard_EXPORT void setName(const char* theName, const char* theSuffix = 0L);
 
- private:
+private:
   // ---------- PRIVATE FIELDS ----------
 
-  const VrmlData_Scene  * myScene; 
-  const char            * myName;       ///< name of the node
+  const VrmlData_Scene* myScene;
+  const char*           myName; ///< name of the node
 #ifdef OCCT_DEBUG
-  Standard_Integer      myLineCount;
+  Standard_Integer myLineCount;
 #endif
 
   friend class VrmlData_Group;
   friend class VrmlData_Scene;
 
- public:
-// Declaration of CASCADE RTTI
-  DEFINE_STANDARD_RTTIEXT(VrmlData_Node,Standard_Transient)
+public:
+  // Declaration of CASCADE RTTI
+  DEFINE_STANDARD_RTTIEXT(VrmlData_Node, Standard_Transient)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE (VrmlData_Node, Standard_Transient)
-
+DEFINE_STANDARD_HANDLE(VrmlData_Node, Standard_Transient)
 
 Standard_EXPORT Standard_Boolean IsEqual(const Handle(VrmlData_Node)& theOne,
                                          const Handle(VrmlData_Node)& theTwo);
 
 namespace std
 {
-  template <>
-  struct hash<Handle(VrmlData_Node)>
+template <>
+struct hash<Handle(VrmlData_Node)>
+{
+  size_t operator()(const Handle(VrmlData_Node)& theNode) const
   {
-    size_t operator()(const Handle(VrmlData_Node)& theNode) const
+    if (!theNode->Name())
     {
-      if (!theNode->Name())
-      {
-        return 1;
-      }
-      return Standard_CStringHasher{}(theNode->Name());
+      return 1;
     }
-  };
+    return Standard_CStringHasher{}(theNode->Name());
+  }
+};
 
-  template<>
-  struct equal_to<Handle(VrmlData_Node)>
+template <>
+struct equal_to<Handle(VrmlData_Node)>
+{
+  bool operator()(const Handle(VrmlData_Node)& theNode1,
+                  const Handle(VrmlData_Node)& theNode2) const noexcept
   {
-    bool operator()(const Handle(VrmlData_Node)& theNode1,
-                    const Handle(VrmlData_Node)& theNode2) const noexcept
-    {
-      return IsEqual(theNode1, theNode2);
-    }
-  };
-}
+    return IsEqual(theNode1, theNode2);
+  }
+};
+} // namespace std
 
 #endif

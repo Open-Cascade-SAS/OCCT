@@ -21,8 +21,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TCollection_AsciiString,OSD_Function> Plugin_MapOfFunctions;
-typedef NCollection_DataMap<TCollection_AsciiString,OSD_Function>::Iterator Plugin_DataMapIteratorOfMapOfFunctions;
-
+typedef NCollection_DataMap<TCollection_AsciiString, OSD_Function> Plugin_MapOfFunctions;
+typedef NCollection_DataMap<TCollection_AsciiString, OSD_Function>::Iterator
+  Plugin_DataMapIteratorOfMapOfFunctions;
 
 #endif

@@ -17,22 +17,25 @@
 #define VrmlData_InBuffer_HeaderFile
 
 #include <Standard_IStream.hxx>
+
 /**
  * Structure passed to the methods dealing with input stream.
  */
-struct VrmlData_InBuffer {
+struct VrmlData_InBuffer
+{
   Standard_IStream& Input;
   char              Line[8096];
-  char *            LinePtr;
+  char*             LinePtr;
   Standard_Boolean  IsProcessed;
   Standard_Integer  LineCount;
-  VrmlData_InBuffer (Standard_IStream& theStream)
-    : Input       (theStream),
-      LinePtr     (&Line[0]),
-      IsProcessed (Standard_False),
-      LineCount   (0) {};
-  private:
-    void operator= (const VrmlData_InBuffer&);
+  VrmlData_InBuffer(Standard_IStream& theStream)
+      : Input(theStream),
+        LinePtr(&Line[0]),
+        IsProcessed(Standard_False),
+        LineCount(0) {};
+
+private:
+  void operator=(const VrmlData_InBuffer&);
 };
 
 #endif

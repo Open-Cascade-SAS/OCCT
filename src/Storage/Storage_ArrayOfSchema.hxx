@@ -22,5 +22,4 @@
 class Storage_Schema;
 typedef NCollection_Array1<Handle(Storage_Schema)> Storage_ArrayOfSchema;
 
-
 #endif

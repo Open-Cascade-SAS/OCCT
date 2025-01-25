@@ -14,31 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRepOffset_Interval.hxx>
 
-//=======================================================================
-//function : BRepOffset_Interval
-//purpose  : 
-//=======================================================================
-BRepOffset_Interval::BRepOffset_Interval()
+//=================================================================================================
+
+BRepOffset_Interval::BRepOffset_Interval() {}
+
+//=================================================================================================
+
+BRepOffset_Interval::BRepOffset_Interval(const Standard_Real          U1,
+                                         const Standard_Real          U2,
+                                         const ChFiDS_TypeOfConcavity Type)
+    : f(U1),
+      l(U2),
+      type(Type)
 {
 }
-
-
-//=======================================================================
-//function : BRepOffset_Interval
-//purpose  : 
-//=======================================================================
-
-BRepOffset_Interval::BRepOffset_Interval(const Standard_Real   U1, 
-					 const Standard_Real   U2, 
-					 const ChFiDS_TypeOfConcavity Type):
-f(U1),
-l(U2),
-type(Type)
-{
-}
-
-
-

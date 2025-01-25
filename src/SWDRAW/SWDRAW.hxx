@@ -24,26 +24,23 @@
 #include <Draw_Interpretor.hxx>
 #include <Standard_CString.hxx>
 
-
 //! Provides DRAW interface to the functionalities of Shape Healing
 //! toolkit (SHAPEWORKS Delivery Unit).
 //!
 //! Classes prefixed with Shape* corresponds to the packages of
 //! Shape Healing.
-class SWDRAW 
+class SWDRAW
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Loads commands defined in SWDRAW
-  Standard_EXPORT static void Init (Draw_Interpretor& theCommands);
+  Standard_EXPORT static void Init(Draw_Interpretor& theCommands);
 
   //! Returns the name of the DRAW group accumulating the
   //! commands from the classes prefixed with Shape*.
   //! Returns "Shape Healing".
   Standard_EXPORT static Standard_CString GroupName();
-
 };
 
 #endif // _SWDRAW_HeaderFile

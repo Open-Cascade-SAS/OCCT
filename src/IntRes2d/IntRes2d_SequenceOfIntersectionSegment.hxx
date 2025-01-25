@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<IntRes2d_IntersectionSegment> IntRes2d_SequenceOfIntersectionSegment;
 
-
 #endif

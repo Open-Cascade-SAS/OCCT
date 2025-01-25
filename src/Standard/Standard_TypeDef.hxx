@@ -20,7 +20,7 @@
 
 #include <stdint.h>
 
-#if(defined(_MSC_VER) && (_MSC_VER < 1800))
+#if (defined(_MSC_VER) && (_MSC_VER < 1800))
   // only Visual Studio 2013 (vc12) provides <cinttypes> header
   // we do not defined all macros here - only used by OCCT framework
   #define PRIx64 "I64x"
@@ -54,7 +54,7 @@
 #endif
 
 #define Standard_False false
-#define Standard_True  true
+#define Standard_True true
 
 #include <Standard_Macro.hxx>
 
@@ -70,17 +70,19 @@ typedef size_t        Standard_Size;
 typedef std::time_t   Standard_Time;
 
 // Unicode primitives, char16_t, char32_t
-typedef char          Standard_Utf8Char;     //!< signed   UTF-8 char
-typedef unsigned char Standard_Utf8UChar;    //!< unsigned UTF-8 char
-#if ((defined(__GNUC__) && !defined(__clang__) && ((__GNUC__ == 4 && __GNUC_MINOR__ <= 3) || __GNUC__ < 4)) || (defined(_MSC_VER) && (_MSC_VER < 1600)))
+typedef char          Standard_Utf8Char;  //!< signed   UTF-8 char
+typedef unsigned char Standard_Utf8UChar; //!< unsigned UTF-8 char
+#if ((defined(__GNUC__) && !defined(__clang__)                                                     \
+      && ((__GNUC__ == 4 && __GNUC_MINOR__ <= 3) || __GNUC__ < 4))                                 \
+     || (defined(_MSC_VER) && (_MSC_VER < 1600)))
 // compatibility with old GCC and MSVC compilers
-typedef uint16_t      Standard_ExtCharacter;
-typedef uint16_t      Standard_Utf16Char;
-typedef uint32_t      Standard_Utf32Char;
+typedef uint16_t Standard_ExtCharacter;
+typedef uint16_t Standard_Utf16Char;
+typedef uint32_t Standard_Utf32Char;
 #else
-typedef char16_t      Standard_ExtCharacter;
-typedef char16_t      Standard_Utf16Char;    //!< UTF-16 char (always unsigned)
-typedef char32_t      Standard_Utf32Char;    //!< UTF-32 char (always unsigned)
+typedef char16_t Standard_ExtCharacter;
+typedef char16_t Standard_Utf16Char; //!< UTF-16 char (always unsigned)
+typedef char32_t Standard_Utf32Char; //!< UTF-32 char (always unsigned)
 #endif
 // clang-format off
 typedef wchar_t       Standard_WideChar;     //!< wide char (unsigned UTF-16 on Windows platform and signed UTF-32 on Linux)

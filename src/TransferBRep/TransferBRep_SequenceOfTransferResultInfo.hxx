@@ -20,7 +20,7 @@
 #include <TransferBRep_TransferResultInfo.hxx>
 #include <NCollection_Sequence.hxx>
 
-typedef NCollection_Sequence<Handle(TransferBRep_TransferResultInfo)> TransferBRep_SequenceOfTransferResultInfo;
-
+typedef NCollection_Sequence<Handle(TransferBRep_TransferResultInfo)>
+  TransferBRep_SequenceOfTransferResultInfo;
 
 #endif

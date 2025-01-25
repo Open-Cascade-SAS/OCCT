@@ -17,12 +17,11 @@
 #ifndef _StepVisual_SurfaceSide_HeaderFile
 #define _StepVisual_SurfaceSide_HeaderFile
 
-
 enum StepVisual_SurfaceSide
 {
-StepVisual_ssNegative,
-StepVisual_ssPositive,
-StepVisual_ssBoth
+  StepVisual_ssNegative,
+  StepVisual_ssPositive,
+  StepVisual_ssBoth
 };
 
 #endif // _StepVisual_SurfaceSide_HeaderFile

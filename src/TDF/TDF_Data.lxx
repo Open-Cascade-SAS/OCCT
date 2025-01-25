@@ -16,28 +16,35 @@
 //      	-------------
 
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Feb  6 1997	Creation
 
-
-
 inline Standard_Integer TDF_Data::Transaction() const
-{ return myTransaction; }
+{
+  return myTransaction;
+}
 
-inline const TDF_Label TDF_Data::Root() const 
-{ return TDF_Label(myRoot); }
+inline const TDF_Label TDF_Data::Root() const
+{
+  return TDF_Label(myRoot);
+}
 
 inline Standard_Integer TDF_Data::Time() const
-{ return myTime; }
+{
+  return myTime;
+}
 
 inline Standard_Boolean TDF_Data::NotUndoMode() const
-{ return myNotUndoMode; }
+{
+  return myNotUndoMode;
+}
 
-inline Standard_OStream& operator << (Standard_OStream& anOS, const Handle(TDF_Data)& aDF)
-{ return aDF->Dump(anOS); }
+inline Standard_OStream& operator<<(Standard_OStream& anOS, const Handle(TDF_Data)& aDF)
+{
+  return aDF->Dump(anOS);
+}
 
-inline void TDF_Data::AllowModification
-  (const Standard_Boolean theAllowModification)
+inline void TDF_Data::AllowModification(const Standard_Boolean theAllowModification)
 {
   myAllowModification = theAllowModification;
 }
@@ -47,6 +54,7 @@ inline Standard_Boolean TDF_Data::IsModificationAllowed() const
   return myAllowModification;
 }
 
-inline const Handle(NCollection_BaseAllocator)&
-    TDF_Data::LabelNodeAllocator() const
-{ return myLabelNodeAllocator; }
+inline const Handle(NCollection_BaseAllocator)& TDF_Data::LabelNodeAllocator() const
+{
+  return myLabelNodeAllocator;
+}

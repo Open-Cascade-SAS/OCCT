@@ -28,44 +28,27 @@ class StepShape_FaceSurface;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write Module for FaceSurface
-class RWStepShape_RWFaceSurface 
+class RWStepShape_RWFaceSurface
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_HIDDEN RWStepShape_RWFaceSurface();
-  
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepShape_FaceSurface)& ent) const;
-  
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepShape_FaceSurface)& ent) const;
-  
-  Standard_HIDDEN void Share (const Handle(StepShape_FaceSurface)& ent, Interface_EntityIterator& iter) const;
 
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& data,
+                                const Standard_Integer                 num,
+                                Handle(Interface_Check)&               ach,
+                                const Handle(StepShape_FaceSurface)&   ent) const;
 
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                 SW,
+                                 const Handle(StepShape_FaceSurface)& ent) const;
 
+  Standard_HIDDEN void Share(const Handle(StepShape_FaceSurface)& ent,
+                             Interface_EntityIterator&            iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepShape_RWFaceSurface_HeaderFile

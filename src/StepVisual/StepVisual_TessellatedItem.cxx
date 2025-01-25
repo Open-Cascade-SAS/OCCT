@@ -11,9 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepVisual_TessellatedItem.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedItem,StepGeom_GeometricRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedItem, StepGeom_GeometricRepresentationItem)
 
-StepVisual_TessellatedItem::StepVisual_TessellatedItem ()  {}
+StepVisual_TessellatedItem::StepVisual_TessellatedItem() {}

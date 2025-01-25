@@ -11,8 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
-
+// commercial license or contractual agreement.
 
 #include <inspector/TInspector_OpenFileDialog.hxx>
 #include <inspector/TInspector_OpenButton.hxx>
@@ -37,13 +36,13 @@
 // function : fileNameInDataDir
 // purpose :
 // =======================================================================
-TCollection_AsciiString fileNameInDataDir (const TCollection_AsciiString& theEnvironmentDir,
-                                           const TCollection_AsciiString& theName)
+TCollection_AsciiString fileNameInDataDir(const TCollection_AsciiString& theEnvironmentDir,
+                                          const TCollection_AsciiString& theName)
 {
-  OSD_Environment anEnvironment (theEnvironmentDir);
-  
+  OSD_Environment anEnvironment(theEnvironmentDir);
+
   TCollection_AsciiString aFileName = anEnvironment.Value();
-  aFileName += TCollection_AsciiString ("/") + theName;
+  aFileName += TCollection_AsciiString("/") + theName;
 
   return aFileName;
 }
@@ -52,63 +51,66 @@ TCollection_AsciiString fileNameInDataDir (const TCollection_AsciiString& theEnv
 // function : setPluginSampleDirectory
 // purpose :
 // =======================================================================
-void setPluginSampleDirectory (const TCollection_AsciiString& theName, TInspector_Communicator* theCommunicator,
-                               TInspector_OpenButton* theButtonControl)
+void setPluginSampleDirectory(const TCollection_AsciiString& theName,
+                              TInspector_Communicator*       theCommunicator,
+                              TInspector_OpenButton*         theButtonControl)
 {
   QStringList aRecentlyOpenedFiles;
-  TInspector_OpenFileDialog::GetPluginRecentlyOpenedFiles (theName, theCommunicator, aRecentlyOpenedFiles);
+  TInspector_OpenFileDialog::GetPluginRecentlyOpenedFiles(theName,
+                                                          theCommunicator,
+                                                          aRecentlyOpenedFiles);
   TCollection_AsciiString aFileName, anAdditionalFileName;
   if (!aRecentlyOpenedFiles.isEmpty())
-    aFileName = TCollection_AsciiString (aRecentlyOpenedFiles.last().toUtf8().data());
+    aFileName = TCollection_AsciiString(aRecentlyOpenedFiles.last().toUtf8().data());
   if (aFileName.IsEmpty())
   {
-    if (theName.IsEqual ("TKDFBrowser"))
-      aFileName = fileNameInDataDir ("CSF_OCCTDataPath", "step/screw.step");
-    else if (theName.IsEqual ("TKShapeView"))
-      aFileName = fileNameInDataDir ("CSF_OCCTDataPath", "occ/hammer.brep");
-    else if (theName.IsEqual ("TKVInspector"))
+    if (theName.IsEqual("TKDFBrowser"))
+      aFileName = fileNameInDataDir("CSF_OCCTDataPath", "step/screw.step");
+    else if (theName.IsEqual("TKShapeView"))
+      aFileName = fileNameInDataDir("CSF_OCCTDataPath", "occ/hammer.brep");
+    else if (theName.IsEqual("TKVInspector"))
     {
-      aFileName = fileNameInDataDir ("CSF_OCCTDataPath", "occ/face1.brep");
-      anAdditionalFileName = fileNameInDataDir ("CSF_OCCTDataPath", "occ/face2.brep");
+      aFileName            = fileNameInDataDir("CSF_OCCTDataPath", "occ/face1.brep");
+      anAdditionalFileName = fileNameInDataDir("CSF_OCCTDataPath", "occ/face2.brep");
     }
-    aRecentlyOpenedFiles.append (aFileName.ToCString());
+    aRecentlyOpenedFiles.append(aFileName.ToCString());
     if (!anAdditionalFileName.IsEmpty())
-      aRecentlyOpenedFiles.append (anAdditionalFileName.ToCString());
+      aRecentlyOpenedFiles.append(anAdditionalFileName.ToCString());
   }
-  theCommunicator->OpenFile (theName, aFileName.ToCString());
+  theCommunicator->OpenFile(theName, aFileName.ToCString());
   if (!anAdditionalFileName.IsEmpty())
-    theCommunicator->OpenFile (theName, anAdditionalFileName);
+    theCommunicator->OpenFile(theName, anAdditionalFileName);
 
-  theButtonControl->SetPluginRecentlyOpenedFiles (theName, aRecentlyOpenedFiles);
+  theButtonControl->SetPluginRecentlyOpenedFiles(theName, aRecentlyOpenedFiles);
 }
 
 // =======================================================================
 // function : main
 // purpose :
 // =======================================================================
-int main (int argc, char** argv)
+int main(int argc, char** argv)
 {
 #if QT_VERSION > 0x050000
   TCollection_AsciiString aPlugindsDirName;
-  if (TInspector_Communicator::PluginsDir (aPlugindsDirName))
-    QApplication::addLibraryPath (aPlugindsDirName.ToCString());
+  if (TInspector_Communicator::PluginsDir(aPlugindsDirName))
+    QApplication::addLibraryPath(aPlugindsDirName.ToCString());
 #endif
-  QApplication anApp (argc, argv);
+  QApplication anApp(argc, argv);
 
   std::set<TCollection_AsciiString> aPlugins;
-  for (int anArgId = 1; anArgId < argc; anArgId++ )
+  for (int anArgId = 1; anArgId < argc; anArgId++)
   {
-    if (!strcmp (argv[anArgId], "dfbrowser"))
-      aPlugins.insert ("TKDFBrowser");
+    if (!strcmp(argv[anArgId], "dfbrowser"))
+      aPlugins.insert("TKDFBrowser");
 
-    if (!strcmp (argv[anArgId], "shapeview"))
-      aPlugins.insert ("TKShapeView");
+    if (!strcmp(argv[anArgId], "shapeview"))
+      aPlugins.insert("TKShapeView");
 
-    if (!strcmp (argv[anArgId], "vinspector"))
-      aPlugins.insert ("TKVInspector");
+    if (!strcmp(argv[anArgId], "vinspector"))
+      aPlugins.insert("TKVInspector");
 
-    if (!strcmp (argv[anArgId], "messageview"))
-      aPlugins.insert ("TKMessageView");
+    if (!strcmp(argv[anArgId], "messageview"))
+      aPlugins.insert("TKMessageView");
   }
   NCollection_List<Handle(Standard_Transient)> aParameters;
 
@@ -120,7 +122,7 @@ int main (int argc, char** argv)
     return 0;
   }
 
-  TInspector_OpenButton* aButtonControl = new TInspector_OpenButton (0);
+  TInspector_OpenButton*  aButtonControl = new TInspector_OpenButton(0);
   TCollection_AsciiString anActivatedPluginName;
   if (aPlugins.empty())
   {
@@ -134,17 +136,19 @@ int main (int argc, char** argv)
   else
     anActivatedPluginName = *aPlugins.rbegin();
 
-  for (std::set<TCollection_AsciiString>::const_iterator aPluginIt = aPlugins.begin(); aPluginIt != aPlugins.end(); aPluginIt++)
+  for (std::set<TCollection_AsciiString>::const_iterator aPluginIt = aPlugins.begin();
+       aPluginIt != aPlugins.end();
+       aPluginIt++)
   {
     TCollection_AsciiString aName = *aPluginIt;
-    aCommunicator->RegisterPlugin (aName);
-    aCommunicator->Init (aName, aParameters);
-    setPluginSampleDirectory (aName, aCommunicator, aButtonControl);
+    aCommunicator->RegisterPlugin(aName);
+    aCommunicator->Init(aName, aParameters);
+    setPluginSampleDirectory(aName, aCommunicator, aButtonControl);
   }
-  aCommunicator->Activate (anActivatedPluginName);
+  aCommunicator->Activate(anActivatedPluginName);
 
-  aCommunicator->SetVisible (true);
-  aCommunicator->SetOpenButton (aButtonControl->StartButton());
+  aCommunicator->SetVisible(true);
+  aCommunicator->SetOpenButton(aButtonControl->StartButton());
 
   return anApp.exec();
 }

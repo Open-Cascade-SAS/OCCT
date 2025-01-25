@@ -25,17 +25,18 @@
 class TCollection_AsciiString;
 class TCollection_ExtendedString;
 
-DEFINE_STANDARD_HANDLE(FSD_CmpFile,FSD_File)
+DEFINE_STANDARD_HANDLE(FSD_CmpFile, FSD_File)
 
 class FSD_CmpFile : public FSD_File
 {
 public:
-  DEFINE_STANDARD_RTTIEXT(FSD_CmpFile,FSD_File)
+  DEFINE_STANDARD_RTTIEXT(FSD_CmpFile, FSD_File)
 
 public:
   Standard_EXPORT FSD_CmpFile();
 
-  Standard_EXPORT Storage_Error Open(const TCollection_AsciiString& aName, const Storage_OpenMode aMode) Standard_OVERRIDE;
+  Standard_EXPORT Storage_Error Open(const TCollection_AsciiString& aName,
+                                     const Storage_OpenMode         aMode) Standard_OVERRIDE;
 
   Standard_EXPORT static Storage_Error IsGoodFileType(const TCollection_AsciiString& aName);
 
@@ -43,7 +44,8 @@ public:
 
   Standard_EXPORT Storage_Error BeginReadInfoSection() Standard_OVERRIDE;
 
-  Standard_EXPORT void WritePersistentObjectHeader(const Standard_Integer aRef, const Standard_Integer aType) Standard_OVERRIDE;
+  Standard_EXPORT void WritePersistentObjectHeader(const Standard_Integer aRef,
+                                                   const Standard_Integer aType) Standard_OVERRIDE;
 
   Standard_EXPORT void BeginWritePersistentObjectData() Standard_OVERRIDE;
 
@@ -53,7 +55,8 @@ public:
 
   Standard_EXPORT void EndWritePersistentObjectData() Standard_OVERRIDE;
 
-  Standard_EXPORT void ReadPersistentObjectHeader(Standard_Integer& aRef, Standard_Integer& aType) Standard_OVERRIDE;
+  Standard_EXPORT void ReadPersistentObjectHeader(Standard_Integer& aRef,
+                                                  Standard_Integer& aType) Standard_OVERRIDE;
 
   Standard_EXPORT void BeginReadPersistentObjectData() Standard_OVERRIDE;
 
@@ -64,15 +67,12 @@ public:
   Standard_EXPORT void EndReadPersistentObjectData() Standard_OVERRIDE;
 
   Standard_EXPORT void Destroy();
-  ~FSD_CmpFile()
-  {
-    Destroy();
-  }
+
+  ~FSD_CmpFile() { Destroy(); }
 
   Standard_EXPORT static Standard_CString MagicNumber();
 
 protected:
-
   //! read from the current position to the end of line.
   Standard_EXPORT void ReadLine(TCollection_AsciiString& buffer) Standard_OVERRIDE;
 
@@ -80,11 +80,11 @@ protected:
   Standard_EXPORT void ReadExtendedLine(TCollection_ExtendedString& buffer) Standard_OVERRIDE;
 
   //! write from the current position to the end of line.
-  Standard_EXPORT void WriteExtendedLine(const TCollection_ExtendedString& buffer) Standard_OVERRIDE;
+  Standard_EXPORT void WriteExtendedLine(const TCollection_ExtendedString& buffer)
+    Standard_OVERRIDE;
 
   //! read from the first none space character position to the end of line.
   Standard_EXPORT void ReadString(TCollection_AsciiString& buffer) Standard_OVERRIDE;
-
 };
 
 #endif // _FSD_CmpFile_HeaderFile

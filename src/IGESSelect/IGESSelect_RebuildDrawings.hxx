@@ -26,7 +26,6 @@ class IGESData_IGESModel;
 class Interface_CopyTool;
 class TCollection_AsciiString;
 
-
 class IGESSelect_RebuildDrawings;
 DEFINE_STANDARD_HANDLE(IGESSelect_RebuildDrawings, IGESSelect_ModelModifier)
 
@@ -44,39 +43,22 @@ class IGESSelect_RebuildDrawings : public IGESSelect_ModelModifier
 {
 
 public:
-
-  
   //! Creates an RebuildDrawings, which uses the system Date
   Standard_EXPORT IGESSelect_RebuildDrawings();
-  
+
   //! Specific action : Rebuilds the original Drawings
-  Standard_EXPORT void Performing (IFSelect_ContextModif& ctx, const Handle(IGESData_IGESModel)& target, Interface_CopyTool& TC) const Standard_OVERRIDE;
-  
+  Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
+                                  const Handle(IGESData_IGESModel)& target,
+                                  Interface_CopyTool&               TC) const Standard_OVERRIDE;
+
   //! Returns a text which is
   //! "Rebuild Drawings"
   Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSelect_RebuildDrawings,IGESSelect_ModelModifier)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_RebuildDrawings, IGESSelect_ModelModifier)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESSelect_RebuildDrawings_HeaderFile

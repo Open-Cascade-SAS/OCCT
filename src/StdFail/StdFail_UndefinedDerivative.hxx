@@ -26,8 +26,9 @@ class StdFail_UndefinedDerivative;
 DEFINE_STANDARD_HANDLE(StdFail_UndefinedDerivative, Standard_DomainError)
 
 #if !defined No_Exception && !defined No_StdFail_UndefinedDerivative
-  #define StdFail_UndefinedDerivative_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw StdFail_UndefinedDerivative(MESSAGE);
+  #define StdFail_UndefinedDerivative_Raise_if(CONDITION, MESSAGE)                                 \
+    if (CONDITION)                                                                                 \
+      throw StdFail_UndefinedDerivative(MESSAGE);
 #else
   #define StdFail_UndefinedDerivative_Raise_if(CONDITION, MESSAGE)
 #endif

@@ -14,19 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRepFill_EdgeFaceAndOrder.hxx>
 #include <BRepFill_Filling.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 
-BRepFill_EdgeFaceAndOrder::BRepFill_EdgeFaceAndOrder()
-{
-}
+BRepFill_EdgeFaceAndOrder::BRepFill_EdgeFaceAndOrder() {}
 
-BRepFill_EdgeFaceAndOrder::BRepFill_EdgeFaceAndOrder( const TopoDS_Edge& anEdge,
-						      const TopoDS_Face& aFace,
-						      const GeomAbs_Shape anOrder )
+BRepFill_EdgeFaceAndOrder::BRepFill_EdgeFaceAndOrder(const TopoDS_Edge&  anEdge,
+                                                     const TopoDS_Face&  aFace,
+                                                     const GeomAbs_Shape anOrder)
 {
   myEdge  = anEdge;
   myFace  = aFace;

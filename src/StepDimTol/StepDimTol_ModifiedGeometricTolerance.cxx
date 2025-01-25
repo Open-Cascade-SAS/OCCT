@@ -21,26 +21,20 @@
 #include <StepRepr_ShapeAspect.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ModifiedGeometricTolerance,StepDimTol_GeometricTolerance)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ModifiedGeometricTolerance, StepDimTol_GeometricTolerance)
 
-//=======================================================================
-//function : StepDimTol_ModifiedGeometricTolerance
-//purpose  : 
-//=======================================================================
-StepDimTol_ModifiedGeometricTolerance::StepDimTol_ModifiedGeometricTolerance ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepDimTol_ModifiedGeometricTolerance::StepDimTol_ModifiedGeometricTolerance() {}
 
-void StepDimTol_ModifiedGeometricTolerance::Init (const Handle(TCollection_HAsciiString) &theGeometricTolerance_Name,
-                                                  const Handle(TCollection_HAsciiString) &theGeometricTolerance_Description,
-                                                  const Handle(StepBasic_MeasureWithUnit) &theGeometricTolerance_Magnitude,
-                                                  const Handle(StepRepr_ShapeAspect) &theGeometricTolerance_TolerancedShapeAspect,
-                                                  const StepDimTol_LimitCondition theModifier)
+//=================================================================================================
+
+void StepDimTol_ModifiedGeometricTolerance::Init(
+  const Handle(TCollection_HAsciiString)&  theGeometricTolerance_Name,
+  const Handle(TCollection_HAsciiString)&  theGeometricTolerance_Description,
+  const Handle(StepBasic_MeasureWithUnit)& theGeometricTolerance_Magnitude,
+  const Handle(StepRepr_ShapeAspect)&      theGeometricTolerance_TolerancedShapeAspect,
+  const StepDimTol_LimitCondition          theModifier)
 {
   StepDimTol_GeometricTolerance::Init(theGeometricTolerance_Name,
                                       theGeometricTolerance_Description,
@@ -50,16 +44,14 @@ void StepDimTol_ModifiedGeometricTolerance::Init (const Handle(TCollection_HAsci
   myModifier = theModifier;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepDimTol_ModifiedGeometricTolerance::Init (const Handle(TCollection_HAsciiString) &theGeometricTolerance_Name,
-                                                  const Handle(TCollection_HAsciiString) &theGeometricTolerance_Description,
-                                                  const Handle(StepBasic_MeasureWithUnit) &theGeometricTolerance_Magnitude,
-                                                  const StepDimTol_GeometricToleranceTarget &theGeometricTolerance_TolerancedShapeAspect,
-                                                  const StepDimTol_LimitCondition theModifier)
+void StepDimTol_ModifiedGeometricTolerance::Init(
+  const Handle(TCollection_HAsciiString)&    theGeometricTolerance_Name,
+  const Handle(TCollection_HAsciiString)&    theGeometricTolerance_Description,
+  const Handle(StepBasic_MeasureWithUnit)&   theGeometricTolerance_Magnitude,
+  const StepDimTol_GeometricToleranceTarget& theGeometricTolerance_TolerancedShapeAspect,
+  const StepDimTol_LimitCondition            theModifier)
 {
   StepDimTol_GeometricTolerance::Init(theGeometricTolerance_Name,
                                       theGeometricTolerance_Description,
@@ -69,22 +61,16 @@ void StepDimTol_ModifiedGeometricTolerance::Init (const Handle(TCollection_HAsci
   myModifier = theModifier;
 }
 
-//=======================================================================
-//function : Modifier
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepDimTol_LimitCondition StepDimTol_ModifiedGeometricTolerance::Modifier () const
+StepDimTol_LimitCondition StepDimTol_ModifiedGeometricTolerance::Modifier() const
 {
   return myModifier;
 }
 
-//=======================================================================
-//function : SetModifier
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepDimTol_ModifiedGeometricTolerance::SetModifier (const StepDimTol_LimitCondition theModifier)
+void StepDimTol_ModifiedGeometricTolerance::SetModifier(const StepDimTol_LimitCondition theModifier)
 {
   myModifier = theModifier;
 }

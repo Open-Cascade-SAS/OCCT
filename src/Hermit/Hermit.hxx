@@ -24,7 +24,6 @@
 class Geom2d_BSplineCurve;
 class Geom_BSplineCurve;
 
-
 //! This  is used to  reparameterize Rational  BSpline
 //! Curves so that we can   concatenate them later to
 //! build C1 Curves  It builds and 1D-reparameterizing
@@ -42,25 +41,33 @@ class Geom_BSplineCurve;
 //! can be found by reading :
 //! " Etude sur la concatenation de NURBS en vue du
 //! balayage de surfaces" PFE n S85 Ensam Lille
-class Hermit 
+class Hermit
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! returns the correct spline a(u) which will
   //! be multiplicated with BS later.
-  Standard_EXPORT static Handle(Geom2d_BSplineCurve) Solution (const Handle(Geom_BSplineCurve)& BS, const Standard_Real TolPoles = 0.000001, const Standard_Real TolKnots = 0.000001);
-  
+  Standard_EXPORT static Handle(Geom2d_BSplineCurve) Solution(
+    const Handle(Geom_BSplineCurve)& BS,
+    const Standard_Real              TolPoles = 0.000001,
+    const Standard_Real              TolKnots = 0.000001);
+
   //! returns the correct spline a(u) which will
   //! be multiplicated with BS later.
-  Standard_EXPORT static Handle(Geom2d_BSplineCurve) Solution (const Handle(Geom2d_BSplineCurve)& BS, const Standard_Real TolPoles = 0.000001, const Standard_Real TolKnots = 0.000001);
-  
+  Standard_EXPORT static Handle(Geom2d_BSplineCurve) Solution(
+    const Handle(Geom2d_BSplineCurve)& BS,
+    const Standard_Real                TolPoles = 0.000001,
+    const Standard_Real                TolKnots = 0.000001);
+
   //! returns the knots to insert to a(u) to
   //! stay with a constant sign and in the
   //! tolerances.
-  Standard_EXPORT static void Solutionbis (const Handle(Geom_BSplineCurve)& BS, Standard_Real& Knotmin, Standard_Real& Knotmax, const Standard_Real TolPoles = 0.000001, const Standard_Real TolKnots = 0.000001);
-
+  Standard_EXPORT static void Solutionbis(const Handle(Geom_BSplineCurve)& BS,
+                                          Standard_Real&                   Knotmin,
+                                          Standard_Real&                   Knotmax,
+                                          const Standard_Real              TolPoles = 0.000001,
+                                          const Standard_Real              TolKnots = 0.000001);
 };
 
 #endif // _Hermit_HeaderFile

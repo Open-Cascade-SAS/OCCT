@@ -21,57 +21,51 @@
 #include <StepData_StepWriter.hxx>
 #include <StepFEA_FeaMaterialPropertyRepresentationItem.hxx>
 
-//=======================================================================
-//function : RWStepFEA_RWFeaMaterialPropertyRepresentationItem
-//purpose  : 
-//=======================================================================
-RWStepFEA_RWFeaMaterialPropertyRepresentationItem::RWStepFEA_RWFeaMaterialPropertyRepresentationItem ()
+//=================================================================================================
+
+RWStepFEA_RWFeaMaterialPropertyRepresentationItem::
+  RWStepFEA_RWFeaMaterialPropertyRepresentationItem()
 {
 }
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepFEA_RWFeaMaterialPropertyRepresentationItem::ReadStep (const Handle(StepData_StepReaderData)& data,
-                                                                  const Standard_Integer num,
-                                                                  Handle(Interface_Check)& ach,
-                                                                  const Handle(StepFEA_FeaMaterialPropertyRepresentationItem) &ent) const
+void RWStepFEA_RWFeaMaterialPropertyRepresentationItem::ReadStep(
+  const Handle(StepData_StepReaderData)&                       data,
+  const Standard_Integer                                       num,
+  Handle(Interface_Check)&                                     ach,
+  const Handle(StepFEA_FeaMaterialPropertyRepresentationItem)& ent) const
 {
   // Check number of parameters
-  if ( ! data->CheckNbParams(num,1,ach,"fea_material_property_representation_item") ) return;
+  if (!data->CheckNbParams(num, 1, ach, "fea_material_property_representation_item"))
+    return;
 
   // Inherited fields of RepresentationItem
 
   Handle(TCollection_HAsciiString) aRepresentationItem_Name;
-  data->ReadString (num, 1, "representation_item.name", ach, aRepresentationItem_Name);
+  data->ReadString(num, 1, "representation_item.name", ach, aRepresentationItem_Name);
 
   // Initialize entity
   ent->Init(aRepresentationItem_Name);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepFEA_RWFeaMaterialPropertyRepresentationItem::WriteStep (StepData_StepWriter& SW,
-                                                                   const Handle(StepFEA_FeaMaterialPropertyRepresentationItem) &ent) const
+void RWStepFEA_RWFeaMaterialPropertyRepresentationItem::WriteStep(
+  StepData_StepWriter&                                         SW,
+  const Handle(StepFEA_FeaMaterialPropertyRepresentationItem)& ent) const
 {
 
   // Inherited fields of RepresentationItem
 
-  SW.Send (ent->StepRepr_RepresentationItem::Name());
+  SW.Send(ent->StepRepr_RepresentationItem::Name());
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepFEA_RWFeaMaterialPropertyRepresentationItem::Share (const Handle(StepFEA_FeaMaterialPropertyRepresentationItem) &,
-                                                               Interface_EntityIterator&) const
+void RWStepFEA_RWFeaMaterialPropertyRepresentationItem::Share(
+  const Handle(StepFEA_FeaMaterialPropertyRepresentationItem)&,
+  Interface_EntityIterator&) const
 {
   // Inherited fields of RepresentationItem
 }

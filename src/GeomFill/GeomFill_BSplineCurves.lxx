@@ -15,12 +15,11 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Surface
-//purpose  : 
+// function : Surface
+// purpose  :
 //=======================================================================
 
-inline const Handle(Geom_BSplineSurface)&  GeomFill_BSplineCurves::Surface()
-     const 
+inline const Handle(Geom_BSplineSurface)& GeomFill_BSplineCurves::Surface() const
 {
   return mySurface;
 }

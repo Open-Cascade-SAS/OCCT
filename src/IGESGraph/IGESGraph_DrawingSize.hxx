@@ -23,7 +23,6 @@
 #include <Standard_Real.hxx>
 #include <IGESData_IGESEntity.hxx>
 
-
 class IGESGraph_DrawingSize;
 DEFINE_STANDARD_HANDLE(IGESGraph_DrawingSize, IGESData_IGESEntity)
 
@@ -37,50 +36,33 @@ class IGESGraph_DrawingSize : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESGraph_DrawingSize();
-  
+
   //! This method is used to set the fields of the class
   //! DrawingSize
   //! - nbProps : Number of property values (NP = 2)
   //! - aXSize  : Extent of Drawing along positive XD axis
   //! - aYSize  : Extent of Drawing along positive YD axis
-  Standard_EXPORT void Init (const Standard_Integer nbProps, const Standard_Real aXSize, const Standard_Real aYSize);
-  
+  Standard_EXPORT void Init(const Standard_Integer nbProps,
+                            const Standard_Real    aXSize,
+                            const Standard_Real    aYSize);
+
   //! returns the number of property values in <me> (NP = 2)
   Standard_EXPORT Standard_Integer NbPropertyValues() const;
-  
+
   //! returns the extent of Drawing along positive XD axis
   Standard_EXPORT Standard_Real XSize() const;
-  
+
   //! returns the extent of Drawing along positive YD axis
   Standard_EXPORT Standard_Real YSize() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESGraph_DrawingSize,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGraph_DrawingSize, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Integer theNbPropertyValues;
-  Standard_Real theXSize;
-  Standard_Real theYSize;
-
-
+  Standard_Real    theXSize;
+  Standard_Real    theYSize;
 };
-
-
-
-
-
-
 
 #endif // _IGESGraph_DrawingSize_HeaderFile

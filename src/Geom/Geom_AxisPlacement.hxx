@@ -25,7 +25,6 @@
 class gp_Dir;
 class gp_Pnt;
 
-
 class Geom_AxisPlacement;
 DEFINE_STANDARD_HANDLE(Geom_AxisPlacement, Geom_Geometry)
 
@@ -59,8 +58,6 @@ class Geom_AxisPlacement : public Geom_Geometry
 {
 
 public:
-
-  
   //! Assigns A1 as the "main Axis" of this positioning system. This modifies
   //! - its origin, and
   //! - its "main Direction".
@@ -71,8 +68,7 @@ public:
   //! For a Geom_Axis2Placement:
   //! Standard_ConstructionError if A1 and the
   //! previous "X Direction" of the coordinate system are parallel.
-  Standard_EXPORT void SetAxis (const gp_Ax1& A1);
-  
+  Standard_EXPORT void SetAxis(const gp_Ax1& A1);
 
   //! Changes the direction of the axis placement.
   //! If <me> is an axis placement two axis the main "Direction"
@@ -81,52 +77,33 @@ public:
   //! Raises ConstructionError only for an axis placement two axis if V and the
   //! previous "XDirection" are parallel because it is not possible
   //! to calculate the new "XDirection" and the new "YDirection".
-  Standard_EXPORT virtual void SetDirection (const gp_Dir& V) = 0;
-  
+  Standard_EXPORT virtual void SetDirection(const gp_Dir& V) = 0;
 
   //! Assigns the point P as the origin of this positioning  system.
-  Standard_EXPORT void SetLocation (const gp_Pnt& P);
-  
+  Standard_EXPORT void SetLocation(const gp_Pnt& P);
+
   //! Computes the angular value, in radians, between the
   //! "main Direction" of this positioning system and that
   //! of positioning system Other. The result is a value between 0 and Pi.
-  Standard_EXPORT Standard_Real Angle (const Handle(Geom_AxisPlacement)& Other) const;
-  
+  Standard_EXPORT Standard_Real Angle(const Handle(Geom_AxisPlacement)& Other) const;
+
   //! Returns the main axis of the axis placement.
   //! For an "Axis2placement" it is the main axis (Location, Direction ).
   //! For an "Axis1Placement" this method returns a copy of <me>.
   Standard_EXPORT const gp_Ax1& Axis() const;
-  
 
   //! Returns the main "Direction" of an axis placement.
   Standard_EXPORT gp_Dir Direction() const;
-  
 
   //! Returns the Location point (origin) of the axis placement.
   Standard_EXPORT gp_Pnt Location() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Geom_AxisPlacement,Geom_Geometry)
+  DEFINE_STANDARD_RTTIEXT(Geom_AxisPlacement, Geom_Geometry)
 
 protected:
-
-
   gp_Ax1 axis;
 
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Geom_AxisPlacement_HeaderFile

@@ -14,70 +14,49 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Geom2d_Curve.hxx>
 #include <Standard_Type.hxx>
 #include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_SurfaceCurveInterference,TopOpeBRepDS_Interference)
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_SurfaceCurveInterference, TopOpeBRepDS_Interference)
 
-//=======================================================================
-//function : TopOpeBRepDS_SurfaceCurveInterference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TopOpeBRepDS_SurfaceCurveInterference::TopOpeBRepDS_SurfaceCurveInterference()
+TopOpeBRepDS_SurfaceCurveInterference::TopOpeBRepDS_SurfaceCurveInterference() {}
+
+//=================================================================================================
+
+TopOpeBRepDS_SurfaceCurveInterference::TopOpeBRepDS_SurfaceCurveInterference(
+  const TopOpeBRepDS_Transition& T,
+  const TopOpeBRepDS_Kind        ST,
+  const Standard_Integer         S,
+  const TopOpeBRepDS_Kind        GT,
+  const Standard_Integer         G,
+  const Handle(Geom2d_Curve)&    PC)
+    : TopOpeBRepDS_Interference(T, ST, S, GT, G),
+      myPCurve(PC)
 {
 }
 
-//=======================================================================
-//function : TopOpeBRepDS_SurfaceCurveInterference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TopOpeBRepDS_SurfaceCurveInterference::TopOpeBRepDS_SurfaceCurveInterference
-  (const TopOpeBRepDS_Transition& T,
-   const TopOpeBRepDS_Kind ST, 
-   const Standard_Integer S, 
-   const TopOpeBRepDS_Kind GT, 
-   const Standard_Integer G, 
-   const Handle(Geom2d_Curve)& PC) :
-  TopOpeBRepDS_Interference(T,ST,S,GT,G),
-  myPCurve(PC)
+TopOpeBRepDS_SurfaceCurveInterference::TopOpeBRepDS_SurfaceCurveInterference(
+  const Handle(TopOpeBRepDS_Interference)& I)
+    : TopOpeBRepDS_Interference(I)
 {
 }
 
-//=======================================================================
-//function : TopOpeBRepDS_SurfaceCurveInterference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TopOpeBRepDS_SurfaceCurveInterference::TopOpeBRepDS_SurfaceCurveInterference
-  (const Handle(TopOpeBRepDS_Interference)& I) :
-  TopOpeBRepDS_Interference(I)
-{
-}
-
-
-//=======================================================================
-//function : PCurve
-//purpose  : 
-//=======================================================================
-
-const Handle(Geom2d_Curve)& TopOpeBRepDS_SurfaceCurveInterference::PCurve
-       ()const 
+const Handle(Geom2d_Curve)& TopOpeBRepDS_SurfaceCurveInterference::PCurve() const
 {
   return myPCurve;
 }
 
-//=======================================================================
-//function : PCurve
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void  TopOpeBRepDS_SurfaceCurveInterference::PCurve
-  (const Handle(Geom2d_Curve)& PC)
+void TopOpeBRepDS_SurfaceCurveInterference::PCurve(const Handle(Geom2d_Curve)& PC)
 {
   myPCurve = PC;
 }

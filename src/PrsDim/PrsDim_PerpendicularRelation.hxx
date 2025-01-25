@@ -28,7 +28,6 @@ class PrsDim_PerpendicularRelation : public PrsDim_Relation
 {
   DEFINE_STANDARD_RTTIEXT(PrsDim_PerpendicularRelation, PrsDim_Relation)
 public:
-
   //! Constructs an object to display constraints of
   //! perpendicularity on shapes.
   //! This object is defined by a first shape aFShape, a
@@ -36,32 +35,34 @@ public:
   //! aPlane is the plane of reference to show and test the
   //! perpendicular relation between two shapes, at least
   //! one of which has a revolved surface.
-  Standard_EXPORT PrsDim_PerpendicularRelation(const TopoDS_Shape& aFShape, const TopoDS_Shape& aSShape, const Handle(Geom_Plane)& aPlane);
-  
+  Standard_EXPORT PrsDim_PerpendicularRelation(const TopoDS_Shape&       aFShape,
+                                               const TopoDS_Shape&       aSShape,
+                                               const Handle(Geom_Plane)& aPlane);
+
   //! Constructs an object to display constraints of
   //! perpendicularity on shapes.
   //! This object is defined by a first shape aFShape and a
   //! second shape aSShape.
-  Standard_EXPORT PrsDim_PerpendicularRelation(const TopoDS_Shape& aFShape, const TopoDS_Shape& aSShape);
+  Standard_EXPORT PrsDim_PerpendicularRelation(const TopoDS_Shape& aFShape,
+                                               const TopoDS_Shape& aSShape);
 
 private:
+  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                       const Handle(Prs3d_Presentation)&         thePrs,
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                        const Handle(Prs3d_Presentation)& thePrs,
-                                        const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
-                                                 const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT void ComputeTwoFacesPerpendicular(
+    const Handle(Prs3d_Presentation)& aPresentation);
 
-  Standard_EXPORT void ComputeTwoFacesPerpendicular (const Handle(Prs3d_Presentation)& aPresentation);
-
-  Standard_EXPORT void ComputeTwoEdgesPerpendicular (const Handle(Prs3d_Presentation)& aPresentation);
+  Standard_EXPORT void ComputeTwoEdgesPerpendicular(
+    const Handle(Prs3d_Presentation)& aPresentation);
 
 private:
-
   gp_Pnt myFAttach;
   gp_Pnt mySAttach;
-
 };
 
 #endif // _PrsDim_PerpendicularRelation_HeaderFile

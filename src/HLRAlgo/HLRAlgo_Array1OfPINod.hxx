@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(HLRAlgo_PolyInternalNode)> HLRAlgo_Array1OfPINod;
 
-
 #endif

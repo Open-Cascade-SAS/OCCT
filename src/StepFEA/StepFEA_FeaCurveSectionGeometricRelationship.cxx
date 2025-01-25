@@ -20,23 +20,17 @@
 #include <StepElement_CurveElementSectionDefinition.hxx>
 #include <StepFEA_FeaCurveSectionGeometricRelationship.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaCurveSectionGeometricRelationship,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaCurveSectionGeometricRelationship, Standard_Transient)
 
-//=======================================================================
-//function : StepFEA_FeaCurveSectionGeometricRelationship
-//purpose  : 
-//=======================================================================
-StepFEA_FeaCurveSectionGeometricRelationship::StepFEA_FeaCurveSectionGeometricRelationship ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepFEA_FeaCurveSectionGeometricRelationship::StepFEA_FeaCurveSectionGeometricRelationship() {}
 
-void StepFEA_FeaCurveSectionGeometricRelationship::Init (const Handle(StepElement_CurveElementSectionDefinition) &aSectionRef,
-                                                         const Handle(StepElement_AnalysisItemWithinRepresentation) &aItem)
+//=================================================================================================
+
+void StepFEA_FeaCurveSectionGeometricRelationship::Init(
+  const Handle(StepElement_CurveElementSectionDefinition)&    aSectionRef,
+  const Handle(StepElement_AnalysisItemWithinRepresentation)& aItem)
 {
 
   theSectionRef = aSectionRef;
@@ -44,42 +38,34 @@ void StepFEA_FeaCurveSectionGeometricRelationship::Init (const Handle(StepElemen
   theItem = aItem;
 }
 
-//=======================================================================
-//function : SectionRef
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepElement_CurveElementSectionDefinition) StepFEA_FeaCurveSectionGeometricRelationship::SectionRef () const
+Handle(StepElement_CurveElementSectionDefinition) StepFEA_FeaCurveSectionGeometricRelationship::
+  SectionRef() const
 {
   return theSectionRef;
 }
 
-//=======================================================================
-//function : SetSectionRef
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_FeaCurveSectionGeometricRelationship::SetSectionRef (const Handle(StepElement_CurveElementSectionDefinition) &aSectionRef)
+void StepFEA_FeaCurveSectionGeometricRelationship::SetSectionRef(
+  const Handle(StepElement_CurveElementSectionDefinition)& aSectionRef)
 {
   theSectionRef = aSectionRef;
 }
 
-//=======================================================================
-//function : Item
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepElement_AnalysisItemWithinRepresentation) StepFEA_FeaCurveSectionGeometricRelationship::Item () const
+Handle(StepElement_AnalysisItemWithinRepresentation) StepFEA_FeaCurveSectionGeometricRelationship::
+  Item() const
 {
   return theItem;
 }
 
-//=======================================================================
-//function : SetItem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_FeaCurveSectionGeometricRelationship::SetItem (const Handle(StepElement_AnalysisItemWithinRepresentation) &aItem)
+void StepFEA_FeaCurveSectionGeometricRelationship::SetItem(
+  const Handle(StepElement_AnalysisItemWithinRepresentation)& aItem)
 {
   theItem = aItem;
 }

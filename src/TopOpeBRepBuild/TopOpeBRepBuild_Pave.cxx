@@ -14,139 +14,107 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopOpeBRepBuild_Pave.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepBuild_Pave,TopOpeBRepBuild_Loop)
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepBuild_Pave, TopOpeBRepBuild_Loop)
 
-//=======================================================================
-//function : TopOpeBRepBuild_Pave
-//purpose  : 
-//=======================================================================
-TopOpeBRepBuild_Pave::TopOpeBRepBuild_Pave
-(const TopoDS_Shape& V, const Standard_Real P, const Standard_Boolean B) :
-TopOpeBRepBuild_Loop(V),
-myVertex(V),myParam(P),myIsShape(B),myHasSameDomain(Standard_False),myIntType(TopOpeBRepDS_FACE)
+//=================================================================================================
+
+TopOpeBRepBuild_Pave::TopOpeBRepBuild_Pave(const TopoDS_Shape&    V,
+                                           const Standard_Real    P,
+                                           const Standard_Boolean B)
+    : TopOpeBRepBuild_Loop(V),
+      myVertex(V),
+      myParam(P),
+      myIsShape(B),
+      myHasSameDomain(Standard_False),
+      myIntType(TopOpeBRepDS_FACE)
 {
 }
 
-//=======================================================================
-//function : HasSameDomain
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TopOpeBRepBuild_Pave::HasSameDomain(const Standard_Boolean B) 
+void TopOpeBRepBuild_Pave::HasSameDomain(const Standard_Boolean B)
 {
   myHasSameDomain = B;
 }
 
-//=======================================================================
-//function : SameDomain
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TopOpeBRepBuild_Pave::SameDomain(const TopoDS_Shape& VSD) 
+void TopOpeBRepBuild_Pave::SameDomain(const TopoDS_Shape& VSD)
 {
   mySameDomain = VSD;
 }
 
-//=======================================================================
-//function : HasSameDomain
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean TopOpeBRepBuild_Pave::HasSameDomain() const
 {
   return myHasSameDomain;
 }
 
-//=======================================================================
-//function : SameDomain
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 const TopoDS_Shape& TopOpeBRepBuild_Pave::SameDomain() const
 {
   return mySameDomain;
 }
 
-//=======================================================================
-//function : Vertex
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-const TopoDS_Shape& TopOpeBRepBuild_Pave::Vertex() const 
+const TopoDS_Shape& TopOpeBRepBuild_Pave::Vertex() const
 {
   return myVertex;
 }
 
-//=======================================================================
-//function : ChangeVertex
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TopoDS_Shape& TopOpeBRepBuild_Pave::ChangeVertex()
 {
   return myVertex;
 }
 
-//=======================================================================
-//function : Parameter
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Real TopOpeBRepBuild_Pave::Parameter() const 
+Standard_Real TopOpeBRepBuild_Pave::Parameter() const
 {
   return myParam;
 }
 
-//modified by NIZHNY-MZV  Mon Feb 21 14:11:40 2000
-//=======================================================================
-//function : Parameter
-//purpose  : 
-//=======================================================================
-void TopOpeBRepBuild_Pave::Parameter(const Standard_Real Par)  
+// modified by NIZHNY-MZV  Mon Feb 21 14:11:40 2000
+//=================================================================================================
+
+void TopOpeBRepBuild_Pave::Parameter(const Standard_Real Par)
 {
   myParam = Par;
 }
 
-//=======================================================================
-//function : IsShape
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_Pave::IsShape() const 
+Standard_Boolean TopOpeBRepBuild_Pave::IsShape() const
 {
   return myIsShape;
 }
 
-//=======================================================================
-//function : Shape
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-const TopoDS_Shape& TopOpeBRepBuild_Pave::Shape() const 
+const TopoDS_Shape& TopOpeBRepBuild_Pave::Shape() const
 {
   return myVertex;
 }
 
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TopOpeBRepBuild_Pave::Dump() const 
+void TopOpeBRepBuild_Pave::Dump() const
 {
 #ifdef OCCT_DEBUG
-  std::cout<<Parameter()<<" ";TopAbs::Print(Vertex().Orientation(),std::cout);
+  std::cout << Parameter() << " ";
+  TopAbs::Print(Vertex().Orientation(), std::cout);
 #endif
 }
 
-//modified by NIZHNY-MZV  Mon Feb 21 14:27:48 2000
-//=======================================================================
-//function : ChangeVertex
-//purpose  : 
-//=======================================================================
+// modified by NIZHNY-MZV  Mon Feb 21 14:27:48 2000
+//=================================================================================================
 
 TopOpeBRepDS_Kind& TopOpeBRepBuild_Pave::InterferenceType()
 {

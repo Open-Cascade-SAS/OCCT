@@ -14,36 +14,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Blend_SurfRstFunction.hxx>
 #include <BRepBlend_AppFuncRst.hxx>
 #include <BRepBlend_Line.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRepBlend_AppFuncRst,BRepBlend_AppFuncRoot)
+IMPLEMENT_STANDARD_RTTIEXT(BRepBlend_AppFuncRst, BRepBlend_AppFuncRoot)
 
-BRepBlend_AppFuncRst::BRepBlend_AppFuncRst (Handle(BRepBlend_Line)& Line,
-					    Blend_SurfRstFunction& Func,
-					    const Standard_Real Tol3d,
-					    const Standard_Real Tol2d)
-:BRepBlend_AppFuncRoot(Line,Func,Tol3d,Tol2d)
+BRepBlend_AppFuncRst::BRepBlend_AppFuncRst(Handle(BRepBlend_Line)& Line,
+                                           Blend_SurfRstFunction&  Func,
+                                           const Standard_Real     Tol3d,
+                                           const Standard_Real     Tol2d)
+    : BRepBlend_AppFuncRoot(Line, Func, Tol3d, Tol2d)
 {
 }
 
 void BRepBlend_AppFuncRst::Point(const Blend_AppFunction& Func,
-				 const Standard_Real Param,
-				 const math_Vector& theSol,
-				 Blend_Point& Pnt)const
+                                 const Standard_Real      Param,
+                                 const math_Vector&       theSol,
+                                 Blend_Point&             Pnt) const
 {
-  Pnt.SetValue(Func.Pnt1(), Func.Pnt2(),
-	       Param,
-	       theSol(1), theSol(2), theSol(3));
+  Pnt.SetValue(Func.Pnt1(), Func.Pnt2(), Param, theSol(1), theSol(2), theSol(3));
 }
 
-void BRepBlend_AppFuncRst::Vec(math_Vector& theSol,
-			       const Blend_Point& Pnt)const
+void BRepBlend_AppFuncRst::Vec(math_Vector& theSol, const Blend_Point& Pnt) const
 {
-  Pnt.ParametersOnS(theSol(1),theSol(2));
+  Pnt.ParametersOnS(theSol(1), theSol(2));
   theSol(3) = Pnt.ParameterOnC();
 }
-

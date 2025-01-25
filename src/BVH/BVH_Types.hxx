@@ -36,85 +36,93 @@
 
 namespace BVH
 {
-  //! Tool class for selecting appropriate vector type (Eigen or NCollection).
-  //! \tparam T Numeric data type
-  //! \tparam N Component number
-  template<class T, int N> struct VectorType
-  {
-    // Not implemented
-  };
+//! Tool class for selecting appropriate vector type (Eigen or NCollection).
+//! \tparam T Numeric data type
+//! \tparam N Component number
+template <class T, int N>
+struct VectorType
+{
+  // Not implemented
+};
 
-  template<class T> struct VectorType<T, 1>
-  {
-    typedef T Type;
-  };
+template <class T>
+struct VectorType<T, 1>
+{
+  typedef T Type;
+};
 
-  template<class T> struct VectorType<T, 2>
-  {
-    typedef NCollection_Vec2<T> Type;
-  };
+template <class T>
+struct VectorType<T, 2>
+{
+  typedef NCollection_Vec2<T> Type;
+};
 
-  template<class T> struct VectorType<T, 3>
-  {
-    typedef NCollection_Vec3<T> Type;
-  };
+template <class T>
+struct VectorType<T, 3>
+{
+  typedef NCollection_Vec3<T> Type;
+};
 
-  template<class T> Bnd_Box ToBndBox (const T& theMin, const T& theMax)
-  {
-    return Bnd_Box (gp_Pnt (theMin, 0., 0.), gp_Pnt (theMax, 0., 0.));
-  }
-
-  template<class T> Bnd_Box ToBndBox (const NCollection_Vec2<T>& theMin,
-                                      const NCollection_Vec2<T>& theMax)
-  {
-    return Bnd_Box (gp_Pnt (theMin.x(), theMin.y(), 0.),
-                    gp_Pnt (theMax.x(), theMax.y(), 0.));
-  }
-
-  template<class T> Bnd_Box ToBndBox (const NCollection_Vec3<T>& theMin,
-                                      const NCollection_Vec3<T>& theMax)
-  {
-    return Bnd_Box (gp_Pnt (theMin.x(), theMin.y(), theMin.z()),
-                    gp_Pnt (theMax.x(), theMax.y(), theMax.z()));
-  }
-
-  template<class T> Bnd_Box ToBndBox (const NCollection_Vec4<T>& theMin,
-                                      const NCollection_Vec4<T>& theMax)
-  {
-    return Bnd_Box (gp_Pnt (theMin.x(), theMin.y(), theMin.z()),
-                    gp_Pnt (theMax.x(), theMax.y(), theMax.z()));
-  }
-
-  template<class T> struct VectorType<T, 4>
-  {
-    typedef NCollection_Vec4<T> Type;
-  };
-
-  //! Tool class for selecting appropriate matrix type (Eigen or NCollection).
-  //! \tparam T Numeric data type
-  //! \tparam N Matrix dimension
-  template<class T, int N> struct MatrixType
-  {
-    // Not implemented
-  };
-
-  template<class T> struct MatrixType<T, 4>
-  {
-    typedef NCollection_Mat4<T> Type;
-  };
-
-  //! Tool class for selecting type of array of vectors (STD or NCollection vector).
-  //! \tparam T Numeric data type
-  //! \tparam N Component number
-  template<class T, int N = 1> struct ArrayType
-  {
-  #ifndef _BVH_USE_STD_VECTOR_
-    typedef NCollection_Vector<typename VectorType<T, N>::Type> Type;
-  #else
-    typedef std::vector<typename VectorType<T, N>::Type> Type;
-  #endif
-  };
+template <class T>
+Bnd_Box ToBndBox(const T& theMin, const T& theMax)
+{
+  return Bnd_Box(gp_Pnt(theMin, 0., 0.), gp_Pnt(theMax, 0., 0.));
 }
+
+template <class T>
+Bnd_Box ToBndBox(const NCollection_Vec2<T>& theMin, const NCollection_Vec2<T>& theMax)
+{
+  return Bnd_Box(gp_Pnt(theMin.x(), theMin.y(), 0.), gp_Pnt(theMax.x(), theMax.y(), 0.));
+}
+
+template <class T>
+Bnd_Box ToBndBox(const NCollection_Vec3<T>& theMin, const NCollection_Vec3<T>& theMax)
+{
+  return Bnd_Box(gp_Pnt(theMin.x(), theMin.y(), theMin.z()),
+                 gp_Pnt(theMax.x(), theMax.y(), theMax.z()));
+}
+
+template <class T>
+Bnd_Box ToBndBox(const NCollection_Vec4<T>& theMin, const NCollection_Vec4<T>& theMax)
+{
+  return Bnd_Box(gp_Pnt(theMin.x(), theMin.y(), theMin.z()),
+                 gp_Pnt(theMax.x(), theMax.y(), theMax.z()));
+}
+
+template <class T>
+struct VectorType<T, 4>
+{
+  typedef NCollection_Vec4<T> Type;
+};
+
+//! Tool class for selecting appropriate matrix type (Eigen or NCollection).
+//! \tparam T Numeric data type
+//! \tparam N Matrix dimension
+template <class T, int N>
+struct MatrixType
+{
+  // Not implemented
+};
+
+template <class T>
+struct MatrixType<T, 4>
+{
+  typedef NCollection_Mat4<T> Type;
+};
+
+//! Tool class for selecting type of array of vectors (STD or NCollection vector).
+//! \tparam T Numeric data type
+//! \tparam N Component number
+template <class T, int N = 1>
+struct ArrayType
+{
+#ifndef _BVH_USE_STD_VECTOR_
+  typedef NCollection_Vector<typename VectorType<T, N>::Type> Type;
+#else
+  typedef std::vector<typename VectorType<T, N>::Type> Type;
+#endif
+};
+} // namespace BVH
 
 //! 2D vector of integers.
 typedef BVH::VectorType<Standard_Integer, 2>::Type BVH_Vec2i;
@@ -166,135 +174,140 @@ typedef BVH::MatrixType<Standard_Real, 4>::Type BVH_Mat4d;
 
 namespace BVH
 {
-  //! Tool class for accessing specific vector component (by index).
-  //! \tparam T Numeric data type
-  //! \tparam N Component number
-  template<class T, int N> struct VecComp
+//! Tool class for accessing specific vector component (by index).
+//! \tparam T Numeric data type
+//! \tparam N Component number
+template <class T, int N>
+struct VecComp
+{
+  // Not implemented
+};
+
+template <class T>
+struct VecComp<T, 2>
+{
+  typedef typename BVH::VectorType<T, 2>::Type BVH_Vec2t;
+
+  static T Get(const BVH_Vec2t& theVec, const Standard_Integer theAxis)
   {
-    // Not implemented
-  };
+    return theAxis == 0 ? theVec.x() : theVec.y();
+  }
+};
 
-  template<class T> struct VecComp<T, 2>
+template <class T>
+struct VecComp<T, 3>
+{
+  typedef typename BVH::VectorType<T, 3>::Type BVH_Vec3t;
+
+  static T Get(const BVH_Vec3t& theVec, const Standard_Integer theAxis)
   {
-    typedef typename BVH::VectorType<T, 2>::Type BVH_Vec2t;
+    return theAxis == 0 ? theVec.x() : (theAxis == 1 ? theVec.y() : theVec.z());
+  }
+};
 
-    static T Get (const BVH_Vec2t& theVec, const Standard_Integer theAxis)
-    {
-      return theAxis == 0 ? theVec.x() : theVec.y();
-    }
-  };
+template <class T>
+struct VecComp<T, 4>
+{
+  typedef typename BVH::VectorType<T, 4>::Type BVH_Vec4t;
 
-  template<class T> struct VecComp<T, 3>
+  static T Get(const BVH_Vec4t& theVec, const Standard_Integer theAxis)
   {
-    typedef typename BVH::VectorType<T, 3>::Type BVH_Vec3t;
+    return theAxis == 0 ? theVec.x()
+                        : (theAxis == 1 ? theVec.y() : (theAxis == 2 ? theVec.z() : theVec.w()));
+  }
+};
 
-    static T Get (const BVH_Vec3t& theVec, const Standard_Integer theAxis)
-    {
-      return theAxis == 0 ? theVec.x() : ( theAxis == 1 ? theVec.y() : theVec.z() );
-    }
-  };
+//! Tool class providing typical operations on the array. It allows
+//! for interoperability between STD vector and NCollection vector.
+//! \tparam T Numeric data type
+//! \tparam N Component number
+template <class T, int N = 1>
+struct Array
+{
+  typedef typename BVH::ArrayType<T, N>::Type BVH_ArrayNt;
 
-  template<class T> struct VecComp<T, 4>
+  //! Returns a const reference to the element with the given index.
+  static inline const typename BVH::VectorType<T, N>::Type& Value(const BVH_ArrayNt&     theArray,
+                                                                  const Standard_Integer theIndex)
   {
-    typedef typename BVH::VectorType<T, 4>::Type BVH_Vec4t;
+#ifdef _BVH_USE_STD_VECTOR_
+    return theArray[theIndex];
+#else
+    return theArray.Value(theIndex);
+#endif
+  }
 
-    static T Get (const BVH_Vec4t& theVec, const Standard_Integer theAxis)
-    {
-      return theAxis == 0 ? theVec.x() :
-        (theAxis == 1 ? theVec.y() : ( theAxis == 2 ? theVec.z() : theVec.w() ));
-    }
-  };
-
-  //! Tool class providing typical operations on the array. It allows
-  //! for interoperability between STD vector and NCollection vector.
-  //! \tparam T Numeric data type
-  //! \tparam N Component number
-  template<class T, int N = 1> struct Array
+  //! Returns a reference to the element with the given index.
+  static inline typename BVH::VectorType<T, N>::Type& ChangeValue(BVH_ArrayNt&           theArray,
+                                                                  const Standard_Integer theIndex)
   {
-    typedef typename BVH::ArrayType<T, N>::Type BVH_ArrayNt;
-
-    //! Returns a const reference to the element with the given index.
-    static inline const typename BVH::VectorType<T, N>::Type& Value (
-        const BVH_ArrayNt& theArray, const Standard_Integer theIndex)
-    {
 #ifdef _BVH_USE_STD_VECTOR_
-      return theArray[theIndex];
+    return theArray[theIndex];
 #else
-      return theArray.Value (theIndex);
+    return theArray.ChangeValue(theIndex);
 #endif
-    }
+  }
 
-    //! Returns a reference to the element with the given index.
-    static inline typename BVH::VectorType<T, N>::Type& ChangeValue (
-      BVH_ArrayNt& theArray, const Standard_Integer theIndex)
-    {
+  //! Adds the new element at the end of the array.
+  static inline void Append(BVH_ArrayNt&                                theArray,
+                            const typename BVH::VectorType<T, N>::Type& theElement)
+  {
 #ifdef _BVH_USE_STD_VECTOR_
-      return theArray[theIndex];
+    theArray.push_back(theElement);
 #else
-      return theArray.ChangeValue (theIndex);
+    theArray.Append(theElement);
 #endif
-    }
+  }
 
-    //! Adds the new element at the end of the array.
-    static inline void Append (BVH_ArrayNt& theArray,
-      const typename BVH::VectorType<T, N>::Type& theElement)
-    {
+  //! Returns the number of elements in the given array.
+  static inline Standard_Integer Size(const BVH_ArrayNt& theArray)
+  {
 #ifdef _BVH_USE_STD_VECTOR_
-      theArray.push_back (theElement);
+    return static_cast<Standard_Integer>(theArray.size());
 #else
-      theArray.Append (theElement);
+    return static_cast<Standard_Integer>(theArray.Size());
 #endif
-    }
+  }
 
-    //! Returns the number of elements in the given array.
-    static inline Standard_Integer Size (const BVH_ArrayNt& theArray)
-    {
+  //! Removes all elements from the given array.
+  static inline void Clear(BVH_ArrayNt& theArray)
+  {
 #ifdef _BVH_USE_STD_VECTOR_
-      return static_cast<Standard_Integer> (theArray.size());
+    theArray.clear();
 #else
-      return static_cast<Standard_Integer> (theArray.Size());
+    theArray.Clear();
 #endif
-    }
+  }
 
-    //! Removes all elements from the given array.
-    static inline void Clear (BVH_ArrayNt& theArray)
-    {
+  //! Requests that the array capacity be at least enough to
+  //! contain given number of elements. This function has no
+  //! effect in case of NCollection based array.
+  static inline void Reserve(BVH_ArrayNt& theArray, const Standard_Integer theCount)
+  {
 #ifdef _BVH_USE_STD_VECTOR_
-      theArray.clear();
-#else
-      theArray.Clear();
-#endif
+    if (Size(theArray) == theCount)
+    {
+  #ifdef _STD_VECTOR_SHRINK
+      theArray.shrink_to_fit();
+  #endif
     }
-
-    //! Requests that the array capacity be at least enough to
-    //! contain given number of elements. This function has no
-    //! effect in case of NCollection based array.
-    static inline void Reserve (BVH_ArrayNt& theArray, const Standard_Integer theCount)
+    else
     {
-#ifdef _BVH_USE_STD_VECTOR_
-      if (Size (theArray) == theCount)
-      {
-#ifdef _STD_VECTOR_SHRINK
-        theArray.shrink_to_fit();
-#endif
-      }
-      else
-      {
-        theArray.reserve (theCount);
-      }
+      theArray.reserve(theCount);
+    }
 #else
       // do nothing
 #endif
-    }
-  };
-
-  template<class T>
-  static inline Standard_Integer IntFloor (const T theValue)
-  {
-    const Standard_Integer aRes = static_cast<Standard_Integer> (theValue);
-
-    return aRes - static_cast<Standard_Integer> (aRes > theValue);
   }
+};
+
+template <class T>
+static inline Standard_Integer IntFloor(const T theValue)
+{
+  const Standard_Integer aRes = static_cast<Standard_Integer>(theValue);
+
+  return aRes - static_cast<Standard_Integer>(aRes > theValue);
 }
+} // namespace BVH
 
 #endif // _BVH_Types_Header

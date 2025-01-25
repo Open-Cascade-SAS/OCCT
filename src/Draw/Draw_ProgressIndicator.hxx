@@ -31,22 +31,21 @@ class Draw_ProgressIndicator : public Message_ProgressIndicator
 {
 
 public:
-
-  
   //! Creates a progress indicator and remembers pointer to Draw_Interpretor
   //!
   //! @param theUpdateThreshold defines minimal progress (in percents) between
   //! updates of the indicator (non-forced updates of the progress bar will be
   //! disabled until that progress is reached since last update).
-  Standard_EXPORT Draw_ProgressIndicator(const Draw_Interpretor& di, Standard_Real theUpdateThreshold = 1.);
-  
+  Standard_EXPORT Draw_ProgressIndicator(const Draw_Interpretor& di,
+                                         Standard_Real           theUpdateThreshold = 1.);
+
   //! Destructor; calls Reset()
   Standard_EXPORT ~Draw_ProgressIndicator();
-  
+
   //! Sets tcl output mode (on/off).
-  Standard_EXPORT void SetTclMode (const Standard_Boolean theTclMode);
-  
-  //! Gets tcl output mode (on/off). 
+  Standard_EXPORT void SetTclMode(const Standard_Boolean theTclMode);
+
+  //! Gets tcl output mode (on/off).
   Standard_EXPORT Standard_Boolean GetTclMode() const;
 
   //! Sets console output mode (on/off).
@@ -57,22 +56,22 @@ public:
   Standard_EXPORT Standard_Boolean GetConsoleMode() const;
 
   //! Sets graphical output mode (on/off)
-  Standard_EXPORT void SetGraphMode (const Standard_Boolean theGraphMode);
-  
+  Standard_EXPORT void SetGraphMode(const Standard_Boolean theGraphMode);
+
   //! Gets graphical output mode (on/off)
   Standard_EXPORT Standard_Boolean GetGraphMode() const;
 
   //! Clears/erases opened TCL windows if any
   //! and sets myBreak to False
   Standard_EXPORT virtual void Reset() Standard_OVERRIDE;
-  
+
   //! Defines method Show of Progress Indicator
-  Standard_EXPORT virtual void Show (const Message_ProgressScope& theScope, 
-                                     const Standard_Boolean force = Standard_True) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void Show(const Message_ProgressScope& theScope,
+                                    const Standard_Boolean force = Standard_True) Standard_OVERRIDE;
+
   //! Redefines method UserBreak of Progress Indicator
   Standard_EXPORT virtual Standard_Boolean UserBreak() Standard_OVERRIDE;
-  
+
   //! Get/Set default value for tcl mode
   Standard_EXPORT static Standard_Boolean& DefaultTclMode();
 
@@ -83,21 +82,21 @@ public:
   Standard_EXPORT static Standard_Boolean& DefaultGraphMode();
 
   //! Internal method for implementation of UserBreak mechanism;
-  //! note that it uses static variable and thus not thread-safe! 
+  //! note that it uses static variable and thus not thread-safe!
   Standard_EXPORT static Standard_Address& StopIndicator();
 
-  DEFINE_STANDARD_RTTIEXT(Draw_ProgressIndicator,Message_ProgressIndicator)
+  DEFINE_STANDARD_RTTIEXT(Draw_ProgressIndicator, Message_ProgressIndicator)
 
 private:
-  Standard_Boolean myTclMode;
-  Standard_Boolean myConsoleMode;
-  Standard_Boolean myGraphMode;
+  Standard_Boolean  myTclMode;
+  Standard_Boolean  myConsoleMode;
+  Standard_Boolean  myGraphMode;
   Draw_Interpretor* myDraw;
-  Standard_Boolean myShown;
-  Standard_Boolean myBreak;
-  Standard_Real myUpdateThreshold;
-  Standard_Real myLastPosition;
-  Standard_Size myStartTime;
+  Standard_Boolean  myShown;
+  Standard_Boolean  myBreak;
+  Standard_Real     myUpdateThreshold;
+  Standard_Real     myLastPosition;
+  Standard_Size     myStartTime;
   Standard_ThreadId myGuiThreadId;
 };
 

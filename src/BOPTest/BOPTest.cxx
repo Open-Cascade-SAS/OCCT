@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPTest.hxx>
 #include <BRepTest.hxx>
 #include <DBRep.hxx>
@@ -31,39 +30,38 @@
 #include <BOPAlgo_Alerts.hxx>
 #include <BOPTest_Objects.hxx>
 
-//=======================================================================
-//function : AllCommands
-//purpose  : 
-//=======================================================================
-void  BOPTest::AllCommands(Draw_Interpretor& theCommands)
+//=================================================================================================
+
+void BOPTest::AllCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
-  if (done) return;
+  if (done)
+    return;
   done = Standard_True;
   //
-  BOPTest::BOPCommands       (theCommands);
-  BOPTest::CheckCommands     (theCommands);
-  BOPTest::LowCommands       (theCommands);
-  BOPTest::TolerCommands     (theCommands);
-  BOPTest::ObjCommands       (theCommands);
-  BOPTest::PartitionCommands (theCommands);
-  BOPTest::APICommands       (theCommands);
-  BOPTest::OptionCommands    (theCommands);
-  BOPTest::DebugCommands     (theCommands);
-  BOPTest::CellsCommands     (theCommands);
-  BOPTest::UtilityCommands   (theCommands);
+  BOPTest::BOPCommands(theCommands);
+  BOPTest::CheckCommands(theCommands);
+  BOPTest::LowCommands(theCommands);
+  BOPTest::TolerCommands(theCommands);
+  BOPTest::ObjCommands(theCommands);
+  BOPTest::PartitionCommands(theCommands);
+  BOPTest::APICommands(theCommands);
+  BOPTest::OptionCommands(theCommands);
+  BOPTest::DebugCommands(theCommands);
+  BOPTest::CellsCommands(theCommands);
+  BOPTest::UtilityCommands(theCommands);
   BOPTest::RemoveFeaturesCommands(theCommands);
   BOPTest::PeriodicityCommands(theCommands);
   BOPTest::MkConnectedCommands(theCommands);
 }
-//=======================================================================
-//function : Factory
-//purpose  : 
-//=======================================================================
-  void BOPTest::Factory(Draw_Interpretor& theCommands)
+
+//=================================================================================================
+
+void BOPTest::Factory(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean FactoryDone = Standard_False;
-  if (FactoryDone) return;
+  if (FactoryDone)
+    return;
 
   FactoryDone = Standard_True;
 
@@ -74,27 +72,24 @@ void  BOPTest::AllCommands(Draw_Interpretor& theCommands)
   MeshTest::Commands(theCommands);
   HLRTest::Commands(theCommands);
   BOPTest::AllCommands(theCommands);
-  SWDRAW::Init (theCommands);
+  SWDRAW::Init(theCommands);
 }
 // Declare entry point PLUGINFACTORY
 DPLUGIN(BOPTest)
 
-//=======================================================================
-//function : ReportAlerts
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void BOPTest::ReportAlerts(const Handle(Message_Report)& theReport)
 {
   // first report warnings, then errors
-  Message_Gravity anAlertTypes[2] = { Message_Warning, Message_Fail };
-  TCollection_ExtendedString aMsgType[2] = { "Warning: ", "Error: " };
+  Message_Gravity            anAlertTypes[2] = {Message_Warning, Message_Fail};
+  TCollection_ExtendedString aMsgType[2]     = {"Warning: ", "Error: "};
   for (int iGravity = 0; iGravity < 2; iGravity++)
   {
     // report shapes for the same type of alert together
     NCollection_Map<Handle(Standard_Transient)> aPassedTypes;
-    const Message_ListOfAlert& aList = theReport->GetAlerts (anAlertTypes[iGravity]);
-    for (Message_ListOfAlert::Iterator aIt (aList); aIt.More(); aIt.Next())
+    const Message_ListOfAlert& aList = theReport->GetAlerts(anAlertTypes[iGravity]);
+    for (Message_ListOfAlert::Iterator aIt(aList); aIt.More(); aIt.Next())
     {
       // check that this type of warnings has not yet been processed
       const Handle(Standard_Type)& aType = aIt.Value()->DynamicType();
@@ -102,21 +97,21 @@ void BOPTest::ReportAlerts(const Handle(Message_Report)& theReport)
         continue;
 
       // get alert message
-      Message_Msg aMsg (aIt.Value()->GetMessageKey());
+      Message_Msg                aMsg(aIt.Value()->GetMessageKey());
       TCollection_ExtendedString aText = aMsgType[iGravity] + aMsg.Get();
 
       // collect all shapes if any attached to this alert
       if (BOPTest_Objects::DrawWarnShapes())
       {
         TCollection_AsciiString aShapeList;
-        Standard_Integer aNbShapes = 0;
-        for (Message_ListOfAlert::Iterator aIt2 (aIt); aIt2.More(); aIt2.Next())
+        Standard_Integer        aNbShapes = 0;
+        for (Message_ListOfAlert::Iterator aIt2(aIt); aIt2.More(); aIt2.Next())
         {
-          Handle(TopoDS_AlertWithShape) aShapeAlert = Handle(TopoDS_AlertWithShape)::DownCast (aIt2.Value());
+          Handle(TopoDS_AlertWithShape) aShapeAlert =
+            Handle(TopoDS_AlertWithShape)::DownCast(aIt2.Value());
 
-          if (!aShapeAlert.IsNull() &&
-              (aType == aShapeAlert->DynamicType()) &&
-              !aShapeAlert->GetShape().IsNull())
+          if (!aShapeAlert.IsNull() && (aType == aShapeAlert->DynamicType())
+              && !aShapeAlert->GetShape().IsNull())
           {
             //
             char aName[80];
@@ -138,10 +133,8 @@ void BOPTest::ReportAlerts(const Handle(Message_Report)& theReport)
   }
 }
 
-//=======================================================================
-//function : GetOperationType
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 BOPAlgo_Operation BOPTest::GetOperationType(const Standard_CString theOp)
 {
   TCollection_AsciiString anOp(theOp);

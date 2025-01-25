@@ -23,48 +23,27 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-
 class StepBasic_ApprovalRole;
 DEFINE_STANDARD_HANDLE(StepBasic_ApprovalRole, Standard_Transient)
-
 
 class StepBasic_ApprovalRole : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a ApprovalRole
   Standard_EXPORT StepBasic_ApprovalRole();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aRole);
-  
-  Standard_EXPORT void SetRole (const Handle(TCollection_HAsciiString)& aRole);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aRole);
+
+  Standard_EXPORT void SetRole(const Handle(TCollection_HAsciiString)& aRole);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) Role() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ApprovalRole,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ApprovalRole, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TCollection_HAsciiString) role;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_ApprovalRole_HeaderFile

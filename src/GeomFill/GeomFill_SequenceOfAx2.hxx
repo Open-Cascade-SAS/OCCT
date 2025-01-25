@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<gp_Ax2> GeomFill_SequenceOfAx2;
 
-
 #endif

@@ -15,57 +15,44 @@
 // commercial license or contractual agreement.
 
 #ifndef No_Exception
-#define No_Exception
+  #define No_Exception
 #endif
-
 
 #include <HLRBRep_VertexList.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_NoMoreObject.hxx>
 #include <Standard_NoSuchObject.hxx>
 
-//=======================================================================
-//function : HLRBRep_VertexList
-//purpose  : 
-//=======================================================================
-HLRBRep_VertexList::
-HLRBRep_VertexList(const HLRBRep_EdgeInterferenceTool& T, 
-		   const HLRAlgo_ListIteratorOfInterferenceList& I) :
-       myIterator(I),
-       myTool(T),
-       fromEdge(Standard_False),
-       fromInterf(Standard_False)
+//=================================================================================================
+
+HLRBRep_VertexList::HLRBRep_VertexList(const HLRBRep_EdgeInterferenceTool&           T,
+                                       const HLRAlgo_ListIteratorOfInterferenceList& I)
+    : myIterator(I),
+      myTool(T),
+      fromEdge(Standard_False),
+      fromInterf(Standard_False)
 {
   myTool.InitVertices();
   Next();
 }
 
-//=======================================================================
-//function : IsPeriodic
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean  HLRBRep_VertexList::IsPeriodic()const 
+Standard_Boolean HLRBRep_VertexList::IsPeriodic() const
 {
   return myTool.IsPeriodic();
 }
 
-//=======================================================================
-//function : More
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean  HLRBRep_VertexList::More()const 
+Standard_Boolean HLRBRep_VertexList::More() const
 {
   return (fromEdge || fromInterf);
 }
 
-//=======================================================================
-//function : Next
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void  HLRBRep_VertexList::Next()
+void HLRBRep_VertexList::Next()
 {
   if (fromInterf)
     myIterator.Next();
@@ -73,25 +60,25 @@ void  HLRBRep_VertexList::Next()
     myTool.NextVertex();
   fromInterf = myIterator.More();
   fromEdge   = myTool.MoreVertices();
-  if (fromEdge && fromInterf) {
-    if (!myTool.SameVertexAndInterference( myIterator.Value())) {
-      if (myTool.CurrentParameter() <
-	  myTool.ParameterOfInterference(myIterator.Value())) {
-	fromInterf = Standard_False;
+  if (fromEdge && fromInterf)
+  {
+    if (!myTool.SameVertexAndInterference(myIterator.Value()))
+    {
+      if (myTool.CurrentParameter() < myTool.ParameterOfInterference(myIterator.Value()))
+      {
+        fromInterf = Standard_False;
       }
-      else {
-	fromEdge = Standard_False;
+      else
+      {
+        fromEdge = Standard_False;
       }
     }
   }
 }
 
-//=======================================================================
-//function : Current
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-const HLRAlgo_Intersection &  HLRBRep_VertexList::Current() const 
+const HLRAlgo_Intersection& HLRBRep_VertexList::Current() const
 {
   if (fromEdge)
     return myTool.CurrentVertex();
@@ -101,32 +88,23 @@ const HLRAlgo_Intersection &  HLRBRep_VertexList::Current() const
     throw Standard_NoSuchObject("HLRBRep_VertexList::Current");
 }
 
-//=======================================================================
-//function : IsBoundary
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean  HLRBRep_VertexList::IsBoundary() const 
+Standard_Boolean HLRBRep_VertexList::IsBoundary() const
 {
   return fromEdge;
 }
 
-//=======================================================================
-//function : IsInterference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean  HLRBRep_VertexList::IsInterference() const 
+Standard_Boolean HLRBRep_VertexList::IsInterference() const
 {
   return fromInterf;
 }
 
-//=======================================================================
-//function : Orientation
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TopAbs_Orientation  HLRBRep_VertexList::Orientation() const 
+TopAbs_Orientation HLRBRep_VertexList::Orientation() const
 {
   if (fromEdge)
     return myTool.CurrentOrientation();
@@ -134,12 +112,9 @@ TopAbs_Orientation  HLRBRep_VertexList::Orientation() const
     throw Standard_DomainError("HLRBRep_VertexList::Orientation");
 }
 
-//=======================================================================
-//function : Transition
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TopAbs_Orientation  HLRBRep_VertexList::Transition() const 
+TopAbs_Orientation HLRBRep_VertexList::Transition() const
 {
   if (fromInterf)
     return myIterator.Value().Transition();
@@ -147,12 +122,9 @@ TopAbs_Orientation  HLRBRep_VertexList::Transition() const
     throw Standard_DomainError("HLRBRep_VertexList::Transition");
 }
 
-//=======================================================================
-//function : BoundaryTransition
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TopAbs_Orientation  HLRBRep_VertexList::BoundaryTransition() const 
+TopAbs_Orientation HLRBRep_VertexList::BoundaryTransition() const
 {
   if (fromInterf)
     return myIterator.Value().BoundaryTransition();

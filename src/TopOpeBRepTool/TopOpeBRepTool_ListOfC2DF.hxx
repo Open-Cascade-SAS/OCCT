@@ -20,8 +20,7 @@
 #include <TopOpeBRepTool_C2DF.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<TopOpeBRepTool_C2DF> TopOpeBRepTool_ListOfC2DF;
+typedef NCollection_List<TopOpeBRepTool_C2DF>           TopOpeBRepTool_ListOfC2DF;
 typedef NCollection_List<TopOpeBRepTool_C2DF>::Iterator TopOpeBRepTool_ListIteratorOfListOfC2DF;
-
 
 #endif

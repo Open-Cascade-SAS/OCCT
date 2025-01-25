@@ -28,73 +28,54 @@
 #include <TColStd_HSequenceOfAsciiString.hxx>
 class Storage_BaseDriver;
 
-
 class Storage_TypeData;
 DEFINE_STANDARD_HANDLE(Storage_TypeData, Standard_Transient)
-
 
 class Storage_TypeData : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT Storage_TypeData();
 
-  Standard_EXPORT Standard_Boolean Read (const Handle(Storage_BaseDriver)& theDriver);
-  
+  Standard_EXPORT Standard_Boolean Read(const Handle(Storage_BaseDriver)& theDriver);
+
   Standard_EXPORT Standard_Integer NumberOfTypes() const;
 
   //! add a type to the list
-  Standard_EXPORT void AddType (const TCollection_AsciiString& aName, const Standard_Integer aTypeNum);
-  
-  //! returns the name of the type with number <aTypeNum>
-  Standard_EXPORT TCollection_AsciiString Type (const Standard_Integer aTypeNum) const;
+  Standard_EXPORT void AddType(const TCollection_AsciiString& aName,
+                               const Standard_Integer         aTypeNum);
 
   //! returns the name of the type with number <aTypeNum>
-  Standard_EXPORT Standard_Integer Type (const TCollection_AsciiString& aTypeName) const;
-  
-  Standard_EXPORT Standard_Boolean IsType (const TCollection_AsciiString& aName) const;
-  
+  Standard_EXPORT TCollection_AsciiString Type(const Standard_Integer aTypeNum) const;
+
+  //! returns the name of the type with number <aTypeNum>
+  Standard_EXPORT Standard_Integer Type(const TCollection_AsciiString& aTypeName) const;
+
+  Standard_EXPORT Standard_Boolean IsType(const TCollection_AsciiString& aName) const;
+
   Standard_EXPORT Handle(TColStd_HSequenceOfAsciiString) Types() const;
-  
+
   Standard_EXPORT Storage_Error ErrorStatus() const;
-  
+
   Standard_EXPORT TCollection_AsciiString ErrorStatusExtension() const;
-  
+
   Standard_EXPORT void ClearErrorStatus();
-  
+
   Standard_EXPORT void Clear();
 
+  friend class Storage_Schema;
 
-friend class Storage_Schema;
-
-
-  DEFINE_STANDARD_RTTIEXT(Storage_TypeData,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Storage_TypeData, Standard_Transient)
 
 protected:
-
-
-
-
 private:
+  Standard_EXPORT void SetErrorStatus(const Storage_Error anError);
 
-  
-  Standard_EXPORT void SetErrorStatus (const Storage_Error anError);
-  
-  Standard_EXPORT void SetErrorStatusExtension (const TCollection_AsciiString& anErrorExt);
+  Standard_EXPORT void SetErrorStatusExtension(const TCollection_AsciiString& anErrorExt);
 
-  Storage_PType myPt;
-  Storage_Error myErrorStatus;
+  Storage_PType           myPt;
+  Storage_Error           myErrorStatus;
   TCollection_AsciiString myErrorStatusExt;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Storage_TypeData_HeaderFile

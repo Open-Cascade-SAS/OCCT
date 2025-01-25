@@ -24,7 +24,6 @@
 #include <Standard_Real.hxx>
 class gp_Pnt;
 
-
 class Geom_Point;
 DEFINE_STANDARD_HANDLE(Geom_Point, Geom_Geometry)
 
@@ -36,50 +35,33 @@ class Geom_Point : public Geom_Geometry
 {
 
 public:
-
-  
   //! returns the Coordinates of <me>.
-  Standard_EXPORT virtual void Coord (Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const = 0;
-  
+  Standard_EXPORT virtual void Coord(Standard_Real& X,
+                                     Standard_Real& Y,
+                                     Standard_Real& Z) const = 0;
+
   //! returns a non transient copy of <me>
   Standard_EXPORT virtual gp_Pnt Pnt() const = 0;
-  
+
   //! returns the X coordinate of <me>.
   Standard_EXPORT virtual Standard_Real X() const = 0;
-  
+
   //! returns  the Y coordinate of <me>.
   Standard_EXPORT virtual Standard_Real Y() const = 0;
-  
+
   //! returns the Z coordinate of <me>.
   Standard_EXPORT virtual Standard_Real Z() const = 0;
-  
+
   //! Computes the distance between <me> and <Other>.
-  Standard_EXPORT Standard_Real Distance (const Handle(Geom_Point)& Other) const;
-  
+  Standard_EXPORT Standard_Real Distance(const Handle(Geom_Point)& Other) const;
+
   //! Computes the square distance between <me> and <Other>.
-  Standard_EXPORT Standard_Real SquareDistance (const Handle(Geom_Point)& Other) const;
+  Standard_EXPORT Standard_Real SquareDistance(const Handle(Geom_Point)& Other) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Geom_Point,Geom_Geometry)
+  DEFINE_STANDARD_RTTIEXT(Geom_Point, Geom_Geometry)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Geom_Point_HeaderFile

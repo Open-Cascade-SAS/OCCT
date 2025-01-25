@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_EntityIterator.hxx>
 #include "RWStepBasic_RWConversionBasedUnitAndTimeUnit.pxx"
 #include <StepBasic_ConversionBasedUnitAndTimeUnit.hxx>
@@ -21,92 +20,101 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWConversionBasedUnitAndTimeUnit::RWStepBasic_RWConversionBasedUnitAndTimeUnit () {}
+RWStepBasic_RWConversionBasedUnitAndTimeUnit::RWStepBasic_RWConversionBasedUnitAndTimeUnit() {}
 
-void RWStepBasic_RWConversionBasedUnitAndTimeUnit::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num0,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepBasic_ConversionBasedUnitAndTimeUnit)& ent) const
+void RWStepBasic_RWConversionBasedUnitAndTimeUnit::ReadStep(
+  const Handle(StepData_StepReaderData)&                  data,
+  const Standard_Integer                                  num0,
+  Handle(Interface_Check)&                                ach,
+  const Handle(StepBasic_ConversionBasedUnitAndTimeUnit)& ent) const
 {
 
-	Standard_Integer num = num0;
+  Standard_Integer num = num0;
 
+  // --- Instance of plex component ConversionBasedUnit ---
 
-	// --- Instance of plex component ConversionBasedUnit ---
+  if (!data->CheckNbParams(num, 2, ach, "conversion_based_unit"))
+    return;
 
-	if (!data->CheckNbParams(num,2,ach,"conversion_based_unit")) return;
+  // --- field : name ---
 
-	// --- field : name ---
+  Handle(TCollection_HAsciiString) aName;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadString(num, 1, "name", ach, aName);
 
-	Handle(TCollection_HAsciiString) aName;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	data->ReadString (num,1,"name",ach,aName);
+  // --- field : conversionFactor ---
 
-	// --- field : conversionFactor ---
+  Handle(StepBasic_MeasureWithUnit) aConversionFactor;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  data->ReadEntity(num,
+                   2,
+                   "conversion_factor",
+                   ach,
+                   STANDARD_TYPE(StepBasic_MeasureWithUnit),
+                   aConversionFactor);
 
-	Handle(StepBasic_MeasureWithUnit) aConversionFactor;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
-	data->ReadEntity(num, 2,"conversion_factor", ach, STANDARD_TYPE(StepBasic_MeasureWithUnit), aConversionFactor);
+  num = data->NextForComplex(num);
 
-	num = data->NextForComplex(num);
+  // --- Instance of common supertype NamedUnit ---
 
-	// --- Instance of common supertype NamedUnit ---
+  if (!data->CheckNbParams(num, 1, ach, "named_unit"))
+    return;
+  // --- field : dimensions ---
 
-	if (!data->CheckNbParams(num,1,ach,"named_unit")) return;
-	// --- field : dimensions ---
+  Handle(StepBasic_DimensionalExponents) aDimensions;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  data->ReadEntity(num,
+                   1,
+                   "dimensions",
+                   ach,
+                   STANDARD_TYPE(StepBasic_DimensionalExponents),
+                   aDimensions);
 
+  num = data->NextForComplex(num);
 
-	Handle(StepBasic_DimensionalExponents) aDimensions;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
-	data->ReadEntity(num, 1,"dimensions", ach, STANDARD_TYPE(StepBasic_DimensionalExponents), aDimensions);
+  // --- Instance of plex component TimeUnit ---
 
-	num = data->NextForComplex(num);
+  if (!data->CheckNbParams(num, 0, ach, "time_unit"))
+    return;
 
-	// --- Instance of plex component TimeUnit ---
+  //--- Initialisation of the red entity ---
 
-	if (!data->CheckNbParams(num,0,ach,"time_unit")) return;
-
-	//--- Initialisation of the red entity ---
-
-	ent->Init(aDimensions,aName,aConversionFactor);
+  ent->Init(aDimensions, aName, aConversionFactor);
 }
 
-
-void RWStepBasic_RWConversionBasedUnitAndTimeUnit::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepBasic_ConversionBasedUnitAndTimeUnit)& ent) const
+void RWStepBasic_RWConversionBasedUnitAndTimeUnit::WriteStep(
+  StepData_StepWriter&                                    SW,
+  const Handle(StepBasic_ConversionBasedUnitAndTimeUnit)& ent) const
 {
 
-	// --- Instance of plex component ConversionBasedUnit ---
+  // --- Instance of plex component ConversionBasedUnit ---
 
-	SW.StartEntity("CONVERSION_BASED_UNIT");
-	// --- field : name ---
+  SW.StartEntity("CONVERSION_BASED_UNIT");
+  // --- field : name ---
 
-	SW.Send(ent->Name());
-	// --- field : conversionFactor ---
+  SW.Send(ent->Name());
+  // --- field : conversionFactor ---
 
-	SW.Send(ent->ConversionFactor());
+  SW.Send(ent->ConversionFactor());
 
-	// --- Instance of plex component TimeUnit ---
+  // --- Instance of plex component TimeUnit ---
 
-	SW.StartEntity("TIME_UNIT");
+  SW.StartEntity("TIME_UNIT");
 
-	// --- Instance of common supertype NamedUnit ---
+  // --- Instance of common supertype NamedUnit ---
 
-	SW.StartEntity("NAMED_UNIT");
-	// --- field : dimensions ---
+  SW.StartEntity("NAMED_UNIT");
+  // --- field : dimensions ---
 
-	SW.Send(ent->Dimensions());
+  SW.Send(ent->Dimensions());
 }
 
-
-void RWStepBasic_RWConversionBasedUnitAndTimeUnit::Share(const Handle(StepBasic_ConversionBasedUnitAndTimeUnit)& ent, Interface_EntityIterator& iter) const
+void RWStepBasic_RWConversionBasedUnitAndTimeUnit::Share(
+  const Handle(StepBasic_ConversionBasedUnitAndTimeUnit)& ent,
+  Interface_EntityIterator&                               iter) const
 {
 
-	iter.GetOneItem(ent->Dimensions());
+  iter.GetOneItem(ent->Dimensions());
 
-
-	iter.GetOneItem(ent->ConversionFactor());
+  iter.GetOneItem(ent->ConversionFactor());
 }
-

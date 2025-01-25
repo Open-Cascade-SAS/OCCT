@@ -27,26 +27,24 @@
 class CDM_Document;
 class TCollection_ExtendedString;
 
-
 class PCDM_Writer;
 DEFINE_STANDARD_HANDLE(PCDM_Writer, Standard_Transient)
-
 
 class PCDM_Writer : public Standard_Transient
 {
 public:
-
-  Standard_EXPORT virtual void Write (const Handle(CDM_Document)& aDocument,
-                                      const TCollection_ExtendedString& aFileName, 
-                                      const Message_ProgressRange& theRange = Message_ProgressRange()) = 0;
+  Standard_EXPORT virtual void Write(
+    const Handle(CDM_Document)&       aDocument,
+    const TCollection_ExtendedString& aFileName,
+    const Message_ProgressRange&      theRange = Message_ProgressRange()) = 0;
 
   //! Write <theDocument> to theOStream
-  Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument,
-                                      Standard_OStream& theOStream, 
-                                      const Message_ProgressRange& theRange = Message_ProgressRange()) = 0;
+  Standard_EXPORT virtual void Write(
+    const Handle(CDM_Document)&  theDocument,
+    Standard_OStream&            theOStream,
+    const Message_ProgressRange& theRange = Message_ProgressRange()) = 0;
 
-  DEFINE_STANDARD_RTTIEXT(PCDM_Writer,Standard_Transient)
-
+  DEFINE_STANDARD_RTTIEXT(PCDM_Writer, Standard_Transient)
 };
 
 #endif // _PCDM_Writer_HeaderFile

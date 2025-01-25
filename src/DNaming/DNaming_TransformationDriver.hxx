@@ -1,5 +1,5 @@
 // Created on: 2009-05-07
-// Created by: Sergey ZARITCHNY <sergey.zaritchny@opencascade.com> 
+// Created by: Sergey ZARITCHNY <sergey.zaritchny@opencascade.com>
 // Copyright (c) 2009-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
@@ -26,63 +26,45 @@ class TDF_Label;
 class TNaming_NamedShape;
 class gp_Trsf;
 
-
 class DNaming_TransformationDriver;
 DEFINE_STANDARD_HANDLE(DNaming_TransformationDriver, TFunction_Driver)
-
 
 class DNaming_TransformationDriver : public TFunction_Driver
 {
 
 public:
-
-  
   //! Constructor
   //! validation
   //! ==========
   Standard_EXPORT DNaming_TransformationDriver();
-  
+
   //! Validates labels of a function in <log>.
   //! In regeneration mode this method must be called (by the
   //! solver) even if the function is not executed, to build
   //! the valid label scope.
   //! execution of function
   //! ======================
-  Standard_EXPORT virtual void Validate (Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void Validate(Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
+
   //! Analyse in <log> if the loaded function must be executed
   //! (i.e.arguments are modified) or not.
   //! If the Function label itself is modified, the function must
   //! be executed.
-  Standard_EXPORT virtual Standard_Boolean MustExecute (const Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Standard_Boolean MustExecute(
+    const Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
+
   //! Execute the function and push in <log> the impacted
   //! labels (see method SetImpacted).
-  Standard_EXPORT virtual Standard_Integer Execute (Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer Execute(Handle(TFunction_Logbook)& theLog) const
+    Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(DNaming_TransformationDriver,TFunction_Driver)
+  DEFINE_STANDARD_RTTIEXT(DNaming_TransformationDriver, TFunction_Driver)
 
 protected:
-
-
-
-
 private:
-
-  
-  Standard_EXPORT void LoadNamingDS (const TDF_Label& theResultLabel, const Handle(TNaming_NamedShape)& theSourceNS, const gp_Trsf& theTrsf) const;
-
-
-
+  Standard_EXPORT void LoadNamingDS(const TDF_Label&                  theResultLabel,
+                                    const Handle(TNaming_NamedShape)& theSourceNS,
+                                    const gp_Trsf&                    theTrsf) const;
 };
-
-
-
-
-
-
 
 #endif // _DNaming_TransformationDriver_HeaderFile

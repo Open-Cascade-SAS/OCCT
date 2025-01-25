@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMDataStd.hxx>
 #include <BinMXCAFDoc_LocationDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
@@ -30,111 +29,109 @@
 #include <TopLoc_Location.hxx>
 #include <XCAFDoc_Location.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_LocationDriver,BinMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_LocationDriver, BinMDF_ADriver)
 
-//#include <Precision.hxx>
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-BinMXCAFDoc_LocationDriver::BinMXCAFDoc_LocationDriver(const Handle(Message_Messenger)& theMsgDriver)
-     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_Location)->Name())
+// #include <Precision.hxx>
+//=================================================================================================
+
+BinMXCAFDoc_LocationDriver::BinMXCAFDoc_LocationDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_Location)->Name())
 {
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-Handle(TDF_Attribute) BinMXCAFDoc_LocationDriver::NewEmpty() const {
+//=================================================================================================
+
+Handle(TDF_Attribute) BinMXCAFDoc_LocationDriver::NewEmpty() const
+{
   return new XCAFDoc_Location();
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-Standard_Boolean BinMXCAFDoc_LocationDriver::Paste(const BinObjMgt_Persistent& theSource,
+//=================================================================================================
+
+Standard_Boolean BinMXCAFDoc_LocationDriver::Paste(const BinObjMgt_Persistent&  theSource,
                                                    const Handle(TDF_Attribute)& theTarget,
-                                                   BinObjMgt_RRelocationTable& theRelocTable) const
+                                                   BinObjMgt_RRelocationTable&  theRelocTable) const
 {
   Handle(XCAFDoc_Location) anAtt = Handle(XCAFDoc_Location)::DownCast(theTarget);
-  TopLoc_Location aLoc;
-  Standard_Boolean aRes = Translate(theSource, aLoc, theRelocTable);
+  TopLoc_Location          aLoc;
+  Standard_Boolean         aRes = Translate(theSource, aLoc, theRelocTable);
   anAtt->Set(aLoc);
   return aRes;
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BinMXCAFDoc_LocationDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                       BinObjMgt_Persistent& theTarget,
-                                       BinObjMgt_SRelocationTable& theRelocTable) const
+                                       BinObjMgt_Persistent&        theTarget,
+                                       BinObjMgt_SRelocationTable&  theRelocTable) const
 {
   Handle(XCAFDoc_Location) anAtt = Handle(XCAFDoc_Location)::DownCast(theSource);
-  TopLoc_Location aLoc = anAtt->Get();
+  TopLoc_Location          aLoc  = anAtt->Get();
   Translate(aLoc, theTarget, theRelocTable);
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean BinMXCAFDoc_LocationDriver::Translate(const BinObjMgt_Persistent& theSource,
-                                                       TopLoc_Location& theLoc,
+                                                       TopLoc_Location&            theLoc,
                                                        BinObjMgt_RRelocationTable& theMap) const
 {
   if (!myNSDriver.IsNull() && myNSDriver->IsQuickPart())
   {
-    BinTools_IStream aDirectStream (*(const_cast<BinObjMgt_Persistent*>(&theSource)->GetIStream()));
-    BinTools_ShapeReader* aReader = static_cast<BinTools_ShapeReader*>(myNSDriver->ShapeSet (Standard_True));
-    theLoc = *(aReader->ReadLocation (aDirectStream));
+    BinTools_IStream aDirectStream(*(const_cast<BinObjMgt_Persistent*>(&theSource)->GetIStream()));
+    BinTools_ShapeReader* aReader =
+      static_cast<BinTools_ShapeReader*>(myNSDriver->ShapeSet(Standard_True));
+    theLoc = *(aReader->ReadLocation(aDirectStream));
     return Standard_True;
   }
 
   Standard_Integer anId = 0;
   theSource >> anId;
-  
-  if(anId == 0)
+
+  if (anId == 0)
   {
     return Standard_True;
   }
 
   if (!myNSDriver.IsNull() && myNSDriver->IsQuickPart())
   { // read directly from the stream
-
-
   }
-  
+
   Standard_Integer aFileVer = theMap.GetHeaderData()->StorageVersion().IntegerValue();
-  if( aFileVer >= TDocStd_FormatVersion_VERSION_6 && myNSDriver.IsNull() )
+  if (aFileVer >= TDocStd_FormatVersion_VERSION_6 && myNSDriver.IsNull())
   {
     return Standard_False;
   }
-  
-  Standard_Integer aPower (0);
+
+  Standard_Integer       aPower(0);
   Handle(TopLoc_Datum3D) aDatum;
-  
+
   if (aFileVer >= TDocStd_FormatVersion_VERSION_6)
   {
-    const TopLoc_Location& aLoc = myNSDriver->GetShapesLocations().Location (anId);
-    aPower = aLoc.FirstPower();
-    aDatum = aLoc.FirstDatum();
-  } else {
+    const TopLoc_Location& aLoc = myNSDriver->GetShapesLocations().Location(anId);
+    aPower                      = aLoc.FirstPower();
+    aDatum                      = aLoc.FirstDatum();
+  }
+  else
+  {
     theSource >> aPower;
 
-    Standard_Integer aDatumID = -1;
+    Standard_Integer aDatumID   = -1;
     Standard_Integer aReadDatum = -1;
     theSource >> aReadDatum;
     theSource >> aDatumID;
-    if(aReadDatum != -1) {
-      if(theMap.IsBound(aDatumID)) {
+    if (aReadDatum != -1)
+    {
+      if (theMap.IsBound(aDatumID))
+      {
         aDatum = Handle(TopLoc_Datum3D)::DownCast(theMap.Find(aDatumID));
-      } else
+      }
+      else
         return Standard_False;
-    } else {
+    }
+    else
+    {
       // read the datum's transformation
       gp_Trsf aTrsf;
 
@@ -147,9 +144,10 @@ Standard_Boolean BinMXCAFDoc_LocationDriver::Translate(const BinObjMgt_Persisten
       aTrsf.SetForm((gp_TrsfForm)aForm);
 
       Standard_Integer R, C;
-      gp_Mat& aMat = (gp_Mat&)aTrsf.HVectorialPart();
-      for(R = 1; R <= 3; R++)
-        for(C = 1; C <= 3; C++) {
+      gp_Mat&          aMat = (gp_Mat&)aTrsf.HVectorialPart();
+      for (R = 1; R <= 3; R++)
+        for (C = 1; C <= 3; C++)
+        {
           Standard_Real aVal;
           theSource >> aVal;
           aMat.SetValue(R, C, aVal);
@@ -166,30 +164,29 @@ Standard_Boolean BinMXCAFDoc_LocationDriver::Translate(const BinObjMgt_Persisten
       theMap.Bind(aDatumID, aDatum);
     }
   }
-  
+
   //  Get Next Location
   TopLoc_Location aNextLoc;
   Translate(theSource, aNextLoc, theMap);
-  
+
   //  Calculate the result
   theLoc = aNextLoc * TopLoc_Location(aDatum).Powered(aPower);
   return Standard_True;
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-void BinMXCAFDoc_LocationDriver::Translate(const TopLoc_Location& theLoc,
-                                           BinObjMgt_Persistent& theTarget,
+//=================================================================================================
+
+void BinMXCAFDoc_LocationDriver::Translate(const TopLoc_Location&      theLoc,
+                                           BinObjMgt_Persistent&       theTarget,
                                            BinObjMgt_SRelocationTable& theMap) const
 {
   if (!myNSDriver.IsNull() && myNSDriver->IsQuickPart())
   { // write directly to the stream
-    Standard_OStream* aDirectStream = theTarget.GetOStream();
-    BinTools_ShapeWriter* aWriter = static_cast<BinTools_ShapeWriter*>(myNSDriver->ShapeSet (Standard_False));
+    Standard_OStream*     aDirectStream = theTarget.GetOStream();
+    BinTools_ShapeWriter* aWriter =
+      static_cast<BinTools_ShapeWriter*>(myNSDriver->ShapeSet(Standard_False));
     BinTools_OStream aStream(*aDirectStream);
-    aWriter->WriteLocation (aStream, theLoc);
+    aWriter->WriteLocation(aStream, theLoc);
     return;
   }
   if (theLoc.IsIdentity())
@@ -197,7 +194,7 @@ void BinMXCAFDoc_LocationDriver::Translate(const TopLoc_Location& theLoc,
     theTarget.PutInteger(0);
     return;
   }
-  
+
   // The location is not identity
   if (myNSDriver.IsNull())
   {
@@ -207,10 +204,10 @@ void BinMXCAFDoc_LocationDriver::Translate(const TopLoc_Location& theLoc,
     return;
   }
 
-  Standard_Integer anId = myNSDriver->GetShapesLocations().Add (theLoc);
+  Standard_Integer anId = myNSDriver->GetShapesLocations().Add(theLoc);
   theTarget << anId;
 
-  // In earlier version of this driver a datums from location stored in 
+  // In earlier version of this driver a datums from location stored in
   // the relocation table, but now it's not necessary
   // (try to uncomment it if some problems appear)
   /*
@@ -223,4 +220,3 @@ void BinMXCAFDoc_LocationDriver::Translate(const TopLoc_Location& theLoc,
 
   Translate(theLoc.NextLocation(), theTarget, theMap);
 }
-

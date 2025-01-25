@@ -48,27 +48,27 @@ DEFINE_STANDARD_HANDLE(IFSelect_AppliedModifiers, Standard_Transient)
 class IFSelect_AppliedModifiers : public Standard_Transient
 {
 public:
-  
   //! Creates an AppliedModifiers, ready to record up to <nbmax>
   //! modifiers, on a model of <nbent> entities
-  Standard_EXPORT IFSelect_AppliedModifiers(const Standard_Integer nbmax, const Standard_Integer nbent);
-  
+  Standard_EXPORT IFSelect_AppliedModifiers(const Standard_Integer nbmax,
+                                            const Standard_Integer nbent);
+
   //! Records a modifier. By default, it is to apply on all a
   //! produced file. Further calls to AddNum will restrict this.
   //! Returns True if done, False if too many modifiers are already
   //! recorded
-  Standard_EXPORT Standard_Boolean AddModif (const Handle(IFSelect_GeneralModifier)& modif);
-  
+  Standard_EXPORT Standard_Boolean AddModif(const Handle(IFSelect_GeneralModifier)& modif);
+
   //! Adds a number of entity of the output file to be applied on.
   //! If a sequence of AddNum is called after AddModif, this
   //! Modifier will be applied on the list of designated entities.
   //! Else, it will be applied on all the file
   //! Returns True if done, False if no modifier has yet been added
-  Standard_EXPORT Standard_Boolean AddNum (const Standard_Integer nument);
-  
+  Standard_EXPORT Standard_Boolean AddNum(const Standard_Integer nument);
+
   //! Returns the count of recorded modifiers
   Standard_EXPORT Standard_Integer Count() const;
-  
+
   //! Returns the description for applied modifier n0 <num> :
   //! the modifier itself, and the count of entities to be applied
   //! on. If no specific list of number has been defined, returns
@@ -77,34 +77,34 @@ public:
   //! the file (see below). Else, the numbers are then queried by
   //! calls to ItemNum between 1 and <entcount>
   //! Returns True if OK, False if <num> is out of range
-  Standard_EXPORT Standard_Boolean Item (const Standard_Integer num, Handle(IFSelect_GeneralModifier)& modif, Standard_Integer& entcount);
-  
+  Standard_EXPORT Standard_Boolean Item(const Standard_Integer            num,
+                                        Handle(IFSelect_GeneralModifier)& modif,
+                                        Standard_Integer&                 entcount);
+
   //! Returns a numero of entity to be applied on, given its rank
   //! in the list. If no list is defined (i.e. for all the file),
   //! returns <nument> itself, to give all the entities of the file
   //! Returns 0 if <nument> out of range
-  Standard_EXPORT Standard_Integer ItemNum (const Standard_Integer nument) const;
-  
+  Standard_EXPORT Standard_Integer ItemNum(const Standard_Integer nument) const;
+
   //! Returns the list of entities to be applied on (see Item)
   //! as a HSequence (IsForAll produces the complete list of all
   //! the entity numbers of the file
   Standard_EXPORT Handle(TColStd_HSequenceOfInteger) ItemList() const;
-  
+
   //! Returns True if the applied modifier queried by last call to
   //! Item is to be applied to all the produced file.
   //! Else, <entcount> returned by Item gives the count of entity
   //! numbers, each one is queried by ItemNum
   Standard_EXPORT Standard_Boolean IsForAll() const;
 
-  DEFINE_STANDARD_RTTIEXT(IFSelect_AppliedModifiers,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_AppliedModifiers, Standard_Transient)
 
 private:
-
   IFSelect_SequenceOfGeneralModifier themodifs;
-  Interface_IntList thelists;
-  Standard_Integer thenbent;
-  Standard_Integer theentcnt;
-
+  Interface_IntList                  thelists;
+  Standard_Integer                   thenbent;
+  Standard_Integer                   theentcnt;
 };
 
 #endif // _IFSelect_AppliedModifiers_HeaderFile

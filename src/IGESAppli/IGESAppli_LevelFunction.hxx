@@ -23,7 +23,6 @@
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 
-
 class IGESAppli_LevelFunction;
 DEFINE_STANDARD_HANDLE(IGESAppli_LevelFunction, IGESData_IGESEntity)
 
@@ -35,10 +34,8 @@ class IGESAppli_LevelFunction : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESAppli_LevelFunction();
-  
+
   //! This method is used to set the fields of the class
   //! LevelFunction
   //! - nbPropVal    : Number of Properties, always = 2
@@ -46,42 +43,27 @@ public:
   //! default = 0
   //! - aFuncDescrip : Function Description
   //! default = null string
-  Standard_EXPORT void Init (const Standard_Integer nbPropVal, const Standard_Integer aCode, const Handle(TCollection_HAsciiString)& aFuncDescrip);
-  
+  Standard_EXPORT void Init(const Standard_Integer                  nbPropVal,
+                            const Standard_Integer                  aCode,
+                            const Handle(TCollection_HAsciiString)& aFuncDescrip);
+
   //! is always 2
   Standard_EXPORT Standard_Integer NbPropertyValues() const;
-  
+
   //! returns the function description code . Default = 0
   Standard_EXPORT Standard_Integer FuncDescriptionCode() const;
-  
+
   //! returns the function description
   //! Default = null string
   Standard_EXPORT Handle(TCollection_HAsciiString) FuncDescription() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESAppli_LevelFunction,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESAppli_LevelFunction, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-  Standard_Integer theNbPropertyValues;
-  Standard_Integer theFuncDescripCode;
+  Standard_Integer                 theNbPropertyValues;
+  Standard_Integer                 theFuncDescripCode;
   Handle(TCollection_HAsciiString) theFuncDescrip;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESAppli_LevelFunction_HeaderFile

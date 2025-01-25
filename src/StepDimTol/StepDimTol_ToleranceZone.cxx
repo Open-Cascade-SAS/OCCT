@@ -17,31 +17,23 @@
 
 #include <StepDimTol_HArray1OfToleranceZoneTarget.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ToleranceZone,StepRepr_ShapeAspect)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ToleranceZone, StepRepr_ShapeAspect)
 
-//=======================================================================
-//function : StepDimTol_ToleranceZone
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepDimTol_ToleranceZone::StepDimTol_ToleranceZone ()
-{
-}
+StepDimTol_ToleranceZone::StepDimTol_ToleranceZone() {}
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepDimTol_ToleranceZone::Init (const Handle(TCollection_HAsciiString)& theName,
-                                     const Handle(TCollection_HAsciiString)& theDescription,
-                                     const Handle(StepRepr_ProductDefinitionShape)& theOfShape,
-                                     const StepData_Logical theProductDefinitional,
-                                     const Handle(StepDimTol_HArray1OfToleranceZoneTarget)& theDefiningTolerance,
-                                     const Handle(StepDimTol_ToleranceZoneForm)& theForm)
+void StepDimTol_ToleranceZone::Init(
+  const Handle(TCollection_HAsciiString)&                theName,
+  const Handle(TCollection_HAsciiString)&                theDescription,
+  const Handle(StepRepr_ProductDefinitionShape)&         theOfShape,
+  const StepData_Logical                                 theProductDefinitional,
+  const Handle(StepDimTol_HArray1OfToleranceZoneTarget)& theDefiningTolerance,
+  const Handle(StepDimTol_ToleranceZoneForm)&            theForm)
 {
   StepRepr_ShapeAspect::Init(theName, theDescription, theOfShape, theProductDefinitional);
   myDefiningTolerance = theDefiningTolerance;
-  myForm = theForm;
+  myForm              = theForm;
 }
-    

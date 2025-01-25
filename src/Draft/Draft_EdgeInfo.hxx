@@ -26,84 +26,61 @@
 class Geom_Curve;
 class Geom2d_Curve;
 
-
-
-class Draft_EdgeInfo 
+class Draft_EdgeInfo
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Draft_EdgeInfo();
-  
+
   Standard_EXPORT Draft_EdgeInfo(const Standard_Boolean HasNewGeometry);
-  
-  Standard_EXPORT void Add (const TopoDS_Face& F);
-  
-  Standard_EXPORT void RootFace (const TopoDS_Face& F);
-  
-  Standard_EXPORT void Tangent (const gp_Pnt& P);
-  
-  Standard_EXPORT Standard_Boolean IsTangent (gp_Pnt& P) const;
-  
+
+  Standard_EXPORT void Add(const TopoDS_Face& F);
+
+  Standard_EXPORT void RootFace(const TopoDS_Face& F);
+
+  Standard_EXPORT void Tangent(const gp_Pnt& P);
+
+  Standard_EXPORT Standard_Boolean IsTangent(gp_Pnt& P) const;
+
   Standard_EXPORT Standard_Boolean NewGeometry() const;
-  
-  Standard_EXPORT void SetNewGeometry (const Standard_Boolean NewGeom);
-  
+
+  Standard_EXPORT void SetNewGeometry(const Standard_Boolean NewGeom);
+
   Standard_EXPORT const Handle(Geom_Curve)& Geometry() const;
-  
+
   Standard_EXPORT const TopoDS_Face& FirstFace() const;
-  
+
   Standard_EXPORT const TopoDS_Face& SecondFace() const;
-  
+
   Standard_EXPORT const Handle(Geom2d_Curve)& FirstPC() const;
-  
+
   Standard_EXPORT const Handle(Geom2d_Curve)& SecondPC() const;
-  
+
   Standard_EXPORT Handle(Geom_Curve)& ChangeGeometry();
-  
+
   Standard_EXPORT Handle(Geom2d_Curve)& ChangeFirstPC();
-  
+
   Standard_EXPORT Handle(Geom2d_Curve)& ChangeSecondPC();
-  
+
   Standard_EXPORT const TopoDS_Face& RootFace() const;
-  
-  Standard_EXPORT void Tolerance (const Standard_Real tol);
-  
+
+  Standard_EXPORT void Tolerance(const Standard_Real tol);
+
   Standard_EXPORT Standard_Real Tolerance() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Boolean myNewGeom;
-  Handle(Geom_Curve) myGeom;
-  TopoDS_Face myFirstF;
-  TopoDS_Face mySeconF;
+  Standard_Boolean     myNewGeom;
+  Handle(Geom_Curve)   myGeom;
+  TopoDS_Face          myFirstF;
+  TopoDS_Face          mySeconF;
   Handle(Geom2d_Curve) myFirstPC;
   Handle(Geom2d_Curve) mySeconPC;
-  TopoDS_Face myRootFace;
-  Standard_Boolean myTgt;
-  gp_Pnt myPt;
-  Standard_Real myTol;
-
-
+  TopoDS_Face          myRootFace;
+  Standard_Boolean     myTgt;
+  gp_Pnt               myPt;
+  Standard_Real        myTol;
 };
-
-
-
-
-
-
 
 #endif // _Draft_EdgeInfo_HeaderFile

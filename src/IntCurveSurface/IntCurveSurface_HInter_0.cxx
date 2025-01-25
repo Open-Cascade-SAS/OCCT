@@ -37,7 +37,6 @@
 #include <gp_Hypr.hxx>
 #include <IntAna_IntConicQuad.hxx>
 #include <Bnd_Box.hxx>
- 
 
 #define TheCurve Handle(Adaptor3d_Curve)
 #define TheCurve_hxx <Adaptor3d_Curve.hxx>
@@ -63,11 +62,14 @@
 #define IntCurveSurface_TheExactInter_hxx <IntCurveSurface_TheExactHInter.hxx>
 #define IntCurveSurface_TheQuadCurvExactInter IntCurveSurface_TheQuadCurvExactHInter
 #define IntCurveSurface_TheQuadCurvExactInter_hxx <IntCurveSurface_TheQuadCurvExactHInter.hxx>
-#define IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactInter IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter
-#define IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactInter_hxx <IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter.hxx>
-#define IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactInter IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter
-#define IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactInter_hxx <IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter.hxx>
+#define IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactInter                                     \
+  IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter
+#define IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactInter_hxx                                 \
+  <IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter.hxx>
+#define IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactInter                                     \
+  IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter
+#define IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactInter_hxx                                 \
+  <IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter.hxx>
 #define IntCurveSurface_Inter IntCurveSurface_HInter
 #define IntCurveSurface_Inter_hxx <IntCurveSurface_HInter.hxx>
 #include "../IntCurveSurface/IntCurveSurface_Inter.gxx"
-

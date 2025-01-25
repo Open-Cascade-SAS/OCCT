@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<HLRAlgo_PolyInternalSegment> HLRAlgo_Array1OfPISeg;
 
-
 #endif

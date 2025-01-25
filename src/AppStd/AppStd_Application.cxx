@@ -13,30 +13,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//AGV 15/10/01 : Add XmlOcaf support; add MessageDriver support
+// AGV 15/10/01 : Add XmlOcaf support; add MessageDriver support
 
 #include <AppStd_Application.hxx>
 #include <Standard_Dump.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(AppStd_Application,TDocStd_Application)
+IMPLEMENT_STANDARD_RTTIEXT(AppStd_Application, TDocStd_Application)
 
-//=======================================================================
-//function : ResourcesName
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_CString AppStd_Application::ResourcesName() {
+Standard_CString AppStd_Application::ResourcesName()
+{
   const Standard_CString aRes = "Standard";
   return aRes;
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void AppStd_Application::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+//=================================================================================================
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDocStd_Application)
+void AppStd_Application::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDocStd_Application)
 }

@@ -12,7 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _BOPAlgo_CellsBuilder_HeaderFile
 #define _BOPAlgo_CellsBuilder_HeaderFile
 
@@ -44,36 +43,34 @@
 //!
 //! Results:
 //!
-//! The result of the algorithm is compound containing selected parts of the basic types (VERTEX, EDGE, FACE or SOLID).
-//! The default result is empty compound.
-//! It is possible to add any split part to the result by using the methods AddToRessult() and AddAllToResult().
-//! It is also possible to remove any part from the result by using methods RemoveFromResult() and RemoveAllFromResult().
+//! The result of the algorithm is compound containing selected parts of the basic types (VERTEX,
+//! EDGE, FACE or SOLID). The default result is empty compound. It is possible to add any split part
+//! to the result by using the methods AddToRessult() and AddAllToResult(). It is also possible to
+//! remove any part from the result by using methods RemoveFromResult() and RemoveAllFromResult().
 //! The method RemoveAllFromResult() is also suitable for clearing the result.
 //!
 //! To remove Internal boundaries it is necessary to set the same material to the
-//! parts between which the boundaries should be removed and call the method RemoveInternalBoundaries().
-//! The material should not be equal to 0, as this is default material value.
-//! The boundaries between parts with this value will not be removed.
-//! One part cannot be added with the different materials.
-//! It is also possible to remove the boundaries during combining the result.
-//! To do this it is necessary to set the material for parts (not equal to 0) and set the flag bUpdate to TRUE.
-//! For the arguments of the types FACE or EDGE it is recommended
+//! parts between which the boundaries should be removed and call the method
+//! RemoveInternalBoundaries(). The material should not be equal to 0, as this is default material
+//! value. The boundaries between parts with this value will not be removed. One part cannot be
+//! added with the different materials. It is also possible to remove the boundaries during
+//! combining the result. To do this it is necessary to set the material for parts (not equal to 0)
+//! and set the flag bUpdate to TRUE. For the arguments of the types FACE or EDGE it is recommended
 //! to remove the boundaries in the end when the result is completely built.
 //! It will help to avoid self-intersections in the result.
 //!
 //! Note, that if the result contains the parts with same material but of different
 //! dimension the boundaries between such parts will not be removed.
-//! Currently, the removal of the internal boundaries between multi-dimensional shapes is not supported.
+//! Currently, the removal of the internal boundaries between multi-dimensional shapes is not
+//! supported.
 //!
-//! It is possible to create typed Containers from the parts added to result by using method MakeContainers().
-//! The type of the containers will depend on the type of the arguments:
-//! WIRES for EEDGE, SHELLS for FACES and COMPSOLIDS for SOLIDS.
-//! The result will be compound containing containers.
-//! Adding of the parts to such result will not update containers.
-//! The result compound will contain the containers and new added parts (of basic type).
-//! Removing of the parts from such result may affect some containers if
-//! the parts that should be removed is in container.
-//! In this case this container will be rebuilt without that part.
+//! It is possible to create typed Containers from the parts added to result by using method
+//! MakeContainers(). The type of the containers will depend on the type of the arguments: WIRES for
+//! EEDGE, SHELLS for FACES and COMPSOLIDS for SOLIDS. The result will be compound containing
+//! containers. Adding of the parts to such result will not update containers. The result compound
+//! will contain the containers and new added parts (of basic type). Removing of the parts from such
+//! result may affect some containers if the parts that should be removed is in container. In this
+//! case this container will be rebuilt without that part.
 //!
 //! History:
 //!
@@ -95,8 +92,8 @@
 //! - BOPAlgo_AlertRemovalOfIBForEdgesFailed
 //! - BOPAlgo_AlertRemovalOfIBForSolidsFailed
 //!
-//! The Warning status can be checked with HasWarnings() method or printed with the DumpWarnings() method.
-//! If warnings are recorded, the result may be not as expected.
+//! The Warning status can be checked with HasWarnings() method or printed with the DumpWarnings()
+//! method. If warnings are recorded, the result may be not as expected.
 //!
 //! Examples:
 //!
@@ -169,8 +166,7 @@
 //! @endcode
 class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
 {
- public:
-
+public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT BOPAlgo_CellsBuilder();
@@ -188,7 +184,7 @@ class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
   //! <theLSToAvoid> defines the arguments which parts should not be taken into result;<br>
   //! To be taken into result the part must be IN for all shapes from the list
   //! <theLSToTake> and must be OUT of all shapes from the list <theLSToAvoid>.<br>
-  //! 
+  //!
   //! To remove internal boundaries between any cells in the result
   //! <theMaterial> variable should be used. The boundaries between
   //! cells with the same material will be removed. Default value is 0.<br>
@@ -196,14 +192,14 @@ class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
   //! <theUpdate> parameter defines whether to remove boundaries now or not.
   Standard_EXPORT void AddToResult(const TopTools_ListOfShape& theLSToTake,
                                    const TopTools_ListOfShape& theLSToAvoid,
-                                   const Standard_Integer theMaterial = 0,
-                                   const Standard_Boolean theUpdate = Standard_False);
+                                   const Standard_Integer      theMaterial = 0,
+                                   const Standard_Boolean      theUpdate   = Standard_False);
 
   //! Add all split parts to result.<br>
   //! <theMaterial> defines the removal of internal boundaries;<br>
   //! <theUpdate> parameter defines whether to remove boundaries now or not.
   Standard_EXPORT void AddAllToResult(const Standard_Integer theMaterial = 0,
-                                      const Standard_Boolean theUpdate = Standard_False);
+                                      const Standard_Boolean theUpdate   = Standard_False);
 
   //! Removing the parts from result.<br>
   //! The parts are defined by two lists of shapes:<br>
@@ -220,7 +216,7 @@ class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
   //! Removes internal boundaries between cells with the same material.<br>
   //! If the result contains the cells with same material but of different dimension
   //! the removal of internal boundaries between these cells will not be performed.<br>
-  //! In case of some errors during the removal the method will set the appropriate warning 
+  //! In case of some errors during the removal the method will set the appropriate warning
   //! status - use GetReport() to access them.
   Standard_EXPORT void RemoveInternalBoundaries();
 
@@ -230,15 +226,17 @@ class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
   //! Makes the Containers of proper type from the parts added to result.
   Standard_EXPORT void MakeContainers();
 
- protected:
-
+protected:
   //! Prepare information for history support taking into account
   //! local modification map of unified elements - myMapModified.
-  Standard_EXPORT virtual const TopTools_ListOfShape* LocModified(const TopoDS_Shape& theS) Standard_OVERRIDE;
+  Standard_EXPORT virtual const TopTools_ListOfShape* LocModified(const TopoDS_Shape& theS)
+    Standard_OVERRIDE;
 
   //! Redefined method PerformInternal1 - makes all split parts,
   //! nullifies the result <myShape>, and index all parts.
-  Standard_EXPORT virtual void PerformInternal1 (const BOPAlgo_PaveFiller& thePF, const Message_ProgressRange& theRange) Standard_OVERRIDE;
+  Standard_EXPORT virtual void PerformInternal1(const BOPAlgo_PaveFiller&    thePF,
+                                                const Message_ProgressRange& theRange)
+    Standard_OVERRIDE;
 
   //! Indexes the parts for quick access to the arguments.
   Standard_EXPORT void IndexParts();
@@ -246,22 +244,23 @@ class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
   //! Looking for the parts defined by two lists.
   Standard_EXPORT void FindParts(const TopTools_ListOfShape& theLSToTake,
                                  const TopTools_ListOfShape& theLSToAvoid,
-                                 TopTools_ListOfShape& theParts);
+                                 TopTools_ListOfShape&       theParts);
 
   //! Removes internal boundaries between cells with the same material.<br>
   //! Returns TRUE if any internal boundaries have been removed.
-  Standard_EXPORT Standard_Boolean RemoveInternals(const TopTools_ListOfShape& theLS,
-                                                   TopTools_ListOfShape& theLSNew,
-                                                   const TopTools_MapOfShape& theMapKeepBnd = TopTools_MapOfShape());
+  Standard_EXPORT Standard_Boolean
+    RemoveInternals(const TopTools_ListOfShape& theLS,
+                    TopTools_ListOfShape&       theLSNew,
+                    const TopTools_MapOfShape&  theMapKeepBnd = TopTools_MapOfShape());
 
   // fields
-  TopoDS_Shape myAllParts;                           //!< All split parts of the arguments
-// clang-format off
+  TopoDS_Shape myAllParts; //!< All split parts of the arguments
+  // clang-format off
   TopTools_IndexedDataMapOfShapeListOfShape myIndex; //!< Connection map from all splits parts to the argument shapes from which they were created
   TopTools_DataMapOfIntegerListOfShape myMaterials;  //!< Map of assigned materials (material -> list of shape)
   TopTools_DataMapOfShapeInteger myShapeMaterial;    //!< Map of assigned materials (shape -> material)
   TopTools_DataMapOfShapeShape myMapModified;        //!< Local modification map to track unification of the splits
-// clang-format on
+  // clang-format on
 };
 
 #endif //_BOPAlgo_CellsBuilder_HeaderFile

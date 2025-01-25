@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRep_TEdge.hxx>
 #include <BRep_TFace.hxx>
 #include <BRep_TVertex.hxx>
@@ -29,92 +28,74 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ShapeCustom_TrsfModification,BRepTools_TrsfModification)
+IMPLEMENT_STANDARD_RTTIEXT(ShapeCustom_TrsfModification, BRepTools_TrsfModification)
 
-//=======================================================================
-//function : ShapeCustom_TrsfModification
-//purpose  : 
-//=======================================================================
-ShapeCustom_TrsfModification::ShapeCustom_TrsfModification(const gp_Trsf& T):
-       BRepTools_TrsfModification(T)
+//=================================================================================================
+
+ShapeCustom_TrsfModification::ShapeCustom_TrsfModification(const gp_Trsf& T)
+    : BRepTools_TrsfModification(T)
 {
 }
 
-//=======================================================================
-//function : NewSurface
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- Standard_Boolean ShapeCustom_TrsfModification::NewSurface(const TopoDS_Face& F,
-							   Handle(Geom_Surface)& S,
-							   TopLoc_Location& L,
-							   Standard_Real& Tol,
-							   Standard_Boolean& RevWires,
-							   Standard_Boolean& RevFace) 
+Standard_Boolean ShapeCustom_TrsfModification::NewSurface(const TopoDS_Face&    F,
+                                                          Handle(Geom_Surface)& S,
+                                                          TopLoc_Location&      L,
+                                                          Standard_Real&        Tol,
+                                                          Standard_Boolean&     RevWires,
+                                                          Standard_Boolean&     RevFace)
 {
   Standard_Boolean result = BRepTools_TrsfModification::NewSurface(F, S, L, Tol, RevWires, RevFace);
   Tol = (*((Handle(BRep_TFace)*)&F.TShape()))->Tolerance() * Abs(Trsf().ScaleFactor());
   return result;
 }
 
-//=======================================================================
-//function : NewCurve
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- Standard_Boolean ShapeCustom_TrsfModification::NewCurve(const TopoDS_Edge& E,
-							 Handle(Geom_Curve)& C,
-							 TopLoc_Location& L,
-							 Standard_Real& Tol) 
+Standard_Boolean ShapeCustom_TrsfModification::NewCurve(const TopoDS_Edge&  E,
+                                                        Handle(Geom_Curve)& C,
+                                                        TopLoc_Location&    L,
+                                                        Standard_Real&      Tol)
 {
-  Standard_Boolean result = BRepTools_TrsfModification::NewCurve (E, C, L, Tol);
+  Standard_Boolean result = BRepTools_TrsfModification::NewCurve(E, C, L, Tol);
   Tol = (*((Handle(BRep_TEdge)*)&E.TShape()))->Tolerance() * Abs(Trsf().ScaleFactor());
   return result;
 }
 
-//=======================================================================
-//function : NewPoint
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- Standard_Boolean ShapeCustom_TrsfModification::NewPoint(const TopoDS_Vertex& V,
-							 gp_Pnt& P,
-							 Standard_Real& Tol) 
+Standard_Boolean ShapeCustom_TrsfModification::NewPoint(const TopoDS_Vertex& V,
+                                                        gp_Pnt&              P,
+                                                        Standard_Real&       Tol)
 {
-  Standard_Boolean result = BRepTools_TrsfModification::NewPoint (V, P, Tol);
+  Standard_Boolean result = BRepTools_TrsfModification::NewPoint(V, P, Tol);
   Tol = (*((Handle(BRep_TVertex)*)&V.TShape()))->Tolerance() * Abs(Trsf().ScaleFactor());
   return result;
 }
 
-//=======================================================================
-//function : NewCurve2d
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- Standard_Boolean ShapeCustom_TrsfModification::NewCurve2d(const TopoDS_Edge& E,
-							   const TopoDS_Face& F,
-							   const TopoDS_Edge& NewE,
-							   const TopoDS_Face& NewF,
-							   Handle(Geom2d_Curve)& C,
-							   Standard_Real& Tol) 
+Standard_Boolean ShapeCustom_TrsfModification::NewCurve2d(const TopoDS_Edge&    E,
+                                                          const TopoDS_Face&    F,
+                                                          const TopoDS_Edge&    NewE,
+                                                          const TopoDS_Face&    NewF,
+                                                          Handle(Geom2d_Curve)& C,
+                                                          Standard_Real&        Tol)
 {
-  Standard_Boolean result = BRepTools_TrsfModification::NewCurve2d (E, F, NewE, NewF, C, Tol);
+  Standard_Boolean result = BRepTools_TrsfModification::NewCurve2d(E, F, NewE, NewF, C, Tol);
   Tol = (*((Handle(BRep_TEdge)*)&E.TShape()))->Tolerance() * Abs(Trsf().ScaleFactor());
   return result;
 }
 
-//=======================================================================
-//function : NewParameter
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- Standard_Boolean ShapeCustom_TrsfModification::NewParameter(const TopoDS_Vertex& V,
-							     const TopoDS_Edge& E,
-							     Standard_Real& P,
-							     Standard_Real& Tol) 
+Standard_Boolean ShapeCustom_TrsfModification::NewParameter(const TopoDS_Vertex& V,
+                                                            const TopoDS_Edge&   E,
+                                                            Standard_Real&       P,
+                                                            Standard_Real&       Tol)
 {
-  Standard_Boolean result = BRepTools_TrsfModification::NewParameter (V, E, P, Tol);
+  Standard_Boolean result = BRepTools_TrsfModification::NewParameter(V, E, P, Tol);
   Tol = (*((Handle(BRep_TVertex)*)&V.TShape()))->Tolerance() * Abs(Trsf().ScaleFactor());
   return result;
 }
-

@@ -35,87 +35,72 @@ class gp_Pnt;
 class gp_Vec;
 class gp_Dir2d;
 
-
-
-class BRepApprox_TheZerImpFuncOfTheImpPrmSvSurfacesOfApprox  : public math_FunctionSetWithDerivatives
+class BRepApprox_TheZerImpFuncOfTheImpPrmSvSurfacesOfApprox : public math_FunctionSetWithDerivatives
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT BRepApprox_TheZerImpFuncOfTheImpPrmSvSurfacesOfApprox();
-  
-  Standard_EXPORT BRepApprox_TheZerImpFuncOfTheImpPrmSvSurfacesOfApprox(const BRepAdaptor_Surface& PS, const IntSurf_Quadric& IS);
-  
+
+  Standard_EXPORT BRepApprox_TheZerImpFuncOfTheImpPrmSvSurfacesOfApprox(
+    const BRepAdaptor_Surface& PS,
+    const IntSurf_Quadric&     IS);
+
   Standard_EXPORT BRepApprox_TheZerImpFuncOfTheImpPrmSvSurfacesOfApprox(const IntSurf_Quadric& IS);
-  
-    void Set (const BRepAdaptor_Surface& PS);
-  
-    void SetImplicitSurface (const IntSurf_Quadric& IS);
-  
-    void Set (const Standard_Real Tolerance);
-  
+
+  void Set(const BRepAdaptor_Surface& PS);
+
+  void SetImplicitSurface(const IntSurf_Quadric& IS);
+
+  void Set(const Standard_Real Tolerance);
+
   Standard_EXPORT Standard_Integer NbVariables() const;
-  
+
   Standard_EXPORT Standard_Integer NbEquations() const;
-  
-  Standard_EXPORT Standard_Boolean Value (const math_Vector& X, math_Vector& F);
-  
-  Standard_EXPORT Standard_Boolean Derivatives (const math_Vector& X, math_Matrix& D);
-  
-  Standard_EXPORT Standard_Boolean Values (const math_Vector& X, math_Vector& F, math_Matrix& D);
-  
-    Standard_Real Root() const;
-  
+
+  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F);
+
+  Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& X, math_Matrix& D);
+
+  Standard_EXPORT Standard_Boolean Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
+
+  Standard_Real Root() const;
+
   //! Returns the value Tol so that if Abs(Func.Root())<Tol
   //! the function is considered null.
-    Standard_Real Tolerance() const;
-  
-    const gp_Pnt& Point() const;
-  
+  Standard_Real Tolerance() const;
+
+  const gp_Pnt& Point() const;
+
   Standard_EXPORT Standard_Boolean IsTangent();
-  
-    const gp_Vec& Direction3d();
-  
-    const gp_Dir2d& Direction2d();
-  
-    const BRepAdaptor_Surface& PSurface() const;
-  
-    const IntSurf_Quadric& ISurface() const;
 
+  const gp_Vec& Direction3d();
 
+  const gp_Dir2d& Direction2d();
 
+  const BRepAdaptor_Surface& PSurface() const;
+
+  const IntSurf_Quadric& ISurface() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Address surf;
   Standard_Address func;
-  Standard_Real u;
-  Standard_Real v;
-  Standard_Real tol;
-  gp_Pnt pntsol;
-  Standard_Real valf;
+  Standard_Real    u;
+  Standard_Real    v;
+  Standard_Real    tol;
+  gp_Pnt           pntsol;
+  Standard_Real    valf;
   Standard_Boolean computed;
   Standard_Boolean tangent;
-  Standard_Real tgdu;
-  Standard_Real tgdv;
-  gp_Vec gradient;
+  Standard_Real    tgdu;
+  Standard_Real    tgdv;
+  gp_Vec           gradient;
   Standard_Boolean derived;
-  gp_Vec d1u;
-  gp_Vec d1v;
-  gp_Vec d3d;
-  gp_Dir2d d2d;
-
-
+  gp_Vec           d1u;
+  gp_Vec           d1v;
+  gp_Vec           d3d;
+  gp_Dir2d         d2d;
 };
 
 #define ThePSurface BRepAdaptor_Surface
@@ -141,8 +126,5 @@ private:
 #undef TheISurfaceTool_hxx
 #undef IntImp_ZerImpFunc
 #undef IntImp_ZerImpFunc_hxx
-
-
-
 
 #endif // _BRepApprox_TheZerImpFuncOfTheImpPrmSvSurfacesOfApprox_HeaderFile

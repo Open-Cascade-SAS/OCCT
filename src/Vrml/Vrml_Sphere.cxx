@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Vrml_Sphere.hxx>
 
 Vrml_Sphere::Vrml_Sphere(const Standard_Real aRadius)
@@ -19,26 +18,26 @@ Vrml_Sphere::Vrml_Sphere(const Standard_Real aRadius)
   myRadius = aRadius;
 }
 
- void Vrml_Sphere::SetRadius(const Standard_Real aRadius) 
+void Vrml_Sphere::SetRadius(const Standard_Real aRadius)
 {
   myRadius = aRadius;
 }
 
- Standard_Real Vrml_Sphere::Radius() const
+Standard_Real Vrml_Sphere::Radius() const
 {
-  return myRadius; 
+  return myRadius;
 }
 
- Standard_OStream& Vrml_Sphere::Print(Standard_OStream& anOStream) const
+Standard_OStream& Vrml_Sphere::Print(Standard_OStream& anOStream) const
 {
- anOStream  << "Sphere {\n";
+  anOStream << "Sphere {\n";
 
- if ( Abs(myRadius - 1) > 0.0001 )
-   {
-    anOStream  << "    radius\t";
+  if (Abs(myRadius - 1) > 0.0001)
+  {
+    anOStream << "    radius\t";
     anOStream << myRadius << "\n";
-   }
+  }
 
- anOStream  << "}\n";
- return anOStream;
+  anOStream << "}\n";
+  return anOStream;
 }

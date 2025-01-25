@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowserPane_TDFReference.hxx>
 
@@ -29,32 +29,33 @@
 // function : GetValues
 // purpose :
 // =======================================================================
-void DFBrowserPane_TDFReference::GetValues (const Handle(TDF_Attribute)& theAttribute, QList<QVariant>& theValues)
+void DFBrowserPane_TDFReference::GetValues(const Handle(TDF_Attribute)& theAttribute,
+                                           QList<QVariant>&             theValues)
 {
-  Handle(TDF_Reference) anAttribute = Handle(TDF_Reference)::DownCast (theAttribute);
+  Handle(TDF_Reference) anAttribute = Handle(TDF_Reference)::DownCast(theAttribute);
   if (anAttribute.IsNull())
     return;
 
   TDF_Label aLabel = anAttribute->Get();
-  theValues.append ("Get");
-  theValues.append (DFBrowserPane_Tools::GetEntry (aLabel).ToCString());
+  theValues.append("Get");
+  theValues.append(DFBrowserPane_Tools::GetEntry(aLabel).ToCString());
 }
 
 // =======================================================================
 // function : GetReferences
 // purpose :
 // =======================================================================
-void DFBrowserPane_TDFReference::GetReferences (const Handle(TDF_Attribute)& theAttribute,
-                                                NCollection_List<TDF_Label>& theRefLabels,
-                                                Handle(Standard_Transient)& /*theRefPresentation*/)
+void DFBrowserPane_TDFReference::GetReferences(const Handle(TDF_Attribute)& theAttribute,
+                                               NCollection_List<TDF_Label>& theRefLabels,
+                                               Handle(Standard_Transient)& /*theRefPresentation*/)
 {
-  Handle(TDF_Reference) anAttribute = Handle(TDF_Reference)::DownCast (theAttribute);
+  Handle(TDF_Reference) anAttribute = Handle(TDF_Reference)::DownCast(theAttribute);
   if (anAttribute.IsNull())
     return;
 
-  QTableView* aTableView = getTableView()->GetTableView();
-  QItemSelectionModel* aSelectionModel = aTableView->selectionModel();
-  QModelIndexList aSelectedIndices = aSelectionModel->selectedIndexes();
+  QTableView*          aTableView       = getTableView()->GetTableView();
+  QItemSelectionModel* aSelectionModel  = aTableView->selectionModel();
+  QModelIndexList      aSelectedIndices = aSelectionModel->selectedIndexes();
   if (aSelectedIndices.size() > 0)
-    theRefLabels.Append (anAttribute->Get());
+    theRefLabels.Append(anAttribute->Get());
 }

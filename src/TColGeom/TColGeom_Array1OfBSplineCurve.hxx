@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(Geom_BSplineCurve)> TColGeom_Array1OfBSplineCurve;
 
-
 #endif

@@ -22,5 +22,4 @@
 
 typedef NCollection_IndexedMap<TCollection_AsciiString> Interface_IndexedMapOfAsciiString;
 
-
 #endif

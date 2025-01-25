@@ -28,55 +28,32 @@ class StepRepr_ProductDefinitionShape;
 class StepRepr_ShapeAspect;
 class StepRepr_ShapeAspectRelationship;
 
-
-
-class StepRepr_ShapeDefinition  : public StepData_SelectType
+class StepRepr_ShapeDefinition : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a ShapeDefinition SelectType
   Standard_EXPORT StepRepr_ShapeDefinition();
-  
+
   //! Recognizes a ShapeDefinition Kind Entity that is :
   //! 1 -> ProductDefinitionShape
   //! 2 -> ShapeAspect
   //! 3 -> ShapeAspectRelationship
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a ProductDefinitionShape (Null if another type)
   Standard_EXPORT Handle(StepRepr_ProductDefinitionShape) ProductDefinitionShape() const;
-  
+
   //! returns Value as a ShapeAspect (Null if another type)
   Standard_EXPORT Handle(StepRepr_ShapeAspect) ShapeAspect() const;
-  
+
   //! returns Value as a ShapeAspectRelationship (Null if another type)
   Standard_EXPORT Handle(StepRepr_ShapeAspectRelationship) ShapeAspectRelationship() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepRepr_ShapeDefinition_HeaderFile

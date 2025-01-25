@@ -29,64 +29,52 @@
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_TransferMapOfProcessForFinder.hxx>
 
-//=======================================================================
-// Function: Transfer_ActorOfProcessForFinder
-// Purpose : 
-//=======================================================================
-Transfer_ActorOfProcessForFinder::Transfer_ActorOfProcessForFinder() {  }
+//=================================================================================================
 
-//=======================================================================
-// Function: Recognize
-// Purpose : 
-//=======================================================================
-Standard_Boolean Transfer_ActorOfProcessForFinder::Recognize(const Handle(Transfer_Finder)& /*start*/)
+Transfer_ActorOfProcessForFinder::Transfer_ActorOfProcessForFinder() {}
+
+//=================================================================================================
+
+Standard_Boolean Transfer_ActorOfProcessForFinder::Recognize(
+  const Handle(Transfer_Finder)& /*start*/)
 {
   return Standard_True;
 }
 
-//=======================================================================
-// Function: Transferring
-// Purpose : 
-//=======================================================================
-Handle(Transfer_Binder) Transfer_ActorOfProcessForFinder::Transferring
-(const Handle(Transfer_Finder)& /*start*/,
- const Handle(Transfer_ProcessForFinder)& /*TP*/,
- const Message_ProgressRange& /*theProgress*/)
+//=================================================================================================
+
+Handle(Transfer_Binder) Transfer_ActorOfProcessForFinder::Transferring(
+  const Handle(Transfer_Finder)& /*start*/,
+  const Handle(Transfer_ProcessForFinder)& /*TP*/,
+  const Message_ProgressRange& /*theProgress*/)
 {
   return NullResult();
 }
 
-//=======================================================================
-// Function: TransientResult
-// Purpose : 
-//=======================================================================
-Handle(Transfer_SimpleBinderOfTransient)
-Transfer_ActorOfProcessForFinder::TransientResult
-(const Handle(Standard_Transient)& res) const
+//=================================================================================================
+
+Handle(Transfer_SimpleBinderOfTransient) Transfer_ActorOfProcessForFinder::TransientResult(
+  const Handle(Standard_Transient)& res) const
 {
   Handle(Transfer_SimpleBinderOfTransient) binder;
-  if (res.IsNull()) return binder;
+  if (res.IsNull())
+    return binder;
   binder = new Transfer_SimpleBinderOfTransient;
   binder->SetResult(res);
   return binder;
 }
 
-//=======================================================================
-// Function: NullResult
-// Purpose : 
-//=======================================================================
+//=================================================================================================
+
 Handle(Transfer_Binder) Transfer_ActorOfProcessForFinder::NullResult() const
 {
   Handle(Transfer_Binder) binder;
   return binder;
 }
 
-//=======================================================================
-// Function: SetNext
-// Purpose : 
-//=======================================================================
-void Transfer_ActorOfProcessForFinder::SetNext
-(const Handle(Transfer_ActorOfProcessForFinder)& next)
+//=================================================================================================
+
+void Transfer_ActorOfProcessForFinder::SetNext(const Handle(Transfer_ActorOfProcessForFinder)& next)
 {
   if (thenext == next)
     return;
@@ -101,29 +89,23 @@ void Transfer_ActorOfProcessForFinder::SetNext
     thenext->SetNext(next);
 }
 
-//=======================================================================
-// Function: Next
-// Purpose : 
-//=======================================================================
+//=================================================================================================
+
 Handle(Transfer_ActorOfProcessForFinder) Transfer_ActorOfProcessForFinder::Next() const
 {
   return thenext;
 }
 
-//=======================================================================
-// Function: SetLast
-// Purpose : 
-//=======================================================================
+//=================================================================================================
+
 void Transfer_ActorOfProcessForFinder::SetLast(const Standard_Boolean mode)
 {
   thelast = mode;
 }
 
-//=======================================================================
-// Function: IsLast
-// Purpose : 
-//=======================================================================
-Standard_Boolean  Transfer_ActorOfProcessForFinder::IsLast() const
+//=================================================================================================
+
+Standard_Boolean Transfer_ActorOfProcessForFinder::IsLast() const
 {
   return thelast;
 }

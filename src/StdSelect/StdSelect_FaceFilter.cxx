@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRepAdaptor_Surface.hxx>
 #include <Standard_Type.hxx>
 #include <StdSelect_BRepOwner.hxx>
@@ -23,7 +22,7 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StdSelect_FaceFilter,SelectMgr_Filter)
+IMPLEMENT_STANDARD_RTTIEXT(StdSelect_FaceFilter, SelectMgr_Filter)
 
 /*#include <.hxx>
 #include <.hxx>
@@ -32,76 +31,69 @@ IMPLEMENT_STANDARD_RTTIEXT(StdSelect_FaceFilter,SelectMgr_Filter)
 #include <.hxx>
 #include <.hxx>
 */
-StdSelect_FaceFilter::
-StdSelect_FaceFilter(const StdSelect_TypeOfFace aTypeOfFace):
-mytype(aTypeOfFace){}
+StdSelect_FaceFilter::StdSelect_FaceFilter(const StdSelect_TypeOfFace aTypeOfFace)
+    : mytype(aTypeOfFace)
+{
+}
 
-void StdSelect_FaceFilter::
-SetType(const StdSelect_TypeOfFace aTypeOfFace)
-{mytype = aTypeOfFace;}
+void StdSelect_FaceFilter::SetType(const StdSelect_TypeOfFace aTypeOfFace)
+{
+  mytype = aTypeOfFace;
+}
 
+//=================================================================================================
 
-//==================================================
-// Function: 
-// Purpose :
-//==================================================
-StdSelect_TypeOfFace StdSelect_FaceFilter::Type() const 
+StdSelect_TypeOfFace StdSelect_FaceFilter::Type() const
 {
   return mytype;
 }
 
-Standard_Boolean StdSelect_FaceFilter::
-IsOk(const Handle(SelectMgr_EntityOwner)& EO) const
+Standard_Boolean StdSelect_FaceFilter::IsOk(const Handle(SelectMgr_EntityOwner)& EO) const
 {
-  Handle(StdSelect_BRepOwner) aBO (Handle(StdSelect_BRepOwner)::DownCast(EO));
+  Handle(StdSelect_BRepOwner) aBO(Handle(StdSelect_BRepOwner)::DownCast(EO));
   if (aBO.IsNull())
     return Standard_False;
 
   const TopoDS_Shape& anobj = aBO->Shape();
-  if(anobj.ShapeType()!= TopAbs_FACE)
-    return Standard_False;  
+  if (anobj.ShapeType() != TopAbs_FACE)
+    return Standard_False;
 
-  switch(mytype) {
-  case StdSelect_AnyFace:
-    return Standard_True;
-  case StdSelect_Plane:
-    {
+  switch (mytype)
+  {
+    case StdSelect_AnyFace:
+      return Standard_True;
+    case StdSelect_Plane: {
       BRepAdaptor_Surface surf(TopoDS::Face(anobj));
       return (surf.GetType() == GeomAbs_Plane);
     }
-  case StdSelect_Cylinder:
-    {
+    case StdSelect_Cylinder: {
       BRepAdaptor_Surface surf(TopoDS::Face(anobj));
       return (surf.GetType() == GeomAbs_Cylinder);
     }
-  case StdSelect_Sphere: 
-    {
+    case StdSelect_Sphere: {
       BRepAdaptor_Surface surf(TopoDS::Face(anobj));
-      return (surf.GetType() == GeomAbs_Sphere);      
+      return (surf.GetType() == GeomAbs_Sphere);
     }
-  case StdSelect_Torus: 
-    {
+    case StdSelect_Torus: {
       BRepAdaptor_Surface surf(TopoDS::Face(anobj));
-      return ( surf.GetType() == GeomAbs_Torus);      
+      return (surf.GetType() == GeomAbs_Torus);
     }
-  case StdSelect_Revol: 
-    {
+    case StdSelect_Revol: {
       BRepAdaptor_Surface surf(TopoDS::Face(anobj));
-      return ( surf.GetType() == GeomAbs_Cylinder || 
-	       surf.GetType() == GeomAbs_Cone     ||
-	       surf.GetType() == GeomAbs_Torus    
-	       ||
-	       surf.GetType() == GeomAbs_Sphere	  || 
-	       surf.GetType() == GeomAbs_SurfaceOfRevolution 
-	     ); 
+      return (surf.GetType() == GeomAbs_Cylinder || surf.GetType() == GeomAbs_Cone
+              || surf.GetType() == GeomAbs_Torus || surf.GetType() == GeomAbs_Sphere
+              || surf.GetType() == GeomAbs_SurfaceOfRevolution);
     }
-  case StdSelect_Cone: // waiting for the free cdl, it is used for Cone
+    case StdSelect_Cone: // waiting for the free cdl, it is used for Cone
     {
       BRepAdaptor_Surface surf(TopoDS::Face(anobj));
-      return (surf.GetType() == GeomAbs_Cone);      
+      return (surf.GetType() == GeomAbs_Cone);
     }
   }
   return Standard_False;
 }
-Standard_Boolean StdSelect_FaceFilter::ActsOn(const TopAbs_ShapeEnum aStandardMode) const 
-{return aStandardMode==TopAbs_FACE;}
+
+Standard_Boolean StdSelect_FaceFilter::ActsOn(const TopAbs_ShapeEnum aStandardMode) const
+{
+  return aStandardMode == TopAbs_FACE;
+}

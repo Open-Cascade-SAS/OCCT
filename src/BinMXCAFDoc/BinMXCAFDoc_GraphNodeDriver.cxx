@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMXCAFDoc_GraphNodeDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <Message_Messenger.hxx>
@@ -21,104 +20,108 @@
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_GraphNode.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_GraphNodeDriver,BinMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_GraphNodeDriver, BinMDF_ADriver)
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-BinMXCAFDoc_GraphNodeDriver::BinMXCAFDoc_GraphNodeDriver(const Handle(Message_Messenger)& theMsgDriver)
-     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_GraphNode)->Name()) {
+//=================================================================================================
+
+BinMXCAFDoc_GraphNodeDriver::BinMXCAFDoc_GraphNodeDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_GraphNode)->Name())
+{
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-Handle(TDF_Attribute) BinMXCAFDoc_GraphNodeDriver::NewEmpty() const {
+//=================================================================================================
+
+Handle(TDF_Attribute) BinMXCAFDoc_GraphNodeDriver::NewEmpty() const
+{
   return new XCAFDoc_GraphNode();
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-Standard_Boolean BinMXCAFDoc_GraphNodeDriver::Paste(const BinObjMgt_Persistent& theSource,
+//=================================================================================================
+
+Standard_Boolean BinMXCAFDoc_GraphNodeDriver::Paste(const BinObjMgt_Persistent&  theSource,
                                                     const Handle(TDF_Attribute)& theTarget,
                                                     BinObjMgt_RRelocationTable& theRelocTable) const
 {
   Handle(XCAFDoc_GraphNode) aT = Handle(XCAFDoc_GraphNode)::DownCast(theTarget);
-  Standard_Integer anID;
+  Standard_Integer          anID;
 
   // Read Fathers
-  if (! (theSource >> anID))
+  if (!(theSource >> anID))
     return Standard_False;
-  while(anID != -1) {
+  while (anID != -1)
+  {
     Handle(XCAFDoc_GraphNode) aNode;
-    if(theRelocTable.IsBound(anID)) {
+    if (theRelocTable.IsBound(anID))
+    {
       aNode = Handle(XCAFDoc_GraphNode)::DownCast(theRelocTable.Find(anID));
-    } else {
+    }
+    else
+    {
       aNode = Handle(XCAFDoc_GraphNode)::DownCast(aT->NewEmpty());
       theRelocTable.Bind(anID, aNode);
     }
     aT->SetFather(aNode);
 
-    if (! (theSource >> anID))
-      return Standard_False;    
+    if (!(theSource >> anID))
+      return Standard_False;
   }
 
   // Read Children
-  if (! (theSource >> anID))
+  if (!(theSource >> anID))
     return Standard_False;
-  while(anID != -1) {
+  while (anID != -1)
+  {
     Handle(XCAFDoc_GraphNode) aNode;
-    if(theRelocTable.IsBound(anID)) {
+    if (theRelocTable.IsBound(anID))
+    {
       aNode = Handle(XCAFDoc_GraphNode)::DownCast(theRelocTable.Find(anID));
-    } else {
+    }
+    else
+    {
       aNode = Handle(XCAFDoc_GraphNode)::DownCast(aT->NewEmpty());
       theRelocTable.Bind(anID, aNode);
     }
     aT->SetChild(aNode);
 
-    if (! (theSource >> anID))
-      return Standard_False;    
+    if (!(theSource >> anID))
+      return Standard_False;
   }
 
   // Graph id
   Standard_GUID aGUID;
-  if (! (theSource >> aGUID))
+  if (!(theSource >> aGUID))
     return Standard_False;
   aT->SetGraphID(aGUID);
-
 
   return Standard_True;
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BinMXCAFDoc_GraphNodeDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                        BinObjMgt_Persistent& theTarget,
-                                        BinObjMgt_SRelocationTable& theRelocTable) const
+                                        BinObjMgt_Persistent&        theTarget,
+                                        BinObjMgt_SRelocationTable&  theRelocTable) const
 {
   Handle(XCAFDoc_GraphNode) aS = Handle(XCAFDoc_GraphNode)::DownCast(theSource);
-  Standard_Integer i, aNb, anID;
+  Standard_Integer          i, aNb, anID;
 
   // Write fathers
   aNb = aS->NbFathers();
-  for(i = 1; i <= aNb; i++) {
+  for (i = 1; i <= aNb; i++)
+  {
     Handle(XCAFDoc_GraphNode) aNode = aS->GetFather(i);
-    anID = theRelocTable.Add(aNode);
+    anID                            = theRelocTable.Add(aNode);
     theTarget << anID;
   }
   theTarget.PutInteger(-1);
 
   // Write children
   aNb = aS->NbChildren();
-  for(i = 1; i <= aNb; i++) {
+  for (i = 1; i <= aNb; i++)
+  {
     Handle(XCAFDoc_GraphNode) aNode = aS->GetChild(i);
-    anID = theRelocTable.Add(aNode);
+    anID                            = theRelocTable.Add(aNode);
     theTarget << anID;
   }
   theTarget.PutInteger(-1);
@@ -126,4 +129,3 @@ void BinMXCAFDoc_GraphNodeDriver::Paste(const Handle(TDF_Attribute)& theSource,
   // Graph id
   theTarget << aS->ID();
 }
-

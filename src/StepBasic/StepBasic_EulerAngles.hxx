@@ -22,7 +22,6 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <Standard_Transient.hxx>
 
-
 class StepBasic_EulerAngles;
 DEFINE_STANDARD_HANDLE(StepBasic_EulerAngles, Standard_Transient)
 
@@ -31,42 +30,23 @@ class StepBasic_EulerAngles : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepBasic_EulerAngles();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TColStd_HArray1OfReal)& aAngles);
-  
+  Standard_EXPORT void Init(const Handle(TColStd_HArray1OfReal)& aAngles);
+
   //! Returns field Angles
   Standard_EXPORT Handle(TColStd_HArray1OfReal) Angles() const;
-  
+
   //! Set field Angles
-  Standard_EXPORT void SetAngles (const Handle(TColStd_HArray1OfReal)& Angles);
+  Standard_EXPORT void SetAngles(const Handle(TColStd_HArray1OfReal)& Angles);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_EulerAngles,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_EulerAngles, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TColStd_HArray1OfReal) theAngles;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_EulerAngles_HeaderFile

@@ -27,42 +27,24 @@ class Interface_Check;
 class HeaderSection_FileName;
 class StepData_StepWriter;
 
-
 //! Read & Write Module for FileName
-class RWHeaderSection_RWFileName 
+class RWHeaderSection_RWFileName
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT RWHeaderSection_RWFileName();
-  
-  Standard_EXPORT void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(HeaderSection_FileName)& ent) const;
-  
-  Standard_EXPORT void WriteStep (StepData_StepWriter& SW, const Handle(HeaderSection_FileName)& ent) const;
 
+  Standard_EXPORT void ReadStep(const Handle(StepData_StepReaderData)& data,
+                                const Standard_Integer                 num,
+                                Handle(Interface_Check)&               ach,
+                                const Handle(HeaderSection_FileName)&  ent) const;
 
-
+  Standard_EXPORT void WriteStep(StepData_StepWriter&                  SW,
+                                 const Handle(HeaderSection_FileName)& ent) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWHeaderSection_RWFileName_HeaderFile

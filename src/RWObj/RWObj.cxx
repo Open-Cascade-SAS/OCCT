@@ -16,16 +16,14 @@
 
 #include <RWObj_TriangulationReader.hxx>
 
-//=============================================================================
-//function : Read
-//purpose  :
-//=============================================================================
-Handle(Poly_Triangulation) RWObj::ReadFile (const Standard_CString theFile,
-                                            const Message_ProgressRange& theProgress)
+//=================================================================================================
+
+Handle(Poly_Triangulation) RWObj::ReadFile(const Standard_CString       theFile,
+                                           const Message_ProgressRange& theProgress)
 {
   RWObj_TriangulationReader aReader;
-  aReader.SetCreateShapes (Standard_False);
-  aReader.Read (theFile, theProgress);
+  aReader.SetCreateShapes(Standard_False);
+  aReader.Read(theFile, theProgress);
   // note that returned bool value is ignored intentionally -- even if something went wrong,
   // but some data have been read, we at least will return these data
   return aReader.GetTriangulation();

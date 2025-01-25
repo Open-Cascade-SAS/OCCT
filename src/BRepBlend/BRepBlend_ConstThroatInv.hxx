@@ -19,5 +19,4 @@
 
 typedef BlendFunc_ConstThroatInv BRepBlend_ConstThroatInv;
 
-
 #endif // _BRepBlend_ConstThroatInv_HeaderFile

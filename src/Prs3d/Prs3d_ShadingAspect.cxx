@@ -22,55 +22,47 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Prs3d_ShadingAspect, Prs3d_BasicAspect)
 
-//=======================================================================
-//function : Prs3d_ShadingAspect
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Prs3d_ShadingAspect::Prs3d_ShadingAspect()
 {
-  const Graphic3d_MaterialAspect aMat (Graphic3d_NameOfMaterial_Brass);
-  const Quantity_Color aColor = aMat.AmbientColor();
-  myAspect = new Graphic3d_AspectFillArea3d (Aspect_IS_SOLID,
-					     aColor,
-					     aColor,
-					     Aspect_TOL_SOLID,
-					     1.0,
-					     aMat,
-					     aMat);
+  const Graphic3d_MaterialAspect aMat(Graphic3d_NameOfMaterial_Brass);
+  const Quantity_Color           aColor = aMat.AmbientColor();
+  myAspect                              = new Graphic3d_AspectFillArea3d(Aspect_IS_SOLID,
+                                            aColor,
+                                            aColor,
+                                            Aspect_TOL_SOLID,
+                                            1.0,
+                                            aMat,
+                                            aMat);
 }
 
-//=======================================================================
-//function : SetColor
-//purpose  :
-//=======================================================================
-void Prs3d_ShadingAspect::SetColor (const Quantity_Color& theColor,
-                                    const Aspect_TypeOfFacingModel theModel)
+//=================================================================================================
+
+void Prs3d_ShadingAspect::SetColor(const Quantity_Color&          theColor,
+                                   const Aspect_TypeOfFacingModel theModel)
 {
   if (theModel != Aspect_TOFM_BOTH_SIDE)
   {
     myAspect->SetDistinguishOn();
   }
 
-  if (theModel == Aspect_TOFM_FRONT_SIDE
-   || theModel == Aspect_TOFM_BOTH_SIDE)
+  if (theModel == Aspect_TOFM_FRONT_SIDE || theModel == Aspect_TOFM_BOTH_SIDE)
   {
-    myAspect->ChangeFrontMaterial().SetColor (theColor);
-    myAspect->SetInteriorColor (theColor);
+    myAspect->ChangeFrontMaterial().SetColor(theColor);
+    myAspect->SetInteriorColor(theColor);
   }
 
-  if (theModel == Aspect_TOFM_BACK_SIDE
-   || theModel == Aspect_TOFM_BOTH_SIDE)
+  if (theModel == Aspect_TOFM_BACK_SIDE || theModel == Aspect_TOFM_BOTH_SIDE)
   {
-    myAspect->ChangeBackMaterial().SetColor (theColor);
-    myAspect->SetBackInteriorColor (theColor);
+    myAspect->ChangeBackMaterial().SetColor(theColor);
+    myAspect->SetBackInteriorColor(theColor);
   }
 }
 
-//=======================================================================
-//function : Color
-//purpose  :
-//=======================================================================
-const Quantity_Color& Prs3d_ShadingAspect::Color (const Aspect_TypeOfFacingModel theModel) const
+//=================================================================================================
+
+const Quantity_Color& Prs3d_ShadingAspect::Color(const Aspect_TypeOfFacingModel theModel) const
 {
   switch (theModel)
   {
@@ -78,44 +70,39 @@ const Quantity_Color& Prs3d_ShadingAspect::Color (const Aspect_TypeOfFacingModel
     case Aspect_TOFM_BOTH_SIDE:
     case Aspect_TOFM_FRONT_SIDE:
       return myAspect->FrontMaterial().MaterialType() == Graphic3d_MATERIAL_ASPECT
-           ? myAspect->InteriorColor()
-           : myAspect->FrontMaterial().Color();
+               ? myAspect->InteriorColor()
+               : myAspect->FrontMaterial().Color();
     case Aspect_TOFM_BACK_SIDE:
       return myAspect->BackMaterial().MaterialType() == Graphic3d_MATERIAL_ASPECT
-           ? myAspect->BackInteriorColor()
-           : myAspect->BackMaterial().Color();
+               ? myAspect->BackInteriorColor()
+               : myAspect->BackMaterial().Color();
   }
 }
 
-//=======================================================================
-//function : SetMaterial
-//purpose  :
-//=======================================================================
-void Prs3d_ShadingAspect::SetMaterial (const Graphic3d_MaterialAspect& theMaterial,
-                                       const Aspect_TypeOfFacingModel  theModel)
+//=================================================================================================
+
+void Prs3d_ShadingAspect::SetMaterial(const Graphic3d_MaterialAspect& theMaterial,
+                                      const Aspect_TypeOfFacingModel  theModel)
 {
   if (theModel != Aspect_TOFM_BOTH_SIDE)
   {
     myAspect->SetDistinguishOn();
   }
-  if (theModel == Aspect_TOFM_FRONT_SIDE
-   || theModel == Aspect_TOFM_BOTH_SIDE)
+  if (theModel == Aspect_TOFM_FRONT_SIDE || theModel == Aspect_TOFM_BOTH_SIDE)
   {
     myAspect->SetFrontMaterial(theMaterial);
   }
 
-  if (theModel == Aspect_TOFM_BACK_SIDE
-   || theModel == Aspect_TOFM_BOTH_SIDE)
+  if (theModel == Aspect_TOFM_BACK_SIDE || theModel == Aspect_TOFM_BOTH_SIDE)
   {
-    myAspect->SetBackMaterial (theMaterial);
+    myAspect->SetBackMaterial(theMaterial);
   }
 }
 
-//=======================================================================
-//function : Material
-//purpose  :
-//=======================================================================
-const Graphic3d_MaterialAspect& Prs3d_ShadingAspect::Material (const Aspect_TypeOfFacingModel theModel) const
+//=================================================================================================
+
+const Graphic3d_MaterialAspect& Prs3d_ShadingAspect::Material(
+  const Aspect_TypeOfFacingModel theModel) const
 {
   switch (theModel)
   {
@@ -128,38 +115,34 @@ const Graphic3d_MaterialAspect& Prs3d_ShadingAspect::Material (const Aspect_Type
   }
 }
 
-//=======================================================================
-//function : SetTransparency
-//purpose  :
-//=======================================================================
-void Prs3d_ShadingAspect::SetTransparency (const Standard_Real theValue,
-                                           const Aspect_TypeOfFacingModel theModel)
+//=================================================================================================
+
+void Prs3d_ShadingAspect::SetTransparency(const Standard_Real            theValue,
+                                          const Aspect_TypeOfFacingModel theModel)
 {
   if (theModel != Aspect_TOFM_BOTH_SIDE)
   {
     myAspect->SetDistinguishOn();
   }
 
-  if (theModel == Aspect_TOFM_FRONT_SIDE
-   || theModel == Aspect_TOFM_BOTH_SIDE)
+  if (theModel == Aspect_TOFM_FRONT_SIDE || theModel == Aspect_TOFM_BOTH_SIDE)
   {
-    myAspect->ChangeFrontMaterial().SetTransparency (Standard_ShortReal(theValue));
-    myAspect->SetInteriorColor (Quantity_ColorRGBA (myAspect->InteriorColor(), 1.0f - Standard_ShortReal(theValue)));
+    myAspect->ChangeFrontMaterial().SetTransparency(Standard_ShortReal(theValue));
+    myAspect->SetInteriorColor(
+      Quantity_ColorRGBA(myAspect->InteriorColor(), 1.0f - Standard_ShortReal(theValue)));
   }
 
-  if (theModel == Aspect_TOFM_BACK_SIDE
-   || theModel == Aspect_TOFM_BOTH_SIDE)
+  if (theModel == Aspect_TOFM_BACK_SIDE || theModel == Aspect_TOFM_BOTH_SIDE)
   {
-    myAspect->ChangeBackMaterial().SetTransparency (Standard_ShortReal(theValue));
-    myAspect->SetBackInteriorColor (Quantity_ColorRGBA (myAspect->BackInteriorColor(), 1.0f - Standard_ShortReal(theValue)));
+    myAspect->ChangeBackMaterial().SetTransparency(Standard_ShortReal(theValue));
+    myAspect->SetBackInteriorColor(
+      Quantity_ColorRGBA(myAspect->BackInteriorColor(), 1.0f - Standard_ShortReal(theValue)));
   }
 }
 
-//=======================================================================
-//function : Transparency
-//purpose  :
-//=======================================================================
-Standard_Real Prs3d_ShadingAspect::Transparency (const Aspect_TypeOfFacingModel theModel) const
+//=================================================================================================
+
+Standard_Real Prs3d_ShadingAspect::Transparency(const Aspect_TypeOfFacingModel theModel) const
 {
   switch (theModel)
   {
@@ -176,9 +159,8 @@ Standard_Real Prs3d_ShadingAspect::Transparency (const Aspect_TypeOfFacingModel 
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void Prs3d_ShadingAspect::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Prs3d_ShadingAspect::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAspect.get())
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myAspect.get())
 }
-

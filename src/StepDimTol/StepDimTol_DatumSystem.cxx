@@ -17,29 +17,21 @@
 
 #include <StepDimTol_HArray1OfDatumReferenceCompartment.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_DatumSystem,StepRepr_ShapeAspect)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_DatumSystem, StepRepr_ShapeAspect)
 
-//=======================================================================
-//function : StepDimTol_DatumSystem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepDimTol_DatumSystem::StepDimTol_DatumSystem ()
-{
-}
+StepDimTol_DatumSystem::StepDimTol_DatumSystem() {}
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepDimTol_DatumSystem::Init (const Handle(TCollection_HAsciiString)& theName,
-                                   const Handle(TCollection_HAsciiString)& theDescription,
-                                   const Handle(StepRepr_ProductDefinitionShape)& theOfShape,
-                                   const StepData_Logical theProductDefinitional,
-                                   const Handle(StepDimTol_HArray1OfDatumReferenceCompartment)& theConstituents)
+void StepDimTol_DatumSystem::Init(
+  const Handle(TCollection_HAsciiString)&                      theName,
+  const Handle(TCollection_HAsciiString)&                      theDescription,
+  const Handle(StepRepr_ProductDefinitionShape)&               theOfShape,
+  const StepData_Logical                                       theProductDefinitional,
+  const Handle(StepDimTol_HArray1OfDatumReferenceCompartment)& theConstituents)
 {
   StepRepr_ShapeAspect::Init(theName, theDescription, theOfShape, theProductDefinitional);
   myConstituents = theConstituents;
 }
-    

@@ -24,33 +24,27 @@ class Media_Timer : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Media_Timer, Standard_Transient)
 public:
-
   //! Empty constructor.
-  Media_Timer() : myTimerFrom (0.0), myTimerSpeed (1.0) {}
+  Media_Timer()
+      : myTimerFrom(0.0),
+        myTimerSpeed(1.0)
+  {
+  }
 
   //! Return elapsed time in seconds.
-  Standard_Real ElapsedTime() const
-  {
-    return myTimerFrom + myTimer.ElapsedTime() * myTimerSpeed;
-  }
+  Standard_Real ElapsedTime() const { return myTimerFrom + myTimer.ElapsedTime() * myTimerSpeed; }
 
   //! Return playback speed coefficient (1.0 means normal speed).
   Standard_Real PlaybackSpeed() const { return myTimerSpeed; }
 
   //! Setup playback speed coefficient.
-  Standard_EXPORT void SetPlaybackSpeed (const Standard_Real theSpeed);
+  Standard_EXPORT void SetPlaybackSpeed(const Standard_Real theSpeed);
 
   //! Return true if timer has been started.
-  Standard_Boolean IsStarted() const
-  {
-    return myTimer.IsStarted();
-  }
+  Standard_Boolean IsStarted() const { return myTimer.IsStarted(); }
 
   //! Start the timer.
-  void Start()
-  {
-    myTimer.Start();
-  }
+  void Start() { myTimer.Start(); }
 
   //! Pause the timer.
   Standard_EXPORT void Pause();
@@ -59,14 +53,12 @@ public:
   Standard_EXPORT void Stop();
 
   //! Seek the timer to specified position.
-  Standard_EXPORT void Seek (const Standard_Real theTime);
+  Standard_EXPORT void Seek(const Standard_Real theTime);
 
 protected:
-
   OSD_Timer     myTimer;
   Standard_Real myTimerFrom;
   Standard_Real myTimerSpeed;
-
 };
 
 DEFINE_STANDARD_HANDLE(Media_Timer, Standard_Transient)

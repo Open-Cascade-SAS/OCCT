@@ -23,24 +23,21 @@
 
 DEFINE_STANDARD_HANDLE(Poly_Polygon3D, Standard_Transient)
 
-//! This class Provides a polygon in 3D space. It is generally an approximate representation of a curve.
-//! A Polygon3D is defined by a table of nodes. Each node is
-//! a 3D point. If the polygon is closed, the point of closure is
-//! repeated at the end of the table of nodes.
-//! If the polygon is an approximate representation of a curve,
-//! you can associate with each of its nodes the value of the
+//! This class Provides a polygon in 3D space. It is generally an approximate representation of a
+//! curve. A Polygon3D is defined by a table of nodes. Each node is a 3D point. If the polygon is
+//! closed, the point of closure is repeated at the end of the table of nodes. If the polygon is an
+//! approximate representation of a curve, you can associate with each of its nodes the value of the
 //! parameter of the corresponding point on the curve.
 class Poly_Polygon3D : public Standard_Transient
 {
 public:
-
   //! Constructs a 3D polygon with specific number of nodes.
-  Standard_EXPORT Poly_Polygon3D (const Standard_Integer theNbNodes,
-                                  const Standard_Boolean theHasParams);
+  Standard_EXPORT Poly_Polygon3D(const Standard_Integer theNbNodes,
+                                 const Standard_Boolean theHasParams);
 
   //! Constructs a 3D polygon defined by the table of points, Nodes.
   Standard_EXPORT Poly_Polygon3D(const TColgp_Array1OfPnt& Nodes);
-  
+
   //! Constructs a 3D polygon defined by
   //! the table of points, Nodes, and the parallel table of
   //! parameters, Parameters, where each value of the table
@@ -49,17 +46,18 @@ public:
   //! Warning
   //! Both the Nodes and Parameters tables must have the
   //! same bounds. This property is not checked at construction time.
-  Standard_EXPORT Poly_Polygon3D(const TColgp_Array1OfPnt& Nodes, const TColStd_Array1OfReal& Parameters);
+  Standard_EXPORT Poly_Polygon3D(const TColgp_Array1OfPnt&   Nodes,
+                                 const TColStd_Array1OfReal& Parameters);
 
   //! Creates a copy of current polygon
   Standard_EXPORT virtual Handle(Poly_Polygon3D) Copy() const;
-  
+
   //! Returns the deflection of this polygon
   Standard_Real Deflection() const { return myDeflection; }
 
   //! Sets the deflection of this polygon. See more on deflection in Poly_Polygon2D
-  void Deflection (const Standard_Real theDefl) { myDeflection = theDefl; }
-  
+  void Deflection(const Standard_Real theDefl) { myDeflection = theDefl; }
+
   //! Returns the number of nodes in this polygon.
   //! Note: If the polygon is closed, the point of closure is
   //! repeated at the end of its table of nodes. Thus, on a closed
@@ -75,7 +73,7 @@ public:
   //! Returns the table of the parameters associated with each node in this polygon.
   //! HasParameters function checks if   parameters are associated with the nodes of this polygon.
   Standard_Boolean HasParameters() const { return !myParameters.IsNull(); }
-  
+
   //! Returns true if parameters are associated with the nodes
   //! in this polygon.
   const TColStd_Array1OfReal& Parameters() const { return myParameters->Array1(); }
@@ -87,16 +85,15 @@ public:
   TColStd_Array1OfReal& ChangeParameters() const { return myParameters->ChangeArray1(); }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const;
 
-  DEFINE_STANDARD_RTTIEXT(Poly_Polygon3D,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Poly_Polygon3D, Standard_Transient)
 
 private:
-
-  Standard_Real myDeflection;
-  TColgp_Array1OfPnt myNodes;
+  Standard_Real                 myDeflection;
+  TColgp_Array1OfPnt            myNodes;
   Handle(TColStd_HArray1OfReal) myParameters;
-
 };
 
 #endif // _Poly_Polygon3D_HeaderFile

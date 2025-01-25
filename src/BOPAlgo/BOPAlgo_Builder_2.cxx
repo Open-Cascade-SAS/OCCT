@@ -15,7 +15,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPAlgo_Builder.hxx>
 #include <BOPAlgo_Alerts.hxx>
 #include <BOPAlgo_BuilderFace.hxx>
@@ -52,82 +51,77 @@
 
 #include <algorithm>
 //
-static
-  TopoDS_Face BuildDraftFace(const TopoDS_Face& theFace,
-                             const TopTools_DataMapOfShapeListOfShape& theImages,
-                             Handle(IntTools_Context)& theCtx,
-                             const Handle(Message_Report)& theReport);
+static TopoDS_Face BuildDraftFace(const TopoDS_Face&                        theFace,
+                                  const TopTools_DataMapOfShapeListOfShape& theImages,
+                                  Handle(IntTools_Context)&                 theCtx,
+                                  const Handle(Message_Report)&             theReport);
 
-//=======================================================================
-//class    : BOPAlgo_PairOfShapeBoolean
-//purpose  : 
-//=======================================================================
-class BOPAlgo_PairOfShapeBoolean : public BOPAlgo_ParallelAlgo {
+//=================================================================================================
 
- public:
+class BOPAlgo_PairOfShapeBoolean : public BOPAlgo_ParallelAlgo
+{
+
+public:
   DEFINE_STANDARD_ALLOC
 
-  BOPAlgo_PairOfShapeBoolean() : 
-    BOPAlgo_ParallelAlgo(),
-    myFlag(Standard_False) {
+  BOPAlgo_PairOfShapeBoolean()
+      : BOPAlgo_ParallelAlgo(),
+        myFlag(Standard_False)
+  {
   }
+
   //
-  virtual ~BOPAlgo_PairOfShapeBoolean() {
-  }
+  virtual ~BOPAlgo_PairOfShapeBoolean() {}
+
   //
-  TopoDS_Shape& Shape1() {
-    return myShape1;
-  }
+  TopoDS_Shape& Shape1() { return myShape1; }
+
   //
-  TopoDS_Shape& Shape2() {
-    return myShape2;
-  }
+  TopoDS_Shape& Shape2() { return myShape2; }
+
   //
-  Standard_Boolean& Flag() {
-    return myFlag;
-  }
+  Standard_Boolean& Flag() { return myFlag; }
+
   //
-  void SetContext(const Handle(IntTools_Context)& aContext) {
-    myContext=aContext;
-  }
+  void SetContext(const Handle(IntTools_Context)& aContext) { myContext = aContext; }
+
   //
-  const Handle(IntTools_Context)& Context()const {
-    return myContext;
-  }
+  const Handle(IntTools_Context)& Context() const { return myContext; }
+
   //
-  virtual void Perform() {
+  virtual void Perform()
+  {
     Message_ProgressScope aPS(myProgressRange, NULL, 1);
     if (UserBreak(aPS))
     {
       return;
     }
 
-    const TopoDS_Face& aFj=*((TopoDS_Face*)&myShape1);
-    const TopoDS_Face& aFk=*((TopoDS_Face*)&myShape2);
-    myFlag=BOPTools_AlgoTools::AreFacesSameDomain(aFj, aFk, myContext, myFuzzyValue);
+    const TopoDS_Face& aFj = *((TopoDS_Face*)&myShape1);
+    const TopoDS_Face& aFk = *((TopoDS_Face*)&myShape2);
+    myFlag = BOPTools_AlgoTools::AreFacesSameDomain(aFj, aFk, myContext, myFuzzyValue);
   }
+
   //
- protected: 
-  Standard_Boolean myFlag;
-  TopoDS_Shape myShape1;
-  TopoDS_Shape myShape2;
+protected:
+  Standard_Boolean         myFlag;
+  TopoDS_Shape             myShape1;
+  TopoDS_Shape             myShape2;
   Handle(IntTools_Context) myContext;
 };
+
 //
 typedef NCollection_Vector<BOPAlgo_PairOfShapeBoolean> BOPAlgo_VectorOfPairOfShapeBoolean;
 
 //=======================================================================
-//class   : BOPAlgo_SplitFace
-//purpose : Auxiliary class to extend BOPAlgo_BuilderFace with progress support
+// class   : BOPAlgo_SplitFace
+// purpose : Auxiliary class to extend BOPAlgo_BuilderFace with progress support
 //=======================================================================
 class BOPAlgo_SplitFace : public BOPAlgo_BuilderFace
 {
 public:
   //! Sets progress range
-  void SetProgressRange(const Message_ProgressRange& theRange)
-  {
-    myRange = theRange;
-  }
+  void SetProgressRange(const Message_ProgressRange& theRange) { myRange = theRange; }
 
   // New perform method, using own progress range
   void Perform()
@@ -147,54 +141,50 @@ private:
 private:
   Message_ProgressRange myRange;
 };
+
 typedef NCollection_Vector<BOPAlgo_SplitFace> BOPAlgo_VectorOfBuilderFace;
 
-//=======================================================================
-//class    : BOPAlgo_VFI
-//purpose  : 
-//=======================================================================
-class BOPAlgo_VFI : public BOPAlgo_ParallelAlgo {
+//=================================================================================================
 
- public:
+class BOPAlgo_VFI : public BOPAlgo_ParallelAlgo
+{
+
+public:
   DEFINE_STANDARD_ALLOC
-  
-  BOPAlgo_VFI() :
-    BOPAlgo_ParallelAlgo(),
-    myIsInternal(Standard_False) {
+
+  BOPAlgo_VFI()
+      : BOPAlgo_ParallelAlgo(),
+        myIsInternal(Standard_False)
+  {
   }
+
   //
-  virtual ~BOPAlgo_VFI(){
-  }
+  virtual ~BOPAlgo_VFI() {}
+
   //
-  void SetVertex(const TopoDS_Vertex& aV) {
-    myV=aV;
-  }
+  void SetVertex(const TopoDS_Vertex& aV) { myV = aV; }
+
   //
-  TopoDS_Vertex& Vertex() {
-    return myV;
-  }
+  TopoDS_Vertex& Vertex() { return myV; }
+
   //
-  void SetFace(const TopoDS_Face& aF) {
-    myF=aF;
-  }
+  void SetFace(const TopoDS_Face& aF) { myF = aF; }
+
   //
-  TopoDS_Face& Face() {
-    return myF;
-  }
+  TopoDS_Face& Face() { return myF; }
+
   //
-  Standard_Boolean IsInternal()const {
-    return myIsInternal;
-  }
+  Standard_Boolean IsInternal() const { return myIsInternal; }
+
   //
-  void SetContext(const Handle(IntTools_Context)& aContext) {
-    myContext=aContext;
-  }
+  void SetContext(const Handle(IntTools_Context)& aContext) { myContext = aContext; }
+
   //
-  const Handle(IntTools_Context)& Context()const {
-    return myContext;
-  }
+  const Handle(IntTools_Context)& Context() const { return myContext; }
+
   //
-  virtual void Perform() {
+  virtual void Perform()
+  {
     Message_ProgressScope aPS(myProgressRange, NULL, 1);
     if (UserBreak(aPS))
     {
@@ -203,24 +193,23 @@ class BOPAlgo_VFI : public BOPAlgo_ParallelAlgo {
 
     Standard_Real aT1, aT2, dummy;
     //
-    Standard_Integer iFlag =
-      myContext->ComputeVF(myV, myF, aT1, aT2, dummy, myFuzzyValue);
-    myIsInternal = (iFlag == 0);
+    Standard_Integer iFlag = myContext->ComputeVF(myV, myF, aT1, aT2, dummy, myFuzzyValue);
+    myIsInternal           = (iFlag == 0);
   }
+
   //
- protected:
-  Standard_Boolean myIsInternal;
-  TopoDS_Vertex myV;
-  TopoDS_Face myF;
+protected:
+  Standard_Boolean         myIsInternal;
+  TopoDS_Vertex            myV;
+  TopoDS_Face              myF;
   Handle(IntTools_Context) myContext;
 };
-//
-typedef NCollection_Vector<BOPAlgo_VFI> BOPAlgo_VectorOfVFI; 
 
-//=======================================================================
-//function : FillImagesFaces
-//purpose  : 
-//=======================================================================
+//
+typedef NCollection_Vector<BOPAlgo_VFI> BOPAlgo_VectorOfVFI;
+
+//=================================================================================================
+
 void BOPAlgo_Builder::FillImagesFaces(const Message_ProgressRange& theRange)
 {
   Message_ProgressScope aPS(theRange, "Filling splits of faces", 10);
@@ -236,41 +225,41 @@ void BOPAlgo_Builder::FillImagesFaces(const Message_ProgressRange& theRange)
   }
   FillInternalVertices(aPS.Next(0.5));
 }
-//=======================================================================
-//function : BuildSplitFaces
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
 void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
 {
-  Standard_Boolean bHasFaceInfo, bIsClosed, bIsDegenerated, bToReverse;
-  Standard_Integer i, j, k, aNbS, aNbPBIn, aNbPBOn, aNbPBSc, aNbAV, nSp;
-  TopoDS_Face aFF, aFSD;
-  TopoDS_Edge aSp, aEE;
-  TopAbs_Orientation anOriF, anOriE;
-  TopExp_Explorer aExp;
+  Standard_Boolean                   bHasFaceInfo, bIsClosed, bIsDegenerated, bToReverse;
+  Standard_Integer                   i, j, k, aNbS, aNbPBIn, aNbPBOn, aNbPBSc, aNbAV, nSp;
+  TopoDS_Face                        aFF, aFSD;
+  TopoDS_Edge                        aSp, aEE;
+  TopAbs_Orientation                 anOriF, anOriE;
+  TopExp_Explorer                    aExp;
   TopTools_ListIteratorOfListOfShape aIt;
-  TColStd_ListOfInteger aLIAV;
-  TopTools_MapOfShape aMFence;
-  Handle(NCollection_BaseAllocator) aAllocator;
-  BOPAlgo_VectorOfBuilderFace aVBF;
+  TColStd_ListOfInteger              aLIAV;
+  TopTools_MapOfShape                aMFence;
+  Handle(NCollection_BaseAllocator)  aAllocator;
+  BOPAlgo_VectorOfBuilderFace        aVBF;
   //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~scope f
-  aAllocator=
-    NCollection_BaseAllocator::CommonBaseAllocator();
+  aAllocator = NCollection_BaseAllocator::CommonBaseAllocator();
   //
   TopTools_ListOfShape aLE(aAllocator);
-  TopTools_MapOfShape aMDE(100, aAllocator);
+  TopTools_MapOfShape  aMDE(100, aAllocator);
   //
   Message_ProgressScope aPSOuter(theRange, NULL, 10);
   // Build temporary map of faces images to avoid rebuilding
   // of the faces without any IN or section edges
   NCollection_IndexedDataMap<Standard_Integer, TopTools_ListOfShape> aFacesIm;
   //
-  aNbS=myDS->NbSourceShapes();
+  aNbS = myDS->NbSourceShapes();
   //
-  for (i=0; i<aNbS; ++i) {
-    const BOPDS_ShapeInfo& aSI=myDS->ShapeInfo(i);
-    if (aSI.ShapeType()!=TopAbs_FACE) {
+  for (i = 0; i < aNbS; ++i)
+  {
+    const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
+    if (aSI.ShapeType() != TopAbs_FACE)
+    {
       continue;
     }
     if (UserBreak(aPSOuter))
@@ -278,29 +267,30 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
       return;
     }
     //
-    const TopoDS_Face& aF=(*(TopoDS_Face*)(&aSI.Shape()));
-    Standard_Boolean isUClosed = Standard_False,
-                     isVClosed = Standard_False,
+    const TopoDS_Face& aF        = (*(TopoDS_Face*)(&aSI.Shape()));
+    Standard_Boolean   isUClosed = Standard_False, isVClosed = Standard_False,
                      isChecked = Standard_False;
     //
-    bHasFaceInfo=myDS->HasFaceInfo(i);
-    if(!bHasFaceInfo) {
+    bHasFaceInfo = myDS->HasFaceInfo(i);
+    if (!bHasFaceInfo)
+    {
       continue;
     }
     //
-    const BOPDS_FaceInfo& aFI=myDS->FaceInfo(i);
+    const BOPDS_FaceInfo& aFI = myDS->FaceInfo(i);
     //
-    const BOPDS_IndexedMapOfPaveBlock& aMPBIn=aFI.PaveBlocksIn();
-    const BOPDS_IndexedMapOfPaveBlock& aMPBOn=aFI.PaveBlocksOn();
-    const BOPDS_IndexedMapOfPaveBlock& aMPBSc=aFI.PaveBlocksSc();
+    const BOPDS_IndexedMapOfPaveBlock& aMPBIn = aFI.PaveBlocksIn();
+    const BOPDS_IndexedMapOfPaveBlock& aMPBOn = aFI.PaveBlocksOn();
+    const BOPDS_IndexedMapOfPaveBlock& aMPBSc = aFI.PaveBlocksSc();
     aLIAV.Clear();
     myDS->AloneVertices(i, aLIAV);
-    
-    aNbPBIn=aMPBIn.Extent();
-    aNbPBOn=aMPBOn.Extent();
-    aNbPBSc=aMPBSc.Extent();
-    aNbAV=aLIAV.Extent();
-    if (!aNbPBIn && !aNbPBOn && !aNbPBSc && !aNbAV) { // not compete
+
+    aNbPBIn = aMPBIn.Extent();
+    aNbPBOn = aMPBOn.Extent();
+    aNbPBSc = aMPBSc.Extent();
+    aNbAV   = aLIAV.Extent();
+    if (!aNbPBIn && !aNbPBOn && !aNbPBSc && !aNbAV)
+    { // not compete
       continue;
     }
 
@@ -357,8 +347,8 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
 
     aMFence.Clear();
     //
-    anOriF=aF.Orientation();
-    aFF=aF;
+    anOriF = aF.Orientation();
+    aFF    = aF;
     aFF.Orientation(TopAbs_FORWARD);
     //
     // 1. Fill the edges set for the face aFF -> LE
@@ -366,37 +356,40 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
 
     // 1.1 Bounding edges
     aExp.Init(aFF, TopAbs_EDGE);
-    for (; aExp.More(); aExp.Next()) {
-      const TopoDS_Edge& aE=(*(TopoDS_Edge*)(&aExp.Current()));
-      anOriE=aE.Orientation();
+    for (; aExp.More(); aExp.Next())
+    {
+      const TopoDS_Edge& aE = (*(TopoDS_Edge*)(&aExp.Current()));
+      anOriE                = aE.Orientation();
       //
-      if (!myImages.IsBound(aE)) {
-        if (anOriE==TopAbs_INTERNAL) {
-          aEE=aE;
+      if (!myImages.IsBound(aE))
+      {
+        if (anOriE == TopAbs_INTERNAL)
+        {
+          aEE = aE;
           aEE.Orientation(TopAbs_FORWARD);
           aLE.Append(aEE);
           aEE.Orientation(TopAbs_REVERSED);
           aLE.Append(aEE);
         }
-        else {
+        else
+        {
           aLE.Append(aE);
         }
 
         continue;
       }
 
-      if(!isChecked)
+      if (!isChecked)
       {
         const Handle(Geom_Surface) aSurf = BRep_Tool::Surface(aF);
-        GeomLib::IsClosed(aSurf, BRep_Tool::Tolerance(aE),
-          isUClosed, isVClosed);
+        GeomLib::IsClosed(aSurf, BRep_Tool::Tolerance(aE), isUClosed, isVClosed);
 
         isChecked = Standard_True;
       }
 
       bIsClosed = Standard_False;
 
-      if((isUClosed || isVClosed) && BRep_Tool::IsClosed(aE, aF)) 
+      if ((isUClosed || isVClosed) && BRep_Tool::IsClosed(aE, aF))
       {
 
         Standard_Boolean isUIso = Standard_False, isVIso = Standard_False;
@@ -405,39 +398,45 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
         bIsClosed = ((isUClosed && isUIso) || (isVClosed && isVIso));
       }
 
-      bIsDegenerated=BRep_Tool::Degenerated(aE);
+      bIsDegenerated = BRep_Tool::Degenerated(aE);
 
-      const TopTools_ListOfShape& aLIE=myImages.Find(aE);
+      const TopTools_ListOfShape& aLIE = myImages.Find(aE);
       aIt.Initialize(aLIE);
-      for (; aIt.More(); aIt.Next()) {
-        aSp=(*(TopoDS_Edge*)(&aIt.Value()));
-        if (bIsDegenerated) {
+      for (; aIt.More(); aIt.Next())
+      {
+        aSp = (*(TopoDS_Edge*)(&aIt.Value()));
+        if (bIsDegenerated)
+        {
           aSp.Orientation(anOriE);
           aLE.Append(aSp);
           continue;
         }
         //
-        if (anOriE==TopAbs_INTERNAL) {
+        if (anOriE == TopAbs_INTERNAL)
+        {
           aSp.Orientation(TopAbs_FORWARD);
           aLE.Append(aSp);
           aSp.Orientation(TopAbs_REVERSED);
           aLE.Append(aSp);
           continue;
         }
-          //
-        if (bIsClosed) {
-          if (aMFence.Add(aSp)) {
-            if (!BRep_Tool::IsClosed(aSp, aF)){
+        //
+        if (bIsClosed)
+        {
+          if (aMFence.Add(aSp))
+          {
+            if (!BRep_Tool::IsClosed(aSp, aF))
+            {
               if (!BOPTools_AlgoTools3D::DoSplitSEAMOnFace(aSp, aF))
               {
                 // try different approach
                 if (!BOPTools_AlgoTools3D::DoSplitSEAMOnFace(aE, aSp, aF))
                 {
                   TopoDS_Compound aWS;
-                  BRep_Builder().MakeCompound (aWS);
-                  BRep_Builder().Add (aWS, aF);
-                  BRep_Builder().Add (aWS, aSp);
-                  AddWarning (new BOPAlgo_AlertUnableToMakeClosedEdgeOnFace (aWS));
+                  BRep_Builder().MakeCompound(aWS);
+                  BRep_Builder().Add(aWS, aF);
+                  BRep_Builder().Add(aWS, aSp);
+                  AddWarning(new BOPAlgo_AlertUnableToMakeClosedEdgeOnFace(aWS));
                 }
               }
             }
@@ -446,26 +445,28 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
             aLE.Append(aSp);
             aSp.Orientation(TopAbs_REVERSED);
             aLE.Append(aSp);
-          }// if (aMFence.Add(aSp))
+          } // if (aMFence.Add(aSp))
           continue;
-        }// if (bIsClosed){
+        } // if (bIsClosed){
         //
         aSp.Orientation(anOriE);
-        bToReverse=BOPTools_AlgoTools::IsSplitToReverseWithWarn(aSp, aE, myContext, myReport);
-        if (bToReverse) {
+        bToReverse = BOPTools_AlgoTools::IsSplitToReverseWithWarn(aSp, aE, myContext, myReport);
+        if (bToReverse)
+        {
           aSp.Reverse();
         }
         aLE.Append(aSp);
-      }// for (; aIt.More(); aIt.Next()) {
-    }// for (; aExp.More(); aExp.Next()) {
-    // 
+      } // for (; aIt.More(); aIt.Next()) {
+    } // for (; aExp.More(); aExp.Next()) {
+    //
     //
     // 1.2 In edges
-    for (j=1; j<=aNbPBIn; ++j) {
-      const Handle(BOPDS_PaveBlock)& aPB=aMPBIn(j);
-      nSp=aPB->Edge();
+    for (j = 1; j <= aNbPBIn; ++j)
+    {
+      const Handle(BOPDS_PaveBlock)& aPB = aMPBIn(j);
+      nSp                                = aPB->Edge();
       Standard_ASSERT(nSp >= 0, "Face information is not up to date", continue);
-      aSp=(*(TopoDS_Edge*)(&myDS->Shape(nSp)));
+      aSp = (*(TopoDS_Edge*)(&myDS->Shape(nSp)));
       //
       aSp.Orientation(TopAbs_FORWARD);
       aLE.Append(aSp);
@@ -475,10 +476,11 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
     //
     //
     // 1.3 Section edges
-    for (j=1; j<=aNbPBSc; ++j) {
-      const Handle(BOPDS_PaveBlock)& aPB=aMPBSc(j);
-      nSp=aPB->Edge();
-      aSp=(*(TopoDS_Edge*)(&myDS->Shape(nSp)));
+    for (j = 1; j <= aNbPBSc; ++j)
+    {
+      const Handle(BOPDS_PaveBlock)& aPB = aMPBSc(j);
+      nSp                                = aPB->Edge();
+      aSp                                = (*(TopoDS_Edge*)(&myDS->Shape(nSp)));
       //
       aSp.Orientation(TopAbs_FORWARD);
       aLE.Append(aSp);
@@ -486,17 +488,18 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
       aLE.Append(aSp);
     }
     //
-    if (!myPaveFiller->NonDestructive()) {
+    if (!myPaveFiller->NonDestructive())
+    {
       // speed up for planar faces
       BRepLib::BuildPCurveForEdgesOnPlane(aLE, aFF);
     }
     // 3 Build split faces
-    BOPAlgo_SplitFace& aBF=aVBF.Appended();
+    BOPAlgo_SplitFace& aBF = aVBF.Appended();
     aBF.SetFace(aF);
     aBF.SetShapes(aLE);
     aBF.SetRunParallel(myRunParallel);
     //
-  }// for (i=0; i<aNbS; ++i) {
+  } // for (i=0; i<aNbS; ++i) {
 
   // close preparation task
   aPSOuter.Next();
@@ -510,7 +513,7 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
     aBF.SetProgressRange(aPSParallel.Next());
   }
   //===================================================
-  BOPTools_Parallel::Perform (myRunParallel, aVBF);
+  BOPTools_Parallel::Perform(myRunParallel, aVBF);
   //===================================================
   if (UserBreak(aPSOuter))
   {
@@ -526,15 +529,16 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
   aNbBF = aFacesIm.Extent();
   for (k = 1; k <= aNbBF; ++k)
   {
-    const TopoDS_Face& aF = TopoDS::Face(myDS->Shape(aFacesIm.FindKey(k)));
-    anOriF = aF.Orientation();
+    const TopoDS_Face& aF            = TopoDS::Face(myDS->Shape(aFacesIm.FindKey(k)));
+    anOriF                           = aF.Orientation();
     const TopTools_ListOfShape& aLFR = aFacesIm(k);
     //
     TopTools_ListOfShape* pLFIm = myImages.Bound(aF, TopTools_ListOfShape());
     aIt.Initialize(aLFR);
-    for (; aIt.More(); aIt.Next()) {
-      TopoDS_Shape& aFR=aIt.ChangeValue();
-      if (anOriF==TopAbs_REVERSED)
+    for (; aIt.More(); aIt.Next())
+    {
+      TopoDS_Shape& aFR = aIt.ChangeValue();
+      if (anOriF == TopAbs_REVERSED)
         aFR.Orientation(TopAbs_REVERSED);
       pLFIm->Append(aFR);
     }
@@ -543,16 +547,13 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~scope t
 }
 
-//=======================================================================
-//function : AddEdgeSet
-//purpose  : 
-//=======================================================================
-typedef
-  NCollection_IndexedDataMap<BOPTools_Set,
-                             TopTools_ListOfShape> BOPAlgo_IndexedDataMapOfSetListOfShape;
+//=================================================================================================
 
-static void AddEdgeSet(const TopoDS_Shape& theS,
-                       BOPAlgo_IndexedDataMapOfSetListOfShape& theMap,
+typedef NCollection_IndexedDataMap<BOPTools_Set, TopTools_ListOfShape>
+  BOPAlgo_IndexedDataMapOfSetListOfShape;
+
+static void AddEdgeSet(const TopoDS_Shape&                      theS,
+                       BOPAlgo_IndexedDataMapOfSetListOfShape&  theMap,
                        const Handle(NCollection_BaseAllocator)& theAllocator)
 {
   // Make set
@@ -565,16 +566,14 @@ static void AddEdgeSet(const TopoDS_Shape& theS,
   pLF->Append(theS);
 }
 
-//=======================================================================
-//function : FillSameDomainFaces
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
 {
   // It is necessary to analyze all Face/Face intersections
   // and find all faces with equal sets of edges
-  const BOPDS_VectorOfInterfFF& aFFs = myDS->InterfFF();
-  Standard_Integer aNbFFs = aFFs.Length();
+  const BOPDS_VectorOfInterfFF& aFFs   = myDS->InterfFF();
+  Standard_Integer              aNbFFs = aFFs.Length();
   if (!aNbFFs)
     return;
 
@@ -617,8 +616,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
   std::sort(aFIVec.begin(), aFIVec.end());
 
   // Data map of set of edges with all faces having this set
-  NCollection_IndexedDataMap<BOPTools_Set,
-                             TopTools_ListOfShape> anESetFaces(1, aAllocator);
+  NCollection_IndexedDataMap<BOPTools_Set, TopTools_ListOfShape> anESetFaces(1, aAllocator);
   // Map of planar bounded faces. If such faces have the same Edge set
   // they are considered Same domain, without additional check.
   TopTools_MapOfShape aMFPlanar(1, aAllocator);
@@ -630,9 +628,9 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
     {
       return;
     }
-    const Standard_Integer nF = aFIVec(i);
+    const Standard_Integer nF  = aFIVec(i);
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(nF);
-    const TopoDS_Shape& aF = aSI.Shape();
+    const TopoDS_Shape&    aF  = aSI.Shape();
 
     Standard_Boolean bCheckPlanar = Standard_False;
     {
@@ -642,9 +640,8 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
       {
         // Check bounding box of the face - it should not be open in any side
         const Bnd_Box& aBox = aSI.Box();
-        bCheckPlanar = !(aBox.IsOpenXmin() || aBox.IsOpenXmax() ||
-                         aBox.IsOpenYmin() || aBox.IsOpenYmax() ||
-                         aBox.IsOpenZmin() || aBox.IsOpenZmax());
+        bCheckPlanar        = !(aBox.IsOpenXmin() || aBox.IsOpenXmax() || aBox.IsOpenYmin()
+                         || aBox.IsOpenYmax() || aBox.IsOpenZmin() || aBox.IsOpenZmax());
       }
     }
 
@@ -688,8 +685,8 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
     TopTools_ListIteratorOfListOfShape aIt1(aLF);
     for (; aIt1.More(); aIt1.Next())
     {
-      const TopoDS_Shape& aF1 = aIt1.Value();
-      Standard_Boolean bCheckPlanar = aMFPlanar.Contains(aF1);
+      const TopoDS_Shape& aF1          = aIt1.Value();
+      Standard_Boolean    bCheckPlanar = aMFPlanar.Contains(aF1);
 
       TopTools_ListIteratorOfListOfShape aIt2 = aIt1;
       for (aIt2.Next(); aIt2.More(); aIt2.Next())
@@ -703,8 +700,8 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
         }
         // Add pair for analysis
         BOPAlgo_PairOfShapeBoolean& aPSB = aVPSB.Appended();
-        aPSB.Shape1() = aF1;
-        aPSB.Shape2() = aF2;
+        aPSB.Shape1()                    = aF1;
+        aPSB.Shape2()                    = aF2;
         aPSB.SetFuzzyValue(myFuzzyValue);
       }
     }
@@ -720,7 +717,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
   }
   //================================================================
   // Perform analysis
-  BOPTools_Parallel::Perform (myRunParallel, aVPSB, myContext);
+  BOPTools_Parallel::Perform(myRunParallel, aVPSB, myContext);
   //================================================================
   if (UserBreak(aPSOuter))
   {
@@ -756,8 +753,8 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
     // If there are no original faces in the group, the first face from
     // the group will be used as the SD face.
     // Such SD face will be representative of the whole group in the result.
-    TopoDS_Face* pFSD = NULL;
-    Standard_Integer nFMin = ::IntegerLast();
+    TopoDS_Face*                       pFSD  = NULL;
+    Standard_Integer                   nFMin = ::IntegerLast();
     TopTools_ListIteratorOfListOfShape aItLF(aLSD);
     for (; aItLF.More(); aItLF.Next())
     {
@@ -777,7 +774,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
         if (nF < nFMin)
         {
           nFMin = nF;
-          pFSD = (TopoDS_Face*)&aF;
+          pFSD  = (TopoDS_Face*)&aF;
         }
       }
     }
@@ -806,7 +803,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
     if (aSI.ShapeType() != TopAbs_FACE)
       continue;
 
-    const TopoDS_Shape& aF = aSI.Shape();
+    const TopoDS_Shape&   aF    = aSI.Shape();
     TopTools_ListOfShape* pLFIm = myImages.ChangeSeek(aF);
     if (!pLFIm)
       continue;
@@ -814,7 +811,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
     TopTools_ListIteratorOfListOfShape aItLFIm(*pLFIm);
     for (; aItLFIm.More(); aItLFIm.Next())
     {
-      TopoDS_Shape& aFIm = aItLFIm.ChangeValue();
+      TopoDS_Shape&       aFIm = aItLFIm.ChangeValue();
       const TopoDS_Shape* pFSD = myShapesSD.Seek(aFIm);
       if (pFSD)
         // Update image with SD face
@@ -831,10 +828,9 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
   aMBlocks.Clear();
   aDMSLS.Clear();
 }
-//=======================================================================
-// function: FillImagesFaces1
-// purpose: 
-//=======================================================================
+
+//=================================================================================================
+
 void BOPAlgo_Builder::FillInternalVertices(const Message_ProgressRange& theRange)
 {
   Message_ProgressScope aPSOuter(theRange, NULL, 1);
@@ -855,7 +851,7 @@ void BOPAlgo_Builder::FillInternalVertices(const Message_ProgressRange& theRange
       return;
     }
 
-    const TopoDS_Shape& aF = aSI.Shape();
+    const TopoDS_Shape&         aF    = aSI.Shape();
     const TopTools_ListOfShape* pLFIm = myImages.Seek(aF);
     if (!pLFIm)
       continue;
@@ -886,13 +882,13 @@ void BOPAlgo_Builder::FillInternalVertices(const Message_ProgressRange& theRange
 
   // Set progress range for each task to be run in parallel
   Message_ProgressScope aPSParallel(aPSOuter.Next(), "Looking for internal shapes", aVVFI.Size());
-  for (Standard_Integer iVFI = 0; iVFI< aVVFI.Size(); ++iVFI)
+  for (Standard_Integer iVFI = 0; iVFI < aVVFI.Size(); ++iVFI)
   {
     aVVFI.ChangeValue(iVFI).SetProgressRange(aPSParallel.Next());
   }
   // Perform classification
   //================================================================
-  BOPTools_Parallel::Perform (myRunParallel, aVVFI, myContext);
+  BOPTools_Parallel::Perform(myRunParallel, aVVFI, myContext);
   //================================================================
   if (UserBreak(aPSOuter))
   {
@@ -906,23 +902,24 @@ void BOPAlgo_Builder::FillInternalVertices(const Message_ProgressRange& theRange
     if (aVFI.IsInternal())
     {
       TopoDS_Vertex& aV = aVFI.Vertex();
-      TopoDS_Face& aF = aVFI.Face();
+      TopoDS_Face&   aF = aVFI.Face();
       BRep_Builder().Add(aF, aV);
     }
   }
 }
+
 //=======================================================================
-//function : HasMultiConnected
-//purpose  : Checks if the edge has multi-connected vertices.
+// function : HasMultiConnected
+// purpose  : Checks if the edge has multi-connected vertices.
 //=======================================================================
-static Standard_Boolean HasMultiConnected(const TopoDS_Edge& theEdge,
+static Standard_Boolean HasMultiConnected(const TopoDS_Edge&                  theEdge,
                                           TopTools_DataMapOfShapeListOfShape& theMap)
 {
   TopoDS_Iterator itV(theEdge);
   for (; itV.More(); itV.Next())
   {
-    const TopoDS_Shape& aV = itV.Value();
-    TopTools_ListOfShape *pList = theMap.ChangeSeek(aV);
+    const TopoDS_Shape&   aV    = itV.Value();
+    TopTools_ListOfShape* pList = theMap.ChangeSeek(aV);
     if (!pList)
     {
       pList = theMap.Bound(aV, TopTools_ListOfShape());
@@ -941,21 +938,22 @@ static Standard_Boolean HasMultiConnected(const TopoDS_Edge& theEdge,
   }
   return Standard_False;
 }
+
 //=======================================================================
-//function : BuildDraftFace
-//purpose  : Build draft faces, updating the bounding edges,
+// function : BuildDraftFace
+// purpose  : Build draft faces, updating the bounding edges,
 //           according to the information stored into the <theImages> map
 //=======================================================================
-TopoDS_Face BuildDraftFace(const TopoDS_Face& theFace,
+TopoDS_Face BuildDraftFace(const TopoDS_Face&                        theFace,
                            const TopTools_DataMapOfShapeListOfShape& theImages,
-                           Handle(IntTools_Context)& theCtx,
-                           const Handle(Message_Report)& theReport)
+                           Handle(IntTools_Context)&                 theCtx,
+                           const Handle(Message_Report)&             theReport)
 {
   BRep_Builder aBB;
   // Take the information from the original face
-  TopLoc_Location aLoc;
-  const Handle(Geom_Surface)& aS = BRep_Tool::Surface(theFace, aLoc);
-  const Standard_Real aTol = BRep_Tool::Tolerance(theFace);
+  TopLoc_Location             aLoc;
+  const Handle(Geom_Surface)& aS   = BRep_Tool::Surface(theFace, aLoc);
+  const Standard_Real         aTol = BRep_Tool::Tolerance(theFace);
   // Make the new face, without any wires
   TopoDS_Face aDraftFace;
   aBB.MakeFace(aDraftFace, aS, aLoc, aTol);

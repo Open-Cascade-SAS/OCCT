@@ -18,31 +18,25 @@
 #include <StepAP242_ItemIdentifiedRepresentationUsageDefinition.hxx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepAP242_ItemIdentifiedRepresentationUsage,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepAP242_ItemIdentifiedRepresentationUsage, Standard_Transient)
 
-//=======================================================================
-//function : StepAP242_ItemIdentifiedRepresentationUsage
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepAP242_ItemIdentifiedRepresentationUsage::StepAP242_ItemIdentifiedRepresentationUsage ()  {}
+StepAP242_ItemIdentifiedRepresentationUsage::StepAP242_ItemIdentifiedRepresentationUsage() {}
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void StepAP242_ItemIdentifiedRepresentationUsage::Init(
-  const Handle(TCollection_HAsciiString)& theName,
-  const Handle(TCollection_HAsciiString)& theDescription,
+  const Handle(TCollection_HAsciiString)&                      theName,
+  const Handle(TCollection_HAsciiString)&                      theDescription,
   const StepAP242_ItemIdentifiedRepresentationUsageDefinition& theDefinition,
-  const Handle(StepRepr_Representation)& theUsedRepresentation,
-  const Handle(StepRepr_HArray1OfRepresentationItem)& theIdentifiedItem)
+  const Handle(StepRepr_Representation)&                       theUsedRepresentation,
+  const Handle(StepRepr_HArray1OfRepresentationItem)&          theIdentifiedItem)
 {
   // --- classe own fields ---
-  name = theName;
-  description = theDescription;
-  definition = theDefinition;
+  name               = theName;
+  description        = theDescription;
+  definition         = theDefinition;
   usedRepresentation = theUsedRepresentation;
-  identifiedItem = theIdentifiedItem;
+  identifiedItem     = theIdentifiedItem;
 }

@@ -13,77 +13,71 @@
 
 #include <SelectMgr_ToleranceMap.hxx>
 
-//=======================================================================
-// function: SelectMgr_ToleranceMap
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 SelectMgr_ToleranceMap::SelectMgr_ToleranceMap()
-: myLargestKey (-1),
-  myCustomTolerance (-1)
+    : myLargestKey(-1),
+      myCustomTolerance(-1)
 {
   //
 }
 
-//=======================================================================
-// function: ~SelectMgr_ToleranceMap
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 SelectMgr_ToleranceMap::~SelectMgr_ToleranceMap()
 {
   myTolerances.Clear();
 }
 
-//=======================================================================
-// function: Add
-// purpose :
-//=======================================================================
-void SelectMgr_ToleranceMap::Add (const Standard_Integer& theTolerance)
+//=================================================================================================
+
+void SelectMgr_ToleranceMap::Add(const Standard_Integer& theTolerance)
 {
-  if (Standard_Integer* aFreq = myTolerances.ChangeSeek (theTolerance))
+  if (Standard_Integer* aFreq = myTolerances.ChangeSeek(theTolerance))
   {
     ++(*aFreq);
     if (*aFreq == 1 && theTolerance != myLargestKey)
     {
-      myLargestKey = Max (theTolerance, myLargestKey);
+      myLargestKey = Max(theTolerance, myLargestKey);
     }
     return;
   }
 
-  myTolerances.Bind (theTolerance, 1);
+  myTolerances.Bind(theTolerance, 1);
   if (myTolerances.Extent() == 1)
   {
     myLargestKey = theTolerance;
   }
   else
   {
-    myLargestKey = Max (theTolerance, myLargestKey);
+    myLargestKey = Max(theTolerance, myLargestKey);
   }
 }
 
-//=======================================================================
-// function: Decrement
-// purpose :
-//=======================================================================
-void SelectMgr_ToleranceMap::Decrement (const Standard_Integer& theTolerance)
+//=================================================================================================
+
+void SelectMgr_ToleranceMap::Decrement(const Standard_Integer& theTolerance)
 {
-  Standard_Integer* aFreq = myTolerances.ChangeSeek (theTolerance);
+  Standard_Integer* aFreq = myTolerances.ChangeSeek(theTolerance);
   if (aFreq == NULL)
   {
     return;
   }
 
-  Standard_ProgramError_Raise_if (*aFreq == 0, "SelectMgr_ToleranceMap::Decrement() - internal error");
+  Standard_ProgramError_Raise_if(*aFreq == 0,
+                                 "SelectMgr_ToleranceMap::Decrement() - internal error");
   --(*aFreq);
 
-  if (theTolerance == myLargestKey
-  && *aFreq == 0)
+  if (theTolerance == myLargestKey && *aFreq == 0)
   {
     myLargestKey = -1;
-    for (NCollection_DataMap<Standard_Integer, Standard_Integer>::Iterator anIter (myTolerances); anIter.More(); anIter.Next())
+    for (NCollection_DataMap<Standard_Integer, Standard_Integer>::Iterator anIter(myTolerances);
+         anIter.More();
+         anIter.Next())
     {
       if (anIter.Value() != 0)
       {
-        myLargestKey = Max (myLargestKey, anIter.Key());
+        myLargestKey = Max(myLargestKey, anIter.Key());
       }
     }
   }

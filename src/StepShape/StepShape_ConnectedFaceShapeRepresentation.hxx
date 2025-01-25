@@ -21,7 +21,6 @@
 
 #include <StepRepr_Representation.hxx>
 
-
 class StepShape_ConnectedFaceShapeRepresentation;
 DEFINE_STANDARD_HANDLE(StepShape_ConnectedFaceShapeRepresentation, StepRepr_Representation)
 
@@ -30,32 +29,13 @@ class StepShape_ConnectedFaceShapeRepresentation : public StepRepr_Representatio
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepShape_ConnectedFaceShapeRepresentation();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_ConnectedFaceShapeRepresentation,StepRepr_Representation)
+  DEFINE_STANDARD_RTTIEXT(StepShape_ConnectedFaceShapeRepresentation, StepRepr_Representation)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_ConnectedFaceShapeRepresentation_HeaderFile

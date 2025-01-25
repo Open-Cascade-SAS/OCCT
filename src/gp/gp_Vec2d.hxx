@@ -24,59 +24,66 @@ class gp_Ax2d;
 class gp_Trsf2d;
 
 //! Defines a non-persistent vector in 2D space.
-class gp_Vec2d 
+class gp_Vec2d
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Creates a zero vector.
   gp_Vec2d() {}
 
   //! Creates a unitary vector from a direction theV.
-  gp_Vec2d (const gp_Dir2d& theV);
+  gp_Vec2d(const gp_Dir2d& theV);
 
   //! Creates a vector with a doublet of coordinates.
-  gp_Vec2d (const gp_XY& theCoord)
-    : coord(theCoord)
-  {}
+  gp_Vec2d(const gp_XY& theCoord)
+      : coord(theCoord)
+  {
+  }
 
   //! Creates a point with its two Cartesian coordinates.
-  gp_Vec2d (const Standard_Real theXv, const Standard_Real theYv)
-  : coord (theXv, theYv)
-  {}
+  gp_Vec2d(const Standard_Real theXv, const Standard_Real theYv)
+      : coord(theXv, theYv)
+  {
+  }
 
   //! Creates a vector from two points. The length of the vector
   //! is the distance between theP1 and theP2
-  gp_Vec2d (const gp_Pnt2d& theP1, const gp_Pnt2d& theP2);
+  gp_Vec2d(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2);
 
   //! Changes the coordinate of range theIndex
   //! theIndex = 1 => X is modified
   //! theIndex = 2 => Y is modified
   //! Raises OutOfRange if theIndex != {1, 2}.
-  void SetCoord (const Standard_Integer theIndex, const Standard_Real theXi) { coord.SetCoord (theIndex, theXi); }
+  void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
+  {
+    coord.SetCoord(theIndex, theXi);
+  }
 
   //! For this vector, assigns
   //! the values theXv and theYv to its two coordinates
-  void SetCoord (const Standard_Real theXv, const Standard_Real theYv) { coord.SetCoord (theXv, theYv); }
+  void SetCoord(const Standard_Real theXv, const Standard_Real theYv)
+  {
+    coord.SetCoord(theXv, theYv);
+  }
 
   //! Assigns the given value to the X coordinate of this vector.
-  void SetX (const Standard_Real theX) { coord.SetX (theX); }
+  void SetX(const Standard_Real theX) { coord.SetX(theX); }
 
   //! Assigns the given value to the Y coordinate of this vector.
-  void SetY (const Standard_Real theY) { coord.SetY (theY); }
+  void SetY(const Standard_Real theY) { coord.SetY(theY); }
 
   //! Assigns the two coordinates of theCoord to this vector.
-  void SetXY (const gp_XY& theCoord) { coord = theCoord; }
+  void SetXY(const gp_XY& theCoord) { coord = theCoord; }
 
   //! Returns the coordinate of range theIndex :
   //! theIndex = 1 => X is returned
   //! theIndex = 2 => Y is returned
   //! Raised if theIndex != {1, 2}.
-  Standard_Real Coord (const Standard_Integer theIndex) const { return coord.Coord (theIndex); }
+  Standard_Real Coord(const Standard_Integer theIndex) const { return coord.Coord(theIndex); }
 
   //! For this vector, returns  its two coordinates theXv and theYv
-  void Coord (Standard_Real& theXv, Standard_Real& theYv) const { coord.Coord (theXv, theYv); }
+  void Coord(Standard_Real& theXv, Standard_Real& theYv) const { coord.Coord(theXv, theYv); }
 
   //! For this vector, returns its X  coordinate.
   Standard_Real X() const { return coord.X(); }
@@ -90,29 +97,33 @@ public:
   //! Returns True if the two vectors have the same magnitude value
   //! and the same direction. The precision values are theLinearTolerance
   //! for the magnitude and theAngularTolerance for the direction.
-  Standard_EXPORT Standard_Boolean IsEqual (const gp_Vec2d& theOther, const Standard_Real theLinearTolerance, const Standard_Real theAngularTolerance) const;
+  Standard_EXPORT Standard_Boolean IsEqual(const gp_Vec2d&     theOther,
+                                           const Standard_Real theLinearTolerance,
+                                           const Standard_Real theAngularTolerance) const;
 
   //! Returns True if abs(Abs(<me>.Angle(theOther)) - PI/2.)
   //! <= theAngularTolerance
   //! Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or
   //! theOther.Magnitude() <= Resolution from gp.
-  Standard_Boolean IsNormal (const gp_Vec2d& theOther, const Standard_Real theAngularTolerance) const
+  Standard_Boolean IsNormal(const gp_Vec2d& theOther, const Standard_Real theAngularTolerance) const
   {
-    const Standard_Real anAng = Abs (M_PI_2 - Abs (Angle (theOther)));
+    const Standard_Real anAng = Abs(M_PI_2 - Abs(Angle(theOther)));
     return !(anAng > theAngularTolerance);
   }
 
   //! Returns True if PI - Abs(<me>.Angle(theOther)) <= theAngularTolerance
   //! Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or
   //! theOther.Magnitude() <= Resolution from gp.
-  Standard_Boolean IsOpposite (const gp_Vec2d& theOther, const Standard_Real theAngularTolerance) const;
+  Standard_Boolean IsOpposite(const gp_Vec2d&     theOther,
+                              const Standard_Real theAngularTolerance) const;
 
   //! Returns true if Abs(Angle(<me>, theOther)) <= theAngularTolerance or
   //! PI - Abs(Angle(<me>, theOther)) <= theAngularTolerance
   //! Two vectors with opposite directions are considered as parallel.
   //! Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or
   //! theOther.Magnitude() <= Resolution from gp
-  Standard_Boolean IsParallel (const gp_Vec2d& theOther, const Standard_Real theAngularTolerance) const;
+  Standard_Boolean IsParallel(const gp_Vec2d&     theOther,
+                              const Standard_Real theAngularTolerance) const;
 
   //! Computes the angular value between <me> and <theOther>
   //! returns the angle value between -PI and PI in radian.
@@ -121,7 +132,7 @@ public:
   //! Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution from gp or
   //! theOther.Magnitude() <= Resolution because the angular value is
   //! indefinite if one of the vectors has a null magnitude.
-  Standard_EXPORT Standard_Real Angle (const gp_Vec2d& theOther) const;
+  Standard_EXPORT Standard_Real Angle(const gp_Vec2d& theOther) const;
 
   //! Computes the magnitude of this vector.
   Standard_Real Magnitude() const { return coord.Modulus(); }
@@ -129,84 +140,94 @@ public:
   //! Computes the square magnitude of this vector.
   Standard_Real SquareMagnitude() const { return coord.SquareModulus(); }
 
-  void Add (const gp_Vec2d& theOther) { coord.Add (theOther.coord); }
+  void Add(const gp_Vec2d& theOther) { coord.Add(theOther.coord); }
 
-  void operator += (const gp_Vec2d& theOther) { Add (theOther); }
+  void operator+=(const gp_Vec2d& theOther) { Add(theOther); }
 
   //! Adds two vectors
-  Standard_NODISCARD gp_Vec2d Added (const gp_Vec2d& theOther) const
+  Standard_NODISCARD gp_Vec2d Added(const gp_Vec2d& theOther) const
   {
     gp_Vec2d aV = *this;
-    aV.coord.Add (theOther.coord);
+    aV.coord.Add(theOther.coord);
     return aV;
   }
 
-  Standard_NODISCARD gp_Vec2d operator + (const gp_Vec2d& theOther) const { return Added (theOther); }
+  Standard_NODISCARD gp_Vec2d operator+(const gp_Vec2d& theOther) const { return Added(theOther); }
 
   //! Computes the crossing product between two vectors
-  Standard_NODISCARD Standard_Real Crossed (const gp_Vec2d& theRight) const
+  Standard_NODISCARD Standard_Real Crossed(const gp_Vec2d& theRight) const
   {
-    return coord.Crossed (theRight.coord);
+    return coord.Crossed(theRight.coord);
   }
 
-  Standard_NODISCARD Standard_Real operator ^ (const gp_Vec2d& theRight) const { return Crossed (theRight); }
+  Standard_NODISCARD Standard_Real operator^(const gp_Vec2d& theRight) const
+  {
+    return Crossed(theRight);
+  }
 
   //! Computes the magnitude of the cross product between <me> and
   //! theRight. Returns || <me> ^ theRight ||
-  Standard_Real CrossMagnitude (const gp_Vec2d& theRight) const
+  Standard_Real CrossMagnitude(const gp_Vec2d& theRight) const
   {
-    return coord.CrossMagnitude (theRight.coord);
+    return coord.CrossMagnitude(theRight.coord);
   }
 
   //! Computes the square magnitude of the cross product between <me> and
   //! theRight. Returns || <me> ^ theRight ||**2
-  Standard_Real CrossSquareMagnitude (const gp_Vec2d& theRight) const
+  Standard_Real CrossSquareMagnitude(const gp_Vec2d& theRight) const
   {
-    return coord.CrossSquareMagnitude (theRight.coord);
+    return coord.CrossSquareMagnitude(theRight.coord);
   }
 
-  void Divide (const Standard_Real theScalar) { coord.Divide (theScalar); }
+  void Divide(const Standard_Real theScalar) { coord.Divide(theScalar); }
 
-  void operator /= (const Standard_Real theScalar) { Divide (theScalar); }
+  void operator/=(const Standard_Real theScalar) { Divide(theScalar); }
 
   //! divides a vector by a scalar
-  Standard_NODISCARD gp_Vec2d Divided (const Standard_Real theScalar) const
+  Standard_NODISCARD gp_Vec2d Divided(const Standard_Real theScalar) const
   {
     gp_Vec2d aV = *this;
-    aV.coord.Divide (theScalar);
+    aV.coord.Divide(theScalar);
     return aV;
   }
 
-  Standard_NODISCARD gp_Vec2d operator / (const Standard_Real theScalar) const { return Divided (theScalar); }
+  Standard_NODISCARD gp_Vec2d operator/(const Standard_Real theScalar) const
+  {
+    return Divided(theScalar);
+  }
 
   //! Computes the scalar product
-  Standard_Real Dot (const gp_Vec2d& theOther) const { return coord.Dot (theOther.coord); }
+  Standard_Real Dot(const gp_Vec2d& theOther) const { return coord.Dot(theOther.coord); }
 
-  Standard_Real operator * (const gp_Vec2d& theOther) const { return Dot (theOther); }
+  Standard_Real operator*(const gp_Vec2d& theOther) const { return Dot(theOther); }
 
-  gp_Vec2d GetNormal() const { return gp_Vec2d (this->Y(), (-1)*this->X()); }
+  gp_Vec2d GetNormal() const { return gp_Vec2d(this->Y(), (-1) * this->X()); }
 
-  void Multiply (const Standard_Real theScalar) { coord.Multiply (theScalar); }
+  void Multiply(const Standard_Real theScalar) { coord.Multiply(theScalar); }
 
-  void operator *= (const Standard_Real theScalar) { Multiply (theScalar); }
+  void operator*=(const Standard_Real theScalar) { Multiply(theScalar); }
 
   //! Normalizes a vector
   //! Raises an exception if the magnitude of the vector is
   //! lower or equal to Resolution from package gp.
-  Standard_NODISCARD gp_Vec2d Multiplied (const Standard_Real theScalar) const
+  Standard_NODISCARD gp_Vec2d Multiplied(const Standard_Real theScalar) const
   {
     gp_Vec2d aV = *this;
-    aV.coord.Multiply (theScalar);
+    aV.coord.Multiply(theScalar);
     return aV;
   }
 
-  Standard_NODISCARD gp_Vec2d operator * (const Standard_Real theScalar) const { return Multiplied (theScalar); }
+  Standard_NODISCARD gp_Vec2d operator*(const Standard_Real theScalar) const
+  {
+    return Multiplied(theScalar);
+  }
 
   void Normalize()
   {
     Standard_Real aD = coord.Modulus();
-    Standard_ConstructionError_Raise_if (aD <= gp::Resolution(), "gp_Vec2d::Normalize() - vector has zero norm");
-    coord.Divide (aD);
+    Standard_ConstructionError_Raise_if(aD <= gp::Resolution(),
+                                        "gp_Vec2d::Normalize() - vector has zero norm");
+    coord.Divide(aD);
   }
 
   //! Normalizes a vector
@@ -225,108 +246,111 @@ public:
     return aV;
   }
 
-  Standard_NODISCARD gp_Vec2d operator -() const { return Reversed(); }
+  Standard_NODISCARD gp_Vec2d operator-() const { return Reversed(); }
 
   //! Subtracts two vectors
-  void Subtract (const gp_Vec2d& theRight)
-  {
-    coord.Subtract (theRight.coord);
-  }
+  void Subtract(const gp_Vec2d& theRight) { coord.Subtract(theRight.coord); }
 
-  void operator -= (const gp_Vec2d& theRight) { Subtract (theRight); }
+  void operator-=(const gp_Vec2d& theRight) { Subtract(theRight); }
 
   //! Subtracts two vectors
-  Standard_NODISCARD gp_Vec2d Subtracted (const gp_Vec2d& theRight) const
+  Standard_NODISCARD gp_Vec2d Subtracted(const gp_Vec2d& theRight) const
   {
     gp_Vec2d aV = *this;
-    aV.coord.Subtract (theRight.coord);
+    aV.coord.Subtract(theRight.coord);
     return aV;
   }
 
-  Standard_NODISCARD gp_Vec2d operator - (const gp_Vec2d& theRight) const { return Subtracted (theRight); }
+  Standard_NODISCARD gp_Vec2d operator-(const gp_Vec2d& theRight) const
+  {
+    return Subtracted(theRight);
+  }
 
   //! <me> is set to the following linear form :
   //! theA1 * theV1 + theA2 * theV2 + theV3
-  void SetLinearForm (const Standard_Real theA1, const gp_Vec2d& theV1,
-                      const Standard_Real theA2, const gp_Vec2d& theV2, const gp_Vec2d& theV3)
+  void SetLinearForm(const Standard_Real theA1,
+                     const gp_Vec2d&     theV1,
+                     const Standard_Real theA2,
+                     const gp_Vec2d&     theV2,
+                     const gp_Vec2d&     theV3)
   {
-    coord.SetLinearForm (theA1, theV1.coord, theA2, theV2.coord, theV3.coord);
+    coord.SetLinearForm(theA1, theV1.coord, theA2, theV2.coord, theV3.coord);
   }
 
   //! <me> is set to the following linear form : theA1 * theV1 + theA2 * theV2
-  void SetLinearForm (const Standard_Real theA1, const gp_Vec2d& theV1,
-                      const Standard_Real theA2, const gp_Vec2d& theV2)
+  void SetLinearForm(const Standard_Real theA1,
+                     const gp_Vec2d&     theV1,
+                     const Standard_Real theA2,
+                     const gp_Vec2d&     theV2)
   {
-    coord.SetLinearForm (theA1, theV1.coord, theA2, theV2.coord);
+    coord.SetLinearForm(theA1, theV1.coord, theA2, theV2.coord);
   }
 
   //! <me> is set to the following linear form : theA1 * theV1 + theV2
-  void SetLinearForm (const Standard_Real theA1, const gp_Vec2d& theV1, const gp_Vec2d& theV2)
+  void SetLinearForm(const Standard_Real theA1, const gp_Vec2d& theV1, const gp_Vec2d& theV2)
   {
-    coord.SetLinearForm (theA1, theV1.coord, theV2.coord);
+    coord.SetLinearForm(theA1, theV1.coord, theV2.coord);
   }
 
   //! <me> is set to the following linear form : theV1 + theV2
-  void SetLinearForm (const gp_Vec2d& theV1, const gp_Vec2d& theV2)
+  void SetLinearForm(const gp_Vec2d& theV1, const gp_Vec2d& theV2)
   {
-    coord.SetLinearForm (theV1.coord, theV2.coord);
+    coord.SetLinearForm(theV1.coord, theV2.coord);
   }
 
   //! Performs the symmetrical transformation of a vector
   //! with respect to the vector theV which is the center of
   //! the  symmetry.
-  Standard_EXPORT void Mirror (const gp_Vec2d& theV);
- 
+  Standard_EXPORT void Mirror(const gp_Vec2d& theV);
+
   //! Performs the symmetrical transformation of a vector
   //! with respect to the vector theV which is the center of
   //! the  symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Vec2d Mirrored (const gp_Vec2d& theV) const;
+  Standard_NODISCARD Standard_EXPORT gp_Vec2d Mirrored(const gp_Vec2d& theV) const;
 
   //! Performs the symmetrical transformation of a vector
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_EXPORT void Mirror (const gp_Ax2d& theA1);
+  Standard_EXPORT void Mirror(const gp_Ax2d& theA1);
 
   //! Performs the symmetrical transformation of a vector
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Vec2d Mirrored (const gp_Ax2d& theA1) const;
+  Standard_NODISCARD Standard_EXPORT gp_Vec2d Mirrored(const gp_Ax2d& theA1) const;
 
-  void Rotate (const Standard_Real theAng);
+  void Rotate(const Standard_Real theAng);
 
   //! Rotates a vector. theAng is the angular value of the
   //! rotation in radians.
-  Standard_NODISCARD gp_Vec2d Rotated (const Standard_Real theAng) const
+  Standard_NODISCARD gp_Vec2d Rotated(const Standard_Real theAng) const
   {
     gp_Vec2d aV = *this;
-    aV.Rotate (theAng);
+    aV.Rotate(theAng);
     return aV;
   }
 
-  void Scale (const Standard_Real theS) { coord.Multiply (theS); }
+  void Scale(const Standard_Real theS) { coord.Multiply(theS); }
 
   //! Scales a vector. theS is the scaling value.
-  Standard_NODISCARD gp_Vec2d Scaled (const Standard_Real theS) const
+  Standard_NODISCARD gp_Vec2d Scaled(const Standard_Real theS) const
   {
     gp_Vec2d aV = *this;
-    aV.coord.Multiply (theS);
+    aV.coord.Multiply(theS);
     return aV;
   }
 
-  Standard_EXPORT void Transform (const gp_Trsf2d& theT);
+  Standard_EXPORT void Transform(const gp_Trsf2d& theT);
 
   //! Transforms a vector with a Trsf from gp.
-  Standard_NODISCARD gp_Vec2d Transformed (const gp_Trsf2d& theT) const
+  Standard_NODISCARD gp_Vec2d Transformed(const gp_Trsf2d& theT) const
   {
     gp_Vec2d aV = *this;
-    aV.Transform (theT);
+    aV.Transform(theT);
     return aV;
   }
 
 private:
-
   gp_XY coord;
-
 };
 
 #include <gp_Dir2d.hxx>
@@ -334,30 +358,31 @@ private:
 #include <gp_Pnt2d.hxx>
 
 //=======================================================================
-//function :  gp_Vec2d
+// function :  gp_Vec2d
 // purpose :
 //=======================================================================
-inline gp_Vec2d::gp_Vec2d (const gp_Dir2d& theV)
+inline gp_Vec2d::gp_Vec2d(const gp_Dir2d& theV)
 {
   coord = theV.XY();
 }
 
 //=======================================================================
-//function :  gp_Vec2d
+// function :  gp_Vec2d
 // purpose :
 //=======================================================================
-inline gp_Vec2d::gp_Vec2d (const gp_Pnt2d& theP1, const gp_Pnt2d& theP2)
+inline gp_Vec2d::gp_Vec2d(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2)
 {
-  coord = theP2.XY().Subtracted (theP1.XY());
+  coord = theP2.XY().Subtracted(theP1.XY());
 }
 
 //=======================================================================
-//function :  IsOpposite
+// function :  IsOpposite
 // purpose :
 //=======================================================================
-inline Standard_Boolean gp_Vec2d::IsOpposite (const gp_Vec2d& theOther, const Standard_Real theAngularTolerance) const
+inline Standard_Boolean gp_Vec2d::IsOpposite(const gp_Vec2d&     theOther,
+                                             const Standard_Real theAngularTolerance) const
 {
-  Standard_Real anAng = Angle (theOther);
+  Standard_Real anAng = Angle(theOther);
   if (anAng < 0)
   {
     anAng = -anAng;
@@ -366,12 +391,13 @@ inline Standard_Boolean gp_Vec2d::IsOpposite (const gp_Vec2d& theOther, const St
 }
 
 //=======================================================================
-//function :  IsParallel
+// function :  IsParallel
 // purpose :
 //=======================================================================
-inline Standard_Boolean gp_Vec2d::IsParallel (const gp_Vec2d& theOther, const Standard_Real theAngularTolerance) const
+inline Standard_Boolean gp_Vec2d::IsParallel(const gp_Vec2d&     theOther,
+                                             const Standard_Real theAngularTolerance) const
 {
-  Standard_Real anAng = Angle (theOther);
+  Standard_Real anAng = Angle(theOther);
   if (anAng < 0)
   {
     anAng = -anAng;
@@ -380,37 +406,37 @@ inline Standard_Boolean gp_Vec2d::IsParallel (const gp_Vec2d& theOther, const St
 }
 
 //=======================================================================
-//function :  Normalized
+// function :  Normalized
 // purpose :
 //=======================================================================
 inline gp_Vec2d gp_Vec2d::Normalized() const
 {
   Standard_Real aD = coord.Modulus();
-  Standard_ConstructionError_Raise_if (aD <= gp::Resolution(), "gp_Vec2d::Normalized() - vector has zero norm");
+  Standard_ConstructionError_Raise_if(aD <= gp::Resolution(),
+                                      "gp_Vec2d::Normalized() - vector has zero norm");
   gp_Vec2d aV = *this;
-  aV.coord.Divide (aD);
+  aV.coord.Divide(aD);
   return aV;
 }
 
 //=======================================================================
-//function :  Rotate
+// function :  Rotate
 // purpose :
 //=======================================================================
-inline void gp_Vec2d::Rotate (const Standard_Real theAng)
+inline void gp_Vec2d::Rotate(const Standard_Real theAng)
 {
   gp_Trsf2d aT;
-  aT.SetRotation (gp_Pnt2d(0.0, 0.0), theAng);
-  coord.Multiply (aT.VectorialPart());
+  aT.SetRotation(gp_Pnt2d(0.0, 0.0), theAng);
+  coord.Multiply(aT.VectorialPart());
 }
 
 //=======================================================================
-//function :  operator*
+// function :  operator*
 // purpose :
 //=======================================================================
-inline gp_Vec2d operator* (const Standard_Real theScalar,
-                           const gp_Vec2d& theV)
+inline gp_Vec2d operator*(const Standard_Real theScalar, const gp_Vec2d& theV)
 {
-  return theV.Multiplied (theScalar);
+  return theV.Multiplied(theScalar);
 }
 
 #endif // _gp_Vec2d_HeaderFile

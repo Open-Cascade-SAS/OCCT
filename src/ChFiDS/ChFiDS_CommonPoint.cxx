@@ -14,119 +14,96 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <ChFiDS_CommonPoint.hxx>
 #include <Standard_DomainError.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 
-//=======================================================================
-//function : ChFiDS_CommonPoint
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 ChFiDS_CommonPoint::ChFiDS_CommonPoint()
-: tol (0.0),
-  prmarc (0.0),
-  prmtg  (0.0),
-  traarc (TopAbs_FORWARD),
-  isonarc(Standard_False),
-  isvtx (Standard_False),
-  hasvector (Standard_False)
+    : tol(0.0),
+      prmarc(0.0),
+      prmtg(0.0),
+      traarc(TopAbs_FORWARD),
+      isonarc(Standard_False),
+      isvtx(Standard_False),
+      hasvector(Standard_False)
 {
 }
 
-
-//=======================================================================
-//function : Reset
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void ChFiDS_CommonPoint::Reset()
 {
-  tol = 0.;
-  isvtx  = Standard_False;
-  isonarc = Standard_False;
+  tol       = 0.;
+  isvtx     = Standard_False;
+  isonarc   = Standard_False;
   hasvector = Standard_False;
 }
 
-
 //=======================================================================
-//function : SetArc
-//purpose  : 
+// function : SetArc
+// purpose  :
 // 30/09/1997 : PMN On n'ecrabouille plus la tolerance
 //=======================================================================
 
-void  ChFiDS_CommonPoint::SetArc(const Standard_Real Tol, 
-				const TopoDS_Edge& A, 
-				const Standard_Real Param, 
-				const TopAbs_Orientation TArc)
+void ChFiDS_CommonPoint::SetArc(const Standard_Real      Tol,
+                                const TopoDS_Edge&       A,
+                                const Standard_Real      Param,
+                                const TopAbs_Orientation TArc)
 {
   isonarc = Standard_True;
-  if (Tol > tol) tol = Tol;
-  arc     = A;
-  prmarc     = Param;
-  traarc  = TArc;
+  if (Tol > tol)
+    tol = Tol;
+  arc    = A;
+  prmarc = Param;
+  traarc = TArc;
 }
 
-//=======================================================================
-//function : SetParameter
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void  ChFiDS_CommonPoint::SetParameter(const Standard_Real Param)
+void ChFiDS_CommonPoint::SetParameter(const Standard_Real Param)
 {
-  prmtg     = Param;
+  prmtg = Param;
 }
 
-//=======================================================================
-//function : Arc
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-const TopoDS_Edge&  ChFiDS_CommonPoint::Arc()const 
+const TopoDS_Edge& ChFiDS_CommonPoint::Arc() const
 {
-  if (!isonarc){
+  if (!isonarc)
+  {
     throw Standard_DomainError("CommonPoint not on Arc");
   }
   return arc;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : TransitionOnArc
-//purpose  : 
-//=======================================================================
-
-TopAbs_Orientation  ChFiDS_CommonPoint::TransitionOnArc()const 
+TopAbs_Orientation ChFiDS_CommonPoint::TransitionOnArc() const
 {
-  if (!isonarc){
+  if (!isonarc)
+  {
     throw Standard_DomainError("CommonPoint not on Arc");
   }
   return traarc;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : ParameterOnArc
-//purpose  : 
-//=======================================================================
-
-Standard_Real  ChFiDS_CommonPoint::ParameterOnArc()const 
+Standard_Real ChFiDS_CommonPoint::ParameterOnArc() const
 {
-  if (!isonarc){
+  if (!isonarc)
+  {
     throw Standard_DomainError("CommonPoint not on Arc");
   }
   return prmarc;
 }
 
-//=======================================================================
-//function : Parameter
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Real  ChFiDS_CommonPoint::Parameter()const 
+Standard_Real ChFiDS_CommonPoint::Parameter() const
 {
   return prmtg;
 }
-
-

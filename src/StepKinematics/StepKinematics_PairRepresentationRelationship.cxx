@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -16,52 +16,51 @@
 
 #include <StepKinematics_PairRepresentationRelationship.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_PairRepresentationRelationship, StepGeom_GeometricRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_PairRepresentationRelationship,
+                           StepGeom_GeometricRepresentationItem)
 
-//=======================================================================
-//function : StepKinematics_PairRepresentationRelationship
-//purpose  :
-//=======================================================================
-StepKinematics_PairRepresentationRelationship::StepKinematics_PairRepresentationRelationship ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_PairRepresentationRelationship::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                                          const Handle(TCollection_HAsciiString)& theRepresentationRelationship_Name,
-                                                          const Standard_Boolean /*hasRepresentationRelationship_Description*/,
-                                                          const Handle(TCollection_HAsciiString)& theRepresentationRelationship_Description,
-                                                          const StepRepr_RepresentationOrRepresentationReference& theRepresentationRelationship_Rep1,
-                                                          const StepRepr_RepresentationOrRepresentationReference& theRepresentationRelationship_Rep2,
-                                                          const StepRepr_Transformation& theRepresentationRelationshipWithTransformation_TransformationOperator)
+StepKinematics_PairRepresentationRelationship::StepKinematics_PairRepresentationRelationship() {}
+
+//=================================================================================================
+
+void StepKinematics_PairRepresentationRelationship::Init(
+  const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
+  const Handle(TCollection_HAsciiString)& theRepresentationRelationship_Name,
+  const Standard_Boolean /*hasRepresentationRelationship_Description*/,
+  const Handle(TCollection_HAsciiString)&                 theRepresentationRelationship_Description,
+  const StepRepr_RepresentationOrRepresentationReference& theRepresentationRelationship_Rep1,
+  const StepRepr_RepresentationOrRepresentationReference& theRepresentationRelationship_Rep2,
+  const StepRepr_Transformation&
+    theRepresentationRelationshipWithTransformation_TransformationOperator)
 {
   StepGeom_GeometricRepresentationItem::Init(theRepresentationItem_Name);
-  myRepresentationRelationshipWithTransformation = new StepRepr_RepresentationRelationshipWithTransformation;
-  myRepresentationRelationshipWithTransformation->Init(theRepresentationRelationship_Name,
-                                                        /*hasRepresentationRelationship_Description,*/
-                                                        theRepresentationRelationship_Description,
-                                                        theRepresentationRelationship_Rep1.Representation(),
-                                                        theRepresentationRelationship_Rep2.Representation(),
-                                                        theRepresentationRelationshipWithTransformation_TransformationOperator);
+  myRepresentationRelationshipWithTransformation =
+    new StepRepr_RepresentationRelationshipWithTransformation;
+  myRepresentationRelationshipWithTransformation->Init(
+    theRepresentationRelationship_Name,
+    /*hasRepresentationRelationship_Description,*/
+    theRepresentationRelationship_Description,
+    theRepresentationRelationship_Rep1.Representation(),
+    theRepresentationRelationship_Rep2.Representation(),
+    theRepresentationRelationshipWithTransformation_TransformationOperator);
 }
 
-//=======================================================================
-//function : RepresentationRelationshipWithTransformation
-//purpose  :
-//=======================================================================
-Handle(StepRepr_RepresentationRelationshipWithTransformation) StepKinematics_PairRepresentationRelationship::RepresentationRelationshipWithTransformation () const
+//=================================================================================================
+
+Handle(StepRepr_RepresentationRelationshipWithTransformation)
+  StepKinematics_PairRepresentationRelationship::RepresentationRelationshipWithTransformation()
+    const
 {
   return myRepresentationRelationshipWithTransformation;
 }
 
-//=======================================================================
-//function : SetRepresentationRelationshipWithTransformation
-//purpose  :
-//=======================================================================
-void StepKinematics_PairRepresentationRelationship::SetRepresentationRelationshipWithTransformation (const Handle(StepRepr_RepresentationRelationshipWithTransformation)& theRepresentationRelationshipWithTransformation)
+//=================================================================================================
+
+void StepKinematics_PairRepresentationRelationship::SetRepresentationRelationshipWithTransformation(
+  const Handle(StepRepr_RepresentationRelationshipWithTransformation)&
+    theRepresentationRelationshipWithTransformation)
 {
   myRepresentationRelationshipWithTransformation = theRepresentationRelationshipWithTransformation;
 }

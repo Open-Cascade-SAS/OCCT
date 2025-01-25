@@ -24,7 +24,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
 
-
 //! defines a Cube node of VRML specifying geometry shapes.
 //! This  node  represents  a  cuboid aligned with  the coordinate  axes.
 //! By  default ,  the  cube  is  centred  at  (0,0,0) and  measures  2  units
@@ -32,53 +31,34 @@
 //! A cube's width is its extent along its object-space X axis, its height is
 //! its extent along the object-space Y axis, and its depth is its extent along its
 //! object-space Z axis.
-class Vrml_Cube 
+class Vrml_Cube
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT Vrml_Cube(const Standard_Real aWidth = 2, const Standard_Real aHeight = 2, const Standard_Real aDepth = 2);
-  
-  Standard_EXPORT void SetWidth (const Standard_Real aWidth);
-  
+  Standard_EXPORT Vrml_Cube(const Standard_Real aWidth  = 2,
+                            const Standard_Real aHeight = 2,
+                            const Standard_Real aDepth  = 2);
+
+  Standard_EXPORT void SetWidth(const Standard_Real aWidth);
+
   Standard_EXPORT Standard_Real Width() const;
-  
-  Standard_EXPORT void SetHeight (const Standard_Real aHeight);
-  
+
+  Standard_EXPORT void SetHeight(const Standard_Real aHeight);
+
   Standard_EXPORT Standard_Real Height() const;
-  
-  Standard_EXPORT void SetDepth (const Standard_Real aDepth);
-  
+
+  Standard_EXPORT void SetDepth(const Standard_Real aDepth);
+
   Standard_EXPORT Standard_Real Depth() const;
-  
-  Standard_EXPORT Standard_OStream& Print (Standard_OStream& anOStream) const;
 
-
-
+  Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Real myWidth;
   Standard_Real myHeight;
   Standard_Real myDepth;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Vrml_Cube_HeaderFile

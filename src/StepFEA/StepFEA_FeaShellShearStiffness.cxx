@@ -19,45 +19,35 @@
 #include <StepFEA_SymmetricTensor22d.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaShellShearStiffness,StepFEA_FeaMaterialPropertyRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaShellShearStiffness,
+                           StepFEA_FeaMaterialPropertyRepresentationItem)
 
-//=======================================================================
-//function : StepFEA_FeaShellShearStiffness
-//purpose  : 
-//=======================================================================
-StepFEA_FeaShellShearStiffness::StepFEA_FeaShellShearStiffness ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepFEA_FeaShellShearStiffness::StepFEA_FeaShellShearStiffness() {}
 
-void StepFEA_FeaShellShearStiffness::Init (const Handle(TCollection_HAsciiString) &aRepresentationItem_Name,
-                                           const StepFEA_SymmetricTensor22d &aFeaConstants)
+//=================================================================================================
+
+void StepFEA_FeaShellShearStiffness::Init(
+  const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
+  const StepFEA_SymmetricTensor22d&       aFeaConstants)
 {
   StepFEA_FeaMaterialPropertyRepresentationItem::Init(aRepresentationItem_Name);
 
   theFeaConstants = aFeaConstants;
 }
 
-//=======================================================================
-//function : FeaConstants
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepFEA_SymmetricTensor22d StepFEA_FeaShellShearStiffness::FeaConstants () const
+StepFEA_SymmetricTensor22d StepFEA_FeaShellShearStiffness::FeaConstants() const
 {
   return theFeaConstants;
 }
 
-//=======================================================================
-//function : SetFeaConstants
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_FeaShellShearStiffness::SetFeaConstants (const StepFEA_SymmetricTensor22d &aFeaConstants)
+void StepFEA_FeaShellShearStiffness::SetFeaConstants(
+  const StepFEA_SymmetricTensor22d& aFeaConstants)
 {
   theFeaConstants = aFeaConstants;
 }

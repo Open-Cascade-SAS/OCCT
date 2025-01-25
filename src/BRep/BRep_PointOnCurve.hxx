@@ -24,7 +24,6 @@
 class Geom_Curve;
 class TopLoc_Location;
 
-
 class BRep_PointOnCurve;
 DEFINE_STANDARD_HANDLE(BRep_PointOnCurve, BRep_PointRepresentation)
 
@@ -33,44 +32,30 @@ class BRep_PointOnCurve : public BRep_PointRepresentation
 {
 
 public:
+  Standard_EXPORT BRep_PointOnCurve(const Standard_Real       P,
+                                    const Handle(Geom_Curve)& C,
+                                    const TopLoc_Location&    L);
 
-  
-  Standard_EXPORT BRep_PointOnCurve(const Standard_Real P, const Handle(Geom_Curve)& C, const TopLoc_Location& L);
-  
   //! Returns True
   Standard_EXPORT virtual Standard_Boolean IsPointOnCurve() const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_Boolean IsPointOnCurve (const Handle(Geom_Curve)& C, const TopLoc_Location& L) const Standard_OVERRIDE;
-  
+
+  Standard_EXPORT virtual Standard_Boolean IsPointOnCurve(const Handle(Geom_Curve)& C,
+                                                          const TopLoc_Location&    L) const
+    Standard_OVERRIDE;
+
   Standard_EXPORT virtual const Handle(Geom_Curve)& Curve() const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Curve (const Handle(Geom_Curve)& C) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void Curve(const Handle(Geom_Curve)& C) Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(BRep_PointOnCurve,BRep_PointRepresentation)
+  DEFINE_STANDARD_RTTIEXT(BRep_PointOnCurve, BRep_PointRepresentation)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(Geom_Curve) myCurve;
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRep_PointOnCurve_HeaderFile

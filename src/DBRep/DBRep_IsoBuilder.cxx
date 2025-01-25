@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepTools.hxx>
@@ -40,33 +39,32 @@
 // Providing consistency with intersection tolerance for the linear curves
 static Standard_Real IntersectorConfusion = Precision::PConfusion();
 static Standard_Real IntersectorTangency  = Precision::PConfusion();
-static Standard_Real HatcherConfusion2d   = 1.e-8 ;
-static Standard_Real HatcherConfusion3d   = 1.e-8 ;
+static Standard_Real HatcherConfusion2d   = 1.e-8;
+static Standard_Real HatcherConfusion3d   = 1.e-8;
 
 //=======================================================================
 // Function : DBRep_IsoBuilder
 // Purpose  : Constructeur.
 //=======================================================================
 
-DBRep_IsoBuilder::DBRep_IsoBuilder (const TopoDS_Face&     TopologicalFace,
-  const Standard_Real    Infinite,
-  const Standard_Integer NbIsos) :
-Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
-  IntersectorTangency),
-  HatcherConfusion2d,
-  HatcherConfusion3d,
-  Standard_True,
-  Standard_False) ,
-  myInfinite (Infinite) ,
-  myUMin     (0.0) ,
-  myUMax     (0.0) ,
-  myVMin     (0.0) ,
-  myVMax     (0.0) ,
-  myUPrm     (1, NbIsos) ,
-  myUInd     (1, NbIsos) ,
-  myVPrm     (1, NbIsos) ,
-  myVInd     (1, NbIsos) ,
-  myNbDom    (0)
+DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
+                                   const Standard_Real    Infinite,
+                                   const Standard_Integer NbIsos)
+    : Geom2dHatch_Hatcher(Geom2dHatch_Intersector(IntersectorConfusion, IntersectorTangency),
+                          HatcherConfusion2d,
+                          HatcherConfusion3d,
+                          Standard_True,
+                          Standard_False),
+      myInfinite(Infinite),
+      myUMin(0.0),
+      myUMax(0.0),
+      myVMin(0.0),
+      myVMax(0.0),
+      myUPrm(1, NbIsos),
+      myUInd(1, NbIsos),
+      myVPrm(1, NbIsos),
+      myVInd(1, NbIsos),
+      myNbDom(0)
 {
   myUInd.Init(0);
   myVInd.Init(0);
@@ -76,26 +74,36 @@ Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
   // value.
   //-----------------------------------------------------------------------
 
-  BRepTools::UVBounds (TopologicalFace, myUMin, myUMax, myVMin, myVMax) ;
-  Standard_Boolean InfiniteUMin = Precision::IsNegativeInfinite (myUMin) ;
-  Standard_Boolean InfiniteUMax = Precision::IsPositiveInfinite (myUMax) ;
-  Standard_Boolean InfiniteVMin = Precision::IsNegativeInfinite (myVMin) ;
-  Standard_Boolean InfiniteVMax = Precision::IsPositiveInfinite (myVMax) ;
-  if (InfiniteUMin && InfiniteUMax) {
-    myUMin = - Infinite ;
-    myUMax =   Infinite ;
-  } else if (InfiniteUMin) {
-    myUMin = myUMax - Infinite ;
-  } else if (InfiniteUMax) {
-    myUMax = myUMin + Infinite ;
+  BRepTools::UVBounds(TopologicalFace, myUMin, myUMax, myVMin, myVMax);
+  Standard_Boolean InfiniteUMin = Precision::IsNegativeInfinite(myUMin);
+  Standard_Boolean InfiniteUMax = Precision::IsPositiveInfinite(myUMax);
+  Standard_Boolean InfiniteVMin = Precision::IsNegativeInfinite(myVMin);
+  Standard_Boolean InfiniteVMax = Precision::IsPositiveInfinite(myVMax);
+  if (InfiniteUMin && InfiniteUMax)
+  {
+    myUMin = -Infinite;
+    myUMax = Infinite;
   }
-  if (InfiniteVMin && InfiniteVMax) {
-    myVMin = - Infinite ;
-    myVMax =   Infinite ;
-  } else if (InfiniteVMin) {
-    myVMin = myVMax - Infinite ;
-  } else if (InfiniteVMax) {
-    myVMax = myVMin + Infinite ;
+  else if (InfiniteUMin)
+  {
+    myUMin = myUMax - Infinite;
+  }
+  else if (InfiniteUMax)
+  {
+    myUMax = myUMin + Infinite;
+  }
+  if (InfiniteVMin && InfiniteVMax)
+  {
+    myVMin = -Infinite;
+    myVMax = Infinite;
+  }
+  else if (InfiniteVMin)
+  {
+    myVMin = myVMax - Infinite;
+  }
+  else if (InfiniteVMax)
+  {
+    myVMax = myVMin + Infinite;
   }
 
   //-----------------------------------------------------------------------
@@ -105,11 +113,12 @@ Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
   DataMapOfEdgePCurve anEdgePCurveMap;
 
   TopExp_Explorer ExpEdges;
-  for (ExpEdges.Init (TopologicalFace, TopAbs_EDGE); ExpEdges.More(); ExpEdges.Next())
+  for (ExpEdges.Init(TopologicalFace, TopAbs_EDGE); ExpEdges.More(); ExpEdges.Next())
   {
-    const TopoDS_Edge& TopologicalEdge = TopoDS::Edge (ExpEdges.Current());
-    Standard_Real U1, U2;
-    const Handle(Geom2d_Curve) PCurve = BRep_Tool::CurveOnSurface (TopologicalEdge, TopologicalFace, U1, U2);
+    const TopoDS_Edge&         TopologicalEdge = TopoDS::Edge(ExpEdges.Current());
+    Standard_Real              U1, U2;
+    const Handle(Geom2d_Curve) PCurve =
+      BRep_Tool::CurveOnSurface(TopologicalEdge, TopologicalFace, U1, U2);
 
     if (PCurve.IsNull())
     {
@@ -127,8 +136,8 @@ Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
     }
 
     //-- Test if a TrimmedCurve is necessary
-    if (Abs(PCurve->FirstParameter()-U1)<= Precision::PConfusion()
-      && Abs(PCurve->LastParameter()-U2)<= Precision::PConfusion())
+    if (Abs(PCurve->FirstParameter() - U1) <= Precision::PConfusion()
+        && Abs(PCurve->LastParameter() - U2) <= Precision::PConfusion())
     {
       anEdgePCurveMap.Add(TopologicalEdge, PCurve);
     }
@@ -136,18 +145,18 @@ Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
     {
       if (!PCurve->IsPeriodic())
       {
-        Handle (Geom2d_TrimmedCurve) TrimPCurve = Handle(Geom2d_TrimmedCurve)::DownCast (PCurve);
+        Handle(Geom2d_TrimmedCurve) TrimPCurve = Handle(Geom2d_TrimmedCurve)::DownCast(PCurve);
         if (!TrimPCurve.IsNull())
         {
-          if (TrimPCurve->BasisCurve()->FirstParameter() - U1 > Precision::PConfusion() ||
-            TrimPCurve->BasisCurve()->FirstParameter() - U2 > Precision::PConfusion() ||
-            U1 - TrimPCurve->BasisCurve()->LastParameter()  > Precision::PConfusion() ||
-            U2 - TrimPCurve->BasisCurve()->LastParameter()  > Precision::PConfusion())
+          if (TrimPCurve->BasisCurve()->FirstParameter() - U1 > Precision::PConfusion()
+              || TrimPCurve->BasisCurve()->FirstParameter() - U2 > Precision::PConfusion()
+              || U1 - TrimPCurve->BasisCurve()->LastParameter() > Precision::PConfusion()
+              || U2 - TrimPCurve->BasisCurve()->LastParameter() > Precision::PConfusion())
           {
 #ifdef OCCT_DEBUG
             std::cout << "DBRep_IsoBuilder TrimPCurve : parameters out of range\n";
-            std::cout << "    U1(" << U1 << "), Umin(" << PCurve->FirstParameter()
-              << "), U2("  << U2 << "), Umax(" << PCurve->LastParameter() << ")\n";
+            std::cout << "    U1(" << U1 << "), Umin(" << PCurve->FirstParameter() << "), U2(" << U2
+                      << "), Umax(" << PCurve->LastParameter() << ")\n";
 #endif
             return;
           }
@@ -190,8 +199,9 @@ Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
       }
 
       // if U1 and U2 coincide-->do nothing
-      if (Abs (U1 - U2) <= Precision::PConfusion()) continue;
-      Handle (Geom2d_TrimmedCurve) TrimPCurve = new Geom2d_TrimmedCurve (PCurve, U1, U2);
+      if (Abs(U1 - U2) <= Precision::PConfusion())
+        continue;
+      Handle(Geom2d_TrimmedCurve) TrimPCurve = new Geom2d_TrimmedCurve(PCurve, U1, U2);
       anEdgePCurveMap.Add(TopologicalEdge, TrimPCurve);
     }
   }
@@ -203,42 +213,45 @@ Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
   Standard_Integer aNbE = anEdgePCurveMap.Extent();
   for (Standard_Integer iE = 1; iE <= aNbE; ++iE)
   {
-    AddElement(Geom2dAdaptor_Curve(anEdgePCurveMap(iE)),
-               anEdgePCurveMap.FindKey(iE).Orientation());
+    AddElement(Geom2dAdaptor_Curve(anEdgePCurveMap(iE)), anEdgePCurveMap.FindKey(iE).Orientation());
   }
   //-----------------------------------------------------------------------
   // Loading and trimming the hatchings.
   //-----------------------------------------------------------------------
 
-  Standard_Integer IIso ;
-  Standard_Real DeltaU = Abs (myUMax - myUMin) ;
-  Standard_Real DeltaV = Abs (myVMax - myVMin) ;
-  Standard_Real confusion = Min (DeltaU, DeltaV) * HatcherConfusion3d ;
-  Confusion3d (confusion) ;
+  Standard_Integer IIso;
+  Standard_Real    DeltaU    = Abs(myUMax - myUMin);
+  Standard_Real    DeltaV    = Abs(myVMax - myVMin);
+  Standard_Real    confusion = Min(DeltaU, DeltaV) * HatcherConfusion3d;
+  Confusion3d(confusion);
 
-  Standard_Real StepU = DeltaU / (Standard_Real) NbIsos ;
-  if (StepU > confusion) {
-    Standard_Real UPrm = myUMin + StepU / 2. ;
-    gp_Dir2d Dir (0., 1.) ;
-    for (IIso = 1 ; IIso <= NbIsos ; IIso++) {
-      myUPrm(IIso) = UPrm ;
-      gp_Pnt2d Ori (UPrm, 0.) ;
-      Geom2dAdaptor_Curve HCur (new Geom2d_Line (Ori, Dir)) ;
-      myUInd(IIso) = AddHatching (HCur) ;
-      UPrm += StepU ;
+  Standard_Real StepU = DeltaU / (Standard_Real)NbIsos;
+  if (StepU > confusion)
+  {
+    Standard_Real UPrm = myUMin + StepU / 2.;
+    gp_Dir2d      Dir(0., 1.);
+    for (IIso = 1; IIso <= NbIsos; IIso++)
+    {
+      myUPrm(IIso) = UPrm;
+      gp_Pnt2d            Ori(UPrm, 0.);
+      Geom2dAdaptor_Curve HCur(new Geom2d_Line(Ori, Dir));
+      myUInd(IIso) = AddHatching(HCur);
+      UPrm += StepU;
     }
   }
 
-  Standard_Real StepV = DeltaV / (Standard_Real) NbIsos ;
-  if (StepV > confusion) {
-    Standard_Real VPrm = myVMin + StepV / 2. ;
-    gp_Dir2d Dir (1., 0.) ;
-    for (IIso = 1 ; IIso <= NbIsos ; IIso++) {
-      myVPrm(IIso) = VPrm ;
-      gp_Pnt2d Ori (0., VPrm) ;
-      Geom2dAdaptor_Curve HCur (new Geom2d_Line (Ori, Dir)) ;
-      myVInd(IIso) = AddHatching (HCur) ;
-      VPrm += StepV ;
+  Standard_Real StepV = DeltaV / (Standard_Real)NbIsos;
+  if (StepV > confusion)
+  {
+    Standard_Real VPrm = myVMin + StepV / 2.;
+    gp_Dir2d      Dir(1., 0.);
+    for (IIso = 1; IIso <= NbIsos; IIso++)
+    {
+      myVPrm(IIso) = VPrm;
+      gp_Pnt2d            Ori(0., VPrm);
+      Geom2dAdaptor_Curve HCur(new Geom2d_Line(Ori, Dir));
+      myVInd(IIso) = AddHatching(HCur);
+      VPrm += StepV;
     }
   }
 
@@ -246,32 +259,32 @@ Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
   // Computation.
   //-----------------------------------------------------------------------
 
-  Trim() ;
+  Trim();
 
-  myNbDom = 0 ;
-  for (IIso = 1 ; IIso <= NbIsos ; IIso++)
+  myNbDom = 0;
+  for (IIso = 1; IIso <= NbIsos; IIso++)
   {
-    Standard_Integer Index ;
+    Standard_Integer Index;
 
-    Index = myUInd(IIso) ;
+    Index = myUInd(IIso);
     if (Index != 0)
     {
-      if (TrimDone (Index) && !TrimFailed (Index))
+      if (TrimDone(Index) && !TrimFailed(Index))
       {
-        ComputeDomains (Index);
-        if (IsDone (Index))
-          myNbDom = myNbDom + Geom2dHatch_Hatcher::NbDomains (Index) ;
+        ComputeDomains(Index);
+        if (IsDone(Index))
+          myNbDom = myNbDom + Geom2dHatch_Hatcher::NbDomains(Index);
       }
     }
 
-    Index = myVInd(IIso) ;
+    Index = myVInd(IIso);
     if (Index != 0)
     {
-      if (TrimDone (Index) && !TrimFailed (Index))
+      if (TrimDone(Index) && !TrimFailed(Index))
       {
-        ComputeDomains (Index);
-        if (IsDone (Index))
-          myNbDom = myNbDom + Geom2dHatch_Hatcher::NbDomains (Index) ;
+        ComputeDomains(Index);
+        if (IsDone(Index))
+          myNbDom = myNbDom + Geom2dHatch_Hatcher::NbDomains(Index);
       }
     }
   }
@@ -283,71 +296,106 @@ Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
 //            of a drawable face.
 //=======================================================================
 
-void DBRep_IsoBuilder::LoadIsos (const Handle(DBRep_Face)& Face) const
+void DBRep_IsoBuilder::LoadIsos(const Handle(DBRep_Face)& Face) const
 {
-  Standard_Integer NumIso = 0 ;
+  Standard_Integer NumIso = 0;
 
-  for (Standard_Integer UIso = myUPrm.Lower() ; UIso <= myUPrm.Upper() ; UIso++) {
-    Standard_Integer UInd = myUInd.Value (UIso) ;
-    if (UInd != 0) {
-      Standard_Real UPrm = myUPrm.Value (UIso) ;
-      if (!IsDone (UInd)) {
-	std::cout << "DBRep_IsoBuilder:: U iso of parameter: " << UPrm ;
-	switch (Status (UInd)) {
-	  case HatchGen_NoProblem          : std::cout << " No Problem"          << std::endl ; break ;
-	  case HatchGen_TrimFailure        : std::cout << " Trim Failure"        << std::endl ; break ;
-	  case HatchGen_TransitionFailure  : std::cout << " Transition Failure"  << std::endl ; break ;
-	  case HatchGen_IncoherentParity   : std::cout << " Incoherent Parity"   << std::endl ; break ;
-	  case HatchGen_IncompatibleStates : std::cout << " Incompatible States" << std::endl ; break ;
-	}
-      } else {
-	Standard_Integer NbDom = Geom2dHatch_Hatcher::NbDomains (UInd) ;
-	for (Standard_Integer IDom = 1 ; IDom <= NbDom ; IDom++) {
-	  const HatchGen_Domain& Dom = Domain (UInd, IDom) ;
-	  Standard_Real V1 = Dom.HasFirstPoint()  ? Dom.FirstPoint().Parameter()  : myVMin - myInfinite ;
-	  Standard_Real V2 = Dom.HasSecondPoint() ? Dom.SecondPoint().Parameter() : myVMax + myInfinite ;
-	  NumIso++ ;
-	  Face->Iso (NumIso, GeomAbs_IsoU, UPrm, V1, V2) ;
-	}
+  for (Standard_Integer UIso = myUPrm.Lower(); UIso <= myUPrm.Upper(); UIso++)
+  {
+    Standard_Integer UInd = myUInd.Value(UIso);
+    if (UInd != 0)
+    {
+      Standard_Real UPrm = myUPrm.Value(UIso);
+      if (!IsDone(UInd))
+      {
+        std::cout << "DBRep_IsoBuilder:: U iso of parameter: " << UPrm;
+        switch (Status(UInd))
+        {
+          case HatchGen_NoProblem:
+            std::cout << " No Problem" << std::endl;
+            break;
+          case HatchGen_TrimFailure:
+            std::cout << " Trim Failure" << std::endl;
+            break;
+          case HatchGen_TransitionFailure:
+            std::cout << " Transition Failure" << std::endl;
+            break;
+          case HatchGen_IncoherentParity:
+            std::cout << " Incoherent Parity" << std::endl;
+            break;
+          case HatchGen_IncompatibleStates:
+            std::cout << " Incompatible States" << std::endl;
+            break;
+        }
+      }
+      else
+      {
+        Standard_Integer NbDom = Geom2dHatch_Hatcher::NbDomains(UInd);
+        for (Standard_Integer IDom = 1; IDom <= NbDom; IDom++)
+        {
+          const HatchGen_Domain& Dom = Domain(UInd, IDom);
+          Standard_Real          V1 =
+            Dom.HasFirstPoint() ? Dom.FirstPoint().Parameter() : myVMin - myInfinite;
+          Standard_Real V2 =
+            Dom.HasSecondPoint() ? Dom.SecondPoint().Parameter() : myVMax + myInfinite;
+          NumIso++;
+          Face->Iso(NumIso, GeomAbs_IsoU, UPrm, V1, V2);
+        }
       }
     }
   }
 
-  for (Standard_Integer VIso = myVPrm.Lower() ; VIso <= myVPrm.Upper() ; VIso++) {
-    Standard_Integer VInd = myVInd.Value (VIso) ;
-    if (VInd != 0) {
-      Standard_Real VPrm = myVPrm.Value (VIso) ;
-      if (!IsDone (VInd)) {
-	std::cout << "DBRep_IsoBuilder:: V iso of parameter: " << VPrm ;
-	switch (Status (VInd)) {
-	  case HatchGen_NoProblem          : std::cout << " No Problem"          << std::endl ; break ;
-	  case HatchGen_TrimFailure        : std::cout << " Trim Failure"        << std::endl ; break ;
-	  case HatchGen_TransitionFailure  : std::cout << " Transition Failure"  << std::endl ; break ;
-	  case HatchGen_IncoherentParity   : std::cout << " Incoherent Parity"   << std::endl ; break ;
-	  case HatchGen_IncompatibleStates : std::cout << " Incompatible States" << std::endl ; break ;
-	}
-      } else {
-	Standard_Integer NbDom = Geom2dHatch_Hatcher::NbDomains (VInd) ;
-	for (Standard_Integer IDom = 1 ; IDom <= NbDom ; IDom++) {
-	  const HatchGen_Domain& Dom = Domain (VInd, IDom) ;
-	  Standard_Real U1 = Dom.HasFirstPoint()  ? Dom.FirstPoint().Parameter()  : myVMin - myInfinite ;
-	  Standard_Real U2 = Dom.HasSecondPoint() ? Dom.SecondPoint().Parameter() : myVMax + myInfinite ;
-	  NumIso++ ;
-	  Face->Iso (NumIso, GeomAbs_IsoV, VPrm, U1, U2) ;
-	}
+  for (Standard_Integer VIso = myVPrm.Lower(); VIso <= myVPrm.Upper(); VIso++)
+  {
+    Standard_Integer VInd = myVInd.Value(VIso);
+    if (VInd != 0)
+    {
+      Standard_Real VPrm = myVPrm.Value(VIso);
+      if (!IsDone(VInd))
+      {
+        std::cout << "DBRep_IsoBuilder:: V iso of parameter: " << VPrm;
+        switch (Status(VInd))
+        {
+          case HatchGen_NoProblem:
+            std::cout << " No Problem" << std::endl;
+            break;
+          case HatchGen_TrimFailure:
+            std::cout << " Trim Failure" << std::endl;
+            break;
+          case HatchGen_TransitionFailure:
+            std::cout << " Transition Failure" << std::endl;
+            break;
+          case HatchGen_IncoherentParity:
+            std::cout << " Incoherent Parity" << std::endl;
+            break;
+          case HatchGen_IncompatibleStates:
+            std::cout << " Incompatible States" << std::endl;
+            break;
+        }
+      }
+      else
+      {
+        Standard_Integer NbDom = Geom2dHatch_Hatcher::NbDomains(VInd);
+        for (Standard_Integer IDom = 1; IDom <= NbDom; IDom++)
+        {
+          const HatchGen_Domain& Dom = Domain(VInd, IDom);
+          Standard_Real          U1 =
+            Dom.HasFirstPoint() ? Dom.FirstPoint().Parameter() : myVMin - myInfinite;
+          Standard_Real U2 =
+            Dom.HasSecondPoint() ? Dom.SecondPoint().Parameter() : myVMax + myInfinite;
+          NumIso++;
+          Face->Iso(NumIso, GeomAbs_IsoV, VPrm, U1, U2);
+        }
       }
     }
   }
 }
 
-//=======================================================================
-// Function : FillGaps
-// Purpose  : 
-//=======================================================================
-void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace,
-                                DataMapOfEdgePCurve& theEdgePCurveMap)
+//=================================================================================================
+
+void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve& theEdgePCurveMap)
 {
-  
+
   // Get surface of the face for getting the 3D points from 2D coordinates
   // of the p-curves bounds
   BRepAdaptor_Surface aBASurf(theFace, Standard_False);
@@ -383,8 +431,8 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace,
     aCurrEdge = aWExp.Current();
 
     // Ensure analysis of the pair of first and last edges
-    TopoDS_Edge aFirstEdge = aCurrEdge;
-    Standard_Real bStop = Standard_False;
+    TopoDS_Edge   aFirstEdge = aCurrEdge;
+    Standard_Real bStop      = Standard_False;
 
     // Iterate on all other edges
     while (!bStop)
@@ -400,7 +448,7 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace,
       else
       {
         aCurrEdge = aFirstEdge;
-        bStop = Standard_True;
+        bStop     = Standard_True;
       }
 
       if (aPrevEdge.IsEqual(aCurrEdge) && !SingleEdge)
@@ -452,12 +500,11 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace,
         aTCurr = lc;
 
       // Get bounding points on the edges corresponding to the current vertex
-      gp_Pnt2d aPrevP2d = aPrevC2d->Value(aTPrev),
-               aCurrP2d = aCurrC2d->Value(aTCurr);
+      gp_Pnt2d aPrevP2d = aPrevC2d->Value(aTPrev), aCurrP2d = aCurrC2d->Value(aTCurr);
 
       // Check if the vertex covers these bounding points by its tolerance
       Standard_Real aTolV2 = BRep_Tool::Tolerance(aCVOnPrev);
-      gp_Pnt aPV = BRep_Tool::Pnt(aCVOnPrev);
+      gp_Pnt        aPV    = BRep_Tool::Pnt(aCVOnPrev);
       // There is no need to check the distance if the tolerance
       // of vertex is infinite (like in the test case sewing/tol_1/R2)
       if (aTolV2 < Precision::Infinite())
@@ -480,7 +527,7 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace,
       }
 
       // Create the segment
-      gp_Vec2d aV2d(aPrevP2d, aCurrP2d);
+      gp_Vec2d      aV2d(aPrevP2d, aCurrP2d);
       Standard_Real aSegmLen = aV2d.Magnitude();
       // Do not add too small segments
       Standard_Boolean bAddSegment = (aSegmLen > Precision::PConfusion());
@@ -499,7 +546,10 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace,
       if (bAddSegment && !aPrevEdge.IsEqual(aCurrEdge))
       {
         Geom2dAdaptor_Curve aPrevGC(aPrevC2d, fp, lp), aCurrGC(aCurrC2d, fc, lc);
-        Geom2dInt_GInter anInter(aPrevGC, aCurrGC, Precision::PConfusion(), Precision::PConfusion());
+        Geom2dInt_GInter    anInter(aPrevGC,
+                                 aCurrGC,
+                                 Precision::PConfusion(),
+                                 Precision::PConfusion());
         if (anInter.IsDone() && !anInter.IsEmpty())
         {
           // Collect intersection points
@@ -517,19 +567,18 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace,
             aLPInt.Append(anInter.Point(iP));
 
           // Analyze the points and find the one closest to the current vertex
-          Standard_Boolean bPointFound = Standard_False;
-          Standard_Real aTPrevClosest = 0., aTCurrClosest = 0.;
-          Standard_Real aDeltaPrev = ::RealLast(), aDeltaCurr = ::RealLast();
+          Standard_Boolean bPointFound   = Standard_False;
+          Standard_Real    aTPrevClosest = 0., aTCurrClosest = 0.;
+          Standard_Real    aDeltaPrev = ::RealLast(), aDeltaCurr = ::RealLast();
 
           NCollection_List<IntRes2d_IntersectionPoint>::Iterator aItLPInt(aLPInt);
           for (; aItLPInt.More(); aItLPInt.Next())
           {
-            const IntRes2d_IntersectionPoint& aPnt = aItLPInt.Value();
-            const Standard_Real aTIntPrev = aPnt.ParamOnFirst();
-            const Standard_Real aTIntCurr = aPnt.ParamOnSecond();
+            const IntRes2d_IntersectionPoint& aPnt      = aItLPInt.Value();
+            const Standard_Real               aTIntPrev = aPnt.ParamOnFirst();
+            const Standard_Real               aTIntCurr = aPnt.ParamOnSecond();
             // Check if the intersection point is in range
-            if (aTIntPrev < fp || aTIntPrev > lp ||
-                aTIntCurr < fc || aTIntCurr > lc)
+            if (aTIntPrev < fp || aTIntPrev > lp || aTIntCurr < fc || aTIntCurr > lc)
             {
               continue;
             }
@@ -540,9 +589,9 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace,
             {
               aTPrevClosest = aTIntPrev;
               aTCurrClosest = aTIntCurr;
-              aDeltaPrev = aDelta1;
-              aDeltaCurr = aDelta2;
-              bPointFound = Standard_True;
+              aDeltaPrev    = aDelta1;
+              aDeltaCurr    = aDelta2;
+              bPointFound   = Standard_True;
             }
           }
 
@@ -566,14 +615,14 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace,
             }
 
             // Trim PCurves only if the intersection belongs to current parameter
-            Standard_Boolean bTrim = (aNbCV == 1 ||
-                                      (Abs(aTPrev - aTPrevClosest) < (lp - fp) / 2. ||
-                                       Abs(aTCurr - aTCurrClosest) < (lc - fc) / 2.));
+            Standard_Boolean bTrim = (aNbCV == 1
+                                      || (Abs(aTPrev - aTPrevClosest) < (lp - fp) / 2.
+                                          || Abs(aTCurr - aTCurrClosest) < (lc - fc) / 2.));
 
             if (bTrim)
             {
               // Check that the intersection point is covered by vertex tolerance
-              gp_Pnt2d aPInt = aPrevC2d->Value(aTPrevClosest);
+              gp_Pnt2d     aPInt = aPrevC2d->Value(aTPrevClosest);
               const gp_Pnt aPOnS = aBASurf.Value(aPInt.X(), aPInt.Y());
               if (aTolV2 > Precision::Infinite() || aPOnS.SquareDistance(aPV) < aTolV2)
               {
@@ -625,7 +674,7 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace,
       if (bAddSegment)
       {
         // Add segment to the hatcher to trim the iso-lines
-        Handle(Geom2d_Line) aLine = new Geom2d_Line(aPrevP2d, aV2d);
+        Handle(Geom2d_Line)         aLine     = new Geom2d_Line(aPrevP2d, aV2d);
         Handle(Geom2d_TrimmedCurve) aLineSegm = new Geom2d_TrimmedCurve(aLine, 0.0, aSegmLen);
         AddElement(Geom2dAdaptor_Curve(aLineSegm), TopAbs_FORWARD);
       }

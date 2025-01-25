@@ -11,11 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepVisual_PreDefinedTextFont.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PreDefinedTextFont,StepVisual_PreDefinedItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PreDefinedTextFont, StepVisual_PreDefinedItem)
 
-StepVisual_PreDefinedTextFont::StepVisual_PreDefinedTextFont ()  {}
-
+StepVisual_PreDefinedTextFont::StepVisual_PreDefinedTextFont() {}

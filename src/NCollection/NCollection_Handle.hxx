@@ -18,35 +18,40 @@
 
 #include <Standard_Transient.hxx>
 #include <Standard_Handle.hxx>
-  
+
 //! Purpose: This template class is used to define Handle adaptor
 //! for allocated dynamically objects of arbitrary type.
 //!
-//! The advantage is that this handle will automatically destroy 
-//! the object when last referred Handle is destroyed (i.e. it is a 
-//! typical smart pointer), and that it can be handled as 
+//! The advantage is that this handle will automatically destroy
+//! the object when last referred Handle is destroyed (i.e. it is a
+//! typical smart pointer), and that it can be handled as
 //! Handle(Standard_Transient) in OCCT components.
 
 template <class T>
 class NCollection_Handle : public opencascade::handle<Standard_Transient>
 {
- private:
-
+private:
   //! Internal adaptor class wrapping actual type
   //! and enhancing it by reference counter inherited from
   //! Standard_Transient
   class Ptr : public Standard_Transient
   {
   public:
-
     //! Constructor: stores pointer to the object
-    Ptr (T* theObj) : myPtr (theObj) {}
+    Ptr(T* theObj)
+        : myPtr(theObj)
+    {
+    }
 
     //! Destructor deletes the object
-    ~Ptr () { if ( myPtr ) delete myPtr; myPtr = 0; }
+    ~Ptr()
+    {
+      if (myPtr)
+        delete myPtr;
+      myPtr = 0;
+    }
 
   protected:
-
     //! Copy constructor
     Ptr(const Ptr&);
 
@@ -56,49 +61,51 @@ class NCollection_Handle : public opencascade::handle<Standard_Transient>
   public:
     T* myPtr; //!< Pointer to the object
   };
-  
+
   //! Constructor of handle from pointer on newly allocated object.
   //! Note that additional argument is used to avoid ambiguity with
   //! public constructor from pointer when Handle is intilialized by 0.
-  NCollection_Handle (Ptr* thePtr, int) 
-  : opencascade::handle<Standard_Transient> (thePtr) {}
-  
- public:
+  NCollection_Handle(Ptr* thePtr, int)
+      : opencascade::handle<Standard_Transient>(thePtr)
+  {
+  }
 
+public:
   typedef T element_type;
 
   //! Default constructor; creates null handle
-  NCollection_Handle () {}
-  
+  NCollection_Handle() {}
+
   //! Constructor of handle from pointer on newly allocated object
-  NCollection_Handle (T* theObject) 
-  : opencascade::handle<Standard_Transient> (theObject ? new Ptr (theObject) : 0) {}
-  
-  //! Cast handle to contained type
-  T* get () { return ((Ptr*)opencascade::handle<Standard_Transient>::get())->myPtr; }
+  NCollection_Handle(T* theObject)
+      : opencascade::handle<Standard_Transient>(theObject ? new Ptr(theObject) : 0)
+  {
+  }
 
   //! Cast handle to contained type
-  const T* get () const { return ((Ptr*)opencascade::handle<Standard_Transient>::get())->myPtr; }
+  T* get() { return ((Ptr*)opencascade::handle<Standard_Transient>::get())->myPtr; }
 
   //! Cast handle to contained type
-  T* operator -> () { return get(); }
-  
+  const T* get() const { return ((Ptr*)opencascade::handle<Standard_Transient>::get())->myPtr; }
+
   //! Cast handle to contained type
-  const T* operator -> () const { return get(); }
-  
+  T* operator->() { return get(); }
+
   //! Cast handle to contained type
-  T& operator * () { return *get(); }
-  
+  const T* operator->() const { return get(); }
+
   //! Cast handle to contained type
-  const T& operator * () const { return *get(); }
+  T& operator*() { return *get(); }
+
+  //! Cast handle to contained type
+  const T& operator*() const { return *get(); }
 
   //! Downcast arbitrary Handle to the argument type if contained
   //! object is Handle for this type; returns null otherwise
-  static NCollection_Handle<T> DownCast (const opencascade::handle<Standard_Transient>& theOther)
+  static NCollection_Handle<T> DownCast(const opencascade::handle<Standard_Transient>& theOther)
   {
     return NCollection_Handle<T>(dynamic_cast<Ptr*>(theOther.get()), 0);
   }
-
 };
 
 #endif

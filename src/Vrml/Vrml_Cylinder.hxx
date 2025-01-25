@@ -25,60 +25,40 @@
 #include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
 
-
 //! defines a Cylinder node of VRML specifying geometry shapes.
 //! This  node  represents  a  simple  capped  cylinder  centred  around the  y-axis.
 //! By  default ,  the  cylinder  is  centred  at  (0,0,0)
 //! and  has  size  of  -1  to  +1  in  the  all  three  dimensions.
 //! The  cylinder  has  three  parts:
 //! the  sides,  the  top  (y=+1)  and  the  bottom (y=-1)
-class Vrml_Cylinder 
+class Vrml_Cylinder
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT Vrml_Cylinder(const Vrml_CylinderParts aParts = Vrml_CylinderALL, const Standard_Real aRadius = 1, const Standard_Real aHeight = 2);
-  
-  Standard_EXPORT void SetParts (const Vrml_CylinderParts aParts);
-  
+  Standard_EXPORT Vrml_Cylinder(const Vrml_CylinderParts aParts  = Vrml_CylinderALL,
+                                const Standard_Real      aRadius = 1,
+                                const Standard_Real      aHeight = 2);
+
+  Standard_EXPORT void SetParts(const Vrml_CylinderParts aParts);
+
   Standard_EXPORT Vrml_CylinderParts Parts() const;
-  
-  Standard_EXPORT void SetRadius (const Standard_Real aRadius);
-  
+
+  Standard_EXPORT void SetRadius(const Standard_Real aRadius);
+
   Standard_EXPORT Standard_Real Radius() const;
-  
-  Standard_EXPORT void SetHeight (const Standard_Real aHeight);
-  
+
+  Standard_EXPORT void SetHeight(const Standard_Real aHeight);
+
   Standard_EXPORT Standard_Real Height() const;
-  
-  Standard_EXPORT Standard_OStream& Print (Standard_OStream& anOStream) const;
 
-
-
+  Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Vrml_CylinderParts myParts;
-  Standard_Real myRadius;
-  Standard_Real myHeight;
-
-
+  Standard_Real      myRadius;
+  Standard_Real      myHeight;
 };
-
-
-
-
-
-
 
 #endif // _Vrml_Cylinder_HeaderFile

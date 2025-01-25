@@ -14,18 +14,25 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline Standard_Boolean IntAna_QuadQuadGeo::IsDone() const {
-  return(done);
+inline Standard_Boolean IntAna_QuadQuadGeo::IsDone() const
+{
+  return (done);
 }
 
-
-inline IntAna_ResultType IntAna_QuadQuadGeo::TypeInter()  const {
-  if(!done) {throw StdFail_NotDone();}
-  return(typeres);
+inline IntAna_ResultType IntAna_QuadQuadGeo::TypeInter() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  return (typeres);
 }
 
-inline Standard_Integer IntAna_QuadQuadGeo::NbSolutions() const {
-  if(!done) {throw StdFail_NotDone();}
-  return(nbint);
+inline Standard_Integer IntAna_QuadQuadGeo::NbSolutions() const
+{
+  if (!done)
+  {
+    throw StdFail_NotDone();
+  }
+  return (nbint);
 }
-

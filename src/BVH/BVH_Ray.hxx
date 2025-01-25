@@ -17,23 +17,22 @@
 #define _BVH_Ray_Header
 
 //! Describes a ray based on BVH vectors.
-template<class T, int N>
+template <class T, int N>
 class BVH_Ray
 {
 public:
-
   typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
 
 public:
-
   BVH_VecNt Origin;
   BVH_VecNt Direct;
 
 public:
-
-  BVH_Ray (const BVH_VecNt& theOrigin,
-           const BVH_VecNt& theDirect) : Origin (theOrigin),
-                                         Direct (theDirect) { }
+  BVH_Ray(const BVH_VecNt& theOrigin, const BVH_VecNt& theDirect)
+      : Origin(theOrigin),
+        Direct(theDirect)
+  {
+  }
 };
 
 #endif // _BVH_Ray_Header

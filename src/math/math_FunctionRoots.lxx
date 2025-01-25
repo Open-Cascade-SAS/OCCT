@@ -16,40 +16,41 @@
 #include <TColStd_SequenceOfReal.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 
-inline Standard_Boolean math_FunctionRoots::IsDone() const { return Done; }
+inline Standard_Boolean math_FunctionRoots::IsDone() const
+{
+  return Done;
+}
 
-inline Standard_OStream& operator<<(Standard_OStream& o,
-				    const math_FunctionRoots& F)
+inline Standard_OStream& operator<<(Standard_OStream& o, const math_FunctionRoots& F)
 {
   F.Dump(o);
   return o;
 }
 
-inline  Standard_Boolean math_FunctionRoots::IsAllNull() const{
+inline Standard_Boolean math_FunctionRoots::IsAllNull() const
+{
 
   StdFail_NotDone_Raise_if(!Done, " ");
   return AllNull;
 }
 
-inline  Standard_Integer math_FunctionRoots::NbSolutions() const{
+inline Standard_Integer math_FunctionRoots::NbSolutions() const
+{
 
   StdFail_NotDone_Raise_if(!Done, " ");
   return Sol.Length();
-  
 }
 
-inline  Standard_Real math_FunctionRoots::Value(const Standard_Integer Nieme) const{
+inline Standard_Real math_FunctionRoots::Value(const Standard_Integer Nieme) const
+{
 
   StdFail_NotDone_Raise_if(!Done, " ");
   return Sol.Value(Nieme);
-  
 }
 
-inline  Standard_Integer math_FunctionRoots::StateNumber(const Standard_Integer Nieme) const{
+inline Standard_Integer math_FunctionRoots::StateNumber(const Standard_Integer Nieme) const
+{
 
   StdFail_NotDone_Raise_if(!Done, " ");
   return NbStateSol.Value(Nieme);
 }
-
-
-

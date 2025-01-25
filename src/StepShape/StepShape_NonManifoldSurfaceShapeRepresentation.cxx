@@ -18,12 +18,11 @@
 #include <Standard_Type.hxx>
 #include <StepShape_NonManifoldSurfaceShapeRepresentation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_NonManifoldSurfaceShapeRepresentation,StepShape_ShapeRepresentation)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_NonManifoldSurfaceShapeRepresentation,
+                           StepShape_ShapeRepresentation)
 
-//=======================================================================
-//function : StepShape_NonManifoldSurfaceShapeRepresentation
-//purpose  : 
-//=======================================================================
-StepShape_NonManifoldSurfaceShapeRepresentation::StepShape_NonManifoldSurfaceShapeRepresentation ()
+//=================================================================================================
+
+StepShape_NonManifoldSurfaceShapeRepresentation::StepShape_NonManifoldSurfaceShapeRepresentation()
 {
 }

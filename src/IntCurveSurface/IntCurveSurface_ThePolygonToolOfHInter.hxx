@@ -26,47 +26,33 @@ class gp_Pnt;
 class IntCurveSurface_ThePolygonOfHInter;
 class Bnd_Box;
 
-
-
-class IntCurveSurface_ThePolygonToolOfHInter 
+class IntCurveSurface_ThePolygonToolOfHInter
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Give the bounding box of the polygon.
-    static const Bnd_Box& Bounding (const IntCurveSurface_ThePolygonOfHInter& thePolygon);
-  
-    static Standard_Real DeflectionOverEstimation (const IntCurveSurface_ThePolygonOfHInter& thePolygon);
-  
-    static Standard_Boolean Closed (const IntCurveSurface_ThePolygonOfHInter& thePolygon);
-  
-    static Standard_Integer NbSegments (const IntCurveSurface_ThePolygonOfHInter& thePolygon);
-  
+  static const Bnd_Box& Bounding(const IntCurveSurface_ThePolygonOfHInter& thePolygon);
+
+  static Standard_Real DeflectionOverEstimation(
+    const IntCurveSurface_ThePolygonOfHInter& thePolygon);
+
+  static Standard_Boolean Closed(const IntCurveSurface_ThePolygonOfHInter& thePolygon);
+
+  static Standard_Integer NbSegments(const IntCurveSurface_ThePolygonOfHInter& thePolygon);
+
   //! Give the point of range Index in the Polygon.
-    static const gp_Pnt& BeginOfSeg (const IntCurveSurface_ThePolygonOfHInter& thePolygon, const Standard_Integer Index);
-  
+  static const gp_Pnt& BeginOfSeg(const IntCurveSurface_ThePolygonOfHInter& thePolygon,
+                                  const Standard_Integer                    Index);
+
   //! Give the point of range Index in the Polygon.
-    static const gp_Pnt& EndOfSeg (const IntCurveSurface_ThePolygonOfHInter& thePolygon, const Standard_Integer Index);
-  
-  Standard_EXPORT static void Dump (const IntCurveSurface_ThePolygonOfHInter& thePolygon);
+  static const gp_Pnt& EndOfSeg(const IntCurveSurface_ThePolygonOfHInter& thePolygon,
+                                const Standard_Integer                    Index);
 
-
-
+  Standard_EXPORT static void Dump(const IntCurveSurface_ThePolygonOfHInter& thePolygon);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
 
 #define ThePoint gp_Pnt
@@ -88,8 +74,5 @@ private:
 #undef TheBoundingBox_hxx
 #undef IntCurveSurface_PolygonTool
 #undef IntCurveSurface_PolygonTool_hxx
-
-
-
 
 #endif // _IntCurveSurface_ThePolygonToolOfHInter_HeaderFile

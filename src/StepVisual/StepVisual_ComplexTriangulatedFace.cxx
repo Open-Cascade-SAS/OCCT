@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:11 2022 
+// Created on : Thu Mar 24 18:30:11 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -18,29 +18,22 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_ComplexTriangulatedFace, StepVisual_TessellatedFace)
 
-//=======================================================================
-//function : StepVisual_ComplexTriangulatedFace
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepVisual_ComplexTriangulatedFace::StepVisual_ComplexTriangulatedFace ()
-{
-}
+StepVisual_ComplexTriangulatedFace::StepVisual_ComplexTriangulatedFace() {}
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_ComplexTriangulatedFace::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                               const Handle(StepVisual_CoordinatesList)& theTessellatedFace_Coordinates,
-                                               const Standard_Integer theTessellatedFace_Pnmax,
-                                               const Handle(TColStd_HArray2OfReal)& theTessellatedFace_Normals,
-                                               const Standard_Boolean theHasTessellatedFace_GeometricLink,
-                                               const StepVisual_FaceOrSurface& theTessellatedFace_GeometricLink,
-                                               const Handle(TColStd_HArray1OfInteger)& thePnindex,
-                                               const Handle(TColStd_HArray1OfTransient)& theTriangleStrips,
-                                               const Handle(TColStd_HArray1OfTransient)& theTriangleFans)
+void StepVisual_ComplexTriangulatedFace::Init(
+  const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
+  const Handle(StepVisual_CoordinatesList)& theTessellatedFace_Coordinates,
+  const Standard_Integer                    theTessellatedFace_Pnmax,
+  const Handle(TColStd_HArray2OfReal)&      theTessellatedFace_Normals,
+  const Standard_Boolean                    theHasTessellatedFace_GeometricLink,
+  const StepVisual_FaceOrSurface&           theTessellatedFace_GeometricLink,
+  const Handle(TColStd_HArray1OfInteger)&   thePnindex,
+  const Handle(TColStd_HArray1OfTransient)& theTriangleStrips,
+  const Handle(TColStd_HArray1OfTransient)& theTriangleFans)
 {
   StepVisual_TessellatedFace::Init(theRepresentationItem_Name,
                                    theTessellatedFace_Coordinates,
@@ -56,31 +49,22 @@ void StepVisual_ComplexTriangulatedFace::Init (const Handle(TCollection_HAsciiSt
   myTriangleFans = theTriangleFans;
 }
 
-//=======================================================================
-//function : Pnindex
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TColStd_HArray1OfInteger) StepVisual_ComplexTriangulatedFace::Pnindex () const
+Handle(TColStd_HArray1OfInteger) StepVisual_ComplexTriangulatedFace::Pnindex() const
 {
   return myPnindex;
 }
 
-//=======================================================================
-//function : SetPnindex
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_ComplexTriangulatedFace::SetPnindex(const Handle(TColStd_HArray1OfInteger)& thePnindex)
+void StepVisual_ComplexTriangulatedFace::SetPnindex(
+  const Handle(TColStd_HArray1OfInteger)& thePnindex)
 {
   myPnindex = thePnindex;
 }
 
-
-//=======================================================================
-//function : NbPnindex
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer StepVisual_ComplexTriangulatedFace::NbPnindex() const
 {
@@ -91,41 +75,30 @@ Standard_Integer StepVisual_ComplexTriangulatedFace::NbPnindex() const
   return myPnindex->Length();
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : PnindexValue
-//purpose  : 
-//=======================================================================
-
-Standard_Integer StepVisual_ComplexTriangulatedFace::PnindexValue(const Standard_Integer theNum) const
+Standard_Integer StepVisual_ComplexTriangulatedFace::PnindexValue(
+  const Standard_Integer theNum) const
 {
   return myPnindex->Value(theNum);
 }
 
-//=======================================================================
-//function : TriangleStrips
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TColStd_HArray1OfTransient) StepVisual_ComplexTriangulatedFace::TriangleStrips () const
+Handle(TColStd_HArray1OfTransient) StepVisual_ComplexTriangulatedFace::TriangleStrips() const
 {
   return myTriangleStrips;
 }
 
-//=======================================================================
-//function : SetTriangleStrips
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_ComplexTriangulatedFace::SetTriangleStrips(const Handle(TColStd_HArray1OfTransient)& theTriangleStrips)
+void StepVisual_ComplexTriangulatedFace::SetTriangleStrips(
+  const Handle(TColStd_HArray1OfTransient)& theTriangleStrips)
 {
   myTriangleStrips = theTriangleStrips;
 }
 
-//=======================================================================
-//function : NbTriangleStrips
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer StepVisual_ComplexTriangulatedFace::NbTriangleStrips() const
 {
@@ -136,30 +109,22 @@ Standard_Integer StepVisual_ComplexTriangulatedFace::NbTriangleStrips() const
   return myTriangleStrips->Length();
 }
 
-//=======================================================================
-//function : TriangleFans
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TColStd_HArray1OfTransient) StepVisual_ComplexTriangulatedFace::TriangleFans () const
+Handle(TColStd_HArray1OfTransient) StepVisual_ComplexTriangulatedFace::TriangleFans() const
 {
   return myTriangleFans;
 }
 
-//=======================================================================
-//function : SetTriangleFans
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_ComplexTriangulatedFace::SetTriangleFans(const Handle(TColStd_HArray1OfTransient)& theTriangleFans)
+void StepVisual_ComplexTriangulatedFace::SetTriangleFans(
+  const Handle(TColStd_HArray1OfTransient)& theTriangleFans)
 {
   myTriangleFans = theTriangleFans;
 }
 
-//=======================================================================
-//function : NbTriangleFans
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer StepVisual_ComplexTriangulatedFace::NbTriangleFans() const
 {

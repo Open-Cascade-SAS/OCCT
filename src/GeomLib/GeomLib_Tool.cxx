@@ -33,8 +33,8 @@
 static const Standard_Real PARTOLERANCE = 1.e-9;
 
 //=======================================================================
-//function : Parameter
-//purpose  : Get parameter on curve of given point
+// function : Parameter
+// purpose  : Get parameter on curve of given point
 //           return FALSE if point is far from curve than MaxDist
 //           or computation fails
 //=======================================================================
@@ -44,45 +44,47 @@ Standard_Boolean GeomLib_Tool::Parameter(const Handle(Geom_Curve)& Curve,
                                          const Standard_Real       MaxDist,
                                          Standard_Real&            U)
 {
-  if( Curve.IsNull() ) return Standard_False;
+  if (Curve.IsNull())
+    return Standard_False;
   //
-  U = 0.;
+  U                  = 0.;
   Standard_Real aTol = MaxDist * MaxDist;
   //
   GeomAdaptor_Curve aGAC(Curve);
-  Extrema_ExtPC extrema(Point,aGAC);
+  Extrema_ExtPC     extrema(Point, aGAC);
   //
-  if( !extrema.IsDone() ) return Standard_False;
+  if (!extrema.IsDone())
+    return Standard_False;
   //
   Standard_Integer n = extrema.NbExt();
-  if( n <= 0 ) return Standard_False;
+  if (n <= 0)
+    return Standard_False;
   //
   Standard_Integer i = 0, iMin = 0;
-  Standard_Real Dist2Min = RealLast();
-  for( i = 1; i <= n; i++ )
+  Standard_Real    Dist2Min = RealLast();
+  for (i = 1; i <= n; i++)
   {
     if (extrema.SquareDistance(i) < Dist2Min)
     {
-      iMin = i;
+      iMin     = i;
       Dist2Min = extrema.SquareDistance(i);
     }
   }
-  if( iMin != 0 && Dist2Min <= aTol ) 
+  if (iMin != 0 && Dist2Min <= aTol)
   {
     U = (extrema.Point(iMin)).Parameter();
   }
-  else 
+  else
   {
     return Standard_False;
   }
- 
-  return Standard_True;
 
+  return Standard_True;
 }
 
 //=======================================================================
-//function : Parameters
-//purpose  : Get parameters on surface of given point
+// function : Parameters
+// purpose  : Get parameters on surface of given point
 //           return FALSE if point is far from surface than MaxDist
 //           or computation fails
 //=======================================================================
@@ -93,35 +95,38 @@ Standard_Boolean GeomLib_Tool::Parameters(const Handle(Geom_Surface)& Surface,
                                           Standard_Real&              U,
                                           Standard_Real&              V)
 {
-  if( Surface.IsNull() ) return Standard_False;
+  if (Surface.IsNull())
+    return Standard_False;
   //
-  U = 0.;
-  V = 0.;
+  U                  = 0.;
+  V                  = 0.;
   Standard_Real aTol = MaxDist * MaxDist;
   //
   GeomAdaptor_Surface aGAS(Surface);
-  Standard_Real aTolU = PARTOLERANCE, aTolV = PARTOLERANCE;
+  Standard_Real       aTolU = PARTOLERANCE, aTolV = PARTOLERANCE;
   //
-  Extrema_ExtPS extrema(Point,aGAS,aTolU,aTolV);
+  Extrema_ExtPS extrema(Point, aGAS, aTolU, aTolV);
   //
-  if( !extrema.IsDone() ) return Standard_False;
+  if (!extrema.IsDone())
+    return Standard_False;
   //
   Standard_Integer n = extrema.NbExt();
-  if( n <= 0 ) return Standard_False;
+  if (n <= 0)
+    return Standard_False;
   //
-  Standard_Real Dist2Min = RealLast();
+  Standard_Real    Dist2Min = RealLast();
   Standard_Integer i = 0, iMin = 0;
-  for( i = 1; i <= n; i++ )
+  for (i = 1; i <= n; i++)
   {
-    if( extrema.SquareDistance(i) < Dist2Min )
+    if (extrema.SquareDistance(i) < Dist2Min)
     {
       Dist2Min = extrema.SquareDistance(i);
-      iMin = i;
+      iMin     = i;
     }
   }
-  if( iMin != 0 && Dist2Min <= aTol)
+  if (iMin != 0 && Dist2Min <= aTol)
   {
-    extrema.Point(iMin).Parameter(U,V);
+    extrema.Point(iMin).Parameter(U, V);
   }
   else
   {
@@ -129,12 +134,11 @@ Standard_Boolean GeomLib_Tool::Parameters(const Handle(Geom_Surface)& Surface,
   }
 
   return Standard_True;
-
 }
 
 //=======================================================================
-//function : Parameter
-//purpose  : Get parameter on curve of given point
+// function : Parameter
+// purpose  : Get parameter on curve of given point
 //           return FALSE if point is far from curve than MaxDist
 //           or computation fails
 //=======================================================================
@@ -144,27 +148,30 @@ Standard_Boolean GeomLib_Tool::Parameter(const Handle(Geom2d_Curve)& Curve,
                                          const Standard_Real         MaxDist,
                                          Standard_Real&              U)
 {
-  if( Curve.IsNull() ) return Standard_False;
+  if (Curve.IsNull())
+    return Standard_False;
   //
-  U = 0.;
+  U                  = 0.;
   Standard_Real aTol = MaxDist * MaxDist;
   //
   Geom2dAdaptor_Curve aGAC(Curve);
-  Extrema_ExtPC2d extrema(Point,aGAC);
-  if( !extrema.IsDone() ) return Standard_False;
+  Extrema_ExtPC2d     extrema(Point, aGAC);
+  if (!extrema.IsDone())
+    return Standard_False;
   Standard_Integer n = extrema.NbExt();
-  if( n <= 0 ) return Standard_False;
+  if (n <= 0)
+    return Standard_False;
   Standard_Integer i = 0, iMin = 0;
-  Standard_Real Dist2Min = RealLast();
-  for ( i = 1; i <= n; i++ )
+  Standard_Real    Dist2Min = RealLast();
+  for (i = 1; i <= n; i++)
   {
-    if( extrema.SquareDistance(i) < Dist2Min )
+    if (extrema.SquareDistance(i) < Dist2Min)
     {
       Dist2Min = extrema.SquareDistance(i);
-      iMin = i;
+      iMin     = i;
     }
   }
-  if( iMin != 0 && Dist2Min <= aTol )
+  if (iMin != 0 && Dist2Min <= aTol)
   {
     U = (extrema.Point(iMin)).Parameter();
   }
@@ -182,20 +189,17 @@ namespace
 //! It is one-variate function. Its parameter is a parameter
 //! on the curve. Deviation is a maximal distance between
 //! any point in the curve and the given line.
-class FuncSolveDeviation: public math_MultipleVarFunction
+class FuncSolveDeviation : public math_MultipleVarFunction
 {
 public:
-
   //! Constructor. Initializes the curve and the line
   //! going through two given points.
-  FuncSolveDeviation(const Geom2dAdaptor_Curve& theCurve,
-                     const gp_XY& thePf,
-                     const gp_XY& thePl):
-    myCurve(theCurve),
-    myPRef(thePf)
+  FuncSolveDeviation(const Geom2dAdaptor_Curve& theCurve, const gp_XY& thePf, const gp_XY& thePl)
+      : myCurve(theCurve),
+        myPRef(thePf)
   {
-    myDirRef = thePl - thePf;
-    mySqMod = myDirRef.SquareModulus();
+    myDirRef  = thePl - thePf;
+    mySqMod   = myDirRef.SquareModulus();
     myIsValid = (mySqMod > Precision::SquarePConfusion());
   }
 
@@ -205,53 +209,43 @@ public:
   {
     myCurve.D0(theParam, myPointOnCurve);
     const gp_XY aVt = myPointOnCurve.XY() - myPRef;
-    myVecCurvLine = aVt.Dot(myDirRef) * myDirRef / mySqMod - aVt;
+    myVecCurvLine   = aVt.Dot(myDirRef) * myDirRef / mySqMod - aVt;
   }
 
   //! Returns value of *this (square deviation) and its 1st and 2nd derivative.
-  void ValueAndDerives(const Standard_Real theParam, Standard_Real& theVal,
-                       Standard_Real& theD1, Standard_Real& theD2)
+  void ValueAndDerives(const Standard_Real theParam,
+                       Standard_Real&      theVal,
+                       Standard_Real&      theD1,
+                       Standard_Real&      theD2)
   {
     gp_Vec2d aD1;
     gp_Vec2d aD2;
     myCurve.D2(theParam, myPointOnCurve, aD1, aD2);
 
     const gp_XY aVt = myPointOnCurve.XY() - myPRef;
-    theVal = aVt.Crossed(myDirRef);
-    theD1 = aD1.Crossed(myDirRef);
-    theD2 = 2.0 * (theD1 * theD1 + theVal * aD2.Crossed(myDirRef));
+    theVal          = aVt.Crossed(myDirRef);
+    theD1           = aD1.Crossed(myDirRef);
+    theD2           = 2.0 * (theD1 * theD1 + theVal * aD2.Crossed(myDirRef));
     theD1 *= 2.0 * theVal;
     theVal *= theVal / mySqMod;
   }
 
   //! Returns TRUE if the function has been initializes correctly.
-  Standard_Boolean IsValid() const
-  {
-    return myIsValid;
-  }
+  Standard_Boolean IsValid() const { return myIsValid; }
 
   //! Returns number of variables
-  virtual Standard_Integer NbVariables() const Standard_OVERRIDE
-  {
-    return 1;
-  }
+  virtual Standard_Integer NbVariables() const Standard_OVERRIDE { return 1; }
 
   //! Returns last computed Point in the given curve.
   //! Its value will be recomputed after calling UpdateFields(...) method,
   //! which sets this point correspond to the input parameter.
-  const gp_Pnt2d& PointOnCurve() const
-  {
-    return myPointOnCurve;
-  }
+  const gp_Pnt2d& PointOnCurve() const { return myPointOnCurve; }
 
   //! Returns last computed vector directed from some point on the curve
   //! to the given line. This vector is correspond to the found deviation.
   //! Its value will be recomputed after calling UpdateFields(...) method,
   //! which set this vector correspond to the input parameter.
-  const gp_Vec2d& VecCurveLine() const
-  {
-    return myVecCurvLine;
-  }
+  const gp_Vec2d& VecCurveLine() const { return myVecCurvLine; }
 
   //! Returns the given line
   void GetLine(gp_Lin2d* const theLine) const
@@ -265,8 +259,7 @@ public:
   }
 
   //! Returns value of *this (square deviation)
-  virtual Standard_Boolean Value(const math_Vector& thePrm,
-                                 Standard_Real& theVal) Standard_OVERRIDE
+  virtual Standard_Boolean Value(const math_Vector& thePrm, Standard_Real& theVal) Standard_OVERRIDE
   {
     Standard_Real aD1;
     Standard_Real aD2;
@@ -276,13 +269,9 @@ public:
   }
 
   //! Always returns 0. It is used for compatibility with the parent class.
-  virtual Standard_Integer GetStateNumber() Standard_OVERRIDE
-  {
-    return 0;
-  }
+  virtual Standard_Integer GetStateNumber() Standard_OVERRIDE { return 0; }
 
 private:
-
   //! The curve
   Geom2dAdaptor_Curve myCurve;
 
@@ -301,11 +290,11 @@ private:
   //! Always directed from myPointOnCurve to the line
   gp_Vec2d myVecCurvLine;
 };
-} //nameless namespace
+} // namespace
 
 //=======================================================================
-//function : ComputeDeviation
-//purpose  : Computes parameter on curve (*thePrmOnCurve) where maximal deviation
+// function : ComputeDeviation
+// purpose  : Computes parameter on curve (*thePrmOnCurve) where maximal deviation
 //           (maximal value of correspond function FuncSolveDeviation) is obtained.
 //           ALGORITHM!
 //           The point is looked for where 1st derivative of the function
@@ -317,14 +306,14 @@ private:
 //            the point U(n). U(0) = theStartParameter.
 //=======================================================================
 Standard_Real GeomLib_Tool::ComputeDeviation(const Geom2dAdaptor_Curve& theCurve,
-                                             const Standard_Real theFPar,
-                                             const Standard_Real theLPar,
-                                             const Standard_Real theStartParameter,
-                                             const Standard_Integer theNbIters,
-                                             Standard_Real* const thePrmOnCurve,
-                                             gp_Pnt2d* const thePtOnCurve,
-                                             gp_Vec2d* const theVecCurvLine,
-                                             gp_Lin2d* const theLine)
+                                             const Standard_Real        theFPar,
+                                             const Standard_Real        theLPar,
+                                             const Standard_Real        theStartParameter,
+                                             const Standard_Integer     theNbIters,
+                                             Standard_Real* const       thePrmOnCurve,
+                                             gp_Pnt2d* const            thePtOnCurve,
+                                             gp_Vec2d* const            theVecCurvLine,
+                                             gp_Lin2d* const            theLine)
 {
   // Computed maximal deflection
   if ((theStartParameter < theFPar) || (theStartParameter > theLPar))
@@ -346,9 +335,9 @@ Standard_Real GeomLib_Tool::ComputeDeviation(const Geom2dAdaptor_Curve& theCurve
 
   constexpr Standard_Real aTolDefl = Precision::PConfusion();
 
-  Standard_Real aD1 = 0.0;
-  Standard_Real aD2 = 0.0;
-  Standard_Real aU0 = theStartParameter;
+  Standard_Real aD1   = 0.0;
+  Standard_Real aD2   = 0.0;
+  Standard_Real aU0   = theStartParameter;
   Standard_Real aUmax = theStartParameter;
   Standard_Real aSqDefl;
   aFunc.ValueAndDerives(aU0, aSqDefl, aD1, aD2);
@@ -359,7 +348,7 @@ Standard_Real GeomLib_Tool::ComputeDeviation(const Geom2dAdaptor_Curve& theCurve
       break;
     }
     const Standard_Real aDelta = aD1 / aD2;
-    const Standard_Real aU1 = aU0 - aDelta;
+    const Standard_Real aU1    = aU0 - aDelta;
 
     if ((aU1 < theFPar) || (aU1 > theLPar))
     {
@@ -369,10 +358,9 @@ Standard_Real GeomLib_Tool::ComputeDeviation(const Geom2dAdaptor_Curve& theCurve
     aFunc.ValueAndDerives(aU1, aSqD, aD1, aD2);
     if (aSqD > aSqDefl)
     {
-      aUmax = aU1;
-      const Standard_Real aDD = aSqDefl > 0.0 ?
-                            Abs(Sqrt(aSqD) - Sqrt(aSqDefl)) : Sqrt(aSqD);
-      aSqDefl = aSqD;
+      aUmax                   = aU1;
+      const Standard_Real aDD = aSqDefl > 0.0 ? Abs(Sqrt(aSqD) - Sqrt(aSqDefl)) : Sqrt(aSqD);
+      aSqDefl                 = aSqD;
       if (aDD < aTolDefl)
       {
         break;
@@ -411,18 +399,18 @@ Standard_Real GeomLib_Tool::ComputeDeviation(const Geom2dAdaptor_Curve& theCurve
 }
 
 //=======================================================================
-//function : ComputeDeviation
-//purpose  : Computes parameter on curve (*thePrmOnCurve) where maximal deviation
+// function : ComputeDeviation
+// purpose  : Computes parameter on curve (*thePrmOnCurve) where maximal deviation
 //           (maximal value of correspond function FuncSolveDeviation) is obtained
 //           (fast but not precisely).
 //           math_PSO Algorithm is used.
 //=======================================================================
 Standard_Real GeomLib_Tool::ComputeDeviation(const Geom2dAdaptor_Curve& theCurve,
-                                             const Standard_Real theFPar,
-                                             const Standard_Real theLPar,
-                                             const Standard_Integer theNbSubIntervals,
-                                             const Standard_Integer theNbIters,
-                                             Standard_Real* const thePrmOnCurve)
+                                             const Standard_Real        theFPar,
+                                             const Standard_Real        theLPar,
+                                             const Standard_Integer     theNbSubIntervals,
+                                             const Standard_Integer     theNbIters,
+                                             Standard_Real* const       thePrmOnCurve)
 {
   // Computed maximal deflection
   const gp_Pnt2d aPf(theCurve.Value(theFPar));
@@ -436,9 +424,9 @@ Standard_Real GeomLib_Tool::ComputeDeviation(const Geom2dAdaptor_Curve& theCurve
   }
   const math_Vector aFPar(1, 1, theFPar);
   const math_Vector aLPar(1, 1, theLPar);
-  const math_Vector aStep(1, 1, (theLPar - theFPar) / (10.0*theNbSubIntervals));
-  math_Vector anOutputPnt(1, 1, theFPar);
-  math_PSO aMPSO(&aFunc, aFPar, aLPar, aStep, theNbSubIntervals, theNbIters);
+  const math_Vector aStep(1, 1, (theLPar - theFPar) / (10.0 * theNbSubIntervals));
+  math_Vector       anOutputPnt(1, 1, theFPar);
+  math_PSO          aMPSO(&aFunc, aFPar, aLPar, aStep, theNbSubIntervals, theNbIters);
 
   Standard_Real aSqDefl = RealLast();
   aMPSO.Perform(aStep, aSqDefl, anOutputPnt, theNbIters);

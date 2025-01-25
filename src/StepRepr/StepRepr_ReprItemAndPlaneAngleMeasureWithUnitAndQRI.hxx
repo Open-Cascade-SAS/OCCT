@@ -23,22 +23,23 @@
 class StepBasic_PlaneAngleMeasureWithUnit;
 
 class StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI;
-DEFINE_STANDARD_HANDLE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI, StepRepr_ReprItemAndMeasureWithUnitAndQRI)
+DEFINE_STANDARD_HANDLE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI,
+                       StepRepr_ReprItemAndMeasureWithUnitAndQRI)
 
-
-class StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI : public StepRepr_ReprItemAndMeasureWithUnitAndQRI
+class StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI
+    : public StepRepr_ReprItemAndMeasureWithUnitAndQRI
 {
 
 public:
-
-  
   Standard_EXPORT StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI();
-  
-  Standard_EXPORT void SetPlaneAngleMeasureWithUnit (const Handle(StepBasic_PlaneAngleMeasureWithUnit)& aLMWU);
-  
+
+  Standard_EXPORT void SetPlaneAngleMeasureWithUnit(
+    const Handle(StepBasic_PlaneAngleMeasureWithUnit)& aLMWU);
+
   Standard_EXPORT Handle(StepBasic_PlaneAngleMeasureWithUnit) GetPlaneAngleMeasureWithUnit() const;
 
-  DEFINE_STANDARD_RTTIEXT(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI,StepRepr_ReprItemAndMeasureWithUnitAndQRI)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI,
+                          StepRepr_ReprItemAndMeasureWithUnitAndQRI)
 
 private:
   Handle(StepBasic_PlaneAngleMeasureWithUnit) myPlaneAngleMeasureWithUnit;

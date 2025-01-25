@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(ChFiDS_Stripe)> ChFiDS_StripeArray1;
 
-
 #endif

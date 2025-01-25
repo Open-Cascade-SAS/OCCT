@@ -28,55 +28,32 @@ class StepGeom_Point;
 class StepGeom_Curve;
 class StepGeom_Surface;
 
-
-
-class StepShape_GeometricSetSelect  : public StepData_SelectType
+class StepShape_GeometricSetSelect : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a GeometricSetSelect SelectType
   Standard_EXPORT StepShape_GeometricSetSelect();
-  
+
   //! Recognizes a GeometricSetSelect Kind Entity that is :
   //! 1 -> Point
   //! 2 -> Curve
   //! 3 -> Surface
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a Point (Null if another type)
   Standard_EXPORT Handle(StepGeom_Point) Point() const;
-  
+
   //! returns Value as a Curve (Null if another type)
   Standard_EXPORT Handle(StepGeom_Curve) Curve() const;
-  
+
   //! returns Value as a Surface (Null if another type)
   Standard_EXPORT Handle(StepGeom_Surface) Surface() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_GeometricSetSelect_HeaderFile

@@ -26,7 +26,6 @@
 #include <Standard_Real.hxx>
 class TCollection_HAsciiString;
 
-
 //! This class manages Statistics to be queried asynchronously.
 //!
 //! It is organized as a stack of counters, identified by their
@@ -61,73 +60,52 @@ class TCollection_HAsciiString;
 //! to the already opened ones :: this will be cumulated
 //!
 //! A Current Stat is available, but it is possible to have others
-class MoniTool_Stat 
+class MoniTool_Stat
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates a Stat form. At start, one default phase is defined,
   //! with one default step. Then, it suffises to start with a
   //! count of items (and cycles if several) then record items,
   //! to have a queryable report.
   Standard_EXPORT MoniTool_Stat(const Standard_CString title = "");
-  
+
   //! used when starting
   Standard_EXPORT MoniTool_Stat(const MoniTool_Stat& other);
-  
+
   Standard_EXPORT static MoniTool_Stat& Current();
-  
+
   //! Opens a new counter with a starting count of items
-  Standard_EXPORT Standard_Integer Open (const Standard_Integer nb = 100);
-  
+  Standard_EXPORT Standard_Integer Open(const Standard_Integer nb = 100);
+
   //! Adds more items to be counted by Add... on current level
-  Standard_EXPORT void OpenMore (const Standard_Integer id, const Standard_Integer nb);
-  
+  Standard_EXPORT void OpenMore(const Standard_Integer id, const Standard_Integer nb);
+
   //! Directly adds items
-  Standard_EXPORT void Add (const Standard_Integer nb = 1);
-  
+  Standard_EXPORT void Add(const Standard_Integer nb = 1);
+
   //! Declares a count of items to be added later. If a sub-counter
   //! is opened, its percentage multiplies this sub-count to compute
   //! the percent of current level
-  Standard_EXPORT void AddSub (const Standard_Integer nb = 1);
-  
+  Standard_EXPORT void AddSub(const Standard_Integer nb = 1);
+
   //! Ends the AddSub and cumulates the sub-count to current level
   Standard_EXPORT void AddEnd();
-  
-  Standard_EXPORT void Close (const Standard_Integer id);
-  
+
+  Standard_EXPORT void Close(const Standard_Integer id);
+
   Standard_EXPORT Standard_Integer Level() const;
-  
-  Standard_EXPORT Standard_Real Percent (const Standard_Integer fromlev = 0) const;
 
-
-
+  Standard_EXPORT Standard_Real Percent(const Standard_Integer fromlev = 0) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(TCollection_HAsciiString) thetit;
-  Standard_Integer thelev;
+  Standard_Integer                 thelev;
   Handle(TColStd_HArray1OfInteger) thetot;
   Handle(TColStd_HArray1OfInteger) thedone;
   Handle(TColStd_HArray1OfInteger) thecurr;
-
-
 };
-
-
-
-
-
-
 
 #endif // _MoniTool_Stat_HeaderFile

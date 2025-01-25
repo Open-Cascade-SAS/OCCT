@@ -21,5 +21,4 @@
 
 typedef NCollection_Array1<Handle(StepDimTol_DatumReference)> StepDimTol_Array1OfDatumReference;
 
-
 #endif

@@ -11,41 +11,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepRepr_ReprItemAndLengthMeasureWithUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ReprItemAndLengthMeasureWithUnit,StepRepr_ReprItemAndMeasureWithUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ReprItemAndLengthMeasureWithUnit,
+                           StepRepr_ReprItemAndMeasureWithUnit)
 
-//=======================================================================
-//function : StepRepr_ReprItemAndLengthMeasureWithUnit
-//purpose  : 
-//=======================================================================
-StepRepr_ReprItemAndLengthMeasureWithUnit::StepRepr_ReprItemAndLengthMeasureWithUnit() : StepRepr_ReprItemAndMeasureWithUnit()
+//=================================================================================================
+
+StepRepr_ReprItemAndLengthMeasureWithUnit::StepRepr_ReprItemAndLengthMeasureWithUnit()
+    : StepRepr_ReprItemAndMeasureWithUnit()
 {
   myLengthMeasureWithUnit = new StepBasic_LengthMeasureWithUnit();
 }
 
-//=======================================================================
-//function : SetLengthMeasureWithUnit
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepRepr_ReprItemAndLengthMeasureWithUnit::SetLengthMeasureWithUnit
-  (const Handle(StepBasic_LengthMeasureWithUnit)& aLMWU) 
+void StepRepr_ReprItemAndLengthMeasureWithUnit::SetLengthMeasureWithUnit(
+  const Handle(StepBasic_LengthMeasureWithUnit)& aLMWU)
 {
   myLengthMeasureWithUnit = aLMWU;
 }
 
-
-//=======================================================================
-//function : GetLengthMeasureWithUnit
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(StepBasic_LengthMeasureWithUnit) StepRepr_ReprItemAndLengthMeasureWithUnit::
-       GetLengthMeasureWithUnit() const
+  GetLengthMeasureWithUnit() const
 {
   return myLengthMeasureWithUnit;
 }

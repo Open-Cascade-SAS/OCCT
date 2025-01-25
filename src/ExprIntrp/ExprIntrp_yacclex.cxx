@@ -18,14 +18,13 @@
 #include <ExprIntrp_yaccintrf.hxx>
 
 static TCollection_AsciiString ExprIntrp_curres;
-static int ExprIntrp_degree;
+static int                     ExprIntrp_degree;
 
 #ifndef _WIN32
 extern char* ExprIntrptext;
 #else
 extern "C" char* ExprIntrptext;
-#endif  // _WIN32
-
+#endif // _WIN32
 
 extern "C" void ExprIntrp_SetResult()
 {
@@ -42,7 +41,7 @@ int ExprIntrp_GetDegree()
   return ExprIntrp_degree;
 }
 
-const TCollection_AsciiString& ExprIntrp_GetResult ()
+const TCollection_AsciiString& ExprIntrp_GetResult()
 {
   return ExprIntrp_curres;
 }

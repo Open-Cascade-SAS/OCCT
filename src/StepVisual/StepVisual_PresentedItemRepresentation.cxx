@@ -11,27 +11,39 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepVisual_PresentedItem.hxx>
 #include <StepVisual_PresentedItemRepresentation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentedItemRepresentation,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentedItemRepresentation, Standard_Transient)
 
-StepVisual_PresentedItemRepresentation::StepVisual_PresentedItemRepresentation  ()    {  }
+StepVisual_PresentedItemRepresentation::StepVisual_PresentedItemRepresentation() {}
 
-void  StepVisual_PresentedItemRepresentation::Init
-  (const StepVisual_PresentationRepresentationSelect& aPresentation,
-   const Handle(StepVisual_PresentedItem)& aItem)
-{  thePresentation = aPresentation;  theItem = aItem;  }
+void StepVisual_PresentedItemRepresentation::Init(
+  const StepVisual_PresentationRepresentationSelect& aPresentation,
+  const Handle(StepVisual_PresentedItem)&            aItem)
+{
+  thePresentation = aPresentation;
+  theItem         = aItem;
+}
 
-void  StepVisual_PresentedItemRepresentation::SetPresentation (const StepVisual_PresentationRepresentationSelect& aPresentation)
-{  thePresentation = aPresentation;  }
+void StepVisual_PresentedItemRepresentation::SetPresentation(
+  const StepVisual_PresentationRepresentationSelect& aPresentation)
+{
+  thePresentation = aPresentation;
+}
 
-StepVisual_PresentationRepresentationSelect  StepVisual_PresentedItemRepresentation::Presentation () const
-{  return thePresentation;  }
+StepVisual_PresentationRepresentationSelect StepVisual_PresentedItemRepresentation::Presentation()
+  const
+{
+  return thePresentation;
+}
 
-void  StepVisual_PresentedItemRepresentation::SetItem (const Handle(StepVisual_PresentedItem)& aItem)
-{  theItem = aItem;  }
+void StepVisual_PresentedItemRepresentation::SetItem(const Handle(StepVisual_PresentedItem)& aItem)
+{
+  theItem = aItem;
+}
 
-Handle(StepVisual_PresentedItem)  StepVisual_PresentedItemRepresentation::Item () const
-{  return theItem;  }
+Handle(StepVisual_PresentedItem) StepVisual_PresentedItemRepresentation::Item() const
+{
+  return theItem;
+}

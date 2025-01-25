@@ -17,13 +17,11 @@
 #include <TColStd_HArray2OfReal.hxx>
 #include <Plate_HArray1OfPinpointConstraint.hxx>
 
-
 inline const Plate_Array1OfPinpointConstraint& Plate_LinearXYZConstraint::GetPPC() const
 {
   return myPPC->Array1();
 }
 
- 
 inline const TColStd_Array2OfReal& Plate_LinearXYZConstraint::Coeff() const
 {
   return myCoef->Array2();

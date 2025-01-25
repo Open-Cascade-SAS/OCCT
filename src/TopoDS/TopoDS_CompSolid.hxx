@@ -28,10 +28,9 @@
 //! solid, in terms of its geometry (as opposed to
 //! orientation in relation to other shapes).
 //! Casts shape S to the more specialized return type, CompSolid.
-class TopoDS_CompSolid  : public TopoDS_Shape
+class TopoDS_CompSolid : public TopoDS_Shape
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Constructs an Undefined CompSolid.
@@ -40,14 +39,14 @@ public:
 
 namespace std
 {
-  template <>
-  struct hash<TopoDS_CompSolid>
+template <>
+struct hash<TopoDS_CompSolid>
+{
+  size_t operator()(const TopoDS_CompSolid& theShape) const
   {
-    size_t operator()(const TopoDS_CompSolid& theShape) const
-    {
-      return std::hash<TopoDS_Shape>{}(theShape);
-    }
-  };
-}
+    return std::hash<TopoDS_Shape>{}(theShape);
+  }
+};
+} // namespace std
 
 #endif // _TopoDS_CompSolid_HeaderFile

@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/TreeModel_ColumnType.hxx>
 #include <inspector/TreeModel_ItemBase.hxx>
@@ -28,11 +28,14 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-TreeModel_ItemBase::TreeModel_ItemBase (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
- : m_iStreamChildren (0), m_bInitialized (false)
+TreeModel_ItemBase::TreeModel_ItemBase(TreeModel_ItemBasePtr theParent,
+                                       const int             theRow,
+                                       const int             theColumn)
+    : m_iStreamChildren(0),
+      m_bInitialized(false)
 {
   m_pParent = theParent;
-  m_iRow = theRow;
+  m_iRow    = theRow;
   m_iColumn = theColumn;
 }
 
@@ -42,7 +45,9 @@ TreeModel_ItemBase::TreeModel_ItemBase (TreeModel_ItemBasePtr theParent, const i
 // =======================================================================
 void TreeModel_ItemBase::Reset()
 {
-  for (PositionToItemHash::const_iterator aChildrenIt = m_ChildItems.begin(); aChildrenIt != m_ChildItems.end(); aChildrenIt++)
+  for (PositionToItemHash::const_iterator aChildrenIt = m_ChildItems.begin();
+       aChildrenIt != m_ChildItems.end();
+       aChildrenIt++)
   {
     TreeModel_ItemBasePtr anItem = aChildrenIt.value();
     if (anItem)
@@ -54,38 +59,39 @@ void TreeModel_ItemBase::Reset()
     myProperties->Reset();
   }
   myCachedValues.clear();
-  myStream.str ("");
+  myStream.str("");
 }
 
 // =======================================================================
 // function :  Reset
 // purpose :
 // =======================================================================
-void TreeModel_ItemBase::Reset (int theRole)
+void TreeModel_ItemBase::Reset(int theRole)
 {
-  if (!myCachedValues.contains (theRole))
+  if (!myCachedValues.contains(theRole))
     return;
 
-  myCachedValues.remove (theRole);
+  myCachedValues.remove(theRole);
 }
 
 // =======================================================================
 // function :  child
 // purpose :
 // =======================================================================
-TreeModel_ItemBasePtr TreeModel_ItemBase::Child (int theRow, int theColumn, const bool isToCreate)
+TreeModel_ItemBasePtr TreeModel_ItemBase::Child(int theRow, int theColumn, const bool isToCreate)
 {
-  QPair<int, int> aPos = qMakePair (theRow, theColumn);
+  QPair<int, int> aPos = qMakePair(theRow, theColumn);
 
-  if (m_ChildItems.contains (aPos))
+  if (m_ChildItems.contains(aPos))
     return m_ChildItems[aPos];
 
   TreeModel_ItemBasePtr anItem;
-  if (isToCreate) {
+  if (isToCreate)
+  {
     if (theRow < m_iStreamChildren)
-      anItem = TreeModel_ItemStream::CreateItem (currentItem(), theRow, theColumn);
+      anItem = TreeModel_ItemStream::CreateItem(currentItem(), theRow, theColumn);
     else
-      anItem = createChild (theRow - m_iStreamChildren, theColumn);
+      anItem = createChild(theRow - m_iStreamChildren, theColumn);
 
     if (anItem)
       m_ChildItems[aPos] = anItem;
@@ -97,7 +103,8 @@ TreeModel_ItemBasePtr TreeModel_ItemBase::Child (int theRow, int theColumn, cons
 // function :  Presentations
 // purpose :
 // =======================================================================
-void TreeModel_ItemBase::Presentations (NCollection_List<Handle(Standard_Transient)>& thePresentations)
+void TreeModel_ItemBase::Presentations(
+  NCollection_List<Handle(Standard_Transient)>& thePresentations)
 {
   if (Column() != 0)
     return;
@@ -105,7 +112,7 @@ void TreeModel_ItemBase::Presentations (NCollection_List<Handle(Standard_Transie
   const Handle(TreeModel_ItemProperties)& anItemProperties = Properties();
   if (anItemProperties)
   {
-    anItemProperties->Presentations (thePresentations);
+    anItemProperties->Presentations(thePresentations);
   }
 }
 
@@ -115,26 +122,26 @@ void TreeModel_ItemBase::Presentations (NCollection_List<Handle(Standard_Transie
 // =======================================================================
 const TreeModel_ItemBasePtr TreeModel_ItemBase::currentItem()
 {
-  return TreeModel_ItemBasePtr (this);
+  return TreeModel_ItemBasePtr(this);
 }
 
 // =======================================================================
 // function :  cachedValue
 // purpose :
 // =======================================================================
-QVariant TreeModel_ItemBase::cachedValue (const int theItemRole) const
+QVariant TreeModel_ItemBase::cachedValue(const int theItemRole) const
 {
-  if (myCachedValues.contains (theItemRole))
+  if (myCachedValues.contains(theItemRole))
     return myCachedValues[theItemRole];
 
   QVariant aValueToCache;
   if (theItemRole == TreeModel_ItemRole_RowCountRole)
     aValueToCache = initRowCount() + const_cast<TreeModel_ItemBase*>(this)->initStreamRowCount();
   else
-    aValueToCache = initValue (theItemRole);
+    aValueToCache = initValue(theItemRole);
 
-  myCachedValues.insert (theItemRole, aValueToCache);
-  return myCachedValues.contains (theItemRole) ? myCachedValues[theItemRole] : QVariant();
+  myCachedValues.insert(theItemRole, aValueToCache);
+  return myCachedValues.contains(theItemRole) ? myCachedValues[theItemRole] : QVariant();
 }
 
 // =======================================================================
@@ -169,13 +176,13 @@ int TreeModel_ItemBase::initStreamRowCount()
   if (Column() == 0)
   {
     Standard_SStream aStream;
-    initStream (aStream);
-    if (!Standard_Dump::Text (aStream).IsEmpty())
+    initStream(aStream);
+    if (!Standard_Dump::Text(aStream).IsEmpty())
     {
       if (!myProperties)
       {
         myProperties = new TreeModel_ItemProperties();
-        myProperties->SetItem (currentItem());
+        myProperties->SetItem(currentItem());
       }
       myProperties->Init();
       aStreamChildrenCount = myProperties->Children().Extent();
@@ -189,14 +196,16 @@ int TreeModel_ItemBase::initStreamRowCount()
 // function : initValue
 // purpose :
 // =======================================================================
-QVariant TreeModel_ItemBase::initValue (const int theItemRole) const
+QVariant TreeModel_ItemBase::initValue(const int theItemRole) const
 {
   if (theItemRole != Qt::DisplayRole && theItemRole != Qt::ToolTipRole)
     return QVariant();
 
   switch (Column())
   {
-    case TreeModel_ColumnType_Row: { return Row(); }
+    case TreeModel_ColumnType_Row: {
+      return Row();
+    }
   }
 
   return QVariant();

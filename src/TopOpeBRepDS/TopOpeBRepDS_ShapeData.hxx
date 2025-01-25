@@ -26,55 +26,34 @@
 #include <TopOpeBRepDS_Config.hxx>
 #include <TopAbs_Orientation.hxx>
 
-
-class TopOpeBRepDS_ShapeData 
+class TopOpeBRepDS_ShapeData
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopOpeBRepDS_ShapeData();
-  
+
   Standard_EXPORT const TopOpeBRepDS_ListOfInterference& Interferences() const;
-  
+
   Standard_EXPORT TopOpeBRepDS_ListOfInterference& ChangeInterferences();
-  
+
   Standard_EXPORT Standard_Boolean Keep() const;
-  
-  Standard_EXPORT void ChangeKeep (const Standard_Boolean B);
 
+  Standard_EXPORT void ChangeKeep(const Standard_Boolean B);
 
-friend class TopOpeBRepDS_DataStructure;
-
+  friend class TopOpeBRepDS_DataStructure;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   TopOpeBRepDS_ListOfInterference myInterferences;
-  TopTools_ListOfShape mySameDomain;
-  Standard_Integer mySameDomainRef;
-  TopOpeBRepDS_Config mySameDomainOri;
-  Standard_Integer mySameDomainInd;
-  TopAbs_Orientation myOrientation;
-  Standard_Boolean myOrientationDef;
-  Standard_Integer myAncestorRank;
-  Standard_Boolean myKeep;
-
-
+  TopTools_ListOfShape            mySameDomain;
+  Standard_Integer                mySameDomainRef;
+  TopOpeBRepDS_Config             mySameDomainOri;
+  Standard_Integer                mySameDomainInd;
+  TopAbs_Orientation              myOrientation;
+  Standard_Boolean                myOrientationDef;
+  Standard_Integer                myAncestorRank;
+  Standard_Boolean                myKeep;
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepDS_ShapeData_HeaderFile

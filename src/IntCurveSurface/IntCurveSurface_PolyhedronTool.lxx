@@ -14,86 +14,76 @@
 
 #include ThePolyhedron_hxx
 
-
-inline const Bnd_Box& IntCurveSurface_PolyhedronTool::Bounding
-  (const ThePolyhedron& thePolyh)
+inline const Bnd_Box& IntCurveSurface_PolyhedronTool::Bounding(const ThePolyhedron& thePolyh)
 {
   return thePolyh.Bounding();
 }
 
-inline const Handle(Bnd_HArray1OfBox)& IntCurveSurface_PolyhedronTool::
-       ComponentsBounding(const ThePolyhedron& thePolyh)
+inline const Handle(Bnd_HArray1OfBox)& IntCurveSurface_PolyhedronTool::ComponentsBounding(
+  const ThePolyhedron& thePolyh)
 {
   return thePolyh.ComponentsBounding();
 }
 
-inline Standard_Real IntCurveSurface_PolyhedronTool::DeflectionOverEstimation
-  (const ThePolyhedron& thePolyh)
+inline Standard_Real IntCurveSurface_PolyhedronTool::DeflectionOverEstimation(
+  const ThePolyhedron& thePolyh)
 {
   return thePolyh.DeflectionOverEstimation();
 }
 
-inline Standard_Integer IntCurveSurface_PolyhedronTool::NbTriangles
-  (const ThePolyhedron& thePolyh) 
+inline Standard_Integer IntCurveSurface_PolyhedronTool::NbTriangles(const ThePolyhedron& thePolyh)
 {
   return thePolyh.NbTriangles();
 }
 
-
-
-inline void IntCurveSurface_PolyhedronTool::Triangle(const ThePolyhedron& thePolyh,
-					      const Standard_Integer Index,
-					      Standard_Integer& P1,
-					      Standard_Integer& P2,
-					      Standard_Integer& P3)
+inline void IntCurveSurface_PolyhedronTool::Triangle(const ThePolyhedron&   thePolyh,
+                                                     const Standard_Integer Index,
+                                                     Standard_Integer&      P1,
+                                                     Standard_Integer&      P2,
+                                                     Standard_Integer&      P3)
 {
-  thePolyh.Triangle(Index, P1,P2,P3);
+  thePolyh.Triangle(Index, P1, P2, P3);
 }
 
-
-inline const gp_Pnt& IntCurveSurface_PolyhedronTool::Point
-  (const ThePolyhedron& thePolyh,
-   const Standard_Integer Index)
+inline const gp_Pnt& IntCurveSurface_PolyhedronTool::Point(const ThePolyhedron&   thePolyh,
+                                                           const Standard_Integer Index)
 {
   return thePolyh.Point(Index);
 }
 
-inline Standard_Integer IntCurveSurface_PolyhedronTool::TriConnex 
-  (const ThePolyhedron& thePolyh,
-   const Standard_Integer Triang,
-   const Standard_Integer Pivot,
-   const Standard_Integer Pedge,
-   Standard_Integer& TriCon,
-   Standard_Integer& OtherP)
+inline Standard_Integer IntCurveSurface_PolyhedronTool::TriConnex(const ThePolyhedron&   thePolyh,
+                                                                  const Standard_Integer Triang,
+                                                                  const Standard_Integer Pivot,
+                                                                  const Standard_Integer Pedge,
+                                                                  Standard_Integer&      TriCon,
+                                                                  Standard_Integer&      OtherP)
 {
   return thePolyh.TriConnex(Triang, Pivot, Pedge, TriCon, OtherP);
 }
 
 //  Modified by Sergey KHROMOV - Fri Dec  7 13:47:07 2001 Begin
 //=======================================================================
-//function : IsOnBound
-//purpose  : This method returns true if the edge based on points with 
+// function : IsOnBound
+// purpose  : This method returns true if the edge based on points with
 //           indices Index1 and Index2 represents a boundary edge.
 //=======================================================================
 
-inline Standard_Boolean IntCurveSurface_PolyhedronTool::IsOnBound
-  (const ThePolyhedron& thePolyh,
-   const Standard_Integer Index1,
-   const Standard_Integer Index2)
+inline Standard_Boolean IntCurveSurface_PolyhedronTool::IsOnBound(const ThePolyhedron&   thePolyh,
+                                                                  const Standard_Integer Index1,
+                                                                  const Standard_Integer Index2)
 {
   return thePolyh.IsOnBound(Index1, Index2);
 }
 
 //=======================================================================
-//function : GetBorderDeflection
-//purpose  : This method returns a border deflection of the polyhedron.
+// function : GetBorderDeflection
+// purpose  : This method returns a border deflection of the polyhedron.
 //=======================================================================
 
-inline Standard_Real IntCurveSurface_PolyhedronTool::GetBorderDeflection
-  (const ThePolyhedron& thePolyh)
+inline Standard_Real IntCurveSurface_PolyhedronTool::GetBorderDeflection(
+  const ThePolyhedron& thePolyh)
 {
   return thePolyh.GetBorderDeflection();
 }
 
 //  Modified by Sergey KHROMOV - Fri Dec  7 13:46:56 2001 End
-

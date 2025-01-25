@@ -26,62 +26,59 @@
 
 namespace
 {
-  //! Structure representing mesh edge.
-  struct Edge
+//! Structure representing mesh edge.
+struct Edge
+{
+  //! Constructor. Sets edge nodes.
+  Edge(const Standard_Integer TheIdx1, const Standard_Integer TheIdx2)
+      : Idx1(Min(TheIdx1, TheIdx2)),
+        Idx2(Max(TheIdx1, TheIdx2))
   {
-    //! Constructor. Sets edge nodes.
-    Edge(const Standard_Integer TheIdx1,
-         const Standard_Integer TheIdx2)
-    : Idx1(Min(TheIdx1, TheIdx2)),
-      Idx2(Max(TheIdx1, TheIdx2))
-    {}
+  }
 
-    //! Comparison operator.
-    Standard_Boolean operator<(const Edge& other) const
+  //! Comparison operator.
+  Standard_Boolean operator<(const Edge& other) const
+  {
+    if (Idx1 < other.Idx1 || (Idx1 == other.Idx1 && Idx2 < other.Idx2))
     {
-      if (Idx1 <  other.Idx1 ||
-         (Idx1 == other.Idx1 && Idx2 < other.Idx2))
-      {
-        return Standard_True;
-      }
-
-      return Standard_False;
+      return Standard_True;
     }
 
-    bool operator==(const Edge& theOther) const
-    {
-      return theOther.Idx1 == Idx1 && theOther.Idx2 == Idx2;
-    }
+    return Standard_False;
+  }
 
-    //! First index. It is lower or equal than the second.
-    Standard_Integer Idx1;
+  bool operator==(const Edge& theOther) const
+  {
+    return theOther.Idx1 == Idx1 && theOther.Idx2 == Idx2;
+  }
 
-    //! Second index.
-    Standard_Integer Idx2;
-  };
-}
+  //! First index. It is lower or equal than the second.
+  Standard_Integer Idx1;
+
+  //! Second index.
+  Standard_Integer Idx2;
+};
+} // namespace
 
 namespace std
 {
-  template <>
-  struct hash<Edge>
+template <>
+struct hash<Edge>
+{
+  size_t operator()(const Edge& theEdge) const noexcept
   {
-    size_t operator()(const Edge& theEdge) const noexcept
-    {
-      // Combine two int values into a single hash value.
-      int aCombination[2]{ theEdge.Idx1, theEdge.Idx2 };
-      return opencascade::hashBytes(aCombination, sizeof(aCombination));
-    }
-  };
-}
+    // Combine two int values into a single hash value.
+    int aCombination[2]{theEdge.Idx1, theEdge.Idx2};
+    return opencascade::hashBytes(aCombination, sizeof(aCombination));
+  }
+};
+} // namespace std
 
-//=======================================================================
-//function : Build
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange)
 {
-  // Generally, this method guarantees topology sharing by mapping mesh primitives 
+  // Generally, this method guarantees topology sharing by mapping mesh primitives
   // into topological counterparts.
   // mesh points -> topological vertices
   // mesh edges  -> topological edges
@@ -90,25 +87,25 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
   if (myMesh.IsNull() || myMesh->NbNodes() == 0 || myMesh->NbTriangles() == 0)
     return;
 
-  const Standard_Integer aNbNodes = myMesh->NbNodes();
+  const Standard_Integer aNbNodes     = myMesh->NbNodes();
   const Standard_Integer aNbTriangles = myMesh->NbTriangles();
 
   // We are going to have three loops: iterate once over nodes and iterate twice
   // over triangles of input mesh.
   Message_ProgressScope aPS(theRange,
-                            "Per-facet shape construction", 
+                            "Per-facet shape construction",
                             Standard_Real(aNbNodes + 2 * aNbTriangles));
 
   // Build shared vertices.
   NCollection_IndexedDataMap<Standard_Integer, TopoDS_Vertex> aPnt2VertexMap;
-  
+
   for (Standard_Integer i = 1; i <= aNbNodes; ++i)
   {
     aPS.Next();
     if (aPS.UserBreak())
       return;
 
-    const gp_Pnt aP = myMesh->Node(i);
+    const gp_Pnt        aP = myMesh->Node(i);
     const TopoDS_Vertex aV = BRepBuilderAPI_MakeVertex(aP);
     aPnt2VertexMap.Add(i, aV);
   }
@@ -121,7 +118,7 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
     if (aPS.UserBreak())
       return;
 
-    Standard_Integer anIdx[3];
+    Standard_Integer     anIdx[3];
     const Poly_Triangle& aTriangle = myMesh->Triangle(i);
     aTriangle.Get(anIdx[0], anIdx[1], anIdx[2]);
 
@@ -129,15 +126,13 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
     if (anIdx[0] == anIdx[1] || anIdx[0] == anIdx[2] || anIdx[1] == anIdx[2])
       continue;
 
-    const gp_Pnt aP1 = myMesh->Node(anIdx[0]);
-    const gp_Pnt aP2 = myMesh->Node(anIdx[1]);
-    const gp_Pnt aP3 = myMesh->Node(anIdx[2]);
+    const gp_Pnt        aP1 = myMesh->Node(anIdx[0]);
+    const gp_Pnt        aP2 = myMesh->Node(anIdx[1]);
+    const gp_Pnt        aP3 = myMesh->Node(anIdx[2]);
     const Standard_Real aD1 = aP1.SquareDistance(aP2);
     const Standard_Real aD2 = aP1.SquareDistance(aP3);
     const Standard_Real aD3 = aP2.SquareDistance(aP3);
-    if (aD1 < gp::Resolution() ||
-        aD2 < gp::Resolution() ||
-        aD3 < gp::Resolution())
+    if (aD1 < gp::Resolution() || aD2 < gp::Resolution() || aD3 < gp::Resolution())
     {
       continue;
     }
@@ -176,7 +171,7 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
 
   // Construct planar faces using shared topology.
   TopoDS_Compound aResult;
-  BRep_Builder aBB;
+  BRep_Builder    aBB;
   aBB.MakeCompound(aResult);
   for (Standard_Integer i = 1; i <= aNbTriangles; ++i)
   {
@@ -184,22 +179,22 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
     if (aPS.UserBreak())
       return;
 
-    Standard_Integer anIdx[3];
+    Standard_Integer     anIdx[3];
     const Poly_Triangle& aTriangle = myMesh->Triangle(i);
     aTriangle.Get(anIdx[0], anIdx[1], anIdx[2]);
 
-    const Edge aMeshEdge1(anIdx[0], anIdx[1]);
-    const Edge aMeshEdge2(anIdx[1], anIdx[2]);
-    const Edge aMeshEdge3(anIdx[2], anIdx[0]);
+    const Edge             aMeshEdge1(anIdx[0], anIdx[1]);
+    const Edge             aMeshEdge2(anIdx[1], anIdx[2]);
+    const Edge             aMeshEdge3(anIdx[2], anIdx[0]);
     const Standard_Boolean isReversed1 = anIdx[1] < anIdx[0];
     const Standard_Boolean isReversed2 = anIdx[2] < anIdx[1];
     const Standard_Boolean isReversed3 = anIdx[0] < anIdx[2];
 
     // Edges can be skipped in case of mesh defects - topologically or geometrically
     // degenerated triangles.
-    const Standard_Boolean aHasAllEdges = anEdgeToTEgeMap.Contains(aMeshEdge1) &&
-                                          anEdgeToTEgeMap.Contains(aMeshEdge2) &&
-                                          anEdgeToTEgeMap.Contains(aMeshEdge3) ;
+    const Standard_Boolean aHasAllEdges = anEdgeToTEgeMap.Contains(aMeshEdge1)
+                                          && anEdgeToTEgeMap.Contains(aMeshEdge2)
+                                          && anEdgeToTEgeMap.Contains(aMeshEdge3);
     if (!aHasAllEdges)
       continue;
 
@@ -223,9 +218,9 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
     // within BRepBuilderAPI_MakeFace.
     BRepAdaptor_Curve aC1(aTEdge1);
     BRepAdaptor_Curve aC2(aTEdge2);
-    const gp_Dir aD1 = aC1.Line().Direction();
-    const gp_Dir aD2 = aC2.Line().Direction();
-    gp_XYZ aN = aD1.XYZ().Crossed(aD2.XYZ());
+    const gp_Dir      aD1 = aC1.Line().Direction();
+    const gp_Dir      aD2 = aC2.Line().Direction();
+    gp_XYZ            aN  = aD1.XYZ().Crossed(aD2.XYZ());
     if (aN.SquareModulus() < Precision::SquareConfusion())
       continue;
     if (aTEdge1.Orientation() == TopAbs_REVERSED)
@@ -233,10 +228,10 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
     if (aTEdge2.Orientation() == TopAbs_REVERSED)
       aN.Reverse();
     const gp_Dir aNorm(aN);
-    gp_Pln aPln(myMesh->Node(anIdx[0]), aNorm);
+    gp_Pln       aPln(myMesh->Node(anIdx[0]), aNorm);
 
     BRepBuilderAPI_MakeFace aFaceMaker(aPln, aWire);
-    const TopoDS_Face& aFace = aFaceMaker.Face();
+    const TopoDS_Face&      aFace = aFaceMaker.Face();
 
     aBB.Add(aResult, aFace);
   }

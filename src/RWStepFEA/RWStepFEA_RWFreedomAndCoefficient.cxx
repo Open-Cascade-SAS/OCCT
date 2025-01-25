@@ -21,68 +21,57 @@
 #include <StepData_StepWriter.hxx>
 #include <StepFEA_FreedomAndCoefficient.hxx>
 
-//=======================================================================
-//function : RWStepFEA_RWFreedomAndCoefficient
-//purpose  : 
-//=======================================================================
-RWStepFEA_RWFreedomAndCoefficient::RWStepFEA_RWFreedomAndCoefficient ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
+RWStepFEA_RWFreedomAndCoefficient::RWStepFEA_RWFreedomAndCoefficient() {}
 
-void RWStepFEA_RWFreedomAndCoefficient::ReadStep (const Handle(StepData_StepReaderData)& data,
-                                                  const Standard_Integer num,
-                                                  Handle(Interface_Check)& ach,
-                                                  const Handle(StepFEA_FreedomAndCoefficient) &ent) const
+//=================================================================================================
+
+void RWStepFEA_RWFreedomAndCoefficient::ReadStep(
+  const Handle(StepData_StepReaderData)&       data,
+  const Standard_Integer                       num,
+  Handle(Interface_Check)&                     ach,
+  const Handle(StepFEA_FreedomAndCoefficient)& ent) const
 {
   // Check number of parameters
-  if ( ! data->CheckNbParams(num,2,ach,"freedom_and_coefficient") ) return;
+  if (!data->CheckNbParams(num, 2, ach, "freedom_and_coefficient"))
+    return;
 
   // Own fields of FreedomAndCoefficient
 
   StepFEA_DegreeOfFreedom aFreedom;
-  data->ReadEntity (num, 1, "freedom", ach, aFreedom);
+  data->ReadEntity(num, 1, "freedom", ach, aFreedom);
 
   StepElement_MeasureOrUnspecifiedValue aA;
-  data->ReadEntity (num, 2, "a", ach, aA);
+  data->ReadEntity(num, 2, "a", ach, aA);
 
   // Initialize entity
-  ent->Init(aFreedom,
-            aA);
+  ent->Init(aFreedom, aA);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepFEA_RWFreedomAndCoefficient::WriteStep (StepData_StepWriter& SW,
-                                                   const Handle(StepFEA_FreedomAndCoefficient) &ent) const
+void RWStepFEA_RWFreedomAndCoefficient::WriteStep(
+  StepData_StepWriter&                         SW,
+  const Handle(StepFEA_FreedomAndCoefficient)& ent) const
 {
 
   // Own fields of FreedomAndCoefficient
 
-  SW.Send (ent->Freedom().Value());
+  SW.Send(ent->Freedom().Value());
 
-  SW.Send (ent->A().Value());
+  SW.Send(ent->A().Value());
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepFEA_RWFreedomAndCoefficient::Share (const Handle(StepFEA_FreedomAndCoefficient) &ent,
-                                               Interface_EntityIterator& iter) const
+void RWStepFEA_RWFreedomAndCoefficient::Share(const Handle(StepFEA_FreedomAndCoefficient)& ent,
+                                              Interface_EntityIterator& iter) const
 {
 
   // Own fields of FreedomAndCoefficient
 
-  iter.AddItem (ent->Freedom().Value());
+  iter.AddItem(ent->Freedom().Value());
 
-  iter.AddItem (ent->A().Value());
+  iter.AddItem(ent->A().Value());
 }

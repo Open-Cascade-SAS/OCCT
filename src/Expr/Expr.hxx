@@ -26,27 +26,26 @@
 class Expr_GeneralExpression;
 class Expr_GeneralRelation;
 
-
 //! This package describes  the data structure  of any
 //! expression, relation or function used in mathematics.
 //! It also describes the assignment of variables. Standard
 //! mathematical functions are implemented such as
 //! trigonometrics, hyperbolics, and log functions.
-class Expr 
+class Expr
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT static Handle(Expr_GeneralExpression) CopyShare (const Handle(Expr_GeneralExpression)& exp);
-  
-  Standard_EXPORT static Standard_Integer NbOfFreeVariables (const Handle(Expr_GeneralExpression)& exp);
-  
-  Standard_EXPORT static Standard_Integer NbOfFreeVariables (const Handle(Expr_GeneralRelation)& exp);
-  
-  Standard_EXPORT static Standard_Real Sign (const Standard_Real val);
+  Standard_EXPORT static Handle(Expr_GeneralExpression) CopyShare(
+    const Handle(Expr_GeneralExpression)& exp);
 
+  Standard_EXPORT static Standard_Integer NbOfFreeVariables(
+    const Handle(Expr_GeneralExpression)& exp);
+
+  Standard_EXPORT static Standard_Integer NbOfFreeVariables(
+    const Handle(Expr_GeneralRelation)& exp);
+
+  Standard_EXPORT static Standard_Real Sign(const Standard_Real val);
 };
 
 #endif // _Expr_HeaderFile

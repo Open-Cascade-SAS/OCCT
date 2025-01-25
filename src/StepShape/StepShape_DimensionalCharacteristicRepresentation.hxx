@@ -22,7 +22,6 @@
 #include <Standard_Transient.hxx>
 class StepShape_ShapeDimensionRepresentation;
 
-
 class StepShape_DimensionalCharacteristicRepresentation;
 DEFINE_STANDARD_HANDLE(StepShape_DimensionalCharacteristicRepresentation, Standard_Transient)
 
@@ -31,49 +30,32 @@ class StepShape_DimensionalCharacteristicRepresentation : public Standard_Transi
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepShape_DimensionalCharacteristicRepresentation();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const StepShape_DimensionalCharacteristic& aDimension, const Handle(StepShape_ShapeDimensionRepresentation)& aRepresentation);
-  
+  Standard_EXPORT void Init(const StepShape_DimensionalCharacteristic&            aDimension,
+                            const Handle(StepShape_ShapeDimensionRepresentation)& aRepresentation);
+
   //! Returns field Dimension
   Standard_EXPORT StepShape_DimensionalCharacteristic Dimension() const;
-  
+
   //! Set field Dimension
-  Standard_EXPORT void SetDimension (const StepShape_DimensionalCharacteristic& Dimension);
-  
+  Standard_EXPORT void SetDimension(const StepShape_DimensionalCharacteristic& Dimension);
+
   //! Returns field Representation
   Standard_EXPORT Handle(StepShape_ShapeDimensionRepresentation) Representation() const;
-  
+
   //! Set field Representation
-  Standard_EXPORT void SetRepresentation (const Handle(StepShape_ShapeDimensionRepresentation)& Representation);
+  Standard_EXPORT void SetRepresentation(
+    const Handle(StepShape_ShapeDimensionRepresentation)& Representation);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_DimensionalCharacteristicRepresentation,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepShape_DimensionalCharacteristicRepresentation, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  StepShape_DimensionalCharacteristic theDimension;
+  StepShape_DimensionalCharacteristic            theDimension;
   Handle(StepShape_ShapeDimensionRepresentation) theRepresentation;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_DimensionalCharacteristicRepresentation_HeaderFile

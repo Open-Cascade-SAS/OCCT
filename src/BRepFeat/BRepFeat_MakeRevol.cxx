@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Bnd_Box.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
@@ -50,150 +49,157 @@ extern Standard_Boolean BRepFeat_GettraceFEAT();
 #endif
 
 static void MajMap(const TopoDS_Shape&, // base
-  const LocOpe_Revol&,
-  TopTools_DataMapOfShapeListOfShape&, // myMap
-  TopoDS_Shape&,  // myFShape
-  TopoDS_Shape&); // myLShape
+                   const LocOpe_Revol&,
+                   TopTools_DataMapOfShapeListOfShape&, // myMap
+                   TopoDS_Shape&,                       // myFShape
+                   TopoDS_Shape&);                      // myLShape
 
+static void VerifGluedFaces(const TopoDS_Face&            theSkface,
+                            const TopoDS_Shape&           thePbase,
+                            Handle(Geom_Curve)&           theBCurve,
+                            TColGeom_SequenceOfCurve&     theCurves,
+                            LocOpe_Revol&                 theRevol,
+                            TopTools_DataMapOfShapeShape& theMap);
 
-static void VerifGluedFaces(const TopoDS_Face& theSkface,
-  const TopoDS_Shape& thePbase,
-  Handle(Geom_Curve)& theBCurve,
-  TColGeom_SequenceOfCurve& theCurves,
-  LocOpe_Revol& theRevol,
-  TopTools_DataMapOfShapeShape& theMap);
+static Standard_Boolean ToFuse(const TopoDS_Face&, const TopoDS_Face&);
 
+//=================================================================================================
 
-static Standard_Boolean ToFuse(const TopoDS_Face& ,
-  const TopoDS_Face&);
-
-
-
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void BRepFeat_MakeRevol::Init(const TopoDS_Shape& Sbase,
-  const TopoDS_Shape& Pbase,
-  const TopoDS_Face& Skface,
-  const gp_Ax1& Axis,
-  const Standard_Integer Mode,
-  const Standard_Boolean Modify)
+void BRepFeat_MakeRevol::Init(const TopoDS_Shape&    Sbase,
+                              const TopoDS_Shape&    Pbase,
+                              const TopoDS_Face&     Skface,
+                              const gp_Ax1&          Axis,
+                              const Standard_Integer Mode,
+                              const Standard_Boolean Modify)
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) std::cout << "BRepFeat_MakeRevol::Init" << std::endl;
+  if (trc)
+    std::cout << "BRepFeat_MakeRevol::Init" << std::endl;
 #endif
-  myAxis   = Axis;
-  myPbase  = Pbase;
-  mySbase  = Sbase;
+  myAxis  = Axis;
+  myPbase = Pbase;
+  mySbase = Sbase;
   BasisShapeValid();
   mySkface = Skface;
   SketchFaceValid();
-  myPbase  = Pbase;
+  myPbase = Pbase;
   mySlface.Clear();
-  if(Mode == 0) {
-    myFuse   = Standard_False;
+  if (Mode == 0)
+  {
+    myFuse     = Standard_False;
     myJustFeat = Standard_False;
   }
-  else if(Mode == 1) {
-    myFuse   = Standard_True;
+  else if (Mode == 1)
+  {
+    myFuse     = Standard_True;
     myJustFeat = Standard_False;
   }
-  else if(Mode == 2) {
-    myFuse   = Standard_True;
+  else if (Mode == 2)
+  {
+    myFuse     = Standard_True;
     myJustFeat = Standard_True;
   }
-  else {    
+  else
+  {
   }
-  myModify = Modify;
+  myModify    = Modify;
   myJustGluer = Standard_False;
 
   //-------------- ifv
   //  mySkface.Nullify();
   //-------------- ifv
 
-
   myShape.Nullify();
   myMap.Clear();
   myFShape.Nullify();
   myLShape.Nullify();
   TopExp_Explorer exp;
-  for (exp.Init(mySbase,TopAbs_FACE);exp.More();exp.Next()) {
+  for (exp.Init(mySbase, TopAbs_FACE); exp.More(); exp.Next())
+  {
     TopTools_ListOfShape thelist;
     myMap.Bind(exp.Current(), thelist);
     myMap(exp.Current()).Append(exp.Current());
   }
 #ifdef OCCT_DEBUG
-  if (trc) {
-    if (myJustFeat)  std::cout << " Just Feature" << std::endl;
-    if (myFuse)  std::cout << " Fuse" << std::endl;
-    if (!myFuse)  std::cout << " Cut" << std::endl;
-    if (!myModify) std::cout << " Modify = 0" << std::endl;
+  if (trc)
+  {
+    if (myJustFeat)
+      std::cout << " Just Feature" << std::endl;
+    if (myFuse)
+      std::cout << " Fuse" << std::endl;
+    if (!myFuse)
+      std::cout << " Cut" << std::endl;
+    if (!myModify)
+      std::cout << " Modify = 0" << std::endl;
   }
-#endif 
+#endif
 }
 
-
 //=======================================================================
-//function : Add
-//purpose  : add faces add edges of sliding
+// function : Add
+// purpose  : add faces add edges of sliding
 //=======================================================================
 
-void BRepFeat_MakeRevol::Add(const TopoDS_Edge& E,
-  const TopoDS_Face& F)
+void BRepFeat_MakeRevol::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) std::cout << "BRepFeat_MakeRevol::Add(Edge,face)" << std::endl;
+  if (trc)
+    std::cout << "BRepFeat_MakeRevol::Add(Edge,face)" << std::endl;
 #endif
   TopExp_Explorer exp;
-  for (exp.Init(mySbase,TopAbs_FACE);exp.More();exp.Next()) {
-    if (exp.Current().IsSame(F)) {
+  for (exp.Init(mySbase, TopAbs_FACE); exp.More(); exp.Next())
+  {
+    if (exp.Current().IsSame(F))
+    {
       break;
     }
   }
-  if (!exp.More()) {
+  if (!exp.More())
+  {
     throw Standard_ConstructionError();
   }
 
-  for (exp.Init(myPbase,TopAbs_EDGE);exp.More();exp.Next()) {
-    if (exp.Current().IsSame(E)) {
+  for (exp.Init(myPbase, TopAbs_EDGE); exp.More(); exp.Next())
+  {
+    if (exp.Current().IsSame(E))
+    {
       break;
     }
   }
-  if (!exp.More()) {
+  if (!exp.More())
+  {
     throw Standard_ConstructionError();
   }
 
-  if (!mySlface.IsBound(F)) {
+  if (!mySlface.IsBound(F))
+  {
     TopTools_ListOfShape thelist;
     mySlface.Bind(F, thelist);
   }
   TopTools_ListIteratorOfListOfShape itl(mySlface(F));
-  for (; itl.More();itl.Next()) {
-    if (itl.Value().IsSame(E)) {
+  for (; itl.More(); itl.Next())
+  {
+    if (itl.Value().IsSame(E))
+    {
       break;
     }
   }
-  if (!itl.More()) {
+  if (!itl.More())
+  {
     mySlface(F).Append(E);
   }
 }
 
-
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void BRepFeat_MakeRevol::Perform(const Standard_Real Angle)
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) std::cout << "BRepFeat_MakeRevol::Perform(Angle)" << std::endl;
+  if (trc)
+    std::cout << "BRepFeat_MakeRevol::Perform(Angle)" << std::endl;
 #endif
   mySFrom.Nullify();
   ShapeFromValid();
@@ -202,11 +208,12 @@ void BRepFeat_MakeRevol::Perform(const Standard_Real Angle)
   myGluedF.Clear();
   myPerfSelection = BRepFeat_NoSelection;
   PerfSelectionValid();
-  Standard_Boolean RevolComp = (2*M_PI-Abs(Angle) <= Precision::Angular());
-  LocOpe_Revol theRevol;
-  Standard_Real angledec = 0.;
-  TopExp_Explorer exp;
-  if(RevolComp) {
+  Standard_Boolean RevolComp = (2 * M_PI - Abs(Angle) <= Precision::Angular());
+  LocOpe_Revol     theRevol;
+  Standard_Real    angledec = 0.;
+  TopExp_Explorer  exp;
+  if (RevolComp)
+  {
     /*
     if (!mySkface.IsNull() || !mySlface.IsEmpty()) {
     for (exp.Init(mySbase,TopAbs_FACE); exp.More(); exp.Next()) {
@@ -220,12 +227,14 @@ void BRepFeat_MakeRevol::Perform(const Standard_Real Angle)
     */
     mySkface.Nullify();
   }
-  if(angledec == 0.) theRevol.Perform(myPbase, myAxis, Angle);
-  else theRevol.Perform(myPbase, myAxis, Angle, angledec);
+  if (angledec == 0.)
+    theRevol.Perform(myPbase, myAxis, Angle);
+  else
+    theRevol.Perform(myPbase, myAxis, Angle, angledec);
 
   TopoDS_Shape VraiRevol = theRevol.Shape();
 
-  MajMap(myPbase,theRevol,myMap,myFShape,myLShape);
+  MajMap(myPbase, theRevol, myMap, myFShape, myLShape);
 
   myGShape = VraiRevol;
   GeneratedShapeValid();
@@ -233,7 +242,8 @@ void BRepFeat_MakeRevol::Perform(const Standard_Real Angle)
   exp.Init(Base, TopAbs_FACE);
   TopoDS_Face theBase = TopoDS::Face(exp.Current());
   exp.Next();
-  if(exp.More()) {
+  if (exp.More())
+  {
     NotDone();
     myStatusError = BRepFeat_InvFirstShape;
     return;
@@ -243,86 +253,103 @@ void BRepFeat_MakeRevol::Perform(const Standard_Real Angle)
 
   Standard_Boolean found = Standard_False;
 
-  if(!mySkface.IsNull() || !mySlface.IsEmpty()) {
-    if(myLShape.ShapeType() == TopAbs_WIRE) {
+  if (!mySkface.IsNull() || !mySlface.IsEmpty())
+  {
+    if (myLShape.ShapeType() == TopAbs_WIRE)
+    {
       TopExp_Explorer ex1(VraiRevol, TopAbs_FACE);
-      for(; ex1.More(); ex1.Next()) {
+      for (; ex1.More(); ex1.Next())
+      {
         TopExp_Explorer ex2(ex1.Current(), TopAbs_WIRE);
-        for(; ex2.More(); ex2.Next()) {
-          if(ex2.Current().IsSame(myLShape)) {
+        for (; ex2.More(); ex2.Next())
+        {
+          if (ex2.Current().IsSame(myLShape))
+          {
             FFace = TopoDS::Face(ex1.Current());
             found = Standard_True;
             break;
           }
         }
-        if(found) break;
+        if (found)
+          break;
       }
     }
 
     TopExp_Explorer anExp(mySbase, TopAbs_FACE);
-    for(; anExp.More(); anExp.Next()) {
+    for (; anExp.More(); anExp.Next())
+    {
       const TopoDS_Face& ff = TopoDS::Face(anExp.Current());
-      if(ToFuse(ff, FFace)) {
+      if (ToFuse(ff, FFace))
+      {
         TopTools_DataMapOfShapeListOfShape sl;
-        if(!FFace.IsSame(myPbase) && BRepFeat::IsInside(ff, FFace)) 
+        if (!FFace.IsSame(myPbase) && BRepFeat::IsInside(ff, FFace))
           break;
       }
     }
   }
   GluedFacesValid();
-  if (!mySkface.IsNull()) {
+  if (!mySkface.IsNull())
+  {
     VerifGluedFaces(mySkface, theBase, myBCurve, myCurves, theRevol, myGluedF);
   }
 
-  if(myGluedF.IsEmpty()) {
-    if(myFuse == 1) {
+  if (myGluedF.IsEmpty())
+  {
+    if (myFuse == 1)
+    {
       BRepAlgoAPI_Fuse f(mySbase, myGShape);
       myShape = f.Shape();
       UpdateDescendants(f, myShape, Standard_False);
       Done();
     }
-    else if(myFuse == 0) {
+    else if (myFuse == 0)
+    {
       BRepAlgoAPI_Cut c(mySbase, myGShape);
       myShape = c.Shape();
       UpdateDescendants(c, myShape, Standard_False);
       Done();
     }
-    else {
+    else
+    {
       myShape = myGShape;
       Done();
     }
   }
-  else {
+  else
+  {
     theRevol.Curves(myCurves);
     myBCurve = theRevol.BarycCurve();
     GlobalPerform();
   }
 }
 
-
 //=======================================================================
-//function : Perform
-//purpose  : feature till shape Until
+// function : Perform
+// purpose  : feature till shape Until
 //=======================================================================
 
 void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) std::cout << "BRepFeat_MakeRevol::Perform(Until)" << std::endl;
+  if (trc)
+    std::cout << "BRepFeat_MakeRevol::Perform(Until)" << std::endl;
 #endif
-  Standard_Real Angle = 0.;
+  Standard_Real    Angle       = 0.;
   Standard_Boolean TourComplet = Standard_False;
 
-  if (Until.IsNull()) {
+  if (Until.IsNull())
+  {
     throw Standard_ConstructionError();
   }
   TopExp_Explorer exp(Until, TopAbs_FACE);
-  if (!exp.More()) {
+  if (!exp.More())
+  {
     throw Standard_ConstructionError();
   }
-  if (!mySkface.IsNull() && Until.IsSame(mySkface)) {
-    Angle = 2*M_PI;
+  if (!mySkface.IsNull() && Until.IsSame(mySkface))
+  {
+    Angle       = 2 * M_PI;
     TourComplet = Standard_True;
   }
   myGluedF.Clear();
@@ -330,25 +357,27 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
   PerfSelectionValid();
   mySFrom.Nullify();
   ShapeFromValid();
-  mySUntil = Until;
+  mySUntil             = Until;
   Standard_Boolean Trf = TransformShapeFU(1);
   ShapeUntilValid();
 
   // Do systematically almost complete revolution
   // BRepSweep_Revol theRevol(myPbase,myAxis,2.*M_PI-10.*Precision::Angular());
   LocOpe_Revol theRevol;
-  if(!TourComplet) {
-    Angle = 2.*M_PI- 3*M_PI/180.;
+  if (!TourComplet)
+  {
+    Angle = 2. * M_PI - 3 * M_PI / 180.;
 #ifdef OCCT_DEBUG
-    if (trc) std::cout << " No complete Revolution" << std::endl;
+    if (trc)
+      std::cout << " No complete Revolution" << std::endl;
 #endif
   }
   theRevol.Perform(myPbase, myAxis, Angle);
   TopoDS_Shape VraiRevol = theRevol.Shape();
-  MajMap(myPbase,theRevol,myMap,myFShape,myLShape);
+  MajMap(myPbase, theRevol, myMap, myFShape, myLShape);
 
-
-  if(!Trf) {
+  if (!Trf)
+  {
 
     myGShape = VraiRevol;
     GeneratedShapeValid();
@@ -357,94 +386,109 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
     exp.Init(Base, TopAbs_FACE);
     TopoDS_Face theBase = TopoDS::Face(exp.Current());
     exp.Next();
-    if(exp.More()) {
+    if (exp.More())
+    {
       NotDone();
       myStatusError = BRepFeat_InvFirstShape;
       return;
     }
     GluedFacesValid();
-    //VerifGluedFaces(mySkface, theBase, myBCurve, myCurves, theRevol, myGluedF);
+    // VerifGluedFaces(mySkface, theBase, myBCurve, myCurves, theRevol, myGluedF);
 
     theRevol.Curves(myCurves);
     myBCurve = theRevol.BarycCurve();
     GlobalPerform();
   }
-  else {
+  else
+  {
     TColGeom_SequenceOfCurve scur;
     theRevol.Curves(myCurves);
-    myBCurve = theRevol.BarycCurve();    
-    scur.Clear();    
+    myBCurve = theRevol.BarycCurve();
+    scur.Clear();
     scur.Append(myBCurve);
     LocOpe_CSIntersector ASI(mySUntil);
     ASI.Perform(scur);
-    if (ASI.IsDone() && ASI.NbPoints(1) >=1) {
-      TopAbs_Orientation Or = ASI.Point(1,1).Orientation();
-      TopoDS_Face FUntil = ASI.Point(1,1).Face();
-      TopoDS_Shape Comp;
-      BRep_Builder B;
+    if (ASI.IsDone() && ASI.NbPoints(1) >= 1)
+    {
+      TopAbs_Orientation Or     = ASI.Point(1, 1).Orientation();
+      TopoDS_Face        FUntil = ASI.Point(1, 1).Face();
+      TopoDS_Shape       Comp;
+      BRep_Builder       B;
       B.MakeCompound(TopoDS::Compound(Comp));
       TopoDS_Solid S = BRepFeat::Tool(mySUntil, FUntil, Or);
-      if (!S.IsNull()) B.Add(Comp,S);
-      BRepAlgoAPI_Cut trP(VraiRevol,Comp);
-      TopoDS_Shape Cutsh = trP.Shape();
+      if (!S.IsNull())
+        B.Add(Comp, S);
+      BRepAlgoAPI_Cut trP(VraiRevol, Comp);
+      TopoDS_Shape    Cutsh = trP.Shape();
       TopExp_Explorer ex(Cutsh, TopAbs_SOLID);
-      for(; ex.More(); ex.Next()) {
+      for (; ex.More(); ex.Next())
+      {
         TopExp_Explorer ex1(ex.Current(), TopAbs_FACE);
-        for(; ex1.More(); ex1.Next()) {
+        for (; ex1.More(); ex1.Next())
+        {
           const TopoDS_Face& fac = TopoDS::Face(ex1.Current());
-          if(fac.IsSame(myPbase)) {
+          if (fac.IsSame(myPbase))
+          {
             VraiRevol = ex.Current();
             break;
           }
         }
       }
-      if(myFuse == 1) {
+      if (myFuse == 1)
+      {
         BRepAlgoAPI_Fuse f(mySbase, VraiRevol);
         myShape = f.Shape();
         UpdateDescendants(f, myShape, Standard_False);
         Done();
       }
-      else if(myFuse == 0) {
+      else if (myFuse == 0)
+      {
         BRepAlgoAPI_Cut c(mySbase, VraiRevol);
         myShape = c.Shape();
         UpdateDescendants(c, myShape, Standard_False);
         Done();
       }
-      else {
+      else
+      {
         myShape = VraiRevol;
-        Done();	
+        Done();
       }
-    }         
+    }
   }
 }
 
-
 //=======================================================================
-//function : Perform
-//purpose  : feature limited by two shapes
+// function : Perform
+// purpose  : feature limited by two shapes
 //=======================================================================
 
-void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From,
-  const TopoDS_Shape& Until)
+void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From, const TopoDS_Shape& Until)
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) std::cout << "BRepFeat_MakeRevol::Perform(From,Until)" << std::endl;
+  if (trc)
+    std::cout << "BRepFeat_MakeRevol::Perform(From,Until)" << std::endl;
 #endif
-  if (From.IsNull() || Until.IsNull()) {
+  if (From.IsNull() || Until.IsNull())
+  {
     throw Standard_ConstructionError();
   }
-  if (!mySkface.IsNull()) {
-    if (From.IsSame(mySkface)) {
+  if (!mySkface.IsNull())
+  {
+    if (From.IsSame(mySkface))
+    {
       myJustGluer = Standard_True;
       Perform(Until);
-      if (myJustGluer) return;
+      if (myJustGluer)
+        return;
     }
-    else if (Until.IsSame(mySkface)) {
+    else if (Until.IsSame(mySkface))
+    {
       myJustGluer = Standard_True;
       myAxis.Reverse();
       Perform(From);
-      if (myJustGluer) return;
+      if (myJustGluer)
+        return;
     }
   }
 
@@ -453,34 +497,38 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From,
   PerfSelectionValid();
 
   TopExp_Explorer exp(From, TopAbs_FACE);
-  if (!exp.More()) {
+  if (!exp.More())
+  {
     throw Standard_ConstructionError();
   }
   exp.Init(Until, TopAbs_FACE);
-  if (!exp.More()) {
+  if (!exp.More())
+  {
     throw Standard_ConstructionError();
   }
 
-  mySFrom = From;
+  mySFrom               = From;
   Standard_Boolean Trff = TransformShapeFU(0);
   ShapeFromValid();
-  mySUntil = Until;
+  mySUntil              = Until;
   Standard_Boolean Trfu = TransformShapeFU(1);
-  ShapeUntilValid();  
+  ShapeUntilValid();
 
-  if(Trfu != Trff) {
+  if (Trfu != Trff)
+  {
     NotDone();
     myStatusError = BRepFeat_IncTypes;
     return;
   }
 
   LocOpe_Revol theRevol;
-  theRevol.Perform(myPbase, myAxis, 2*M_PI);
+  theRevol.Perform(myPbase, myAxis, 2 * M_PI);
   TopoDS_Shape VraiRevol = theRevol.Shape();
 
-  MajMap(myPbase,theRevol,myMap,myFShape,myLShape);
+  MajMap(myPbase, theRevol, myMap, myFShape, myLShape);
 
-  if(!Trff) {    
+  if (!Trff)
+  {
     myGShape = VraiRevol;
     GeneratedShapeValid();
     GluedFacesValid();
@@ -490,45 +538,51 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From,
     myBCurve = theRevol.BarycCurve();
     GlobalPerform();
   }
-  else {
+  else
+  {
     theRevol.Curves(myCurves);
-    myBCurve = theRevol.BarycCurve();    
+    myBCurve = theRevol.BarycCurve();
     TColGeom_SequenceOfCurve scur;
-    scur.Clear();    
+    scur.Clear();
     scur.Append(myBCurve);
     LocOpe_CSIntersector ASI1(mySUntil);
     LocOpe_CSIntersector ASI2(mySFrom);
     ASI1.Perform(scur);
     ASI2.Perform(scur);
     TopAbs_Orientation OrU, OrF;
-    TopoDS_Face FFrom, FUntil;
-    Standard_Real PrF, PrU;
-    if (ASI1.IsDone() && ASI1.NbPoints(1) >=1) {
-      OrU = ASI1.Point(1,1).Orientation();
-      FUntil = ASI1.Point(1,1).Face();
-      PrU = ASI1.Point(1,1).Parameter();
+    TopoDS_Face        FFrom, FUntil;
+    Standard_Real      PrF, PrU;
+    if (ASI1.IsDone() && ASI1.NbPoints(1) >= 1)
+    {
+      OrU    = ASI1.Point(1, 1).Orientation();
+      FUntil = ASI1.Point(1, 1).Face();
+      PrU    = ASI1.Point(1, 1).Parameter();
     }
-    else {
+    else
+    {
       NotDone();
       myStatusError = BRepFeat_NoIntersectU;
       return;
     }
-    if (ASI2.IsDone() && ASI2.NbPoints(1) >=1) {
-      Standard_Real pr1 = ASI2.Point(1,1).Parameter();
-      pr1 = ElCLib::InPeriod(pr1,PrU-2*M_PI,PrU);
-      Standard_Real pr2 = ASI2.Point(1,ASI2.NbPoints(1)).Parameter();
-      pr2 = ElCLib::InPeriod(pr2,PrU-2*M_PI,PrU);
-      //OrF = OrU;
-      OrF = TopAbs::Reverse(OrU);
-      FFrom = ASI2.Point(1,1).Face();
-      PrF = Max(pr1, pr2);
+    if (ASI2.IsDone() && ASI2.NbPoints(1) >= 1)
+    {
+      Standard_Real pr1 = ASI2.Point(1, 1).Parameter();
+      pr1               = ElCLib::InPeriod(pr1, PrU - 2 * M_PI, PrU);
+      Standard_Real pr2 = ASI2.Point(1, ASI2.NbPoints(1)).Parameter();
+      pr2               = ElCLib::InPeriod(pr2, PrU - 2 * M_PI, PrU);
+      // OrF = OrU;
+      OrF   = TopAbs::Reverse(OrU);
+      FFrom = ASI2.Point(1, 1).Face();
+      PrF   = Max(pr1, pr2);
     }
-    else {
+    else
+    {
       NotDone();
       myStatusError = BRepFeat_NoIntersectF;
       return;
     }
-    if(!(PrU > PrF)) {
+    if (!(PrU > PrF))
+    {
       NotDone();
       myStatusError = BRepFeat_IncParameter;
       return;
@@ -537,78 +591,88 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From,
     BRep_Builder B;
     B.MakeCompound(TopoDS::Compound(Comp));
     TopoDS_Solid SF = BRepFeat::Tool(mySFrom, FFrom, OrF);
-    if (!SF.IsNull()) B.Add(Comp,SF);
+    if (!SF.IsNull())
+      B.Add(Comp, SF);
     TopoDS_Solid SU = BRepFeat::Tool(mySUntil, FUntil, OrU);
-    if (!SU.IsNull()) B.Add(Comp,SU);
-    BRepAlgoAPI_Cut trP(VraiRevol,Comp);
-    TopoDS_Shape Cutsh = trP.Shape();
+    if (!SU.IsNull())
+      B.Add(Comp, SU);
+    BRepAlgoAPI_Cut trP(VraiRevol, Comp);
+    TopoDS_Shape    Cutsh = trP.Shape();
     TopExp_Explorer ex(Cutsh, TopAbs_SOLID);
     VraiRevol = ex.Current();
-    for(; ex.More(); ex.Next()) {
-      Standard_Real PrCur = BRepFeat::
-        ParametricBarycenter(ex.Current(), myBCurve);
-      if(PrF <= PrCur && PrU >= PrCur) {
+    for (; ex.More(); ex.Next())
+    {
+      Standard_Real PrCur = BRepFeat::ParametricBarycenter(ex.Current(), myBCurve);
+      if (PrF <= PrCur && PrU >= PrCur)
+      {
         VraiRevol = ex.Current();
         break;
       }
     }
-    if(myFuse == 1 && !myJustFeat) {
+    if (myFuse == 1 && !myJustFeat)
+    {
       BRepAlgoAPI_Fuse f(mySbase, VraiRevol);
       myShape = f.Shape();
       UpdateDescendants(f, myShape, Standard_False);
       Done();
     }
-    else if(myFuse == 0 && !myJustFeat) {
+    else if (myFuse == 0 && !myJustFeat)
+    {
       BRepAlgoAPI_Cut c(mySbase, VraiRevol);
       myShape = c.Shape();
       UpdateDescendants(c, myShape, Standard_False);
       Done();
     }
-    else {
+    else
+    {
       myShape = VraiRevol;
-      Done();	
+      Done();
     }
   }
 }
 
-
 //=======================================================================
-//function : PerformThruAll
-//purpose  : feature throughout the initial shape
+// function : PerformThruAll
+// purpose  : feature throughout the initial shape
 //=======================================================================
 
 void BRepFeat_MakeRevol::PerformThruAll()
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) std::cout << "BRepFeat_MakeRevol::PerformThruAll()" << std::endl;
+  if (trc)
+    std::cout << "BRepFeat_MakeRevol::PerformThruAll()" << std::endl;
 #endif
-  Perform(2.*M_PI);
+  Perform(2. * M_PI);
 }
 
 //=======================================================================
-//function : PerformUntilAngle
-//purpose  : feature till shape Until defined with the angle
+// function : PerformUntilAngle
+// purpose  : feature till shape Until defined with the angle
 //=======================================================================
 
-void BRepFeat_MakeRevol::PerformUntilAngle(const TopoDS_Shape& Until,
-  const Standard_Real Angle)
+void BRepFeat_MakeRevol::PerformUntilAngle(const TopoDS_Shape& Until, const Standard_Real Angle)
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) std::cout << "BRepFeat_MakeRevol::PerformUntilAngle(Until,Angle)" << std::endl;
+  if (trc)
+    std::cout << "BRepFeat_MakeRevol::PerformUntilAngle(Until,Angle)" << std::endl;
 #endif
-  if (Until.IsNull()) {
+  if (Until.IsNull())
+  {
     Perform(Angle);
   }
-  if(Angle == 0) {
+  if (Angle == 0)
+  {
     Perform(Until);
   }
   TopExp_Explorer exp(Until, TopAbs_FACE);
-  if (!exp.More()) {
+  if (!exp.More())
+  {
     throw Standard_ConstructionError();
   }
-  if (!mySkface.IsNull() && Until.IsSame(mySkface)) {
+  if (!mySkface.IsNull() && Until.IsSame(mySkface))
+  {
     Perform(Angle);
     return;
   }
@@ -617,7 +681,7 @@ void BRepFeat_MakeRevol::PerformUntilAngle(const TopoDS_Shape& Until,
   PerfSelectionValid();
   mySFrom.Nullify();
   ShapeFromValid();
-  mySUntil = Until;
+  mySUntil             = Until;
   Standard_Boolean Trf = TransformShapeFU(1);
   ShapeUntilValid();
 
@@ -627,9 +691,10 @@ void BRepFeat_MakeRevol::PerformUntilAngle(const TopoDS_Shape& Until,
   theRevol.Perform(myPbase, myAxis, Angle);
   TopoDS_Shape VraiRevol = theRevol.Shape();
 
-  MajMap(myPbase,theRevol,myMap,myFShape,myLShape);
+  MajMap(myPbase, theRevol, myMap, myFShape, myLShape);
 
-  if(Trf) {
+  if (Trf)
+  {
     myGShape = VraiRevol;
     GeneratedShapeValid();
 
@@ -637,70 +702,80 @@ void BRepFeat_MakeRevol::PerformUntilAngle(const TopoDS_Shape& Until,
     exp.Init(Base, TopAbs_FACE);
     TopoDS_Face theBase = TopoDS::Face(exp.Current());
     exp.Next();
-    if(exp.More()) {
+    if (exp.More())
+    {
       NotDone();
       myStatusError = BRepFeat_InvFirstShape;
       return;
     }
     GluedFacesValid();
-    //VerifGluedFaces(mySkface, theBase, myBCurve, myCurves, theRevol, myGluedF);
-
+    // VerifGluedFaces(mySkface, theBase, myBCurve, myCurves, theRevol, myGluedF);
 
     theRevol.Curves(myCurves);
     myBCurve = theRevol.BarycCurve();
     GlobalPerform();
   }
-  else {
+  else
+  {
     TColGeom_SequenceOfCurve scur;
     theRevol.Curves(myCurves);
-    myBCurve = theRevol.BarycCurve();    
-    scur.Clear();    
+    myBCurve = theRevol.BarycCurve();
+    scur.Clear();
     scur.Append(myBCurve);
     LocOpe_CSIntersector ASI(mySUntil);
     ASI.Perform(scur);
-    if (ASI.IsDone() && ASI.NbPoints(1) >=1) {
-      TopAbs_Orientation Or = ASI.Point(1,1).Orientation();
-      TopoDS_Face FUntil = ASI.Point(1,1).Face();
-      TopoDS_Shape Comp;
-      BRep_Builder B;
+    if (ASI.IsDone() && ASI.NbPoints(1) >= 1)
+    {
+      TopAbs_Orientation Or     = ASI.Point(1, 1).Orientation();
+      TopoDS_Face        FUntil = ASI.Point(1, 1).Face();
+      TopoDS_Shape       Comp;
+      BRep_Builder       B;
       B.MakeCompound(TopoDS::Compound(Comp));
       TopoDS_Solid S = BRepFeat::Tool(mySUntil, FUntil, Or);
-      if (!S.IsNull()) B.Add(Comp,S);
-      BRepAlgoAPI_Cut trP(VraiRevol,Comp);
-      TopoDS_Shape Cutsh = trP.Shape();
+      if (!S.IsNull())
+        B.Add(Comp, S);
+      BRepAlgoAPI_Cut trP(VraiRevol, Comp);
+      TopoDS_Shape    Cutsh = trP.Shape();
       TopExp_Explorer ex(Cutsh, TopAbs_SOLID);
-      for(; ex.More(); ex.Next()) {
+      for (; ex.More(); ex.Next())
+      {
         TopExp_Explorer ex1(ex.Current(), TopAbs_FACE);
-        for(; ex1.More(); ex1.Next()) {
+        for (; ex1.More(); ex1.Next())
+        {
           const TopoDS_Face& fac = TopoDS::Face(ex1.Current());
-          if(fac.IsSame(myPbase)) {
+          if (fac.IsSame(myPbase))
+          {
             VraiRevol = ex.Current();
             break;
           }
         }
       }
-      if(myFuse == 1) {
+      if (myFuse == 1)
+      {
         BRepAlgoAPI_Fuse f(mySbase, VraiRevol);
         myShape = f.Shape();
         UpdateDescendants(f, myShape, Standard_False);
         Done();
       }
-      else if(myFuse == 0) {
+      else if (myFuse == 0)
+      {
         BRepAlgoAPI_Cut c(mySbase, VraiRevol);
         myShape = c.Shape();
         UpdateDescendants(c, myShape, Standard_False);
         Done();
       }
-      else {
+      else
+      {
         myShape = VraiRevol;
-        Done();	
+        Done();
       }
-    }         
+    }
   }
 }
+
 //=======================================================================
-//function : Curves
-//purpose  : circles parallel to the generating edge of revolution
+// function : Curves
+// purpose  : circles parallel to the generating edge of revolution
 //=======================================================================
 
 void BRepFeat_MakeRevol::Curves(TColGeom_SequenceOfCurve& scur)
@@ -709,8 +784,8 @@ void BRepFeat_MakeRevol::Curves(TColGeom_SequenceOfCurve& scur)
 }
 
 //=======================================================================
-//function : BarycCurve
-//purpose  : pass through the center of mass of the primitive
+// function : BarycCurve
+// purpose  : pass through the center of mass of the primitive
 //=======================================================================
 
 Handle(Geom_Curve) BRepFeat_MakeRevol::BarycCurve()
@@ -719,58 +794,68 @@ Handle(Geom_Curve) BRepFeat_MakeRevol::BarycCurve()
 }
 
 //=======================================================================
-//function : VerifGluedFaces
-//purpose  : Check intersection Tool/theSkface = thePbase
+// function : VerifGluedFaces
+// purpose  : Check intersection Tool/theSkface = thePbase
 //           if yes -> OK otherwise -> case without gluing
 //=======================================================================
 
-static void VerifGluedFaces(const TopoDS_Face& theSkface,
-  const TopoDS_Shape& thePbase,
-  Handle(Geom_Curve)& theBCurve,
-  TColGeom_SequenceOfCurve& theCurves,
-  LocOpe_Revol& theRevol,
-  TopTools_DataMapOfShapeShape& theMap)
+static void VerifGluedFaces(const TopoDS_Face&            theSkface,
+                            const TopoDS_Shape&           thePbase,
+                            Handle(Geom_Curve)&           theBCurve,
+                            TColGeom_SequenceOfCurve&     theCurves,
+                            LocOpe_Revol&                 theRevol,
+                            TopTools_DataMapOfShapeShape& theMap)
 {
-  Standard_Boolean GluedFaces = Standard_True;
-  const TopoDS_Shape& VraiRevol = theRevol.Shape();
+  Standard_Boolean    GluedFaces = Standard_True;
+  const TopoDS_Shape& VraiRevol  = theRevol.Shape();
 
   TColGeom_SequenceOfCurve scur;
   theRevol.Curves(theCurves);
-  theBCurve = theRevol.BarycCurve();    
-  scur.Clear();    
+  theBCurve = theRevol.BarycCurve();
+  scur.Clear();
   scur.Append(theBCurve);
   LocOpe_CSIntersector ASI(theSkface);
   ASI.Perform(scur);
-  if (ASI.IsDone() && ASI.NbPoints(1) >=1) {
-    TopAbs_Orientation Or = ASI.Point(1,1).Orientation();
-    TopoDS_Face FSk = ASI.Point(1,1).Face();
-    TopoDS_Shape Comp;
-    BRep_Builder B;
+  if (ASI.IsDone() && ASI.NbPoints(1) >= 1)
+  {
+    TopAbs_Orientation Or  = ASI.Point(1, 1).Orientation();
+    TopoDS_Face        FSk = ASI.Point(1, 1).Face();
+    TopoDS_Shape       Comp;
+    BRep_Builder       B;
     B.MakeCompound(TopoDS::Compound(Comp));
     TopoDS_Solid S = BRepFeat::Tool(theSkface, FSk, Or);
-    if (!S.IsNull()) B.Add(Comp,S);
-    BRepAlgoAPI_Cut trP(VraiRevol,Comp);
-    TopoDS_Shape Cutsh = trP.Shape();
+    if (!S.IsNull())
+      B.Add(Comp, S);
+    BRepAlgoAPI_Cut trP(VraiRevol, Comp);
+    TopoDS_Shape    Cutsh = trP.Shape();
     TopExp_Explorer ex(Cutsh, TopAbs_SOLID);
-    for(; ex.More(); ex.Next()) {
+    for (; ex.More(); ex.Next())
+    {
       TopExp_Explorer ex1(ex.Current(), TopAbs_FACE);
-      for(; ex1.More(); ex1.Next()) {
+      for (; ex1.More(); ex1.Next())
+      {
         const TopoDS_Face& fac1 = TopoDS::Face(ex1.Current());
-        TopExp_Explorer ex2(thePbase, TopAbs_FACE);
-        for(; ex2.More(); ex2.Next()) {
+        TopExp_Explorer    ex2(thePbase, TopAbs_FACE);
+        for (; ex2.More(); ex2.Next())
+        {
           const TopoDS_Face& fac2 = TopoDS::Face(ex2.Current());
-          if(fac1.IsSame(fac2)) break;
+          if (fac1.IsSame(fac2))
+            break;
         }
-        if (ex2.More()) break;
+        if (ex2.More())
+          break;
       }
-      if (ex1.More()) continue;
+      if (ex1.More())
+        continue;
       GluedFaces = Standard_False;
       break;
     }
-    if (!GluedFaces) {
+    if (!GluedFaces)
+    {
 #ifdef OCCT_DEBUG
       Standard_Boolean trc = BRepFeat_GettraceFEAT();
-      if (trc) std::cout << " Intersection Revol/skface : no gluing" << std::endl;
+      if (trc)
+        std::cout << " Intersection Revol/skface : no gluing" << std::endl;
 #endif
       theMap.Clear();
     }
@@ -778,38 +863,44 @@ static void VerifGluedFaces(const TopoDS_Face& theSkface,
 }
 
 //=======================================================================
-//function : MajMap
-//purpose  : management of descendants
+// function : MajMap
+// purpose  : management of descendants
 //=======================================================================
 
-static void MajMap(const TopoDS_Shape& theB,
-  const LocOpe_Revol& theP,
-  TopTools_DataMapOfShapeListOfShape& theMap, // myMap
-  TopoDS_Shape& theFShape,  // myFShape
-  TopoDS_Shape& theLShape) // myLShape
+static void MajMap(const TopoDS_Shape&                 theB,
+                   const LocOpe_Revol&                 theP,
+                   TopTools_DataMapOfShapeListOfShape& theMap,    // myMap
+                   TopoDS_Shape&                       theFShape, // myFShape
+                   TopoDS_Shape&                       theLShape)                       // myLShape
 {
-  TopExp_Explorer exp(theP.FirstShape(),TopAbs_WIRE);
-  if (exp.More()) {
+  TopExp_Explorer exp(theP.FirstShape(), TopAbs_WIRE);
+  if (exp.More())
+  {
     theFShape = exp.Current();
     TopTools_ListOfShape thelist;
     theMap.Bind(theFShape, thelist);
-    for (exp.Init(theP.FirstShape(),TopAbs_FACE);exp.More();exp.Next()) {
+    for (exp.Init(theP.FirstShape(), TopAbs_FACE); exp.More(); exp.Next())
+    {
       theMap(theFShape).Append(exp.Current());
     }
   }
 
-  exp.Init(theP.LastShape(),TopAbs_WIRE);
-  if (exp.More()) {
+  exp.Init(theP.LastShape(), TopAbs_WIRE);
+  if (exp.More())
+  {
     theLShape = exp.Current();
     TopTools_ListOfShape thelist1;
     theMap.Bind(theLShape, thelist1);
-    for (exp.Init(theP.LastShape(),TopAbs_FACE);exp.More();exp.Next()) {
+    for (exp.Init(theP.LastShape(), TopAbs_FACE); exp.More(); exp.Next())
+    {
       theMap(theLShape).Append(exp.Current());
     }
   }
 
-  for (exp.Init(theB,TopAbs_EDGE); exp.More(); exp.Next()) {
-    if (!theMap.IsBound(exp.Current())) {
+  for (exp.Init(theB, TopAbs_EDGE); exp.More(); exp.Next())
+  {
+    if (!theMap.IsBound(exp.Current()))
+    {
       TopTools_ListOfShape thelist2;
       theMap.Bind(exp.Current(), thelist2);
       theMap(exp.Current()) = theP.Shapes(exp.Current());
@@ -817,67 +908,60 @@ static void MajMap(const TopoDS_Shape& theB,
   }
 }
 
-
-
 //=======================================================================
-//function : ToFuse
-//purpose  : two faces samedomaine or not
+// function : ToFuse
+// purpose  : two faces samedomaine or not
 //=======================================================================
 
-Standard_Boolean ToFuse(const TopoDS_Face& F1,
-  const TopoDS_Face& F2)
+Standard_Boolean ToFuse(const TopoDS_Face& F1, const TopoDS_Face& F2)
 {
-  if (F1.IsNull() || F2.IsNull()) {
+  if (F1.IsNull() || F2.IsNull())
+  {
     return Standard_False;
   }
 
-  Handle(Geom_Surface) S1,S2;
-  TopLoc_Location loc1, loc2;
-  Handle(Standard_Type) typS1,typS2;
+  Handle(Geom_Surface)    S1, S2;
+  TopLoc_Location         loc1, loc2;
+  Handle(Standard_Type)   typS1, typS2;
   constexpr Standard_Real tollin = Precision::Confusion();
   constexpr Standard_Real tolang = Precision::Angular();
 
-  S1 = BRep_Tool::Surface(F1,loc1);
-  S2 = BRep_Tool::Surface(F2,loc2);
+  S1 = BRep_Tool::Surface(F1, loc1);
+  S2 = BRep_Tool::Surface(F2, loc2);
 
   typS1 = S1->DynamicType();
   typS2 = S2->DynamicType();
 
-  if (typS1 == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-    S1 =  Handle(Geom_RectangularTrimmedSurface)::DownCast (S1)->BasisSurface();
+  if (typS1 == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
+  {
+    S1    = Handle(Geom_RectangularTrimmedSurface)::DownCast(S1)->BasisSurface();
     typS1 = S1->DynamicType();
   }
 
-  if (typS2 == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-    S2 =  Handle(Geom_RectangularTrimmedSurface)::DownCast (S2)->BasisSurface();
+  if (typS2 == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
+  {
+    S2    = Handle(Geom_RectangularTrimmedSurface)::DownCast(S2)->BasisSurface();
     typS2 = S2->DynamicType();
   }
 
-  if (typS1 != typS2) {
+  if (typS1 != typS2)
+  {
     return Standard_False;
   }
 
-
   Standard_Boolean ValRet = Standard_False;
-  if (typS1 == STANDARD_TYPE(Geom_Plane)) {
-    S1 = BRep_Tool::Surface(F1);  // to apply the location.
+  if (typS1 == STANDARD_TYPE(Geom_Plane))
+  {
+    S1 = BRep_Tool::Surface(F1); // to apply the location.
     S2 = BRep_Tool::Surface(F2);
-    gp_Pln pl1( Handle(Geom_Plane)::DownCast (S1)->Pln());
-    gp_Pln pl2( Handle(Geom_Plane)::DownCast (S2)->Pln());
+    gp_Pln pl1(Handle(Geom_Plane)::DownCast(S1)->Pln());
+    gp_Pln pl2(Handle(Geom_Plane)::DownCast(S2)->Pln());
 
-    if (pl1.Position().IsCoplanar(pl2.Position(),tollin,tolang)) {
+    if (pl1.Position().IsCoplanar(pl2.Position(), tollin, tolang))
+    {
       ValRet = Standard_True;
     }
   }
 
   return ValRet;
 }
-
-
-
-
-
-
-
-
-

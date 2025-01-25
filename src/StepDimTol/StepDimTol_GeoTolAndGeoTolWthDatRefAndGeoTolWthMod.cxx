@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod.hxx>
@@ -21,59 +20,52 @@
 #include <StepRepr_ShapeAspect.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod,StepDimTol_GeometricTolerance)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod,
+                           StepDimTol_GeometricTolerance)
 
-//=======================================================================
-//function : StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod
-//purpose  : 
-//=======================================================================
-StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod::StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod()
+//=================================================================================================
+
+StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod::
+  StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod()
 {
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod::Init
-  (const Handle(TCollection_HAsciiString)& theName,
-   const Handle(TCollection_HAsciiString)& theDescription,
-   const Handle(StepBasic_MeasureWithUnit)& theMagnitude,
-   const Handle(StepRepr_ShapeAspect)& theTolerancedShapeAspect,
-   const Handle(StepDimTol_GeometricToleranceWithDatumReference)& theGTWDR,
-   const Handle(StepDimTol_GeometricToleranceWithModifiers)& theGTWM,
-   const StepDimTol_GeometricToleranceType theType)
+void StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod::Init(
+  const Handle(TCollection_HAsciiString)&                        theName,
+  const Handle(TCollection_HAsciiString)&                        theDescription,
+  const Handle(StepBasic_MeasureWithUnit)&                       theMagnitude,
+  const Handle(StepRepr_ShapeAspect)&                            theTolerancedShapeAspect,
+  const Handle(StepDimTol_GeometricToleranceWithDatumReference)& theGTWDR,
+  const Handle(StepDimTol_GeometricToleranceWithModifiers)&      theGTWM,
+  const StepDimTol_GeometricToleranceType                        theType)
 {
   SetName(theName);
   SetDescription(theDescription);
   SetMagnitude(theMagnitude);
   SetTolerancedShapeAspect(theTolerancedShapeAspect);
   myGeometricToleranceWithDatumReference = theGTWDR;
-  myGeometricToleranceWithModifiers = theGTWM;
-  myToleranceType = theType;
+  myGeometricToleranceWithModifiers      = theGTWM;
+  myToleranceType                        = theType;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod::Init
-  (const Handle(TCollection_HAsciiString)& theName,
-   const Handle(TCollection_HAsciiString)& theDescription,
-   const Handle(StepBasic_MeasureWithUnit)& theMagnitude,
-   const StepDimTol_GeometricToleranceTarget& theTolerancedShapeAspect,
-   const Handle(StepDimTol_GeometricToleranceWithDatumReference)& theGTWDR,
-   const Handle(StepDimTol_GeometricToleranceWithModifiers)& theGTWM,
-   const StepDimTol_GeometricToleranceType theType)
+void StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod::Init(
+  const Handle(TCollection_HAsciiString)&                        theName,
+  const Handle(TCollection_HAsciiString)&                        theDescription,
+  const Handle(StepBasic_MeasureWithUnit)&                       theMagnitude,
+  const StepDimTol_GeometricToleranceTarget&                     theTolerancedShapeAspect,
+  const Handle(StepDimTol_GeometricToleranceWithDatumReference)& theGTWDR,
+  const Handle(StepDimTol_GeometricToleranceWithModifiers)&      theGTWM,
+  const StepDimTol_GeometricToleranceType                        theType)
 {
   SetName(theName);
   SetDescription(theDescription);
   SetMagnitude(theMagnitude);
   SetTolerancedShapeAspect(theTolerancedShapeAspect);
   myGeometricToleranceWithDatumReference = theGTWDR;
-  myGeometricToleranceWithModifiers = theGTWM;
-  myToleranceType = theType;
+  myGeometricToleranceWithModifiers      = theGTWM;
+  myToleranceType                        = theType;
 }

@@ -23,18 +23,15 @@
 class BinMDF_ADriverTable;
 class Message_Messenger;
 
-
 //! Storage and Retrieval drivers for TFunction modelling attributes.
-class BinMFunction 
+class BinMFunction
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Adds the attribute drivers to <theDriverTable>.
-  Standard_EXPORT static void AddDrivers (const Handle(BinMDF_ADriverTable)& theDriverTable, const Handle(Message_Messenger)& aMsgDrv);
-
+  Standard_EXPORT static void AddDrivers(const Handle(BinMDF_ADriverTable)& theDriverTable,
+                                         const Handle(Message_Messenger)&   aMsgDrv);
 };
 
 #endif // _BinMFunction_HeaderFile

@@ -18,7 +18,6 @@
 #ifndef TObj_TIntSparseArray_HeaderFile
 #define TObj_TIntSparseArray_HeaderFile
 
-
 #include <NCollection_SparseArray.hxx>
 #include <TDF_Label.hxx>
 
@@ -35,8 +34,7 @@ class Standard_GUID;
 
 class TObj_TIntSparseArray : public TDF_Attribute
 {
- public:
-
+public:
   //! Empty constructor
   Standard_EXPORT TObj_TIntSparseArray();
 
@@ -47,15 +45,13 @@ class TObj_TIntSparseArray : public TDF_Attribute
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
 
   //! Creates TObj_TIntSparseArray attribute on given label.
-  static Standard_EXPORT Handle(TObj_TIntSparseArray) Set
-                            (const TDF_Label& theLabel);
+  static Standard_EXPORT Handle(TObj_TIntSparseArray) Set(const TDF_Label& theLabel);
 
- public:
+public:
   //! Methods for access to data
 
   //! Returns the number of stored values in the set
-  Standard_Size Size() const
-  { return myVector.Size(); }
+  Standard_Size Size() const { return myVector.Size(); }
 
   typedef TObj_TIntSparseArray_VecOfData::ConstIterator Iterator;
 
@@ -63,27 +59,24 @@ class TObj_TIntSparseArray : public TDF_Attribute
   Iterator GetIterator() const { return Iterator(myVector); }
 
   //! Returns true if the value with the given ID is present.
-  Standard_Boolean HasValue (const Standard_Size theId) const
-  { return myVector.HasValue(theId); }
+  Standard_Boolean HasValue(const Standard_Size theId) const { return myVector.HasValue(theId); }
 
   //! Returns the value by its ID.
   //! Raises an exception if no value is stored with this ID
-  Standard_Integer Value (const Standard_Size theId) const
-  { return myVector.Value(theId); }
+  Standard_Integer Value(const Standard_Size theId) const { return myVector.Value(theId); }
 
   //! Sets the value with the given ID.
   //! Raises an exception if theId is not positive
-  Standard_EXPORT void SetValue (const Standard_Size theId,
-                                 const Standard_Integer theValue);
+  Standard_EXPORT void SetValue(const Standard_Size theId, const Standard_Integer theValue);
 
   //! Unsets the value with the given ID.
   //! Raises an exception if theId is not positive
   Standard_EXPORT void UnsetValue(const Standard_Size theId);
 
   //! Clears the set
-  Standard_EXPORT void Clear ();
+  Standard_EXPORT void Clear();
 
- public:
+public:
   //! Redefined OCAF abstract methods
 
   //! Returns an new empty TObj_TIntSparseArray attribute. It is used by the
@@ -106,26 +99,23 @@ class TObj_TIntSparseArray : public TDF_Attribute
   Standard_EXPORT void BeforeCommitTransaction() Standard_OVERRIDE;
 
   //! Applies theDelta to this.
-  Standard_EXPORT void DeltaOnModification
-                        (const Handle(TDF_DeltaOnModification)& theDelta) Standard_OVERRIDE;
+  Standard_EXPORT void DeltaOnModification(const Handle(TDF_DeltaOnModification)& theDelta)
+    Standard_OVERRIDE;
 
   //! Clears my modification delta; called after application of theDelta
-  Standard_EXPORT Standard_Boolean AfterUndo
-                        (const Handle(TDF_AttributeDelta)& theDelta,
-                         const Standard_Boolean toForce) Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean AfterUndo(const Handle(TDF_AttributeDelta)& theDelta,
+                                             const Standard_Boolean toForce) Standard_OVERRIDE;
 
- public:
+public:
   //! Methods to handle the modification delta
 
   //! Sets the flag pointing to the necessity to maintain a modification delta.
   //! It is called by the retrieval driver
-  void SetDoBackup (const Standard_Boolean toDo)
-  { myDoBackup = toDo; }
+  void SetDoBackup(const Standard_Boolean toDo) { myDoBackup = toDo; }
 
-  void ClearDelta ()
-  { myOldMap.Clear(); }
+  void ClearDelta() { myOldMap.Clear(); }
 
- private:
+private:
   //! Internal constant to recognize items in the backup array
   //! correspondent to absent values
   enum
@@ -134,21 +124,21 @@ class TObj_TIntSparseArray : public TDF_Attribute
   };
 
   //! backup one value
-  void backupValue (const Standard_Size theId,
-                    const Standard_Integer theCurrValue,
-                    const Standard_Integer theNewValue);
+  void backupValue(const Standard_Size    theId,
+                   const Standard_Integer theCurrValue,
+                   const Standard_Integer theNewValue);
 
   TObj_TIntSparseArray_VecOfData myVector;
   TObj_TIntSparseArray_MapOfData myOldMap;
   Standard_Boolean               myDoBackup;
 
- public:
+public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTIEXT(TObj_TIntSparseArray,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TObj_TIntSparseArray, TDF_Attribute)
 };
 
 //! Define handle class for TObj_TIntSparseArray
-DEFINE_STANDARD_HANDLE(TObj_TIntSparseArray,TDF_Attribute)
+DEFINE_STANDARD_HANDLE(TObj_TIntSparseArray, TDF_Attribute)
 
 #endif
 

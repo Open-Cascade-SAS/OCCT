@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <XmlDrivers.hxx>
@@ -21,26 +20,20 @@
 #include <XmlMXCAFDoc.hxx>
 #include <XmlXCAFDrivers_DocumentRetrievalDriver.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XmlXCAFDrivers_DocumentRetrievalDriver,XmlDrivers_DocumentRetrievalDriver)
+IMPLEMENT_STANDARD_RTTIEXT(XmlXCAFDrivers_DocumentRetrievalDriver,
+                           XmlDrivers_DocumentRetrievalDriver)
 
-//=======================================================================
-//function : XmlXCAFDrivers_DocumentRetrievalDriver
-//purpose  : 
-//=======================================================================
-XmlXCAFDrivers_DocumentRetrievalDriver::XmlXCAFDrivers_DocumentRetrievalDriver()
+//=================================================================================================
+
+XmlXCAFDrivers_DocumentRetrievalDriver::XmlXCAFDrivers_DocumentRetrievalDriver() {}
+
+//=================================================================================================
+
+Handle(XmlMDF_ADriverTable) XmlXCAFDrivers_DocumentRetrievalDriver::AttributeDrivers(
+  const Handle(Message_Messenger)& theMsgDrv)
 {
-}
-
-//=======================================================================
-//function : AttributeDrivers
-//purpose  : 
-//=======================================================================
-Handle(XmlMDF_ADriverTable)
-        XmlXCAFDrivers_DocumentRetrievalDriver::AttributeDrivers
-                        (const Handle(Message_Messenger)& theMsgDrv) 
-{ 
   // Standard drivers
-  Handle(XmlMDF_ADriverTable) aTable = XmlDrivers::AttributeDrivers (theMsgDrv);
+  Handle(XmlMDF_ADriverTable) aTable = XmlDrivers::AttributeDrivers(theMsgDrv);
 
   // Native drivers
   XmlMXCAFDoc::AddDrivers(aTable, theMsgDrv);

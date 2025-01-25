@@ -16,18 +16,16 @@
 #include <TNaming_NamedShape.hxx>
 #include <TDataStd_Real.hxx>
 
-
 //=======================================================================
-//function : Import
-//purpose  : Import transient attribute from the persistent data
+// function : Import
+// purpose  : Import transient attribute from the persistent data
 //=======================================================================
-void StdPersistent_DataXtd_Constraint::Import
-  (const Handle(TDataXtd_Constraint)& theAttribute) const
+void StdPersistent_DataXtd_Constraint::Import(const Handle(TDataXtd_Constraint)& theAttribute) const
 {
-  theAttribute->SetType  (static_cast<TDataXtd_ConstraintEnum> (myType));
-  theAttribute->Reversed (myIsReversed);
-  theAttribute->Inverted (myIsInverted);
-  theAttribute->Verified (myIsVerified);
+  theAttribute->SetType(static_cast<TDataXtd_ConstraintEnum>(myType));
+  theAttribute->Reversed(myIsReversed);
+  theAttribute->Inverted(myIsInverted);
+  theAttribute->Verified(myIsVerified);
 
   if (myGeometries)
   {
@@ -38,8 +36,7 @@ void StdPersistent_DataXtd_Constraint::Import
       if (aPGeometry)
       {
         Handle(TDF_Attribute) aTGeometry = aPGeometry->GetAttribute();
-        theAttribute->SetGeometry
-          (i, Handle(TNaming_NamedShape)::DownCast (aTGeometry));
+        theAttribute->SetGeometry(i, Handle(TNaming_NamedShape)::DownCast(aTGeometry));
       }
     }
   }
@@ -47,12 +44,12 @@ void StdPersistent_DataXtd_Constraint::Import
   if (myValue)
   {
     Handle(TDF_Attribute) aValue = myValue->GetAttribute();
-    theAttribute->SetValue (Handle(TDataStd_Real)::DownCast (aValue));
+    theAttribute->SetValue(Handle(TDataStd_Real)::DownCast(aValue));
   }
 
   if (myPlane)
   {
     Handle(TDF_Attribute) aPlane = myPlane->GetAttribute();
-    theAttribute->SetPlane (Handle(TNaming_NamedShape)::DownCast (aPlane));
+    theAttribute->SetPlane(Handle(TNaming_NamedShape)::DownCast(aPlane));
   }
 }

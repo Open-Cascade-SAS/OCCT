@@ -16,109 +16,113 @@
 
 #ifdef OCCT_DEBUG
 
-#include <TopOpeBRep_traceSIFF.hxx>
-#include <stdio.h>
+  #include <TopOpeBRep_traceSIFF.hxx>
+  #include <stdio.h>
+
 TopOpeBRep_traceSIFF::TopOpeBRep_traceSIFF()
-{ 
+{
   Reset();
 }
 
 void TopOpeBRep_traceSIFF::Reset()
-{ 
-  mybrep1 = ""; 
-  mybrep2 = ""; 
-  myfilename = ""; 
-  myopen = Standard_False;
+{
+  mybrep1    = "";
+  mybrep2    = "";
+  myfilename = "";
+  myopen     = Standard_False;
 }
 
-void TopOpeBRep_traceSIFF::Set(const Standard_Boolean b,
-			       Standard_Integer n,
-			       char**a)
+void TopOpeBRep_traceSIFF::Set(const Standard_Boolean b, Standard_Integer n, char** a)
 {
-  if (n < 3 || !b || a == NULL) { 
+  if (n < 3 || !b || a == NULL)
+  {
     Reset();
     return;
   }
-  mybrep1 = a[0];
-  mybrep2 = a[1];
+  mybrep1    = a[0];
+  mybrep2    = a[1];
   myfilename = a[2];
 }
 
 void TopOpeBRep_traceSIFF::Set(const TCollection_AsciiString& brep1,
-			       const TCollection_AsciiString& brep2,
-			       const TCollection_AsciiString& filename)
-{ 
-  mybrep1 = brep1; 
-  mybrep2 = brep2; 
+                               const TCollection_AsciiString& brep2,
+                               const TCollection_AsciiString& filename)
+{
+  mybrep1    = brep1;
+  mybrep2    = brep2;
   myfilename = filename;
 }
 
 TCollection_AsciiString TopOpeBRep_traceSIFF::Name1(const Standard_Integer I) const
 {
-  TCollection_AsciiString s = mybrep1 + "_" + I; 
+  TCollection_AsciiString s = mybrep1 + "_" + I;
   return s;
-} 
+}
 
 TCollection_AsciiString TopOpeBRep_traceSIFF::Name2(const Standard_Integer I) const
 {
-  TCollection_AsciiString s = mybrep2 + "_" + I; 
+  TCollection_AsciiString s = mybrep2 + "_" + I;
   return s;
-} 
-
-const TCollection_AsciiString& TopOpeBRep_traceSIFF::File() const 
-{ 
-  return myfilename; 
 }
 
-Standard_Boolean TopOpeBRep_traceSIFF::Start(const TCollection_AsciiString& s,
-					     Standard_OStream& OS) 
+const TCollection_AsciiString& TopOpeBRep_traceSIFF::File() const
+{
+  return myfilename;
+}
+
+Standard_Boolean TopOpeBRep_traceSIFF::Start(const TCollection_AsciiString& s, Standard_OStream& OS)
 {
   Standard_CString cs = myfilename.ToCString();
-  myopen = Standard_True;
-  if (!myfilebuf.open(cs,std::ios::out)) {
+  myopen              = Standard_True;
+  if (!myfilebuf.open(cs, std::ios::out))
+  {
     myopen = Standard_False;
   }
-  if (!myopen) {
+  if (!myopen)
+  {
     return myopen;
   }
-  std::ostream osfic(&myfilebuf); osfic.precision(15);
-  if (s.Length()) {
-    OS<<s<<myfilename<<std::endl;
+  std::ostream osfic(&myfilebuf);
+  osfic.precision(15);
+  if (s.Length())
+  {
+    OS << s << myfilename << std::endl;
   }
   return myopen;
 }
 
-void TopOpeBRep_traceSIFF::Add(const Standard_Integer I1,
-			       const Standard_Integer I2)
+void TopOpeBRep_traceSIFF::Add(const Standard_Integer I1, const Standard_Integer I2)
 {
-  if (!myopen) {
+  if (!myopen)
+  {
     return;
   }
   TCollection_AsciiString n1 = Name1(I1);
   TCollection_AsciiString n2 = Name2(I2);
-  std::ostream osfic(&myfilebuf);
-  osfic<<n1<<" "<<n2<<"\n";
+  std::ostream            osfic(&myfilebuf);
+  osfic << n1 << " " << n2 << "\n";
 }
 
-void TopOpeBRep_traceSIFF::End(const TCollection_AsciiString& s,
-			       Standard_OStream& OS)
+void TopOpeBRep_traceSIFF::End(const TCollection_AsciiString& s, Standard_OStream& OS)
 {
-  if (!myopen) {
+  if (!myopen)
+  {
     return;
   }
-  if (s.Length()) {
-    OS<<s<<myfilename<<std::endl;
+  if (s.Length())
+  {
+    OS << s << myfilename << std::endl;
   }
   myopen = Standard_False;
-}  
+}
+
 //////////////////////////////////////////////////////////////////////////
 
 TopOpeBRep_traceSIFF SIFF;
 
-Standard_EXPORT void TopOpeBRep_SettraceSIFF(const Standard_Boolean b,
-					     Standard_Integer n,char**a)
+Standard_EXPORT void TopOpeBRep_SettraceSIFF(const Standard_Boolean b, Standard_Integer n, char** a)
 {
-  SIFF.Set(b,n,a);
+  SIFF.Set(b, n, a);
 }
 
 Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceSIFF()

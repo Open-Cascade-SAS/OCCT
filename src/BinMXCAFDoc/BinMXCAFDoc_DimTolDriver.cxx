@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMXCAFDoc_DimTolDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <Message_Messenger.hxx>
@@ -22,86 +21,82 @@
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_DimTol.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_DimTolDriver,BinMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_DimTolDriver, BinMDF_ADriver)
 
-//=======================================================================
-//function : Constructor
-//purpose  : 
-//=======================================================================
-BinMXCAFDoc_DimTolDriver::BinMXCAFDoc_DimTolDriver
-  (const Handle(Message_Messenger)& theMsgDriver)
-: BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_DimTol)->Name())
+//=================================================================================================
+
+BinMXCAFDoc_DimTolDriver::BinMXCAFDoc_DimTolDriver(const Handle(Message_Messenger)& theMsgDriver)
+    : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_DimTol)->Name())
 {
 }
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Handle(TDF_Attribute) BinMXCAFDoc_DimTolDriver::NewEmpty() const
 {
   return new XCAFDoc_DimTol();
 }
 
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-Standard_Boolean BinMXCAFDoc_DimTolDriver::Paste(const BinObjMgt_Persistent& theSource,
-                                                 const Handle(TDF_Attribute)& theTarget,
-                                                 BinObjMgt_RRelocationTable& /*theRelocTable*/) const 
+//=================================================================================================
+
+Standard_Boolean BinMXCAFDoc_DimTolDriver::Paste(
+  const BinObjMgt_Persistent&  theSource,
+  const Handle(TDF_Attribute)& theTarget,
+  BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
-  Handle(XCAFDoc_DimTol) anAtt = Handle(XCAFDoc_DimTol)::DownCast(theTarget);
-  Standard_Integer aKind, aFirstInd, aLastInd;
+  Handle(XCAFDoc_DimTol)  anAtt = Handle(XCAFDoc_DimTol)::DownCast(theTarget);
+  Standard_Integer        aKind, aFirstInd, aLastInd;
   TCollection_AsciiString aName, aDescr;
-  if ( !(theSource >> aKind >> aName >> aDescr >> aFirstInd >> aLastInd) )
+  if (!(theSource >> aKind >> aName >> aDescr >> aFirstInd >> aLastInd))
     return Standard_False;
 
   Handle(TColStd_HArray1OfReal) aHArr;
-  const Standard_Integer aLength = aLastInd - aFirstInd + 1;
-  if (aLength > 0 ) {
-    aHArr = new TColStd_HArray1OfReal( aFirstInd, aLastInd );
+  const Standard_Integer        aLength = aLastInd - aFirstInd + 1;
+  if (aLength > 0)
+  {
+    aHArr = new TColStd_HArray1OfReal(aFirstInd, aLastInd);
 
     TColStd_Array1OfReal& aTargetArray = aHArr->ChangeArray1();
-    if(!theSource.GetRealArray (&aTargetArray(aFirstInd), aLength))
+    if (!theSource.GetRealArray(&aTargetArray(aFirstInd), aLength))
       return Standard_False;
   }
-  anAtt->Set(aKind, aHArr,
-             new TCollection_HAsciiString( aName ),
-             new TCollection_HAsciiString( aDescr ));
+  anAtt->Set(aKind,
+             aHArr,
+             new TCollection_HAsciiString(aName),
+             new TCollection_HAsciiString(aDescr));
   return Standard_True;
 }
 
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BinMXCAFDoc_DimTolDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                     BinObjMgt_Persistent& theTarget,
+                                     BinObjMgt_Persistent&        theTarget,
                                      BinObjMgt_SRelocationTable& /*theRelocTable*/) const
 {
   Handle(XCAFDoc_DimTol) anAtt = Handle(XCAFDoc_DimTol)::DownCast(theSource);
   theTarget << anAtt->GetKind();
-  if ( !anAtt->GetName().IsNull() )
+  if (!anAtt->GetName().IsNull())
     theTarget << anAtt->GetName()->String();
   else
     theTarget << TCollection_AsciiString("");
-  if ( !anAtt->GetDescription().IsNull() )
+  if (!anAtt->GetDescription().IsNull())
     theTarget << anAtt->GetDescription()->String();
   else
     theTarget << TCollection_AsciiString("");
-  
-  Handle(TColStd_HArray1OfReal) aHArr = anAtt->GetVal();
-  Standard_Integer aFirstInd = 1, aLastInd = 0;
-  if ( !aHArr.IsNull() ) {
+
+  Handle(TColStd_HArray1OfReal) aHArr     = anAtt->GetVal();
+  Standard_Integer              aFirstInd = 1, aLastInd = 0;
+  if (!aHArr.IsNull())
+  {
     aFirstInd = aHArr->Lower();
-    aLastInd = aHArr->Upper();
+    aLastInd  = aHArr->Upper();
   }
   theTarget << aFirstInd << aLastInd;
-  if ( !aHArr.IsNull() ) {
-    const Standard_Integer aLength   = aLastInd - aFirstInd + 1;
-    const TColStd_Array1OfReal& anArr = aHArr->Array1();
-    Standard_Real *aPtr = (Standard_Real *) &anArr(aFirstInd);
-    theTarget.PutRealArray (aPtr, aLength);
+  if (!aHArr.IsNull())
+  {
+    const Standard_Integer      aLength = aLastInd - aFirstInd + 1;
+    const TColStd_Array1OfReal& anArr   = aHArr->Array1();
+    Standard_Real*              aPtr    = (Standard_Real*)&anArr(aFirstInd);
+    theTarget.PutRealArray(aPtr, aLength);
   }
 }

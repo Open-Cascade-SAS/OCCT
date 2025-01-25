@@ -21,5 +21,4 @@
 
 DEFINE_HARRAY1(TColStd_HArray1OfCharacter, TColStd_Array1OfCharacter)
 
-
 #endif

@@ -20,6 +20,7 @@
 #include <IntPatch_ThePathPointOfTheSOnBounds.hxx>
 #include <NCollection_Sequence.hxx>
 
-typedef NCollection_Sequence<IntPatch_ThePathPointOfTheSOnBounds> IntPatch_SequenceOfPathPointOfTheSOnBounds;
+typedef NCollection_Sequence<IntPatch_ThePathPointOfTheSOnBounds>
+  IntPatch_SequenceOfPathPointOfTheSOnBounds;
 
 #endif // _IntPatch_SequenceOfPathPointOfTheSOnBounds_HeaderFile

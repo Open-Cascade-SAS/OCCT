@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef View_ViewActionType_H
 #define View_ViewActionType_H
@@ -20,7 +20,8 @@
 enum View_ViewActionType
 {
   View_ViewActionType_FitAllId,     //!< fits the view to wrap the bounding box of displayed objects
-  View_ViewActionType_DisplayModeId //!< change display mode of visualized presentations (to wireframe or shading)
+  View_ViewActionType_DisplayModeId //!< change display mode of visualized presentations (to
+                                    //!< wireframe or shading)
 };
 
 #endif

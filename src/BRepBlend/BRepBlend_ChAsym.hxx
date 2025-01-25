@@ -21,5 +21,4 @@
 
 typedef BlendFunc_ChAsym BRepBlend_ChAsym;
 
-
 #endif // _BRepBlend_ChAsym_HeaderFile

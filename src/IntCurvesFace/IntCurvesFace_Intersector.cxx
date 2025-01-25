@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define OPTIMISATION 1 
+#define OPTIMISATION 1
 
 #include <IntCurvesFace_Intersector.hxx>
 
@@ -42,14 +42,14 @@
 IMPLEMENT_STANDARD_RTTIEXT(IntCurvesFace_Intersector, Standard_Transient)
 
 //
-static void ComputeSamplePars(const Handle(Adaptor3d_Surface)& Hsurface, 
-                              const Standard_Integer nbsu,
-                              const Standard_Integer nbsv,
-                              Handle(TColStd_HArray1OfReal)& UPars, 
-                              Handle(TColStd_HArray1OfReal)& VPars)
+static void ComputeSamplePars(const Handle(Adaptor3d_Surface)& Hsurface,
+                              const Standard_Integer           nbsu,
+                              const Standard_Integer           nbsv,
+                              Handle(TColStd_HArray1OfReal)&   UPars,
+                              Handle(TColStd_HArray1OfReal)&   VPars)
 {
-  Standard_Integer NbUInts = Hsurface->NbUIntervals(GeomAbs_C2);
-  Standard_Integer NbVInts = Hsurface->NbVIntervals(GeomAbs_C2);
+  Standard_Integer     NbUInts = Hsurface->NbUIntervals(GeomAbs_C2);
+  Standard_Integer     NbVInts = Hsurface->NbVIntervals(GeomAbs_C2);
   TColStd_Array1OfReal UInts(1, NbUInts + 1);
   TColStd_Array1OfReal VInts(1, NbVInts + 1);
   Hsurface->UIntervals(UInts, GeomAbs_C2);
@@ -59,22 +59,22 @@ static void ComputeSamplePars(const Handle(Adaptor3d_Surface)& Hsurface,
   TColStd_Array1OfInteger NbVSubInts(1, NbVInts);
   //
   Standard_Integer i, j, ind, NbU, NbV;
-  Standard_Real t, dt;
-  t = UInts(NbUInts + 1) - UInts(1);
-  t = 1. / t;
+  Standard_Real    t, dt;
+  t   = UInts(NbUInts + 1) - UInts(1);
+  t   = 1. / t;
   NbU = 0;
-  for(i = 1; i <= NbUInts; ++i)
+  for (i = 1; i <= NbUInts; ++i)
   {
-    dt = (UInts(i+1) - UInts(i));
+    dt            = (UInts(i + 1) - UInts(i));
     NbUSubInts(i) = RealToInt(nbsu * dt * t) + 1;
     NbU += NbUSubInts(i);
   }
-  t = VInts(NbVInts + 1) - VInts(1);
-  t = 1. / t;
+  t   = VInts(NbVInts + 1) - VInts(1);
+  t   = 1. / t;
   NbV = 0;
-  for(i = 1; i <= NbVInts; ++i)
+  for (i = 1; i <= NbVInts; ++i)
   {
-    dt = (VInts(i+1) - VInts(i));
+    dt            = (VInts(i + 1) - VInts(i));
     NbVSubInts(i) = RealToInt(nbsv * dt * t) + 1;
     NbV += NbVSubInts(i);
   }
@@ -82,12 +82,12 @@ static void ComputeSamplePars(const Handle(Adaptor3d_Surface)& Hsurface,
   VPars = new TColStd_HArray1OfReal(1, NbV + 1);
   //
   ind = 1;
-  for(i = 1; i <= NbUInts; ++i)
+  for (i = 1; i <= NbUInts; ++i)
   {
     UPars->SetValue(ind++, UInts(i));
-    dt = (UInts(i+1) - UInts(i)) / NbUSubInts(i);
-    t = UInts(i);
-    for(j = 1; j < NbUSubInts(i); ++j)
+    dt = (UInts(i + 1) - UInts(i)) / NbUSubInts(i);
+    t  = UInts(i);
+    for (j = 1; j < NbUSubInts(i); ++j)
     {
       t += dt;
       UPars->SetValue(ind++, t);
@@ -96,12 +96,12 @@ static void ComputeSamplePars(const Handle(Adaptor3d_Surface)& Hsurface,
   UPars->SetValue(ind, UInts(NbUInts + 1));
   //
   ind = 1;
-  for(i = 1; i <= NbVInts; ++i)
+  for (i = 1; i <= NbVInts; ++i)
   {
     VPars->SetValue(ind++, VInts(i));
-    dt = (VInts(i+1) - VInts(i)) / NbVSubInts(i);
-    t = VInts(i);
-    for(j = 1; j < NbVSubInts(i); ++j)
+    dt = (VInts(i + 1) - VInts(i)) / NbVSubInts(i);
+    t  = VInts(i);
+    for (j = 1; j < NbVSubInts(i); ++j)
     {
       t += dt;
       VPars->SetValue(ind++, t);
@@ -109,46 +109,42 @@ static void ComputeSamplePars(const Handle(Adaptor3d_Surface)& Hsurface,
   }
   VPars->SetValue(ind, VInts(NbVInts + 1));
 }
+
 //
-//=======================================================================
-//function : SurfaceType
-//purpose  : 
-//=======================================================================
-GeomAbs_SurfaceType IntCurvesFace_Intersector::SurfaceType() const 
-{ 
-  return(Adaptor3d_HSurfaceTool::GetType(Hsurface));
+//=================================================================================================
+
+GeomAbs_SurfaceType IntCurvesFace_Intersector::SurfaceType() const
+{
+  return (Adaptor3d_HSurfaceTool::GetType(Hsurface));
 }
-//=======================================================================
-//function : IntCurvesFace_Intersector
-//purpose  : 
-//=======================================================================
-IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
-                                                     const Standard_Real aTol,
+
+//=================================================================================================
+
+IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face&     Face,
+                                                     const Standard_Real    aTol,
                                                      const Standard_Boolean aRestr,
                                                      const Standard_Boolean UseBToler)
-                                                    
-: 
-  Tol(aTol),
-  done(Standard_False),
-  myReady(Standard_False),
-  nbpnt(0),
-  myUseBoundTol (UseBToler),
-  myIsParallel(Standard_False)
-{ 
+
+    : Tol(aTol),
+      done(Standard_False),
+      myReady(Standard_False),
+      nbpnt(0),
+      myUseBoundTol(UseBToler),
+      myIsParallel(Standard_False)
+{
   BRepAdaptor_Surface surface;
   face = Face;
   surface.Initialize(Face, aRestr);
-  Hsurface = new BRepAdaptor_Surface(surface);
+  Hsurface    = new BRepAdaptor_Surface(surface);
   myTopolTool = new BRepTopAdaptor_TopolTool(Hsurface);
-  
+
   GeomAbs_SurfaceType SurfaceType = Adaptor3d_HSurfaceTool::GetType(Hsurface);
-  if(   (SurfaceType != GeomAbs_Plane) 
-     && (SurfaceType != GeomAbs_Cylinder)
-     && (SurfaceType != GeomAbs_Cone) 
-     && (SurfaceType != GeomAbs_Sphere)
-     && (SurfaceType != GeomAbs_Torus)) {
-    Standard_Integer nbsu,nbsv;
-    Standard_Real U0,V0,U1,V1;
+  if ((SurfaceType != GeomAbs_Plane) && (SurfaceType != GeomAbs_Cylinder)
+      && (SurfaceType != GeomAbs_Cone) && (SurfaceType != GeomAbs_Sphere)
+      && (SurfaceType != GeomAbs_Torus))
+  {
+    Standard_Integer nbsu, nbsv;
+    Standard_Real    U0, V0, U1, V1;
     U0 = Hsurface->FirstUParameter();
     U1 = Hsurface->LastUParameter();
     V0 = Hsurface->FirstVParameter();
@@ -161,23 +157,29 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
     Standard_Real aVRes = Hsurface->VResolution(1.0);
 
     // Checking correlation between number of samples and length of the face along each axis
-    const Standard_Real aTresh = 100.0;
-    Standard_Integer aMinSamples = 20;
-    const Standard_Integer aMaxSamples = 40;
+    const Standard_Real    aTresh       = 100.0;
+    Standard_Integer       aMinSamples  = 20;
+    const Standard_Integer aMaxSamples  = 40;
     const Standard_Integer aMaxSamples2 = aMaxSamples * aMaxSamples;
-    Standard_Real dU = (U1 - U0) / aURes;
-    Standard_Real dV = (V1 - V0) / aVRes;
-    if (nbsu < aMinSamples) nbsu = aMinSamples;
-    if (nbsv < aMinSamples) nbsv = aMinSamples;
-    if (nbsu > aMaxSamples) nbsu = aMaxSamples;
-    if (nbsv > aMaxSamples) nbsv = aMaxSamples;
+    Standard_Real          dU           = (U1 - U0) / aURes;
+    Standard_Real          dV           = (V1 - V0) / aVRes;
+    if (nbsu < aMinSamples)
+      nbsu = aMinSamples;
+    if (nbsv < aMinSamples)
+      nbsv = aMinSamples;
+    if (nbsu > aMaxSamples)
+      nbsu = aMaxSamples;
+    if (nbsv > aMaxSamples)
+      nbsv = aMaxSamples;
 
-    if (dU > Precision::Confusion() && dV > Precision::Confusion()) {
+    if (dU > Precision::Confusion() && dV > Precision::Confusion())
+    {
       if (Max(dU, dV) > Min(dU, dV) * aTresh)
       {
         aMinSamples = 10;
-        nbsu = (Standard_Integer)(Sqrt(dU / dV) * aMaxSamples);
-        if (nbsu < aMinSamples) nbsu = aMinSamples;
+        nbsu        = (Standard_Integer)(Sqrt(dU / dV) * aMaxSamples);
+        if (nbsu < aMinSamples)
+          nbsu = aMinSamples;
         nbsv = aMaxSamples2 / nbsu;
         if (nbsv < aMinSamples)
         {
@@ -186,81 +188,86 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
         }
       }
     }
-    else {
+    else
+    {
       return; // surface has no extension along one of directions
     }
 
     Standard_Integer NbUOnS = Hsurface->NbUIntervals(GeomAbs_C2);
     Standard_Integer NbVOnS = Hsurface->NbVIntervals(GeomAbs_C2);
 
-    if(NbUOnS > 1 || NbVOnS > 1)
+    if (NbUOnS > 1 || NbVOnS > 1)
     {
       Handle(TColStd_HArray1OfReal) UPars, VPars;
       ComputeSamplePars(Hsurface, nbsu, nbsv, UPars, VPars);
-      myPolyhedron.reset(new IntCurveSurface_ThePolyhedronOfHInter(Hsurface, UPars->ChangeArray1(),
+      myPolyhedron.reset(new IntCurveSurface_ThePolyhedronOfHInter(Hsurface,
+                                                                   UPars->ChangeArray1(),
                                                                    VPars->ChangeArray1()));
     }
-    else 
+    else
     {
-      myPolyhedron.reset(new IntCurveSurface_ThePolyhedronOfHInter(Hsurface,nbsu,nbsv,U0,V0,U1,V1));
+      myPolyhedron.reset(
+        new IntCurveSurface_ThePolyhedronOfHInter(Hsurface, nbsu, nbsv, U0, V0, U1, V1));
     }
   }
   myReady = Standard_True;
 }
-//=======================================================================
-//function : InternalCall
-//purpose  : 
-//=======================================================================
-void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter &HICS,
-                                             const Standard_Real parinf,
-                                             const Standard_Real parsup) 
+
+//=================================================================================================
+
+void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter& HICS,
+                                             const Standard_Real           parinf,
+                                             const Standard_Real           parsup)
 {
-  if(HICS.IsDone() && HICS.NbPoints() > 0) {
-    //Calculate tolerance for 2d classifier
-    Standard_Real mintol3d = BRep_Tool::Tolerance(face);
-    Standard_Real maxtol3d = mintol3d;
-    Standard_Real mintol2d = Tol, maxtol2d = Tol;
+  if (HICS.IsDone() && HICS.NbPoints() > 0)
+  {
+    // Calculate tolerance for 2d classifier
+    Standard_Real   mintol3d = BRep_Tool::Tolerance(face);
+    Standard_Real   maxtol3d = mintol3d;
+    Standard_Real   mintol2d = Tol, maxtol2d = Tol;
     TopExp_Explorer anExp(face, TopAbs_EDGE);
-    for(; anExp.More(); anExp.Next())
+    for (; anExp.More(); anExp.Next())
     {
       Standard_Real curtol = BRep_Tool::Tolerance(TopoDS::Edge(anExp.Current()));
-      mintol3d = Min(mintol3d, curtol);
-      maxtol3d = Max(maxtol3d, curtol);
+      mintol3d             = Min(mintol3d, curtol);
+      maxtol3d             = Max(maxtol3d, curtol);
     }
     Standard_Real minres = Max(Hsurface->UResolution(mintol3d), Hsurface->VResolution(mintol3d));
     Standard_Real maxres = Max(Hsurface->UResolution(maxtol3d), Hsurface->VResolution(maxtol3d));
-    mintol2d = Max(minres, Tol); 
-    maxtol2d = Max(maxres, Tol);
+    mintol2d             = Max(minres, Tol);
+    maxtol2d             = Max(maxres, Tol);
     //
     Handle(BRepTopAdaptor_TopolTool) anAdditionalTool;
-    for(Standard_Integer index=HICS.NbPoints(); index>=1; index--) {  
+    for (Standard_Integer index = HICS.NbPoints(); index >= 1; index--)
+    {
       const IntCurveSurface_IntersectionPoint& HICSPointindex = HICS.Point(index);
-      gp_Pnt2d Puv(HICSPointindex.U(),HICSPointindex.V());
+      gp_Pnt2d                                 Puv(HICSPointindex.U(), HICSPointindex.V());
 
-      //TopAbs_State currentstate = myTopolTool->Classify(Puv,Tol);
+      // TopAbs_State currentstate = myTopolTool->Classify(Puv,Tol);
       TopAbs_State currentstate = myTopolTool->Classify(Puv, !myUseBoundTol ? 0 : mintol2d);
-      if(myUseBoundTol && currentstate == TopAbs_OUT && maxtol2d > mintol2d) {
-        if(anAdditionalTool.IsNull())
+      if (myUseBoundTol && currentstate == TopAbs_OUT && maxtol2d > mintol2d)
+      {
+        if (anAdditionalTool.IsNull())
         {
           anAdditionalTool = new BRepTopAdaptor_TopolTool(Hsurface);
         }
-        currentstate = anAdditionalTool->Classify(Puv,maxtol2d);
-        if(currentstate == TopAbs_ON)
+        currentstate = anAdditionalTool->Classify(Puv, maxtol2d);
+        if (currentstate == TopAbs_ON)
         {
           currentstate = TopAbs_OUT;
-          //Find out nearest edge and it's tolerance
+          // Find out nearest edge and it's tolerance
           anExp.Init(face, TopAbs_EDGE);
-          for(; anExp.More(); anExp.Next())
+          for (; anExp.More(); anExp.Next())
           {
-            TopoDS_Edge anE = TopoDS::Edge(anExp.Current());
-            Standard_Real f, l;
-            Handle(Geom_Curve) aPC = BRep_Tool::Curve (anE, f, l);
-            GeomAPI_ProjectPointOnCurve aProj (HICSPointindex.Pnt(), aPC, f, l);
+            TopoDS_Edge                 anE = TopoDS::Edge(anExp.Current());
+            Standard_Real               f, l;
+            Handle(Geom_Curve)          aPC = BRep_Tool::Curve(anE, f, l);
+            GeomAPI_ProjectPointOnCurve aProj(HICSPointindex.Pnt(), aPC, f, l);
             if (aProj.NbPoints() > 0)
             {
               if (aProj.LowerDistance() <= maxtol3d)
               {
-                //Nearest edge is found, state is really ON
+                // Nearest edge is found, state is really ON
                 currentstate = TopAbs_ON;
                 break;
               }
@@ -268,58 +275,70 @@ void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter &HICS,
           }
         }
       }
-      if(currentstate==TopAbs_IN || currentstate==TopAbs_ON) { 
+      if (currentstate == TopAbs_IN || currentstate == TopAbs_ON)
+      {
         Standard_Real HICSW = HICSPointindex.W();
-        if(HICSW >= parinf && HICSW <= parsup ) { 
-          Standard_Real U          = HICSPointindex.U();
-          Standard_Real V          = HICSPointindex.V();
-          Standard_Real W          = HICSW; 
+        if (HICSW >= parinf && HICSW <= parsup)
+        {
+          Standard_Real                     U          = HICSPointindex.U();
+          Standard_Real                     V          = HICSPointindex.V();
+          Standard_Real                     W          = HICSW;
           IntCurveSurface_TransitionOnCurve transition = HICSPointindex.Transition();
-          gp_Pnt pnt        = HICSPointindex.Pnt();
+          gp_Pnt                            pnt        = HICSPointindex.Pnt();
           //  Modified by skv - Wed Sep  3 16:14:10 2003 OCC578 Begin
           Standard_Integer anIntState = (currentstate == TopAbs_IN) ? 0 : 1;
           //  Modified by skv - Wed Sep  3 16:14:11 2003 OCC578 End
 
-          if(transition != IntCurveSurface_Tangent && face.Orientation()==TopAbs_REVERSED) { 
-            if(transition == IntCurveSurface_In) 
+          if (transition != IntCurveSurface_Tangent && face.Orientation() == TopAbs_REVERSED)
+          {
+            if (transition == IntCurveSurface_In)
               transition = IntCurveSurface_Out;
-            else 
+            else
               transition = IntCurveSurface_In;
           }
-          //----- Insertion du point 
-          if(nbpnt==0) { 
-            IntCurveSurface_IntersectionPoint PPP(pnt,U,V,W,transition);
+          //----- Insertion du point
+          if (nbpnt == 0)
+          {
+            IntCurveSurface_IntersectionPoint PPP(pnt, U, V, W, transition);
             SeqPnt.Append(PPP);
             //  Modified by skv - Wed Sep  3 16:14:10 2003 OCC578 Begin
             mySeqState.Append(anIntState);
             //  Modified by skv - Wed Sep  3 16:14:11 2003 OCC578 End
           }
-          else { 
+          else
+          {
             Standard_Integer i = 1;
-            Standard_Integer b = nbpnt+1;                    
-            while(i<=nbpnt) {
-              const IntCurveSurface_IntersectionPoint& Pnti=SeqPnt.Value(i);
-              Standard_Real wi = Pnti.W();
-              if(wi >= W) { b=i; i=nbpnt; }
+            Standard_Integer b = nbpnt + 1;
+            while (i <= nbpnt)
+            {
+              const IntCurveSurface_IntersectionPoint& Pnti = SeqPnt.Value(i);
+              Standard_Real                            wi   = Pnti.W();
+              if (wi >= W)
+              {
+                b = i;
+                i = nbpnt;
+              }
               i++;
             }
-            IntCurveSurface_IntersectionPoint PPP(pnt,U,V,W,transition);
+            IntCurveSurface_IntersectionPoint PPP(pnt, U, V, W, transition);
             //  Modified by skv - Wed Sep  3 16:14:10 2003 OCC578 Begin
-            // 	    if(b>nbpnt)          { SeqPnt.Append(PPP); } 
-            // 	    else if(b>0)             { SeqPnt.InsertBefore(b,PPP); } 
-            if(b>nbpnt) {
+            // 	    if(b>nbpnt)          { SeqPnt.Append(PPP); }
+            // 	    else if(b>0)             { SeqPnt.InsertBefore(b,PPP); }
+            if (b > nbpnt)
+            {
               SeqPnt.Append(PPP);
               mySeqState.Append(anIntState);
-            } else if(b>0) {
-              SeqPnt.InsertBefore(b,PPP);
+            }
+            else if (b > 0)
+            {
+              SeqPnt.InsertBefore(b, PPP);
               mySeqState.InsertBefore(b, anIntState);
             }
             //  Modified by skv - Wed Sep  3 16:14:11 2003 OCC578 End
           }
 
-
           nbpnt++;
-        } 
+        }
       } //-- classifier state is IN or ON
     } //-- Loop on Intersection points.
   } //-- HICS.IsDone()
@@ -328,14 +347,13 @@ void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter &HICS,
     myIsParallel = HICS.IsParallel();
   }
 }
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
-void IntCurvesFace_Intersector::Perform(const gp_Lin& L,
+
+//=================================================================================================
+
+void IntCurvesFace_Intersector::Perform(const gp_Lin&       L,
                                         const Standard_Real ParMin,
                                         const Standard_Real ParMax)
-{ 
+{
   done = Standard_False;
   if (!myReady)
   {
@@ -345,78 +363,88 @@ void IntCurvesFace_Intersector::Perform(const gp_Lin& L,
   SeqPnt.Clear();
   mySeqState.Clear();
   nbpnt = 0;
-  
-  IntCurveSurface_HInter HICS; 
-  Handle(Geom_Line) geomline = new Geom_Line(L);
-  GeomAdaptor_Curve LL(geomline);
-  Handle(GeomAdaptor_Curve) HLL  = new GeomAdaptor_Curve(LL);
-  Standard_Real parinf=ParMin;
-  Standard_Real parsup=ParMax;
+
+  IntCurveSurface_HInter    HICS;
+  Handle(Geom_Line)         geomline = new Geom_Line(L);
+  GeomAdaptor_Curve         LL(geomline);
+  Handle(GeomAdaptor_Curve) HLL    = new GeomAdaptor_Curve(LL);
+  Standard_Real             parinf = ParMin;
+  Standard_Real             parsup = ParMax;
   //
-  if(!myPolyhedron) { 
-    HICS.Perform(HLL,Hsurface);
+  if (!myPolyhedron)
+  {
+    HICS.Perform(HLL, Hsurface);
   }
-  else { 
+  else
+  {
     Intf_Tool bndTool;
     Bnd_Box   boxLine;
-    bndTool.LinBox
-      (L,
-       myPolyhedron->Bounding(),
-       boxLine);
-    if(bndTool.NbSegments() == 0) 
+    bndTool.LinBox(L, myPolyhedron->Bounding(), boxLine);
+    if (bndTool.NbSegments() == 0)
       return;
-    for(Standard_Integer nbseg=1; nbseg<= bndTool.NbSegments(); nbseg++) { 
+    for (Standard_Integer nbseg = 1; nbseg <= bndTool.NbSegments(); nbseg++)
+    {
       Standard_Real pinf = bndTool.BeginParam(nbseg);
       Standard_Real psup = bndTool.EndParam(nbseg);
-      Standard_Real pppp = 0.05*(psup-pinf);
-      pinf-=pppp;
-      psup+=pppp;
-      if((psup - pinf)<1e-10) { pinf-=1e-10; psup+=1e-10; } 
-      if(nbseg==1) { parinf=pinf; parsup=psup; }
-      else { 
-        if(parinf>pinf) parinf = pinf;
-        if(parsup<psup) parsup = psup;
+      Standard_Real pppp = 0.05 * (psup - pinf);
+      pinf -= pppp;
+      psup += pppp;
+      if ((psup - pinf) < 1e-10)
+      {
+        pinf -= 1e-10;
+        psup += 1e-10;
+      }
+      if (nbseg == 1)
+      {
+        parinf = pinf;
+        parsup = psup;
+      }
+      else
+      {
+        if (parinf > pinf)
+          parinf = pinf;
+        if (parsup < psup)
+          parsup = psup;
       }
     }
-    if(parinf>ParMax) { return; } 
-    if(parsup<ParMin) { return; }
-    if(parinf<ParMin) parinf=ParMin;
-    if(parsup>ParMax) parsup=ParMax;
-    if(parinf>(parsup-1e-9)) return; 
-    IntCurveSurface_ThePolygonOfHInter polygon(HLL,
-                                              parinf,
-                                              parsup,
-                                              2);
-#if OPTIMISATION
-    if(!myBndBounding)
-    { 
-      myBndBounding.reset(new Bnd_BoundSortBox());
-      myBndBounding->Initialize(IntCurveSurface_ThePolyhedronToolOfHInter::Bounding(*myPolyhedron),
-                                IntCurveSurface_ThePolyhedronToolOfHInter::ComponentsBounding(*myPolyhedron));
+    if (parinf > ParMax)
+    {
+      return;
     }
-    HICS.Perform(HLL,
-                polygon,
-                Hsurface,
-                *myPolyhedron,
-                *myBndBounding);
+    if (parsup < ParMin)
+    {
+      return;
+    }
+    if (parinf < ParMin)
+      parinf = ParMin;
+    if (parsup > ParMax)
+      parsup = ParMax;
+    if (parinf > (parsup - 1e-9))
+      return;
+    IntCurveSurface_ThePolygonOfHInter polygon(HLL, parinf, parsup, 2);
+#if OPTIMISATION
+    if (!myBndBounding)
+    {
+      myBndBounding.reset(new Bnd_BoundSortBox());
+      myBndBounding->Initialize(
+        IntCurveSurface_ThePolyhedronToolOfHInter::Bounding(*myPolyhedron),
+        IntCurveSurface_ThePolyhedronToolOfHInter::ComponentsBounding(*myPolyhedron));
+    }
+    HICS.Perform(HLL, polygon, Hsurface, *myPolyhedron, *myBndBounding);
 #else
-    HICS.Perform(HLL,
-                polygon,
-                Hsurface,
-                *myPolyhedron);
+    HICS.Perform(HLL, polygon, Hsurface, *myPolyhedron);
 #endif
   }
-  
-  InternalCall(HICS,parinf,parsup);
+
+  InternalCall(HICS, parinf, parsup);
 }
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
 void IntCurvesFace_Intersector::Perform(const Handle(Adaptor3d_Curve)& HCu,
-                                        const Standard_Real ParMin,
-                                        const Standard_Real ParMax) 
-{ 
+                                        const Standard_Real            ParMin,
+                                        const Standard_Real            ParMax)
+{
   done = Standard_False;
   if (!myReady)
   {
@@ -428,67 +456,63 @@ void IntCurvesFace_Intersector::Perform(const Handle(Adaptor3d_Curve)& HCu,
   mySeqState.Clear();
   //  Modified by skv - Wed Sep  3 16:14:11 2003 OCC578 End
   nbpnt = 0;
-  IntCurveSurface_HInter            HICS; 
-  
-  //-- 
-  Standard_Real parinf=ParMin;
-  Standard_Real parsup=ParMax;
+  IntCurveSurface_HInter HICS;
 
-  if(!myPolyhedron) 
-  { 
-    HICS.Perform(HCu,Hsurface);
+  //--
+  Standard_Real parinf = ParMin;
+  Standard_Real parsup = ParMax;
+
+  if (!myPolyhedron)
+  {
+    HICS.Perform(HCu, Hsurface);
   }
-  else 
-  { 
+  else
+  {
     parinf = IntCurveSurface_TheHCurveTool::FirstParameter(HCu);
     parsup = IntCurveSurface_TheHCurveTool::LastParameter(HCu);
-    if(parinf<ParMin) parinf = ParMin;
-    if(parsup>ParMax) parsup = ParMax;
-    if(parinf>(parsup-1e-9)) return; 
+    if (parinf < ParMin)
+      parinf = ParMin;
+    if (parsup > ParMax)
+      parsup = ParMax;
+    if (parinf > (parsup - 1e-9))
+      return;
     Standard_Integer nbs;
-    nbs = IntCurveSurface_TheHCurveTool::NbSamples(HCu,parinf,parsup);
-    
-    IntCurveSurface_ThePolygonOfHInter polygon(HCu,
-                                              parinf,
-                                              parsup,
-                                              nbs);
+    nbs = IntCurveSurface_TheHCurveTool::NbSamples(HCu, parinf, parsup);
+
+    IntCurveSurface_ThePolygonOfHInter polygon(HCu, parinf, parsup, nbs);
 #if OPTIMISATION
-    if(!myBndBounding) { 
+    if (!myBndBounding)
+    {
       myBndBounding.reset(new Bnd_BoundSortBox());
-      myBndBounding->Initialize(IntCurveSurface_ThePolyhedronToolOfHInter::Bounding(*myPolyhedron),
-                                IntCurveSurface_ThePolyhedronToolOfHInter::ComponentsBounding(*myPolyhedron));
+      myBndBounding->Initialize(
+        IntCurveSurface_ThePolyhedronToolOfHInter::Bounding(*myPolyhedron),
+        IntCurveSurface_ThePolyhedronToolOfHInter::ComponentsBounding(*myPolyhedron));
     }
-    HICS.Perform(HCu,
-                polygon,
-                Hsurface,
-                *myPolyhedron,
-                *myBndBounding);
+    HICS.Perform(HCu, polygon, Hsurface, *myPolyhedron, *myBndBounding);
 #else
-    HICS.Perform(HCu,
-                polygon,
-                Hsurface,
-                *myPolyhedron);
+    HICS.Perform(HCu, polygon, Hsurface, *myPolyhedron);
 #endif
   }
-  InternalCall(HICS,parinf,parsup);
+  InternalCall(HICS, parinf, parsup);
 }
 
 //============================================================================
-Bnd_Box IntCurvesFace_Intersector::Bounding() const {
-  if(myPolyhedron) 
+Bnd_Box IntCurvesFace_Intersector::Bounding() const
+{
+  if (myPolyhedron)
   {
     return myPolyhedron->Bounding();
   }
-  else 
-  { 
+  else
+  {
     Bnd_Box B;
     return B;
   }
 }
 
-TopAbs_State IntCurvesFace_Intersector::ClassifyUVPoint(const gp_Pnt2d& Puv) const 
-{ 
-  TopAbs_State state = myTopolTool->Classify(Puv,1e-7);
+TopAbs_State IntCurvesFace_Intersector::ClassifyUVPoint(const gp_Pnt2d& Puv) const
+{
+  TopAbs_State state = myTopolTool->Classify(Puv, 1e-7);
   return state;
 }
 
@@ -502,6 +526,4 @@ Standard_Boolean IntCurvesFace_Intersector::GetUseBoundToler() const
   return myUseBoundTol;
 }
 
-IntCurvesFace_Intersector::~IntCurvesFace_Intersector()
-{
-}
+IntCurvesFace_Intersector::~IntCurvesFace_Intersector() {}

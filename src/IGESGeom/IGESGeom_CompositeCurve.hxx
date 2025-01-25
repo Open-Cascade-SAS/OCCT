@@ -23,7 +23,6 @@
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 
-
 class IGESGeom_CompositeCurve;
 DEFINE_STANDARD_HANDLE(IGESGeom_CompositeCurve, IGESData_IGESEntity)
 
@@ -36,44 +35,25 @@ class IGESGeom_CompositeCurve : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESGeom_CompositeCurve();
-  
+
   //! This method is used to set the fields of the class
   //! CompositeCurve
   //! - allEntities : Constituent Entities of the composite curve
-  Standard_EXPORT void Init (const Handle(IGESData_HArray1OfIGESEntity)& allEntities);
-  
+  Standard_EXPORT void Init(const Handle(IGESData_HArray1OfIGESEntity)& allEntities);
+
   //! returns the number of curves contained in the CompositeCurve
   Standard_EXPORT Standard_Integer NbCurves() const;
-  
+
   //! returns Component of the CompositeCurve (a curve or a point)
   //! raises exception if Index <= 0 or Index > NbCurves()
-  Standard_EXPORT Handle(IGESData_IGESEntity) Curve (const Standard_Integer Index) const;
+  Standard_EXPORT Handle(IGESData_IGESEntity) Curve(const Standard_Integer Index) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESGeom_CompositeCurve,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_CompositeCurve, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(IGESData_HArray1OfIGESEntity) theEntities;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESGeom_CompositeCurve_HeaderFile

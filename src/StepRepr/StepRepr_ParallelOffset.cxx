@@ -15,21 +15,18 @@
 
 #include <StepRepr_ParallelOffset.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ParallelOffset,StepRepr_DerivedShapeAspect)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ParallelOffset, StepRepr_DerivedShapeAspect)
 
-StepRepr_ParallelOffset::StepRepr_ParallelOffset ()    {  }
+StepRepr_ParallelOffset::StepRepr_ParallelOffset() {}
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void StepRepr_ParallelOffset::Init(
-  const Handle(TCollection_HAsciiString)& theShapeAspect_Name,
-  const Handle(TCollection_HAsciiString)& theShapeAspect_Description,
+  const Handle(TCollection_HAsciiString)&        theShapeAspect_Name,
+  const Handle(TCollection_HAsciiString)&        theShapeAspect_Description,
   const Handle(StepRepr_ProductDefinitionShape)& theShapeAspect_OfShape,
-  const StepData_Logical theShapeAspect_ProductDefinitional,
-  const Handle(StepBasic_MeasureWithUnit) &theOffset)
+  const StepData_Logical                         theShapeAspect_ProductDefinitional,
+  const Handle(StepBasic_MeasureWithUnit)&       theOffset)
 {
   StepRepr_ShapeAspect::Init(theShapeAspect_Name,
                              theShapeAspect_Description,

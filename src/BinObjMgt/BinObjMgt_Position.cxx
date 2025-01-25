@@ -13,36 +13,32 @@
 
 #include <BinObjMgt_Position.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT (BinObjMgt_Position, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(BinObjMgt_Position, Standard_Transient)
 
-//=======================================================================
-//function : BinObjMgt_Position
-//purpose  : 
-//=======================================================================
-BinObjMgt_Position::BinObjMgt_Position (Standard_OStream& theStream) :
-  myPosition (theStream.tellp()), mySize(0)
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : StoreSize
-//purpose  : 
-//=======================================================================
-void BinObjMgt_Position::StoreSize (Standard_OStream& theStream)
+BinObjMgt_Position::BinObjMgt_Position(Standard_OStream& theStream)
+    : myPosition(theStream.tellp()),
+      mySize(0)
 {
-  mySize = uint64_t (theStream.tellp() - myPosition);
 }
 
-//=======================================================================
-//function : WriteSize
-//purpose  : 
-//=======================================================================
-void BinObjMgt_Position::WriteSize (Standard_OStream& theStream, const Standard_Boolean theDummy)
+//=================================================================================================
+
+void BinObjMgt_Position::StoreSize(Standard_OStream& theStream)
+{
+  mySize = uint64_t(theStream.tellp() - myPosition);
+}
+
+//=================================================================================================
+
+void BinObjMgt_Position::WriteSize(Standard_OStream& theStream, const Standard_Boolean theDummy)
 {
   if (!theDummy && theStream.tellp() != myPosition)
-    theStream.seekp (myPosition);
+    theStream.seekp(myPosition);
   uint64_t aSize = theDummy ? 0 : mySize;
 #if DO_INVERSE
-  aSize = FSD_BinaryFile::InverseUint64 (aSize);
+  aSize = FSD_BinaryFile::InverseUint64(aSize);
 #endif
-  theStream.write ((char*)&aSize, sizeof (uint64_t));
+  theStream.write((char*)&aSize, sizeof(uint64_t));
 }

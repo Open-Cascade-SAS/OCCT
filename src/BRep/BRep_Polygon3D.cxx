@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRep_CurveRepresentation.hxx>
 #include <BRep_Polygon3D.hxx>
 #include <Poly_Polygon3D.hxx>
@@ -22,69 +21,52 @@
 #include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRep_Polygon3D,BRep_CurveRepresentation)
+IMPLEMENT_STANDARD_RTTIEXT(BRep_Polygon3D, BRep_CurveRepresentation)
 
-//=======================================================================
-//function : BRep_Polygon3D
-//purpose  : 
-//=======================================================================
-BRep_Polygon3D::BRep_Polygon3D(const Handle(Poly_Polygon3D)& P, 
-			       const TopLoc_Location&        L): 
-			       BRep_CurveRepresentation(L),
-			       myPolygon3D(P)
+//=================================================================================================
+
+BRep_Polygon3D::BRep_Polygon3D(const Handle(Poly_Polygon3D)& P, const TopLoc_Location& L)
+    : BRep_CurveRepresentation(L),
+      myPolygon3D(P)
 {
 }
 
-//=======================================================================
-//function : IsPolygon3D
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean BRep_Polygon3D::IsPolygon3D() const 
+Standard_Boolean BRep_Polygon3D::IsPolygon3D() const
 {
   return Standard_True;
 }
 
-//=======================================================================
-//function : Polygon3D
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-const Handle(Poly_Polygon3D)& BRep_Polygon3D::Polygon3D() const 
+const Handle(Poly_Polygon3D)& BRep_Polygon3D::Polygon3D() const
 {
   return myPolygon3D;
 }
 
-//=======================================================================
-//function : Polygon3d
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void BRep_Polygon3D::Polygon3D(const Handle(Poly_Polygon3D)& P)
 {
   myPolygon3D = P;
 }
 
-//=======================================================================
-//function : Copy
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(BRep_CurveRepresentation) BRep_Polygon3D::Copy() const 
+Handle(BRep_CurveRepresentation) BRep_Polygon3D::Copy() const
 {
   Handle(BRep_Polygon3D) P = new BRep_Polygon3D(myPolygon3D, Location());
   return P;
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void BRep_Polygon3D::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+//=================================================================================================
+
+void BRep_Polygon3D::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, BRep_CurveRepresentation)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, BRep_CurveRepresentation)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myPolygon3D.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myPolygon3D.get())
 }

@@ -20,12 +20,12 @@
 #include <Media_Packet.hxx>
 
 #ifdef HAVE_FFMPEG
-#include <Standard_WarningsDisable.hxx>
+  #include <Standard_WarningsDisable.hxx>
 extern "C"
 {
   #include <libavcodec/avcodec.h>
 };
-#include <Standard_WarningsRestore.hxx>
+  #include <Standard_WarningsRestore.hxx>
 #endif
 
 IMPLEMENT_STANDARD_RTTIEXT(Media_Packet, Standard_Transient)
@@ -35,7 +35,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Media_Packet, Standard_Transient)
 // purpose  :
 // =======================================================================
 Media_Packet::Media_Packet()
-: myPacket (NULL)
+    : myPacket(NULL)
 {
 #ifdef HAVE_FFMPEG
   myPacket = av_packet_alloc();
@@ -49,7 +49,7 @@ Media_Packet::Media_Packet()
 Media_Packet::~Media_Packet()
 {
 #ifdef HAVE_FFMPEG
-  av_packet_free (&myPacket);
+  av_packet_free(&myPacket);
 #endif
 }
 
@@ -60,7 +60,7 @@ Media_Packet::~Media_Packet()
 void Media_Packet::Unref()
 {
 #ifdef HAVE_FFMPEG
-  av_packet_unref (myPacket);
+  av_packet_unref(myPacket);
 #endif
 }
 

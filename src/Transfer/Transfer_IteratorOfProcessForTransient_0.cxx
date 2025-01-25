@@ -23,49 +23,48 @@
 #include <Transfer_ActorOfProcessForTransient.hxx>
 #include <Transfer_Binder.hxx>
 
-//=======================================================================
-//function : Transfer_IteratorOfProcessForTransient
-//purpose  : 
-//=======================================================================
-Transfer_IteratorOfProcessForTransient::Transfer_IteratorOfProcessForTransient(const Standard_Boolean withstarts)
-  : Transfer_TransferIterator()
+//=================================================================================================
+
+Transfer_IteratorOfProcessForTransient::Transfer_IteratorOfProcessForTransient(
+  const Standard_Boolean withstarts)
+    : Transfer_TransferIterator()
 {
-  if (withstarts) thestarts = new TColStd_HSequenceOfTransient();
+  if (withstarts)
+    thestarts = new TColStd_HSequenceOfTransient();
 }
 
-//=======================================================================
-//function : Add
-//purpose  : 
-//=======================================================================
-void  Transfer_IteratorOfProcessForTransient::Add
-(const Handle(Transfer_Binder)& binder)
+//=================================================================================================
+
+void Transfer_IteratorOfProcessForTransient::Add(const Handle(Transfer_Binder)& binder)
 {
-  if (!thestarts.IsNull()) throw Standard_NoSuchObject("Transfer_IteratorOfProcessForTransient : Add, Starting Object required not provided");
+  if (!thestarts.IsNull())
+    throw Standard_NoSuchObject(
+      "Transfer_IteratorOfProcessForTransient : Add, Starting Object required not provided");
   AddItem(binder);
 }
 
-//=======================================================================
-//function : Add
-//purpose  : 
-//=======================================================================
-void  Transfer_IteratorOfProcessForTransient::Add
-(const Handle(Transfer_Binder)& binder, const Handle(Standard_Transient)& start)
+//=================================================================================================
+
+void Transfer_IteratorOfProcessForTransient::Add(const Handle(Transfer_Binder)&    binder,
+                                                 const Handle(Standard_Transient)& start)
 {
   AddItem(binder);
-  if (!thestarts.IsNull()) thestarts->Append(start);
+  if (!thestarts.IsNull())
+    thestarts->Append(start);
 }
 
-//=======================================================================
-//function : Filter
-//purpose  : 
-//=======================================================================
-void  Transfer_IteratorOfProcessForTransient::Filter
-(const Handle(TColStd_HSequenceOfTransient)& list, const Standard_Boolean keep)
+//=================================================================================================
+
+void Transfer_IteratorOfProcessForTransient::Filter(
+  const Handle(TColStd_HSequenceOfTransient)& list,
+  const Standard_Boolean                      keep)
 {
-  if (list.IsNull() || thestarts.IsNull()) return;
+  if (list.IsNull() || thestarts.IsNull())
+    return;
   Standard_Integer i, j, nb = thestarts->Length();
-  if (nb == 0) return;
-  Handle(Transfer_Binder) factice;
+  if (nb == 0)
+    return;
+  Handle(Transfer_Binder)                   factice;
   Transfer_TransferMapOfProcessForTransient amap(nb);
   for (i = 1; i <= nb; i++)
   {
@@ -78,25 +77,23 @@ void  Transfer_IteratorOfProcessForTransient::Filter
   for (i = 1; i <= nb; i++)
   {
     j = amap.FindIndex(list->Value(i));
-    if (j > 0) SelectItem(j, keep);
+    if (j > 0)
+      SelectItem(j, keep);
   }
 }
 
-//=======================================================================
-//function : HasStarting
-//purpose  : 
-//=======================================================================
-Standard_Boolean  Transfer_IteratorOfProcessForTransient::HasStarting() const
+//=================================================================================================
+
+Standard_Boolean Transfer_IteratorOfProcessForTransient::HasStarting() const
 {
   return (!thestarts.IsNull());
 }
 
-//=======================================================================
-//function : Starting
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 const Handle(Standard_Transient)& Transfer_IteratorOfProcessForTransient::Starting() const
 {
-  if (thestarts.IsNull()) throw Standard_NoSuchObject("TransferIterator : No Starting defined at all");
+  if (thestarts.IsNull())
+    throw Standard_NoSuchObject("TransferIterator : No Starting defined at all");
   return thestarts->Value(thecurr);
 }

@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<gp_Lin2d> TColgp_Array1OfLin2d;
 
-
 #endif

@@ -24,7 +24,6 @@
 #include <TDataXtd_Array1OfTrsf.hxx>
 class Standard_GUID;
 
-
 class TDataXtd_Pattern;
 DEFINE_STANDARD_HANDLE(TDataXtd_Pattern, TDF_Attribute)
 
@@ -33,43 +32,24 @@ class TDataXtd_Pattern : public TDF_Attribute
 {
 
 public:
-
-  
   Standard_EXPORT static const Standard_GUID& GetID();
-  
+
   //! Returns the ID of the attribute.
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
-  
+
   //! Returns the ID of the attribute.
   Standard_EXPORT virtual const Standard_GUID& PatternID() const = 0;
-  
+
   //! Give the number of transformation
   Standard_EXPORT virtual Standard_Integer NbTrsfs() const = 0;
-  
+
   //! Give the transformations
-  Standard_EXPORT virtual void ComputeTrsfs (TDataXtd_Array1OfTrsf& Trsfs) const = 0;
+  Standard_EXPORT virtual void ComputeTrsfs(TDataXtd_Array1OfTrsf& Trsfs) const = 0;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(TDataXtd_Pattern,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataXtd_Pattern, TDF_Attribute)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _TDataXtd_Pattern_HeaderFile

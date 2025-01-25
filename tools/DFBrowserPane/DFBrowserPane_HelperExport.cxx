@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowserPane_HelperExport.hxx>
 
@@ -27,7 +27,8 @@
 // function : AddShape
 // purpose :
 // =======================================================================
-void DFBrowserPane_HelperExport::AddShape (const TopoDS_Shape& theShape, const QModelIndexList& theIndices)
+void DFBrowserPane_HelperExport::AddShape(const TopoDS_Shape&    theShape,
+                                          const QModelIndexList& theIndices)
 {
   for (int anIndicesIt = 0, aCount = theIndices.size(); anIndicesIt < aCount; anIndicesIt++)
     myShapes[theIndices[anIndicesIt]] = theShape;
@@ -37,9 +38,9 @@ void DFBrowserPane_HelperExport::AddShape (const TopoDS_Shape& theShape, const Q
 // function : OnButtonPressed
 // purpose :
 // =======================================================================
-void DFBrowserPane_HelperExport::OnButtonPressed (const QModelIndex& theIndex)
+void DFBrowserPane_HelperExport::OnButtonPressed(const QModelIndex& theIndex)
 {
-  if (!myShapes.contains (theIndex))
+  if (!myShapes.contains(theIndex))
     return;
 
   const TopoDS_Shape& aShape = myShapes[theIndex];
@@ -50,18 +51,22 @@ void DFBrowserPane_HelperExport::OnButtonPressed (const QModelIndex& theIndex)
   QString aFileExtension = ".brep";
 
 #if QT_VERSION < 0x050000
-  QString aFilter (tr ("BREP file (*%1*)").arg (aFileExtension));
+  QString aFilter(tr("BREP file (*%1*)").arg(aFileExtension));
 #else
   QString aFilter;
 #endif
   QString aSelectedFilter;
-  QString aFileName = QFileDialog::getSaveFileName (0, tr ("Export shape to BREP file"), QString(),
-                                                    aFilter, &aSelectedFilter);
-  if (!aFileName.isEmpty()) {
-    QApplication::setOverrideCursor (Qt::WaitCursor);
-    if (aFileName.indexOf (aFileExtension) < 0)
-      aFileName += QString (aFileExtension);
-  
+  QString aFileName = QFileDialog::getSaveFileName(0,
+                                                   tr("Export shape to BREP file"),
+                                                   QString(),
+                                                   aFilter,
+                                                   &aSelectedFilter);
+  if (!aFileName.isEmpty())
+  {
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    if (aFileName.indexOf(aFileExtension) < 0)
+      aFileName += QString(aFileExtension);
+
     const TCollection_AsciiString anAsciiName(aFileName.toUtf8().data());
     BRepTools::Write(aShape, anAsciiName.ToCString());
     QApplication::restoreOverrideCursor();

@@ -26,26 +26,20 @@ class TopoDS_Edge;
 class IMeshTools_ShapeVisitor : public Standard_Transient
 {
 public:
-
   //! Destructor.
-  virtual ~IMeshTools_ShapeVisitor()
-  {
-  }
+  virtual ~IMeshTools_ShapeVisitor() {}
 
   //! Handles TopoDS_Face object.
-  Standard_EXPORT virtual void Visit (const TopoDS_Face& theFace) = 0;
+  Standard_EXPORT virtual void Visit(const TopoDS_Face& theFace) = 0;
 
   //! Handles TopoDS_Edge object.
-  Standard_EXPORT virtual void Visit (const TopoDS_Edge& theEdge) = 0;
+  Standard_EXPORT virtual void Visit(const TopoDS_Edge& theEdge) = 0;
 
   DEFINE_STANDARD_RTTIEXT(IMeshTools_ShapeVisitor, Standard_Transient)
 
 protected:
-
   //! Constructor.
-  IMeshTools_ShapeVisitor()
-  {
-  }
+  IMeshTools_ShapeVisitor() {}
 };
 
 #endif

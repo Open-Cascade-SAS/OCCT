@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 class IFSelect_SessionPilot;
 
-
 class IFSelect_Act;
 DEFINE_STANDARD_HANDLE(IFSelect_Act, IFSelect_Activator)
 
@@ -52,56 +51,45 @@ class IFSelect_Act : public IFSelect_Activator
 {
 
 public:
-
-  
   //! Creates an Act with a name, help and a function
   //! mode (Add or AddSet) is given when recording
-  Standard_EXPORT IFSelect_Act(const Standard_CString name, const Standard_CString help, const IFSelect_ActFunc func);
-  
+  Standard_EXPORT IFSelect_Act(const Standard_CString name,
+                               const Standard_CString help,
+                               const IFSelect_ActFunc func);
+
   //! Execution of Command Line. remark that <number> is senseless
   //! because each Act brings one and only one function
-  Standard_EXPORT IFSelect_ReturnStatus Do (const Standard_Integer number, const Handle(IFSelect_SessionPilot)& pilot) Standard_OVERRIDE;
-  
+  Standard_EXPORT IFSelect_ReturnStatus
+    Do(const Standard_Integer number, const Handle(IFSelect_SessionPilot)& pilot) Standard_OVERRIDE;
+
   //! Short Help for commands : returns the help given to create
-  Standard_EXPORT Standard_CString Help (const Standard_Integer number) const Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_CString Help(const Standard_Integer number) const Standard_OVERRIDE;
+
   //! Changes the default group name for the following Acts
   //! group empty means to come back to default from Activator
   //! Also a file name can be precised (to query by getsource)
-  Standard_EXPORT static void SetGroup (const Standard_CString group, const Standard_CString file = "");
-  
+  Standard_EXPORT static void SetGroup(const Standard_CString group,
+                                       const Standard_CString file = "");
+
   //! Adds a function with its name and help : creates an Act then
   //! records it as normal function
-  Standard_EXPORT static void AddFunc (const Standard_CString name, const Standard_CString help, const IFSelect_ActFunc func);
-  
+  Standard_EXPORT static void AddFunc(const Standard_CString name,
+                                      const Standard_CString help,
+                                      const IFSelect_ActFunc func);
+
   //! Adds a function with its name and help : creates an Act then
   //! records it as function for XSET (i.e. to create control item)
-  Standard_EXPORT static void AddFSet (const Standard_CString name, const Standard_CString help, const IFSelect_ActFunc func);
+  Standard_EXPORT static void AddFSet(const Standard_CString name,
+                                      const Standard_CString help,
+                                      const IFSelect_ActFunc func);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IFSelect_Act,IFSelect_Activator)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_Act, IFSelect_Activator)
 
 protected:
-
-
-
-
 private:
-
-
   TCollection_AsciiString thename;
   TCollection_AsciiString thehelp;
-  IFSelect_ActFunc thefunc;
-
-
+  IFSelect_ActFunc        thefunc;
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_Act_HeaderFile

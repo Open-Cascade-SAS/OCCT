@@ -32,55 +32,47 @@ class TopoDS_Edge;
 class TopoDS_Shape;
 class TopoDS_Vertex;
 
-
 //! Geometric Tool using to construct Offset Wires.
-class BRepFill_TrimEdgeTool 
+class BRepFill_TrimEdgeTool
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT BRepFill_TrimEdgeTool();
-  
-  Standard_EXPORT BRepFill_TrimEdgeTool(const Bisector_Bisec& Bisec, const Handle(Geom2d_Geometry)& S1, const Handle(Geom2d_Geometry)& S2, const Standard_Real Offset);
-  
-  Standard_EXPORT   void IntersectWith (const TopoDS_Edge& Edge1, const TopoDS_Edge& Edge2, const TopoDS_Shape& InitShape1, const TopoDS_Shape& InitShape2, const TopoDS_Vertex& End1, const TopoDS_Vertex& End2, const GeomAbs_JoinType theJoinType, const Standard_Boolean IsOpenResult, TColgp_SequenceOfPnt& Params) ;
-  
-  Standard_EXPORT void AddOrConfuse (const Standard_Boolean Start, const TopoDS_Edge& Edge1, const TopoDS_Edge& Edge2, TColgp_SequenceOfPnt& Params) const;
-  
-  Standard_EXPORT Standard_Boolean IsInside (const gp_Pnt2d& P) const;
 
+  Standard_EXPORT BRepFill_TrimEdgeTool(const Bisector_Bisec&          Bisec,
+                                        const Handle(Geom2d_Geometry)& S1,
+                                        const Handle(Geom2d_Geometry)& S2,
+                                        const Standard_Real            Offset);
 
+  Standard_EXPORT void IntersectWith(const TopoDS_Edge&     Edge1,
+                                     const TopoDS_Edge&     Edge2,
+                                     const TopoDS_Shape&    InitShape1,
+                                     const TopoDS_Shape&    InitShape2,
+                                     const TopoDS_Vertex&   End1,
+                                     const TopoDS_Vertex&   End2,
+                                     const GeomAbs_JoinType theJoinType,
+                                     const Standard_Boolean IsOpenResult,
+                                     TColgp_SequenceOfPnt&  Params);
 
+  Standard_EXPORT void AddOrConfuse(const Standard_Boolean Start,
+                                    const TopoDS_Edge&     Edge1,
+                                    const TopoDS_Edge&     Edge2,
+                                    TColgp_SequenceOfPnt&  Params) const;
+
+  Standard_EXPORT Standard_Boolean IsInside(const gp_Pnt2d& P) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Boolean isPoint1;
-  Standard_Boolean isPoint2;
-  gp_Pnt2d myP1;
-  gp_Pnt2d myP2;
+  Standard_Boolean     isPoint1;
+  Standard_Boolean     isPoint2;
+  gp_Pnt2d             myP1;
+  gp_Pnt2d             myP2;
   Handle(Geom2d_Curve) myC1;
   Handle(Geom2d_Curve) myC2;
-  Standard_Real myOffset;
-  Bisector_Bisec myBisec;
-  Geom2dAdaptor_Curve myBis;
-
-
+  Standard_Real        myOffset;
+  Bisector_Bisec       myBisec;
+  Geom2dAdaptor_Curve  myBis;
 };
-
-
-
-
-
-
 
 #endif // _BRepFill_TrimEdgeTool_HeaderFile

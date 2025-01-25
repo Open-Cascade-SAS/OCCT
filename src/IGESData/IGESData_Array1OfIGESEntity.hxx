@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(IGESData_IGESEntity)> IGESData_Array1OfIGESEntity;
 
-
 #endif

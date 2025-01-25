@@ -19,7 +19,6 @@
 #include <HLRBRep_CurveTool.hxx>
 #include <Extrema_POnCurv2d.hxx>
 #include <gp_Pnt2d.hxx>
- 
 
 #define Curve1 Standard_Address
 #define Curve1_hxx <Standard_Address.hxx>
@@ -36,4 +35,3 @@
 #define Extrema_CurveLocator HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter
 #define Extrema_CurveLocator_hxx <HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter.hxx>
 #include "../Extrema/Extrema_CurveLocator.gxx"
-

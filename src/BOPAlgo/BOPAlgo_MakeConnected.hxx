@@ -27,7 +27,6 @@
 
 #include <NCollection_DataMap.hxx>
 
-
 //! BOPAlgo_MakeConnected is the algorithm for making the touching
 //! shapes connected or glued, i.e. for making the coinciding geometries
 //! be topologically shared among the shapes.
@@ -113,8 +112,8 @@
 //! }
 //!
 //! // Making the connected shape periodic
-//! BOPAlgo_MakePeriodic::PeriodicityParams aParams = ...; // Options for periodicity of the connected shape
-//! aMC.MakePeriodic(aParams);
+//! BOPAlgo_MakePeriodic::PeriodicityParams aParams = ...; // Options for periodicity of the
+//! connected shape aMC.MakePeriodic(aParams);
 //!
 //! // Shape repetition after making it periodic
 //! // Check if the shape has been made periodic successfully
@@ -132,47 +131,32 @@
 class BOPAlgo_MakeConnected : public BOPAlgo_Options
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
 public: //! @name Constructor
-
   //! Empty constructor
-  BOPAlgo_MakeConnected() : BOPAlgo_Options()
+  BOPAlgo_MakeConnected()
+      : BOPAlgo_Options()
   {
   }
-
 
 public: //! @name Setters for the shapes to make connected
-
   //! Sets the shape for making them connected.
   //! @param[in] theArgs  The arguments for the operation.
-  void SetArguments(const TopTools_ListOfShape& theArgs)
-  {
-    myArguments = theArgs;
-  }
+  void SetArguments(const TopTools_ListOfShape& theArgs) { myArguments = theArgs; }
 
   //! Adds the shape to the arguments.
   //! @param[in] theS  One of the argument shapes.
-  void AddArgument(const TopoDS_Shape& theS)
-  {
-    myArguments.Append(theS);
-  }
+  void AddArgument(const TopoDS_Shape& theS) { myArguments.Append(theS); }
 
   //! Returns the list of arguments of the operation.
-  const TopTools_ListOfShape& Arguments() const
-  {
-    return myArguments;
-  }
+  const TopTools_ListOfShape& Arguments() const { return myArguments; }
 
 public: //! @name Performing the operations
-
   //! Performs the operation, i.e. makes the input shapes connected.
   Standard_EXPORT void Perform();
 
-
 public: //! @name Shape periodicity & repetition
-
   //! Makes the connected shape periodic.
   //! Repeated calls of this method overwrite the previous calls
   //! working with the basis connected shape.
@@ -192,14 +176,9 @@ public: //! @name Shape periodicity & repetition
   Standard_EXPORT void ClearRepetitions();
 
   //! Returns the periodicity tool.
-  const BOPAlgo_MakePeriodic& PeriodicityTool() const
-  {
-    return myPeriodicityMaker;
-  }
-
+  const BOPAlgo_MakePeriodic& PeriodicityTool() const { return myPeriodicityMaker; }
 
 public: //! @name Material transitions
-
   //! Returns the original shapes which images contain the
   //! the given shape with FORWARD orientation.
   //! @param[in] theS  The shape for which the materials are necessary.
@@ -218,14 +197,9 @@ public: //! @name Material transitions
     return (pLM ? *pLM : EmptyList());
   }
 
-
 public: //! @name History methods
-
   //! Returns the history of operations
-  const Handle(BRepTools_History)& History() const
-  {
-    return myHistory;
-  }
+  const Handle(BRepTools_History)& History() const { return myHistory; }
 
   //! Returns the list of shapes modified from the given shape.
   //! @param[in] theS  The shape for which the modified shapes are necessary.
@@ -242,24 +216,14 @@ public: //! @name History methods
     return (pLOr ? *pLOr : EmptyList());
   }
 
-
 public: //! @name Getting the result shapes
-
   //! Returns the resulting connected shape
-  const TopoDS_Shape& Shape() const
-  {
-    return myGlued;
-  }
+  const TopoDS_Shape& Shape() const { return myGlued; }
 
   //! Returns the resulting periodic & repeated shape
-  const TopoDS_Shape& PeriodicShape() const
-  {
-    return myShape;
-  }
-
+  const TopoDS_Shape& PeriodicShape() const { return myShape; }
 
 public: //! @name Clearing the contents of the algorithm from previous runs
-
   //! Clears the contents of the algorithm.
   void Clear()
   {
@@ -277,9 +241,7 @@ public: //! @name Clearing the contents of the algorithm from previous runs
     myShape.Nullify();
   }
 
-
 protected: //! @name Protected methods performing the operation
-
   //! Checks the validity of input data.
   Standard_EXPORT void CheckData();
 
@@ -300,7 +262,6 @@ protected: //! @name Protected methods performing the operation
   Standard_EXPORT void Update();
 
 private:
-
   //! Returns an empty list.
   const TopTools_ListOfShape& EmptyList()
   {
@@ -309,28 +270,27 @@ private:
   }
 
 protected: //! @name Fields
-
   // Inputs
-  TopTools_ListOfShape myArguments;          //!< Input shapes for making them connected
+  TopTools_ListOfShape       myArguments;    //!< Input shapes for making them connected
   TopTools_IndexedMapOfShape myAllInputsMap; //!< Map of all BRep sub-elements of the input shapes
 
   // Tools
-  BOPAlgo_MakePeriodic myPeriodicityMaker;   //!< Tool for making the shape periodic
+  BOPAlgo_MakePeriodic myPeriodicityMaker; //!< Tool for making the shape periodic
 
   // Results
-  NCollection_DataMap
-    <TopoDS_Shape,
-     TopTools_ListOfShape> myMaterials;            //!< Map of the materials associations
-                                                   //! for the border elements
-  TopTools_DataMapOfShapeListOfShape myOrigins;    //!< Map of origins
-                                                   //! (allows tracking the shape's ancestors)
+  NCollection_DataMap<TopoDS_Shape,
+                      TopTools_ListOfShape>
+    myMaterials;                                //!< Map of the materials associations
+                                                //! for the border elements
+  TopTools_DataMapOfShapeListOfShape myOrigins; //!< Map of origins
+                                                //! (allows tracking the shape's ancestors)
 
-  Handle(BRepTools_History) myGlueHistory;         //!< Gluing History
-  Handle(BRepTools_History) myHistory;             //!< Final History of shapes modifications
-                                                   //! (including making the shape periodic and repetitions)
+  Handle(BRepTools_History) myGlueHistory; //!< Gluing History
+  Handle(BRepTools_History) myHistory;     //!< Final History of shapes modifications
+                                           //! (including making the shape periodic and repetitions)
 
-  TopoDS_Shape myGlued;                            //!< The resulting connected (glued) shape
-  TopoDS_Shape myShape;                            //!< The resulting shape
+  TopoDS_Shape myGlued; //!< The resulting connected (glued) shape
+  TopoDS_Shape myShape; //!< The resulting shape
 };
 
 #endif // _BOPAlgo_MakeConnected_HeaderFile

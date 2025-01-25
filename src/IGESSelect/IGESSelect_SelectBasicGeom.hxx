@@ -28,7 +28,6 @@ class Interface_EntityIterator;
 class TCollection_AsciiString;
 class IGESData_IGESEntity;
 
-
 class IGESSelect_SelectBasicGeom;
 DEFINE_STANDARD_HANDLE(IGESSelect_SelectBasicGeom, IFSelect_SelectExplore)
 
@@ -49,8 +48,6 @@ class IGESSelect_SelectBasicGeom : public IFSelect_SelectExplore
 {
 
 public:
-
-  
   //! Creates a SelectBasicGeom, which always works recursively
   //! mode = -1 : Returns Surfaces (without trimming)
   //! mode = +1 : Returns Curves 3D (free or bound of surface)
@@ -58,46 +55,34 @@ public:
   //! are returned in detail
   //! mode = 0  : both
   Standard_EXPORT IGESSelect_SelectBasicGeom(const Standard_Integer mode);
-  
+
   Standard_EXPORT Standard_Boolean CurvesOnly() const;
-  
+
   //! Explores an entity, to take its contained Curves 3d
   //! Works recursively
-  Standard_EXPORT Standard_Boolean Explore (const Standard_Integer level, const Handle(Standard_Transient)& ent, const Interface_Graph& G, Interface_EntityIterator& explored) const Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Boolean
+    Explore(const Standard_Integer            level,
+            const Handle(Standard_Transient)& ent,
+            const Interface_Graph&            G,
+            Interface_EntityIterator&         explored) const Standard_OVERRIDE;
+
   //! Returns a text defining the criterium : "Curves 3d" or
   //! "Basic Geometry"
   Standard_EXPORT TCollection_AsciiString ExploreLabel() const Standard_OVERRIDE;
-  
+
   //! This method can be called from everywhere to get the curves
   //! as sub-elements of a given curve :
   //! CompositeCurve : explored lists its subs + returns True
   //! Any Curve : explored is not filled but returned is True
   //! Other : returned is False
-  Standard_EXPORT static Standard_Boolean SubCurves (const Handle(IGESData_IGESEntity)& ent, Interface_EntityIterator& explored);
+  Standard_EXPORT static Standard_Boolean SubCurves(const Handle(IGESData_IGESEntity)& ent,
+                                                    Interface_EntityIterator&          explored);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectBasicGeom,IFSelect_SelectExplore)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectBasicGeom, IFSelect_SelectExplore)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Integer thegeom;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESSelect_SelectBasicGeom_HeaderFile

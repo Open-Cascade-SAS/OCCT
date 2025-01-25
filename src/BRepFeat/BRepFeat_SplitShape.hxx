@@ -33,7 +33,6 @@ class TopoDS_Face;
 class TopoDS_Edge;
 class TopoDS_Compound;
 
-
 //! One of the most significant aspects of BRepFeat functionality is the use of local
 //! operations as opposed to global ones. In a global operation, you would first construct a
 //! form of the type you wanted in your final feature, and then remove matter so that it could
@@ -47,16 +46,14 @@ class TopoDS_Compound;
 //! face in the basis shape to be used as a part of the feature are cut out and projected to a plane
 //! outside or inside the basis shape. By rebuilding the initial shape incorporating the edges and
 //! the faces of the tool, protrusion or depression features can be constructed.
-class BRepFeat_SplitShape  : public BRepBuilderAPI_MakeShape
+class BRepFeat_SplitShape : public BRepBuilderAPI_MakeShape
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
-    BRepFeat_SplitShape();
-  
+  BRepFeat_SplitShape();
+
   //! Creates the process  with the shape <S>.
   BRepFeat_SplitShape(const TopoDS_Shape& S);
 
@@ -64,21 +61,21 @@ public:
   //! without additional specification edge->face, edge->edge
   //! This method puts edge on the corresponding faces from initial shape
   Standard_Boolean Add(const TopTools_SequenceOfShape& theEdges);
-  
+
   //! Initializes the process on the shape <S>.
-    void Init (const TopoDS_Shape& S);
-  
+  void Init(const TopoDS_Shape& S);
+
   //! Set the flag of check internal intersections
   //! default value is True (to check)
-    void SetCheckInterior (const Standard_Boolean ToCheckInterior);
-  
+  void SetCheckInterior(const Standard_Boolean ToCheckInterior);
+
   //! Adds the wire <W> on the face <F>.
   //! Raises NoSuchObject  if <F> does not belong to the original shape.
-    void Add (const TopoDS_Wire& W, const TopoDS_Face& F);
-  
+  void Add(const TopoDS_Wire& W, const TopoDS_Face& F);
+
   //! Adds the edge <E> on the face <F>.
-    void Add (const TopoDS_Edge& E, const TopoDS_Face& F);
-  
+  void Add(const TopoDS_Edge& E, const TopoDS_Face& F);
+
   //! Adds the compound <Comp> on the face <F>. The
   //! compound <Comp> must consist of edges lying on the
   //! face <F>. If edges are geometrically connected,
@@ -86,59 +83,42 @@ public:
   //! must share common vertices.
   //!
   //! Raises NoSuchObject  if <F> does not belong to the original shape.
-    void Add (const TopoDS_Compound& Comp, const TopoDS_Face& F);
-  
+  void Add(const TopoDS_Compound& Comp, const TopoDS_Face& F);
+
   //! Adds the edge <E> on the existing edge <EOn>.
-    void Add (const TopoDS_Edge& E, const TopoDS_Edge& EOn);
-  
+  void Add(const TopoDS_Edge& E, const TopoDS_Edge& EOn);
+
   //! Returns  the faces   which  are the  left of   the
   //! projected wires.
   Standard_EXPORT const TopTools_ListOfShape& DirectLeft() const;
-  
+
   //! Returns the faces of the "left" part on the shape.
   //! (It  is build   from  DirectLeft,  with  the faces
   //! connected to this set, and so on...).
   //! Raises NotDone if IsDone returns <Standard_False>.
   Standard_EXPORT const TopTools_ListOfShape& Left() const;
-  
+
   //! Returns the faces of the "right" part on the shape.
   Standard_EXPORT const TopTools_ListOfShape& Right() const;
-  
+
   //! Builds the cut and the resulting faces and edges as well.
-  Standard_EXPORT void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
-  
+  Standard_EXPORT void Build(const Message_ProgressRange& theRange = Message_ProgressRange())
+    Standard_OVERRIDE;
+
   //! Returns true if the shape has been deleted.
-  Standard_EXPORT virtual Standard_Boolean IsDeleted (const TopoDS_Shape& S) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) Standard_OVERRIDE;
+
   //! Returns the list of generated Faces.
-  Standard_EXPORT const TopTools_ListOfShape& Modified (const TopoDS_Shape& F) Standard_OVERRIDE;
-
-
-
+  Standard_EXPORT const TopTools_ListOfShape& Modified(const TopoDS_Shape& F) Standard_OVERRIDE;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  LocOpe_Spliter mySShape;
+  LocOpe_Spliter              mySShape;
   Handle(LocOpe_WiresOnShape) myWOnShape;
 
   mutable TopTools_ListOfShape myRight;
-
-
 };
 
-
 #include <BRepFeat_SplitShape.lxx>
-
-
-
-
 
 #endif // _BRepFeat_SplitShape_HeaderFile

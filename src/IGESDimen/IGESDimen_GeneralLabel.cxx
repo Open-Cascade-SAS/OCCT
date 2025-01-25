@@ -22,33 +22,31 @@
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_GeneralLabel,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_GeneralLabel, IGESData_IGESEntity)
 
-IGESDimen_GeneralLabel::IGESDimen_GeneralLabel ()    {  }
+IGESDimen_GeneralLabel::IGESDimen_GeneralLabel() {}
 
-    void  IGESDimen_GeneralLabel::Init
-  (const Handle(IGESDimen_GeneralNote)& aNote,
-   const Handle(IGESDimen_HArray1OfLeaderArrow)& someLeaders)
+void IGESDimen_GeneralLabel::Init(const Handle(IGESDimen_GeneralNote)&          aNote,
+                                  const Handle(IGESDimen_HArray1OfLeaderArrow)& someLeaders)
 {
   if (someLeaders->Lower() != 1)
     throw Standard_DimensionMismatch("IGESDimen_GeneralLabel : Init");
   theNote    = aNote;
   theLeaders = someLeaders;
-  InitTypeAndForm(210,0);
+  InitTypeAndForm(210, 0);
 }
 
-    Handle(IGESDimen_GeneralNote)  IGESDimen_GeneralLabel::Note () const 
+Handle(IGESDimen_GeneralNote) IGESDimen_GeneralLabel::Note() const
 {
   return theNote;
 }
 
-    Standard_Integer  IGESDimen_GeneralLabel::NbLeaders () const 
+Standard_Integer IGESDimen_GeneralLabel::NbLeaders() const
 {
   return theLeaders->Length();
 }
 
-    Handle(IGESDimen_LeaderArrow)  IGESDimen_GeneralLabel::Leader
-  (const Standard_Integer Index) const 
+Handle(IGESDimen_LeaderArrow) IGESDimen_GeneralLabel::Leader(const Standard_Integer Index) const
 {
   return theLeaders->Value(Index);
 }

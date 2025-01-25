@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRep_CurveRepresentation.hxx>
 #include <BRep_PolygonOnSurface.hxx>
 #include <Geom_Surface.hxx>
@@ -23,95 +22,71 @@
 #include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRep_PolygonOnSurface,BRep_CurveRepresentation)
+IMPLEMENT_STANDARD_RTTIEXT(BRep_PolygonOnSurface, BRep_CurveRepresentation)
 
-//=======================================================================
-//function : BRep_PolygonOnSurface
-//purpose  : 
-//=======================================================================
-BRep_PolygonOnSurface::BRep_PolygonOnSurface(const Handle(Poly_Polygon2D)& P, 
-					     const Handle(Geom_Surface)&   S, 
-					     const TopLoc_Location&        L):
-					     BRep_CurveRepresentation(L),
-					     myPolygon2D(P),
-					     mySurface(S)
+//=================================================================================================
+
+BRep_PolygonOnSurface::BRep_PolygonOnSurface(const Handle(Poly_Polygon2D)& P,
+                                             const Handle(Geom_Surface)&   S,
+                                             const TopLoc_Location&        L)
+    : BRep_CurveRepresentation(L),
+      myPolygon2D(P),
+      mySurface(S)
 {
 }
 
-//=======================================================================
-//function : IsPolygonOnSurface
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean BRep_PolygonOnSurface::IsPolygonOnSurface() const 
+Standard_Boolean BRep_PolygonOnSurface::IsPolygonOnSurface() const
 {
   return Standard_True;
 }
 
-//=======================================================================
-//function : IsPolygonOnSurface
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean BRep_PolygonOnSurface::IsPolygonOnSurface(const Handle(Geom_Surface)& S, 
-							   const TopLoc_Location&      L) const 
-{  
+Standard_Boolean BRep_PolygonOnSurface::IsPolygonOnSurface(const Handle(Geom_Surface)& S,
+                                                           const TopLoc_Location&      L) const
+{
   return (S == mySurface) && (L == myLocation);
 }
 
-//=======================================================================
-//function : Surface
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-const Handle(Geom_Surface)& BRep_PolygonOnSurface::Surface() const 
+const Handle(Geom_Surface)& BRep_PolygonOnSurface::Surface() const
 {
   return mySurface;
 }
 
-//=======================================================================
-//function : Polygon
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-const Handle(Poly_Polygon2D)& BRep_PolygonOnSurface::Polygon() const 
+const Handle(Poly_Polygon2D)& BRep_PolygonOnSurface::Polygon() const
 {
   return myPolygon2D;
 }
 
-//=======================================================================
-//function : Polygon
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void BRep_PolygonOnSurface::Polygon(const Handle(Poly_Polygon2D)& P)
 {
   myPolygon2D = P;
 }
 
-//=======================================================================
-//function : Copy
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(BRep_CurveRepresentation) BRep_PolygonOnSurface::Copy() const 
+Handle(BRep_CurveRepresentation) BRep_PolygonOnSurface::Copy() const
 {
-  Handle(BRep_PolygonOnSurface) P = new BRep_PolygonOnSurface(myPolygon2D,
-							      mySurface,
-							      Location());
+  Handle(BRep_PolygonOnSurface) P = new BRep_PolygonOnSurface(myPolygon2D, mySurface, Location());
   return P;
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void BRep_PolygonOnSurface::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+//=================================================================================================
+
+void BRep_PolygonOnSurface::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, BRep_CurveRepresentation)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, BRep_CurveRepresentation)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myPolygon2D.get())
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, mySurface.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myPolygon2D.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, mySurface.get())
 }

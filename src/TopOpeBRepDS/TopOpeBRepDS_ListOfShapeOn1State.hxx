@@ -24,50 +24,28 @@
 #include <TopTools_ListOfShape.hxx>
 #include <Standard_Boolean.hxx>
 
-
 //! represent a list of shape
-class TopOpeBRepDS_ListOfShapeOn1State 
+class TopOpeBRepDS_ListOfShapeOn1State
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopOpeBRepDS_ListOfShapeOn1State();
-  
+
   Standard_EXPORT const TopTools_ListOfShape& ListOnState() const;
-  
+
   Standard_EXPORT TopTools_ListOfShape& ChangeListOnState();
-  
+
   Standard_EXPORT Standard_Boolean IsSplit() const;
-  
-  Standard_EXPORT void Split (const Standard_Boolean B = Standard_True);
-  
+
+  Standard_EXPORT void Split(const Standard_Boolean B = Standard_True);
+
   Standard_EXPORT void Clear();
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   TopTools_ListOfShape myList;
-  Standard_Integer mySplits;
-
-
+  Standard_Integer     mySplits;
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepDS_ListOfShapeOn1State_HeaderFile

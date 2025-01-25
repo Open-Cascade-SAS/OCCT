@@ -24,7 +24,6 @@
 class gp_Pnt;
 class Draw_Display;
 
-
 class DrawDim_Dimension;
 DEFINE_STANDARD_HANDLE(DrawDim_Dimension, Draw_Drawable3D)
 
@@ -33,46 +32,28 @@ class DrawDim_Dimension : public Draw_Drawable3D
 {
 
 public:
+  Standard_EXPORT void SetValue(const Standard_Real avalue);
 
-  
-  Standard_EXPORT void SetValue (const Standard_Real avalue);
-  
   Standard_EXPORT Standard_Real GetValue() const;
-  
+
   Standard_EXPORT Standard_Boolean IsValued() const;
-  
-  Standard_EXPORT void TextColor (const Draw_Color& C);
-  
+
+  Standard_EXPORT void TextColor(const Draw_Color& C);
+
   Standard_EXPORT Draw_Color TextColor() const;
-  
-  Standard_EXPORT void DrawText (const gp_Pnt& Pos, Draw_Display& D) const;
 
+  Standard_EXPORT void DrawText(const gp_Pnt& Pos, Draw_Display& D) const;
 
-
-
-  DEFINE_STANDARD_RTTIEXT(DrawDim_Dimension,Draw_Drawable3D)
+  DEFINE_STANDARD_RTTIEXT(DrawDim_Dimension, Draw_Drawable3D)
 
 protected:
-
-  
   Standard_EXPORT DrawDim_Dimension();
 
   Standard_Boolean is_valued;
-  Standard_Real myValue;
-  Draw_Color myTextColor;
-
+  Standard_Real    myValue;
+  Draw_Color       myTextColor;
 
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _DrawDim_Dimension_HeaderFile

@@ -12,34 +12,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt.hxx>
 #include <IntSurf_PathPoint.hxx>
 #include <StdFail_UndefinedDerivative.hxx>
 
-IntSurf_PathPoint::IntSurf_PathPoint ():
-      ispass(Standard_True), istgt(Standard_True) 
+IntSurf_PathPoint::IntSurf_PathPoint()
+    : ispass(Standard_True),
+      istgt(Standard_True)
 {
 }
 
-
-IntSurf_PathPoint::IntSurf_PathPoint (const gp_Pnt& P,
-				      const Standard_Real U,
-				      const Standard_Real V):
-       pt(P),ispass(Standard_True),istgt(Standard_True) 
+IntSurf_PathPoint::IntSurf_PathPoint(const gp_Pnt& P, const Standard_Real U, const Standard_Real V)
+    : pt(P),
+      ispass(Standard_True),
+      istgt(Standard_True)
 {
-  sequv = new TColgp_HSequenceOfXY ();
-  sequv->Append(gp_XY(U,V));
+  sequv = new TColgp_HSequenceOfXY();
+  sequv->Append(gp_XY(U, V));
 }
 
-
-void IntSurf_PathPoint::SetValue (const gp_Pnt& P,
-				  const Standard_Real U,
-				  const Standard_Real V) 
+void IntSurf_PathPoint::SetValue(const gp_Pnt& P, const Standard_Real U, const Standard_Real V)
 {
-  pt = P;
-  sequv = new TColgp_HSequenceOfXY ();
-  sequv->Append(gp_XY(U,V));
+  pt    = P;
+  sequv = new TColgp_HSequenceOfXY();
+  sequv->Append(gp_XY(U, V));
 }
-  

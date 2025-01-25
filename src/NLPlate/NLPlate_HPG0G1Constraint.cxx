@@ -14,32 +14,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <NLPlate_HPG0G1Constraint.hxx>
 #include <Plate_D1.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(NLPlate_HPG0G1Constraint,NLPlate_HPG0Constraint)
+IMPLEMENT_STANDARD_RTTIEXT(NLPlate_HPG0G1Constraint, NLPlate_HPG0Constraint)
 
-NLPlate_HPG0G1Constraint::NLPlate_HPG0G1Constraint(const gp_XY& UV,const gp_XYZ& Value,const Plate_D1& D1T)
-: NLPlate_HPG0Constraint(UV,Value),myG1Target(D1T)
+NLPlate_HPG0G1Constraint::NLPlate_HPG0G1Constraint(const gp_XY&    UV,
+                                                   const gp_XYZ&   Value,
+                                                   const Plate_D1& D1T)
+    : NLPlate_HPG0Constraint(UV, Value),
+      myG1Target(D1T)
 {
   SetActiveOrder(1);
   myOrientation = 0;
 }
 
-void NLPlate_HPG0G1Constraint::SetOrientation(const Standard_Integer Orient) 
+void NLPlate_HPG0G1Constraint::SetOrientation(const Standard_Integer Orient)
 {
   myOrientation = Orient;
 }
 
 Standard_Integer NLPlate_HPG0G1Constraint::ActiveOrder() const
 {
-  if (myActiveOrder<1) return myActiveOrder;
-  else return 1;
+  if (myActiveOrder < 1)
+    return myActiveOrder;
+  else
+    return 1;
 }
 
-Standard_Integer NLPlate_HPG0G1Constraint::Orientation() 
+Standard_Integer NLPlate_HPG0G1Constraint::Orientation()
 {
   return myOrientation;
 }

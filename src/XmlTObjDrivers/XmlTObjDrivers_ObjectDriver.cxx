@@ -15,7 +15,6 @@
 
 // The original implementation Copyright: (C) RINA S.p.A
 
-
 #include <Message_Messenger.hxx>
 #include "XmlTObjDrivers_ObjectDriver.hxx"
 #include <TObj_TObject.hxx>
@@ -24,25 +23,19 @@
 #include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlObjMgt.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_ObjectDriver, XmlMDF_ADriver)
 
+//=================================================================================================
 
-
-IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_ObjectDriver,XmlMDF_ADriver)
-
-//=======================================================================
-//function : XmlTObjDrivers_ObjectDriver
-//purpose  : constructor
-//=======================================================================
-
-XmlTObjDrivers_ObjectDriver::XmlTObjDrivers_ObjectDriver
-                         (const Handle(Message_Messenger)& theMessageDriver)
-: XmlMDF_ADriver( theMessageDriver, NULL)
+XmlTObjDrivers_ObjectDriver::XmlTObjDrivers_ObjectDriver(
+  const Handle(Message_Messenger)& theMessageDriver)
+    : XmlMDF_ADriver(theMessageDriver, NULL)
 {
 }
 
 //=======================================================================
-//function : NewEmpty
-//purpose  : Creates a new attribute
+// function : NewEmpty
+// purpose  : Creates a new attribute
 //=======================================================================
 
 Handle(TDF_Attribute) XmlTObjDrivers_ObjectDriver::NewEmpty() const
@@ -51,24 +44,24 @@ Handle(TDF_Attribute) XmlTObjDrivers_ObjectDriver::NewEmpty() const
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : Translate the contents of <aSource> and put it
+// function : Paste
+// purpose  : Translate the contents of <aSource> and put it
 //           into <aTarget>, using the relocation table
 //           <aRelocTable> to keep the sharings.
 //=======================================================================
 
-Standard_Boolean XmlTObjDrivers_ObjectDriver::Paste
-                         (const XmlObjMgt_Persistent&  Source,
-                          const Handle(TDF_Attribute)& Target,
-                          XmlObjMgt_RRelocationTable&  /*RelocTable*/) const
+Standard_Boolean XmlTObjDrivers_ObjectDriver::Paste(
+  const XmlObjMgt_Persistent&  Source,
+  const Handle(TDF_Attribute)& Target,
+  XmlObjMgt_RRelocationTable& /*RelocTable*/) const
 {
   TCollection_ExtendedString aString;
-  if (XmlObjMgt::GetExtendedString (Source, aString))
+  if (XmlObjMgt::GetExtendedString(Source, aString))
   {
-    TCollection_AsciiString anAscii (aString);
-    Handle(TObj_Object) anObject = 
-      TObj_Persistence::CreateNewObject(anAscii.ToCString(),Target->Label());
-    Handle(TObj_TObject)::DownCast (Target) ->Set( anObject );
+    TCollection_AsciiString anAscii(aString);
+    Handle(TObj_Object)     anObject =
+      TObj_Persistence::CreateNewObject(anAscii.ToCString(), Target->Label());
+    Handle(TObj_TObject)::DownCast(Target)->Set(anObject);
     return Standard_True;
   }
   myMessageDriver->Send("error retrieving ExtendedString for type TObj_TModel", Message_Fail);
@@ -76,22 +69,19 @@ Standard_Boolean XmlTObjDrivers_ObjectDriver::Paste
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : Translate the contents of <aSource> and put it
+// function : Paste
+// purpose  : Translate the contents of <aSource> and put it
 //           into <aTarget>, using the relocation table
 //           <aRelocTable> to keep the sharings.
 //           anObject is stored as a Name of class derived from TObj_Object
 //=======================================================================
 
-void XmlTObjDrivers_ObjectDriver::Paste
-                         (const Handle(TDF_Attribute)& Source,
-                          XmlObjMgt_Persistent&        Target,
-                          XmlObjMgt_SRelocationTable&  /*RelocTable*/) const
+void XmlTObjDrivers_ObjectDriver::Paste(const Handle(TDF_Attribute)& Source,
+                                        XmlObjMgt_Persistent&        Target,
+                                        XmlObjMgt_SRelocationTable& /*RelocTable*/) const
 {
-  Handle(TObj_TObject) aTObj =
-    Handle(TObj_TObject)::DownCast( Source );
-  Handle(TObj_Object) anIObject = aTObj->Get();
-  
-  XmlObjMgt::SetExtendedString (Target, anIObject->DynamicType()->Name());
-}
+  Handle(TObj_TObject) aTObj     = Handle(TObj_TObject)::DownCast(Source);
+  Handle(TObj_Object)  anIObject = aTObj->Get();
 
+  XmlObjMgt::SetExtendedString(Target, anIObject->DynamicType()->Name());
+}

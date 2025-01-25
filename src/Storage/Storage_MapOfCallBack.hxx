@@ -21,8 +21,9 @@
 #include <Storage_TypedCallBack.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TCollection_AsciiString,Handle(Storage_TypedCallBack)> Storage_MapOfCallBack;
-typedef NCollection_DataMap<TCollection_AsciiString,Handle(Storage_TypedCallBack)>::Iterator Storage_DataMapIteratorOfMapOfCallBack;
-
+typedef NCollection_DataMap<TCollection_AsciiString, Handle(Storage_TypedCallBack)>
+  Storage_MapOfCallBack;
+typedef NCollection_DataMap<TCollection_AsciiString, Handle(Storage_TypedCallBack)>::Iterator
+  Storage_DataMapIteratorOfMapOfCallBack;
 
 #endif

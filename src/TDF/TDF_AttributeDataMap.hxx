@@ -19,8 +19,8 @@
 #include <TDF_Attribute.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Handle(TDF_Attribute),Handle(TDF_Attribute)> TDF_AttributeDataMap;
-typedef NCollection_DataMap<Handle(TDF_Attribute),Handle(TDF_Attribute)>::Iterator TDF_DataMapIteratorOfAttributeDataMap;
-
+typedef NCollection_DataMap<Handle(TDF_Attribute), Handle(TDF_Attribute)> TDF_AttributeDataMap;
+typedef NCollection_DataMap<Handle(TDF_Attribute), Handle(TDF_Attribute)>::Iterator
+  TDF_DataMapIteratorOfAttributeDataMap;
 
 #endif

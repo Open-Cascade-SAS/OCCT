@@ -13,10 +13,10 @@
 
 #ifndef NCollection_IncAllocator_HeaderFile
 #define NCollection_IncAllocator_HeaderFile
- 
+
 #include <NCollection_BaseAllocator.hxx>
 #include <NCollection_OccAllocator.hxx>
-#include <NCollection_Allocator.hxx> 
+#include <NCollection_Allocator.hxx>
 
 #include <utility>
 
@@ -49,20 +49,19 @@ class Standard_Mutex;
 class NCollection_IncAllocator : public NCollection_BaseAllocator
 {
 public:
-
   //! Constructor.
-  //! Note that this constructor does NOT setup mutex for using allocator concurrently from different threads,
-  //! see SetThreadSafe() method.
-  //! 
+  //! Note that this constructor does NOT setup mutex for using allocator concurrently from
+  //! different threads, see SetThreadSafe() method.
+  //!
   //! The default size of the memory blocks is 12KB.
   //! It is not recommended to use memory blocks larger than 16KB on Windows
   //! platform for the repeated operations (and thus multiple allocations)
   //! because Low Fragmentation Heap is not going to be used for these allocations,
   //! leading to memory fragmentation and eventual performance slow down.
-  Standard_EXPORT NCollection_IncAllocator (const size_t theBlockSize = THE_DEFAULT_BLOCK_SIZE);
+  Standard_EXPORT NCollection_IncAllocator(const size_t theBlockSize = THE_DEFAULT_BLOCK_SIZE);
 
   //! Setup mutex for thread-safe allocations.
-  Standard_EXPORT void SetThreadSafe (const bool theIsThreadSafe = true);
+  Standard_EXPORT void SetThreadSafe(const bool theIsThreadSafe = true);
 
   //! Allocate memory with given size. Returns NULL on failure
   Standard_EXPORT void* Allocate(const size_t size) Standard_OVERRIDE;
@@ -90,21 +89,19 @@ public:
 
 private:
   // Prohibited methods
-  NCollection_IncAllocator(const NCollection_IncAllocator&) = delete;
-  NCollection_IncAllocator& operator = (const NCollection_IncAllocator&) = delete;
+  NCollection_IncAllocator(const NCollection_IncAllocator&)            = delete;
+  NCollection_IncAllocator& operator=(const NCollection_IncAllocator&) = delete;
 
 public:
-
   //! Forward list to keep multi-time allocated pointers.
   //! On Reset operation objects will be reused.
   struct IBlock
   {
-    IBlock(void* thePointer,
-           const size_t theSize);
+    IBlock(void* thePointer, const size_t theSize);
 
-    char* CurPointer;
-    size_t AvailableSize;
-    IBlock* NextBlock = nullptr; //! Pointer to next sorted block
+    char*   CurPointer;
+    size_t  AvailableSize;
+    IBlock* NextBlock        = nullptr; //! Pointer to next sorted block
     IBlock* NextOrderedBlock = nullptr; //! Pointer to next ordered block
   };
 
@@ -112,14 +109,13 @@ public:
   enum class IBlockSizeLevel : unsigned short
   {
     Min = 0, // x8 growing
-    Small, // x4 growing
-    Medium, // x2 growing
-    Large, // x1.5 growing
-    Max // no growing
+    Small,   // x4 growing
+    Medium,  // x2 growing
+    Large,   // x1.5 growing
+    Max      // no growing
   };
 
 protected:
-
   //! Increases size according current block size level
   void increaseBlockSize();
 
@@ -131,18 +127,17 @@ protected:
   void clean();
 
 public:
-
   static constexpr size_t THE_DEFAULT_BLOCK_SIZE = 1024 * 12;
 
   static constexpr size_t THE_MINIMUM_BLOCK_SIZE = 1024 * 2;
 
 private:
-  unsigned int myBlockSize;           //!< Block size to incremental allocations
-  unsigned int myBlockCount = 0;      //!< Count of created blocks
-  Standard_Mutex* myMutex = nullptr;  //!< Thread-safety mutex
-  IBlock* myAllocationHeap = nullptr; //!< Sorted list for allocations
-  IBlock* myUsedHeap = nullptr;       //!< Sorted list for store empty blocks
-  IBlock* myOrderedBlocks = nullptr;  //!< Ordered list for store growing size blocks
+  unsigned int    myBlockSize;                //!< Block size to incremental allocations
+  unsigned int    myBlockCount     = 0;       //!< Count of created blocks
+  Standard_Mutex* myMutex          = nullptr; //!< Thread-safety mutex
+  IBlock*         myAllocationHeap = nullptr; //!< Sorted list for allocations
+  IBlock*         myUsedHeap       = nullptr; //!< Sorted list for store empty blocks
+  IBlock*         myOrderedBlocks  = nullptr; //!< Ordered list for store growing size blocks
 
 public:
   // Declaration of CASCADE RTTI

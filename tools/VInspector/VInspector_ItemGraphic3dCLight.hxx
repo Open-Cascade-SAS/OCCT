@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef VInspector_ItemGraphic3dCLight_H
 #define VInspector_ItemGraphic3dCLight_H
@@ -22,17 +22,22 @@
 #include <Graphic3d_CLight.hxx>
 
 class VInspector_ItemGraphic3dCLight;
-typedef QExplicitlySharedDataPointer<VInspector_ItemGraphic3dCLight> VInspector_ItemGraphic3dCLightPtr;
+typedef QExplicitlySharedDataPointer<VInspector_ItemGraphic3dCLight>
+  VInspector_ItemGraphic3dCLightPtr;
 
 //! \class VInspector_ItemGraphic3dCLight
 //! Parent item is context properties, that corresponds to AIS_InteractiveContext
 class VInspector_ItemGraphic3dCLight : public VInspector_ItemBase
 {
 public:
-
   //! Creates an item wrapped by a shared pointer
-  static VInspector_ItemGraphic3dCLightPtr CreateItem (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
-  { return VInspector_ItemGraphic3dCLightPtr (new VInspector_ItemGraphic3dCLight (theParent, theRow, theColumn)); }
+  static VInspector_ItemGraphic3dCLightPtr CreateItem(TreeModel_ItemBasePtr theParent,
+                                                      const int             theRow,
+                                                      const int             theColumn)
+  {
+    return VInspector_ItemGraphic3dCLightPtr(
+      new VInspector_ItemGraphic3dCLight(theParent, theRow, theColumn));
+  }
 
   //! Destructor
   virtual ~VInspector_ItemGraphic3dCLight() Standard_OVERRIDE {};
@@ -45,14 +50,20 @@ public:
 
   //! Returns data object of the item.
   //! \return object
-  virtual const Handle(Standard_Transient)& Object() const Standard_OVERRIDE { initItem(); return myLight; }
+  virtual const Handle(Standard_Transient)& Object() const Standard_OVERRIDE
+  {
+    initItem();
+    return myLight;
+  }
 
   //! Returns the current light, init item if it was not initialized yet
   //! \return interactive object
-  Handle(Graphic3d_CLight) GetLight() const { return Handle(Graphic3d_CLight)::DownCast (Object()); }
+  Handle(Graphic3d_CLight) GetLight() const { return Handle(Graphic3d_CLight)::DownCast(Object()); }
 
   //! Updates item by the item properties value
-  virtual void StoreItemProperties (const int theRow, const int theColumn, const QVariant& theValue) Standard_OVERRIDE;
+  virtual void StoreItemProperties(const int       theRow,
+                                   const int       theColumn,
+                                   const QVariant& theValue) Standard_OVERRIDE;
 
 protected:
   //! Initializes the current item. It is empty because Reset() is also empty.
@@ -65,23 +76,25 @@ protected:
   //! Returns item information for the given role. Fills internal container if it was not filled yet
   //! \param theItemRole a value role
   //! \return the value
-  Standard_EXPORT virtual QVariant initValue (const int theItemRole) const Standard_OVERRIDE;
+  Standard_EXPORT virtual QVariant initValue(const int theItemRole) const Standard_OVERRIDE;
 
   //! Returns stream value of the item to fulfill property panel.
   //! \return stream value or dummy
-  Standard_EXPORT virtual void initStream (Standard_OStream& theOStream) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void initStream(Standard_OStream& theOStream) const Standard_OVERRIDE;
 
 private:
-
   //! Constructor
   //! param theParent a parent item
   //! \param theRow the item row positition in the parent item
   //! \param theColumn the item column positition in the parent item
-  VInspector_ItemGraphic3dCLight(TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
-    : VInspector_ItemBase(theParent, theRow, theColumn) {}
+  VInspector_ItemGraphic3dCLight(TreeModel_ItemBasePtr theParent,
+                                 const int             theRow,
+                                 const int             theColumn)
+      : VInspector_ItemBase(theParent, theRow, theColumn)
+  {
+  }
 
 protected:
-
   Handle(Graphic3d_CLight) myLight; //!< the current light
 };
 

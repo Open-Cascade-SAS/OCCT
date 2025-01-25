@@ -15,124 +15,184 @@
 // commercial license or contractual agreement.
 
 #define CONSTRUCTOR IntCurve_IntConicConic::IntCurve_IntConicConic
-#define PERFORM     void IntCurve_IntConicConic::Perform
+#define PERFORM void IntCurve_IntConicConic::Perform
 
-
-inline CONSTRUCTOR() { }
+inline CONSTRUCTOR() {}
 
 //----------------------------------------------------------------------  L  P
-inline CONSTRUCTOR(const gp_Lin2d& L,const IntRes2d_Domain& DL 
-		   ,const gp_Parab2d& P,const IntRes2d_Domain& DP
-		   ,const Standard_Real TolConf,const Standard_Real Tol)  {
-  Perform(L,DL,P,DP,TolConf,Tol);
+inline CONSTRUCTOR(const gp_Lin2d&        L,
+                   const IntRes2d_Domain& DL,
+                   const gp_Parab2d&      P,
+                   const IntRes2d_Domain& DP,
+                   const Standard_Real    TolConf,
+                   const Standard_Real    Tol)
+{
+  Perform(L, DL, P, DP, TolConf, Tol);
 }
 
-//----------------------------------------------------------------------  L  E 
-inline CONSTRUCTOR(const gp_Lin2d& L,const IntRes2d_Domain& DL
-		   ,const gp_Elips2d& E,const IntRes2d_Domain& DE
-		   ,const Standard_Real TolConf,const Standard_Real Tol) {
-  
-  Perform(L,DL,E,DE,TolConf,Tol);
+//----------------------------------------------------------------------  L  E
+inline CONSTRUCTOR(const gp_Lin2d&        L,
+                   const IntRes2d_Domain& DL,
+                   const gp_Elips2d&      E,
+                   const IntRes2d_Domain& DE,
+                   const Standard_Real    TolConf,
+                   const Standard_Real    Tol)
+{
+
+  Perform(L, DL, E, DE, TolConf, Tol);
 }
 
-//----------------------------------------------------------------------  L H 
-inline CONSTRUCTOR(const gp_Lin2d& L,const IntRes2d_Domain& DL
-		   ,const gp_Hypr2d& H,const IntRes2d_Domain& DH
-		   ,const Standard_Real TolConf,const Standard_Real Tol)  { 
-  
-  Perform(L,DL,H,DH,TolConf,Tol);
-}           
+//----------------------------------------------------------------------  L H
+inline CONSTRUCTOR(const gp_Lin2d&        L,
+                   const IntRes2d_Domain& DL,
+                   const gp_Hypr2d&       H,
+                   const IntRes2d_Domain& DH,
+                   const Standard_Real    TolConf,
+                   const Standard_Real    Tol)
+{
 
-//---------------------------------------------------------------------- C P 
-inline CONSTRUCTOR(const gp_Circ2d& C,const IntRes2d_Domain& DC
-		   ,const gp_Parab2d& P,const IntRes2d_Domain& DP
-		   ,const Standard_Real TolConf,const Standard_Real Tol) {
-  
-  Perform(C,DC,P,DP,TolConf,Tol);
-}           
-//----------------------------------------------------------------------  C E  
-inline CONSTRUCTOR(const gp_Circ2d& C,const IntRes2d_Domain& DC
-		   ,const gp_Elips2d& E,const IntRes2d_Domain& DE
-		   ,const Standard_Real TolConf,const Standard_Real Tol)  {
-  
-  Perform(C,DC,E,DE,TolConf,Tol);
-}           
-//---------------------------------------------------------------------- C H 
-inline CONSTRUCTOR(const gp_Circ2d& C,const IntRes2d_Domain& DC
-		   ,const gp_Hypr2d& H,const IntRes2d_Domain& DH
-		   ,const Standard_Real TolConf,const Standard_Real Tol)  {
-  
-  Perform(C,DC,H,DH,TolConf,Tol);
-}           
-//---------------------------------------------------------------------- P P 
-inline CONSTRUCTOR(const gp_Parab2d& P1,const IntRes2d_Domain& D1
-		   ,const gp_Parab2d& P2,const IntRes2d_Domain& D2
-		   ,const Standard_Real TolConf,const Standard_Real Tol)  {
-  
-  Perform(P1,D1,P2,D2,TolConf,Tol);
-}           
-//---------------------------------------------------------------------- E P 
-inline CONSTRUCTOR(const gp_Elips2d& E,const IntRes2d_Domain& DE
-		   ,const gp_Parab2d& P,const IntRes2d_Domain& DP
-		   ,const Standard_Real TolConf,const Standard_Real Tol)  { 
-  Perform(E,DE,P,DP,TolConf,Tol);
-}           
-//---------------------------------------------------------------------- P H 
-inline CONSTRUCTOR(const gp_Parab2d& P,const IntRes2d_Domain& DP
-		   ,const gp_Hypr2d& H,const IntRes2d_Domain& DH
-		   ,const Standard_Real TolConf,const Standard_Real Tol)  {
-  
-  Perform(P,DP,H,DH,TolConf,Tol);
-}    
-//---------------------------------------------------------------------- E E 
-inline CONSTRUCTOR(const gp_Elips2d& E1,const IntRes2d_Domain& D1
-		   ,const gp_Elips2d& E2,const IntRes2d_Domain& D2
-		   ,const Standard_Real TolConf,const Standard_Real Tol)  {
-  
-  Perform(E1,D1,E2,D2,TolConf,Tol);
-}           
-
-//----------------------------------------------------------------------  E H 
-inline CONSTRUCTOR(const gp_Elips2d& E,const IntRes2d_Domain& DE 
-		   ,const gp_Hypr2d& H,const IntRes2d_Domain& DH
-		   ,const Standard_Real TolConf,const Standard_Real Tol)  {
-  
-  Perform(E,DE,H,DH,TolConf,Tol);
-}           
-//---------------------------------------------------------------------- H H 
-inline CONSTRUCTOR(const gp_Hypr2d& H1,const IntRes2d_Domain& DH1
-		   ,const gp_Hypr2d& H2,const IntRes2d_Domain& DH2
-		   ,const Standard_Real TolConf,const Standard_Real Tol)  {
-  
-  Perform(H1,DH1,H2,DH2,TolConf,Tol);
+  Perform(L, DL, H, DH, TolConf, Tol);
 }
+
+//---------------------------------------------------------------------- C P
+inline CONSTRUCTOR(const gp_Circ2d&       C,
+                   const IntRes2d_Domain& DC,
+                   const gp_Parab2d&      P,
+                   const IntRes2d_Domain& DP,
+                   const Standard_Real    TolConf,
+                   const Standard_Real    Tol)
+{
+
+  Perform(C, DC, P, DP, TolConf, Tol);
+}
+
+//----------------------------------------------------------------------  C E
+inline CONSTRUCTOR(const gp_Circ2d&       C,
+                   const IntRes2d_Domain& DC,
+                   const gp_Elips2d&      E,
+                   const IntRes2d_Domain& DE,
+                   const Standard_Real    TolConf,
+                   const Standard_Real    Tol)
+{
+
+  Perform(C, DC, E, DE, TolConf, Tol);
+}
+
+//---------------------------------------------------------------------- C H
+inline CONSTRUCTOR(const gp_Circ2d&       C,
+                   const IntRes2d_Domain& DC,
+                   const gp_Hypr2d&       H,
+                   const IntRes2d_Domain& DH,
+                   const Standard_Real    TolConf,
+                   const Standard_Real    Tol)
+{
+
+  Perform(C, DC, H, DH, TolConf, Tol);
+}
+
+//---------------------------------------------------------------------- P P
+inline CONSTRUCTOR(const gp_Parab2d&      P1,
+                   const IntRes2d_Domain& D1,
+                   const gp_Parab2d&      P2,
+                   const IntRes2d_Domain& D2,
+                   const Standard_Real    TolConf,
+                   const Standard_Real    Tol)
+{
+
+  Perform(P1, D1, P2, D2, TolConf, Tol);
+}
+
+//---------------------------------------------------------------------- E P
+inline CONSTRUCTOR(const gp_Elips2d&      E,
+                   const IntRes2d_Domain& DE,
+                   const gp_Parab2d&      P,
+                   const IntRes2d_Domain& DP,
+                   const Standard_Real    TolConf,
+                   const Standard_Real    Tol)
+{
+  Perform(E, DE, P, DP, TolConf, Tol);
+}
+
+//---------------------------------------------------------------------- P H
+inline CONSTRUCTOR(const gp_Parab2d&      P,
+                   const IntRes2d_Domain& DP,
+                   const gp_Hypr2d&       H,
+                   const IntRes2d_Domain& DH,
+                   const Standard_Real    TolConf,
+                   const Standard_Real    Tol)
+{
+
+  Perform(P, DP, H, DH, TolConf, Tol);
+}
+
+//---------------------------------------------------------------------- E E
+inline CONSTRUCTOR(const gp_Elips2d&      E1,
+                   const IntRes2d_Domain& D1,
+                   const gp_Elips2d&      E2,
+                   const IntRes2d_Domain& D2,
+                   const Standard_Real    TolConf,
+                   const Standard_Real    Tol)
+{
+
+  Perform(E1, D1, E2, D2, TolConf, Tol);
+}
+
+//----------------------------------------------------------------------  E H
+inline CONSTRUCTOR(const gp_Elips2d&      E,
+                   const IntRes2d_Domain& DE,
+                   const gp_Hypr2d&       H,
+                   const IntRes2d_Domain& DH,
+                   const Standard_Real    TolConf,
+                   const Standard_Real    Tol)
+{
+
+  Perform(E, DE, H, DH, TolConf, Tol);
+}
+
+//---------------------------------------------------------------------- H H
+inline CONSTRUCTOR(const gp_Hypr2d&       H1,
+                   const IntRes2d_Domain& DH1,
+                   const gp_Hypr2d&       H2,
+                   const IntRes2d_Domain& DH2,
+                   const Standard_Real    TolConf,
+                   const Standard_Real    Tol)
+{
+
+  Perform(H1, DH1, H2, DH2, TolConf, Tol);
+}
+
 //---------------------------------------------------------------------- L L
-inline CONSTRUCTOR(const gp_Lin2d& L1
-		   ,const IntRes2d_Domain& D1
-		   ,const gp_Lin2d& L2
-		   ,const IntRes2d_Domain& D2
-		   ,const Standard_Real TolConf
-		   ,const Standard_Real Tol)  {
-  Perform(L1,D1,L2,D2,TolConf,Tol);
+inline CONSTRUCTOR(const gp_Lin2d&        L1,
+                   const IntRes2d_Domain& D1,
+                   const gp_Lin2d&        L2,
+                   const IntRes2d_Domain& D2,
+                   const Standard_Real    TolConf,
+                   const Standard_Real    Tol)
+{
+  Perform(L1, D1, L2, D2, TolConf, Tol);
 }
+
 //---------------------------------------------------------------------- L C
-inline CONSTRUCTOR(const gp_Lin2d& L1
-		   ,const IntRes2d_Domain& D1
-		   ,const gp_Circ2d& C2
-		   ,const IntRes2d_Domain& D2
-		   ,const Standard_Real TolConf
-		   ,const Standard_Real Tol) {
-  
-  Perform(L1,D1,C2,D2,TolConf,Tol);
+inline CONSTRUCTOR(const gp_Lin2d&        L1,
+                   const IntRes2d_Domain& D1,
+                   const gp_Circ2d&       C2,
+                   const IntRes2d_Domain& D2,
+                   const Standard_Real    TolConf,
+                   const Standard_Real    Tol)
+{
+
+  Perform(L1, D1, C2, D2, TolConf, Tol);
 }
+
 //---------------------------------------------------------------------- C C
 
-inline CONSTRUCTOR(const gp_Circ2d& C1
-                   ,const IntRes2d_Domain& D1
-                   ,const gp_Circ2d& C2
-                   ,const IntRes2d_Domain& D2
-		   ,const Standard_Real TolConf
-                   ,const Standard_Real Tol) {
+inline CONSTRUCTOR(const gp_Circ2d&       C1,
+                   const IntRes2d_Domain& D1,
+                   const gp_Circ2d&       C2,
+                   const IntRes2d_Domain& D2,
+                   const Standard_Real    TolConf,
+                   const Standard_Real    Tol)
+{
   SetReversedParameters(Standard_False);
-  Perform(C1,D1,C2,D2,TolConf,Tol);
+  Perform(C1, D1, C2, D2, TolConf, Tol);
 }

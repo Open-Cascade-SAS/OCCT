@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(IGESSolid_Shell)> IGESSolid_Array1OfShell;
 
-
 #endif

@@ -23,14 +23,14 @@
 
 class StepRepr_ContinuosShapeAspect;
 DEFINE_STANDARD_HANDLE(StepRepr_ContinuosShapeAspect, StepRepr_CompositeShapeAspect)
+
 //! Added for Dimensional Tolerances
 class StepRepr_ContinuosShapeAspect : public StepRepr_CompositeShapeAspect
 {
 
 public:
-  
   Standard_EXPORT StepRepr_ContinuosShapeAspect();
 
-  DEFINE_STANDARD_RTTIEXT(StepRepr_ContinuosShapeAspect,StepRepr_CompositeShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ContinuosShapeAspect, StepRepr_CompositeShapeAspect)
 };
 #endif // _StepRepr_ContinuosShapeAspect_HeaderFile

@@ -25,242 +25,264 @@
 #include <BRepAdaptor_Curve.hxx>
 
 //=======================================================================
-//function : FirstParameter
-//purpose  : 
+// function : FirstParameter
+// purpose  :
 //=======================================================================
 
-inline Standard_Real
-HLRBRep_BCurveTool::FirstParameter (const BRepAdaptor_Curve& C)
-{ return(C.FirstParameter()); }
+inline Standard_Real HLRBRep_BCurveTool::FirstParameter(const BRepAdaptor_Curve& C)
+{
+  return (C.FirstParameter());
+}
 
 //=======================================================================
-//function : LastParameter
-//purpose  : 
+// function : LastParameter
+// purpose  :
 //=======================================================================
 
-inline Standard_Real
-HLRBRep_BCurveTool::LastParameter (const BRepAdaptor_Curve& C)
-{ return(C.LastParameter()); }
+inline Standard_Real HLRBRep_BCurveTool::LastParameter(const BRepAdaptor_Curve& C)
+{
+  return (C.LastParameter());
+}
 
 //=======================================================================
-//function : Continuity
-//purpose  : 
+// function : Continuity
+// purpose  :
 //=======================================================================
 
-inline GeomAbs_Shape
-HLRBRep_BCurveTool::Continuity (const BRepAdaptor_Curve& C)
-{ return(C.Continuity()); }
+inline GeomAbs_Shape HLRBRep_BCurveTool::Continuity(const BRepAdaptor_Curve& C)
+{
+  return (C.Continuity());
+}
 
 //=======================================================================
-//function : NbIntervals
-//purpose  : 
+// function : NbIntervals
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer
-HLRBRep_BCurveTool::NbIntervals(const BRepAdaptor_Curve& C,
-                                const GeomAbs_Shape Sh)
-{ return(C.NbIntervals(Sh)); }
+inline Standard_Integer HLRBRep_BCurveTool::NbIntervals(const BRepAdaptor_Curve& C,
+                                                        const GeomAbs_Shape      Sh)
+{
+  return (C.NbIntervals(Sh));
+}
 
 //=======================================================================
-//function : Intervals
-//purpose  : 
+// function : Intervals
+// purpose  :
 //=======================================================================
 
-inline void
-HLRBRep_BCurveTool::Intervals(const BRepAdaptor_Curve& C,
-                              TColStd_Array1OfReal& Tab,
-                              const GeomAbs_Shape Sh)
-{ C.Intervals(Tab,Sh); }
+inline void HLRBRep_BCurveTool::Intervals(const BRepAdaptor_Curve& C,
+                                          TColStd_Array1OfReal&    Tab,
+                                          const GeomAbs_Shape      Sh)
+{
+  C.Intervals(Tab, Sh);
+}
 
 //=======================================================================
-//function : IsClosed
-//purpose  : 
+// function : IsClosed
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean
-HLRBRep_BCurveTool::IsClosed(const BRepAdaptor_Curve& C)
-{ return(C.IsClosed()); }
+inline Standard_Boolean HLRBRep_BCurveTool::IsClosed(const BRepAdaptor_Curve& C)
+{
+  return (C.IsClosed());
+}
 
 //=======================================================================
-//function : IsPeriodic
-//purpose  : 
+// function : IsPeriodic
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean
-HLRBRep_BCurveTool::IsPeriodic(const BRepAdaptor_Curve& C)
-{ return(C.IsPeriodic()); }
+inline Standard_Boolean HLRBRep_BCurveTool::IsPeriodic(const BRepAdaptor_Curve& C)
+{
+  return (C.IsPeriodic());
+}
 
 //=======================================================================
-//function : Period
-//purpose  : 
+// function : Period
+// purpose  :
 //=======================================================================
 
-inline Standard_Real
-HLRBRep_BCurveTool::Period(const BRepAdaptor_Curve& C)
-{ return(C.Period()); }
+inline Standard_Real HLRBRep_BCurveTool::Period(const BRepAdaptor_Curve& C)
+{
+  return (C.Period());
+}
 
 //=======================================================================
-//function : Value
-//purpose  : 
+// function : Value
+// purpose  :
 //=======================================================================
 
-inline gp_Pnt
-HLRBRep_BCurveTool::Value (const BRepAdaptor_Curve& C,
-			   const Standard_Real U)
-{ return(C.Value(U)); }
+inline gp_Pnt HLRBRep_BCurveTool::Value(const BRepAdaptor_Curve& C, const Standard_Real U)
+{
+  return (C.Value(U));
+}
 
 //=======================================================================
-//function : D0
-//purpose  : 
+// function : D0
+// purpose  :
 //=======================================================================
 
-inline void
-HLRBRep_BCurveTool::D0(const BRepAdaptor_Curve& C,
-		       const Standard_Real U,
-		       gp_Pnt& P)
-{ C.D0(U,P); }
+inline void HLRBRep_BCurveTool::D0(const BRepAdaptor_Curve& C, const Standard_Real U, gp_Pnt& P)
+{
+  C.D0(U, P);
+}
 
 //=======================================================================
-//function : D1
-//purpose  : 
+// function : D1
+// purpose  :
 //=======================================================================
 
-inline void
-HLRBRep_BCurveTool::D1 (const BRepAdaptor_Curve& C,
-			const Standard_Real U,
-			gp_Pnt& P,
-			gp_Vec& T)
-{ C.D1(U,P,T); }
+inline void HLRBRep_BCurveTool::D1(const BRepAdaptor_Curve& C,
+                                   const Standard_Real      U,
+                                   gp_Pnt&                  P,
+                                   gp_Vec&                  T)
+{
+  C.D1(U, P, T);
+}
 
-inline void
-HLRBRep_BCurveTool::D2 (const BRepAdaptor_Curve& C,
-			const Standard_Real U,
-			gp_Pnt& P,
-			gp_Vec& T,
-			gp_Vec& N)
-{ C.D2(U,P,T,N); }
-
-//=======================================================================
-//function : D3
-//purpose  : 
-//=======================================================================
-
-inline void
-HLRBRep_BCurveTool::D3 (const BRepAdaptor_Curve& C,
-			const Standard_Real U,
-			gp_Pnt& P,
-			gp_Vec& V1,
-			gp_Vec& V2,
-			gp_Vec& V3)
-{ C.D3(U,P,V1,V2,V3); }
+inline void HLRBRep_BCurveTool::D2(const BRepAdaptor_Curve& C,
+                                   const Standard_Real      U,
+                                   gp_Pnt&                  P,
+                                   gp_Vec&                  T,
+                                   gp_Vec&                  N)
+{
+  C.D2(U, P, T, N);
+}
 
 //=======================================================================
-//function : DN
-//purpose  : 
+// function : D3
+// purpose  :
 //=======================================================================
 
-inline gp_Vec
-HLRBRep_BCurveTool::DN (const BRepAdaptor_Curve& C,
-			const Standard_Real U,
-			const Standard_Integer N)
-{ return(C.DN(U,N)); }
+inline void HLRBRep_BCurveTool::D3(const BRepAdaptor_Curve& C,
+                                   const Standard_Real      U,
+                                   gp_Pnt&                  P,
+                                   gp_Vec&                  V1,
+                                   gp_Vec&                  V2,
+                                   gp_Vec&                  V3)
+{
+  C.D3(U, P, V1, V2, V3);
+}
 
 //=======================================================================
-//function : Resolution
-//purpose  : 
+// function : DN
+// purpose  :
 //=======================================================================
 
-inline Standard_Real
-HLRBRep_BCurveTool::Resolution(const BRepAdaptor_Curve& C,
-			       const Standard_Real R3d)
-{ return(C.Resolution(R3d)); }
+inline gp_Vec HLRBRep_BCurveTool::DN(const BRepAdaptor_Curve& C,
+                                     const Standard_Real      U,
+                                     const Standard_Integer   N)
+{
+  return (C.DN(U, N));
+}
 
 //=======================================================================
-//function : GetType
-//purpose  : 
+// function : Resolution
+// purpose  :
 //=======================================================================
 
-inline GeomAbs_CurveType
- HLRBRep_BCurveTool::GetType(const BRepAdaptor_Curve& C)
-{ return(C.GetType()); }
+inline Standard_Real HLRBRep_BCurveTool::Resolution(const BRepAdaptor_Curve& C,
+                                                    const Standard_Real      R3d)
+{
+  return (C.Resolution(R3d));
+}
 
 //=======================================================================
-//function : Line
-//purpose  : 
+// function : GetType
+// purpose  :
 //=======================================================================
 
-inline gp_Lin
-HLRBRep_BCurveTool::Line (const BRepAdaptor_Curve& C)
-{ return(C.Line()); }
+inline GeomAbs_CurveType HLRBRep_BCurveTool::GetType(const BRepAdaptor_Curve& C)
+{
+  return (C.GetType());
+}
 
 //=======================================================================
-//function : Circle
-//purpose  : 
+// function : Line
+// purpose  :
 //=======================================================================
 
-inline gp_Circ
-HLRBRep_BCurveTool::Circle (const BRepAdaptor_Curve& C)
-{ return(C.Circle()); }
+inline gp_Lin HLRBRep_BCurveTool::Line(const BRepAdaptor_Curve& C)
+{
+  return (C.Line());
+}
 
 //=======================================================================
-//function : Ellipse
-//purpose  : 
+// function : Circle
+// purpose  :
 //=======================================================================
 
-inline gp_Elips
-HLRBRep_BCurveTool::Ellipse (const BRepAdaptor_Curve& C)
-{ return(C.Ellipse()); }
+inline gp_Circ HLRBRep_BCurveTool::Circle(const BRepAdaptor_Curve& C)
+{
+  return (C.Circle());
+}
 
 //=======================================================================
-//function : Parabola
-//purpose  : 
+// function : Ellipse
+// purpose  :
 //=======================================================================
 
-inline gp_Parab
-HLRBRep_BCurveTool::Parabola (const BRepAdaptor_Curve& C)
-{ return(C.Parabola()); }
+inline gp_Elips HLRBRep_BCurveTool::Ellipse(const BRepAdaptor_Curve& C)
+{
+  return (C.Ellipse());
+}
 
 //=======================================================================
-//function : Hyperbola
-//purpose  : 
+// function : Parabola
+// purpose  :
 //=======================================================================
 
-inline gp_Hypr
-HLRBRep_BCurveTool::Hyperbola (const BRepAdaptor_Curve& C)
-{ return(C.Hyperbola()); }
+inline gp_Parab HLRBRep_BCurveTool::Parabola(const BRepAdaptor_Curve& C)
+{
+  return (C.Parabola());
+}
 
 //=======================================================================
-//function : Degree
-//purpose  : 
+// function : Hyperbola
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer
-HLRBRep_BCurveTool::Degree (const BRepAdaptor_Curve& C)
-{ return(C.Degree()); }
+inline gp_Hypr HLRBRep_BCurveTool::Hyperbola(const BRepAdaptor_Curve& C)
+{
+  return (C.Hyperbola());
+}
 
 //=======================================================================
-//function : IsRational
-//purpose  : 
+// function : Degree
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean
-HLRBRep_BCurveTool::IsRational (const BRepAdaptor_Curve& C)
-{ return(C.IsRational()); }
+inline Standard_Integer HLRBRep_BCurveTool::Degree(const BRepAdaptor_Curve& C)
+{
+  return (C.Degree());
+}
 
 //=======================================================================
-//function : NbPoles
-//purpose  : 
+// function : IsRational
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer
-HLRBRep_BCurveTool::NbPoles (const BRepAdaptor_Curve& C)
-{ return(C.NbPoles()); }
+inline Standard_Boolean HLRBRep_BCurveTool::IsRational(const BRepAdaptor_Curve& C)
+{
+  return (C.IsRational());
+}
 
 //=======================================================================
-//function : NbKnots
-//purpose  : 
+// function : NbPoles
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer
-HLRBRep_BCurveTool::NbKnots(const BRepAdaptor_Curve& C)
-{ return(C.NbKnots()); }
+inline Standard_Integer HLRBRep_BCurveTool::NbPoles(const BRepAdaptor_Curve& C)
+{
+  return (C.NbPoles());
+}
+
+//=======================================================================
+// function : NbKnots
+// purpose  :
+//=======================================================================
+
+inline Standard_Integer HLRBRep_BCurveTool::NbKnots(const BRepAdaptor_Curve& C)
+{
+  return (C.NbKnots());
+}

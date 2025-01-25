@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:14 2020 
+// Created on : Sat May 02 12:41:14 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -23,66 +23,61 @@
 #include <TCollection_HAsciiString.hxx>
 #include <StepRepr_RepresentationContextReference.hxx>
 
-//=======================================================================
-//function : RWStepRepr_RWRepresentationReference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 RWStepRepr_RWRepresentationReference::RWStepRepr_RWRepresentationReference() {}
 
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
-
-void RWStepRepr_RWRepresentationReference::ReadStep (const Handle(StepData_StepReaderData)& theData,
-                                                     const Standard_Integer theNum,
-                                                     Handle(Interface_Check)& theAch,
-                                                     const Handle(StepRepr_RepresentationReference)& theEnt) const
+void RWStepRepr_RWRepresentationReference::ReadStep(
+  const Handle(StepData_StepReaderData)&          theData,
+  const Standard_Integer                          theNum,
+  Handle(Interface_Check)&                        theAch,
+  const Handle(StepRepr_RepresentationReference)& theEnt) const
 {
   // Check number of parameters
-  if ( ! theData->CheckNbParams(theNum,2,theAch,"representation_reference") ) return;
+  if (!theData->CheckNbParams(theNum, 2, theAch, "representation_reference"))
+    return;
 
   // Own fields of RepresentationReference
 
   Handle(TCollection_HAsciiString) aId;
-  theData->ReadString (theNum, 1, "id", theAch, aId);
+  theData->ReadString(theNum, 1, "id", theAch, aId);
 
   Handle(StepRepr_RepresentationContextReference) aContextOfItems;
-  theData->ReadEntity (theNum, 2, "context_of_items", theAch, STANDARD_TYPE(StepRepr_RepresentationContextReference), aContextOfItems);
+  theData->ReadEntity(theNum,
+                      2,
+                      "context_of_items",
+                      theAch,
+                      STANDARD_TYPE(StepRepr_RepresentationContextReference),
+                      aContextOfItems);
 
   // Initialize entity
-  theEnt->Init(aId,
-            aContextOfItems);
+  theEnt->Init(aId, aContextOfItems);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepRepr_RWRepresentationReference::WriteStep (StepData_StepWriter& SW,
-                                                      const Handle(StepRepr_RepresentationReference)& theEnt) const
+void RWStepRepr_RWRepresentationReference::WriteStep(
+  StepData_StepWriter&                            SW,
+  const Handle(StepRepr_RepresentationReference)& theEnt) const
 {
 
   // Own fields of RepresentationReference
 
-  SW.Send (theEnt->Id());
+  SW.Send(theEnt->Id());
 
-  SW.Send (theEnt->ContextOfItems());
+  SW.Send(theEnt->ContextOfItems());
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepRepr_RWRepresentationReference::Share (const Handle(StepRepr_RepresentationReference)& theEnt,
-                                                  Interface_EntityIterator& iter) const
+void RWStepRepr_RWRepresentationReference::Share(
+  const Handle(StepRepr_RepresentationReference)& theEnt,
+  Interface_EntityIterator&                       iter) const
 {
 
   // Own fields of RepresentationReference
 
-  iter.AddItem (theEnt->ContextOfItems());
+  iter.AddItem(theEnt->ContextOfItems());
 }

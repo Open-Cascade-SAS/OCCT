@@ -26,12 +26,12 @@
 //! EditDynamic   : not a field, only to be displayed
 enum IFSelect_EditValue
 {
-IFSelect_Optional,
-IFSelect_Editable,
-IFSelect_EditProtected,
-IFSelect_EditComputed,
-IFSelect_EditRead,
-IFSelect_EditDynamic
+  IFSelect_Optional,
+  IFSelect_Editable,
+  IFSelect_EditProtected,
+  IFSelect_EditComputed,
+  IFSelect_EditRead,
+  IFSelect_EditDynamic
 };
 
 #endif // _IFSelect_EditValue_HeaderFile

@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <OSD_Environment.hxx>
 #include <OSD_FileIterator.hxx>
 #include <OSD_Host.hxx>
@@ -30,39 +29,39 @@
 #include <TCollection_ExtendedString.hxx>
 #include <UTL.hxx>
 
-TCollection_ExtendedString UTL::xgetenv(const Standard_CString aCString) {
+TCollection_ExtendedString UTL::xgetenv(const Standard_CString aCString)
+{
   TCollection_ExtendedString x;
-  OSD_Environment theEnv(aCString);
-  TCollection_AsciiString theValue=theEnv.Value();
-  if( ! theValue.IsEmpty())
+  OSD_Environment            theEnv(aCString);
+  TCollection_AsciiString    theValue = theEnv.Value();
+  if (!theValue.IsEmpty())
     x = TCollection_ExtendedString(theValue);
   return x;
 }
 
-TCollection_ExtendedString UTL::Extension(const TCollection_ExtendedString& aFileName) 
+TCollection_ExtendedString UTL::Extension(const TCollection_ExtendedString& aFileName)
 {
   TCollection_AsciiString aFileNameU(aFileName);
-  OSD_Path p = OSD_Path(aFileNameU);
+  OSD_Path                p            = OSD_Path(aFileNameU);
   TCollection_AsciiString theExtension = p.Extension();
   if (theExtension.Value(1) == '.')
     theExtension.Remove(1, 1);
   return TCollection_ExtendedString(theExtension);
 }
 
-Storage_Error UTL::OpenFile(const Handle(Storage_BaseDriver)& aDriver, 
-                            const TCollection_ExtendedString& aFileName, 
-                            const Storage_OpenMode aMode) 
+Storage_Error UTL::OpenFile(const Handle(Storage_BaseDriver)& aDriver,
+                            const TCollection_ExtendedString& aFileName,
+                            const Storage_OpenMode            aMode)
 {
-  return aDriver->Open(TCollection_AsciiString(aFileName),aMode);
+  return aDriver->Open(TCollection_AsciiString(aFileName), aMode);
 }
 
-void UTL::AddToUserInfo(const Handle(Storage_Data)& aData, 
-                        const TCollection_ExtendedString& anInfo) 
+void UTL::AddToUserInfo(const Handle(Storage_Data)& aData, const TCollection_ExtendedString& anInfo)
 {
   aData->AddToUserInfo(TCollection_AsciiString(anInfo));
 }
 
-OSD_Path UTL::Path(const TCollection_ExtendedString& aFileName) 
+OSD_Path UTL::Path(const TCollection_ExtendedString& aFileName)
 {
   OSD_Path p = OSD_Path(TCollection_AsciiString(aFileName));
   return p;
@@ -90,7 +89,7 @@ TCollection_ExtendedString UTL::Extension(const OSD_Path& aPath)
 
 OSD_FileIterator UTL::FileIterator(const OSD_Path& aPath, const TCollection_ExtendedString& aMask)
 {
-  OSD_FileIterator it = OSD_FileIterator(aPath,TCollection_AsciiString(aMask));
+  OSD_FileIterator it = OSD_FileIterator(aPath, TCollection_AsciiString(aMask));
   return it;
 }
 
@@ -107,22 +106,22 @@ TCollection_ExtendedString UTL::ExtendedString(const TCollection_AsciiString& an
 
 Standard_GUID UTL::GUID(const TCollection_ExtendedString& anXString)
 {
-  return Standard_GUID(TCollection_AsciiString(anXString,'?').ToCString());
+  return Standard_GUID(TCollection_AsciiString(anXString, '?').ToCString());
 }
 
-Standard_Boolean UTL::Find(const Handle(Resource_Manager)& aResourceManager,
+Standard_Boolean UTL::Find(const Handle(Resource_Manager)&   aResourceManager,
                            const TCollection_ExtendedString& aResourceName)
 {
   return aResourceManager->Find(TCollection_AsciiString(aResourceName).ToCString());
 }
 
-TCollection_ExtendedString UTL::Value(const Handle(Resource_Manager)& aResourceManager,
+TCollection_ExtendedString UTL::Value(const Handle(Resource_Manager)&   aResourceManager,
                                       const TCollection_ExtendedString& aResourceName)
 {
   TCollection_AsciiString aResourceNameU(aResourceName);
   return TCollection_ExtendedString(aResourceManager->Value(aResourceNameU.ToCString()),
                                     Standard_True);
-}  
+}
 
 Standard_Integer UTL::IntegerValue(const TCollection_ExtendedString& anExtendedString)
 {
@@ -139,16 +138,17 @@ Standard_CString UTL::CString(const TCollection_ExtendedString& anExtendedString
 
 Standard_Boolean UTL::IsReadOnly(const TCollection_ExtendedString& aFileName)
 {
-  switch (OSD_File(UTL::Path(aFileName)).Protection().User()) {
-  case OSD_W:
-  case OSD_RW:
-  case OSD_WX:
-  case OSD_RWX:
-  case OSD_RWD:
-  case OSD_WXD:
-  case OSD_RWXD:
-    return Standard_False;
-  default:
-    return Standard_True;
+  switch (OSD_File(UTL::Path(aFileName)).Protection().User())
+  {
+    case OSD_W:
+    case OSD_RW:
+    case OSD_WX:
+    case OSD_RWX:
+    case OSD_RWD:
+    case OSD_WXD:
+    case OSD_RWXD:
+      return Standard_False;
+    default:
+      return Standard_True;
   }
 }

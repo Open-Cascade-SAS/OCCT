@@ -18,12 +18,11 @@
 #include <Standard_Type.hxx>
 #include <StepShape_EdgeBasedWireframeShapeRepresentation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_EdgeBasedWireframeShapeRepresentation,StepShape_ShapeRepresentation)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_EdgeBasedWireframeShapeRepresentation,
+                           StepShape_ShapeRepresentation)
 
-//=======================================================================
-//function : StepShape_EdgeBasedWireframeShapeRepresentation
-//purpose  : 
-//=======================================================================
-StepShape_EdgeBasedWireframeShapeRepresentation::StepShape_EdgeBasedWireframeShapeRepresentation ()
+//=================================================================================================
+
+StepShape_EdgeBasedWireframeShapeRepresentation::StepShape_EdgeBasedWireframeShapeRepresentation()
 {
 }

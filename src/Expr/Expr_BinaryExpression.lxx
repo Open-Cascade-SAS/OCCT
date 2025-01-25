@@ -15,12 +15,11 @@
 // commercial license or contractual agreement.
 
 inline const Handle(Expr_GeneralExpression)& Expr_BinaryExpression::FirstOperand() const
-{   
+{
   return myFirstOperand;
 }
 
-inline const Handle(Expr_GeneralExpression)& Expr_BinaryExpression::SecondOperand () const
+inline const Handle(Expr_GeneralExpression)& Expr_BinaryExpression::SecondOperand() const
 {
   return mySecondOperand;
 }
-

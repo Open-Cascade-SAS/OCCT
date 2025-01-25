@@ -12,12 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//#ifndef OCCT_DEBUG
+// #ifndef OCCT_DEBUG
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
 
-//#endif
+// #endif
 
 #include <math_BFGS.hxx>
 #include <math_BracketMinimum.hxx>
@@ -36,42 +36,37 @@
 class DirFunction : public math_FunctionWithDerivative
 {
 
-  math_Vector *P0;
-  math_Vector *Dir;
-  math_Vector *P;
-  math_Vector *G;
-  math_MultipleVarFunctionWithGradient *F;
+  math_Vector*                          P0;
+  math_Vector*                          Dir;
+  math_Vector*                          P;
+  math_Vector*                          G;
+  math_MultipleVarFunctionWithGradient* F;
 
 public:
-
   //! Ctor.
-  DirFunction(math_Vector& V1,
-              math_Vector& V2,
-              math_Vector& V3,
-              math_Vector& V4,
+  DirFunction(math_Vector&                          V1,
+              math_Vector&                          V2,
+              math_Vector&                          V3,
+              math_Vector&                          V4,
               math_MultipleVarFunctionWithGradient& f)
-  : P0(&V1),
-    Dir(&V2),
-    P(&V3),
-    G(&V4),
-    F(&f)
-  {}
+      : P0(&V1),
+        Dir(&V2),
+        P(&V3),
+        G(&V4),
+        F(&f)
+  {
+  }
 
   //! Sets point and direction.
-  void Initialize(const math_Vector& p0,
-                  const math_Vector& dir) const
+  void Initialize(const math_Vector& p0, const math_Vector& dir) const
   {
-    *P0 = p0;
+    *P0  = p0;
     *Dir = dir;
   }
 
-  void TheGradient(math_Vector& Grad)
-  {
-    Grad = *G;
-  }
+  void TheGradient(math_Vector& Grad) { Grad = *G; }
 
-  virtual Standard_Boolean Value(const Standard_Real x,
-                                 Standard_Real&      fval)
+  virtual Standard_Boolean Value(const Standard_Real x, Standard_Real& fval)
   {
     *P = *Dir;
     P->Multiply(x);
@@ -80,9 +75,7 @@ public:
     return F->Value(*P, fval);
   }
 
-  virtual Standard_Boolean Values(const Standard_Real x,
-                                  Standard_Real&      fval,
-                                  Standard_Real&      D)
+  virtual Standard_Boolean Values(const Standard_Real x, Standard_Real& fval, Standard_Real& D)
   {
     *P = *Dir;
     P->Multiply(x);
@@ -96,8 +89,8 @@ public:
 
     return Standard_False;
   }
-  virtual Standard_Boolean Derivative(const Standard_Real x,
-                                      Standard_Real&      D)
+
+  virtual Standard_Boolean Derivative(const Standard_Real x, Standard_Real& D)
   {
     *P = *Dir;
     P->Multiply(x);
@@ -112,13 +105,11 @@ public:
 
     return Standard_False;
   }
-
-
 };
 
 //=============================================================================
-//function : ComputeInitScale
-//purpose  : Compute the appropriate initial value of scale factor to apply
+// function : ComputeInitScale
+// purpose  : Compute the appropriate initial value of scale factor to apply
 //           to the direction to approach to the minimum of the function
 //=============================================================================
 static Standard_Boolean ComputeInitScale(const Standard_Real theF0,
@@ -131,8 +122,8 @@ static Standard_Boolean ComputeInitScale(const Standard_Real theF0,
     return Standard_False;
 
   const Standard_Real aHnr1 = theDir.Norm2();
-  const Standard_Real alfa = 0.7*(-theF0) / dy1;
-  theScale = 0.015 / Sqrt(aHnr1);
+  const Standard_Real alfa  = 0.7 * (-theF0) / dy1;
+  theScale                  = 0.015 / Sqrt(aHnr1);
   if (theScale > alfa)
     theScale = alfa;
 
@@ -140,11 +131,11 @@ static Standard_Boolean ComputeInitScale(const Standard_Real theF0,
 }
 
 //=============================================================================
-//function : ComputeMinMaxScale
-//purpose  : For a given point and direction, and bounding box,
+// function : ComputeMinMaxScale
+// purpose  : For a given point and direction, and bounding box,
 //           find min and max scale factors with which the point reaches borders
 //           if we apply translation Point+Dir*Scale.
-//return   : True if found, False if point is out of bounds.
+// return   : True if found, False if point is out of bounds.
 //=============================================================================
 static Standard_Boolean ComputeMinMaxScale(const math_Vector& thePoint,
                                            const math_Vector& theDir,
@@ -155,7 +146,7 @@ static Standard_Boolean ComputeMinMaxScale(const math_Vector& thePoint,
 {
   for (Standard_Integer anIdx = 1; anIdx <= theLeft.Upper(); anIdx++)
   {
-    const Standard_Real aLeft = theLeft(anIdx) - thePoint(anIdx);
+    const Standard_Real aLeft  = theLeft(anIdx) - thePoint(anIdx);
     const Standard_Real aRight = theRight(anIdx) - thePoint(anIdx);
     if (Abs(theDir(anIdx)) > RealSmall())
     {
@@ -189,8 +180,7 @@ static Standard_Boolean ComputeMinMaxScale(const math_Vector& thePoint,
     {
       // Direction is parallel to the border.
       // Check that the point is not out of bounds
-      if (aLeft  >  Precision::PConfusion() ||
-          aRight < -Precision::PConfusion())
+      if (aLeft > Precision::PConfusion() || aRight < -Precision::PConfusion())
       {
         return Standard_False;
       }
@@ -200,8 +190,8 @@ static Standard_Boolean ComputeMinMaxScale(const math_Vector& thePoint,
 }
 
 //=============================================================================
-//function : MinimizeDirection
-//purpose  : Solves 1D minimization problem when point and directions
+// function : MinimizeDirection
+// purpose  : Solves 1D minimization problem when point and directions
 //           are known.
 //=============================================================================
 static Standard_Boolean MinimizeDirection(math_Vector&       P,
@@ -233,8 +223,8 @@ static Standard_Boolean MinimizeDirection(math_Vector&       P,
       // Make direction to go along the border
       for (Standard_Integer anIdx = 1; anIdx <= theLeft.Upper(); anIdx++)
       {
-        if ((Abs(P(anIdx) - theRight(anIdx)) < Precision::PConfusion() && Dir(anIdx) > 0.0) ||
-            (Abs(P(anIdx) - theLeft(anIdx))  < Precision::PConfusion() && Dir(anIdx) < 0.0))
+        if ((Abs(P(anIdx) - theRight(anIdx)) < Precision::PConfusion() && Dir(anIdx) > 0.0)
+            || (Abs(P(anIdx) - theLeft(anIdx)) < Precision::PConfusion() && Dir(anIdx) < 0.0))
         {
           Dir(anIdx) = 0.0;
         }
@@ -268,14 +258,14 @@ static Standard_Boolean MinimizeDirection(math_Vector&       P,
     Bracket.Values(ax, xx, bx);
     Bracket.FunctionValues(Fax, Fxx, Fbx);
 
-    Standard_Integer niter = 100;
-    Standard_Real tol = 1.e-03;
+    Standard_Integer  niter = 100;
+    Standard_Real     tol   = 1.e-03;
     math_BrentMinimum Sol(tol, Fxx, niter, 1.e-08);
     Sol.Perform(F, ax, xx, bx);
     if (Sol.IsDone())
     {
       Standard_Real Scale = Sol.Location();
-      Result = Sol.Minimum();
+      Result              = Sol.Minimum();
       Dir.Multiply(Scale);
       P.Add(Dir);
       return Standard_True;
@@ -294,12 +284,12 @@ static Standard_Boolean MinimizeDirection(math_Vector&       P,
     if (aFMin < aFMax)
     {
       aBestLambda = aMinLambda;
-      Result = aFMin;
+      Result      = aFMin;
     }
     else
     {
       aBestLambda = aMaxLambda;
-      Result = aFMax;
+      Result      = aFMax;
     }
     Dir.Multiply(aBestLambda);
     P.Add(Dir);
@@ -309,16 +299,15 @@ static Standard_Boolean MinimizeDirection(math_Vector&       P,
 }
 
 //=============================================================================
-//function : Perform
-//purpose  : Performs minimization problem using BFGS method.
+// function : Perform
+// purpose  : Performs minimization problem using BFGS method.
 //=============================================================================
-void  math_BFGS::Perform(math_MultipleVarFunctionWithGradient& F,
-                         const math_Vector&                    StartingPoint)
+void math_BFGS::Perform(math_MultipleVarFunctionWithGradient& F, const math_Vector& StartingPoint)
 {
-  const Standard_Integer n = TheLocation.Length();
-  Standard_Boolean Good = Standard_True;
-  Standard_Integer j, i;
-  Standard_Real fae, fad, fac;
+  const Standard_Integer n    = TheLocation.Length();
+  Standard_Boolean       Good = Standard_True;
+  Standard_Integer       j, i;
+  Standard_Real          fae, fad, fac;
 
   math_Vector xi(1, n), dg(1, n), hdg(1, n);
   math_Matrix hessin(1, n, 1, n);
@@ -331,37 +320,42 @@ void  math_BFGS::Perform(math_MultipleVarFunctionWithGradient& F,
   DirFunction F_Dir(Temp1, Temp2, Temp3, Temp4, F);
 
   TheLocation = StartingPoint;
-  Good = F.Values(TheLocation, PreviousMinimum, TheGradient);
+  Good        = F.Values(TheLocation, PreviousMinimum, TheGradient);
   if (!Good)
   {
-    Done = Standard_False;
+    Done      = Standard_False;
     TheStatus = math_FunctionError;
     return;
   }
   for (i = 1; i <= n; i++)
   {
     hessin(i, i) = 1.0;
-    xi(i) = -TheGradient(i);
+    xi(i)        = -TheGradient(i);
   }
-
 
   for (nbiter = 1; nbiter <= Itermax; nbiter++)
   {
-    TheMinimum = PreviousMinimum;
-    const Standard_Boolean IsGood = MinimizeDirection(TheLocation, TheMinimum, TheGradient,
-                                                      xi, TheMinimum, F_Dir, myIsBoundsDefined,
-                                                      myLeft, myRight);
+    TheMinimum                    = PreviousMinimum;
+    const Standard_Boolean IsGood = MinimizeDirection(TheLocation,
+                                                      TheMinimum,
+                                                      TheGradient,
+                                                      xi,
+                                                      TheMinimum,
+                                                      F_Dir,
+                                                      myIsBoundsDefined,
+                                                      myLeft,
+                                                      myRight);
 
     if (IsSolutionReached(F))
     {
-      Done = Standard_True;
+      Done      = Standard_True;
       TheStatus = math_OK;
       return;
     }
 
     if (!IsGood)
     {
-      Done = Standard_False;
+      Done      = Standard_False;
       TheStatus = math_DirectionSearchError;
       return;
     }
@@ -372,7 +366,7 @@ void  math_BFGS::Perform(math_MultipleVarFunctionWithGradient& F,
     Good = F.Values(TheLocation, TheMinimum, TheGradient);
     if (!Good)
     {
-      Done = Standard_False;
+      Done      = Standard_False;
       TheStatus = math_FunctionError;
       return;
     }
@@ -412,58 +406,50 @@ void  math_BFGS::Perform(math_MultipleVarFunctionWithGradient& F,
         xi(i) -= hessin(i, j) * TheGradient(j);
     }
   }
-  Done = Standard_False;
+  Done      = Standard_False;
   TheStatus = math_TooManyIterations;
   return;
 }
 
 //=============================================================================
-//function : IsSolutionReached
-//purpose  : Checks whether solution reached or not.
+// function : IsSolutionReached
+// purpose  : Checks whether solution reached or not.
 //=============================================================================
 Standard_Boolean math_BFGS::IsSolutionReached(math_MultipleVarFunctionWithGradient&) const
 {
 
-  return 2.0 * fabs(TheMinimum - PreviousMinimum) <=
-    XTol * (fabs(TheMinimum) + fabs(PreviousMinimum) + EPSZ);
+  return 2.0 * fabs(TheMinimum - PreviousMinimum)
+         <= XTol * (fabs(TheMinimum) + fabs(PreviousMinimum) + EPSZ);
 }
 
-//=============================================================================
-//function : math_BFGS
-//purpose  : Constructor.
-//=============================================================================
-math_BFGS::math_BFGS(const Standard_Integer     NbVariables,
-                     const Standard_Real        Tolerance,
-                     const Standard_Integer     NbIterations,
-                     const Standard_Real        ZEPS)
-: TheStatus(math_OK),
-  TheLocation(1, NbVariables),
-  TheGradient(1, NbVariables),
-  PreviousMinimum(0.),
-  TheMinimum(0.),
-  XTol(Tolerance),
-  EPSZ(ZEPS),
-  nbiter(0),
-  myIsBoundsDefined(Standard_False),
-  myLeft(1, NbVariables, 0.0),
-  myRight(1, NbVariables, 0.0),
-  Done(Standard_False),
-  Itermax(NbIterations)
+//=================================================================================================
+
+math_BFGS::math_BFGS(const Standard_Integer NbVariables,
+                     const Standard_Real    Tolerance,
+                     const Standard_Integer NbIterations,
+                     const Standard_Real    ZEPS)
+    : TheStatus(math_OK),
+      TheLocation(1, NbVariables),
+      TheGradient(1, NbVariables),
+      PreviousMinimum(0.),
+      TheMinimum(0.),
+      XTol(Tolerance),
+      EPSZ(ZEPS),
+      nbiter(0),
+      myIsBoundsDefined(Standard_False),
+      myLeft(1, NbVariables, 0.0),
+      myRight(1, NbVariables, 0.0),
+      Done(Standard_False),
+      Itermax(NbIterations)
 {
 }
 
-//=============================================================================
-//function : ~math_BFGS
-//purpose  : Destructor.
-//=============================================================================
-math_BFGS::~math_BFGS()
-{
-}
+//=================================================================================================
 
-//=============================================================================
-//function : Dump
-//purpose  : Prints dump.
-//=============================================================================
+math_BFGS::~math_BFGS() {}
+
+//=================================================================================================
+
 void math_BFGS::Dump(Standard_OStream& o) const
 {
 
@@ -480,13 +466,12 @@ void math_BFGS::Dump(Standard_OStream& o) const
 }
 
 //=============================================================================
-//function : SetBoundary
-//purpose  : Set boundaries for conditional optimization
+// function : SetBoundary
+// purpose  : Set boundaries for conditional optimization
 //=============================================================================
-void math_BFGS::SetBoundary(const math_Vector& theLeftBorder,
-                            const math_Vector& theRightBorder)
+void math_BFGS::SetBoundary(const math_Vector& theLeftBorder, const math_Vector& theRightBorder)
 {
-  myLeft = theLeftBorder;
-  myRight = theRightBorder;
+  myLeft            = theLeftBorder;
+  myRight           = theRightBorder;
   myIsBoundsDefined = Standard_True;
 }

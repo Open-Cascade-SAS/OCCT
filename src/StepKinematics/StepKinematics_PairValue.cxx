@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -18,40 +18,32 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_PairValue, StepGeom_GeometricRepresentationItem)
 
-//=======================================================================
-//function : StepKinematics_PairValue
-//purpose  :
-//=======================================================================
-StepKinematics_PairValue::StepKinematics_PairValue ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_PairValue::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                     const Handle(StepKinematics_KinematicPair)& theAppliesToPair)
+StepKinematics_PairValue::StepKinematics_PairValue() {}
+
+//=================================================================================================
+
+void StepKinematics_PairValue::Init(
+  const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
+  const Handle(StepKinematics_KinematicPair)& theAppliesToPair)
 {
   StepGeom_GeometricRepresentationItem::Init(theRepresentationItem_Name);
 
   myAppliesToPair = theAppliesToPair;
 }
 
-//=======================================================================
-//function : AppliesToPair
-//purpose  :
-//=======================================================================
-Handle(StepKinematics_KinematicPair) StepKinematics_PairValue::AppliesToPair () const
+//=================================================================================================
+
+Handle(StepKinematics_KinematicPair) StepKinematics_PairValue::AppliesToPair() const
 {
   return myAppliesToPair;
 }
 
-//=======================================================================
-//function : SetAppliesToPair
-//purpose  :
-//=======================================================================
-void StepKinematics_PairValue::SetAppliesToPair (const Handle(StepKinematics_KinematicPair)& theAppliesToPair)
+//=================================================================================================
+
+void StepKinematics_PairValue::SetAppliesToPair(
+  const Handle(StepKinematics_KinematicPair)& theAppliesToPair)
 {
   myAppliesToPair = theAppliesToPair;
 }

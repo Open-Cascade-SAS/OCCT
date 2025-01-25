@@ -29,27 +29,28 @@ public:
   GeomEvaluator_Curve() {}
 
   //! Value of 3D curve
-  virtual void D0(const Standard_Real theU,
-                  gp_Pnt& theValue) const = 0;
+  virtual void D0(const Standard_Real theU, gp_Pnt& theValue) const = 0;
   //! Value and first derivatives of curve
-  virtual void D1(const Standard_Real theU,
-                  gp_Pnt& theValue, gp_Vec& theD1) const = 0;
+  virtual void D1(const Standard_Real theU, gp_Pnt& theValue, gp_Vec& theD1) const = 0;
   //! Value, first and second derivatives of curve
   virtual void D2(const Standard_Real theU,
-                  gp_Pnt& theValue, gp_Vec& theD1, gp_Vec& theD2) const = 0;
+                  gp_Pnt&             theValue,
+                  gp_Vec&             theD1,
+                  gp_Vec&             theD2) const = 0;
   //! Value, first, second and third derivatives of curve
   virtual void D3(const Standard_Real theU,
-                  gp_Pnt& theValue, gp_Vec& theD1, gp_Vec& theD2, gp_Vec& theD3) const = 0;
+                  gp_Pnt&             theValue,
+                  gp_Vec&             theD1,
+                  gp_Vec&             theD2,
+                  gp_Vec&             theD3) const = 0;
   //! Calculates N-th derivatives of curve, where N = theDerU. Raises if N < 1
-  virtual gp_Vec DN(const Standard_Real theU,
-                    const Standard_Integer theDerU) const = 0;
+  virtual gp_Vec DN(const Standard_Real theU, const Standard_Integer theDerU) const = 0;
 
   virtual Handle(GeomEvaluator_Curve) ShallowCopy() const = 0;
 
-  DEFINE_STANDARD_RTTI_INLINE(GeomEvaluator_Curve,Standard_Transient)
+  DEFINE_STANDARD_RTTI_INLINE(GeomEvaluator_Curve, Standard_Transient)
 };
 
 DEFINE_STANDARD_HANDLE(GeomEvaluator_Curve, Standard_Transient)
-
 
 #endif // _GeomEvaluator_Curve_HeaderFile

@@ -41,18 +41,22 @@ enum AIS_ViewInputBufferType
 class AIS_ViewInputBuffer
 {
 public:
-
-  bool IsNewGesture;     //!< transition from one action to another
+  bool IsNewGesture; //!< transition from one action to another
 
   NCollection_Sequence<Aspect_ScrollDelta> ZoomActions; //!< the queue with zoom actions
 
   struct _orientation
   {
-    bool                  ToFitAll;         //!< perform FitAll operation
-    bool                  ToSetViewOrient;  //!< set new view orientation
-    V3d_TypeOfOrientation ViewOrient;       //!< new view orientation
+    bool                  ToFitAll;        //!< perform FitAll operation
+    bool                  ToSetViewOrient; //!< set new view orientation
+    V3d_TypeOfOrientation ViewOrient;      //!< new view orientation
 
-    _orientation() : ToFitAll (false), ToSetViewOrient (false), ViewOrient (V3d_Xpos) {}
+    _orientation()
+        : ToFitAll(false),
+          ToSetViewOrient(false),
+          ViewOrient(V3d_Xpos)
+    {
+    }
   } Orientation;
 
   struct _highlighting
@@ -60,18 +64,25 @@ public:
     bool            ToHilight; //!< perform dynamic highlighting at specified point
     Graphic3d_Vec2i Point;     //!< the new point for dynamic highlighting
 
-    _highlighting() : ToHilight (false) {}
+    _highlighting()
+        : ToHilight(false)
+    {
+    }
   } MoveTo;
 
   struct _selection
   {
-    AIS_ViewSelectionTool Tool;          //!< perform selection
-    AIS_SelectionScheme   Scheme;        //!< selection scheme
-    NCollection_Sequence<Graphic3d_Vec2i>
-                          Points;        //!< the points for selection
-    bool                  ToApplyTool;   //!< apply rubber-band selection tool
+    AIS_ViewSelectionTool                 Tool;        //!< perform selection
+    AIS_SelectionScheme                   Scheme;      //!< selection scheme
+    NCollection_Sequence<Graphic3d_Vec2i> Points;      //!< the points for selection
+    bool                                  ToApplyTool; //!< apply rubber-band selection tool
 
-    _selection() : Tool (AIS_ViewSelectionTool_Picking), Scheme (AIS_SelectionScheme_UNKNOWN), ToApplyTool (false) {}
+    _selection()
+        : Tool(AIS_ViewSelectionTool_Picking),
+          Scheme(AIS_SelectionScheme_UNKNOWN),
+          ToApplyTool(false)
+    {
+    }
   } Selection;
 
   struct _panningParams
@@ -81,7 +92,11 @@ public:
     bool            ToPan;      //!< perform panning
     Graphic3d_Vec2i Delta;      //!< panning delta
 
-    _panningParams() : ToStart (false), ToPan (false) {}
+    _panningParams()
+        : ToStart(false),
+          ToPan(false)
+    {
+    }
   } Panning;
 
   struct _draggingParams
@@ -94,7 +109,14 @@ public:
     Graphic3d_Vec2i PointStart; //!< drag start point
     Graphic3d_Vec2i PointTo;    //!< drag end point
 
-    _draggingParams() : ToStart (false), ToConfirm (false), ToMove (false), ToStop (false), ToAbort (false) {}
+    _draggingParams()
+        : ToStart(false),
+          ToConfirm(false),
+          ToMove(false),
+          ToStop(false),
+          ToAbort(false)
+    {
+    }
   } Dragging;
 
   struct _orbitRotation
@@ -104,7 +126,11 @@ public:
     bool            ToRotate;   //!< perform orbit rotation
     Graphic3d_Vec2d PointTo;    //!< orbit rotation end point
 
-    _orbitRotation() : ToStart (false), ToRotate (false) {}
+    _orbitRotation()
+        : ToStart(false),
+          ToRotate(false)
+    {
+    }
   } OrbitRotation;
 
   struct _viewRotation
@@ -114,7 +140,11 @@ public:
     bool            ToRotate;   //!< perform view rotation
     Graphic3d_Vec2d PointTo;    //!< view rotation end point
 
-    _viewRotation() : ToStart (false), ToRotate (false) {}
+    _viewRotation()
+        : ToStart(false),
+          ToRotate(false)
+    {
+    }
   } ViewRotation;
 
   struct _zrotateParams
@@ -123,37 +153,41 @@ public:
     double          Angle;    //!< Z rotation angle
     bool            ToRotate; //!< start Z rotation
 
-    _zrotateParams() : Angle (0.0), ToRotate (false) {}
+    _zrotateParams()
+        : Angle(0.0),
+          ToRotate(false)
+    {
+    }
   } ZRotate;
 
 public:
-
   AIS_ViewInputBuffer()
-  : IsNewGesture (false) {}
+      : IsNewGesture(false)
+  {
+  }
 
   //! Reset events buffer.
   void Reset()
   {
-    Orientation.ToFitAll = false;
+    Orientation.ToFitAll        = false;
     Orientation.ToSetViewOrient = false;
-    MoveTo.ToHilight = false;
-    Selection.ToApplyTool = false;
-    IsNewGesture     = false;
+    MoveTo.ToHilight            = false;
+    Selection.ToApplyTool       = false;
+    IsNewGesture                = false;
     ZoomActions.Clear();
-    Panning.ToStart    = false;
-    Panning.ToPan      = false;
-    Dragging.ToStart   = false;
-    Dragging.ToConfirm = false;
-    Dragging.ToMove    = false;
-    Dragging.ToStop    = false;
-    Dragging.ToAbort   = false;
+    Panning.ToStart        = false;
+    Panning.ToPan          = false;
+    Dragging.ToStart       = false;
+    Dragging.ToConfirm     = false;
+    Dragging.ToMove        = false;
+    Dragging.ToStop        = false;
+    Dragging.ToAbort       = false;
     OrbitRotation.ToStart  = false;
     OrbitRotation.ToRotate = false;
     ViewRotation.ToStart   = false;
     ViewRotation.ToRotate  = false;
-    ZRotate.ToRotate = false;
+    ZRotate.ToRotate       = false;
   }
-
 };
 
 #endif // _AIS_ViewInputBuffer_HeaderFile

@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef View_Viewer_H
 #define View_Viewer_H
@@ -28,9 +28,11 @@
 class View_Viewer
 {
 public:
-
   //! Constructor
-  View_Viewer (const Quantity_Color& theColor) : myDefaultColor(theColor) {}
+  View_Viewer(const Quantity_Color& theColor)
+      : myDefaultColor(theColor)
+  {
+  }
 
   //! Destructor
   virtual ~View_Viewer() {}
@@ -39,18 +41,21 @@ public:
   static Quantity_Color DefaultColor() { return Quantity_Color(Quantity_NOC_BLACK); }
 
   //! Returns the view default colors
-  static Quantity_Color DisabledColor() { return Quantity_Color(195 / 255., 195 / 255., 195 / 255., Quantity_TOC_sRGB); }
+  static Quantity_Color DisabledColor()
+  {
+    return Quantity_Color(195 / 255., 195 / 255., 195 / 255., Quantity_TOC_sRGB);
+  }
 
   //! Creates V3d view
   Standard_EXPORT void CreateView();
 
   //! Fills V3d view by the given window
   //! \param depending on platform it is either WNT_Window or Xw_Window
-  Standard_EXPORT void SetWindow (const Handle(Aspect_Window)& theWindow);
+  Standard_EXPORT void SetWindow(const Handle(Aspect_Window)& theWindow);
 
   //! Creates OCC components on the window
   //! \param theWindowHandle an id of the application window
-  Standard_EXPORT void InitViewer (const Handle(AIS_InteractiveContext)& theContext);
+  Standard_EXPORT void InitViewer(const Handle(AIS_InteractiveContext)& theContext);
 
   //! Creates OCC components on the window
   //! \param theWindowHandle an id of the application window
@@ -66,10 +71,10 @@ public:
   const Handle(AIS_InteractiveContext)& GetContext() const { return myContext; }
 
 private:
-
   Handle(V3d_Viewer) myViewer; //!< the OCCT viewer
-  Handle(V3d_View) myView; //!< the OCCT view window
-  Handle(AIS_InteractiveContext) myContext; //!< OCCT context to provide display and selection mechanism
+  Handle(V3d_View)   myView;   //!< the OCCT view window
+  Handle(AIS_InteractiveContext)
+                 myContext;      //!< OCCT context to provide display and selection mechanism
   Quantity_Color myDefaultColor; //!< the default color of the viewer
 };
 

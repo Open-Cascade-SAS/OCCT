@@ -20,8 +20,8 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,gp_Pnt2d> MAT2d_DataMapOfIntegerPnt2d;
-typedef NCollection_DataMap<Standard_Integer,gp_Pnt2d>::Iterator MAT2d_DataMapIteratorOfDataMapOfIntegerPnt2d;
-
+typedef NCollection_DataMap<Standard_Integer, gp_Pnt2d> MAT2d_DataMapOfIntegerPnt2d;
+typedef NCollection_DataMap<Standard_Integer, gp_Pnt2d>::Iterator
+  MAT2d_DataMapIteratorOfDataMapOfIntegerPnt2d;
 
 #endif

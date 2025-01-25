@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(TDataXtd_HArray1OfTrsf, TDataXtd_Array1OfTrsf)
 
-
 #endif

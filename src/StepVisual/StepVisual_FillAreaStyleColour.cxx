@@ -11,41 +11,38 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepVisual_Colour.hxx>
 #include <StepVisual_FillAreaStyleColour.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_FillAreaStyleColour,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_FillAreaStyleColour, Standard_Transient)
 
-StepVisual_FillAreaStyleColour::StepVisual_FillAreaStyleColour ()  {}
+StepVisual_FillAreaStyleColour::StepVisual_FillAreaStyleColour() {}
 
-void StepVisual_FillAreaStyleColour::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepVisual_Colour)& aFillColour)
+void StepVisual_FillAreaStyleColour::Init(const Handle(TCollection_HAsciiString)& aName,
+                                          const Handle(StepVisual_Colour)&        aFillColour)
 {
-	// --- classe own fields ---
-	name = aName;
-	fillColour = aFillColour;
+  // --- classe own fields ---
+  name       = aName;
+  fillColour = aFillColour;
 }
-
 
 void StepVisual_FillAreaStyleColour::SetName(const Handle(TCollection_HAsciiString)& aName)
 {
-	name = aName;
+  name = aName;
 }
 
 Handle(TCollection_HAsciiString) StepVisual_FillAreaStyleColour::Name() const
 {
-	return name;
+  return name;
 }
 
 void StepVisual_FillAreaStyleColour::SetFillColour(const Handle(StepVisual_Colour)& aFillColour)
 {
-	fillColour = aFillColour;
+  fillColour = aFillColour;
 }
 
 Handle(StepVisual_Colour) StepVisual_FillAreaStyleColour::FillColour() const
 {
-	return fillColour;
+  return fillColour;
 }

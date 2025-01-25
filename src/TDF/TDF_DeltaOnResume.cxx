@@ -15,7 +15,7 @@
 
 //      	---------------------
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Jul  6 1998	Creation
 
 #include <TDF_DeltaOnResume.hxx>
@@ -25,39 +25,31 @@
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDF_DeltaOnResume,TDF_AttributeDelta)
+IMPLEMENT_STANDARD_RTTIEXT(TDF_DeltaOnResume, TDF_AttributeDelta)
 
-//=======================================================================
-//function : TDF_DeltaOnResume
-//purpose  : 
-//=======================================================================
-TDF_DeltaOnResume::TDF_DeltaOnResume
-(const Handle(TDF_Attribute)& anAtt)
-: TDF_AttributeDelta(anAtt)
-{}
+//=================================================================================================
 
+TDF_DeltaOnResume::TDF_DeltaOnResume(const Handle(TDF_Attribute)& anAtt)
+    : TDF_AttributeDelta(anAtt)
+{
+}
 
-//=======================================================================
-//function : Apply
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TDF_DeltaOnResume::Apply() 
+void TDF_DeltaOnResume::Apply()
 {
   // Undo = Forget.
-  Label().ForgetAttribute (Attribute());
+  Label().ForgetAttribute(Attribute());
 #ifdef OCCT_DEBUG
-  std::cout<<"Forget attribute"<<std::endl;
+  std::cout << "Forget attribute" << std::endl;
 #endif
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void TDF_DeltaOnResume::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+//=================================================================================================
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_AttributeDelta)
+void TDF_DeltaOnResume::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDF_AttributeDelta)
 }

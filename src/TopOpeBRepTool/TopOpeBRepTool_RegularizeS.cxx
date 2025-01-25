@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 #ifdef DRAW
-#include <TopOpeBRepTool_DRAW.hxx>
+  #include <TopOpeBRepTool_DRAW.hxx>
 #endif
 
 #include <TopOpeBRepTool_REGUS.hxx>
@@ -24,35 +24,34 @@
 #include <TopExp_Explorer.hxx>
 #include <TopOpeBRepTool_define.hxx>
 
+//=================================================================================================
 
-//=======================================================================
-//function : RegularizeShells
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean TopOpeBRepTool::RegularizeShells(const TopoDS_Solid& theSolid,
-				     TopTools_DataMapOfShapeListOfShape& OldSheNewShe,
-				     TopTools_DataMapOfShapeListOfShape& FSplits) 
+Standard_Boolean TopOpeBRepTool::RegularizeShells(const TopoDS_Solid&                 theSolid,
+                                                  TopTools_DataMapOfShapeListOfShape& OldSheNewShe,
+                                                  TopTools_DataMapOfShapeListOfShape& FSplits)
 {
   OldSheNewShe.Clear();
   FSplits.Clear();
   TopOpeBRepTool_REGUS REGUS;
-  REGUS.SetOshNsh(OldSheNewShe);  
+  REGUS.SetOshNsh(OldSheNewShe);
   REGUS.SetFsplits(FSplits);
 
-//  Standard_Boolean hastoregu = Standard_False;
-  TopExp_Explorer exsh(theSolid,TopAbs_SHELL);
-  for (; exsh.More(); exsh.Next()) {
+  //  Standard_Boolean hastoregu = Standard_False;
+  TopExp_Explorer exsh(theSolid, TopAbs_SHELL);
+  for (; exsh.More(); exsh.Next())
+  {
 
     const TopoDS_Shape& sh = exsh.Current();
     REGUS.Init(sh);
     Standard_Boolean ok = REGUS.MapS();
-    if (!ok) return Standard_False;
+    if (!ok)
+      return Standard_False;
     ok = REGUS.SplitFaces();
-    if (!ok) return Standard_False;
+    if (!ok)
+      return Standard_False;
     REGUS.REGU();
-  
-  }//exsh(theSolid)
+
+  } // exsh(theSolid)
 
   REGUS.GetOshNsh(OldSheNewShe); //??????????????????????????????
   REGUS.GetFsplits(FSplits);     //??????????????????????????????

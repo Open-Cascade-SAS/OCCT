@@ -26,36 +26,36 @@
 #include <DBRep.hxx>
 #include <Draw_ProgressIndicator.hxx>
 
-static Standard_Integer RemoveFeatures (Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer RemoveFeatures(Draw_Interpretor&, Standard_Integer, const char**);
 
-//=======================================================================
-//function : RemoveFeaturesCommands
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BOPTest::RemoveFeaturesCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
-  if (done) return;
+  if (done)
+    return;
   done = Standard_True;
   // Chapter's name
   const char* group = "BOPTest commands";
   // Commands
-  theCommands.Add("removefeatures", "removefeatures result shape f1 f2 ... [-parallel]\n"
+  theCommands.Add("removefeatures",
+                  "removefeatures result shape f1 f2 ... [-parallel]\n"
                   "\t\tRemoves user-defined features (faces) from the shape.\n"
                   "\t\tresult   - result of the operation;\n"
                   "\t\tshape    - the shape to remove the features from;\n"
                   "\t\tf1, f2   - features to remove from the shape;\n"
                   "\t\tparallel - enables the parallel processing mode.",
-                  __FILE__, RemoveFeatures, group);
+                  __FILE__,
+                  RemoveFeatures,
+                  group);
 }
 
-//=======================================================================
-//function : RemoveFeatures
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer RemoveFeatures(Draw_Interpretor& theDI,
                                 Standard_Integer  theArgc,
-                                const char ** theArgv)
+                                const char**      theArgv)
 {
   if (theArgc < 4)
   {

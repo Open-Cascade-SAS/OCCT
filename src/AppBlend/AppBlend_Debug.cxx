@@ -21,13 +21,25 @@
 //****************************************************
 
 static Standard_Boolean AppBlend_ContextSplineApprox = Standard_False;
-Standard_EXPORT void AppBlend_SetContextSplineApprox(const Standard_Boolean b) 
-{ AppBlend_ContextSplineApprox = b; }
-Standard_EXPORT Standard_Boolean AppBlend_GetContextSplineApprox() 
-{ return AppBlend_ContextSplineApprox; }
+
+Standard_EXPORT void AppBlend_SetContextSplineApprox(const Standard_Boolean b)
+{
+  AppBlend_ContextSplineApprox = b;
+}
+
+Standard_EXPORT Standard_Boolean AppBlend_GetContextSplineApprox()
+{
+  return AppBlend_ContextSplineApprox;
+}
 
 static Standard_Boolean AppBlend_ContextApproxWithNoTgt = Standard_False;
-Standard_EXPORT void AppBlend_SetContextApproxWithNoTgt(const Standard_Boolean b) 
-{ AppBlend_ContextApproxWithNoTgt = b; }
-Standard_EXPORT Standard_Boolean AppBlend_GetContextApproxWithNoTgt() 
-{ return AppBlend_ContextApproxWithNoTgt; }
+
+Standard_EXPORT void AppBlend_SetContextApproxWithNoTgt(const Standard_Boolean b)
+{
+  AppBlend_ContextApproxWithNoTgt = b;
+}
+
+Standard_EXPORT Standard_Boolean AppBlend_GetContextApproxWithNoTgt()
+{
+  return AppBlend_ContextApproxWithNoTgt;
+}

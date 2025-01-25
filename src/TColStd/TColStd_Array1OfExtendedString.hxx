@@ -20,5 +20,4 @@
 
 typedef NCollection_Array1<TCollection_ExtendedString> TColStd_Array1OfExtendedString;
 
-
 #endif

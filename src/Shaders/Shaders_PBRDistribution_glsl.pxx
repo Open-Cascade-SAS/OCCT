@@ -6,7 +6,8 @@ static const char Shaders_PBRDistribution_glsl[] =
   "                          in float theRoughness)\n"
   "{\n"
   "  float aDistribution = theRoughness * theRoughness;\n"
-  "  aDistribution = aDistribution / (theCosH * theCosH * (aDistribution * aDistribution - 1.0) + 1.0);\n"
+  "  aDistribution = aDistribution / (theCosH * theCosH * (aDistribution * aDistribution - 1.0) + "
+  "1.0);\n"
   "  aDistribution = INV_PI * aDistribution * aDistribution;\n"
   "  return aDistribution;\n"
   "}\n";

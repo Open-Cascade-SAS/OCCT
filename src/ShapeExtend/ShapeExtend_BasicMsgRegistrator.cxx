@@ -13,54 +13,39 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Message_Msg.hxx>
 #include <ShapeExtend_BasicMsgRegistrator.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ShapeExtend_BasicMsgRegistrator,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(ShapeExtend_BasicMsgRegistrator, Standard_Transient)
 
-//=======================================================================
-//function : ShapeExtend_BasicMsgRegistrator
-//purpose  : 
-//=======================================================================
-ShapeExtend_BasicMsgRegistrator::ShapeExtend_BasicMsgRegistrator()
+//=================================================================================================
+
+ShapeExtend_BasicMsgRegistrator::ShapeExtend_BasicMsgRegistrator() {}
+
+//=================================================================================================
+
+void ShapeExtend_BasicMsgRegistrator::Send(const Handle(Standard_Transient)& /*object*/,
+                                           const Message_Msg& /*message*/,
+                                           const Message_Gravity /*gravity*/)
 {
 }
 
-//=======================================================================
-//function : Send
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- void ShapeExtend_BasicMsgRegistrator::Send(const Handle(Standard_Transient)& /*object*/,
-					    const Message_Msg& /*message*/,
-					    const Message_Gravity /*gravity*/) 
+void ShapeExtend_BasicMsgRegistrator::Send(const TopoDS_Shape& /*shape*/,
+                                           const Message_Msg& /*message*/,
+                                           const Message_Gravity /*gravity*/)
 {
 }
 
-//=======================================================================
-//function : Send
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
- void ShapeExtend_BasicMsgRegistrator::Send(const TopoDS_Shape& /*shape*/,
-					    const Message_Msg& /*message*/,
-					    const Message_Gravity /*gravity*/) 
-{
-}
-
-//=======================================================================
-//function : Send
-//purpose  : 
-//=======================================================================
-
- void ShapeExtend_BasicMsgRegistrator::Send(const Message_Msg& message,
-					    const Message_Gravity gravity) 
+void ShapeExtend_BasicMsgRegistrator::Send(const Message_Msg&    message,
+                                           const Message_Gravity gravity)
 {
   Handle(Standard_Transient) dummy;
-  Send (dummy, message, gravity);
+  Send(dummy, message, gravity);
 }
-

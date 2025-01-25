@@ -21,50 +21,47 @@
 #include <StepRepr_ShapeAspect.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithDatumReference,StepDimTol_GeometricTolerance)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithDatumReference,
+                           StepDimTol_GeometricTolerance)
 
-//=======================================================================
-//function : StepDimTol_GeometricToleranceWithDatumReference
-//purpose  : 
-//=======================================================================
-StepDimTol_GeometricToleranceWithDatumReference::StepDimTol_GeometricToleranceWithDatumReference ()
+//=================================================================================================
+
+StepDimTol_GeometricToleranceWithDatumReference::StepDimTol_GeometricToleranceWithDatumReference()
 {
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepDimTol_GeometricToleranceWithDatumReference::Init (const Handle(TCollection_HAsciiString) &theGeometricTolerance_Name,
-                                                            const Handle(TCollection_HAsciiString) &theGeometricTolerance_Description,
-                                                            const Handle(StepBasic_MeasureWithUnit) &theGeometricTolerance_Magnitude,
-                                                            const Handle(StepRepr_ShapeAspect) &theGeometricTolerance_TolerancedShapeAspect,
-                                                            const Handle(StepDimTol_HArray1OfDatumReference) &theDatumSystem)
+void StepDimTol_GeometricToleranceWithDatumReference::Init(
+  const Handle(TCollection_HAsciiString)&           theGeometricTolerance_Name,
+  const Handle(TCollection_HAsciiString)&           theGeometricTolerance_Description,
+  const Handle(StepBasic_MeasureWithUnit)&          theGeometricTolerance_Magnitude,
+  const Handle(StepRepr_ShapeAspect)&               theGeometricTolerance_TolerancedShapeAspect,
+  const Handle(StepDimTol_HArray1OfDatumReference)& theDatumSystem)
 {
   StepDimTol_GeometricTolerance::Init(theGeometricTolerance_Name,
                                       theGeometricTolerance_Description,
                                       theGeometricTolerance_Magnitude,
                                       theGeometricTolerance_TolerancedShapeAspect);
 
-  myDatumSystem = new StepDimTol_HArray1OfDatumSystemOrReference(theDatumSystem->Lower(), theDatumSystem->Upper());
+  myDatumSystem = new StepDimTol_HArray1OfDatumSystemOrReference(theDatumSystem->Lower(),
+                                                                 theDatumSystem->Upper());
   StepDimTol_DatumSystemOrReference anAux;
-  for (Standard_Integer i = theDatumSystem->Lower(); i <= theDatumSystem->Upper(); i++) {
+  for (Standard_Integer i = theDatumSystem->Lower(); i <= theDatumSystem->Upper(); i++)
+  {
     anAux.SetValue(theDatumSystem->Value(i));
     myDatumSystem->SetValue(i, anAux);
   }
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepDimTol_GeometricToleranceWithDatumReference::Init (const Handle(TCollection_HAsciiString) &theGeometricTolerance_Name,
-                                                            const Handle(TCollection_HAsciiString) &theGeometricTolerance_Description,
-                                                            const Handle(StepBasic_MeasureWithUnit) &theGeometricTolerance_Magnitude,
-                                                            const StepDimTol_GeometricToleranceTarget &theGeometricTolerance_TolerancedShapeAspect,
-                                                            const Handle(StepDimTol_HArray1OfDatumSystemOrReference) &theDatumSystem)
+void StepDimTol_GeometricToleranceWithDatumReference::Init(
+  const Handle(TCollection_HAsciiString)&    theGeometricTolerance_Name,
+  const Handle(TCollection_HAsciiString)&    theGeometricTolerance_Description,
+  const Handle(StepBasic_MeasureWithUnit)&   theGeometricTolerance_Magnitude,
+  const StepDimTol_GeometricToleranceTarget& theGeometricTolerance_TolerancedShapeAspect,
+  const Handle(StepDimTol_HArray1OfDatumSystemOrReference)& theDatumSystem)
 {
   StepDimTol_GeometricTolerance::Init(theGeometricTolerance_Name,
                                       theGeometricTolerance_Description,
@@ -74,52 +71,48 @@ void StepDimTol_GeometricToleranceWithDatumReference::Init (const Handle(TCollec
   myDatumSystem = theDatumSystem;
 }
 
-//=======================================================================
-//function : DatumSystem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepDimTol_HArray1OfDatumReference) StepDimTol_GeometricToleranceWithDatumReference::DatumSystem () const
+Handle(StepDimTol_HArray1OfDatumReference) StepDimTol_GeometricToleranceWithDatumReference::
+  DatumSystem() const
 {
   Handle(StepDimTol_HArray1OfDatumReference) aDatumSystem;
-  aDatumSystem = new StepDimTol_HArray1OfDatumReference(myDatumSystem->Lower(), myDatumSystem->Upper());
-  for (Standard_Integer i = aDatumSystem->Lower(); i <= aDatumSystem->Upper(); i++) {
+  aDatumSystem =
+    new StepDimTol_HArray1OfDatumReference(myDatumSystem->Lower(), myDatumSystem->Upper());
+  for (Standard_Integer i = aDatumSystem->Lower(); i <= aDatumSystem->Upper(); i++)
+  {
     aDatumSystem->SetValue(i, myDatumSystem->Value(i).DatumReference());
   }
   return aDatumSystem;
 }
 
-//=======================================================================
-//function : DatumSystemAP242
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepDimTol_HArray1OfDatumSystemOrReference) StepDimTol_GeometricToleranceWithDatumReference::DatumSystemAP242 () const
+Handle(StepDimTol_HArray1OfDatumSystemOrReference) StepDimTol_GeometricToleranceWithDatumReference::
+  DatumSystemAP242() const
 {
   return myDatumSystem;
 }
 
-//=======================================================================
-//function : SetDatumSystem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepDimTol_GeometricToleranceWithDatumReference::SetDatumSystem (const Handle(StepDimTol_HArray1OfDatumReference) &theDatumSystem)
+void StepDimTol_GeometricToleranceWithDatumReference::SetDatumSystem(
+  const Handle(StepDimTol_HArray1OfDatumReference)& theDatumSystem)
 {
-  myDatumSystem = new StepDimTol_HArray1OfDatumSystemOrReference(theDatumSystem->Lower(), theDatumSystem->Upper());
+  myDatumSystem = new StepDimTol_HArray1OfDatumSystemOrReference(theDatumSystem->Lower(),
+                                                                 theDatumSystem->Upper());
   StepDimTol_DatumSystemOrReference anAux;
-  for (Standard_Integer i = theDatumSystem->Lower(); i <= theDatumSystem->Upper(); i++) {
+  for (Standard_Integer i = theDatumSystem->Lower(); i <= theDatumSystem->Upper(); i++)
+  {
     anAux.SetValue(theDatumSystem->Value(i));
     myDatumSystem->SetValue(i, anAux);
   }
 }
 
-//=======================================================================
-//function : SetDatumSystem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepDimTol_GeometricToleranceWithDatumReference::SetDatumSystem (const Handle(StepDimTol_HArray1OfDatumSystemOrReference) &theDatumSystem)
+void StepDimTol_GeometricToleranceWithDatumReference::SetDatumSystem(
+  const Handle(StepDimTol_HArray1OfDatumSystemOrReference)& theDatumSystem)
 {
   myDatumSystem = theDatumSystem;
 }

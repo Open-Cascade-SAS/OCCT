@@ -12,7 +12,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <math_Function.hxx>
 
-Standard_Integer math_Function::GetStateNumber() { return 0; }
+Standard_Integer math_Function::GetStateNumber()
+{
+  return 0;
+}

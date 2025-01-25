@@ -24,12 +24,11 @@
 class BRepMesh_DelabellaMeshAlgoFactory : public IMeshTools_MeshAlgoFactory
 {
 public:
-
   //! Constructor.
-  Standard_EXPORT BRepMesh_DelabellaMeshAlgoFactory ();
+  Standard_EXPORT BRepMesh_DelabellaMeshAlgoFactory();
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_DelabellaMeshAlgoFactory ();
+  Standard_EXPORT virtual ~BRepMesh_DelabellaMeshAlgoFactory();
 
   //! Creates instance of meshing algorithm for the given type of surface.
   Standard_EXPORT virtual Handle(IMeshTools_MeshAlgo) GetAlgo(

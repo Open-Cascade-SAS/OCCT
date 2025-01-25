@@ -14,26 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <TopoDS_TCompSolid.hxx>
 #include <TopoDS_Shape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TopoDS_TCompSolid,TopoDS_TShape)
+IMPLEMENT_STANDARD_RTTIEXT(TopoDS_TCompSolid, TopoDS_TShape)
 
-//=======================================================================
-//function : ShapeType
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 TopAbs_ShapeEnum TopoDS_TCompSolid::ShapeType() const
 {
   return TopAbs_COMPSOLID;
 }
 
-//=======================================================================
-//function : EmptyCopy
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(TopoDS_TShape) TopoDS_TCompSolid::EmptyCopy() const
 {

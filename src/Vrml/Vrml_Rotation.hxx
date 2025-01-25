@@ -24,49 +24,27 @@
 #include <Vrml_SFRotation.hxx>
 #include <Standard_OStream.hxx>
 
-
 //! defines a Rotation node of VRML specifying matrix and transform properties.
 //! This  node  defines  a  3D  rotation  about  an  arbitrary  axis  through  the  origin.
 //! By  default  :  myRotation  =  (0 0 1 0)
-class Vrml_Rotation 
+class Vrml_Rotation
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Vrml_Rotation();
-  
+
   Standard_EXPORT Vrml_Rotation(const Vrml_SFRotation& aRotation);
-  
-  Standard_EXPORT void SetRotation (const Vrml_SFRotation& aRotation);
-  
+
+  Standard_EXPORT void SetRotation(const Vrml_SFRotation& aRotation);
+
   Standard_EXPORT Vrml_SFRotation Rotation() const;
-  
-  Standard_EXPORT Standard_OStream& Print (Standard_OStream& anOStream) const;
 
-
-
+  Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Vrml_SFRotation myRotation;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Vrml_Rotation_HeaderFile

@@ -27,20 +27,20 @@
 //  (Modules are created and loaded in appropriate libraries, once by Init)
 static Handle(IGESGeom_Protocol) protocol;
 
-
-    void  IGESGeom::Init ()
+void IGESGeom::Init()
 {
   IGESBasic::Init();
-  if (protocol.IsNull()) {
+  if (protocol.IsNull())
+  {
     protocol = new IGESGeom_Protocol;
-    Interface_GeneralLib::SetGlobal (new IGESGeom_GeneralModule,  protocol);
-    Interface_ReaderLib::SetGlobal  (new IGESGeom_ReadWriteModule,protocol);
-    IGESData_WriterLib::SetGlobal   (new IGESGeom_ReadWriteModule,protocol);
-    IGESData_SpecificLib::SetGlobal (new IGESGeom_SpecificModule, protocol);
+    Interface_GeneralLib::SetGlobal(new IGESGeom_GeneralModule, protocol);
+    Interface_ReaderLib::SetGlobal(new IGESGeom_ReadWriteModule, protocol);
+    IGESData_WriterLib::SetGlobal(new IGESGeom_ReadWriteModule, protocol);
+    IGESData_SpecificLib::SetGlobal(new IGESGeom_SpecificModule, protocol);
   }
 }
 
-    Handle(IGESGeom_Protocol)  IGESGeom::Protocol ()
+Handle(IGESGeom_Protocol) IGESGeom::Protocol()
 {
   return protocol;
 }

@@ -26,51 +26,65 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-//=======================================================================
-//function : RWStepAP214_RWAppliedExternalIdentificationAssignment
-//purpose  : 
-//=======================================================================
-RWStepAP214_RWAppliedExternalIdentificationAssignment::RWStepAP214_RWAppliedExternalIdentificationAssignment ()
+//=================================================================================================
+
+RWStepAP214_RWAppliedExternalIdentificationAssignment::
+  RWStepAP214_RWAppliedExternalIdentificationAssignment()
 {
 }
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepAP214_RWAppliedExternalIdentificationAssignment::ReadStep (const Handle(StepData_StepReaderData)& data,
-                                                                      const Standard_Integer num,
-                                                                      Handle(Interface_Check)& ach,
-                                                                      const Handle(StepAP214_AppliedExternalIdentificationAssignment) &ent) const
+void RWStepAP214_RWAppliedExternalIdentificationAssignment::ReadStep(
+  const Handle(StepData_StepReaderData)&                           data,
+  const Standard_Integer                                           num,
+  Handle(Interface_Check)&                                         ach,
+  const Handle(StepAP214_AppliedExternalIdentificationAssignment)& ent) const
 {
   // Check number of parameters
-  if ( ! data->CheckNbParams(num,4,ach,"applied_external_identification_assignment") ) return;
+  if (!data->CheckNbParams(num, 4, ach, "applied_external_identification_assignment"))
+    return;
 
   // Inherited fields of IdentificationAssignment
 
   Handle(TCollection_HAsciiString) aIdentificationAssignment_AssignedId;
-  data->ReadString (num, 1, "identification_assignment.assigned_id", ach, aIdentificationAssignment_AssignedId);
+  data->ReadString(num,
+                   1,
+                   "identification_assignment.assigned_id",
+                   ach,
+                   aIdentificationAssignment_AssignedId);
 
   Handle(StepBasic_IdentificationRole) aIdentificationAssignment_Role;
-  data->ReadEntity (num, 2, "identification_assignment.role", ach, STANDARD_TYPE(StepBasic_IdentificationRole), aIdentificationAssignment_Role);
+  data->ReadEntity(num,
+                   2,
+                   "identification_assignment.role",
+                   ach,
+                   STANDARD_TYPE(StepBasic_IdentificationRole),
+                   aIdentificationAssignment_Role);
 
   // Inherited fields of ExternalIdentificationAssignment
 
   Handle(StepBasic_ExternalSource) aExternalIdentificationAssignment_Source;
-  data->ReadEntity (num, 3, "external_identification_assignment.source", ach, STANDARD_TYPE(StepBasic_ExternalSource), aExternalIdentificationAssignment_Source);
+  data->ReadEntity(num,
+                   3,
+                   "external_identification_assignment.source",
+                   ach,
+                   STANDARD_TYPE(StepBasic_ExternalSource),
+                   aExternalIdentificationAssignment_Source);
 
   // Own fields of AppliedExternalIdentificationAssignment
 
   Handle(StepAP214_HArray1OfExternalIdentificationItem) aItems;
-  Standard_Integer sub4 = 0;
-  if ( data->ReadSubList (num, 4, "items", ach, sub4) ) {
+  Standard_Integer                                      sub4 = 0;
+  if (data->ReadSubList(num, 4, "items", ach, sub4))
+  {
     Standard_Integer num2 = sub4;
-    Standard_Integer nb0 = data->NbParams(num2);
-    aItems = new StepAP214_HArray1OfExternalIdentificationItem (1, nb0);
-    for ( Standard_Integer i0=1; i0 <= nb0; i0++ ) {
+    Standard_Integer nb0  = data->NbParams(num2);
+    aItems                = new StepAP214_HArray1OfExternalIdentificationItem(1, nb0);
+    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    {
       StepAP214_ExternalIdentificationItem anIt0;
-      data->ReadEntity (num2, i0, "items", ach, anIt0);
+      data->ReadEntity(num2, i0, "items", ach, anIt0);
       aItems->SetValue(i0, anIt0);
     }
   }
@@ -82,56 +96,54 @@ void RWStepAP214_RWAppliedExternalIdentificationAssignment::ReadStep (const Hand
             aItems);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepAP214_RWAppliedExternalIdentificationAssignment::WriteStep (StepData_StepWriter& SW,
-                                                                       const Handle(StepAP214_AppliedExternalIdentificationAssignment) &ent) const
+void RWStepAP214_RWAppliedExternalIdentificationAssignment::WriteStep(
+  StepData_StepWriter&                                             SW,
+  const Handle(StepAP214_AppliedExternalIdentificationAssignment)& ent) const
 {
 
   // Inherited fields of IdentificationAssignment
 
-  SW.Send (ent->StepBasic_IdentificationAssignment::AssignedId());
+  SW.Send(ent->StepBasic_IdentificationAssignment::AssignedId());
 
-  SW.Send (ent->StepBasic_IdentificationAssignment::Role());
+  SW.Send(ent->StepBasic_IdentificationAssignment::Role());
 
   // Inherited fields of ExternalIdentificationAssignment
 
-  SW.Send (ent->StepBasic_ExternalIdentificationAssignment::Source());
+  SW.Send(ent->StepBasic_ExternalIdentificationAssignment::Source());
 
   // Own fields of AppliedExternalIdentificationAssignment
 
   SW.OpenSub();
-  for (Standard_Integer i3=1; i3 <= ent->Items()->Length(); i3++ ) {
+  for (Standard_Integer i3 = 1; i3 <= ent->Items()->Length(); i3++)
+  {
     StepAP214_ExternalIdentificationItem Var0 = ent->Items()->Value(i3);
-    SW.Send (Var0.Value());
+    SW.Send(Var0.Value());
   }
   SW.CloseSub();
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepAP214_RWAppliedExternalIdentificationAssignment::Share (const Handle(StepAP214_AppliedExternalIdentificationAssignment) &ent,
-                                                                   Interface_EntityIterator& iter) const
+void RWStepAP214_RWAppliedExternalIdentificationAssignment::Share(
+  const Handle(StepAP214_AppliedExternalIdentificationAssignment)& ent,
+  Interface_EntityIterator&                                        iter) const
 {
 
   // Inherited fields of IdentificationAssignment
 
-  iter.AddItem (ent->StepBasic_IdentificationAssignment::Role());
+  iter.AddItem(ent->StepBasic_IdentificationAssignment::Role());
 
   // Inherited fields of ExternalIdentificationAssignment
 
-  iter.AddItem (ent->StepBasic_ExternalIdentificationAssignment::Source());
+  iter.AddItem(ent->StepBasic_ExternalIdentificationAssignment::Source());
 
   // Own fields of AppliedExternalIdentificationAssignment
 
-  for (Standard_Integer i3=1; i3 <= ent->Items()->Length(); i3++ ) {
+  for (Standard_Integer i3 = 1; i3 <= ent->Items()->Length(); i3++)
+  {
     StepAP214_ExternalIdentificationItem Var0 = ent->Items()->Value(i3);
-    iter.AddItem (Var0.Value());
+    iter.AddItem(Var0.Value());
   }
 }

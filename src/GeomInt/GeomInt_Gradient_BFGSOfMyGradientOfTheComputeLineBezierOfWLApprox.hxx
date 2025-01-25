@@ -31,42 +31,26 @@ class GeomInt_ResConstraintOfMyGradientOfTheComputeLineBezierOfWLApprox;
 class GeomInt_ParFunctionOfMyGradientOfTheComputeLineBezierOfWLApprox;
 class math_MultipleVarFunctionWithGradient;
 
-
-
-class GeomInt_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfWLApprox  : public math_BFGS
+class GeomInt_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfWLApprox : public math_BFGS
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT GeomInt_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfWLApprox(math_MultipleVarFunctionWithGradient& F, const math_Vector& StartingPoint, const Standard_Real Tolerance3d, const Standard_Real Tolerance2d, const Standard_Real Eps, const Standard_Integer NbIterations = 200);
-  
-  Standard_EXPORT virtual Standard_Boolean IsSolutionReached (math_MultipleVarFunctionWithGradient& F) const Standard_OVERRIDE;
+  Standard_EXPORT GeomInt_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfWLApprox(
+    math_MultipleVarFunctionWithGradient& F,
+    const math_Vector&                    StartingPoint,
+    const Standard_Real                   Tolerance3d,
+    const Standard_Real                   Tolerance2d,
+    const Standard_Real                   Eps,
+    const Standard_Integer                NbIterations = 200);
 
-
-
+  Standard_EXPORT virtual Standard_Boolean IsSolutionReached(
+    math_MultipleVarFunctionWithGradient& F) const Standard_OVERRIDE;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Real myTol3d;
   Standard_Real myTol2d;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeomInt_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfWLApprox_HeaderFile

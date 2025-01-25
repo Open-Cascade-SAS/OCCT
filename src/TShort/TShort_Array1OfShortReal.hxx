@@ -19,5 +19,4 @@
 
 typedef NCollection_Array1<Standard_ShortReal> TShort_Array1OfShortReal;
 
-
 #endif

@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef TreeModel_ContextMenu_H
 #define TreeModel_ContextMenu_H
@@ -33,7 +33,7 @@ class TreeModel_ContextMenu : public QObject
   Q_OBJECT
 public:
   //! Constructor
-  Standard_EXPORT TreeModel_ContextMenu (QTreeView* theTreeView);
+  Standard_EXPORT TreeModel_ContextMenu(QTreeView* theTreeView);
 
   //! Destructor
   ~TreeModel_ContextMenu() {}
@@ -41,7 +41,7 @@ public:
 protected slots:
   //! Shows context menu for tree view header. It contains actions to change columns visibility.
   //! \param thePosition a clicked point
-  void onTreeViewHeaderContextMenuRequested (const QPoint& thePosition);
+  void onTreeViewHeaderContextMenuRequested(const QPoint& thePosition);
 
   //! Changes clicked column visibility
   void onColumnVisibilityChanged();

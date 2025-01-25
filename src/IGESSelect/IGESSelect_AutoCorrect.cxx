@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IFSelect_ContextModif.hxx>
 #include <IGESData_BasicEditor.hxx>
 #include <IGESData_IGESEntity.hxx>
@@ -24,32 +23,35 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_AutoCorrect,IGESSelect_ModelModifier)
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_AutoCorrect, IGESSelect_ModelModifier)
 
-IGESSelect_AutoCorrect::IGESSelect_AutoCorrect ()
-    : IGESSelect_ModelModifier (Standard_False)    {  }
-
-    void  IGESSelect_AutoCorrect::Performing
-  (IFSelect_ContextModif& ctx,
-   const Handle(IGESData_IGESModel)& target,
-   Interface_CopyTool& ) const
+IGESSelect_AutoCorrect::IGESSelect_AutoCorrect()
+    : IGESSelect_ModelModifier(Standard_False)
 {
-  DeclareAndCast(IGESData_Protocol,protocol,ctx.Protocol());
-  if (protocol.IsNull()) {
+}
+
+void IGESSelect_AutoCorrect::Performing(IFSelect_ContextModif&            ctx,
+                                        const Handle(IGESData_IGESModel)& target,
+                                        Interface_CopyTool&) const
+{
+  DeclareAndCast(IGESData_Protocol, protocol, ctx.Protocol());
+  if (protocol.IsNull())
+  {
     ctx.CCheck()->AddFail("IGES Auto Correct, not called with Protocol");
     return;
   }
 
-  IGESData_BasicEditor corrector (target,protocol);
-  for (ctx.Start(); ctx.More(); ctx.Next()) {
-    DeclareAndCast(IGESData_IGESEntity,ent,ctx.ValueResult());
-    Standard_Boolean done = corrector.AutoCorrect (ent);
-    if (done) ctx.Trace();
+  IGESData_BasicEditor corrector(target, protocol);
+  for (ctx.Start(); ctx.More(); ctx.Next())
+  {
+    DeclareAndCast(IGESData_IGESEntity, ent, ctx.ValueResult());
+    Standard_Boolean done = corrector.AutoCorrect(ent);
+    if (done)
+      ctx.Trace();
   }
 }
 
-
-    TCollection_AsciiString  IGESSelect_AutoCorrect::Label () const
+TCollection_AsciiString IGESSelect_AutoCorrect::Label() const
 {
-  return TCollection_AsciiString ("Auto-Correction of IGES Entities");
+  return TCollection_AsciiString("Auto-Correction of IGES Entities");
 }

@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IntPolyh_Intersection.hxx>
 
 #include <Adaptor3d_Surface.hxx>
@@ -30,129 +29,117 @@
 
 static Standard_Integer ComputeIntersection(IntPolyh_PMaillageAffinage& theMaillage);
 
-//=======================================================================
-//function : IntPolyh_Intersection
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 IntPolyh_Intersection::IntPolyh_Intersection(const Handle(Adaptor3d_Surface)& theS1,
                                              const Handle(Adaptor3d_Surface)& theS2)
 {
-  mySurf1 = theS1;
-  mySurf2 = theS2;
-  myNbSU1 = 10;
-  myNbSV1 = 10;
-  myNbSU2 = 10;
-  myNbSV2 = 10;
-  myIsDone = Standard_False;
+  mySurf1      = theS1;
+  mySurf2      = theS2;
+  myNbSU1      = 10;
+  myNbSV1      = 10;
+  myNbSU2      = 10;
+  myNbSV2      = 10;
+  myIsDone     = Standard_False;
   myIsParallel = Standard_False;
   mySectionLines.Init(1000);
   myTangentZones.Init(10000);
   Perform();
 }
 
-//=======================================================================
-//function : IntPolyh_Intersection
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 IntPolyh_Intersection::IntPolyh_Intersection(const Handle(Adaptor3d_Surface)& theS1,
-                                             const Standard_Integer            theNbSU1,
-                                             const Standard_Integer            theNbSV1,
+                                             const Standard_Integer           theNbSU1,
+                                             const Standard_Integer           theNbSV1,
                                              const Handle(Adaptor3d_Surface)& theS2,
-                                             const Standard_Integer            theNbSU2,
-                                             const Standard_Integer            theNbSV2)
+                                             const Standard_Integer           theNbSU2,
+                                             const Standard_Integer           theNbSV2)
 {
-  mySurf1 = theS1;
-  mySurf2 = theS2;
-  myNbSU1 = theNbSU1;
-  myNbSV1 = theNbSV1;
-  myNbSU2 = theNbSU2;
-  myNbSV2 = theNbSV2;
-  myIsDone = Standard_False;
+  mySurf1      = theS1;
+  mySurf2      = theS2;
+  myNbSU1      = theNbSU1;
+  myNbSV1      = theNbSV1;
+  myNbSU2      = theNbSU2;
+  myNbSV2      = theNbSV2;
+  myIsDone     = Standard_False;
   myIsParallel = Standard_False;
   mySectionLines.Init(1000);
   myTangentZones.Init(10000);
   Perform();
 }
 
-//=======================================================================
-//function : IntPolyh_Intersection
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 IntPolyh_Intersection::IntPolyh_Intersection(const Handle(Adaptor3d_Surface)& theS1,
-                                             const TColStd_Array1OfReal&       theUPars1,
-                                             const TColStd_Array1OfReal&       theVPars1,
+                                             const TColStd_Array1OfReal&      theUPars1,
+                                             const TColStd_Array1OfReal&      theVPars1,
                                              const Handle(Adaptor3d_Surface)& theS2,
-                                             const TColStd_Array1OfReal&       theUPars2,
-                                             const TColStd_Array1OfReal&       theVPars2)
+                                             const TColStd_Array1OfReal&      theUPars2,
+                                             const TColStd_Array1OfReal&      theVPars2)
 {
-  mySurf1 = theS1;
-  mySurf2 = theS2;
-  myNbSU1 = theUPars1.Length();
-  myNbSV1 = theVPars1.Length();
-  myNbSU2 = theUPars2.Length();
-  myNbSV2 = theVPars2.Length();
-  myIsDone = Standard_False;
+  mySurf1      = theS1;
+  mySurf2      = theS2;
+  myNbSU1      = theUPars1.Length();
+  myNbSV1      = theVPars1.Length();
+  myNbSU2      = theUPars2.Length();
+  myNbSV2      = theVPars2.Length();
+  myIsDone     = Standard_False;
   myIsParallel = Standard_False;
   mySectionLines.Init(1000);
   myTangentZones.Init(10000);
   Perform(theUPars1, theVPars1, theUPars2, theVPars2);
 }
 
-//=======================================================================
-//function : GetLinePoint
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntPolyh_Intersection::GetLinePoint(const Standard_Integer Indexl,
                                          const Standard_Integer Indexp,
-                                         Standard_Real &x,
-                                         Standard_Real &y,
-                                         Standard_Real &z,
-                                         Standard_Real &u1,
-                                         Standard_Real &v1,
-                                         Standard_Real &u2,
-                                         Standard_Real &v2,
-                                         Standard_Real &incidence) const
+                                         Standard_Real&         x,
+                                         Standard_Real&         y,
+                                         Standard_Real&         z,
+                                         Standard_Real&         u1,
+                                         Standard_Real&         v1,
+                                         Standard_Real&         u2,
+                                         Standard_Real&         v2,
+                                         Standard_Real&         incidence) const
 {
-  const IntPolyh_SectionLine  &msl = mySectionLines[Indexl - 1];
-  const IntPolyh_StartPoint   &sp = msl[Indexp - 1];
-  x = sp.X();
-  y = sp.Y();
-  z = sp.Z();
-  u1 = sp.U1();
-  v1 = sp.V1();
-  u2 = sp.U2();
-  v2 = sp.V2();
-  incidence = sp.GetAngle();
+  const IntPolyh_SectionLine& msl = mySectionLines[Indexl - 1];
+  const IntPolyh_StartPoint&  sp  = msl[Indexp - 1];
+  x                               = sp.X();
+  y                               = sp.Y();
+  z                               = sp.Z();
+  u1                              = sp.U1();
+  v1                              = sp.V1();
+  u2                              = sp.U2();
+  v2                              = sp.V2();
+  incidence                       = sp.GetAngle();
 }
 
-//=======================================================================
-//function : GetTangentZonePoint
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntPolyh_Intersection::GetTangentZonePoint(const Standard_Integer Indexz,
                                                 const Standard_Integer /*Indexp*/,
-                                                Standard_Real &x,
-                                                Standard_Real &y,
-                                                Standard_Real &z,
-                                                Standard_Real &u1,
-                                                Standard_Real &v1,
-                                                Standard_Real &u2,
-                                                Standard_Real &v2) const
+                                                Standard_Real& x,
+                                                Standard_Real& y,
+                                                Standard_Real& z,
+                                                Standard_Real& u1,
+                                                Standard_Real& v1,
+                                                Standard_Real& u2,
+                                                Standard_Real& v2) const
 {
-  const IntPolyh_StartPoint   &sp = myTangentZones[Indexz - 1];
-  x = sp.X();
-  y = sp.Y();
-  z = sp.Z();
-  u1 = sp.U1();
-  v1 = sp.V1();
-  u2 = sp.U2();
-  v2 = sp.V2();
+  const IntPolyh_StartPoint& sp = myTangentZones[Indexz - 1];
+  x                             = sp.X();
+  y                             = sp.Y();
+  z                             = sp.Z();
+  u1                            = sp.U1();
+  v1                            = sp.V1();
+  u2                            = sp.U2();
+  v2                            = sp.V2();
 }
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntPolyh_Intersection::Perform()
 {
   // Prepare the sampling of the surfaces - UV parameters of the triangulation nodes
@@ -164,10 +151,8 @@ void IntPolyh_Intersection::Perform()
   Perform(UPars1, VPars1, UPars2, VPars2);
 }
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntPolyh_Intersection::Perform(const TColStd_Array1OfReal& theUPars1,
                                     const TColStd_Array1OfReal& theVPars1,
                                     const TColStd_Array1OfReal& theUPars2,
@@ -182,16 +167,21 @@ void IntPolyh_Intersection::Perform(const TColStd_Array1OfReal& theUPars1,
   // Perform standard intersection
   IntPolyh_PMaillageAffinage pMaillageStd = 0;
   Standard_Integer           nbCouplesStd = 0;
-  Standard_Boolean isStdDone = PerformStd(theUPars1, theVPars1,
-                                          theUPars2, theVPars2,
-                                          aDeflTol1, aDeflTol2,
-                                          pMaillageStd, nbCouplesStd);
+  Standard_Boolean           isStdDone    = PerformStd(theUPars1,
+                                          theVPars1,
+                                          theUPars2,
+                                          theVPars2,
+                                          aDeflTol1,
+                                          aDeflTol2,
+                                          pMaillageStd,
+                                          nbCouplesStd);
 
   if (!isStdDone)
   {
     // Intersection not done
     myIsDone = Standard_False;
-    if (pMaillageStd) delete pMaillageStd;
+    if (pMaillageStd)
+      delete pMaillageStd;
     return;
   }
 
@@ -204,20 +194,23 @@ void IntPolyh_Intersection::Perform(const TColStd_Array1OfReal& theUPars1,
   {
     // Default intersection is done, but too few interferences found.
     // Perform advanced intersection - perform intersection four times with different shifts.
-    IntPolyh_PMaillageAffinage pMaillageFF = 0;
-    IntPolyh_PMaillageAffinage pMaillageFR = 0;
-    IntPolyh_PMaillageAffinage pMaillageRF = 0;
-    IntPolyh_PMaillageAffinage pMaillageRR = 0;
+    IntPolyh_PMaillageAffinage pMaillageFF  = 0;
+    IntPolyh_PMaillageAffinage pMaillageFR  = 0;
+    IntPolyh_PMaillageAffinage pMaillageRF  = 0;
+    IntPolyh_PMaillageAffinage pMaillageRR  = 0;
     Standard_Integer           nbCouplesAdv = 0;
 
-    Standard_Boolean isAdvDone = PerformAdv(theUPars1, theVPars1,
-                                              theUPars2, theVPars2,
-                                              aDeflTol1, aDeflTol2,
-                                              pMaillageFF,
-                                              pMaillageFR,
-                                              pMaillageRF,
-                                              pMaillageRR,
-                                              nbCouplesAdv);
+    Standard_Boolean isAdvDone = PerformAdv(theUPars1,
+                                            theVPars1,
+                                            theUPars2,
+                                            theVPars2,
+                                            aDeflTol1,
+                                            aDeflTol2,
+                                            pMaillageFF,
+                                            pMaillageFR,
+                                            pMaillageRF,
+                                            pMaillageRR,
+                                            nbCouplesAdv);
 
     if (isAdvDone && nbCouplesAdv > 0)
     {
@@ -235,20 +228,23 @@ void IntPolyh_Intersection::Perform(const TColStd_Array1OfReal& theUPars1,
     }
 
     // Clean up
-    if (pMaillageFF) delete pMaillageFF;
-    if (pMaillageFR) delete pMaillageFR;
-    if (pMaillageRF) delete pMaillageRF;
-    if (pMaillageRR) delete pMaillageRR;
+    if (pMaillageFF)
+      delete pMaillageFF;
+    if (pMaillageFR)
+      delete pMaillageFR;
+    if (pMaillageRF)
+      delete pMaillageRF;
+    if (pMaillageRR)
+      delete pMaillageRR;
   }
 
   // clean up
-  if (pMaillageStd) delete pMaillageStd;
+  if (pMaillageStd)
+    delete pMaillageStd;
 }
 
-//=======================================================================
-//function : PerformStd
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean IntPolyh_Intersection::PerformStd(const TColStd_Array1OfReal& theUPars1,
                                                    const TColStd_Array1OfReal& theVPars1,
                                                    const TColStd_Array1OfReal& theUPars2,
@@ -258,18 +254,19 @@ Standard_Boolean IntPolyh_Intersection::PerformStd(const TColStd_Array1OfReal& t
                                                    IntPolyh_PMaillageAffinage& theMaillageS,
                                                    Standard_Integer&           theNbCouples)
 {
-  Standard_Boolean isDone = PerformMaillage(theUPars1, theVPars1,
-                                            theUPars2, theVPars2,
-                                            theDeflTol1, theDeflTol2,
+  Standard_Boolean isDone = PerformMaillage(theUPars1,
+                                            theVPars1,
+                                            theUPars2,
+                                            theVPars2,
+                                            theDeflTol1,
+                                            theDeflTol2,
                                             theMaillageS);
-  theNbCouples = (isDone) ? (theMaillageS->GetCouples().Extent()) : 0;
+  theNbCouples            = (isDone) ? (theMaillageS->GetCouples().Extent()) : 0;
   return isDone;
 }
 
-//=======================================================================
-//function : PerformAdv
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean IntPolyh_Intersection::PerformAdv(const TColStd_Array1OfReal& theUPars1,
                                                    const TColStd_Array1OfReal& theVPars1,
                                                    const TColStd_Array1OfReal& theUPars2,
@@ -288,40 +285,58 @@ Standard_Boolean IntPolyh_Intersection::PerformAdv(const TColStd_Array1OfReal& t
   IntPolyh_Tools::FillArrayOfPointNormal(mySurf2, theUPars2, theVPars2, aPoints2);
 
   // Perform intersection with the different shifts of the triangles
-  Standard_Boolean isDone =
-    PerformMaillage(theUPars1, theVPars1, theUPars2, theVPars2, // sampling
-                    theDeflTol1, theDeflTol2,                   // deflection tolerance
-                    aPoints1, aPoints2,                         // points and normals
-                    Standard_True , Standard_False,             // shift
-                    theMaillageFR)
-                    &&
-    PerformMaillage(theUPars1, theVPars1, theUPars2, theVPars2, // sampling
-                    theDeflTol1, theDeflTol2,                   // deflection tolerance
-                    aPoints1, aPoints2,                         // points and normals
-                    Standard_False, Standard_True,              // shift
-                    theMaillageRF)
-                    &&
-    PerformMaillage(theUPars1, theVPars1, theUPars2, theVPars2, // sampling
-                    theDeflTol1, theDeflTol2,                   // deflection tolerance
-                    aPoints1, aPoints2,                         // points and normals
-                    Standard_True, Standard_True,               // shift
-                    theMaillageFF)
-                    &&
-    PerformMaillage(theUPars1, theVPars1, theUPars2, theVPars2, // sampling
-                    theDeflTol1, theDeflTol2,                   // deflection tolerance
-                    aPoints1, aPoints2,                         // points and normals
-                    Standard_False, Standard_False,             // shift
-                    theMaillageRR);
+  Standard_Boolean isDone = PerformMaillage(theUPars1,
+                                            theVPars1,
+                                            theUPars2,
+                                            theVPars2, // sampling
+                                            theDeflTol1,
+                                            theDeflTol2, // deflection tolerance
+                                            aPoints1,
+                                            aPoints2, // points and normals
+                                            Standard_True,
+                                            Standard_False, // shift
+                                            theMaillageFR)
+                            && PerformMaillage(theUPars1,
+                                               theVPars1,
+                                               theUPars2,
+                                               theVPars2, // sampling
+                                               theDeflTol1,
+                                               theDeflTol2, // deflection tolerance
+                                               aPoints1,
+                                               aPoints2, // points and normals
+                                               Standard_False,
+                                               Standard_True, // shift
+                                               theMaillageRF)
+                            && PerformMaillage(theUPars1,
+                                               theVPars1,
+                                               theUPars2,
+                                               theVPars2, // sampling
+                                               theDeflTol1,
+                                               theDeflTol2, // deflection tolerance
+                                               aPoints1,
+                                               aPoints2, // points and normals
+                                               Standard_True,
+                                               Standard_True, // shift
+                                               theMaillageFF)
+                            && PerformMaillage(theUPars1,
+                                               theVPars1,
+                                               theUPars2,
+                                               theVPars2, // sampling
+                                               theDeflTol1,
+                                               theDeflTol2, // deflection tolerance
+                                               aPoints1,
+                                               aPoints2, // points and normals
+                                               Standard_False,
+                                               Standard_False, // shift
+                                               theMaillageRR);
 
   if (isDone)
   {
-    theNbCouples = theMaillageFF->GetCouples().Extent() +
-                   theMaillageFR->GetCouples().Extent() +
-                   theMaillageRF->GetCouples().Extent() +
-                   theMaillageRR->GetCouples().Extent();
+    theNbCouples = theMaillageFF->GetCouples().Extent() + theMaillageFR->GetCouples().Extent()
+                   + theMaillageRF->GetCouples().Extent() + theMaillageRR->GetCouples().Extent();
 
     // Merge couples
-    if(theNbCouples > 0)
+    if (theNbCouples > 0)
       MergeCouples(theMaillageFF->GetCouples(),
                    theMaillageFR->GetCouples(),
                    theMaillageRF->GetCouples(),
@@ -332,8 +347,8 @@ Standard_Boolean IntPolyh_Intersection::PerformAdv(const TColStd_Array1OfReal& t
 }
 
 //=======================================================================
-//function : PerformMaillage
-//purpose  : Computes standard MaillageAffinage (without shift)
+// function : PerformMaillage
+// purpose  : Computes standard MaillageAffinage (without shift)
 //=======================================================================
 Standard_Boolean IntPolyh_Intersection::PerformMaillage(const TColStd_Array1OfReal& theUPars1,
                                                         const TColStd_Array1OfReal& theVPars1,
@@ -343,10 +358,13 @@ Standard_Boolean IntPolyh_Intersection::PerformMaillage(const TColStd_Array1OfRe
                                                         const Standard_Real         theDeflTol2,
                                                         IntPolyh_PMaillageAffinage& theMaillage)
 {
-  theMaillage =
-    new IntPolyh_MaillageAffinage(mySurf1, theUPars1.Length(), theVPars1.Length(),
-                                  mySurf2, theUPars2.Length(), theVPars2.Length(),
-                                  0);
+  theMaillage = new IntPolyh_MaillageAffinage(mySurf1,
+                                              theUPars1.Length(),
+                                              theVPars1.Length(),
+                                              mySurf2,
+                                              theUPars2.Length(),
+                                              theVPars2.Length(),
+                                              0);
 
   theMaillage->FillArrayOfPnt(1, theUPars1, theVPars1, &theDeflTol1);
   theMaillage->FillArrayOfPnt(2, theUPars2, theVPars2, &theDeflTol2);
@@ -378,27 +396,31 @@ Standard_Boolean IntPolyh_Intersection::PerformMaillage(const TColStd_Array1OfRe
 }
 
 //=======================================================================
-//function : PerformMaillage
-//purpose  : Computes MaillageAffinage
+// function : PerformMaillage
+// purpose  : Computes MaillageAffinage
 //=======================================================================
-Standard_Boolean IntPolyh_Intersection::PerformMaillage(const TColStd_Array1OfReal& theUPars1,
-                                                        const TColStd_Array1OfReal& theVPars1,
-                                                        const TColStd_Array1OfReal& theUPars2,
-                                                        const TColStd_Array1OfReal& theVPars2,
-                                                        const Standard_Real         theDeflTol1,
-                                                        const Standard_Real         theDeflTol2,
-                                                        const IntPolyh_ArrayOfPointNormal& thePoints1,
-                                                        const IntPolyh_ArrayOfPointNormal& thePoints2,
-                                                        const Standard_Boolean      theIsFirstFwd,
-                                                        const Standard_Boolean      theIsSecondFwd,
-                                                        IntPolyh_PMaillageAffinage& theMaillage)
+Standard_Boolean IntPolyh_Intersection::PerformMaillage(
+  const TColStd_Array1OfReal&        theUPars1,
+  const TColStd_Array1OfReal&        theVPars1,
+  const TColStd_Array1OfReal&        theUPars2,
+  const TColStd_Array1OfReal&        theVPars2,
+  const Standard_Real                theDeflTol1,
+  const Standard_Real                theDeflTol2,
+  const IntPolyh_ArrayOfPointNormal& thePoints1,
+  const IntPolyh_ArrayOfPointNormal& thePoints2,
+  const Standard_Boolean             theIsFirstFwd,
+  const Standard_Boolean             theIsSecondFwd,
+  IntPolyh_PMaillageAffinage&        theMaillage)
 {
-  theMaillage =
-    new IntPolyh_MaillageAffinage(mySurf1, theUPars1.Length(), theVPars1.Length(),
-                                  mySurf2, theUPars2.Length(), theVPars2.Length(),
-                                  0);
+  theMaillage = new IntPolyh_MaillageAffinage(mySurf1,
+                                              theUPars1.Length(),
+                                              theVPars1.Length(),
+                                              mySurf2,
+                                              theUPars2.Length(),
+                                              theVPars2.Length(),
+                                              0);
 
-  theMaillage->FillArrayOfPnt(1, theIsFirstFwd , thePoints1, theUPars1, theVPars1, theDeflTol1);
+  theMaillage->FillArrayOfPnt(1, theIsFirstFwd, thePoints1, theUPars1, theVPars1, theDeflTol1);
   theMaillage->FillArrayOfPnt(2, theIsSecondFwd, thePoints2, theUPars2, theVPars2, theDeflTol2);
 
   ComputeIntersection(theMaillage);
@@ -407,24 +429,27 @@ Standard_Boolean IntPolyh_Intersection::PerformMaillage(const TColStd_Array1OfRe
 }
 
 //=======================================================================
-//function : MergeCouples
-//purpose  : This method analyzes the lists to find same couples.
+// function : MergeCouples
+// purpose  : This method analyzes the lists to find same couples.
 //           If some are detected it leaves the couple in only one list
 //           deleting from others.
 //=======================================================================
-void IntPolyh_Intersection::MergeCouples(IntPolyh_ListOfCouples &anArrayFF,
-                                         IntPolyh_ListOfCouples &anArrayFR,
-                                         IntPolyh_ListOfCouples &anArrayRF,
-                                         IntPolyh_ListOfCouples &anArrayRR) const
+void IntPolyh_Intersection::MergeCouples(IntPolyh_ListOfCouples& anArrayFF,
+                                         IntPolyh_ListOfCouples& anArrayFR,
+                                         IntPolyh_ListOfCouples& anArrayRF,
+                                         IntPolyh_ListOfCouples& anArrayRR) const
 {
   // Fence map to remove from the lists the duplicating elements.
   NCollection_Map<IntPolyh_Couple> aFenceMap;
   //
   IntPolyh_ListOfCouples* pLists[4] = {&anArrayFF, &anArrayFR, &anArrayRF, &anArrayRR};
-  for (Standard_Integer i = 0; i < 4; ++i) {
+  for (Standard_Integer i = 0; i < 4; ++i)
+  {
     IntPolyh_ListIteratorOfListOfCouples aIt(*pLists[i]);
-    for (; aIt.More();) {
-      if (!aFenceMap.Add(aIt.Value())) {
+    for (; aIt.More();)
+    {
+      if (!aFenceMap.Add(aIt.Value()))
+      {
         pLists[i]->Remove(aIt);
         continue;
       }
@@ -434,8 +459,8 @@ void IntPolyh_Intersection::MergeCouples(IntPolyh_ListOfCouples &anArrayFF,
 }
 
 //=======================================================================
-//function : IsAdvRequired
-//purpose  : Analyzes the standard intersection on the angles between triangles.
+// function : IsAdvRequired
+// purpose  : Analyzes the standard intersection on the angles between triangles.
 //           If the angle between some of the interfering triangles is
 //           too small (less than 5 deg), the advanced intersection is required.
 //           Otherwise, the standard intersection is considered satisfactory.
@@ -459,9 +484,9 @@ Standard_Boolean IntPolyh_Intersection::IsAdvRequired(IntPolyh_PMaillageAffinage
     // Enough interfering triangles are found -> no need to perform advanced intersection
     return isAdvReq;
 
-  const Standard_Real anEps = .996; //~ cos of 5 deg
+  const Standard_Real                  anEps = .996; //~ cos of 5 deg
   IntPolyh_ListIteratorOfListOfCouples aIt(Couples);
-  for(; aIt.More(); aIt.Next())
+  for (; aIt.More(); aIt.Next())
   {
     if (Abs(aIt.Value().Angle()) > anEps)
     {
@@ -476,8 +501,8 @@ Standard_Boolean IntPolyh_Intersection::IsAdvRequired(IntPolyh_PMaillageAffinage
 }
 
 //=======================================================================
-//function : ComputeIntersection
-//purpose  : Computes the intersection of the triangles
+// function : ComputeIntersection
+// purpose  : Computes the intersection of the triangles
 //=======================================================================
 Standard_Integer ComputeIntersection(IntPolyh_PMaillageAffinage& theMaillage)
 {
@@ -502,8 +527,8 @@ Standard_Integer ComputeIntersection(IntPolyh_PMaillageAffinage& theMaillage)
 }
 
 //=======================================================================
-//function : AnalyzeIntersection
-//purpose  : Analyzes the intersection on the number of interfering triangles
+// function : AnalyzeIntersection
+// purpose  : Analyzes the intersection on the number of interfering triangles
 //=======================================================================
 Standard_Boolean IntPolyh_Intersection::AnalyzeIntersection(IntPolyh_PMaillageAffinage& theMaillage)
 {
@@ -511,20 +536,21 @@ Standard_Boolean IntPolyh_Intersection::AnalyzeIntersection(IntPolyh_PMaillageAf
     return Standard_False;
 
   IntPolyh_ListOfCouples& Couples = theMaillage->GetCouples();
-  Standard_Integer FinTTC = Couples.Extent();
-  if(FinTTC > 200)
+  Standard_Integer        FinTTC  = Couples.Extent();
+  if (FinTTC > 200)
   {
-    const Standard_Real eps = .996; //~ cos of 5deg.
-    Standard_Integer npara = 0;
+    const Standard_Real                  eps   = .996; //~ cos of 5deg.
+    Standard_Integer                     npara = 0;
     IntPolyh_ListIteratorOfListOfCouples aIt(Couples);
-    for(; aIt.More(); aIt.Next())
+    for (; aIt.More(); aIt.Next())
     {
       Standard_Real cosa = Abs(aIt.Value().Angle());
-      if(cosa > eps) ++npara;
+      if (cosa > eps)
+        ++npara;
     }
 
-    if (npara >= theMaillage->GetArrayOfTriangles(1).NbItems() ||
-        npara >= theMaillage->GetArrayOfTriangles(2).NbItems())
+    if (npara >= theMaillage->GetArrayOfTriangles(1).NbItems()
+        || npara >= theMaillage->GetArrayOfTriangles(2).NbItems())
     {
       Couples.Clear();
       myIsParallel = Standard_True;

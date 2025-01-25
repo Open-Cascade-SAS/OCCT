@@ -25,7 +25,6 @@
 #include <Standard_CString.hxx>
 class Interface_Protocol;
 
-
 class StepAP214_Protocol;
 DEFINE_STANDARD_HANDLE(StepAP214_Protocol, StepData_Protocol)
 
@@ -35,42 +34,26 @@ class StepAP214_Protocol : public StepData_Protocol
 {
 
 public:
-
-  
   Standard_EXPORT StepAP214_Protocol();
-  
+
   //! Returns a Case Number for each of the StepAP214 Entities
-  Standard_EXPORT virtual Standard_Integer TypeNumber (const Handle(Standard_Type)& atype) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_CString SchemaName(const Handle(Interface_InterfaceModel)& theModel) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Standard_Integer TypeNumber(const Handle(Standard_Type)& atype) const
+    Standard_OVERRIDE;
+
+  Standard_EXPORT virtual Standard_CString SchemaName(
+    const Handle(Interface_InterfaceModel)& theModel) const Standard_OVERRIDE;
+
   //! Returns count of Protocol used as Resources (level one)
   Standard_EXPORT virtual Standard_Integer NbResources() const Standard_OVERRIDE;
-  
+
   //! Returns a Resource, given its rank (between 1 and NbResources)
-  Standard_EXPORT virtual Handle(Interface_Protocol) Resource (const Standard_Integer num) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Interface_Protocol) Resource(const Standard_Integer num) const
+    Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepAP214_Protocol,StepData_Protocol)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_Protocol, StepData_Protocol)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepAP214_Protocol_HeaderFile

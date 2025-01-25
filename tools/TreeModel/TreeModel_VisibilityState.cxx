@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/TreeModel_VisibilityState.hxx>
 
@@ -19,14 +19,14 @@
 // function : OnClicked
 // purpose :
 // =======================================================================
-bool TreeModel_VisibilityState::processClicked (const QModelIndex& theIndex)
+bool TreeModel_VisibilityState::processClicked(const QModelIndex& theIndex)
 {
   if (theIndex.column() != TreeModel_ColumnType_Visibility)
     return false;
 
-  if (!CanBeVisible (theIndex))
+  if (!CanBeVisible(theIndex))
     return false;
 
-  SetVisible (theIndex, !IsVisible (theIndex), true);
+  SetVisible(theIndex, !IsVisible(theIndex), true);
   return true;
 }

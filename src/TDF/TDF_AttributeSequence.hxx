@@ -21,5 +21,4 @@
 
 typedef NCollection_Sequence<Handle(TDF_Attribute)> TDF_AttributeSequence;
 
-
 #endif

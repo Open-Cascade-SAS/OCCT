@@ -25,53 +25,35 @@ class StepGeom_Surface;
 class StepRepr_DefinitionalRepresentation;
 class TCollection_HAsciiString;
 
-
 class StepGeom_DegeneratePcurve;
 DEFINE_STANDARD_HANDLE(StepGeom_DegeneratePcurve, StepGeom_Point)
-
 
 class StepGeom_DegeneratePcurve : public StepGeom_Point
 {
 
 public:
-
-  
   //! Returns a DegeneratePcurve
   Standard_EXPORT StepGeom_DegeneratePcurve();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Surface)& aBasisSurface, const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve);
-  
-  Standard_EXPORT void SetBasisSurface (const Handle(StepGeom_Surface)& aBasisSurface);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&            aName,
+                            const Handle(StepGeom_Surface)&                    aBasisSurface,
+                            const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve);
+
+  Standard_EXPORT void SetBasisSurface(const Handle(StepGeom_Surface)& aBasisSurface);
+
   Standard_EXPORT Handle(StepGeom_Surface) BasisSurface() const;
-  
-  Standard_EXPORT void SetReferenceToCurve (const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve);
-  
+
+  Standard_EXPORT void SetReferenceToCurve(
+    const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve);
+
   Standard_EXPORT Handle(StepRepr_DefinitionalRepresentation) ReferenceToCurve() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_DegeneratePcurve,StepGeom_Point)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_DegeneratePcurve, StepGeom_Point)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(StepGeom_Surface) basisSurface;
+  Handle(StepGeom_Surface)                    basisSurface;
   Handle(StepRepr_DefinitionalRepresentation) referenceToCurve;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_DegeneratePcurve_HeaderFile

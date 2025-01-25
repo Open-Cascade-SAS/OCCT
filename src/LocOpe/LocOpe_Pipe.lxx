@@ -15,42 +15,41 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Spine
-//purpose  : 
+// function : Spine
+// purpose  :
 //=======================================================================
 
-inline const TopoDS_Shape& LocOpe_Pipe::Spine () const
+inline const TopoDS_Shape& LocOpe_Pipe::Spine() const
 {
   return myPipe.Spine();
 }
 
 //=======================================================================
-//function : Profile
-//purpose  : 
+// function : Profile
+// purpose  :
 //=======================================================================
 
-inline const TopoDS_Shape& LocOpe_Pipe::Profile () const
+inline const TopoDS_Shape& LocOpe_Pipe::Profile() const
 {
   return myPipe.Profile();
 }
 
 //=======================================================================
-//function : FirstShape
-//purpose  : 
+// function : FirstShape
+// purpose  :
 //=======================================================================
 
-inline const TopoDS_Shape& LocOpe_Pipe::FirstShape () const
+inline const TopoDS_Shape& LocOpe_Pipe::FirstShape() const
 {
   return myPipe.FirstShape();
 }
 
 //=======================================================================
-//function : LastShape
-//purpose  : 
+// function : LastShape
+// purpose  :
 //=======================================================================
 
-inline const TopoDS_Shape& LocOpe_Pipe::LastShape () const
+inline const TopoDS_Shape& LocOpe_Pipe::LastShape() const
 {
   return myPipe.LastShape();
 }
-

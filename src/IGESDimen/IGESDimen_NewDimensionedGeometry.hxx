@@ -27,7 +27,6 @@
 #include <IGESData_IGESEntity.hxx>
 class gp_Pnt;
 
-
 class IGESDimen_NewDimensionedGeometry;
 DEFINE_STANDARD_HANDLE(IGESDimen_NewDimensionedGeometry, IGESData_IGESEntity)
 
@@ -41,10 +40,8 @@ class IGESDimen_NewDimensionedGeometry : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESDimen_NewDimensionedGeometry();
-  
+
   //! This method is used to set the fields of the class
   //! NewDimensionedGeometry
   //! - nbDimen       : Number of Dimensions, default = 1
@@ -56,67 +53,56 @@ public:
   //! - allPoints     : Points on the Geometry Entities
   //! exception raised if lengths of entities, locations, points
   //! are not the same
-  Standard_EXPORT void Init (const Standard_Integer nbDimens, const Handle(IGESData_IGESEntity)& aDimen, const Standard_Integer anOrientation, const Standard_Real anAngle, const Handle(IGESData_HArray1OfIGESEntity)& allEntities, const Handle(TColStd_HArray1OfInteger)& allLocations, const Handle(TColgp_HArray1OfXYZ)& allPoints);
-  
+  Standard_EXPORT void Init(const Standard_Integer                      nbDimens,
+                            const Handle(IGESData_IGESEntity)&          aDimen,
+                            const Standard_Integer                      anOrientation,
+                            const Standard_Real                         anAngle,
+                            const Handle(IGESData_HArray1OfIGESEntity)& allEntities,
+                            const Handle(TColStd_HArray1OfInteger)&     allLocations,
+                            const Handle(TColgp_HArray1OfXYZ)&          allPoints);
+
   //! returns the number of dimensions
   Standard_EXPORT Standard_Integer NbDimensions() const;
-  
+
   //! returns the number of associated geometry entities
   Standard_EXPORT Standard_Integer NbGeometries() const;
-  
+
   //! returns the dimension entity
   Standard_EXPORT Handle(IGESData_IGESEntity) DimensionEntity() const;
-  
+
   //! returns the dimension orientation flag
   Standard_EXPORT Standard_Integer DimensionOrientationFlag() const;
-  
+
   //! returns the angle value
   Standard_EXPORT Standard_Real AngleValue() const;
-  
+
   //! returns the Index'th geometry entity
   //! raises exception if Index <= 0 or Index > NbGeometries()
-  Standard_EXPORT Handle(IGESData_IGESEntity) GeometryEntity (const Standard_Integer Index) const;
-  
+  Standard_EXPORT Handle(IGESData_IGESEntity) GeometryEntity(const Standard_Integer Index) const;
+
   //! returns the Index'th geometry entity's dimension location flag
   //! raises exception if Index <= 0 or Index > NbGeometries()
-  Standard_EXPORT Standard_Integer DimensionLocationFlag (const Standard_Integer Index) const;
-  
+  Standard_EXPORT Standard_Integer DimensionLocationFlag(const Standard_Integer Index) const;
+
   //! coordinate of point on Index'th geometry entity
   //! raises exception if Index <= 0 or Index > NbGeometries()
-  Standard_EXPORT gp_Pnt Point (const Standard_Integer Index) const;
-  
+  Standard_EXPORT gp_Pnt Point(const Standard_Integer Index) const;
+
   //! coordinate of point on Index'th geometry entity after Transformation
   //! raises exception if Index <= 0 or Index > NbGeometries()
-  Standard_EXPORT gp_Pnt TransformedPoint (const Standard_Integer Index) const;
+  Standard_EXPORT gp_Pnt TransformedPoint(const Standard_Integer Index) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESDimen_NewDimensionedGeometry,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_NewDimensionedGeometry, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-  Standard_Integer theNbDimensions;
-  Handle(IGESData_IGESEntity) theDimensionEntity;
-  Standard_Integer theDimensionOrientationFlag;
-  Standard_Real theAngleValue;
+  Standard_Integer                     theNbDimensions;
+  Handle(IGESData_IGESEntity)          theDimensionEntity;
+  Standard_Integer                     theDimensionOrientationFlag;
+  Standard_Real                        theAngleValue;
   Handle(IGESData_HArray1OfIGESEntity) theGeometryEntities;
-  Handle(TColStd_HArray1OfInteger) theDimensionLocationFlags;
-  Handle(TColgp_HArray1OfXYZ) thePoints;
-
-
+  Handle(TColStd_HArray1OfInteger)     theDimensionLocationFlags;
+  Handle(TColgp_HArray1OfXYZ)          thePoints;
 };
-
-
-
-
-
-
 
 #endif // _IGESDimen_NewDimensionedGeometry_HeaderFile

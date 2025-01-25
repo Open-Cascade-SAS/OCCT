@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(StepRepr_RepresentationItem)> StepRepr_Array1OfRepresentationItem;
 
-
 #endif

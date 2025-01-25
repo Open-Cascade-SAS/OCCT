@@ -19,40 +19,38 @@
 #include <IGESAppli_PWBDrilledHole.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_PWBDrilledHole,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_PWBDrilledHole, IGESData_IGESEntity)
 
-IGESAppli_PWBDrilledHole::IGESAppli_PWBDrilledHole ()    {  }
+IGESAppli_PWBDrilledHole::IGESAppli_PWBDrilledHole() {}
 
-
-    void  IGESAppli_PWBDrilledHole::Init
-  (const Standard_Integer nbPropVal,
-   const Standard_Real aDrillDia, const Standard_Real aFinishDia,
-   const Standard_Integer aCode)
+void IGESAppli_PWBDrilledHole::Init(const Standard_Integer nbPropVal,
+                                    const Standard_Real    aDrillDia,
+                                    const Standard_Real    aFinishDia,
+                                    const Standard_Integer aCode)
 {
   theNbPropertyValues = nbPropVal;
   theDrillDiameter    = aDrillDia;
   theFinishDiameter   = aFinishDia;
   theFunctionCode     = aCode;
-  InitTypeAndForm(406,26);
+  InitTypeAndForm(406, 26);
 }
 
-
-    Standard_Integer  IGESAppli_PWBDrilledHole::NbPropertyValues () const
+Standard_Integer IGESAppli_PWBDrilledHole::NbPropertyValues() const
 {
   return theNbPropertyValues;
 }
 
-    Standard_Real  IGESAppli_PWBDrilledHole::DrillDiameterSize () const
+Standard_Real IGESAppli_PWBDrilledHole::DrillDiameterSize() const
 {
   return theDrillDiameter;
 }
 
-    Standard_Real  IGESAppli_PWBDrilledHole::FinishDiameterSize () const
+Standard_Real IGESAppli_PWBDrilledHole::FinishDiameterSize() const
 {
   return theFinishDiameter;
 }
 
-    Standard_Integer  IGESAppli_PWBDrilledHole::FunctionCode () const
+Standard_Integer IGESAppli_PWBDrilledHole::FunctionCode() const
 {
   return theFunctionCode;
 }

@@ -12,63 +12,60 @@
 // commercial license or contractual agreement.
 
 #include <ShapeExtend.hxx>
-inline  Standard_Boolean ShapeAnalysis_CheckSmallFace::Status(const ShapeExtend_Status status) const
+
+inline Standard_Boolean ShapeAnalysis_CheckSmallFace::Status(const ShapeExtend_Status status) const
 {
-   return ShapeExtend::DecodeStatus ( myStatus, status );
+  return ShapeExtend::DecodeStatus(myStatus, status);
 }
 
- 
-inline  void ShapeAnalysis_CheckSmallFace::SetTolerance(const Standard_Real tol) 
+inline void ShapeAnalysis_CheckSmallFace::SetTolerance(const Standard_Real tol)
 {
- myPrecision = tol;
-
+  myPrecision = tol;
 }
 
- 
-inline  Standard_Real ShapeAnalysis_CheckSmallFace::Tolerance() const
+inline Standard_Real ShapeAnalysis_CheckSmallFace::Tolerance() const
 {
- return myPrecision;
+  return myPrecision;
 }
 
- 
-inline  Standard_Boolean ShapeAnalysis_CheckSmallFace::StatusSpot(const ShapeExtend_Status status) const
+inline Standard_Boolean ShapeAnalysis_CheckSmallFace::StatusSpot(
+  const ShapeExtend_Status status) const
 {
-  return ShapeExtend::DecodeStatus ( myStatusSpot, status );
+  return ShapeExtend::DecodeStatus(myStatusSpot, status);
 }
 
- 
-inline  Standard_Boolean ShapeAnalysis_CheckSmallFace::StatusStrip(const ShapeExtend_Status status) const
+inline Standard_Boolean ShapeAnalysis_CheckSmallFace::StatusStrip(
+  const ShapeExtend_Status status) const
 {
-  return ShapeExtend::DecodeStatus ( myStatusStrip, status );
+  return ShapeExtend::DecodeStatus(myStatusStrip, status);
 }
 
- 
-inline  Standard_Boolean ShapeAnalysis_CheckSmallFace::StatusPin(const ShapeExtend_Status status) const
+inline Standard_Boolean ShapeAnalysis_CheckSmallFace::StatusPin(
+  const ShapeExtend_Status status) const
 {
-  return ShapeExtend::DecodeStatus ( myStatusPin, status );
-
+  return ShapeExtend::DecodeStatus(myStatusPin, status);
 }
 
- 
-inline  Standard_Boolean ShapeAnalysis_CheckSmallFace::StatusTwisted(const ShapeExtend_Status status) const
+inline Standard_Boolean ShapeAnalysis_CheckSmallFace::StatusTwisted(
+  const ShapeExtend_Status status) const
 {
-  return ShapeExtend::DecodeStatus ( myStatusTwisted, status );
-
-}
-inline  Standard_Boolean ShapeAnalysis_CheckSmallFace::StatusPinFace(const ShapeExtend_Status status) const
-{
-  return ShapeExtend::DecodeStatus ( myStatusPinFace, status );
-
-}
-inline  Standard_Boolean ShapeAnalysis_CheckSmallFace::StatusPinEdges(const ShapeExtend_Status status) const
-{
-  return ShapeExtend::DecodeStatus ( myStatusPinEdges, status );
-
-} 
-inline  Standard_Boolean ShapeAnalysis_CheckSmallFace::StatusSplitVert(const ShapeExtend_Status status) const
-{
-  return ShapeExtend::DecodeStatus ( myStatusSplitVert, status );
-
+  return ShapeExtend::DecodeStatus(myStatusTwisted, status);
 }
 
+inline Standard_Boolean ShapeAnalysis_CheckSmallFace::StatusPinFace(
+  const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusPinFace, status);
+}
 
+inline Standard_Boolean ShapeAnalysis_CheckSmallFace::StatusPinEdges(
+  const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusPinEdges, status);
+}
+
+inline Standard_Boolean ShapeAnalysis_CheckSmallFace::StatusSplitVert(
+  const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusSplitVert, status);
+}

@@ -17,22 +17,24 @@
 
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringHArray1OfReal,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringHArray1OfReal, Standard_Transient)
 
 //=======================================================================
-//function : TDataStd_HDataMapOfStringHArray1OfReal
-//purpose  : Constructor of empty map
+// function : TDataStd_HDataMapOfStringHArray1OfReal
+// purpose  : Constructor of empty map
 //=======================================================================
-TDataStd_HDataMapOfStringHArray1OfReal::TDataStd_HDataMapOfStringHArray1OfReal(const Standard_Integer NbBuckets)
+TDataStd_HDataMapOfStringHArray1OfReal::TDataStd_HDataMapOfStringHArray1OfReal(
+  const Standard_Integer NbBuckets)
 {
   myMap.ReSize(NbBuckets);
 }
 
 //=======================================================================
-//function : TDataStd_HDataMapOfStringHArray1OfReal
-//purpose  : Constructor from already existing map; performs copying
+// function : TDataStd_HDataMapOfStringHArray1OfReal
+// purpose  : Constructor from already existing map; performs copying
 //=======================================================================
-TDataStd_HDataMapOfStringHArray1OfReal::TDataStd_HDataMapOfStringHArray1OfReal (const TDataStd_DataMapOfStringHArray1OfReal &theOther)
-{ 
-  myMap.Assign ( theOther ); 
+TDataStd_HDataMapOfStringHArray1OfReal::TDataStd_HDataMapOfStringHArray1OfReal(
+  const TDataStd_DataMapOfStringHArray1OfReal& theOther)
+{
+  myMap.Assign(theOther);
 }

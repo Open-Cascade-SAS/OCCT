@@ -14,74 +14,80 @@
 
 #include <Standard_DomainError.hxx>
 
-
-inline void IntPatch_Line::SetValue (const Standard_Boolean Uiso1,
-				     const Standard_Boolean Viso1,
-				     const Standard_Boolean Uiso2,
-				     const Standard_Boolean Viso2) {
+inline void IntPatch_Line::SetValue(const Standard_Boolean Uiso1,
+                                    const Standard_Boolean Viso1,
+                                    const Standard_Boolean Uiso2,
+                                    const Standard_Boolean Viso2)
+{
   uS1 = Uiso1;
   vS1 = Viso1;
   uS2 = Uiso2;
   vS2 = Viso2;
 }
 
-
-inline IntPatch_IType IntPatch_Line::ArcType () const {
+inline IntPatch_IType IntPatch_Line::ArcType() const
+{
   return typ;
 }
 
-inline Standard_Boolean IntPatch_Line::IsTangent () const {
+inline Standard_Boolean IntPatch_Line::IsTangent() const
+{
 
   return tg;
 }
 
-
-inline IntSurf_TypeTrans IntPatch_Line::TransitionOnS1 () const {
+inline IntSurf_TypeTrans IntPatch_Line::TransitionOnS1() const
+{
 
   return tS1;
 }
 
-
-inline IntSurf_TypeTrans IntPatch_Line::TransitionOnS2 () const {
+inline IntSurf_TypeTrans IntPatch_Line::TransitionOnS2() const
+{
 
   return tS2;
 }
 
+inline IntSurf_Situation IntPatch_Line::SituationS1() const
+{
 
-inline IntSurf_Situation IntPatch_Line::SituationS1 () const {
-
-  if (tS1 != IntSurf_Touch) {throw Standard_DomainError();}
+  if (tS1 != IntSurf_Touch)
+  {
+    throw Standard_DomainError();
+  }
   return sit1;
 }
 
+inline IntSurf_Situation IntPatch_Line::SituationS2() const
+{
 
-inline IntSurf_Situation IntPatch_Line::SituationS2 () const {
-
-  if (tS2 != IntSurf_Touch) {throw Standard_DomainError();}
+  if (tS2 != IntSurf_Touch)
+  {
+    throw Standard_DomainError();
+  }
   return sit2;
 }
 
-
-inline Standard_Boolean IntPatch_Line::IsUIsoOnS1 () const {
+inline Standard_Boolean IntPatch_Line::IsUIsoOnS1() const
+{
 
   return uS1;
 }
 
-
-inline Standard_Boolean IntPatch_Line::IsVIsoOnS1 () const {
+inline Standard_Boolean IntPatch_Line::IsVIsoOnS1() const
+{
 
   return vS1;
 }
 
-
-inline Standard_Boolean IntPatch_Line::IsUIsoOnS2 () const {
+inline Standard_Boolean IntPatch_Line::IsUIsoOnS2() const
+{
 
   return uS2;
 }
 
-
-
-inline Standard_Boolean IntPatch_Line::IsVIsoOnS2 () const {
+inline Standard_Boolean IntPatch_Line::IsVIsoOnS2() const
+{
 
   return vS2;
 }

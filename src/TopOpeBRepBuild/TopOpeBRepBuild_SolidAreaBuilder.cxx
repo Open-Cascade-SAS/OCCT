@@ -14,39 +14,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopOpeBRepBuild_LoopClassifier.hxx>
 #include <TopOpeBRepBuild_LoopSet.hxx>
 #include <TopOpeBRepBuild_SolidAreaBuilder.hxx>
 
-//=======================================================================
-//function : TopOpeBRepBuild_SolidAreaBuilder
-//purpose  : 
-//=======================================================================
-TopOpeBRepBuild_SolidAreaBuilder::TopOpeBRepBuild_SolidAreaBuilder()
+//=================================================================================================
+
+TopOpeBRepBuild_SolidAreaBuilder::TopOpeBRepBuild_SolidAreaBuilder() {}
+
+//=================================================================================================
+
+TopOpeBRepBuild_SolidAreaBuilder::TopOpeBRepBuild_SolidAreaBuilder(
+  TopOpeBRepBuild_LoopSet&        LS,
+  TopOpeBRepBuild_LoopClassifier& LC,
+  const Standard_Boolean          ForceClass)
 {
+  InitSolidAreaBuilder(LS, LC, ForceClass);
 }
 
-//=======================================================================
-//function : TopOpeBRepBuild_SolidAreaBuilder
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TopOpeBRepBuild_SolidAreaBuilder::TopOpeBRepBuild_SolidAreaBuilder
-(TopOpeBRepBuild_LoopSet& LS, TopOpeBRepBuild_LoopClassifier& LC,
- const Standard_Boolean ForceClass)
+void TopOpeBRepBuild_SolidAreaBuilder::InitSolidAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
+                                                            TopOpeBRepBuild_LoopClassifier& LC,
+                                                            const Standard_Boolean ForceClass)
 {
-  InitSolidAreaBuilder(LS,LC,ForceClass);
-}
-
-//=======================================================================
-//function : TopOpeBRepBuild_SolidAreaBuilder
-//purpose  : 
-//=======================================================================
-
-void TopOpeBRepBuild_SolidAreaBuilder::InitSolidAreaBuilder
-(TopOpeBRepBuild_LoopSet& LS, TopOpeBRepBuild_LoopClassifier& LC,
- const Standard_Boolean ForceClass)
-{
-  InitAreaBuilder(LS,LC,ForceClass);
+  InitAreaBuilder(LS, LC, ForceClass);
 }

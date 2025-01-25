@@ -20,7 +20,6 @@
 #include <Standard_DomainError.hxx>
 #include <Adaptor3d_HVertex.hxx>
 #include <IntPatch_ThePathPointOfTheSOnBounds.hxx>
- 
 
 #define TheVertex Handle(Adaptor3d_HVertex)
 #define TheVertex_hxx <Adaptor3d_HVertex.hxx>
@@ -31,4 +30,3 @@
 #define IntStart_Segment IntPatch_TheSegmentOfTheSOnBounds
 #define IntStart_Segment_hxx <IntPatch_TheSegmentOfTheSOnBounds.hxx>
 #include "../IntStart/IntStart_Segment.gxx"
-

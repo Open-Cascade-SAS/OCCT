@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowser_SearchView.hxx>
 
@@ -41,27 +41,28 @@ static const int DEFAULT_ICON_SIZE = 40;
 // function : Constructor
 // purpose :
 // =======================================================================
-DFBrowser_SearchView::DFBrowser_SearchView (QWidget* theParent)
-: QObject (theParent)
+DFBrowser_SearchView::DFBrowser_SearchView(QWidget* theParent)
+    : QObject(theParent)
 {
-  myMainWindow = new QWidget (theParent);
-  QGridLayout* aLayout = new QGridLayout (myMainWindow);
-  aLayout->setContentsMargins (0, 0, 0, 0);
+  myMainWindow         = new QWidget(theParent);
+  QGridLayout* aLayout = new QGridLayout(myMainWindow);
+  aLayout->setContentsMargins(0, 0, 0, 0);
 
-  myTableView = new QTableView (myMainWindow);
-  myTableView->verticalHeader()->setVisible (false);
-  myTableView->verticalHeader()->setDefaultSectionSize (DEFAULT_ICON_SIZE + TreeModel_Tools::HeaderSectionMargin());
-  myTableView->setIconSize (QSize (DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE));
-  myTableView->horizontalHeader()->setVisible (false);
-  myTableView->horizontalHeader()->setStretchLastSection (true);
+  myTableView = new QTableView(myMainWindow);
+  myTableView->verticalHeader()->setVisible(false);
+  myTableView->verticalHeader()->setDefaultSectionSize(DEFAULT_ICON_SIZE
+                                                       + TreeModel_Tools::HeaderSectionMargin());
+  myTableView->setIconSize(QSize(DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE));
+  myTableView->horizontalHeader()->setVisible(false);
+  myTableView->horizontalHeader()->setStretchLastSection(true);
 
-  myTableView->viewport()->setAttribute (Qt::WA_Hover);
-  myTableView->setItemDelegate (new DFBrowser_HighlightDelegate (myTableView));
+  myTableView->viewport()->setAttribute(Qt::WA_Hover);
+  myTableView->setItemDelegate(new DFBrowser_HighlightDelegate(myTableView));
 
-  aLayout->addWidget (myTableView);
+  aLayout->addWidget(myTableView);
 
-  ViewControl_Tools::SetWhiteBackground (myTableView);
-  myTableView->setGridStyle (Qt::NoPen);
+  ViewControl_Tools::SetWhiteBackground(myTableView);
+  myTableView->setGridStyle(Qt::NoPen);
 }
 
 // =======================================================================
@@ -71,55 +72,62 @@ DFBrowser_SearchView::DFBrowser_SearchView (QWidget* theParent)
 void DFBrowser_SearchView::InitModels()
 {
   QAbstractItemModel* aModel = mySearchLine->GetCompletionModel();
-  myTableView->setModel (aModel);
-  myTableView->setColumnWidth (0, 0); // to hide column
-  myTableView->setColumnWidth (1, DEFAULT_ICON_SIZE + TreeModel_Tools::HeaderSectionMargin());
+  myTableView->setModel(aModel);
+  myTableView->setColumnWidth(0, 0); // to hide column
+  myTableView->setColumnWidth(1, DEFAULT_ICON_SIZE + TreeModel_Tools::HeaderSectionMargin());
 
-  QItemSelectionModel* aSelectionModel = new QItemSelectionModel (aModel);
-  myTableView->setSelectionMode (QAbstractItemView::SingleSelection);
-  myTableView->setSelectionModel (aSelectionModel);
-  connect (aSelectionModel, SIGNAL (selectionChanged (const QItemSelection&, const QItemSelection&)),
-          this, SLOT (onTableSelectionChanged (const QItemSelection&, const QItemSelection&)));
-  connect (myTableView, SIGNAL (doubleClicked (const QModelIndex&)),
-          this, SLOT (onTableDoubleClicked (const QModelIndex&)));
+  QItemSelectionModel* aSelectionModel = new QItemSelectionModel(aModel);
+  myTableView->setSelectionMode(QAbstractItemView::SingleSelection);
+  myTableView->setSelectionModel(aSelectionModel);
+  connect(aSelectionModel,
+          SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+          this,
+          SLOT(onTableSelectionChanged(const QItemSelection&, const QItemSelection&)));
+  connect(myTableView,
+          SIGNAL(doubleClicked(const QModelIndex&)),
+          this,
+          SLOT(onTableDoubleClicked(const QModelIndex&)));
 }
 
 // =======================================================================
 // function : onTableSelectionChanged
 // purpose :
 // =======================================================================
-void DFBrowser_SearchView::onTableSelectionChanged (const QItemSelection&,
-                                                   const QItemSelection&)
+void DFBrowser_SearchView::onTableSelectionChanged(const QItemSelection&, const QItemSelection&)
 {
-  QItemSelectionModel* aSelectionModel = myTableView->selectionModel();
-  QModelIndexList aSelectedIndices = aSelectionModel->selectedIndexes();
-  QModelIndex aSelectedIndex = TreeModel_ModelBase::SingleSelected (aSelectedIndices, 2);
+  QItemSelectionModel* aSelectionModel  = myTableView->selectionModel();
+  QModelIndexList      aSelectedIndices = aSelectionModel->selectedIndexes();
+  QModelIndex          aSelectedIndex   = TreeModel_ModelBase::SingleSelected(aSelectedIndices, 2);
   if (!aSelectedIndex.isValid())
     return;
-  QAbstractProxyModel* aTableModel = dynamic_cast<QAbstractProxyModel*> (myTableView->model());
+  QAbstractProxyModel* aTableModel = dynamic_cast<QAbstractProxyModel*>(myTableView->model());
   if (!aTableModel)
     return;
-  DFBrowser_SearchLineModel* aSourceModel = dynamic_cast<DFBrowser_SearchLineModel*> (aTableModel->sourceModel());
+  DFBrowser_SearchLineModel* aSourceModel =
+    dynamic_cast<DFBrowser_SearchLineModel*>(aTableModel->sourceModel());
   if (!aSourceModel)
     return;
 
   QModelIndex aSourceSelectedIndex = aTableModel->mapToSource(aSelectedIndex);
-  emit pathSelected(aSourceModel->GetPath (aSourceSelectedIndex), aSourceModel->GetValue (aSourceSelectedIndex));
+  emit        pathSelected(aSourceModel->GetPath(aSourceSelectedIndex),
+                    aSourceModel->GetValue(aSourceSelectedIndex));
 }
 
 // =======================================================================
 // function : onTableDoubleClicked
 // purpose :
 // =======================================================================
-void DFBrowser_SearchView::onTableDoubleClicked (const QModelIndex& theIndex)
+void DFBrowser_SearchView::onTableDoubleClicked(const QModelIndex& theIndex)
 {
-  QAbstractProxyModel* aTableModel = dynamic_cast<QAbstractProxyModel*> (myTableView->model());
+  QAbstractProxyModel* aTableModel = dynamic_cast<QAbstractProxyModel*>(myTableView->model());
   if (!aTableModel)
     return;
-  DFBrowser_SearchLineModel* aSourceModel = dynamic_cast<DFBrowser_SearchLineModel*> (aTableModel->sourceModel());
+  DFBrowser_SearchLineModel* aSourceModel =
+    dynamic_cast<DFBrowser_SearchLineModel*>(aTableModel->sourceModel());
   if (!aSourceModel)
     return;
 
   QModelIndex aSourceSelectedIndex = aTableModel->mapToSource(theIndex);
-  emit pathDoubleClicked (aSourceModel->GetPath (aSourceSelectedIndex), aSourceModel->GetValue (aSourceSelectedIndex));
+  emit        pathDoubleClicked(aSourceModel->GetPath(aSourceSelectedIndex),
+                         aSourceModel->GetValue(aSourceSelectedIndex));
 }

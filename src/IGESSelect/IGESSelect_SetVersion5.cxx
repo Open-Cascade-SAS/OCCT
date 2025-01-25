@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IFSelect_ContextModif.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <IGESSelect_SetVersion5.hxx>
@@ -20,26 +19,30 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SetVersion5,IGESSelect_ModelModifier)
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SetVersion5, IGESSelect_ModelModifier)
 
-IGESSelect_SetVersion5::IGESSelect_SetVersion5 ()
-    : IGESSelect_ModelModifier (Standard_False)    {  }
+IGESSelect_SetVersion5::IGESSelect_SetVersion5()
+    : IGESSelect_ModelModifier(Standard_False)
+{
+}
 
-    void  IGESSelect_SetVersion5::Performing
-  (IFSelect_ContextModif& ctx,
-   const Handle(IGESData_IGESModel)& target,
-   Interface_CopyTool& ) const
+void IGESSelect_SetVersion5::Performing(IFSelect_ContextModif&            ctx,
+                                        const Handle(IGESData_IGESModel)& target,
+                                        Interface_CopyTool&) const
 {
   IGESData_GlobalSection GS = target->GlobalSection();
-  if (GS.IGESVersion() >= 9) return;
+  if (GS.IGESVersion() >= 9)
+    return;
   GS.SetIGESVersion(9);
-  GS.SetLastChangeDate ();
+  GS.SetLastChangeDate();
   target->SetGlobalSection(GS);
   Handle(Interface_Check) check = new Interface_Check;
   target->VerifyCheck(check);
-  if (check->HasFailed()) ctx.CCheck()->GetMessages(check);
+  if (check->HasFailed())
+    ctx.CCheck()->GetMessages(check);
 }
 
-
-    TCollection_AsciiString  IGESSelect_SetVersion5::Label () const
-{ return TCollection_AsciiString ("Update IGES Version in Global Section to 5.1"); }
+TCollection_AsciiString IGESSelect_SetVersion5::Label() const
+{
+  return TCollection_AsciiString("Update IGES Version in Global Section to 5.1");
+}

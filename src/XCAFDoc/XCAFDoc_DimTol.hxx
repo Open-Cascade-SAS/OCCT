@@ -27,7 +27,6 @@ class Standard_GUID;
 class TDF_Label;
 class TDF_RelocationTable;
 
-
 class XCAFDoc_DimTol;
 DEFINE_STANDARD_HANDLE(XCAFDoc_DimTol, TDF_Attribute)
 
@@ -36,60 +35,51 @@ class XCAFDoc_DimTol : public TDF_Attribute
 {
 
 public:
-
-  
   Standard_EXPORT XCAFDoc_DimTol();
-  
+
   Standard_EXPORT static const Standard_GUID& GetID();
-  
-  Standard_EXPORT static Handle(XCAFDoc_DimTol) Set (const TDF_Label& label, const Standard_Integer kind, const Handle(TColStd_HArray1OfReal)& aVal, const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription);
-  
-  Standard_EXPORT void Set (const Standard_Integer kind, const Handle(TColStd_HArray1OfReal)& aVal, const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription);
-  
+
+  Standard_EXPORT static Handle(XCAFDoc_DimTol) Set(
+    const TDF_Label&                        label,
+    const Standard_Integer                  kind,
+    const Handle(TColStd_HArray1OfReal)&    aVal,
+    const Handle(TCollection_HAsciiString)& aName,
+    const Handle(TCollection_HAsciiString)& aDescription);
+
+  Standard_EXPORT void Set(const Standard_Integer                  kind,
+                           const Handle(TColStd_HArray1OfReal)&    aVal,
+                           const Handle(TCollection_HAsciiString)& aName,
+                           const Handle(TCollection_HAsciiString)& aDescription);
+
   Standard_EXPORT Standard_Integer GetKind() const;
-  
+
   Standard_EXPORT Handle(TColStd_HArray1OfReal) GetVal() const;
-  
+
   Standard_EXPORT Handle(TCollection_HAsciiString) GetName() const;
-  
+
   Standard_EXPORT Handle(TCollection_HAsciiString) GetDescription() const;
-  
+
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Restore (const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
-  
+
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
+
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& Into, const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
-  
+
+  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
+                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(XCAFDoc_DimTol,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(XCAFDoc_DimTol, TDF_Attribute)
 
 protected:
-
-
-
-
 private:
-
-
-  Standard_Integer myKind;
-  Handle(TColStd_HArray1OfReal) myVal;
+  Standard_Integer                 myKind;
+  Handle(TColStd_HArray1OfReal)    myVal;
   Handle(TCollection_HAsciiString) myName;
   Handle(TCollection_HAsciiString) myDescription;
-
-
 };
-
-
-
-
-
-
 
 #endif // _XCAFDoc_DimTol_HeaderFile

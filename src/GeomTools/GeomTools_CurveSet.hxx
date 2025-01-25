@@ -29,59 +29,55 @@
 
 class Geom_Curve;
 
-
 //! Stores a set of Curves from Geom.
-class GeomTools_CurveSet 
+class GeomTools_CurveSet
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns an empty set of Curves.
   Standard_EXPORT GeomTools_CurveSet();
-  
+
   //! Clears the content of the set.
   Standard_EXPORT void Clear();
-  
+
   //! Incorporate a new Curve in the  set and returns
   //! its index.
-  Standard_EXPORT Standard_Integer Add (const Handle(Geom_Curve)& C);
-  
+  Standard_EXPORT Standard_Integer Add(const Handle(Geom_Curve)& C);
+
   //! Returns the Curve of index <I>.
-  Standard_EXPORT Handle(Geom_Curve) Curve (const Standard_Integer I) const;
-  
+  Standard_EXPORT Handle(Geom_Curve) Curve(const Standard_Integer I) const;
+
   //! Returns the index of <L>.
-  Standard_EXPORT Standard_Integer Index (const Handle(Geom_Curve)& C) const;
-  
+  Standard_EXPORT Standard_Integer Index(const Handle(Geom_Curve)& C) const;
+
   //! Dumps the content of me on the stream <OS>.
-  Standard_EXPORT void Dump (Standard_OStream& OS) const;
-  
+  Standard_EXPORT void Dump(Standard_OStream& OS) const;
+
   //! Writes the content of  me  on the stream <OS> in a
   //! format that can be read back by Read.
-  Standard_EXPORT void Write (Standard_OStream& OS,
-                              const Message_ProgressRange& theProgress = Message_ProgressRange()) const;
-  
+  Standard_EXPORT void Write(
+    Standard_OStream&            OS,
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) const;
+
   //! Reads the content of me from the  stream  <IS>. me
   //! is first cleared.
-  Standard_EXPORT void Read (Standard_IStream& IS,
-                             const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+  Standard_EXPORT void Read(Standard_IStream&            IS,
+                            const Message_ProgressRange& theProgress = Message_ProgressRange());
+
   //! Dumps the curve on the stream,  if compact is True
   //! use the compact format that can be read back.
-  Standard_EXPORT static void PrintCurve (const Handle(Geom_Curve)& C,
-                                          Standard_OStream& OS,
-                                          const Standard_Boolean compact = Standard_False);
-  
+  Standard_EXPORT static void PrintCurve(const Handle(Geom_Curve)& C,
+                                         Standard_OStream&         OS,
+                                         const Standard_Boolean    compact = Standard_False);
+
   //! Reads the curve  from  the stream.  The  curve  is
   //! assumed   to have  been  written  with  the Print
   //! method (compact = True).
-  Standard_EXPORT static Handle(Geom_Curve) ReadCurve (Standard_IStream& IS);
+  Standard_EXPORT static Handle(Geom_Curve) ReadCurve(Standard_IStream& IS);
 
 private:
-
   TColStd_IndexedMapOfTransient myMap;
-
 };
 
 #endif // _GeomTools_CurveSet_HeaderFile

@@ -13,57 +13,52 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepBasic_ProductDefinitionOrReference.hxx>
 #include <StepBasic_ProductDefinitionReference.hxx>
 #include <StepBasic_ProductDefinitionReferenceWithLocalRepresentation.hxx>
 
-//=======================================================================
-//function : StepBasic_ProductDefinitionOrReference
-//purpose  : 
-//=======================================================================
-StepBasic_ProductDefinitionOrReference::StepBasic_ProductDefinitionOrReference () {  }
+//=================================================================================================
 
-//=======================================================================
-//function : CaseNum
-//purpose  : 
-//=======================================================================
-Standard_Integer StepBasic_ProductDefinitionOrReference::CaseNum(const Handle(Standard_Transient)& ent) const
+StepBasic_ProductDefinitionOrReference::StepBasic_ProductDefinitionOrReference() {}
+
+//=================================================================================================
+
+Standard_Integer StepBasic_ProductDefinitionOrReference::CaseNum(
+  const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionReference))) return 2;
-  if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionReferenceWithLocalRepresentation))) return 3;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionReference)))
+    return 2;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionReferenceWithLocalRepresentation)))
+    return 3;
   return 0;
 }
 
-//=======================================================================
-//function : ProductDefinition
-//purpose  : 
-//=======================================================================
-Handle(StepBasic_ProductDefinition) StepBasic_ProductDefinitionOrReference::ProductDefinition () const
+//=================================================================================================
+
+Handle(StepBasic_ProductDefinition) StepBasic_ProductDefinitionOrReference::ProductDefinition()
+  const
 {
   return GetCasted(StepBasic_ProductDefinition, Value());
 }
 
-//=======================================================================
-//function : ProductDefinitionReference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Handle(StepBasic_ProductDefinitionReference) StepBasic_ProductDefinitionOrReference::
-  ProductDefinitionReference () const
+  ProductDefinitionReference() const
 {
   return GetCasted(StepBasic_ProductDefinitionReference, Value());
 }
 
-//=======================================================================
-//function : ProductDefinitionReferenceWithLocalRepresentation
-//purpose  : 
-//=======================================================================
-Handle(StepBasic_ProductDefinitionReferenceWithLocalRepresentation) StepBasic_ProductDefinitionOrReference::
-  ProductDefinitionReferenceWithLocalRepresentation () const
+//=================================================================================================
+
+Handle(StepBasic_ProductDefinitionReferenceWithLocalRepresentation)
+  StepBasic_ProductDefinitionOrReference::ProductDefinitionReferenceWithLocalRepresentation() const
 {
   return GetCasted(StepBasic_ProductDefinitionReferenceWithLocalRepresentation, Value());
 }

@@ -13,28 +13,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepRepr_CharacterizedRepresentation.hxx>
 #include <StepRepr_RepresentationContext.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_CharacterizedRepresentation, StepRepr_Representation)
 
-//=======================================================================
-//function : StepRepr_CharacterizedRepresentation
-//purpose  : 
-//=======================================================================
-StepRepr_CharacterizedRepresentation::StepRepr_CharacterizedRepresentation ()  {}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-void StepRepr_CharacterizedRepresentation::Init
-  (const Handle(TCollection_HAsciiString)& theName,
-   const Handle(TCollection_HAsciiString)& theDescription,
-   const Handle(StepRepr_HArray1OfRepresentationItem)& theItems,
-   const Handle(StepRepr_RepresentationContext)& theContextOfItems)
+StepRepr_CharacterizedRepresentation::StepRepr_CharacterizedRepresentation() {}
+
+//=================================================================================================
+
+void StepRepr_CharacterizedRepresentation::Init(
+  const Handle(TCollection_HAsciiString)&             theName,
+  const Handle(TCollection_HAsciiString)&             theDescription,
+  const Handle(StepRepr_HArray1OfRepresentationItem)& theItems,
+  const Handle(StepRepr_RepresentationContext)&       theContextOfItems)
 {
   myDescription = theDescription;
   StepRepr_Representation::Init(theName, theItems, theContextOfItems);

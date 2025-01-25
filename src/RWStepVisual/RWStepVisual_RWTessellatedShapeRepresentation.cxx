@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -24,23 +24,16 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepRepr_RepresentationContext.hxx>
 
-//=======================================================================
-//function : RWStepVisual_RWTessellatedShapeRepresentation
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 RWStepVisual_RWTessellatedShapeRepresentation::RWStepVisual_RWTessellatedShapeRepresentation() {}
 
-
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void RWStepVisual_RWTessellatedShapeRepresentation::ReadStep(
-  const Handle(StepData_StepReaderData)& theData,
-  const Standard_Integer theNum,
-  Handle(Interface_Check)& theCheck,
+  const Handle(StepData_StepReaderData)&                   theData,
+  const Standard_Integer                                   theNum,
+  Handle(Interface_Check)&                                 theCheck,
   const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt) const
 {
   // Check number of parameters
@@ -55,36 +48,41 @@ void RWStepVisual_RWTessellatedShapeRepresentation::ReadStep(
   theData->ReadString(theNum, 1, "representation.name", theCheck, aRepresentation_Name);
 
   Handle(StepRepr_HArray1OfRepresentationItem) aRepresentation_Items;
-  Standard_Integer sub2 = 0;
+  Standard_Integer                             sub2 = 0;
   if (theData->ReadSubList(theNum, 2, "representation.items", theCheck, sub2))
   {
-    Standard_Integer nb0 = theData->NbParams(sub2);
+    Standard_Integer nb0  = theData->NbParams(sub2);
     aRepresentation_Items = new StepRepr_HArray1OfRepresentationItem(1, nb0);
     Standard_Integer num2 = sub2;
     for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
     {
       Handle(StepRepr_RepresentationItem) anIt0;
-      theData->ReadEntity(num2, i0, "representation_item", theCheck,
-        STANDARD_TYPE(StepRepr_RepresentationItem), anIt0);
+      theData->ReadEntity(num2,
+                          i0,
+                          "representation_item",
+                          theCheck,
+                          STANDARD_TYPE(StepRepr_RepresentationItem),
+                          anIt0);
       aRepresentation_Items->SetValue(i0, anIt0);
     }
   }
 
   Handle(StepRepr_RepresentationContext) aRepresentation_ContextOfItems;
-  theData->ReadEntity(theNum, 3, "representation.context_of_items", theCheck,
-    STANDARD_TYPE(StepRepr_RepresentationContext), aRepresentation_ContextOfItems);
+  theData->ReadEntity(theNum,
+                      3,
+                      "representation.context_of_items",
+                      theCheck,
+                      STANDARD_TYPE(StepRepr_RepresentationContext),
+                      aRepresentation_ContextOfItems);
 
   // Initialize entity
   theEnt->Init(aRepresentation_Name, aRepresentation_Items, aRepresentation_ContextOfItems);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void RWStepVisual_RWTessellatedShapeRepresentation::WriteStep(
-  StepData_StepWriter& theSW,
+  StepData_StepWriter&                                     theSW,
   const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt) const
 {
 
@@ -103,14 +101,11 @@ void RWStepVisual_RWTessellatedShapeRepresentation::WriteStep(
   theSW.Send(theEnt->ContextOfItems());
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void RWStepVisual_RWTessellatedShapeRepresentation::Share(
-  const Handle(StepVisual_TessellatedShapeRepresentation)&theEnt,
-Interface_EntityIterator& theIter) const
+  const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt,
+  Interface_EntityIterator&                                theIter) const
 {
 
   // Inherited fields of Representation
@@ -118,7 +113,8 @@ Interface_EntityIterator& theIter) const
   {
     for (Standard_Integer i1 = 1; i1 <= theEnt->StepRepr_Representation::Items()->Length(); i1++)
     {
-      Handle(StepRepr_RepresentationItem) Var0 = theEnt->StepRepr_Representation::Items()->Value(i1);
+      Handle(StepRepr_RepresentationItem) Var0 =
+        theEnt->StepRepr_Representation::Items()->Value(i1);
       theIter.AddItem(Var0);
     }
   }

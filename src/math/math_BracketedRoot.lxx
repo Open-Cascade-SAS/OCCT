@@ -14,31 +14,31 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline Standard_Boolean math_BracketedRoot::IsDone() const { return Done; }
+inline Standard_Boolean math_BracketedRoot::IsDone() const
+{
+  return Done;
+}
 
-inline Standard_OStream& operator<<(Standard_OStream& o,
-				    const math_BracketedRoot& Br)
+inline Standard_OStream& operator<<(Standard_OStream& o, const math_BracketedRoot& Br)
 {
   Br.Dump(o);
   return o;
 }
 
-
-inline Standard_Real math_BracketedRoot::Root () const {
+inline Standard_Real math_BracketedRoot::Root() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return TheRoot;
 }
 
-
-inline  Standard_Real math_BracketedRoot::Value () const {
+inline Standard_Real math_BracketedRoot::Value() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return TheError;
 }
 
-
-inline  Standard_Integer math_BracketedRoot::NbIterations ()const {
+inline Standard_Integer math_BracketedRoot::NbIterations() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return NbIter;
 }
-
-

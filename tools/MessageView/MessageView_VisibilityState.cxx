@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/MessageView_VisibilityState.hxx>
 #include <inspector/MessageModel_ItemAlert.hxx>
@@ -25,13 +25,13 @@
 // function : CanBeVisible
 // purpose :
 // =======================================================================
-bool MessageView_VisibilityState::CanBeVisible (const QModelIndex& theIndex) const
+bool MessageView_VisibilityState::CanBeVisible(const QModelIndex& theIndex) const
 {
-  MessageModel_ItemAlertPtr anAlertItem = getAlertItem (theIndex);
+  MessageModel_ItemAlertPtr anAlertItem = getAlertItem(theIndex);
   if (anAlertItem)
   {
     NCollection_List<Handle(Standard_Transient)> aPresentations;
-    anAlertItem->Presentations (aPresentations);
+    anAlertItem->Presentations(aPresentations);
     if (!aPresentations.IsEmpty())
       return true;
   }
@@ -42,7 +42,7 @@ bool MessageView_VisibilityState::CanBeVisible (const QModelIndex& theIndex) con
 // function : SetVisible
 // purpose :
 // =======================================================================
-bool MessageView_VisibilityState::SetVisible (const QModelIndex&, const bool, const bool)
+bool MessageView_VisibilityState::SetVisible(const QModelIndex&, const bool, const bool)
 {
   return false;
 }
@@ -51,7 +51,7 @@ bool MessageView_VisibilityState::SetVisible (const QModelIndex&, const bool, co
 // function : IsVisible
 // purpose :
 // =======================================================================
-bool MessageView_VisibilityState::IsVisible (const QModelIndex&) const
+bool MessageView_VisibilityState::IsVisible(const QModelIndex&) const
 {
   return false;
 }
@@ -60,19 +60,20 @@ bool MessageView_VisibilityState::IsVisible (const QModelIndex&) const
 // function : OnClicked
 // purpose :
 // =======================================================================
-void MessageView_VisibilityState::OnClicked (const QModelIndex& theIndex)
+void MessageView_VisibilityState::OnClicked(const QModelIndex& theIndex)
 {
-  processClicked (theIndex);
-  emit itemClicked (theIndex);
+  processClicked(theIndex);
+  emit itemClicked(theIndex);
 }
 
 // =======================================================================
 // function : getAlertItem
 // purpose :
 // =======================================================================
-MessageModel_ItemAlertPtr MessageView_VisibilityState::getAlertItem (const QModelIndex& theIndex) const
+MessageModel_ItemAlertPtr MessageView_VisibilityState::getAlertItem(
+  const QModelIndex& theIndex) const
 {
-  TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (theIndex);
+  TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex(theIndex);
   if (!anItemBase)
     return MessageModel_ItemAlertPtr();
 

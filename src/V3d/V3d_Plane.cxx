@@ -21,18 +21,18 @@
 #include <gp_Pln.hxx>
 #include <V3d_Viewer.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(V3d_Plane,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(V3d_Plane, Standard_Transient)
 
 // =======================================================================
 // function : V3d_Plane
 // purpose  :
 // =======================================================================
-V3d_Plane::V3d_Plane (const Standard_Real theA,
-                      const Standard_Real theB,
-                      const Standard_Real theC,
-                      const Standard_Real theD)
-: myGraphicStructure(),
-  myPlane (new Graphic3d_ClipPlane (gp_Pln (theA, theB, theC, theD)))
+V3d_Plane::V3d_Plane(const Standard_Real theA,
+                     const Standard_Real theB,
+                     const Standard_Real theC,
+                     const Standard_Real theD)
+    : myGraphicStructure(),
+      myPlane(new Graphic3d_ClipPlane(gp_Pln(theA, theB, theC, theD)))
 {
 }
 
@@ -40,12 +40,12 @@ V3d_Plane::V3d_Plane (const Standard_Real theA,
 // function : V3d_Plane
 // purpose  :
 // =======================================================================
-void V3d_Plane::SetPlane (const Standard_Real theA,
-                          const Standard_Real theB,
-                          const Standard_Real theC,
-                          const Standard_Real theD)
+void V3d_Plane::SetPlane(const Standard_Real theA,
+                         const Standard_Real theB,
+                         const Standard_Real theC,
+                         const Standard_Real theD)
 {
-  myPlane->SetEquation (gp_Pln (theA, theB, theC, theD));
+  myPlane->SetEquation(gp_Pln(theA, theB, theC, theD));
   if (IsDisplayed())
   {
     Update();
@@ -56,8 +56,7 @@ void V3d_Plane::SetPlane (const Standard_Real theA,
 // function : Display
 // purpose  :
 // =======================================================================
-void V3d_Plane::Display (const Handle(V3d_View)& theView,
-                         const Quantity_Color& theColor)
+void V3d_Plane::Display(const Handle(V3d_View)& theView, const Quantity_Color& theColor)
 {
   Handle(V3d_Viewer) aViewer = theView->Viewer();
   if (!myGraphicStructure.IsNull())
@@ -65,28 +64,28 @@ void V3d_Plane::Display (const Handle(V3d_View)& theView,
     myGraphicStructure->Clear();
   }
 
-  myGraphicStructure = new Graphic3d_Structure (aViewer->StructureManager());
+  myGraphicStructure                        = new Graphic3d_Structure(aViewer->StructureManager());
   Handle(Graphic3d_Group)            aGroup = myGraphicStructure->NewGroup();
   Handle(Graphic3d_AspectFillArea3d) anAsp  = new Graphic3d_AspectFillArea3d();
-  Graphic3d_MaterialAspect aPlastic (Graphic3d_NameOfMaterial_Plastified);
-  aPlastic.SetColor (theColor);
-  aPlastic.SetTransparency (0.5);
-  anAsp->SetFrontMaterial (aPlastic);
-  anAsp->SetInteriorStyle (Aspect_IS_HATCH);
-  anAsp->SetHatchStyle (new Graphic3d_HatchStyle (Aspect_HS_GRID_DIAGONAL_WIDE));
-  aGroup->SetGroupPrimitivesAspect (anAsp);
+  Graphic3d_MaterialAspect           aPlastic(Graphic3d_NameOfMaterial_Plastified);
+  aPlastic.SetColor(theColor);
+  aPlastic.SetTransparency(0.5);
+  anAsp->SetFrontMaterial(aPlastic);
+  anAsp->SetInteriorStyle(Aspect_IS_HATCH);
+  anAsp->SetHatchStyle(new Graphic3d_HatchStyle(Aspect_HS_GRID_DIAGONAL_WIDE));
+  aGroup->SetGroupPrimitivesAspect(anAsp);
 
-  const Standard_ShortReal aSize = (Standard_ShortReal)(0.5*aViewer->DefaultViewSize());
-  const Standard_ShortReal anOffset = aSize/5000.0f;
+  const Standard_ShortReal aSize    = (Standard_ShortReal)(0.5 * aViewer->DefaultViewSize());
+  const Standard_ShortReal anOffset = aSize / 5000.0f;
 
   Handle(Graphic3d_ArrayOfQuadrangles) aPrims = new Graphic3d_ArrayOfQuadrangles(4);
-  aPrims->AddVertex (-aSize,-aSize, anOffset);
-  aPrims->AddVertex (-aSize, aSize, anOffset);
-  aPrims->AddVertex ( aSize, aSize, anOffset);
-  aPrims->AddVertex ( aSize,-aSize, anOffset);
+  aPrims->AddVertex(-aSize, -aSize, anOffset);
+  aPrims->AddVertex(-aSize, aSize, anOffset);
+  aPrims->AddVertex(aSize, aSize, anOffset);
+  aPrims->AddVertex(aSize, -aSize, anOffset);
   aGroup->AddPrimitiveArray(aPrims);
 
-  myGraphicStructure->SetDisplayPriority (Graphic3d_DisplayPriority_Bottom);
+  myGraphicStructure->SetDisplayPriority(Graphic3d_DisplayPriority_Bottom);
   myGraphicStructure->Display();
   Update();
 }
@@ -107,13 +106,16 @@ void V3d_Plane::Erase()
 // function : Plane
 // purpose  :
 // =======================================================================
-void V3d_Plane::Plane (Standard_Real& theA, Standard_Real& theB, Standard_Real& theC, Standard_Real& theD) const
+void V3d_Plane::Plane(Standard_Real& theA,
+                      Standard_Real& theB,
+                      Standard_Real& theC,
+                      Standard_Real& theD) const
 {
   const Graphic3d_ClipPlane::Equation& anEquation = myPlane->GetEquation();
-  theA = anEquation[0];
-  theB = anEquation[1];
-  theC = anEquation[2];
-  theD = anEquation[3];
+  theA                                            = anEquation[0];
+  theB                                            = anEquation[1];
+  theC                                            = anEquation[2];
+  theD                                            = anEquation[3];
 }
 
 // =======================================================================
@@ -142,8 +144,8 @@ void V3d_Plane::Update()
   }
 
   const gp_Pln aGeomPln = myPlane->ToPlane();
-  gp_Trsf aTransform;
-  aTransform.SetTransformation (aGeomPln.Position());
+  gp_Trsf      aTransform;
+  aTransform.SetTransformation(aGeomPln.Position());
   aTransform.Invert();
-  myGraphicStructure->SetTransformation (new TopLoc_Datum3D (aTransform));
+  myGraphicStructure->SetTransformation(new TopLoc_Datum3D(aTransform));
 }

@@ -20,17 +20,17 @@
 #include <OpenGl_Texture.hxx>
 #include <Standard_Assert.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Sampler,OpenGl_Resource)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Sampler, OpenGl_Resource)
 
 // =======================================================================
 // function : OpenGl_Sampler
 // purpose  :
 // =======================================================================
-OpenGl_Sampler::OpenGl_Sampler (const Handle(Graphic3d_TextureParams)& theParams)
-: myParams (theParams),
-  mySamplerRevision (0),
-  mySamplerID (NO_SAMPLER),
-  myIsImmutable (false)
+OpenGl_Sampler::OpenGl_Sampler(const Handle(Graphic3d_TextureParams)& theParams)
+    : myParams(theParams),
+      mySamplerRevision(0),
+      mySamplerID(NO_SAMPLER),
+      myIsImmutable(false)
 {
   if (myParams.IsNull())
   {
@@ -44,16 +44,16 @@ OpenGl_Sampler::OpenGl_Sampler (const Handle(Graphic3d_TextureParams)& theParams
 // =======================================================================
 OpenGl_Sampler::~OpenGl_Sampler()
 {
-  Release (NULL);
+  Release(NULL);
 }
 
 // =======================================================================
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_Sampler::Release (OpenGl_Context* theCtx)
+void OpenGl_Sampler::Release(OpenGl_Context* theCtx)
 {
-  myIsImmutable = false;
+  myIsImmutable     = false;
   mySamplerRevision = myParams->SamplerRevision() - 1;
   if (!isValidSampler())
   {
@@ -61,12 +61,13 @@ void OpenGl_Sampler::Release (OpenGl_Context* theCtx)
   }
 
   // application can not handle this case by exception - this is bug in code
-  Standard_ASSERT_RETURN (theCtx != NULL,
-    "OpenGl_Sampler destroyed without GL context! Possible GPU memory leakage...",);
+  Standard_ASSERT_RETURN(
+    theCtx != NULL,
+    "OpenGl_Sampler destroyed without GL context! Possible GPU memory leakage...", );
 
   if (theCtx->IsValid())
   {
-    theCtx->arbSamplerObject->glDeleteSamplers (1, &mySamplerID);
+    theCtx->arbSamplerObject->glDeleteSamplers(1, &mySamplerID);
   }
 
   mySamplerID = NO_SAMPLER;
@@ -76,7 +77,7 @@ void OpenGl_Sampler::Release (OpenGl_Context* theCtx)
 // function : Create
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_Sampler::Create (const Handle(OpenGl_Context)& theCtx)
+Standard_Boolean OpenGl_Sampler::Create(const Handle(OpenGl_Context)& theCtx)
 {
   if (isValidSampler())
   {
@@ -87,7 +88,7 @@ Standard_Boolean OpenGl_Sampler::Create (const Handle(OpenGl_Context)& theCtx)
     return Standard_False;
   }
 
-  theCtx->arbSamplerObject->glGenSamplers (1, &mySamplerID);
+  theCtx->arbSamplerObject->glGenSamplers(1, &mySamplerID);
   return Standard_True;
 }
 
@@ -95,8 +96,8 @@ Standard_Boolean OpenGl_Sampler::Create (const Handle(OpenGl_Context)& theCtx)
 // function : Init
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_Sampler::Init (const Handle(OpenGl_Context)& theCtx,
-                                       const OpenGl_Texture& theTexture)
+Standard_Boolean OpenGl_Sampler::Init(const Handle(OpenGl_Context)& theCtx,
+                                      const OpenGl_Texture&         theTexture)
 {
   if (isValidSampler())
   {
@@ -106,18 +107,22 @@ Standard_Boolean OpenGl_Sampler::Init (const Handle(OpenGl_Context)& theCtx,
     }
     else if (!myIsImmutable)
     {
-      applySamplerParams (theCtx, myParams, this, theTexture.GetTarget(), theTexture.MaxMipmapLevel());
+      applySamplerParams(theCtx,
+                         myParams,
+                         this,
+                         theTexture.GetTarget(),
+                         theTexture.MaxMipmapLevel());
       return Standard_True;
     }
-    Release (theCtx.get());
+    Release(theCtx.get());
   }
 
-  if (!Create (theCtx))
+  if (!Create(theCtx))
   {
     return Standard_False;
   }
 
-  applySamplerParams (theCtx, myParams, this, theTexture.GetTarget(), theTexture.MaxMipmapLevel());
+  applySamplerParams(theCtx, myParams, this, theTexture.GetTarget(), theTexture.MaxMipmapLevel());
   return Standard_True;
 }
 
@@ -125,12 +130,11 @@ Standard_Boolean OpenGl_Sampler::Init (const Handle(OpenGl_Context)& theCtx,
 // function : Bind
 // purpose  : Binds sampler object to the given texture unit
 // =======================================================================
-void OpenGl_Sampler::Bind (const Handle(OpenGl_Context)& theCtx,
-                           const Graphic3d_TextureUnit   theUnit)
+void OpenGl_Sampler::Bind(const Handle(OpenGl_Context)& theCtx, const Graphic3d_TextureUnit theUnit)
 {
   if (isValidSampler())
   {
-    theCtx->arbSamplerObject->glBindSampler (theUnit, mySamplerID);
+    theCtx->arbSamplerObject->glBindSampler(theUnit, mySamplerID);
   }
 }
 
@@ -138,12 +142,12 @@ void OpenGl_Sampler::Bind (const Handle(OpenGl_Context)& theCtx,
 // function : Unbind
 // purpose  : Unbinds sampler object from the given texture unit
 // =======================================================================
-void OpenGl_Sampler::Unbind (const Handle(OpenGl_Context)& theCtx,
-                             const Graphic3d_TextureUnit   theUnit)
+void OpenGl_Sampler::Unbind(const Handle(OpenGl_Context)& theCtx,
+                            const Graphic3d_TextureUnit   theUnit)
 {
   if (isValidSampler())
   {
-    theCtx->arbSamplerObject->glBindSampler (theUnit, NO_SAMPLER);
+    theCtx->arbSamplerObject->glBindSampler(theUnit, NO_SAMPLER);
   }
 }
 
@@ -151,19 +155,19 @@ void OpenGl_Sampler::Unbind (const Handle(OpenGl_Context)& theCtx,
 // function : setParameter
 // purpose  :
 // =======================================================================
-void OpenGl_Sampler::setParameter (const Handle(OpenGl_Context)& theCtx,
-                                   OpenGl_Sampler*  theSampler,
-                                   unsigned int     theTarget,
-                                   unsigned int     theParam,
-                                   Standard_Integer theValue)
+void OpenGl_Sampler::setParameter(const Handle(OpenGl_Context)& theCtx,
+                                  OpenGl_Sampler*               theSampler,
+                                  unsigned int                  theTarget,
+                                  unsigned int                  theParam,
+                                  Standard_Integer              theValue)
 {
   if (theSampler != NULL && theSampler->isValidSampler())
   {
-    theCtx->arbSamplerObject->glSamplerParameteri (theSampler->mySamplerID, theParam, theValue);
+    theCtx->arbSamplerObject->glSamplerParameteri(theSampler->mySamplerID, theParam, theValue);
   }
   else
   {
-    theCtx->core11fwd->glTexParameteri (theTarget, theParam, theValue);
+    theCtx->core11fwd->glTexParameteri(theTarget, theParam, theValue);
   }
 }
 
@@ -171,11 +175,11 @@ void OpenGl_Sampler::setParameter (const Handle(OpenGl_Context)& theCtx,
 // function : SetParameters
 // purpose  :
 // =======================================================================
-void OpenGl_Sampler::SetParameters (const Handle(Graphic3d_TextureParams)& theParams)
+void OpenGl_Sampler::SetParameters(const Handle(Graphic3d_TextureParams)& theParams)
 {
   if (myParams != theParams)
   {
-    myParams = theParams;
+    myParams          = theParams;
     mySamplerRevision = myParams->SamplerRevision() - 1;
   }
 }
@@ -184,11 +188,11 @@ void OpenGl_Sampler::SetParameters (const Handle(Graphic3d_TextureParams)& thePa
 // function : applySamplerParams
 // purpose  :
 // =======================================================================
-void OpenGl_Sampler::applySamplerParams (const Handle(OpenGl_Context)& theCtx,
-                                         const Handle(Graphic3d_TextureParams)& theParams,
-                                         OpenGl_Sampler* theSampler,
-                                         const unsigned int theTarget,
-                                         const Standard_Integer theMaxMipLevels)
+void OpenGl_Sampler::applySamplerParams(const Handle(OpenGl_Context)&          theCtx,
+                                        const Handle(Graphic3d_TextureParams)& theParams,
+                                        OpenGl_Sampler*                        theSampler,
+                                        const unsigned int                     theTarget,
+                                        const Standard_Integer                 theMaxMipLevels)
 {
   if (theSampler != NULL && theSampler->Parameters() == theParams)
   {
@@ -197,7 +201,7 @@ void OpenGl_Sampler::applySamplerParams (const Handle(OpenGl_Context)& theCtx,
 
   // setup texture filtering
   const GLenum aFilter = (theParams->Filter() == Graphic3d_TOTF_NEAREST) ? GL_NEAREST : GL_LINEAR;
-  GLenum aFilterMin = aFilter;
+  GLenum       aFilterMin = aFilter;
   if (theMaxMipLevels > 0)
   {
     aFilterMin = GL_NEAREST_MIPMAP_NEAREST;
@@ -211,24 +215,23 @@ void OpenGl_Sampler::applySamplerParams (const Handle(OpenGl_Context)& theCtx,
     }
   }
 
-  setParameter (theCtx, theSampler, theTarget, GL_TEXTURE_MIN_FILTER, aFilterMin);
-  setParameter (theCtx, theSampler, theTarget, GL_TEXTURE_MAG_FILTER, aFilter);
+  setParameter(theCtx, theSampler, theTarget, GL_TEXTURE_MIN_FILTER, aFilterMin);
+  setParameter(theCtx, theSampler, theTarget, GL_TEXTURE_MAG_FILTER, aFilter);
 
   // setup texture wrapping
   const GLenum aWrapMode = theParams->IsRepeat() ? GL_REPEAT : theCtx->TextureWrapClamp();
-  setParameter (theCtx, theSampler, theTarget, GL_TEXTURE_WRAP_S, aWrapMode);
+  setParameter(theCtx, theSampler, theTarget, GL_TEXTURE_WRAP_S, aWrapMode);
   if (theTarget == GL_TEXTURE_1D)
   {
     return;
   }
 
-  setParameter (theCtx, theSampler, theTarget, GL_TEXTURE_WRAP_T, aWrapMode);
-  if (theTarget == GL_TEXTURE_3D
-   || theTarget == GL_TEXTURE_CUBE_MAP)
+  setParameter(theCtx, theSampler, theTarget, GL_TEXTURE_WRAP_T, aWrapMode);
+  if (theTarget == GL_TEXTURE_3D || theTarget == GL_TEXTURE_CUBE_MAP)
   {
     if (theCtx->HasTextureBaseLevel())
     {
-      setParameter (theCtx, theSampler, theTarget, GL_TEXTURE_WRAP_R, aWrapMode);
+      setParameter(theCtx, theSampler, theTarget, GL_TEXTURE_WRAP_R, aWrapMode);
     }
     return;
   }
@@ -237,41 +240,36 @@ void OpenGl_Sampler::applySamplerParams (const Handle(OpenGl_Context)& theCtx,
   {
     // setup degree of anisotropy filter
     const GLint aMaxDegree = theCtx->MaxDegreeOfAnisotropy();
-    GLint aDegree;
+    GLint       aDegree;
     switch (theParams->AnisoFilter())
     {
-      case Graphic3d_LOTA_QUALITY:
-      {
+      case Graphic3d_LOTA_QUALITY: {
         aDegree = aMaxDegree;
         break;
       }
-      case Graphic3d_LOTA_MIDDLE:
-      {
+      case Graphic3d_LOTA_MIDDLE: {
         aDegree = (aMaxDegree <= 4) ? 2 : (aMaxDegree / 2);
         break;
       }
-      case Graphic3d_LOTA_FAST:
-      {
+      case Graphic3d_LOTA_FAST: {
         aDegree = 2;
         break;
       }
       case Graphic3d_LOTA_OFF:
-      default:
-      {
+      default: {
         aDegree = 1;
         break;
       }
     }
 
-    setParameter (theCtx, theSampler, theTarget, GL_TEXTURE_MAX_ANISOTROPY_EXT, aDegree);
+    setParameter(theCtx, theSampler, theTarget, GL_TEXTURE_MAX_ANISOTROPY_EXT, aDegree);
   }
 
-  if (theCtx->HasTextureBaseLevel()
-   && (theSampler == NULL || !theSampler->isValidSampler()))
+  if (theCtx->HasTextureBaseLevel() && (theSampler == NULL || !theSampler->isValidSampler()))
   {
-    const Standard_Integer aMaxLevel = Min (theMaxMipLevels, theParams->MaxLevel());
-    setParameter (theCtx, theSampler, theTarget, GL_TEXTURE_BASE_LEVEL, theParams->BaseLevel());
-    setParameter (theCtx, theSampler, theTarget, GL_TEXTURE_MAX_LEVEL,  aMaxLevel);
+    const Standard_Integer aMaxLevel = Min(theMaxMipLevels, theParams->MaxLevel());
+    setParameter(theCtx, theSampler, theTarget, GL_TEXTURE_BASE_LEVEL, theParams->BaseLevel());
+    setParameter(theCtx, theSampler, theTarget, GL_TEXTURE_MAX_LEVEL, aMaxLevel);
   }
 }
 
@@ -279,12 +277,11 @@ void OpenGl_Sampler::applySamplerParams (const Handle(OpenGl_Context)& theCtx,
 // function : applyGlobalTextureParams
 // purpose  :
 // =======================================================================
-void OpenGl_Sampler::applyGlobalTextureParams (const Handle(OpenGl_Context)& theCtx,
-                                               const OpenGl_Texture& theTexture,
-                                               const Handle(Graphic3d_TextureParams)& theParams)
+void OpenGl_Sampler::applyGlobalTextureParams(const Handle(OpenGl_Context)&          theCtx,
+                                              const OpenGl_Texture&                  theTexture,
+                                              const Handle(Graphic3d_TextureParams)& theParams)
 {
-  if (theCtx->core11ffp == NULL
-   || theParams->TextureUnit() >= theCtx->MaxTextureUnitsFFP())
+  if (theCtx->core11ffp == NULL || theParams->TextureUnit() >= theCtx->MaxTextureUnitsFFP())
   {
     return;
   }
@@ -293,8 +290,7 @@ void OpenGl_Sampler::applyGlobalTextureParams (const Handle(OpenGl_Context)& the
   if (!theParams->IsModulate())
   {
     anEnvMode = GL_DECAL;
-    if (theTexture.GetFormat() == GL_ALPHA
-     || theTexture.GetFormat() == GL_LUMINANCE)
+    if (theTexture.GetFormat() == GL_ALPHA || theTexture.GetFormat() == GL_LUMINANCE)
     {
       anEnvMode = GL_REPLACE;
     }
@@ -303,84 +299,78 @@ void OpenGl_Sampler::applyGlobalTextureParams (const Handle(OpenGl_Context)& the
   // setup generation of texture coordinates
   switch (theParams->GenMode())
   {
-    case Graphic3d_TOTM_OBJECT:
-    {
-      theCtx->core11ffp->glTexGeni  (GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
-      theCtx->core11ffp->glTexGenfv (GL_S, GL_OBJECT_PLANE,     theParams->GenPlaneS().GetData());
+    case Graphic3d_TOTM_OBJECT: {
+      theCtx->core11ffp->glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+      theCtx->core11ffp->glTexGenfv(GL_S, GL_OBJECT_PLANE, theParams->GenPlaneS().GetData());
       if (theTexture.GetTarget() != GL_TEXTURE_1D)
       {
-        theCtx->core11ffp->glTexGeni  (GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
-        theCtx->core11ffp->glTexGenfv (GL_T, GL_OBJECT_PLANE,     theParams->GenPlaneT().GetData());
+        theCtx->core11ffp->glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+        theCtx->core11ffp->glTexGenfv(GL_T, GL_OBJECT_PLANE, theParams->GenPlaneT().GetData());
       }
       break;
     }
-    case Graphic3d_TOTM_SPHERE:
-    {
-      theCtx->core11ffp->glTexGeni (GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+    case Graphic3d_TOTM_SPHERE: {
+      theCtx->core11ffp->glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
       if (theTexture.GetTarget() != GL_TEXTURE_1D)
       {
-        theCtx->core11ffp->glTexGeni (GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+        theCtx->core11ffp->glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
       }
       break;
     }
-    case Graphic3d_TOTM_EYE:
-    {
+    case Graphic3d_TOTM_EYE: {
       theCtx->WorldViewState.Push();
       theCtx->WorldViewState.SetIdentity();
       theCtx->ApplyWorldViewMatrix();
 
-      theCtx->core11ffp->glTexGeni  (GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-      theCtx->core11ffp->glTexGenfv (GL_S, GL_EYE_PLANE,        theParams->GenPlaneS().GetData());
+      theCtx->core11ffp->glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+      theCtx->core11ffp->glTexGenfv(GL_S, GL_EYE_PLANE, theParams->GenPlaneS().GetData());
       if (theTexture.GetTarget() != GL_TEXTURE_1D)
       {
-        theCtx->core11ffp->glTexGeni  (GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-        theCtx->core11ffp->glTexGenfv (GL_T, GL_EYE_PLANE,        theParams->GenPlaneT().GetData());
+        theCtx->core11ffp->glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+        theCtx->core11ffp->glTexGenfv(GL_T, GL_EYE_PLANE, theParams->GenPlaneT().GetData());
       }
 
       theCtx->WorldViewState.Pop();
       break;
     }
-    case Graphic3d_TOTM_SPRITE:
-    {
+    case Graphic3d_TOTM_SPRITE: {
       if (theCtx->core20fwd != NULL)
       {
-        theCtx->core11fwd->glEnable (GL_POINT_SPRITE);
-        theCtx->core11ffp->glTexEnvi (GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
+        theCtx->core11fwd->glEnable(GL_POINT_SPRITE);
+        theCtx->core11ffp->glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
         anEnvMode = GL_REPLACE;
       }
       break;
     }
     case Graphic3d_TOTM_MANUAL:
-    default: break;
+    default:
+      break;
   }
 
   // setup lighting
-  theCtx->core11ffp->glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, anEnvMode);
+  theCtx->core11ffp->glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, anEnvMode);
 
   switch (theTexture.GetTarget())
   {
-    case GL_TEXTURE_1D:
-    {
+    case GL_TEXTURE_1D: {
       if (theParams->GenMode() != Graphic3d_TOTM_MANUAL)
       {
-        theCtx->core11fwd->glEnable (GL_TEXTURE_GEN_S);
+        theCtx->core11fwd->glEnable(GL_TEXTURE_GEN_S);
       }
-      theCtx->core11fwd->glEnable (GL_TEXTURE_1D);
+      theCtx->core11fwd->glEnable(GL_TEXTURE_1D);
       break;
     }
-    case GL_TEXTURE_2D:
-    {
+    case GL_TEXTURE_2D: {
       if (theParams->GenMode() != Graphic3d_TOTM_MANUAL)
       {
-        theCtx->core11fwd->glEnable (GL_TEXTURE_GEN_S);
-        theCtx->core11fwd->glEnable (GL_TEXTURE_GEN_T);
+        theCtx->core11fwd->glEnable(GL_TEXTURE_GEN_S);
+        theCtx->core11fwd->glEnable(GL_TEXTURE_GEN_T);
       }
-      theCtx->core11fwd->glEnable (GL_TEXTURE_2D);
+      theCtx->core11fwd->glEnable(GL_TEXTURE_2D);
       break;
     }
     case GL_TEXTURE_3D:
-    default:
-    {
+    default: {
       break;
     }
   }
@@ -390,9 +380,9 @@ void OpenGl_Sampler::applyGlobalTextureParams (const Handle(OpenGl_Context)& the
 // function : resetGlobalTextureParams
 // purpose  :
 // =======================================================================
-void OpenGl_Sampler::resetGlobalTextureParams (const Handle(OpenGl_Context)& theCtx,
-                                               const OpenGl_Texture& theTexture,
-                                               const Handle(Graphic3d_TextureParams)& theParams)
+void OpenGl_Sampler::resetGlobalTextureParams(const Handle(OpenGl_Context)&          theCtx,
+                                              const OpenGl_Texture&                  theTexture,
+                                              const Handle(Graphic3d_TextureParams)& theParams)
 {
   if (theCtx->core11ffp == NULL)
   {
@@ -401,40 +391,36 @@ void OpenGl_Sampler::resetGlobalTextureParams (const Handle(OpenGl_Context)& the
 
   // reset texture matrix because some code may expect it is identity
   GLint aMatrixMode = GL_TEXTURE;
-  theCtx->core11fwd->glGetIntegerv (GL_MATRIX_MODE, &aMatrixMode);
-  theCtx->core11ffp->glMatrixMode (GL_TEXTURE);
+  theCtx->core11fwd->glGetIntegerv(GL_MATRIX_MODE, &aMatrixMode);
+  theCtx->core11ffp->glMatrixMode(GL_TEXTURE);
   theCtx->core11ffp->glLoadIdentity();
-  theCtx->core11ffp->glMatrixMode (aMatrixMode);
+  theCtx->core11ffp->glMatrixMode(aMatrixMode);
 
   switch (theTexture.GetTarget())
   {
-    case GL_TEXTURE_1D:
-    {
+    case GL_TEXTURE_1D: {
       if (theParams->GenMode() != GL_NONE)
       {
-        theCtx->core11fwd->glDisable (GL_TEXTURE_GEN_S);
+        theCtx->core11fwd->glDisable(GL_TEXTURE_GEN_S);
       }
-      theCtx->core11fwd->glDisable (GL_TEXTURE_1D);
+      theCtx->core11fwd->glDisable(GL_TEXTURE_1D);
       break;
     }
-    case GL_TEXTURE_2D:
-    {
+    case GL_TEXTURE_2D: {
       if (theParams->GenMode() != GL_NONE)
       {
-        theCtx->core11fwd->glDisable (GL_TEXTURE_GEN_S);
-        theCtx->core11fwd->glDisable (GL_TEXTURE_GEN_T);
-        if (theParams->GenMode() == Graphic3d_TOTM_SPRITE
-         && theCtx->core20fwd != NULL)
+        theCtx->core11fwd->glDisable(GL_TEXTURE_GEN_S);
+        theCtx->core11fwd->glDisable(GL_TEXTURE_GEN_T);
+        if (theParams->GenMode() == Graphic3d_TOTM_SPRITE && theCtx->core20fwd != NULL)
         {
-          theCtx->core11fwd->glDisable (GL_POINT_SPRITE);
+          theCtx->core11fwd->glDisable(GL_POINT_SPRITE);
         }
       }
-      theCtx->core11fwd->glDisable (GL_TEXTURE_2D);
+      theCtx->core11fwd->glDisable(GL_TEXTURE_2D);
       break;
     }
     case GL_TEXTURE_3D:
-    default:
-    {
+    default: {
       break;
     }
   }

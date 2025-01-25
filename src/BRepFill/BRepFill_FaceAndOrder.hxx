@@ -24,43 +24,22 @@
 #include <TopoDS_Face.hxx>
 #include <GeomAbs_Shape.hxx>
 
-
 //! A structure containing Face and Order of constraint
-class BRepFill_FaceAndOrder 
+class BRepFill_FaceAndOrder
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT BRepFill_FaceAndOrder();
-  
+
   Standard_EXPORT BRepFill_FaceAndOrder(const TopoDS_Face& aFace, const GeomAbs_Shape anOrder);
 
-
-friend class BRepFill_Filling;
-
+  friend class BRepFill_Filling;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  TopoDS_Face myFace;
+  TopoDS_Face   myFace;
   GeomAbs_Shape myOrder;
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepFill_FaceAndOrder_HeaderFile

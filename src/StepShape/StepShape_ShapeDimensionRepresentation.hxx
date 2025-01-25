@@ -21,7 +21,6 @@
 #include <StepShape_HArray1OfShapeDimensionRepresentationItem.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
 
-
 class StepShape_ShapeDimensionRepresentation;
 DEFINE_STANDARD_HANDLE(StepShape_ShapeDimensionRepresentation, StepShape_ShapeRepresentation)
 
@@ -30,24 +29,27 @@ class StepShape_ShapeDimensionRepresentation : public StepShape_ShapeRepresentat
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepShape_ShapeDimensionRepresentation();
-  
+
   //! Initialize all fields AP214
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theName, const Handle(StepRepr_HArray1OfRepresentationItem)& theItems, const Handle(StepRepr_RepresentationContext)& theContextOfItems);
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&             theName,
+                            const Handle(StepRepr_HArray1OfRepresentationItem)& theItems,
+                            const Handle(StepRepr_RepresentationContext)&       theContextOfItems);
 
   //! Initialize all fields AP242
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theName, const Handle(StepShape_HArray1OfShapeDimensionRepresentationItem)& theItems, const Handle(StepRepr_RepresentationContext)& theContextOfItems);
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&                            theName,
+    const Handle(StepShape_HArray1OfShapeDimensionRepresentationItem)& theItems,
+    const Handle(StepRepr_RepresentationContext)&                      theContextOfItems);
 
-  Standard_EXPORT void SetItemsAP242 (const Handle(StepShape_HArray1OfShapeDimensionRepresentationItem)& theItems);
-  
+  Standard_EXPORT void SetItemsAP242(
+    const Handle(StepShape_HArray1OfShapeDimensionRepresentationItem)& theItems);
+
   Standard_EXPORT Handle(StepShape_HArray1OfShapeDimensionRepresentationItem) ItemsAP242() const;
-  
-  DEFINE_STANDARD_RTTIEXT(StepShape_ShapeDimensionRepresentation,StepShape_ShapeRepresentation)
-private:
 
+  DEFINE_STANDARD_RTTIEXT(StepShape_ShapeDimensionRepresentation, StepShape_ShapeRepresentation)
+private:
   Handle(StepShape_HArray1OfShapeDimensionRepresentationItem) itemsAP242;
 };
 #endif // _StepShape_ShapeDimensionRepresentation_HeaderFile

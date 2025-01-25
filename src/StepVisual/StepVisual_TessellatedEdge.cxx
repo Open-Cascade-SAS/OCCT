@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -18,26 +18,21 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedEdge, StepVisual_TessellatedStructuredItem)
 
-//=======================================================================
-//function : StepVisual_TessellatedEdge
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepVisual_TessellatedEdge::StepVisual_TessellatedEdge ()
+StepVisual_TessellatedEdge::StepVisual_TessellatedEdge()
 {
   myHasGeometricLink = Standard_False;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedEdge::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                       const Handle(StepVisual_CoordinatesList)& theCoordinates,
-                                       const Standard_Boolean theHasGeometricLink,
-                                       const StepVisual_EdgeOrCurve& theGeometricLink,
-                                       const Handle(TColStd_HArray1OfInteger)& theLineStrip)
+void StepVisual_TessellatedEdge::Init(
+  const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
+  const Handle(StepVisual_CoordinatesList)& theCoordinates,
+  const Standard_Boolean                    theHasGeometricLink,
+  const StepVisual_EdgeOrCurve&             theGeometricLink,
+  const Handle(TColStd_HArray1OfInteger)&   theLineStrip)
 {
   StepVisual_TessellatedStructuredItem::Init(theRepresentationItem_Name);
 
@@ -56,81 +51,57 @@ void StepVisual_TessellatedEdge::Init (const Handle(TCollection_HAsciiString)& t
   myLineStrip = theLineStrip;
 }
 
-//=======================================================================
-//function : Coordinates
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepVisual_CoordinatesList) StepVisual_TessellatedEdge::Coordinates () const
+Handle(StepVisual_CoordinatesList) StepVisual_TessellatedEdge::Coordinates() const
 {
   return myCoordinates;
 }
 
-//=======================================================================
-//function : SetCoordinates
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedEdge::SetCoordinates(const Handle(StepVisual_CoordinatesList)& theCoordinates)
+void StepVisual_TessellatedEdge::SetCoordinates(
+  const Handle(StepVisual_CoordinatesList)& theCoordinates)
 {
   myCoordinates = theCoordinates;
 }
 
-//=======================================================================
-//function : GeometricLink
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepVisual_EdgeOrCurve StepVisual_TessellatedEdge::GeometricLink () const
+StepVisual_EdgeOrCurve StepVisual_TessellatedEdge::GeometricLink() const
 {
   return myGeometricLink;
 }
 
-//=======================================================================
-//function : SetGeometricLink
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void StepVisual_TessellatedEdge::SetGeometricLink(const StepVisual_EdgeOrCurve& theGeometricLink)
 {
   myGeometricLink = theGeometricLink;
 }
 
-//=======================================================================
-//function : HasGeometricLink
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean StepVisual_TessellatedEdge::HasGeometricLink () const
+Standard_Boolean StepVisual_TessellatedEdge::HasGeometricLink() const
 {
   return myHasGeometricLink;
 }
 
-//=======================================================================
-//function : LineStrip
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TColStd_HArray1OfInteger) StepVisual_TessellatedEdge::LineStrip () const
+Handle(TColStd_HArray1OfInteger) StepVisual_TessellatedEdge::LineStrip() const
 {
   return myLineStrip;
 }
 
-//=======================================================================
-//function : SetLineStrip
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void StepVisual_TessellatedEdge::SetLineStrip(const Handle(TColStd_HArray1OfInteger)& theLineStrip)
 {
   myLineStrip = theLineStrip;
 }
 
-
-//=======================================================================
-//function : NbLineStrip
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer StepVisual_TessellatedEdge::NbLineStrip() const
 {
@@ -141,11 +112,7 @@ Standard_Integer StepVisual_TessellatedEdge::NbLineStrip() const
   return myLineStrip->Length();
 }
 
-
-//=======================================================================
-//function : LineStripValue
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer StepVisual_TessellatedEdge::LineStripValue(const Standard_Integer theNum) const
 {

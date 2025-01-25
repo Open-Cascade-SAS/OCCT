@@ -17,15 +17,14 @@
 #ifndef _BiTgte_ContactType_HeaderFile
 #define _BiTgte_ContactType_HeaderFile
 
-
 enum BiTgte_ContactType
 {
-BiTgte_FaceFace,
-BiTgte_FaceEdge,
-BiTgte_FaceVertex,
-BiTgte_EdgeEdge,
-BiTgte_EdgeVertex,
-BiTgte_VertexVertex
+  BiTgte_FaceFace,
+  BiTgte_FaceEdge,
+  BiTgte_FaceVertex,
+  BiTgte_EdgeEdge,
+  BiTgte_EdgeVertex,
+  BiTgte_VertexVertex
 };
 
 #endif // _BiTgte_ContactType_HeaderFile

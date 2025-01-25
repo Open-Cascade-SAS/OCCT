@@ -21,8 +21,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TCollection_AsciiString,Handle(Storage_Root)> Storage_MapOfPers;
-typedef NCollection_DataMap<TCollection_AsciiString,Handle(Storage_Root)>::Iterator Storage_DataMapIteratorOfMapOfPers;
-
+typedef NCollection_DataMap<TCollection_AsciiString, Handle(Storage_Root)> Storage_MapOfPers;
+typedef NCollection_DataMap<TCollection_AsciiString, Handle(Storage_Root)>::Iterator
+  Storage_DataMapIteratorOfMapOfPers;
 
 #endif

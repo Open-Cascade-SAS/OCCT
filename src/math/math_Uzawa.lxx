@@ -14,38 +14,43 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline Standard_Boolean math_Uzawa::IsDone() const { return Done; }
+inline Standard_Boolean math_Uzawa::IsDone() const
+{
+  return Done;
+}
 
-inline Standard_OStream& operator<<(Standard_OStream& o,
-				    const math_Uzawa& U) 
+inline Standard_OStream& operator<<(Standard_OStream& o, const math_Uzawa& U)
 {
   U.Dump(o);
   return o;
 }
 
-
-inline const math_Vector& math_Uzawa::Value() const {
+inline const math_Vector& math_Uzawa::Value() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return Resul;
 }
 
-inline const math_Vector& math_Uzawa::InitialError() const {
+inline const math_Vector& math_Uzawa::InitialError() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return Errinit;
 }
 
-inline const math_Vector& math_Uzawa::Error() const {
+inline const math_Vector& math_Uzawa::Error() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return Erruza;
 }
 
-inline Standard_Integer math_Uzawa::NbIterations() const {
+inline Standard_Integer math_Uzawa::NbIterations() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return NbIter;
 }
 
-inline const math_Matrix& math_Uzawa::InverseCont() const {
+inline const math_Matrix& math_Uzawa::InverseCont() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return CTCinv;
 }
-  

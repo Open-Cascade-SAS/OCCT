@@ -17,95 +17,87 @@
 #include <TDataStd_Name.hxx>
 #include <TDF_Label.hxx>
 
-IMPLEMENT_DERIVED_ATTRIBUTE(TDataStd_Name,TDataStd_GenericExtString)
+IMPLEMENT_DERIVED_ATTRIBUTE(TDataStd_Name, TDataStd_GenericExtString)
 
-//=======================================================================
-//function : GetID
-//purpose  : 
-//=======================================================================
-const Standard_GUID& TDataStd_Name::GetID () 
+//=================================================================================================
+
+const Standard_GUID& TDataStd_Name::GetID()
 {
   static Standard_GUID TDataStd_NameID("2a96b608-ec8b-11d0-bee7-080009dc3333");
   return TDataStd_NameID;
 }
 
 //=======================================================================
-//function : SetAttr
-//purpose  : Implements Set functionality
+// function : SetAttr
+// purpose  : Implements Set functionality
 //=======================================================================
-static Handle(TDataStd_Name) SetAttr(const TDF_Label&       label,
+static Handle(TDataStd_Name) SetAttr(const TDF_Label&                  label,
                                      const TCollection_ExtendedString& theString,
-                                     const Standard_GUID& theGuid) 
+                                     const Standard_GUID&              theGuid)
 {
   Handle(TDataStd_Name) N;
-  if (!label.FindAttribute(theGuid, N)) {
-    N = new TDataStd_Name ();
-    N->SetID (theGuid);
+  if (!label.FindAttribute(theGuid, N))
+  {
+    N = new TDataStd_Name();
+    N->SetID(theGuid);
     label.AddAttribute(N);
   }
-  N->Set (theString); 
+  N->Set(theString);
   return N;
 }
 
-//=======================================================================
-//function : Set
-//purpose  : 
-//=======================================================================
-Handle(TDataStd_Name) TDataStd_Name::Set
-                                (const TDF_Label&                  label,
-                                 const TCollection_ExtendedString& theString) 
+//=================================================================================================
+
+Handle(TDataStd_Name) TDataStd_Name::Set(const TDF_Label&                  label,
+                                         const TCollection_ExtendedString& theString)
 {
   return SetAttr(label, theString, GetID());
 }
 
 //=======================================================================
-//function : Set
-//purpose  : Set user defined attribute
+// function : Set
+// purpose  : Set user defined attribute
 //=======================================================================
 
-Handle(TDataStd_Name) TDataStd_Name::Set (const TDF_Label&    label, 
-                                          const Standard_GUID& theGuid,
-                                          const TCollection_ExtendedString& theString) 
+Handle(TDataStd_Name) TDataStd_Name::Set(const TDF_Label&                  label,
+                                         const Standard_GUID&              theGuid,
+                                         const TCollection_ExtendedString& theString)
 {
   return SetAttr(label, theString, theGuid);
 }
 
-//=======================================================================
-//function : TDataStd_Name
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 TDataStd_Name::TDataStd_Name()
 {
   myID = GetID();
 }
 
-//=======================================================================
-//function : Set
-//purpose  : 
-//=======================================================================
-void TDataStd_Name::Set (const TCollection_ExtendedString& S) 
+//=================================================================================================
+
+void TDataStd_Name::Set(const TCollection_ExtendedString& S)
 {
-  if(myString == S) return;
- 
+  if (myString == S)
+    return;
+
   Backup();
   myString = S;
 }
 
-//=======================================================================
-//function : SetID
-//purpose  :
-//=======================================================================
-void TDataStd_Name::SetID( const Standard_GUID&  theGuid)
-{  
-  if(myID == theGuid) return;
+//=================================================================================================
+
+void TDataStd_Name::SetID(const Standard_GUID& theGuid)
+{
+  if (myID == theGuid)
+    return;
 
   Backup();
   myID = theGuid;
 }
 
 //=======================================================================
-//function : SetID
-//purpose  : sets default ID
+// function : SetID
+// purpose  : sets default ID
 //=======================================================================
 
 void TDataStd_Name::SetID()
@@ -115,15 +107,12 @@ void TDataStd_Name::SetID()
 }
 
 // TDF_Attribute methods
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_OStream& TDataStd_Name::Dump (Standard_OStream& anOS) const
+Standard_OStream& TDataStd_Name::Dump(Standard_OStream& anOS) const
 {
   TDF_Attribute::Dump(anOS);
-  anOS << " Name=|"<<myString<<"|";
+  anOS << " Name=|" << myString << "|";
   Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid << std::endl;

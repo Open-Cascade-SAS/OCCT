@@ -22,15 +22,15 @@
 #include <StepGeom_GeometricRepresentationItem.hxx>
 
 DEFINE_STANDARD_HANDLE(StepVisual_TessellatedItem, StepGeom_GeometricRepresentationItem)
-class StepVisual_TessellatedItem  : public StepGeom_GeometricRepresentationItem
+
+class StepVisual_TessellatedItem : public StepGeom_GeometricRepresentationItem
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-  
+
   //! Returns a DraughtingCalloutElement select type
   Standard_EXPORT StepVisual_TessellatedItem();
-  
-  DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedItem,StepGeom_GeometricRepresentationItem)
+
+  DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedItem, StepGeom_GeometricRepresentationItem)
 };
 #endif // StepVisual_TessellatedItem

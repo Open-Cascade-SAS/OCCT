@@ -11,59 +11,54 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include "RWStepShape_RWLimitsAndFits.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepShape_LimitsAndFits.hxx>
 
-RWStepShape_RWLimitsAndFits::RWStepShape_RWLimitsAndFits () {}
+RWStepShape_RWLimitsAndFits::RWStepShape_RWLimitsAndFits() {}
 
-void RWStepShape_RWLimitsAndFits::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepShape_LimitsAndFits)& ent) const
+void RWStepShape_RWLimitsAndFits::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                           const Standard_Integer                 num,
+                                           Handle(Interface_Check)&               ach,
+                                           const Handle(StepShape_LimitsAndFits)& ent) const
 {
 
+  // --- Number of Parameter Control ---
 
-	// --- Number of Parameter Control ---
+  if (!data->CheckNbParams(num, 4, ach, "limits_and_fits"))
+    return;
 
-	if (!data->CheckNbParams(num,4,ach,"limits_and_fits")) return;
+  // --- own field : form_variance ---
 
-	// --- own field : form_variance ---
+  Handle(TCollection_HAsciiString) fv;
+  data->ReadString(num, 1, "form_variance", ach, fv);
 
-	Handle(TCollection_HAsciiString) fv;
-	data->ReadString (num,1,"form_variance",ach,fv);
+  // --- own field : form_variance ---
 
-	// --- own field : form_variance ---
+  Handle(TCollection_HAsciiString) zv;
+  data->ReadString(num, 2, "zone_variance", ach, zv);
 
-	Handle(TCollection_HAsciiString) zv;
-	data->ReadString (num,2,"zone_variance",ach,zv);
+  // --- own field : grade ---
 
-	// --- own field : grade ---
+  Handle(TCollection_HAsciiString) gr;
+  data->ReadString(num, 3, "grade", ach, gr);
 
-	Handle(TCollection_HAsciiString) gr;
-	data->ReadString (num,3,"grade",ach,gr);
+  // --- own field : source ---
 
-	// --- own field : source ---
+  Handle(TCollection_HAsciiString) sou;
+  data->ReadString(num, 4, "source", ach, sou);
 
-	Handle(TCollection_HAsciiString) sou;
-	data->ReadString (num,4,"source",ach,sou);
+  //--- Initialisation of the read entity ---
 
-	//--- Initialisation of the read entity ---
-
-	ent->Init(fv,zv,gr,sou);
+  ent->Init(fv, zv, gr, sou);
 }
 
-
-void RWStepShape_RWLimitsAndFits::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepShape_LimitsAndFits)& ent) const
+void RWStepShape_RWLimitsAndFits::WriteStep(StepData_StepWriter&                   SW,
+                                            const Handle(StepShape_LimitsAndFits)& ent) const
 {
-	SW.Send(ent->FormVariance());
-	SW.Send(ent->ZoneVariance());
-	SW.Send(ent->Grade());
-	SW.Send(ent->Source());
+  SW.Send(ent->FormVariance());
+  SW.Send(ent->ZoneVariance());
+  SW.Send(ent->Grade());
+  SW.Send(ent->Source());
 }
-

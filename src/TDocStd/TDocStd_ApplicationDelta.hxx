@@ -23,51 +23,31 @@
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 
-
 class TDocStd_ApplicationDelta;
 DEFINE_STANDARD_HANDLE(TDocStd_ApplicationDelta, Standard_Transient)
-
 
 class TDocStd_ApplicationDelta : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT TDocStd_ApplicationDelta();
-  
-    TDocStd_SequenceOfDocument& GetDocuments();
-  
-    const TCollection_ExtendedString& GetName() const;
-  
-    void SetName (const TCollection_ExtendedString& theName);
-  
-  Standard_EXPORT void Dump (Standard_OStream& anOS) const;
 
+  TDocStd_SequenceOfDocument& GetDocuments();
 
+  const TCollection_ExtendedString& GetName() const;
 
+  void SetName(const TCollection_ExtendedString& theName);
 
-  DEFINE_STANDARD_RTTIEXT(TDocStd_ApplicationDelta,Standard_Transient)
+  Standard_EXPORT void Dump(Standard_OStream& anOS) const;
+
+  DEFINE_STANDARD_RTTIEXT(TDocStd_ApplicationDelta, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   TDocStd_SequenceOfDocument myDocuments;
   TCollection_ExtendedString myName;
-
-
 };
 
-
 #include <TDocStd_ApplicationDelta.lxx>
-
-
-
-
 
 #endif // _TDocStd_ApplicationDelta_HeaderFile

@@ -24,7 +24,6 @@
 class TopoDS_Wire;
 class GeomFill_LocationLaw;
 
-
 class BRepFill_Edge3DLaw;
 DEFINE_STANDARD_HANDLE(BRepFill_Edge3DLaw, BRepFill_LocationLaw)
 
@@ -33,31 +32,13 @@ class BRepFill_Edge3DLaw : public BRepFill_LocationLaw
 {
 
 public:
+  Standard_EXPORT BRepFill_Edge3DLaw(const TopoDS_Wire&                  Path,
+                                     const Handle(GeomFill_LocationLaw)& Law);
 
-  
-  Standard_EXPORT BRepFill_Edge3DLaw(const TopoDS_Wire& Path, const Handle(GeomFill_LocationLaw)& Law);
-
-
-
-
-  DEFINE_STANDARD_RTTIEXT(BRepFill_Edge3DLaw,BRepFill_LocationLaw)
+  DEFINE_STANDARD_RTTIEXT(BRepFill_Edge3DLaw, BRepFill_LocationLaw)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepFill_Edge3DLaw_HeaderFile

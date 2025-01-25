@@ -28,39 +28,38 @@
 /**
  * Purpose:     Single hashed Map. This  Map is used  to store and
  *              retrieve keys in linear time.
- *              
+ *
  *              The ::Iterator class can be  used to explore  the
  *              content of the map. It is not  wise to iterate and
  *              modify a map in parallel.
- *               
+ *
  *              To compute  the hashcode of  the key the  function
  *              ::HashCode must be defined in the global namespace
- *               
+ *
  *              To compare two keys the function ::IsEqual must be
  *              defined in the global namespace.
- *               
+ *
  *              The performance of  a Map is conditioned  by  its
  *              number of buckets that  should be kept greater  to
  *              the number   of keys.  This  map has  an automatic
  *              management of the number of buckets. It is resized
  *              when  the number of Keys  becomes greater than the
  *              number of buckets.
- *              
+ *
  *              If you have a fair  idea of the number of  objects
  *              you  can save on automatic   resizing by giving  a
  *              number of buckets  at creation or using the ReSize
  *              method. This should be  consider only for  crucial
  *              optimisation issues.
- */            
+ */
 
-template < class TheKeyType, 
-           class Hasher = NCollection_DefaultHasher<TheKeyType> >
+template <class TheKeyType, class Hasher = NCollection_DefaultHasher<TheKeyType>>
 class NCollection_Map : public NCollection_BaseMap
 {
 public:
   //! STL-compliant typedef for key type
   typedef TheKeyType key_type;
-  typedef Hasher hasher;
+  typedef Hasher     hasher;
 
 public:
   //!   Adaptation of the TListNode to the map notations
@@ -68,74 +67,88 @@ public:
   {
   public:
     //! Constructor with 'Next'
-    MapNode (const TheKeyType& theKey, 
-             NCollection_ListNode* theNext) :
-      NCollection_TListNode<TheKeyType> (theKey, theNext) {}
-    //! Constructor with 'Next'
-    MapNode (TheKeyType&& theKey,
-             NCollection_ListNode* theNext) :
-      NCollection_TListNode<TheKeyType> (std::forward<TheKeyType>(theKey), theNext) {}
-    //! Key
-    const TheKeyType& Key (void)
-    { return this->Value(); }
+    MapNode(const TheKeyType& theKey, NCollection_ListNode* theNext)
+        : NCollection_TListNode<TheKeyType>(theKey, theNext)
+    {
+    }
 
+    //! Constructor with 'Next'
+    MapNode(TheKeyType&& theKey, NCollection_ListNode* theNext)
+        : NCollection_TListNode<TheKeyType>(std::forward<TheKeyType>(theKey), theNext)
+    {
+    }
+
+    //! Key
+    const TheKeyType& Key(void) { return this->Value(); }
   };
 
- public:
+public:
   //!   Implementation of the Iterator interface.
   class Iterator : public NCollection_BaseMap::Iterator
   {
   public:
     //! Empty constructor
-    Iterator (void) :
-      NCollection_BaseMap::Iterator() {}
+    Iterator(void)
+        : NCollection_BaseMap::Iterator()
+    {
+    }
+
     //! Constructor
-    Iterator (const NCollection_Map& theMap) :
-      NCollection_BaseMap::Iterator(theMap) {}
+    Iterator(const NCollection_Map& theMap)
+        : NCollection_BaseMap::Iterator(theMap)
+    {
+    }
+
     //! Query if the end of collection is reached by iterator
-    Standard_Boolean More(void) const
-    { return PMore(); }
+    Standard_Boolean More(void) const { return PMore(); }
+
     //! Make a step along the collection
-    void Next(void)
-    { PNext(); }
+    void Next(void) { PNext(); }
+
     //! Value inquiry
     const TheKeyType& Value(void) const
     {
-      Standard_NoSuchObject_Raise_if (!More(), "NCollection_Map::Iterator::Value");  
-      return ((MapNode *) myNode)->Value();
+      Standard_NoSuchObject_Raise_if(!More(), "NCollection_Map::Iterator::Value");
+      return ((MapNode*)myNode)->Value();
     }
 
     //! Key
-    const TheKeyType& Key (void) const
-    { 
-      Standard_NoSuchObject_Raise_if (!More(), "NCollection_Map::Iterator::Key");  
-      return ((MapNode *) myNode)->Value();
+    const TheKeyType& Key(void) const
+    {
+      Standard_NoSuchObject_Raise_if(!More(), "NCollection_Map::Iterator::Key");
+      return ((MapNode*)myNode)->Value();
     }
   };
-  
+
   //! Shorthand for a constant iterator type.
-  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheKeyType, true> const_iterator;
+  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheKeyType, true>
+    const_iterator;
 
   //! Returns a const iterator pointing to the first element in the map.
-  const_iterator cbegin() const { return Iterator (*this); }
+  const_iterator cbegin() const { return Iterator(*this); }
 
   //! Returns a const iterator referring to the past-the-end element in the map.
   const_iterator cend() const { return Iterator(); }
 
- public:
+public:
   // ---------- PUBLIC METHODS ------------
 
   //! Empty constructor.
-  NCollection_Map() : NCollection_BaseMap (1, Standard_True, Handle(NCollection_BaseAllocator)()) {}
+  NCollection_Map()
+      : NCollection_BaseMap(1, Standard_True, Handle(NCollection_BaseAllocator)())
+  {
+  }
 
   //! Constructor
-  explicit NCollection_Map (const Standard_Integer theNbBuckets,
-                            const Handle(NCollection_BaseAllocator)& theAllocator = 0L)
-  : NCollection_BaseMap (theNbBuckets, Standard_True, theAllocator) {}
+  explicit NCollection_Map(const Standard_Integer                   theNbBuckets,
+                           const Handle(NCollection_BaseAllocator)& theAllocator = 0L)
+      : NCollection_BaseMap(theNbBuckets, Standard_True, theAllocator)
+  {
+  }
 
   //! Copy constructor
-  NCollection_Map(const NCollection_Map& theOther) :
-    NCollection_BaseMap(theOther.NbBuckets(), Standard_True, theOther.myAllocator)
+  NCollection_Map(const NCollection_Map& theOther)
+      : NCollection_BaseMap(theOther.NbBuckets(), Standard_True, theOther.myAllocator)
   {
     const int anExt = theOther.Extent();
     if (anExt <= 0)
@@ -146,21 +159,19 @@ public:
   }
 
   //! Move constructor
-  NCollection_Map (NCollection_Map&& theOther) noexcept :
-    NCollection_BaseMap (std::forward<NCollection_BaseMap>(theOther))
-  {}
+  NCollection_Map(NCollection_Map&& theOther) noexcept
+      : NCollection_BaseMap(std::forward<NCollection_BaseMap>(theOther))
+  {
+  }
 
   //! Exchange the content of two maps without re-allocations.
   //! Notice that allocators will be swapped as well!
-  void Exchange (NCollection_Map& theOther)
-  {
-    this->exchangeMapsData (theOther);
-  }
+  void Exchange(NCollection_Map& theOther) { this->exchangeMapsData(theOther); }
 
   //! Assign.
   //! This method does not change the internal allocator.
-  NCollection_Map& Assign (const NCollection_Map& theOther)
-  { 
+  NCollection_Map& Assign(const NCollection_Map& theOther)
+  {
     if (this == &theOther)
       return *this;
 
@@ -168,22 +179,19 @@ public:
     int anExt = theOther.Extent();
     if (anExt)
     {
-      ReSize (anExt-1);
+      ReSize(anExt - 1);
       Iterator anIter(theOther);
       for (; anIter.More(); anIter.Next())
-        Add (anIter.Key());
+        Add(anIter.Key());
     }
     return *this;
   }
 
   //! Assign operator
-  NCollection_Map& operator= (const NCollection_Map& theOther)
-  {
-    return Assign(theOther);
-  }
+  NCollection_Map& operator=(const NCollection_Map& theOther) { return Assign(theOther); }
 
   //! Move operator
-  NCollection_Map& operator= (NCollection_Map&& theOther) noexcept
+  NCollection_Map& operator=(NCollection_Map&& theOther) noexcept
   {
     if (this == &theOther)
       return *this;
@@ -192,50 +200,50 @@ public:
   }
 
   //! ReSize
-  void ReSize (const Standard_Integer N)
+  void ReSize(const Standard_Integer N)
   {
     NCollection_ListNode** newdata = 0L;
-    NCollection_ListNode** dummy = 0L;
-    Standard_Integer newBuck;
-    if (BeginResize (N, newBuck, newdata, dummy))
+    NCollection_ListNode** dummy   = 0L;
+    Standard_Integer       newBuck;
+    if (BeginResize(N, newBuck, newdata, dummy))
     {
-      if (myData1) 
+      if (myData1)
       {
-        MapNode** olddata = (MapNode**) myData1;
-        MapNode *p, *q;
-        for (int i = 0; i <= NbBuckets(); i++) 
+        MapNode** olddata = (MapNode**)myData1;
+        MapNode * p, *q;
+        for (int i = 0; i <= NbBuckets(); i++)
         {
-          if (olddata[i]) 
+          if (olddata[i])
           {
             p = olddata[i];
-            while (p) 
+            while (p)
             {
-              const size_t k = HashCode(p->Key(),newBuck);
-              q = (MapNode*) p->Next();
-              p->Next() = newdata[k];
-              newdata[k] = p;
-              p = q;
+              const size_t k = HashCode(p->Key(), newBuck);
+              q              = (MapNode*)p->Next();
+              p->Next()      = newdata[k];
+              newdata[k]     = p;
+              p              = q;
             }
           }
         }
       }
-      EndResize (N, newBuck, newdata, dummy);
+      EndResize(N, newBuck, newdata, dummy);
     }
   }
 
   //! Add
   Standard_Boolean Add(const TheKeyType& theKey)
   {
-    if (Resizable()) 
+    if (Resizable())
       ReSize(Extent());
     MapNode* aNode;
-    size_t aHash;
+    size_t   aHash;
     if (lookup(theKey, aNode, aHash))
     {
       return Standard_False;
     }
     MapNode** data = (MapNode**)myData1;
-    data[aHash] = new (this->myAllocator) MapNode(theKey,data[aHash]);
+    data[aHash]    = new (this->myAllocator) MapNode(theKey, data[aHash]);
     Increment();
     return Standard_True;
   }
@@ -243,52 +251,52 @@ public:
   //! Add
   Standard_Boolean Add(TheKeyType&& theKey)
   {
-    if (Resizable()) 
+    if (Resizable())
       ReSize(Extent());
     MapNode* aNode;
-    size_t aHash;
+    size_t   aHash;
     if (lookup(theKey, aNode, aHash))
     {
       return Standard_False;
     }
     MapNode** data = (MapNode**)myData1;
-    data[aHash] = new (this->myAllocator) MapNode(std::forward<TheKeyType>(theKey),data[aHash]);
+    data[aHash]    = new (this->myAllocator) MapNode(std::forward<TheKeyType>(theKey), data[aHash]);
     Increment();
     return Standard_True;
   }
 
-  //! Added: add a new key if not yet in the map, and return 
+  //! Added: add a new key if not yet in the map, and return
   //! reference to either newly added or previously existing object
   const TheKeyType& Added(const TheKeyType& theKey)
   {
-    if (Resizable()) 
+    if (Resizable())
       ReSize(Extent());
     MapNode* aNode;
-    size_t aHash;
+    size_t   aHash;
     if (lookup(theKey, aNode, aHash))
     {
       return aNode->Key();
     }
     MapNode** data = (MapNode**)myData1;
-    data[aHash] = new (this->myAllocator) MapNode(theKey,data[aHash]);
+    data[aHash]    = new (this->myAllocator) MapNode(theKey, data[aHash]);
     Increment();
     return data[aHash]->Key();
   }
 
-  //! Added: add a new key if not yet in the map, and return 
+  //! Added: add a new key if not yet in the map, and return
   //! reference to either newly added or previously existing object
   const TheKeyType& Added(TheKeyType&& theKey)
   {
-    if (Resizable()) 
+    if (Resizable())
       ReSize(Extent());
     MapNode* aNode;
-    size_t aHash;
+    size_t   aHash;
     if (lookup(theKey, aNode, aHash))
     {
       return aNode->Key();
     }
     MapNode** data = (MapNode**)myData1;
-    data[aHash] = new (this->myAllocator) MapNode(std::forward<TheKeyType>(theKey),data[aHash]);
+    data[aHash]    = new (this->myAllocator) MapNode(std::forward<TheKeyType>(theKey), data[aHash]);
     Increment();
     return data[aHash]->Key();
   }
@@ -303,27 +311,27 @@ public:
   //! Remove
   Standard_Boolean Remove(const TheKeyType& K)
   {
-    if (IsEmpty()) 
+    if (IsEmpty())
       return Standard_False;
-    MapNode** data = (MapNode**) myData1;
-    const size_t k = HashCode(K,NbBuckets());
-    MapNode* p = data[k];
-    MapNode* q = NULL;
-    while (p) 
+    MapNode**    data = (MapNode**)myData1;
+    const size_t k    = HashCode(K, NbBuckets());
+    MapNode*     p    = data[k];
+    MapNode*     q    = NULL;
+    while (p)
     {
-      if (IsEqual(p->Key(),K)) 
+      if (IsEqual(p->Key(), K))
       {
         Decrement();
-        if (q) 
+        if (q)
           q->Next() = p->Next();
         else
-          data[k] = (MapNode*) p->Next();
+          data[k] = (MapNode*)p->Next();
         p->~MapNode();
         this->myAllocator->Free(p);
         return Standard_True;
       }
       q = p;
-      p = (MapNode*) p->Next();
+      p = (MapNode*)p->Next();
     }
     return Standard_False;
   }
@@ -331,30 +339,31 @@ public:
   //! Clear data. If doReleaseMemory is false then the table of
   //! buckets is not released and will be reused.
   void Clear(const Standard_Boolean doReleaseMemory = Standard_False)
-  { Destroy (MapNode::delNode, doReleaseMemory); }
+  {
+    Destroy(MapNode::delNode, doReleaseMemory);
+  }
 
   //! Clear data and reset allocator
-  void Clear (const Handle(NCollection_BaseAllocator)& theAllocator)
-  { 
+  void Clear(const Handle(NCollection_BaseAllocator)& theAllocator)
+  {
     Clear(theAllocator != this->myAllocator);
-    this->myAllocator = ( ! theAllocator.IsNull() ? theAllocator :
-                    NCollection_BaseAllocator::CommonBaseAllocator() );
+    this->myAllocator =
+      (!theAllocator.IsNull() ? theAllocator : NCollection_BaseAllocator::CommonBaseAllocator());
   }
 
   //! Destructor
-  virtual ~NCollection_Map (void)
-  { Clear(true); }
+  virtual ~NCollection_Map(void) { Clear(true); }
 
   //! Size
-  Standard_Integer Size(void) const
-  { return Extent(); }
+  Standard_Integer Size(void) const { return Extent(); }
 
 public:
-
   //! Checks if two maps contain exactly the same keys.
   //! This function compares the keys of this map and another map and returns true
   //! if they contain exactly the same keys.
-  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
+                      "NCollection_MapAlgo.hxx instead.")
+
   Standard_Boolean IsEqual(const NCollection_Map& theOther) const
   {
     return NCollection_MapAlgo::IsEqual<NCollection_Map>(*this, theOther);
@@ -362,64 +371,78 @@ public:
 
   //! Checks if this map contains all keys of another map.
   //! This function checks if this map contains all keys of another map.
-  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
+                      "NCollection_MapAlgo.hxx instead.")
+
   Standard_Boolean Contains(const NCollection_Map& theOther) const
   {
     return NCollection_MapAlgo::Contains<NCollection_Map>(*this, theOther);
   }
 
-  //! Sets this Map to be the result of union (aka addition, fuse, merge, boolean OR) operation between two given Maps
-  //! The new Map contains the values that are contained either in the first map or in the second map or in both.
-  //! All previous content of this Map is cleared.
-  //! This map (result of the boolean operation) can also be passed as one of operands.
-  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  //! Sets this Map to be the result of union (aka addition, fuse, merge, boolean OR) operation
+  //! between two given Maps The new Map contains the values that are contained either in the first
+  //! map or in the second map or in both. All previous content of this Map is cleared. This map
+  //! (result of the boolean operation) can also be passed as one of operands.
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
+                      "NCollection_MapAlgo.hxx instead.")
+
   void Union(const NCollection_Map& theLeft, const NCollection_Map& theRight)
   {
     NCollection_MapAlgo::Union<NCollection_Map>(*this, theLeft, theRight);
   }
 
-  //! Apply to this Map the boolean operation union (aka addition, fuse, merge, boolean OR) with another (given) Map.
-  //! The result contains the values that were previously contained in this map or contained in the given (operand) map.
-  //! This algorithm is similar to method Union().
-  //! Returns True if contents of this map is changed.
-  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  //! Apply to this Map the boolean operation union (aka addition, fuse, merge, boolean OR) with
+  //! another (given) Map. The result contains the values that were previously contained in this map
+  //! or contained in the given (operand) map. This algorithm is similar to method Union(). Returns
+  //! True if contents of this map is changed.
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
+                      "NCollection_MapAlgo.hxx instead.")
+
   Standard_Boolean Unite(const NCollection_Map& theOther)
   {
     return NCollection_MapAlgo::Unite<NCollection_Map>(*this, theOther);
   }
 
   //! Returns true if this and theMap have common elements.
-  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
+                      "NCollection_MapAlgo.hxx instead.")
+
   Standard_Boolean HasIntersection(const NCollection_Map& theMap) const
   {
     return NCollection_MapAlgo::HasIntersection<NCollection_Map>(*this, theMap);
   }
 
-  //! Sets this Map to be the result of intersection (aka multiplication, common, boolean AND) operation between two given Maps.
-  //! The new Map contains only the values that are contained in both map operands.
-  //! All previous content of this Map is cleared.
-  //! This same map (result of the boolean operation) can also be used as one of operands.
-  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  //! Sets this Map to be the result of intersection (aka multiplication, common, boolean AND)
+  //! operation between two given Maps. The new Map contains only the values that are contained in
+  //! both map operands. All previous content of this Map is cleared. This same map (result of the
+  //! boolean operation) can also be used as one of operands.
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
+                      "NCollection_MapAlgo.hxx instead.")
+
   void Intersection(const NCollection_Map& theLeft, const NCollection_Map& theRight)
   {
     NCollection_MapAlgo::Intersection<NCollection_Map>(*this, theLeft, theRight);
   }
 
-  //! Apply to this Map the intersection operation (aka multiplication, common, boolean AND) with another (given) Map.
-  //! The result contains only the values that are contained in both this and the given maps.
-  //! This algorithm is similar to method Intersection().
-  //! Returns True if contents of this map is changed.
-  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  //! Apply to this Map the intersection operation (aka multiplication, common, boolean AND) with
+  //! another (given) Map. The result contains only the values that are contained in both this and
+  //! the given maps. This algorithm is similar to method Intersection(). Returns True if contents
+  //! of this map is changed.
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
+                      "NCollection_MapAlgo.hxx instead.")
+
   Standard_Boolean Intersect(const NCollection_Map& theOther)
   {
     return NCollection_MapAlgo::Intersect<NCollection_Map>(*this, theOther);
   }
 
-  //! Sets this Map to be the result of subtraction (aka set-theoretic difference, relative complement,
-  //! exclude, cut, boolean NOT) operation between two given Maps.
-  //! The new Map contains only the values that are contained in the first map operands and not contained in the second one.
-  //! All previous content of this Map is cleared.
-  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  //! Sets this Map to be the result of subtraction (aka set-theoretic difference, relative
+  //! complement, exclude, cut, boolean NOT) operation between two given Maps. The new Map contains
+  //! only the values that are contained in the first map operands and not contained in the second
+  //! one. All previous content of this Map is cleared.
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
+                      "NCollection_MapAlgo.hxx instead.")
+
   void Subtraction(const NCollection_Map& theLeft, const NCollection_Map& theRight)
   {
     NCollection_MapAlgo::Subtraction<NCollection_Map>(*this, theLeft, theRight);
@@ -427,36 +450,42 @@ public:
 
   //! Apply to this Map the subtraction (aka set-theoretic difference, relative complement,
   //! exclude, cut, boolean NOT) operation with another (given) Map.
-  //! The result contains only the values that were previously contained in this map and not contained in this map.
-  //! This algorithm is similar to method Subtract() with two operands.
+  //! The result contains only the values that were previously contained in this map and not
+  //! contained in this map. This algorithm is similar to method Subtract() with two operands.
   //! Returns True if contents of this map is changed.
-  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
+                      "NCollection_MapAlgo.hxx instead.")
+
   Standard_Boolean Subtract(const NCollection_Map& theOther)
   {
     return NCollection_MapAlgo::Subtract<NCollection_Map>(*this, theOther);
   }
 
-  //! Sets this Map to be the result of symmetric difference (aka exclusive disjunction, boolean XOR) operation between two given Maps.
-  //! The new Map contains the values that are contained only in the first or the second operand maps but not in both.
-  //! All previous content of this Map is cleared. This map (result of the boolean operation) can also be used as one of operands.
-  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  //! Sets this Map to be the result of symmetric difference (aka exclusive disjunction, boolean
+  //! XOR) operation between two given Maps. The new Map contains the values that are contained only
+  //! in the first or the second operand maps but not in both. All previous content of this Map is
+  //! cleared. This map (result of the boolean operation) can also be used as one of operands.
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
+                      "NCollection_MapAlgo.hxx instead.")
+
   void Difference(const NCollection_Map& theLeft, const NCollection_Map& theRight)
   {
     NCollection_MapAlgo::Difference<NCollection_Map>(*this, theLeft, theRight);
   }
 
-  //! Apply to this Map the symmetric difference (aka exclusive disjunction, boolean XOR) operation with another (given) Map.
-  //! The result contains the values that are contained only in this or the operand map, but not in both.
-  //! This algorithm is similar to method Difference().
-  //! Returns True if contents of this map is changed.
-  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  //! Apply to this Map the symmetric difference (aka exclusive disjunction, boolean XOR) operation
+  //! with another (given) Map. The result contains the values that are contained only in this or
+  //! the operand map, but not in both. This algorithm is similar to method Difference(). Returns
+  //! True if contents of this map is changed.
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
+                      "NCollection_MapAlgo.hxx instead.")
+
   Standard_Boolean Differ(const NCollection_Map& theOther)
   {
     return NCollection_MapAlgo::Differ<NCollection_Map>(*this, theOther);
   }
 
 protected:
-
   //! Lookup for particular key in map.
   //! @param[in] theKey key to compute hash
   //! @param[out] theNode the detected node with equal key. Can be null.
@@ -467,10 +496,9 @@ protected:
     theHash = HashCode(theKey, NbBuckets());
     if (IsEmpty())
       return Standard_False; // Not found
-    for (theNode = (MapNode*)myData1[theHash];
-         theNode; theNode = (MapNode*)theNode->Next())
+    for (theNode = (MapNode*)myData1[theHash]; theNode; theNode = (MapNode*)theNode->Next())
     {
-      if (IsEqual(theNode->Key(), theKey)) 
+      if (IsEqual(theNode->Key(), theKey))
         return Standard_True;
     }
     return Standard_False; // Not found
@@ -484,8 +512,8 @@ protected:
   {
     if (IsEmpty())
       return Standard_False; // Not found
-    for (theNode = (MapNode*)myData1[HashCode(theKey, NbBuckets())];
-         theNode; theNode = (MapNode*)theNode->Next())
+    for (theNode = (MapNode*)myData1[HashCode(theKey, NbBuckets())]; theNode;
+         theNode = (MapNode*)theNode->Next())
     {
       if (IsEqual(theNode->Key(), theKey))
       {
@@ -495,19 +523,17 @@ protected:
     return Standard_False; // Not found
   }
 
-  bool IsEqual(const TheKeyType& theKey1,
-               const TheKeyType& theKey2) const
+  bool IsEqual(const TheKeyType& theKey1, const TheKeyType& theKey2) const
   {
     return myHasher(theKey1, theKey2);
   }
 
-  size_t HashCode(const TheKeyType& theKey,
-                  const int theUpperBound) const
+  size_t HashCode(const TheKeyType& theKey, const int theUpperBound) const
   {
     return myHasher(theKey) % theUpperBound + 1;
   }
-protected:
 
+protected:
   Hasher myHasher;
 };
 

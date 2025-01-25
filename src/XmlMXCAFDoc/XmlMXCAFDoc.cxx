@@ -33,37 +33,35 @@
 #include <XmlMXCAFDoc_NoteBinDataDriver.hxx>
 #include <XmlMXCAFDoc_VisMaterialToolDriver.hxx>
 
-//=======================================================================
-//function : AddDrivers
-//purpose  : 
-//=======================================================================
-void XmlMXCAFDoc::AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable,
-                              const Handle(Message_Messenger)&   anMsgDrv)
+//=================================================================================================
+
+void XmlMXCAFDoc::AddDrivers(const Handle(XmlMDF_ADriverTable)& aDriverTable,
+                             const Handle(Message_Messenger)&   anMsgDrv)
 {
-  aDriverTable -> AddDriver (new XmlMXCAFDoc_CentroidDriver  (anMsgDrv));
-  aDriverTable -> AddDriver (new XmlMXCAFDoc_ColorDriver     (anMsgDrv));
-  aDriverTable -> AddDriver (new XmlMXCAFDoc_GraphNodeDriver (anMsgDrv));
-  
-  //oan: changes for sharing locations map
+  aDriverTable->AddDriver(new XmlMXCAFDoc_CentroidDriver(anMsgDrv));
+  aDriverTable->AddDriver(new XmlMXCAFDoc_ColorDriver(anMsgDrv));
+  aDriverTable->AddDriver(new XmlMXCAFDoc_GraphNodeDriver(anMsgDrv));
+
+  // oan: changes for sharing locations map
   Handle(XmlMDF_ADriver) aDriver;
   aDriverTable->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver);
-  Handle(XmlMNaming_NamedShapeDriver) aNamedShapeDriver = 
-    Handle(XmlMNaming_NamedShapeDriver)::DownCast (aDriver);
-  
-  Handle(XmlMXCAFDoc_LocationDriver) aLocationDriver = new XmlMXCAFDoc_LocationDriver (anMsgDrv);
-  if( !aNamedShapeDriver.IsNull() )
+  Handle(XmlMNaming_NamedShapeDriver) aNamedShapeDriver =
+    Handle(XmlMNaming_NamedShapeDriver)::DownCast(aDriver);
+
+  Handle(XmlMXCAFDoc_LocationDriver) aLocationDriver = new XmlMXCAFDoc_LocationDriver(anMsgDrv);
+  if (!aNamedShapeDriver.IsNull())
   {
-    aLocationDriver->SetSharedLocations( &(aNamedShapeDriver->GetShapesLocations()) );
+    aLocationDriver->SetSharedLocations(&(aNamedShapeDriver->GetShapesLocations()));
   }
-  
-  aDriverTable -> AddDriver (aLocationDriver);
-  aDriverTable -> AddDriver (new XmlMXCAFDoc_LengthUnitDriver (anMsgDrv));
-  aDriverTable -> AddDriver (new XmlMXCAFDoc_AssemblyItemRefDriver(anMsgDrv));
-  aDriverTable -> AddDriver (new XmlMXCAFDoc_DatumDriver      (anMsgDrv));
-  aDriverTable -> AddDriver (new XmlMXCAFDoc_DimTolDriver     (anMsgDrv));
-  aDriverTable -> AddDriver (new XmlMXCAFDoc_MaterialDriver   (anMsgDrv));
-  aDriverTable -> AddDriver (new XmlMXCAFDoc_VisMaterialDriver(anMsgDrv));
-  aDriverTable -> AddDriver (new XmlMXCAFDoc_NoteCommentDriver(anMsgDrv));
-  aDriverTable -> AddDriver (new XmlMXCAFDoc_NoteBinDataDriver(anMsgDrv));
-  aDriverTable -> AddDriver (new XmlMXCAFDoc_VisMaterialToolDriver (anMsgDrv));
+
+  aDriverTable->AddDriver(aLocationDriver);
+  aDriverTable->AddDriver(new XmlMXCAFDoc_LengthUnitDriver(anMsgDrv));
+  aDriverTable->AddDriver(new XmlMXCAFDoc_AssemblyItemRefDriver(anMsgDrv));
+  aDriverTable->AddDriver(new XmlMXCAFDoc_DatumDriver(anMsgDrv));
+  aDriverTable->AddDriver(new XmlMXCAFDoc_DimTolDriver(anMsgDrv));
+  aDriverTable->AddDriver(new XmlMXCAFDoc_MaterialDriver(anMsgDrv));
+  aDriverTable->AddDriver(new XmlMXCAFDoc_VisMaterialDriver(anMsgDrv));
+  aDriverTable->AddDriver(new XmlMXCAFDoc_NoteCommentDriver(anMsgDrv));
+  aDriverTable->AddDriver(new XmlMXCAFDoc_NoteBinDataDriver(anMsgDrv));
+  aDriverTable->AddDriver(new XmlMXCAFDoc_VisMaterialToolDriver(anMsgDrv));
 }

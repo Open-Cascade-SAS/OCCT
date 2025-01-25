@@ -19,44 +19,36 @@
 #include <StepData_StepWriter.hxx>
 #include <StepDimTol_ToleranceZoneForm.hxx>
 
-//=======================================================================
-//function : RWStepDimTol_RWToleranceZoneForm
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-RWStepDimTol_RWToleranceZoneForm::RWStepDimTol_RWToleranceZoneForm ()
-{
-}
+RWStepDimTol_RWToleranceZoneForm::RWStepDimTol_RWToleranceZoneForm() {}
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepDimTol_RWToleranceZoneForm::ReadStep (const Handle(StepData_StepReaderData)& data,
-                                                 const Standard_Integer num,
-                                                 Handle(Interface_Check)& ach,
-                                                 const Handle(StepDimTol_ToleranceZoneForm) &ent) const
+void RWStepDimTol_RWToleranceZoneForm::ReadStep(
+  const Handle(StepData_StepReaderData)&      data,
+  const Standard_Integer                      num,
+  Handle(Interface_Check)&                    ach,
+  const Handle(StepDimTol_ToleranceZoneForm)& ent) const
 {
   // Check number of parameters
-  if ( ! data->CheckNbParams(num,1,ach,"tolerance_zone_form") ) return;
+  if (!data->CheckNbParams(num, 1, ach, "tolerance_zone_form"))
+    return;
 
   // Own fields of ToleranceZoneForm
 
   Handle(TCollection_HAsciiString) aName;
-  data->ReadString (num, 1, "name", ach, aName);
+  data->ReadString(num, 1, "name", ach, aName);
 
   // Initialize entity
   ent->Init(aName);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepDimTol_RWToleranceZoneForm::WriteStep (StepData_StepWriter& SW,
-                                                  const Handle(StepDimTol_ToleranceZoneForm) &ent) const
+void RWStepDimTol_RWToleranceZoneForm::WriteStep(
+  StepData_StepWriter&                        SW,
+  const Handle(StepDimTol_ToleranceZoneForm)& ent) const
 {
-  SW.Send (ent->Name());
+  SW.Send(ent->Name());
 }

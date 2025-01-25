@@ -21,5 +21,4 @@
 
 typedef TColStd_SequenceOfAddress BRepTopAdaptor_SeqOfPtr;
 
-
 #endif // _BRepTopAdaptor_SeqOfPtr_HeaderFile

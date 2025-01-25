@@ -26,7 +26,6 @@
 
 class gp_Pln;
 
-
 //! The   GeomAPI   package  provides  an  Application
 //! Programming Interface for the Geometry.
 //!
@@ -61,13 +60,11 @@ class gp_Pln;
 //!
 //! GeomAPI_ProjectPointOnCurve PonC(P,C);
 //! D = PonC.LowerDistance();
-class GeomAPI 
+class GeomAPI
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! This function builds (in the
   //! parametric space of the plane P) a 2D curve equivalent to the 3D curve
   //! C. The 3D curve C is considered to be located in the plane P.
@@ -81,14 +78,13 @@ public:
   //! -      a Bezier curve
   //! -      a BSpline curve
   //! Exceptions Standard_NoSuchObject if C is not a defined type curve.
-  Standard_EXPORT static Handle(Geom2d_Curve) To2d (const Handle(Geom_Curve)& C, const gp_Pln& P);
-  
+  Standard_EXPORT static Handle(Geom2d_Curve) To2d(const Handle(Geom_Curve)& C, const gp_Pln& P);
+
   //! Builds a 3D curve equivalent to the 2D curve C
   //! described in the parametric space defined by the local
   //! coordinate system of plane P.
   //! The resulting 3D curve is of the same nature as that of the curve C.
-  Standard_EXPORT static Handle(Geom_Curve) To3d (const Handle(Geom2d_Curve)& C, const gp_Pln& P);
-
+  Standard_EXPORT static Handle(Geom_Curve) To3d(const Handle(Geom2d_Curve)& C, const gp_Pln& P);
 };
 
 #endif // _GeomAPI_HeaderFile

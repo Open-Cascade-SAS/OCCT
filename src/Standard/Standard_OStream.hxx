@@ -20,5 +20,3 @@
 typedef std::ostream Standard_OStream;
 
 #endif
-
-

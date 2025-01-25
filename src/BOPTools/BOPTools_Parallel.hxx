@@ -24,15 +24,18 @@
 //! Implementation of Functors/Starters
 class BOPTools_Parallel
 {
-  template<class TypeSolverVector>
+  template <class TypeSolverVector>
   class Functor
   {
   public:
     //! Constructor.
-    explicit Functor(TypeSolverVector& theSolverVec) : mySolvers (theSolverVec) {}
+    explicit Functor(TypeSolverVector& theSolverVec)
+        : mySolvers(theSolverVec)
+    {
+    }
 
     //! Defines functor interface.
-    void operator() (const Standard_Integer theIndex) const
+    void operator()(const Standard_Integer theIndex) const
     {
       typename TypeSolverVector::value_type& aSolver = mySolvers[theIndex];
       aSolver.Perform();
@@ -40,32 +43,34 @@ class BOPTools_Parallel
 
   private:
     Functor(const Functor&);
-    Functor& operator= (const Functor&);
+    Functor& operator=(const Functor&);
 
   private:
     TypeSolverVector& mySolvers;
   };
 
   //! Functor storing map of thread id -> algorithm context
-  template<class TypeSolverVector, class TypeContext>
+  template <class TypeSolverVector, class TypeContext>
   class ContextFunctor
   {
   public:
-
     //! Constructor
-    explicit ContextFunctor (TypeSolverVector& theVector) : mySolverVector(theVector) {}
+    explicit ContextFunctor(TypeSolverVector& theVector)
+        : mySolverVector(theVector)
+    {
+    }
 
     //! Binds main thread context
-    void SetContext (const opencascade::handle<TypeContext>& theContext)
+    void SetContext(const opencascade::handle<TypeContext>& theContext)
     {
-      myContextMap.Bind (OSD_Thread::Current(), theContext);
+      myContextMap.Bind(OSD_Thread::Current(), theContext);
     }
 
     //! Returns current thread context
     const opencascade::handle<TypeContext>& GetThreadContext() const
     {
       const Standard_ThreadId aThreadID = OSD_Thread::Current();
-      if (const opencascade::handle<TypeContext>* aContextPtr = myContextMap.Seek (aThreadID))
+      if (const opencascade::handle<TypeContext>* aContextPtr = myContextMap.Seek(aThreadID))
       {
         if (!aContextPtr->IsNull())
         {
@@ -74,18 +79,19 @@ class BOPTools_Parallel
       }
 
       // Create new context
-      opencascade::handle<TypeContext> aContext = new TypeContext (NCollection_BaseAllocator::CommonBaseAllocator());
+      opencascade::handle<TypeContext> aContext =
+        new TypeContext(NCollection_BaseAllocator::CommonBaseAllocator());
 
-      Standard_Mutex::Sentry aLocker (myMutex);
-      myContextMap.Bind (aThreadID, aContext);
-      return myContextMap (aThreadID);
+      Standard_Mutex::Sentry aLocker(myMutex);
+      myContextMap.Bind(aThreadID, aContext);
+      return myContextMap(aThreadID);
     }
 
     //! Defines functor interface
-    void operator()( const Standard_Integer theIndex ) const
+    void operator()(const Standard_Integer theIndex) const
     {
       const opencascade::handle<TypeContext>& aContext = GetThreadContext();
-      typename TypeSolverVector::value_type& aSolver = mySolverVector[theIndex];
+      typename TypeSolverVector::value_type&  aSolver  = mySolverVector[theIndex];
 
       aSolver.SetContext(aContext);
       aSolver.Perform();
@@ -93,86 +99,86 @@ class BOPTools_Parallel
 
   private:
     ContextFunctor(const ContextFunctor&);
-    ContextFunctor& operator= (const ContextFunctor&);
+    ContextFunctor& operator=(const ContextFunctor&);
 
   private:
-    TypeSolverVector& mySolverVector;
+    TypeSolverVector&                                                                mySolverVector;
     mutable NCollection_DataMap<Standard_ThreadId, opencascade::handle<TypeContext>> myContextMap;
-    mutable Standard_Mutex myMutex;
+    mutable Standard_Mutex                                                           myMutex;
   };
 
   //! Functor storing array of algorithm contexts per thread in pool
-  template<class TypeSolverVector, class TypeContext>
+  template <class TypeSolverVector, class TypeContext>
   class ContextFunctor2
   {
   public:
-
     //! Constructor
-    explicit ContextFunctor2 (TypeSolverVector& theVector, const OSD_ThreadPool::Launcher& thePoolLauncher)
-    : mySolverVector(theVector),
-      myContextArray (thePoolLauncher.LowerThreadIndex(), thePoolLauncher.UpperThreadIndex()) {}
+    explicit ContextFunctor2(TypeSolverVector&               theVector,
+                             const OSD_ThreadPool::Launcher& thePoolLauncher)
+        : mySolverVector(theVector),
+          myContextArray(thePoolLauncher.LowerThreadIndex(), thePoolLauncher.UpperThreadIndex())
+    {
+    }
 
     //! Binds main thread context
-    void SetContext (const opencascade::handle<TypeContext>& theContext)
+    void SetContext(const opencascade::handle<TypeContext>& theContext)
     {
-// clang-format off
+      // clang-format off
       myContextArray.ChangeLast() = theContext; // OSD_ThreadPool::Launcher::UpperThreadIndex() is reserved for a main thread
-// clang-format on
+      // clang-format on
     }
 
     //! Defines functor interface with serialized thread index.
-    void operator() (int theThreadIndex,
-                     int theIndex) const
+    void operator()(int theThreadIndex, int theIndex) const
     {
-      opencascade::handle<TypeContext>& aContext = myContextArray.ChangeValue (theThreadIndex);
+      opencascade::handle<TypeContext>& aContext = myContextArray.ChangeValue(theThreadIndex);
       if (aContext.IsNull())
       {
-        aContext = new TypeContext (NCollection_BaseAllocator::CommonBaseAllocator());
+        aContext = new TypeContext(NCollection_BaseAllocator::CommonBaseAllocator());
       }
       typename TypeSolverVector::value_type& aSolver = mySolverVector[theIndex];
-      aSolver.SetContext (aContext);
+      aSolver.SetContext(aContext);
       aSolver.Perform();
     }
 
   private:
     ContextFunctor2(const ContextFunctor2&);
-    ContextFunctor2& operator= (const ContextFunctor2&);
+    ContextFunctor2& operator=(const ContextFunctor2&);
 
   private:
-    TypeSolverVector& mySolverVector;
-    mutable NCollection_Array1< opencascade::handle<TypeContext> > myContextArray;
+    TypeSolverVector&                                            mySolverVector;
+    mutable NCollection_Array1<opencascade::handle<TypeContext>> myContextArray;
   };
 
 public:
-
   //! Pure version
-  template<class TypeSolverVector>
-  static void Perform (Standard_Boolean theIsRunParallel,
-                       TypeSolverVector& theSolverVector)
+  template <class TypeSolverVector>
+  static void Perform(Standard_Boolean theIsRunParallel, TypeSolverVector& theSolverVector)
   {
-    Functor<TypeSolverVector> aFunctor (theSolverVector);
-    OSD_Parallel::For (0, theSolverVector.Length(), aFunctor, !theIsRunParallel);
+    Functor<TypeSolverVector> aFunctor(theSolverVector);
+    OSD_Parallel::For(0, theSolverVector.Length(), aFunctor, !theIsRunParallel);
   }
 
   //! Context dependent version
-  template<class TypeSolverVector, class TypeContext>
-  static void Perform (Standard_Boolean  theIsRunParallel,
-                       TypeSolverVector& theSolverVector,
-                       opencascade::handle<TypeContext>& theContext)
+  template <class TypeSolverVector, class TypeContext>
+  static void Perform(Standard_Boolean                  theIsRunParallel,
+                      TypeSolverVector&                 theSolverVector,
+                      opencascade::handle<TypeContext>& theContext)
   {
     if (OSD_Parallel::ToUseOcctThreads())
     {
-      const Handle(OSD_ThreadPool)& aThreadPool = OSD_ThreadPool::DefaultPool();
-      OSD_ThreadPool::Launcher aPoolLauncher (*aThreadPool, theIsRunParallel ? theSolverVector.Length() : 0);
-      ContextFunctor2<TypeSolverVector, TypeContext> aFunctor (theSolverVector, aPoolLauncher);
-      aFunctor.SetContext (theContext);
-      aPoolLauncher.Perform (0, theSolverVector.Length(), aFunctor);
+      const Handle(OSD_ThreadPool)&                  aThreadPool = OSD_ThreadPool::DefaultPool();
+      OSD_ThreadPool::Launcher                       aPoolLauncher(*aThreadPool,
+                                             theIsRunParallel ? theSolverVector.Length() : 0);
+      ContextFunctor2<TypeSolverVector, TypeContext> aFunctor(theSolverVector, aPoolLauncher);
+      aFunctor.SetContext(theContext);
+      aPoolLauncher.Perform(0, theSolverVector.Length(), aFunctor);
     }
     else
     {
-      ContextFunctor<TypeSolverVector, TypeContext> aFunctor (theSolverVector);
-      aFunctor.SetContext (theContext);
-      OSD_Parallel::For (0, theSolverVector.Length(), aFunctor, !theIsRunParallel);
+      ContextFunctor<TypeSolverVector, TypeContext> aFunctor(theSolverVector);
+      aFunctor.SetContext(theContext);
+      OSD_Parallel::For(0, theSolverVector.Length(), aFunctor, !theIsRunParallel);
     }
   }
 };

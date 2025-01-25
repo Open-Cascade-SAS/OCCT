@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:14 2020 
+// Created on : Sat May 02 12:41:14 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -16,23 +16,19 @@
 
 #include <StepKinematics_RotationAboutDirection.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_RotationAboutDirection, StepGeom_GeometricRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_RotationAboutDirection,
+                           StepGeom_GeometricRepresentationItem)
 
-//=======================================================================
-//function : StepKinematics_RotationAboutDirection
-//purpose  :
-//=======================================================================
-StepKinematics_RotationAboutDirection::StepKinematics_RotationAboutDirection ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_RotationAboutDirection::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                                  const Handle(StepGeom_Direction)& theDirectionOfAxis,
-                                                  const Standard_Real theRotationAngle)
+StepKinematics_RotationAboutDirection::StepKinematics_RotationAboutDirection() {}
+
+//=================================================================================================
+
+void StepKinematics_RotationAboutDirection::Init(
+  const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
+  const Handle(StepGeom_Direction)&       theDirectionOfAxis,
+  const Standard_Real                     theRotationAngle)
 {
   StepGeom_GeometricRepresentationItem::Init(theRepresentationItem_Name);
 
@@ -41,38 +37,31 @@ void StepKinematics_RotationAboutDirection::Init (const Handle(TCollection_HAsci
   myRotationAngle = theRotationAngle;
 }
 
-//=======================================================================
-//function : DirectionOfAxis
-//purpose  :
-//=======================================================================
-Handle(StepGeom_Direction) StepKinematics_RotationAboutDirection::DirectionOfAxis () const
+//=================================================================================================
+
+Handle(StepGeom_Direction) StepKinematics_RotationAboutDirection::DirectionOfAxis() const
 {
   return myDirectionOfAxis;
 }
 
-//=======================================================================
-//function : SetDirectionOfAxis
-//purpose  :
-//=======================================================================
-void StepKinematics_RotationAboutDirection::SetDirectionOfAxis (const Handle(StepGeom_Direction)& theDirectionOfAxis)
+//=================================================================================================
+
+void StepKinematics_RotationAboutDirection::SetDirectionOfAxis(
+  const Handle(StepGeom_Direction)& theDirectionOfAxis)
 {
   myDirectionOfAxis = theDirectionOfAxis;
 }
 
-//=======================================================================
-//function : RotationAngle
-//purpose  :
-//=======================================================================
-Standard_Real StepKinematics_RotationAboutDirection::RotationAngle () const
+//=================================================================================================
+
+Standard_Real StepKinematics_RotationAboutDirection::RotationAngle() const
 {
   return myRotationAngle;
 }
 
-//=======================================================================
-//function : SetRotationAngle
-//purpose  :
-//=======================================================================
-void StepKinematics_RotationAboutDirection::SetRotationAngle (const Standard_Real theRotationAngle)
+//=================================================================================================
+
+void StepKinematics_RotationAboutDirection::SetRotationAngle(const Standard_Real theRotationAngle)
 {
   myRotationAngle = theRotationAngle;
 }

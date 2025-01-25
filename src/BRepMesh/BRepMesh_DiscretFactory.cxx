@@ -22,67 +22,59 @@
 
 namespace
 {
-  //! Embedded triangulation tool(s)
-  static TCollection_AsciiString THE_FAST_DISCRET_MESH ("FastDiscret");
+//! Embedded triangulation tool(s)
+static TCollection_AsciiString THE_FAST_DISCRET_MESH("FastDiscret");
 
-  //! Generate system-dependent name for dynamic library
-  //! (add standard prefixes and postfixes)
-  static void MakeLibName (const TCollection_AsciiString& theDefaultName,
-                                 TCollection_AsciiString& theLibName)
-  {
-    theLibName = "";
-  #ifndef _WIN32
-    theLibName += "lib";
-  #endif
-    theLibName += theDefaultName;
-  #ifdef _WIN32
-    theLibName += ".dll";
-  #elif __APPLE__
-    theLibName += ".dylib";
-  #elif defined (HPUX) || defined(_hpux)
-    theLibName += ".sl";
-  #else
-    theLibName += ".so";
-  #endif
-  }
+//! Generate system-dependent name for dynamic library
+//! (add standard prefixes and postfixes)
+static void MakeLibName(const TCollection_AsciiString& theDefaultName,
+                        TCollection_AsciiString&       theLibName)
+{
+  theLibName = "";
+#ifndef _WIN32
+  theLibName += "lib";
+#endif
+  theLibName += theDefaultName;
+#ifdef _WIN32
+  theLibName += ".dll";
+#elif __APPLE__
+  theLibName += ".dylib";
+#elif defined(HPUX) || defined(_hpux)
+  theLibName += ".sl";
+#else
+  theLibName += ".so";
+#endif
 }
+} // namespace
 
-//=======================================================================
-//function : BRepMesh_DiscretFactory
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 BRepMesh_DiscretFactory::BRepMesh_DiscretFactory()
-: myPluginEntry  (NULL),
-  myErrorStatus  (BRepMesh_FE_NOERROR),
-  myDefaultName  (THE_FAST_DISCRET_MESH),
-  myFunctionName ("DISCRETALGO")
+    : myPluginEntry(NULL),
+      myErrorStatus(BRepMesh_FE_NOERROR),
+      myDefaultName(THE_FAST_DISCRET_MESH),
+      myFunctionName("DISCRETALGO")
 {
   // register built-in meshing algorithms
   myNames.Add(THE_FAST_DISCRET_MESH);
 }
 
-//=======================================================================
-//function : ~
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 BRepMesh_DiscretFactory::~BRepMesh_DiscretFactory()
 {
   clear();
 }
 
-//=======================================================================
-//function : clear
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void BRepMesh_DiscretFactory::clear()
 {
   // what should we do here? Unload dynamic libraries and reset plugins list?
 }
 
-//=======================================================================
-//function : Get
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 BRepMesh_DiscretFactory& BRepMesh_DiscretFactory::Get()
 {
   //! global factory instance
@@ -90,13 +82,10 @@ BRepMesh_DiscretFactory& BRepMesh_DiscretFactory::Get()
   return THE_GLOBAL_FACTORY;
 }
 
-//=======================================================================
-//function : SetDefault
-//purpose  :
-//=======================================================================
-Standard_Boolean BRepMesh_DiscretFactory::SetDefault(
-  const TCollection_AsciiString& theName,
-  const TCollection_AsciiString& theFuncName)
+//=================================================================================================
+
+Standard_Boolean BRepMesh_DiscretFactory::SetDefault(const TCollection_AsciiString& theName,
+                                                     const TCollection_AsciiString& theFuncName)
 {
   myErrorStatus = BRepMesh_FE_NOERROR;
   if (theName == THE_FAST_DISCRET_MESH)
@@ -113,19 +102,19 @@ Standard_Boolean BRepMesh_DiscretFactory::SetDefault(
     return myPluginEntry != NULL;
   }
 
-  TCollection_AsciiString aMeshAlgoId = theName + "_" + theFuncName;
-  BRepMesh_PluginEntryType aFunc = NULL;
-  if (myFactoryMethods.IsBound (aMeshAlgoId))
+  TCollection_AsciiString  aMeshAlgoId = theName + "_" + theFuncName;
+  BRepMesh_PluginEntryType aFunc       = NULL;
+  if (myFactoryMethods.IsBound(aMeshAlgoId))
   {
     // retrieve from cache
-    aFunc = (BRepMesh_PluginEntryType )myFactoryMethods (aMeshAlgoId);
+    aFunc = (BRepMesh_PluginEntryType)myFactoryMethods(aMeshAlgoId);
   }
   else
   {
     TCollection_AsciiString aLibName;
-    MakeLibName (theName, aLibName);
-    OSD_SharedLibrary aSL (aLibName.ToCString());
-    if (!aSL.DlOpen (OSD_RTLD_LAZY))
+    MakeLibName(theName, aLibName);
+    OSD_SharedLibrary aSL(aLibName.ToCString());
+    if (!aSL.DlOpen(OSD_RTLD_LAZY))
     {
       // library is not found
       myErrorStatus = BRepMesh_FE_LIBRARYNOTFOUND;
@@ -133,8 +122,8 @@ Standard_Boolean BRepMesh_DiscretFactory::SetDefault(
     }
 
     // retrieve the function from plugin
-    aFunc = (BRepMesh_PluginEntryType )aSL.DlSymb (theFuncName.ToCString());
-    myFactoryMethods.Bind (aMeshAlgoId, (OSD_Function )aFunc);
+    aFunc = (BRepMesh_PluginEntryType)aSL.DlSymb(theFuncName.ToCString());
+    myFactoryMethods.Bind(aMeshAlgoId, (OSD_Function)aFunc);
   }
 
   if (aFunc == NULL)
@@ -146,10 +135,10 @@ Standard_Boolean BRepMesh_DiscretFactory::SetDefault(
 
   // try to create dummy tool
   BRepMesh_DiscretRoot* anInstancePtr = NULL;
-  Standard_Integer anErr = aFunc (TopoDS_Shape(), 0.001, 0.1, anInstancePtr);
+  Standard_Integer      anErr         = aFunc(TopoDS_Shape(), 0.001, 0.1, anInstancePtr);
   if (anErr != 0 || anInstancePtr == NULL)
   {
-    // can not create the algo specified  
+    // can not create the algo specified
     myErrorStatus = BRepMesh_FE_CANNOTCREATEALGO;
     delete anInstancePtr;
     return Standard_False;
@@ -160,27 +149,23 @@ Standard_Boolean BRepMesh_DiscretFactory::SetDefault(
   myPluginEntry  = aFunc;
   myDefaultName  = theName;
   myFunctionName = theFuncName;
-  myNames.Add (theName);
+  myNames.Add(theName);
   return Standard_True;
 }
 
-//=======================================================================
-//function : Discret
-//purpose  :
-//=======================================================================
-Handle(BRepMesh_DiscretRoot) BRepMesh_DiscretFactory::Discret(
-  const TopoDS_Shape& theShape,
-  const Standard_Real theDeflection,
-  const Standard_Real theAngle)
+//=================================================================================================
+
+Handle(BRepMesh_DiscretRoot) BRepMesh_DiscretFactory::Discret(const TopoDS_Shape& theShape,
+                                                              const Standard_Real theDeflection,
+                                                              const Standard_Real theAngle)
 {
   Handle(BRepMesh_DiscretRoot) aDiscretRoot;
-  BRepMesh_DiscretRoot* anInstancePtr = NULL;
+  BRepMesh_DiscretRoot*        anInstancePtr = NULL;
   if (myPluginEntry != NULL)
   {
     // use plugin
-    Standard_Integer anErr = myPluginEntry (theShape, 
-      theDeflection, theAngle, anInstancePtr);
-      
+    Standard_Integer anErr = myPluginEntry(theShape, theDeflection, theAngle, anInstancePtr);
+
     if (anErr != 0 || anInstancePtr == NULL)
     {
       // can not create the algo specified - should never happens here
@@ -188,11 +173,10 @@ Handle(BRepMesh_DiscretRoot) BRepMesh_DiscretFactory::Discret(
       return aDiscretRoot;
     }
   }
-  else //if (myDefaultName == THE_FAST_DISCRET_MESH)
+  else // if (myDefaultName == THE_FAST_DISCRET_MESH)
   {
     // use built-in
-    BRepMesh_IncrementalMesh::Discret (theShape, 
-      theDeflection, theAngle, anInstancePtr);
+    BRepMesh_IncrementalMesh::Discret(theShape, theDeflection, theAngle, anInstancePtr);
   }
 
   // cover with handle

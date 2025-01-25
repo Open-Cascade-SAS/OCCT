@@ -18,12 +18,8 @@
 #include <Standard_Type.hxx>
 #include <StepDimTol_DatumFeature.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_DatumFeature,StepRepr_ShapeAspect)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_DatumFeature, StepRepr_ShapeAspect)
 
-//=======================================================================
-//function : StepDimTol_DatumFeature
-//purpose  : 
-//=======================================================================
-StepDimTol_DatumFeature::StepDimTol_DatumFeature ()
-{
-}
+//=================================================================================================
+
+StepDimTol_DatumFeature::StepDimTol_DatumFeature() {}

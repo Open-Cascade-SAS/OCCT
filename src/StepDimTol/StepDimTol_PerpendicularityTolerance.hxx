@@ -20,41 +20,23 @@
 
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
 
-
 class StepDimTol_PerpendicularityTolerance;
-DEFINE_STANDARD_HANDLE(StepDimTol_PerpendicularityTolerance, StepDimTol_GeometricToleranceWithDatumReference)
+DEFINE_STANDARD_HANDLE(StepDimTol_PerpendicularityTolerance,
+                       StepDimTol_GeometricToleranceWithDatumReference)
 
 //! Representation of STEP entity PerpendicularityTolerance
 class StepDimTol_PerpendicularityTolerance : public StepDimTol_GeometricToleranceWithDatumReference
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepDimTol_PerpendicularityTolerance();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepDimTol_PerpendicularityTolerance,StepDimTol_GeometricToleranceWithDatumReference)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_PerpendicularityTolerance,
+                          StepDimTol_GeometricToleranceWithDatumReference)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepDimTol_PerpendicularityTolerance_HeaderFile

@@ -21,5 +21,4 @@
 
 typedef NCollection_Array1<TColStd_SequenceOfInteger> MeshVS_Array1OfSequenceOfInteger;
 
-
 #endif

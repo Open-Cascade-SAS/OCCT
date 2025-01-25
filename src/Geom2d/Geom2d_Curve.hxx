@@ -28,7 +28,6 @@ class gp_Trsf2d;
 class gp_Pnt2d;
 class gp_Vec2d;
 
-
 class Geom2d_Curve;
 DEFINE_STANDARD_HANDLE(Geom2d_Curve, Geom2d_Geometry)
 
@@ -62,9 +61,6 @@ class Geom2d_Curve : public Geom2d_Geometry
 {
 
 public:
-
-  
-
   //! Changes the direction of parametrization of <me>.
   //! The "FirstParameter" and the "LastParameter" are not changed
   //! but the orientation  of the curve is modified. If the curve
@@ -72,20 +68,21 @@ public:
   //! EndPoint of the reversed curve  and the EndPoint of the initial
   //! curve becomes the StartPoint of the reversed curve.
   Standard_EXPORT virtual void Reverse() = 0;
-  
+
   //! Computes the parameter on the reversed curve for
   //! the point of parameter U on this curve.
   //! Note: The point of parameter U on this curve is
   //! identical to the point of parameter
   //! ReversedParameter(U) on the reversed curve.
-  Standard_EXPORT virtual Standard_Real ReversedParameter (const Standard_Real U) const = 0;
-  
+  Standard_EXPORT virtual Standard_Real ReversedParameter(const Standard_Real U) const = 0;
+
   //! Computes the parameter on the curve transformed by
   //! T for the point of parameter U on this curve.
   //! Note: this function generally returns U but it can be
   //! redefined (for example, on a line).
-  Standard_EXPORT virtual Standard_Real TransformedParameter (const Standard_Real U, const gp_Trsf2d& T) const;
-  
+  Standard_EXPORT virtual Standard_Real TransformedParameter(const Standard_Real U,
+                                                             const gp_Trsf2d&    T) const;
+
   //! Returns the coefficient required to compute the
   //! parametric transformation of this curve when
   //! transformation T is applied. This coefficient is the
@@ -94,8 +91,8 @@ public:
   //! new curve transformed by T.
   //! Note: this function generally returns 1. but it can be
   //! redefined (for example, on a line).
-  Standard_EXPORT virtual Standard_Real ParametricTransformation (const gp_Trsf2d& T) const;
-  
+  Standard_EXPORT virtual Standard_Real ParametricTransformation(const gp_Trsf2d& T) const;
+
   //! Creates a reversed duplicate Changes the orientation of this curve. The first and
   //! last parameters are not changed, but the parametric
   //! direction of the curve is reversed.
@@ -106,19 +103,19 @@ public:
   //! point of the reversed curve.
   //! - Reversed creates a new curve.
   Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Curve) Reversed() const;
-  
+
   //! Returns the value of the first parameter.
   //! Warnings :
   //! It can be RealFirst or RealLast from package Standard
   //! if the curve is infinite
   Standard_EXPORT virtual Standard_Real FirstParameter() const = 0;
-  
+
   //! Value of the last parameter.
   //! Warnings :
   //! It can be RealFirst or RealLast from package Standard
   //! if the curve is infinite
   Standard_EXPORT virtual Standard_Real LastParameter() const = 0;
-  
+
   //! Returns true if the curve is closed.
   //! Examples :
   //! Some curves such as circle are always closed, others such as line
@@ -129,7 +126,6 @@ public:
   //! from package gp which is a fixed criterion independent of the
   //! application.
   Standard_EXPORT virtual Standard_Boolean IsClosed() const = 0;
-  
 
   //! Returns true if the parameter of the curve is periodic.
   //! It is possible only if the curve is closed and if the
@@ -147,11 +143,10 @@ public:
   //! and you have to turn (explicitly) the curve into a periodic
   //! curve  if you want the curve to be periodic.
   Standard_EXPORT virtual Standard_Boolean IsPeriodic() const = 0;
-  
+
   //! Returns the period of this curve.
   //! raises if the curve is not periodic
   Standard_EXPORT virtual Standard_Real Period() const;
-  
 
   //! It is the global continuity of the curve :
   //! C0 : only geometric continuity,
@@ -162,11 +157,11 @@ public:
   //! G2 : curvature continuity all along the Curve,
   //! CN : the order of continuity is infinite.
   Standard_EXPORT virtual GeomAbs_Shape Continuity() const = 0;
-  
+
   //! Returns true if the degree of continuity of this curve is at least N.
   //! Exceptions Standard_RangeError if N is less than 0.
-  Standard_EXPORT virtual Standard_Boolean IsCN (const Standard_Integer N) const = 0;
-  
+  Standard_EXPORT virtual Standard_Boolean IsCN(const Standard_Integer N) const = 0;
+
   //! Returns in P the point of parameter U.
   //! If the curve is periodic  then the returned point is P(U) with
   //! U = Ustart + (U - Uend)  where Ustart and Uend are the
@@ -176,25 +171,29 @@ public:
   //! compute the current point. For example when the first
   //! derivative on the basis curve and the offset direction
   //! are parallel.
-  Standard_EXPORT virtual void D0 (const Standard_Real U, gp_Pnt2d& P) const = 0;
-  
+  Standard_EXPORT virtual void D0(const Standard_Real U, gp_Pnt2d& P) const = 0;
 
   //! Returns the point P of parameter U and the first derivative V1.
   //! Raised if the continuity of the curve is not C1.
-  Standard_EXPORT virtual void D1 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const = 0;
-  
+  Standard_EXPORT virtual void D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const = 0;
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
   //! Raised if the continuity of the curve is not C2.
-  Standard_EXPORT virtual void D2 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const = 0;
-  
+  Standard_EXPORT virtual void D2(const Standard_Real U,
+                                  gp_Pnt2d&           P,
+                                  gp_Vec2d&           V1,
+                                  gp_Vec2d&           V2) const = 0;
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
   //! Raised if the continuity of the curve is not C3.
-  Standard_EXPORT virtual void D3 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3) const = 0;
-  
+  Standard_EXPORT virtual void D3(const Standard_Real U,
+                                  gp_Pnt2d&           P,
+                                  gp_Vec2d&           V1,
+                                  gp_Vec2d&           V2,
+                                  gp_Vec2d&           V3) const = 0;
+
   //! For the point of parameter U of this curve, computes
   //! the vector corresponding to the Nth derivative.
   //! Exceptions
@@ -204,8 +203,8 @@ public:
   //! this is the case with specific types of curve (for
   //! example, a rational BSpline curve where N is greater than 3).
   //! Standard_RangeError if N is less than 1.
-  Standard_EXPORT virtual gp_Vec2d DN (const Standard_Real U, const Standard_Integer N) const = 0;
-  
+  Standard_EXPORT virtual gp_Vec2d DN(const Standard_Real U, const Standard_Integer N) const = 0;
+
   //! Computes the point of parameter U on <me>.
   //! If the curve is periodic  then the returned point is P(U) with
   //! U = Ustart + (U - Uend)  where Ustart and Uend are the
@@ -217,32 +216,16 @@ public:
   //! compute the current point. For example when the first
   //! derivative on the basis curve and the offset direction
   //! are parallel.
-  Standard_EXPORT gp_Pnt2d Value (const Standard_Real U) const;
+  Standard_EXPORT gp_Pnt2d Value(const Standard_Real U) const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Geom2d_Curve,Geom2d_Geometry)
+  DEFINE_STANDARD_RTTIEXT(Geom2d_Curve, Geom2d_Geometry)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Geom2d_Curve_HeaderFile

@@ -24,48 +24,29 @@
 class TCollection_HAsciiString;
 class StepGeom_Axis2Placement;
 
-
 class StepGeom_Parabola;
 DEFINE_STANDARD_HANDLE(StepGeom_Parabola, StepGeom_Conic)
-
 
 class StepGeom_Parabola : public StepGeom_Conic
 {
 
 public:
-
-  
   //! Returns a Parabola
   Standard_EXPORT StepGeom_Parabola();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const StepGeom_Axis2Placement& aPosition, const Standard_Real aFocalDist);
-  
-  Standard_EXPORT void SetFocalDist (const Standard_Real aFocalDist);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const StepGeom_Axis2Placement&          aPosition,
+                            const Standard_Real                     aFocalDist);
+
+  Standard_EXPORT void SetFocalDist(const Standard_Real aFocalDist);
+
   Standard_EXPORT Standard_Real FocalDist() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_Parabola,StepGeom_Conic)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_Parabola, StepGeom_Conic)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Real focalDist;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_Parabola_HeaderFile

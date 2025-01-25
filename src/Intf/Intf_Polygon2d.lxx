@@ -14,11 +14,11 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Bounding
-//purpose  : 
+// function : Bounding
+// purpose  :
 //=======================================================================
 
-inline const Bnd_Box2d& Intf_Polygon2d::Bounding () const
+inline const Bnd_Box2d& Intf_Polygon2d::Bounding() const
 {
   return myBox;
 }

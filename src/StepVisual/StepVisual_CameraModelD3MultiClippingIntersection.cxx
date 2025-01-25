@@ -13,24 +13,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepVisual_CameraModelD3MultiClippingIntersection.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CameraModelD3MultiClippingIntersection, StepGeom_GeometricRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CameraModelD3MultiClippingIntersection,
+                           StepGeom_GeometricRepresentationItem)
 
-//=======================================================================
-//function : StepVisual_CameraModelD3MultiClippingIntersection
-//purpose  : 
-//=======================================================================
-StepVisual_CameraModelD3MultiClippingIntersection::StepVisual_CameraModelD3MultiClippingIntersection()  {}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepVisual_CameraModelD3MultiClippingIntersection::
+  StepVisual_CameraModelD3MultiClippingIntersection()
+{
+}
+
+//=================================================================================================
+
 void StepVisual_CameraModelD3MultiClippingIntersection::Init(
-  const Handle(TCollection_HAsciiString)& theName,
+  const Handle(TCollection_HAsciiString)&                                        theName,
   const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect)& theShapeClipping)
 {
   // Own field

@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(StepBasic_HArray1OfApproval, StepBasic_Array1OfApproval)
 
-
 #endif

@@ -21,67 +21,54 @@
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_OrientedSurface.hxx>
 
-//=======================================================================
-//function : RWStepGeom_RWOrientedSurface
-//purpose  : 
-//=======================================================================
-RWStepGeom_RWOrientedSurface::RWStepGeom_RWOrientedSurface ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
+RWStepGeom_RWOrientedSurface::RWStepGeom_RWOrientedSurface() {}
 
-void RWStepGeom_RWOrientedSurface::ReadStep (const Handle(StepData_StepReaderData)& data,
-                                             const Standard_Integer num,
-                                             Handle(Interface_Check)& ach,
-                                             const Handle(StepGeom_OrientedSurface) &ent) const
+//=================================================================================================
+
+void RWStepGeom_RWOrientedSurface::ReadStep(const Handle(StepData_StepReaderData)&  data,
+                                            const Standard_Integer                  num,
+                                            Handle(Interface_Check)&                ach,
+                                            const Handle(StepGeom_OrientedSurface)& ent) const
 {
   // Check number of parameters
-  if ( ! data->CheckNbParams(num,2,ach,"oriented_surface") ) return;
+  if (!data->CheckNbParams(num, 2, ach, "oriented_surface"))
+    return;
 
   // Inherited fields of RepresentationItem
 
   Handle(TCollection_HAsciiString) aRepresentationItem_Name;
-  data->ReadString (num, 1, "representation_item.name", ach, aRepresentationItem_Name);
+  data->ReadString(num, 1, "representation_item.name", ach, aRepresentationItem_Name);
 
   // Own fields of OrientedSurface
 
   Standard_Boolean aOrientation;
-  data->ReadBoolean (num, 2, "orientation", ach, aOrientation);
+  data->ReadBoolean(num, 2, "orientation", ach, aOrientation);
 
   // Initialize entity
-  ent->Init(aRepresentationItem_Name,
-            aOrientation);
+  ent->Init(aRepresentationItem_Name, aOrientation);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepGeom_RWOrientedSurface::WriteStep (StepData_StepWriter& SW,
-                                              const Handle(StepGeom_OrientedSurface) &ent) const
+void RWStepGeom_RWOrientedSurface::WriteStep(StepData_StepWriter&                    SW,
+                                             const Handle(StepGeom_OrientedSurface)& ent) const
 {
 
   // Inherited fields of RepresentationItem
 
-  SW.Send (ent->StepRepr_RepresentationItem::Name());
+  SW.Send(ent->StepRepr_RepresentationItem::Name());
 
   // Own fields of OrientedSurface
 
-  SW.SendBoolean (ent->Orientation());
+  SW.SendBoolean(ent->Orientation());
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepGeom_RWOrientedSurface::Share (const Handle(StepGeom_OrientedSurface) &/*ent*/,
-                                          Interface_EntityIterator& /*iter*/) const
+void RWStepGeom_RWOrientedSurface::Share(const Handle(StepGeom_OrientedSurface)& /*ent*/,
+                                         Interface_EntityIterator& /*iter*/) const
 {
 
   // Inherited fields of RepresentationItem

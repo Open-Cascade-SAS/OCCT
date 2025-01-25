@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:14 2020 
+// Created on : Sat May 02 12:41:14 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -18,40 +18,33 @@
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_SuParameters.hxx>
 
-//=======================================================================
-//function : StepKinematics_RigidPlacement
-//purpose  :
-//=======================================================================
-StepKinematics_RigidPlacement::StepKinematics_RigidPlacement ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : CaseNum
-//purpose  :
-//=======================================================================
-Standard_Integer StepKinematics_RigidPlacement::CaseNum (const Handle(Standard_Transient)& ent) const
+StepKinematics_RigidPlacement::StepKinematics_RigidPlacement() {}
+
+//=================================================================================================
+
+Standard_Integer StepKinematics_RigidPlacement::CaseNum(const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepGeom_Axis2Placement3d))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepGeom_SuParameters))) return 2;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepGeom_Axis2Placement3d)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepGeom_SuParameters)))
+    return 2;
   return 0;
 }
 
-//=======================================================================
-//function : Axis2Placement3d
-//purpose  :
-//=======================================================================
-Handle(StepGeom_Axis2Placement3d) StepKinematics_RigidPlacement::Axis2Placement3d () const
+//=================================================================================================
+
+Handle(StepGeom_Axis2Placement3d) StepKinematics_RigidPlacement::Axis2Placement3d() const
 {
   return Handle(StepGeom_Axis2Placement3d)::DownCast(Value());
 }
 
-//=======================================================================
-//function : SuParameters
-//purpose  :
-//=======================================================================
-Handle(StepGeom_SuParameters) StepKinematics_RigidPlacement::SuParameters () const
+//=================================================================================================
+
+Handle(StepGeom_SuParameters) StepKinematics_RigidPlacement::SuParameters() const
 {
   return Handle(StepGeom_SuParameters)::DownCast(Value());
 }

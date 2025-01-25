@@ -22,57 +22,53 @@ IMPLEMENT_STANDARD_RTTIEXT(NCollection_IncAllocator, NCollection_BaseAllocator)
 
 namespace
 {
-  // Bounds for checking block size level
+// Bounds for checking block size level
 // clang-format off
   static constexpr unsigned THE_SMALL_BOUND_BLOCK_SIZE = NCollection_IncAllocator::THE_DEFAULT_BLOCK_SIZE * 16;   // 196 KB
   static constexpr unsigned THE_MEDIUM_BOUND_BLOCK_SIZE = NCollection_IncAllocator::THE_DEFAULT_BLOCK_SIZE * 64;  // 786 KB
   static constexpr unsigned THE_LARGE_BOUND_BLOCK_SIZE = NCollection_IncAllocator::THE_DEFAULT_BLOCK_SIZE * 1024; // 12 MB
 // clang-format on
 
-  //=======================================================================
-  //function : computeLevel
-  //purpose  :
-  //=======================================================================
-  NCollection_IncAllocator::IBlockSizeLevel computeLevel(const unsigned int theSize)
+//=================================================================================================
+
+NCollection_IncAllocator::IBlockSizeLevel computeLevel(const unsigned int theSize)
+{
+  if (theSize < NCollection_IncAllocator::THE_DEFAULT_BLOCK_SIZE)
   {
-    if (theSize < NCollection_IncAllocator::THE_DEFAULT_BLOCK_SIZE)
-    {
-      return NCollection_IncAllocator::IBlockSizeLevel::Min;
-    }
-    else if (theSize < THE_SMALL_BOUND_BLOCK_SIZE)
-    {
-      return NCollection_IncAllocator::IBlockSizeLevel::Small;
-    }
-    else if (theSize < THE_MEDIUM_BOUND_BLOCK_SIZE)
-    {
-      return NCollection_IncAllocator::IBlockSizeLevel::Medium;
-    }
-    else if (theSize < THE_LARGE_BOUND_BLOCK_SIZE)
-    {
-      return NCollection_IncAllocator::IBlockSizeLevel::Large;
-    }
-    else
-    {
-      return NCollection_IncAllocator::IBlockSizeLevel::Max;
-    }
+    return NCollection_IncAllocator::IBlockSizeLevel::Min;
+  }
+  else if (theSize < THE_SMALL_BOUND_BLOCK_SIZE)
+  {
+    return NCollection_IncAllocator::IBlockSizeLevel::Small;
+  }
+  else if (theSize < THE_MEDIUM_BOUND_BLOCK_SIZE)
+  {
+    return NCollection_IncAllocator::IBlockSizeLevel::Medium;
+  }
+  else if (theSize < THE_LARGE_BOUND_BLOCK_SIZE)
+  {
+    return NCollection_IncAllocator::IBlockSizeLevel::Large;
+  }
+  else
+  {
+    return NCollection_IncAllocator::IBlockSizeLevel::Max;
   }
 }
+} // namespace
 
-//=======================================================================
-//function : NCollection_IncAllocator
-//purpose  : Constructor
-//=======================================================================
-NCollection_IncAllocator::NCollection_IncAllocator(const size_t theDefaultSize) :
-  myBlockSize(static_cast<unsigned>(theDefaultSize < THE_MINIMUM_BLOCK_SIZE ? THE_DEFAULT_BLOCK_SIZE : theDefaultSize))
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : SetThreadSafe
-//purpose  : Constructor
-//=======================================================================
-void NCollection_IncAllocator::SetThreadSafe (const bool theIsThreadSafe)
+NCollection_IncAllocator::NCollection_IncAllocator(const size_t theDefaultSize)
+    : myBlockSize(static_cast<unsigned>(
+        theDefaultSize < THE_MINIMUM_BLOCK_SIZE ? THE_DEFAULT_BLOCK_SIZE : theDefaultSize))
 {
-  if(theIsThreadSafe)
+}
+
+//=================================================================================================
+
+void NCollection_IncAllocator::SetThreadSafe(const bool theIsThreadSafe)
+{
+  if (theIsThreadSafe)
   {
     if (!myMutex)
     {
@@ -86,10 +82,8 @@ void NCollection_IncAllocator::SetThreadSafe (const bool theIsThreadSafe)
   }
 }
 
-//=======================================================================
-//function : ~NCollection_IncAllocator
-//purpose  : Destructor
-//=======================================================================
+//=================================================================================================
+
 NCollection_IncAllocator::~NCollection_IncAllocator()
 {
   clean();
@@ -97,8 +91,8 @@ NCollection_IncAllocator::~NCollection_IncAllocator()
 }
 
 //=======================================================================
-//function : AllocateOptimal
-//purpose  : allocate a memory
+// function : AllocateOptimal
+// purpose  : allocate a memory
 //=======================================================================
 void* NCollection_IncAllocator::AllocateOptimal(const size_t theSize)
 {
@@ -120,116 +114,110 @@ void* NCollection_IncAllocator::AllocateOptimal(const size_t theSize)
     {
       myBlockSize = static_cast<unsigned>(theSize);
     }
-    void* aBufferBlock = Standard::AllocateOptimal(myBlockSize + sizeof(IBlock));
-    aBlock = new (aBufferBlock) IBlock(aBufferBlock, myBlockSize);
-    aBlock->NextBlock = myAllocationHeap;
+    void* aBufferBlock       = Standard::AllocateOptimal(myBlockSize + sizeof(IBlock));
+    aBlock                   = new (aBufferBlock) IBlock(aBufferBlock, myBlockSize);
+    aBlock->NextBlock        = myAllocationHeap;
     aBlock->NextOrderedBlock = myOrderedBlocks;
-    myOrderedBlocks = aBlock;
-    myAllocationHeap = aBlock;
+    myOrderedBlocks          = aBlock;
+    myAllocationHeap         = aBlock;
   }
   void* aRes = aBlock->CurPointer;
   aBlock->CurPointer += theSize;
   aBlock->AvailableSize -= theSize;
   if (aBlock->AvailableSize < 16)
   {
-    myAllocationHeap = aBlock->NextBlock;
+    myAllocationHeap  = aBlock->NextBlock;
     aBlock->NextBlock = myUsedHeap;
-    myUsedHeap = aBlock;
+    myUsedHeap        = aBlock;
   }
   else
   {
-    IBlock* aBlockIter = aBlock->NextBlock;
+    IBlock* aBlockIter           = aBlock->NextBlock;
     IBlock* aBlockToReplaceAfter = nullptr;
     while (aBlockIter) // Search new sorted position
     {
       if (aBlockIter->AvailableSize > aBlock->AvailableSize)
       {
         aBlockToReplaceAfter = aBlockIter;
-        aBlockIter = aBlockIter->NextBlock;
+        aBlockIter           = aBlockIter->NextBlock;
         continue;
       }
       break;
     }
     if (aBlockToReplaceAfter) // Update list order
     {
-      IBlock* aNext = aBlockToReplaceAfter->NextBlock;
+      IBlock* aNext                   = aBlockToReplaceAfter->NextBlock;
       aBlockToReplaceAfter->NextBlock = aBlock;
-      myAllocationHeap = aBlock->NextBlock;
-      aBlock->NextBlock = aNext;
+      myAllocationHeap                = aBlock->NextBlock;
+      aBlock->NextBlock               = aNext;
     }
   }
   return aRes;
 }
 
 //=======================================================================
-//function : Allocate
-//purpose  : Allocate a memory
+// function : Allocate
+// purpose  : Allocate a memory
 //=======================================================================
 void* NCollection_IncAllocator::Allocate(const size_t theSize)
 {
   return AllocateOptimal(theSize);
 }
 
-//=======================================================================
-//function : clean
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void NCollection_IncAllocator::clean()
 {
   Standard_Mutex::Sentry aLock(myMutex);
-  IBlock* aHeapIter = myOrderedBlocks;
+  IBlock*                aHeapIter = myOrderedBlocks;
   while (aHeapIter)
   {
     IBlock* aCur = aHeapIter;
-    aHeapIter = aHeapIter->NextOrderedBlock;
+    aHeapIter    = aHeapIter->NextOrderedBlock;
     Standard::Free(aCur);
   }
-  myOrderedBlocks = nullptr;
+  myOrderedBlocks  = nullptr;
   myAllocationHeap = nullptr;
-  myUsedHeap = nullptr;
-  myBlockCount = 0;
-  myBlockSize = THE_DEFAULT_BLOCK_SIZE;
+  myUsedHeap       = nullptr;
+  myBlockCount     = 0;
+  myBlockSize      = THE_DEFAULT_BLOCK_SIZE;
 }
 
-//=======================================================================
-//function : increaseBlockSize
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void NCollection_IncAllocator::increaseBlockSize()
 {
   switch (computeLevel(myBlockSize))
   {
-  case NCollection_IncAllocator::IBlockSizeLevel::Min:
-    myBlockSize *= 8;
-    break;
-  case NCollection_IncAllocator::IBlockSizeLevel::Small:
-    myBlockSize *= 4;
-    break;
-  case NCollection_IncAllocator::IBlockSizeLevel::Medium:
-    myBlockSize *= 2;
-    break;
-  case NCollection_IncAllocator::IBlockSizeLevel::Large:
-    myBlockSize = static_cast<unsigned>(std::lround(myBlockSize * 1.5));
-    break;
-  case NCollection_IncAllocator::IBlockSizeLevel::Max:
-    break;
+    case NCollection_IncAllocator::IBlockSizeLevel::Min:
+      myBlockSize *= 8;
+      break;
+    case NCollection_IncAllocator::IBlockSizeLevel::Small:
+      myBlockSize *= 4;
+      break;
+    case NCollection_IncAllocator::IBlockSizeLevel::Medium:
+      myBlockSize *= 2;
+      break;
+    case NCollection_IncAllocator::IBlockSizeLevel::Large:
+      myBlockSize = static_cast<unsigned>(std::lround(myBlockSize * 1.5));
+      break;
+    case NCollection_IncAllocator::IBlockSizeLevel::Max:
+      break;
   }
 }
 
-//=======================================================================
-//function : resetBlock
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void NCollection_IncAllocator::resetBlock(IBlock* theBlock) const
 {
-  theBlock->AvailableSize = theBlock->AvailableSize + (theBlock->CurPointer - (reinterpret_cast<char*>(theBlock) + sizeof(IBlock)));
+  theBlock->AvailableSize =
+    theBlock->AvailableSize
+    + (theBlock->CurPointer - (reinterpret_cast<char*>(theBlock) + sizeof(IBlock)));
   theBlock->CurPointer = reinterpret_cast<char*>(theBlock) + sizeof(IBlock);
 }
 
-//=======================================================================
-//function : Reset
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void NCollection_IncAllocator::Reset(const Standard_Boolean theReleaseMemory)
 {
   if (theReleaseMemory)
@@ -238,24 +226,22 @@ void NCollection_IncAllocator::Reset(const Standard_Boolean theReleaseMemory)
     return;
   }
   Standard_Mutex::Sentry aLock(myMutex);
-  IBlock* aHeapIter = myOrderedBlocks;
+  IBlock*                aHeapIter = myOrderedBlocks;
   while (aHeapIter)
   {
-    IBlock* aCur = aHeapIter;
-    aHeapIter = aHeapIter->NextOrderedBlock;
+    IBlock* aCur    = aHeapIter;
+    aHeapIter       = aHeapIter->NextOrderedBlock;
     aCur->NextBlock = aHeapIter;
     resetBlock(aCur); // reset size and pointer
   }
   myAllocationHeap = myOrderedBlocks;
-  myUsedHeap = nullptr;
+  myUsedHeap       = nullptr;
 }
 
-//=======================================================================
-//function : IBlockSmall::IBlockSmall
-//purpose  : 
-//=======================================================================
-NCollection_IncAllocator::IBlock::IBlock(void* thePointer,
-                                         const size_t theSize) :
-  CurPointer(static_cast<char*>(thePointer) + sizeof(IBlock)),
-  AvailableSize(theSize)
-{}
+//=================================================================================================
+
+NCollection_IncAllocator::IBlock::IBlock(void* thePointer, const size_t theSize)
+    : CurPointer(static_cast<char*>(thePointer) + sizeof(IBlock)),
+      AvailableSize(theSize)
+{
+}

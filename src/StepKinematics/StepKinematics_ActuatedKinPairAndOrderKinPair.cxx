@@ -18,36 +18,33 @@
 #include <StepKinematics_KinematicPair.hxx>
 #include <StepKinematics_ActuatedKinematicPair.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_ActuatedKinPairAndOrderKinPair, StepKinematics_KinematicPair)
+IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_ActuatedKinPairAndOrderKinPair,
+                           StepKinematics_KinematicPair)
 
-//=======================================================================
-//function : StepKinematics_ActuatedKinPairAndOrderKinPair
-//purpose  :
-//=======================================================================
-StepKinematics_ActuatedKinPairAndOrderKinPair::StepKinematics_ActuatedKinPairAndOrderKinPair()
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_ActuatedKinPairAndOrderKinPair::Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                                         const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Name,
-                                                         const Standard_Boolean hasItemDefinedTransformation_Description,
-                                                         const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Description,
-                                                         const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem1,
-                                                         const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem2,
-                                                         const Handle(StepKinematics_KinematicJoint)& theJoint,
-                                                         const Handle(StepKinematics_ActuatedKinematicPair)& theActuatedKinematicPair,
-                                                         const Handle(StepKinematics_KinematicPair)& theOrderKinematicPair)
+StepKinematics_ActuatedKinPairAndOrderKinPair::StepKinematics_ActuatedKinPairAndOrderKinPair() {}
+
+//=================================================================================================
+
+void StepKinematics_ActuatedKinPairAndOrderKinPair::Init(
+  const Handle(TCollection_HAsciiString)&             theRepresentationItem_Name,
+  const Handle(TCollection_HAsciiString)&             theItemDefinedTransformation_Name,
+  const Standard_Boolean                              hasItemDefinedTransformation_Description,
+  const Handle(TCollection_HAsciiString)&             theItemDefinedTransformation_Description,
+  const Handle(StepRepr_RepresentationItem)&          theItemDefinedTransformation_TransformItem1,
+  const Handle(StepRepr_RepresentationItem)&          theItemDefinedTransformation_TransformItem2,
+  const Handle(StepKinematics_KinematicJoint)&        theJoint,
+  const Handle(StepKinematics_ActuatedKinematicPair)& theActuatedKinematicPair,
+  const Handle(StepKinematics_KinematicPair)&         theOrderKinematicPair)
 {
   StepKinematics_KinematicPair::Init(theRepresentationItem_Name,
-    theItemDefinedTransformation_Name,
-    hasItemDefinedTransformation_Description,
-    theItemDefinedTransformation_Description,
-    theItemDefinedTransformation_TransformItem1,
-    theItemDefinedTransformation_TransformItem2,
-    theJoint);
+                                     theItemDefinedTransformation_Name,
+                                     hasItemDefinedTransformation_Description,
+                                     theItemDefinedTransformation_Description,
+                                     theItemDefinedTransformation_TransformItem1,
+                                     theItemDefinedTransformation_TransformItem2,
+                                     theJoint);
   SetActuatedKinematicPair(theActuatedKinematicPair);
   SetOrderKinematicPair(theOrderKinematicPair);
 }

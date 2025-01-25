@@ -24,54 +24,42 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_EdgeTessellationExtractor, IMeshTools_CurveTessellator)
 
-//=======================================================================
-//function : Constructor
-//purpose  : 
-//=======================================================================
-BRepMesh_EdgeTessellationExtractor::BRepMesh_EdgeTessellationExtractor (
+//=================================================================================================
+
+BRepMesh_EdgeTessellationExtractor::BRepMesh_EdgeTessellationExtractor(
   const IMeshData::IEdgeHandle& theEdge,
   const IMeshData::IFaceHandle& theFace)
 {
-  Handle (Poly_Triangulation) aTriangulation =
-    BRep_Tool::Triangulation (theFace->GetFace(), myLoc);
+  Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation(theFace->GetFace(), myLoc);
 
-  Handle (Poly_PolygonOnTriangulation) aPolygon =
-    BRep_Tool::PolygonOnTriangulation (theEdge->GetEdge(), aTriangulation, myLoc);
+  Handle(Poly_PolygonOnTriangulation) aPolygon =
+    BRep_Tool::PolygonOnTriangulation(theEdge->GetEdge(), aTriangulation, myLoc);
 
   myTriangulation = aTriangulation.get();
-  myIndices = &aPolygon->Nodes ();
-  myProvider.Init (theEdge, TopAbs_FORWARD, theFace, aPolygon->Parameters ());
+  myIndices       = &aPolygon->Nodes();
+  myProvider.Init(theEdge, TopAbs_FORWARD, theFace, aPolygon->Parameters());
 }
 
-//=======================================================================
-//function : Constructor
-//purpose  : 
-//=======================================================================
-BRepMesh_EdgeTessellationExtractor::~BRepMesh_EdgeTessellationExtractor ()
+//=================================================================================================
+
+BRepMesh_EdgeTessellationExtractor::~BRepMesh_EdgeTessellationExtractor() {}
+
+//=================================================================================================
+
+Standard_Integer BRepMesh_EdgeTessellationExtractor::PointsNb() const
 {
+  return myIndices->Size();
 }
 
-//=======================================================================
-//function : NbPoints
-//purpose  : 
-//=======================================================================
-Standard_Integer BRepMesh_EdgeTessellationExtractor::PointsNb () const
-{
-  return myIndices->Size ();
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
-Standard_Boolean BRepMesh_EdgeTessellationExtractor::Value (
-  const Standard_Integer theIndex,
-  gp_Pnt&                thePoint,
-  Standard_Real&         theParameter) const
+Standard_Boolean BRepMesh_EdgeTessellationExtractor::Value(const Standard_Integer theIndex,
+                                                           gp_Pnt&                thePoint,
+                                                           Standard_Real& theParameter) const
 {
-  const gp_Pnt aRefPnt = myTriangulation->Node (myIndices->Value (theIndex));
-  thePoint = BRepMesh_ShapeTool::UseLocation (aRefPnt, myLoc);
+  const gp_Pnt aRefPnt = myTriangulation->Node(myIndices->Value(theIndex));
+  thePoint             = BRepMesh_ShapeTool::UseLocation(aRefPnt, myLoc);
 
-  theParameter = myProvider.Parameter (theIndex, thePoint);
+  theParameter = myProvider.Parameter(theIndex, thePoint);
   return Standard_True;
 }

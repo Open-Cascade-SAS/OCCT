@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IGESData_IGESDumper.hxx>
 #include <IGESDefs_AssociativityDef.hxx>
 #include <IGESDefs_AttributeDef.hxx>
@@ -31,69 +30,78 @@
 #include <Interface_Macros.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_SpecificModule,IGESData_SpecificModule)
+IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_SpecificModule, IGESData_SpecificModule)
 
 //  Each Module is attached to a Protocol : it must interpret Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
-IGESDefs_SpecificModule::IGESDefs_SpecificModule()    {  }
+IGESDefs_SpecificModule::IGESDefs_SpecificModule() {}
 
-
-    void  IGESDefs_SpecificModule::OwnDump
-  (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent,
-   const IGESData_IGESDumper& dumper, Standard_OStream& S,
-   const Standard_Integer own) const 
+void IGESDefs_SpecificModule::OwnDump(const Standard_Integer             CN,
+                                      const Handle(IGESData_IGESEntity)& ent,
+                                      const IGESData_IGESDumper&         dumper,
+                                      Standard_OStream&                  S,
+                                      const Standard_Integer             own) const
 {
-  switch (CN) {
-    case  1 : {
-      DeclareAndCast(IGESDefs_AssociativityDef,anent,ent);
-      if (anent.IsNull()) return;
+  switch (CN)
+  {
+    case 1: {
+      DeclareAndCast(IGESDefs_AssociativityDef, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDefs_ToolAssociativityDef tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case  2 : {
-      DeclareAndCast(IGESDefs_AttributeDef,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 2: {
+      DeclareAndCast(IGESDefs_AttributeDef, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDefs_ToolAttributeDef tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case  3 : {
-      DeclareAndCast(IGESDefs_AttributeTable,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 3: {
+      DeclareAndCast(IGESDefs_AttributeTable, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDefs_ToolAttributeTable tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case  4 : {
-      DeclareAndCast(IGESDefs_GenericData,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 4: {
+      DeclareAndCast(IGESDefs_GenericData, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDefs_ToolGenericData tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case  5 : {
-      DeclareAndCast(IGESDefs_MacroDef,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 5: {
+      DeclareAndCast(IGESDefs_MacroDef, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDefs_ToolMacroDef tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case  6 : {
-      DeclareAndCast(IGESDefs_TabularData,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 6: {
+      DeclareAndCast(IGESDefs_TabularData, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDefs_ToolTabularData tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
-      break;
-    case  7 : {
-      DeclareAndCast(IGESDefs_UnitsData,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 7: {
+      DeclareAndCast(IGESDefs_UnitsData, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDefs_ToolUnitsData tool;
-      tool.OwnDump(anent,dumper,S,own);
+      tool.OwnDump(anent, dumper, S, own);
     }
+    break;
+    default:
       break;
-    default : break;
   }
 }

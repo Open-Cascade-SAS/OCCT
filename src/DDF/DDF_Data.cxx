@@ -15,7 +15,7 @@
 
 //      	------------
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Feb 10 1997	Creation
 
 #include <DDF.hxx>
@@ -28,76 +28,56 @@
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(DDF_Data,Draw_Drawable3D)
+IMPLEMENT_STANDARD_RTTIEXT(DDF_Data, Draw_Drawable3D)
 
-//=======================================================================
-//function : DDF_Data
-//purpose  : 
-//=======================================================================
-DDF_Data::DDF_Data(const Handle(TDF_Data)& aDF) : myDF (aDF) {}
+//=================================================================================================
 
+DDF_Data::DDF_Data(const Handle(TDF_Data)& aDF)
+    : myDF(aDF)
+{
+}
 
-
-//=======================================================================
-//function : DrawOn
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void DDF_Data::DrawOn(Draw_Display& /*dis*/) const
 
-{ std::cout<<"DDF_Data"<<std::endl; }
+{
+  std::cout << "DDF_Data" << std::endl;
+}
 
+//=================================================================================================
 
+Handle(Draw_Drawable3D) DDF_Data::Copy() const
+{
+  return new DDF_Data(myDF);
+}
 
-//=======================================================================
-//function : Copy
-//purpose  : 
-//=======================================================================
-
-Handle(Draw_Drawable3D) DDF_Data::Copy() const { return new DDF_Data (myDF); }
-
-
-
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void DDF_Data::Dump(Standard_OStream& S) const
 
 {
-  TDF_Tool::DeepDump(S,myDF);
+  TDF_Tool::DeepDump(S, myDF);
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : DataFramework
-//purpose  : 
-//=======================================================================
+Handle(TDF_Data) DDF_Data::DataFramework() const
+{
+  return myDF;
+}
 
-Handle(TDF_Data) DDF_Data::DataFramework () const { return myDF; }
+//=================================================================================================
 
+void DDF_Data::DataFramework(const Handle(TDF_Data)& aDF)
 
+{
+  myDF = aDF;
+}
 
+//=================================================================================================
 
-//=======================================================================
-//function : DataFramework
-//purpose  : 
-//=======================================================================
-
-void DDF_Data::DataFramework (const Handle(TDF_Data)& aDF) 
-
-{ myDF = aDF; }
-
-
-
-
-//=======================================================================
-//function : Whatis
-//purpose  : 
-//=======================================================================
-
-void DDF_Data::Whatis (Draw_Interpretor& I) const
+void DDF_Data::Whatis(Draw_Interpretor& I) const
 
 {
   I << "Data Framework";

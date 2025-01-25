@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(StepBasic_Approval)> StepBasic_Array1OfApproval;
 
-
 #endif

@@ -18,7 +18,7 @@
 
 #include <NCollection_DefineAlloc.hxx>
 
-//! Template defining a class derived from the specified base class and 
+//! Template defining a class derived from the specified base class and
 //! Standard_Transient, and supporting OCCT RTTI.
 //!
 //! This provides possibility to use Handes for types not initially intended
@@ -32,7 +32,9 @@
 //! The intent is similar to std::make_shared<> in STL, except that this
 //! implementation defines a separate type.
 
-template <class T, typename = typename opencascade::std::enable_if<! opencascade::std::is_base_of<Standard_Transient, T>::value>::type>
+template <class T,
+          typename = typename opencascade::std::enable_if<
+            !opencascade::std::is_base_of<Standard_Transient, T>::value>::type>
 class NCollection_Shared : public Standard_Transient, public T
 {
 public:
@@ -40,33 +42,57 @@ public:
   DEFINE_NCOLLECTION_ALLOC
 
   //! Default constructor
-  NCollection_Shared () {}
+  NCollection_Shared() {}
 
   //! Constructor with single argument
-  template<typename T1> NCollection_Shared (const T1& arg1) : T(arg1) {}
+  template <typename T1>
+  NCollection_Shared(const T1& arg1)
+      : T(arg1)
+  {
+  }
 
   //! Constructor with single argument
-  template<typename T1> NCollection_Shared (T1& arg1) : T(arg1) {}
+  template <typename T1>
+  NCollection_Shared(T1& arg1)
+      : T(arg1)
+  {
+  }
 
   //! Constructor with two arguments
-  template<typename T1, typename T2> NCollection_Shared (const T1& arg1, const T2& arg2) : T(arg1, arg2) {}
+  template <typename T1, typename T2>
+  NCollection_Shared(const T1& arg1, const T2& arg2)
+      : T(arg1, arg2)
+  {
+  }
 
   //! Constructor with two arguments
-  template<typename T1, typename T2> NCollection_Shared (T1& arg1, const T2& arg2) : T(arg1, arg2) {}
+  template <typename T1, typename T2>
+  NCollection_Shared(T1& arg1, const T2& arg2)
+      : T(arg1, arg2)
+  {
+  }
 
   //! Constructor with two arguments
-  template<typename T1, typename T2> NCollection_Shared (const T1& arg1, T2& arg2) : T(arg1, arg2) {}
+  template <typename T1, typename T2>
+  NCollection_Shared(const T1& arg1, T2& arg2)
+      : T(arg1, arg2)
+  {
+  }
 
   //! Constructor with two arguments
-  template<typename T1, typename T2> NCollection_Shared (T1& arg1, T2& arg2) : T(arg1, arg2) {}
+  template <typename T1, typename T2>
+  NCollection_Shared(T1& arg1, T2& arg2)
+      : T(arg1, arg2)
+  {
+  }
 
-/* this could work...
-  //! Forwarding constructor
-  template<typename... Args>
-  NCollection_Shared (Args&&... args) 
-  : T (std::forward<Args>(args)...)
-  {}
-*/
+  /* this could work...
+    //! Forwarding constructor
+    template<typename... Args>
+    NCollection_Shared (Args&&... args)
+    : T (std::forward<Args>(args)...)
+    {}
+  */
 };
 
 #endif

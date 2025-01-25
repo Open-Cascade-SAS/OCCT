@@ -14,20 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopExp.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepTool_AncestorsTool.hxx>
 
-//=======================================================================
-//function : MakeAncestors
-//purpose  : 
-//=======================================================================
-void TopOpeBRepTool_AncestorsTool::MakeAncestors
-  (const TopoDS_Shape& S,
-   const TopAbs_ShapeEnum TS,
-   const TopAbs_ShapeEnum TA,
-   TopTools_IndexedDataMapOfShapeListOfShape& M)
+//=================================================================================================
+
+void TopOpeBRepTool_AncestorsTool::MakeAncestors(const TopoDS_Shape&                        S,
+                                                 const TopAbs_ShapeEnum                     TS,
+                                                 const TopAbs_ShapeEnum                     TA,
+                                                 TopTools_IndexedDataMapOfShapeListOfShape& M)
 {
-  TopExp::MapShapesAndAncestors(S,TS,TA,M);
+  TopExp::MapShapesAndAncestors(S, TS, TA, M);
 }

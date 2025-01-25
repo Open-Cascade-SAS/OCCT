@@ -24,7 +24,6 @@
 #include <IGESData_IGESEntity.hxx>
 class gp_Pnt;
 
-
 class IGESGeom_TabulatedCylinder;
 DEFINE_STANDARD_HANDLE(IGESGeom_TabulatedCylinder, IGESData_IGESEntity)
 
@@ -39,10 +38,8 @@ class IGESGeom_TabulatedCylinder : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESGeom_TabulatedCylinder();
-  
+
   //! This method is used to set the fields of the class
   //! TabulatedCylinder
   //! - aDirectrix : Directrix Curve of the tabulated cylinder
@@ -50,41 +47,24 @@ public:
   //! generatrix
   //! The start point of the directrix is identical to the start
   //! point of the generatrix
-  Standard_EXPORT void Init (const Handle(IGESData_IGESEntity)& aDirectrix, const gp_XYZ& anEnd);
-  
+  Standard_EXPORT void Init(const Handle(IGESData_IGESEntity)& aDirectrix, const gp_XYZ& anEnd);
+
   //! returns the directrix curve of the tabulated cylinder
   Standard_EXPORT Handle(IGESData_IGESEntity) Directrix() const;
-  
+
   //! returns end point of generatrix of the tabulated cylinder
   Standard_EXPORT gp_Pnt EndPoint() const;
-  
+
   //! returns end point of generatrix of the tabulated cylinder
   //! after applying Transf. Matrix
   Standard_EXPORT gp_Pnt TransformedEndPoint() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESGeom_TabulatedCylinder,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_TabulatedCylinder, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(IGESData_IGESEntity) theDirectrix;
-  gp_XYZ theEnd;
-
-
+  gp_XYZ                      theEnd;
 };
-
-
-
-
-
-
 
 #endif // _IGESGeom_TabulatedCylinder_HeaderFile

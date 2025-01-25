@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <DsgPrs_ShadedPlanePresentation.hxx>
 #include <gp_Pnt.hxx>
 #include <Graphic3d_ArrayOfPolygons.hxx>
@@ -23,15 +22,13 @@
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 
-//=======================================================================
-//function : Add
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void DsgPrs_ShadedPlanePresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-					 const Handle(Prs3d_Drawer)& aDrawer,	     
-					 const gp_Pnt& aPt1, 
-					 const gp_Pnt& aPt2,
-					 const gp_Pnt& aPt3)
+                                         const Handle(Prs3d_Drawer)&       aDrawer,
+                                         const gp_Pnt&                     aPt1,
+                                         const gp_Pnt&                     aPt2,
+                                         const gp_Pnt&                     aPt3)
 {
   Handle(Graphic3d_Group) aGroup = aPresentation->CurrentGroup();
   aGroup->SetPrimitivesAspect(aDrawer->PlaneAspect()->EdgesAspect()->Aspect());

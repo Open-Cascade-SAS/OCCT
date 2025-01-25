@@ -28,54 +28,32 @@ class StepShape_VertexLoop;
 class StepToTopoDS_Tool;
 class StepToTopoDS_NMTool;
 
-
-
-class StepToTopoDS_TranslateVertexLoop  : public StepToTopoDS_Root
+class StepToTopoDS_TranslateVertexLoop : public StepToTopoDS_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT StepToTopoDS_TranslateVertexLoop();
-  
-  Standard_EXPORT StepToTopoDS_TranslateVertexLoop(const Handle(StepShape_VertexLoop)& VL,
-                                                   StepToTopoDS_Tool& T,
-                                                   StepToTopoDS_NMTool& NMTool,
-                                                   const StepData_Factors& theLocalFactors = StepData_Factors());
-  
-  Standard_EXPORT void Init (const Handle(StepShape_VertexLoop)& VL,
-                             StepToTopoDS_Tool& T,
-                             StepToTopoDS_NMTool& NMTool,
-                             const StepData_Factors& theLocalFactors = StepData_Factors());
-  
+
+  Standard_EXPORT StepToTopoDS_TranslateVertexLoop(
+    const Handle(StepShape_VertexLoop)& VL,
+    StepToTopoDS_Tool&                  T,
+    StepToTopoDS_NMTool&                NMTool,
+    const StepData_Factors&             theLocalFactors = StepData_Factors());
+
+  Standard_EXPORT void Init(const Handle(StepShape_VertexLoop)& VL,
+                            StepToTopoDS_Tool&                  T,
+                            StepToTopoDS_NMTool&                NMTool,
+                            const StepData_Factors& theLocalFactors = StepData_Factors());
+
   Standard_EXPORT const TopoDS_Shape& Value() const;
-  
+
   Standard_EXPORT StepToTopoDS_TranslateVertexLoopError Error() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   StepToTopoDS_TranslateVertexLoopError myError;
-  TopoDS_Shape myResult;
-
-
+  TopoDS_Shape                          myResult;
 };
-
-
-
-
-
-
 
 #endif // _StepToTopoDS_TranslateVertexLoop_HeaderFile

@@ -45,10 +45,9 @@ class IFSelect_IntParam : public Standard_Transient
 {
 
 public:
-
   //! Creates an IntParam. Initial value is set to zer
   Standard_EXPORT IFSelect_IntParam();
-  
+
   //! Commands this IntParam to be bound to a Static
   //! Hence, Value will return the value if this Static if it is set
   //! Else, Value works on the locally stored value
@@ -57,29 +56,26 @@ public:
   //! Else, it is ignored
   //!
   //! If <statname> is empty, disconnects the IntParam from Static
-  Standard_EXPORT void SetStaticName (const Standard_CString statname);
-  
+  Standard_EXPORT void SetStaticName(const Standard_CString statname);
+
   //! Returns the name of static parameter to which this IntParam
   //! is bound, empty if none
   Standard_EXPORT Standard_CString StaticName() const;
-  
+
   //! Reads Integer Value of the IntParam. If a StaticName is
   //! defined and the Static is set, looks in priority the value
   //! of the static
   Standard_EXPORT Standard_Integer Value() const;
-  
+
   //! Sets a new Integer Value for the IntParam. If a StaticName is
   //! defined and the Static is set, also sets the value of the static
-  Standard_EXPORT void SetValue (const Standard_Integer val);
+  Standard_EXPORT void SetValue(const Standard_Integer val);
 
-
-  DEFINE_STANDARD_RTTIEXT(IFSelect_IntParam,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_IntParam, Standard_Transient)
 
 private:
-
-  Standard_Integer theval;
+  Standard_Integer        theval;
   TCollection_AsciiString thestn;
-
 };
 
 #endif // _IFSelect_IntParam_HeaderFile

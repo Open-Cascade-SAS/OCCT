@@ -11,46 +11,43 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepGeom_Axis1Placement.hxx>
 #include <StepGeom_CurveBoundedSurface.hxx>
 #include <StepShape_RevolvedAreaSolid.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_RevolvedAreaSolid,StepShape_SweptAreaSolid)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_RevolvedAreaSolid, StepShape_SweptAreaSolid)
 
-StepShape_RevolvedAreaSolid::StepShape_RevolvedAreaSolid ()  {}
+StepShape_RevolvedAreaSolid::StepShape_RevolvedAreaSolid() {}
 
-void StepShape_RevolvedAreaSolid::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_CurveBoundedSurface)& aSweptArea,
-	const Handle(StepGeom_Axis1Placement)& aAxis,
-	const Standard_Real aAngle)
+void StepShape_RevolvedAreaSolid::Init(const Handle(TCollection_HAsciiString)&     aName,
+                                       const Handle(StepGeom_CurveBoundedSurface)& aSweptArea,
+                                       const Handle(StepGeom_Axis1Placement)&      aAxis,
+                                       const Standard_Real                         aAngle)
 {
-	// --- classe own fields ---
-	axis = aAxis;
-	angle = aAngle;
-	// --- classe inherited fields ---
-	StepShape_SweptAreaSolid::Init(aName, aSweptArea);
+  // --- classe own fields ---
+  axis  = aAxis;
+  angle = aAngle;
+  // --- classe inherited fields ---
+  StepShape_SweptAreaSolid::Init(aName, aSweptArea);
 }
-
 
 void StepShape_RevolvedAreaSolid::SetAxis(const Handle(StepGeom_Axis1Placement)& aAxis)
 {
-	axis = aAxis;
+  axis = aAxis;
 }
 
 Handle(StepGeom_Axis1Placement) StepShape_RevolvedAreaSolid::Axis() const
 {
-	return axis;
+  return axis;
 }
 
 void StepShape_RevolvedAreaSolid::SetAngle(const Standard_Real aAngle)
 {
-	angle = aAngle;
+  angle = aAngle;
 }
 
 Standard_Real StepShape_RevolvedAreaSolid::Angle() const
 {
-	return angle;
+  return angle;
 }

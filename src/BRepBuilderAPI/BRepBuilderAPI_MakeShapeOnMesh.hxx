@@ -25,22 +25,21 @@
 class BRepBuilderAPI_MakeShapeOnMesh : public BRepBuilderAPI_MakeShape
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Ctor. Sets mesh to process.
   //! @param[in] theMesh  - Mesh to construct shape for.
   BRepBuilderAPI_MakeShapeOnMesh(const Handle(Poly_Triangulation)& theMesh)
-  : myMesh(theMesh)
-  {}
+      : myMesh(theMesh)
+  {
+  }
 
   //! Builds shape on mesh.
-  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(
+    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
 private:
-
   Handle(Poly_Triangulation) myMesh;
-
 };
 
 #endif // _BRepBuilderAPI_MakeShapeOnMesh_HeaderFile

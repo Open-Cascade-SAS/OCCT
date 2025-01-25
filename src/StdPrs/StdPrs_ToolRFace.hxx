@@ -26,11 +26,11 @@
 class TopoDS_Edge;
 
 //! Iterator over 2D curves restricting a face (skipping internal/external edges).
-//! In addition, the algorithm skips NULL curves - IsInvalidGeometry() can be checked if this should be handled within algorithm.
-class StdPrs_ToolRFace 
+//! In addition, the algorithm skips NULL curves - IsInvalidGeometry() can be checked if this should
+//! be handled within algorithm.
+class StdPrs_ToolRFace
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor.
@@ -38,14 +38,14 @@ public:
 
   //! Constructor with initialization.
   Standard_EXPORT StdPrs_ToolRFace(const Handle(BRepAdaptor_Surface)& aSurface);
-  
+
   //! Return TRUE indicating that iterator looks only for oriented edges.
   Standard_Boolean IsOriented() const { return Standard_True; }
-  
+
   //! Move iterator to the first element.
   void Init()
   {
-    myExplorer.Init (myFace, TopAbs_EDGE);
+    myExplorer.Init(myFace, TopAbs_EDGE);
     next();
   }
 
@@ -72,17 +72,14 @@ public:
   Standard_Boolean IsInvalidGeometry() const { return myHasNullCurves; }
 
 private:
-
   //! Find nearest valid item for the iterator.
   Standard_EXPORT void next();
 
 private:
-
-  TopoDS_Face myFace;
-  TopExp_Explorer myExplorer;
+  TopoDS_Face         myFace;
+  TopExp_Explorer     myExplorer;
   Geom2dAdaptor_Curve myCurve;
-  Standard_Boolean myHasNullCurves;
-
+  Standard_Boolean    myHasNullCurves;
 };
 
 #endif // _StdPrs_ToolRFace_HeaderFile

@@ -22,41 +22,20 @@
 
 #include <StepShape_ShapeRepresentation.hxx>
 
-
 class StepShape_FacetedBrepShapeRepresentation;
 DEFINE_STANDARD_HANDLE(StepShape_FacetedBrepShapeRepresentation, StepShape_ShapeRepresentation)
-
 
 class StepShape_FacetedBrepShapeRepresentation : public StepShape_ShapeRepresentation
 {
 
 public:
-
-  
   //! Returns a FacetedBrepShapeRepresentation
   Standard_EXPORT StepShape_FacetedBrepShapeRepresentation();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_FacetedBrepShapeRepresentation,StepShape_ShapeRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepShape_FacetedBrepShapeRepresentation, StepShape_ShapeRepresentation)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_FacetedBrepShapeRepresentation_HeaderFile

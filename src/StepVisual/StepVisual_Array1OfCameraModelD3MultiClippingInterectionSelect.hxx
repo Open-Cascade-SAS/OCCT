@@ -19,5 +19,6 @@
 #include <StepVisual_CameraModelD3MultiClippingInterectionSelect.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<StepVisual_CameraModelD3MultiClippingInterectionSelect> StepVisual_Array1OfCameraModelD3MultiClippingInterectionSelect;
+typedef NCollection_Array1<StepVisual_CameraModelD3MultiClippingInterectionSelect>
+  StepVisual_Array1OfCameraModelD3MultiClippingInterectionSelect;
 #endif // _StepVisual_Array1OfCameraModelD3MultiClippingInterectionSelect_HeaderFile

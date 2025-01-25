@@ -21,7 +21,7 @@
 #include <BRepCheck_Result.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-typedef NCollection_IndexedDataMap<TopoDS_Shape,Handle(BRepCheck_Result)> BRepCheck_IndexedDataMapOfShapeResult;
-
+typedef NCollection_IndexedDataMap<TopoDS_Shape, Handle(BRepCheck_Result)>
+  BRepCheck_IndexedDataMapOfShapeResult;
 
 #endif

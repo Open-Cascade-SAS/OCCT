@@ -25,53 +25,34 @@
 class StepShape_Loop;
 class TCollection_HAsciiString;
 
-
 class StepShape_FaceBound;
 DEFINE_STANDARD_HANDLE(StepShape_FaceBound, StepShape_TopologicalRepresentationItem)
-
 
 class StepShape_FaceBound : public StepShape_TopologicalRepresentationItem
 {
 
 public:
-
-  
   //! Returns a FaceBound
   Standard_EXPORT StepShape_FaceBound();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_Loop)& aBound, const Standard_Boolean aOrientation);
-  
-  Standard_EXPORT void SetBound (const Handle(StepShape_Loop)& aBound);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Handle(StepShape_Loop)&           aBound,
+                            const Standard_Boolean                  aOrientation);
+
+  Standard_EXPORT void SetBound(const Handle(StepShape_Loop)& aBound);
+
   Standard_EXPORT Handle(StepShape_Loop) Bound() const;
-  
-  Standard_EXPORT void SetOrientation (const Standard_Boolean aOrientation);
-  
+
+  Standard_EXPORT void SetOrientation(const Standard_Boolean aOrientation);
+
   Standard_EXPORT Standard_Boolean Orientation() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_FaceBound,StepShape_TopologicalRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_FaceBound, StepShape_TopologicalRepresentationItem)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepShape_Loop) bound;
-  Standard_Boolean orientation;
-
-
+  Standard_Boolean       orientation;
 };
-
-
-
-
-
-
 
 #endif // _StepShape_FaceBound_HeaderFile

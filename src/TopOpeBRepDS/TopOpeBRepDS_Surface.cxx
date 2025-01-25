@@ -18,48 +18,39 @@
 
 #include <Geom_Surface.hxx>
 
-//=======================================================================
-//function : TopOpeBRepDS_Surface
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 TopOpeBRepDS_Surface::TopOpeBRepDS_Surface()
-: myTolerance (0.0),
-  myKeep (Standard_False)
+    : myTolerance(0.0),
+      myKeep(Standard_False)
 {
 }
 
-//=======================================================================
-//function : TopOpeBRepDS_Surface
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TopOpeBRepDS_Surface::TopOpeBRepDS_Surface (const Handle(Geom_Surface)& theSurface,
-                                            const Standard_Real theTolerance)
-: mySurface (theSurface),
-  myTolerance (theTolerance),
-  myKeep (Standard_False)
+TopOpeBRepDS_Surface::TopOpeBRepDS_Surface(const Handle(Geom_Surface)& theSurface,
+                                           const Standard_Real         theTolerance)
+    : mySurface(theSurface),
+      myTolerance(theTolerance),
+      myKeep(Standard_False)
 {
 }
 
-//=======================================================================
-//function : TopOpeBRepDS_Surface::TopOpeBRepDS_Surface
-//purpose  : 
-//=======================================================================
-TopOpeBRepDS_Surface::TopOpeBRepDS_Surface (const TopOpeBRepDS_Surface& theOther)
-: mySurface (theOther.mySurface),
-  myTolerance (theOther.myTolerance),
-  myKeep (theOther.myKeep)
+//=================================================================================================
+
+TopOpeBRepDS_Surface::TopOpeBRepDS_Surface(const TopOpeBRepDS_Surface& theOther)
+    : mySurface(theOther.mySurface),
+      myTolerance(theOther.myTolerance),
+      myKeep(theOther.myKeep)
 {
   //
 }
 
-//=======================================================================
-//function : Assign
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void TopOpeBRepDS_Surface::Assign(const TopOpeBRepDS_Surface& Other)
 {
-  mySurface=Other.mySurface;
-  myTolerance=Other.myTolerance;
-  myKeep=Other.myKeep;
+  mySurface   = Other.mySurface;
+  myTolerance = Other.myTolerance;
+  myKeep      = Other.myKeep;
 }

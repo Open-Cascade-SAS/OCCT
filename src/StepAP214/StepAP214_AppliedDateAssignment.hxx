@@ -26,52 +26,33 @@ class StepBasic_Date;
 class StepBasic_DateRole;
 class StepAP214_DateItem;
 
-
 class StepAP214_AppliedDateAssignment;
 DEFINE_STANDARD_HANDLE(StepAP214_AppliedDateAssignment, StepBasic_DateAssignment)
-
 
 class StepAP214_AppliedDateAssignment : public StepBasic_DateAssignment
 {
 
 public:
-
-  
   //! Returns a AppliedDateAssignment
   Standard_EXPORT StepAP214_AppliedDateAssignment();
-  
-  Standard_EXPORT void Init (const Handle(StepBasic_Date)& aAssignedDate, const Handle(StepBasic_DateRole)& aRole, const Handle(StepAP214_HArray1OfDateItem)& aItems);
-  
-  Standard_EXPORT void SetItems (const Handle(StepAP214_HArray1OfDateItem)& aItems);
-  
+
+  Standard_EXPORT void Init(const Handle(StepBasic_Date)&              aAssignedDate,
+                            const Handle(StepBasic_DateRole)&          aRole,
+                            const Handle(StepAP214_HArray1OfDateItem)& aItems);
+
+  Standard_EXPORT void SetItems(const Handle(StepAP214_HArray1OfDateItem)& aItems);
+
   Standard_EXPORT Handle(StepAP214_HArray1OfDateItem) Items() const;
-  
-  Standard_EXPORT StepAP214_DateItem ItemsValue (const Standard_Integer num) const;
-  
+
+  Standard_EXPORT StepAP214_DateItem ItemsValue(const Standard_Integer num) const;
+
   Standard_EXPORT Standard_Integer NbItems() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepAP214_AppliedDateAssignment,StepBasic_DateAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_AppliedDateAssignment, StepBasic_DateAssignment)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepAP214_HArray1OfDateItem) items;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepAP214_AppliedDateAssignment_HeaderFile

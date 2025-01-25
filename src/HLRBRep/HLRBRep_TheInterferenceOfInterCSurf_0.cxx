@@ -24,7 +24,6 @@
 #include <Bnd_BoundSortBox.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_XYZ.hxx>
- 
 
 #define Polygon3d HLRBRep_ThePolygonOfInterCSurf
 #define Polygon3d_hxx <HLRBRep_ThePolygonOfInterCSurf.hxx>
@@ -37,4 +36,3 @@
 #define Intf_InterferencePolygonPolyhedron HLRBRep_TheInterferenceOfInterCSurf
 #define Intf_InterferencePolygonPolyhedron_hxx <HLRBRep_TheInterferenceOfInterCSurf.hxx>
 #include "../Intf/Intf_InterferencePolygonPolyhedron.gxx"
-

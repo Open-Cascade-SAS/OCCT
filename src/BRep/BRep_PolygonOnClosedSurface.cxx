@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRep_CurveRepresentation.hxx>
 #include <BRep_PolygonOnClosedSurface.hxx>
 #include <Geom_Surface.hxx>
@@ -22,73 +21,57 @@
 #include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRep_PolygonOnClosedSurface,BRep_PolygonOnSurface)
+IMPLEMENT_STANDARD_RTTIEXT(BRep_PolygonOnClosedSurface, BRep_PolygonOnSurface)
 
-//=======================================================================
-//function : BRep_PolygonOnClosedSurface
-//purpose  : 
-//=======================================================================
-BRep_PolygonOnClosedSurface::BRep_PolygonOnClosedSurface(const Handle(Poly_Polygon2D)& P1, 
-							 const Handle(Poly_Polygon2D)& P2, 
-							 const Handle(Geom_Surface)&   S, 
-							 const TopLoc_Location&        L):
-							 BRep_PolygonOnSurface(P1, S, L),
-							 myPolygon2(P2)
+//=================================================================================================
+
+BRep_PolygonOnClosedSurface::BRep_PolygonOnClosedSurface(const Handle(Poly_Polygon2D)& P1,
+                                                         const Handle(Poly_Polygon2D)& P2,
+                                                         const Handle(Geom_Surface)&   S,
+                                                         const TopLoc_Location&        L)
+    : BRep_PolygonOnSurface(P1, S, L),
+      myPolygon2(P2)
 {
 }
 
-//=======================================================================
-//function : IsPolygonOnClosedSurface
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean BRep_PolygonOnClosedSurface::IsPolygonOnClosedSurface() const 
+Standard_Boolean BRep_PolygonOnClosedSurface::IsPolygonOnClosedSurface() const
 {
   return Standard_True;
 }
 
-//=======================================================================
-//function : Polygon2
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-const Handle(Poly_Polygon2D)& BRep_PolygonOnClosedSurface::Polygon2() const 
+const Handle(Poly_Polygon2D)& BRep_PolygonOnClosedSurface::Polygon2() const
 {
   return myPolygon2;
 }
 
-//=======================================================================
-//function : Polygon2
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void BRep_PolygonOnClosedSurface::Polygon2(const Handle(Poly_Polygon2D)& P)
 {
   myPolygon2 = P;
 }
 
-//=======================================================================
-//function : Copy
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(BRep_CurveRepresentation) BRep_PolygonOnClosedSurface::Copy() const 
+Handle(BRep_CurveRepresentation) BRep_PolygonOnClosedSurface::Copy() const
 {
-  Handle(BRep_PolygonOnClosedSurface) P = 
+  Handle(BRep_PolygonOnClosedSurface) P =
     new BRep_PolygonOnClosedSurface(Polygon(), myPolygon2, Surface(), Location());
   return P;
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void BRep_PolygonOnClosedSurface::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+//=================================================================================================
+
+void BRep_PolygonOnClosedSurface::DumpJson(Standard_OStream& theOStream,
+                                           Standard_Integer  theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, BRep_PolygonOnSurface)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, BRep_PolygonOnSurface)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myPolygon2.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myPolygon2.get())
 }
-

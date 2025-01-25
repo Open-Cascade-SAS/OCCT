@@ -20,17 +20,16 @@
 #include <TColStd_ListOfAsciiString.hxx>
 
 //! Unique item identifier in the hierarchical product structure.
-//! A full path to an assembly component in the "part-of" graph starting from 
-//! the root node. 
+//! A full path to an assembly component in the "part-of" graph starting from
+//! the root node.
 class XCAFDoc_AssemblyItemId
 {
 
 public:
-
   //! Constructs an empty item ID.
   Standard_EXPORT XCAFDoc_AssemblyItemId();
 
-  //! Constructs an item ID from a list of strings, where every 
+  //! Constructs an item ID from a list of strings, where every
   //! string is a label entry.
   //! \param[in]  thePath - list of label entries.
   Standard_EXPORT XCAFDoc_AssemblyItemId(const TColStd_ListOfAsciiString& thePath);
@@ -40,7 +39,7 @@ public:
   //! \param[in]  theString - formatted full path.
   Standard_EXPORT XCAFDoc_AssemblyItemId(const TCollection_AsciiString& theString);
 
-  //! Initializes the item ID from a list of strings, where every 
+  //! Initializes the item ID from a list of strings, where every
   //! string is a label entry.
   //! \param[in]  thePath - list of label entries.
   Standard_EXPORT void Init(const TColStd_ListOfAsciiString& thePath);
@@ -76,32 +75,28 @@ public:
 
   //! Returns the full pass as a formatted string.
   Standard_EXPORT TCollection_AsciiString ToString() const;
-  
-  //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
-  bool operator==(const XCAFDoc_AssemblyItemId& theOther) const
-  {
-    return IsEqual(theOther);
-  }
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const;
+
+  bool operator==(const XCAFDoc_AssemblyItemId& theOther) const { return IsEqual(theOther); }
 
 private:
-
   TColStd_ListOfAsciiString myPath; ///< List of label entries
-
 };
 
 namespace std
 {
 
-  template<>
-  struct hash<XCAFDoc_AssemblyItemId>
+template <>
+struct hash<XCAFDoc_AssemblyItemId>
+{
+  size_t operator()(const XCAFDoc_AssemblyItemId& theAssemblyItemId) const
   {
-    size_t operator()(const XCAFDoc_AssemblyItemId& theAssemblyItemId) const
-    {
-      return std::hash<TCollection_AsciiString>{}(theAssemblyItemId.ToString());
-    }
-  };
+    return std::hash<TCollection_AsciiString>{}(theAssemblyItemId.ToString());
+  }
+};
 
-}
+} // namespace std
 #endif // _XCAFDoc_AssemblyItemId_HeaderFile

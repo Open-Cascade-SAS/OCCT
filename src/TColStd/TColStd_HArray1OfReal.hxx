@@ -20,5 +20,4 @@
 
 DEFINE_HARRAY1(TColStd_HArray1OfReal, TColStd_Array1OfReal)
 
-
 #endif

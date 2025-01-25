@@ -13,77 +13,64 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IntTools_PntOn2Faces.hxx>
 #include <IntTools_PntOnFace.hxx>
 
-//=======================================================================
-//function : IntTools_PntOn2Faces::IntTools_PntOn2Faces
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 IntTools_PntOn2Faces::IntTools_PntOn2Faces()
-:
-  myIsValid(Standard_False)
-{}
-//=======================================================================
-//function : IntTools_PntOn2Faces::IntTools_PntOn2Faces
-//purpose  : 
-//=======================================================================
-  IntTools_PntOn2Faces::IntTools_PntOn2Faces(const IntTools_PntOnFace& aP1,
-					     const IntTools_PntOnFace& aP2)
-:
-  myIsValid(Standard_False)
+    : myIsValid(Standard_False)
 {
-  myPnt1=aP1;
-  myPnt2=aP2;
 }
-//=======================================================================
-//function : SetP1
-//purpose  : 
-//=======================================================================
-  void IntTools_PntOn2Faces::SetP1(const IntTools_PntOnFace& aP)
+
+//=================================================================================================
+
+IntTools_PntOn2Faces::IntTools_PntOn2Faces(const IntTools_PntOnFace& aP1,
+                                           const IntTools_PntOnFace& aP2)
+    : myIsValid(Standard_False)
 {
-  myPnt1=aP;
+  myPnt1 = aP1;
+  myPnt2 = aP2;
 }
-//=======================================================================
-//function : SetP2
-//purpose  : 
-//=======================================================================
-  void IntTools_PntOn2Faces::SetP2(const IntTools_PntOnFace& aP)
+
+//=================================================================================================
+
+void IntTools_PntOn2Faces::SetP1(const IntTools_PntOnFace& aP)
 {
-  myPnt2=aP;
+  myPnt1 = aP;
 }
-//=======================================================================
-//function : P1
-//purpose  : 
-//=======================================================================
-  const IntTools_PntOnFace& IntTools_PntOn2Faces::P1()const
+
+//=================================================================================================
+
+void IntTools_PntOn2Faces::SetP2(const IntTools_PntOnFace& aP)
+{
+  myPnt2 = aP;
+}
+
+//=================================================================================================
+
+const IntTools_PntOnFace& IntTools_PntOn2Faces::P1() const
 {
   return myPnt1;
 }
-//=======================================================================
-//function : P2
-//purpose  : 
-//=======================================================================
-  const IntTools_PntOnFace& IntTools_PntOn2Faces::P2()const 
+
+//=================================================================================================
+
+const IntTools_PntOnFace& IntTools_PntOn2Faces::P2() const
 {
   return myPnt2;
 }
 
-//=======================================================================
-//function : SetValid
-//purpose  : 
-//=======================================================================
-  void IntTools_PntOn2Faces::SetValid(const Standard_Boolean bF)
+//=================================================================================================
+
+void IntTools_PntOn2Faces::SetValid(const Standard_Boolean bF)
 {
-  myIsValid=bF;
+  myIsValid = bF;
 }
-//=======================================================================
-//function : IsValid
-//purpose  : 
-//=======================================================================
-  Standard_Boolean IntTools_PntOn2Faces::IsValid()const
+
+//=================================================================================================
+
+Standard_Boolean IntTools_PntOn2Faces::IsValid() const
 {
   return myIsValid;
 }
-

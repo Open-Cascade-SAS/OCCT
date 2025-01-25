@@ -42,9 +42,9 @@ public:
   {
     //! The default constructor.
     FaceIndices()
-    : Index(0),
-      Min(0),
-      Max(0)
+        : Index(0),
+          Min(0),
+          Max(0)
     {
     }
 
@@ -53,7 +53,7 @@ public:
 
   struct Triangle
   {
-    gp_XY V1, V2, V3;
+    gp_XY         V1, V2, V3;
     Standard_Real Param, TolParam, TolAng, Tolerance;
   };
 
@@ -63,80 +63,78 @@ public:
 
     //! The default constructor.
     Box()
-    : XMin(0.0),
-      YMin(0.0),
-      ZMin(0.0),
-      XMax(0.0),
-      YMax(0.0),
-      ZMax(0.0)
+        : XMin(0.0),
+          YMin(0.0),
+          ZMin(0.0),
+          XMax(0.0),
+          YMax(0.0),
+          ZMax(0.0)
     {
     }
 
     //! The initializing constructor.
-    Box(
-        const Standard_Real& theXMin,
+    Box(const Standard_Real& theXMin,
         const Standard_Real& theYMin,
         const Standard_Real& theZMin,
         const Standard_Real& theXMax,
         const Standard_Real& theYMax,
-        const Standard_Real& theZMax) :
-      XMin(theXMin),
-      YMin(theYMin),
-      ZMin(theZMin),
-      XMax(theXMax),
-      YMax(theYMax),
-      ZMax(theZMax)
+        const Standard_Real& theZMax)
+        : XMin(theXMin),
+          YMin(theYMin),
+          ZMin(theZMin),
+          XMax(theXMax),
+          YMax(theYMax),
+          ZMax(theZMax)
     {
     }
   };
 
   Standard_EXPORT HLRAlgo_PolyData();
-  
-  Standard_EXPORT void HNodes (const Handle(TColgp_HArray1OfXYZ)& HNodes);
-  
-  Standard_EXPORT void HTData (const Handle(HLRAlgo_HArray1OfTData)& HTData);
-  
-  Standard_EXPORT void HPHDat (const Handle(HLRAlgo_HArray1OfPHDat)& HPHDat);
-  
-    void FaceIndex (const Standard_Integer I);
-  
-    Standard_Integer FaceIndex() const;
-  
-    TColgp_Array1OfXYZ& Nodes() const;
-  
-    HLRAlgo_Array1OfTData& TData() const;
-  
-    HLRAlgo_Array1OfPHDat& PHDat() const;
-  
-  Standard_EXPORT void UpdateGlobalMinMax (Box& theBox);
-  
-    Standard_Boolean Hiding() const;
-  
-  //! process hiding between <Pt1> and <Pt2>.
-  Standard_EXPORT void HideByPolyData (const HLRAlgo_BiPoint::PointsT& thePoints, Triangle& theTriangle, HLRAlgo_BiPoint::IndicesT& theIndices, const Standard_Boolean HidingShell, HLRAlgo_EdgeStatus& status);
-  
-  FaceIndices& Indices()
-  {
-    return myFaceIndices;
-  }
 
-  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyData,Standard_Transient)
+  Standard_EXPORT void HNodes(const Handle(TColgp_HArray1OfXYZ)& HNodes);
+
+  Standard_EXPORT void HTData(const Handle(HLRAlgo_HArray1OfTData)& HTData);
+
+  Standard_EXPORT void HPHDat(const Handle(HLRAlgo_HArray1OfPHDat)& HPHDat);
+
+  void FaceIndex(const Standard_Integer I);
+
+  Standard_Integer FaceIndex() const;
+
+  TColgp_Array1OfXYZ& Nodes() const;
+
+  HLRAlgo_Array1OfTData& TData() const;
+
+  HLRAlgo_Array1OfPHDat& PHDat() const;
+
+  Standard_EXPORT void UpdateGlobalMinMax(Box& theBox);
+
+  Standard_Boolean Hiding() const;
+
+  //! process hiding between <Pt1> and <Pt2>.
+  Standard_EXPORT void HideByPolyData(const HLRAlgo_BiPoint::PointsT& thePoints,
+                                      Triangle&                       theTriangle,
+                                      HLRAlgo_BiPoint::IndicesT&      theIndices,
+                                      const Standard_Boolean          HidingShell,
+                                      HLRAlgo_EdgeStatus&             status);
+
+  FaceIndices& Indices() { return myFaceIndices; }
+
+  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyData, Standard_Transient)
 
 private:
-
   //! evident.
-  void hideByOneTriangle (const HLRAlgo_BiPoint::PointsT& thePoints,
-                          Triangle& theTriangle,
-                          const Standard_Boolean Crossing,
-                          const Standard_Boolean HideBefore,
-                          const Standard_Integer TrFlags,
-                          HLRAlgo_EdgeStatus& status);
+  void hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoints,
+                         Triangle&                       theTriangle,
+                         const Standard_Boolean          Crossing,
+                         const Standard_Boolean          HideBefore,
+                         const Standard_Integer          TrFlags,
+                         HLRAlgo_EdgeStatus&             status);
 
-  FaceIndices myFaceIndices;
-  Handle(TColgp_HArray1OfXYZ) myHNodes;
+  FaceIndices                    myFaceIndices;
+  Handle(TColgp_HArray1OfXYZ)    myHNodes;
   Handle(HLRAlgo_HArray1OfTData) myHTData;
   Handle(HLRAlgo_HArray1OfPHDat) myHPHDat;
-
 };
 
 #include <HLRAlgo_PolyData.lxx>

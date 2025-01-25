@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Message_Messenger.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Standard_Type.hxx>
@@ -23,103 +22,100 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_IntegerListDriver,XmlMDF_ADriver)
-IMPLEMENT_DOMSTRING (FirstIndexString, "first")
-IMPLEMENT_DOMSTRING (LastIndexString,  "last")
-IMPLEMENT_DOMSTRING (AttributeIDString, "intlistattguid")
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_IntegerListDriver, XmlMDF_ADriver)
+IMPLEMENT_DOMSTRING(FirstIndexString, "first")
+IMPLEMENT_DOMSTRING(LastIndexString, "last")
+IMPLEMENT_DOMSTRING(AttributeIDString, "intlistattguid")
 
-//=======================================================================
-//function : XmlMDataStd_IntegerListDriver
-//purpose  : Constructor
-//=======================================================================
-XmlMDataStd_IntegerListDriver::XmlMDataStd_IntegerListDriver(const Handle(Message_Messenger)& theMsgDriver)
-: XmlMDF_ADriver (theMsgDriver, NULL)
+//=================================================================================================
+
+XmlMDataStd_IntegerListDriver::XmlMDataStd_IntegerListDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : XmlMDF_ADriver(theMsgDriver, NULL)
 {
-
 }
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Handle(TDF_Attribute) XmlMDataStd_IntegerListDriver::NewEmpty() const
 {
   return new TDataStd_IntegerList();
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
 Standard_Boolean XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent&  theSource,
                                                       const Handle(TDF_Attribute)& theTarget,
-                                                      XmlObjMgt_RRelocationTable&  ) const
+                                                      XmlObjMgt_RRelocationTable&) const
 {
-  Standard_Integer aFirstInd, aLastInd, aValue, ind;
+  Standard_Integer         aFirstInd, aLastInd, aValue, ind;
   const XmlObjMgt_Element& anElement = theSource;
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
-  XmlObjMgt_DOMString aFirstIndex= anElement.getAttribute(::FirstIndexString());
+  XmlObjMgt_DOMString aFirstIndex = anElement.getAttribute(::FirstIndexString());
   if (aFirstIndex == NULL)
     aFirstInd = 1;
-  else if (!aFirstIndex.GetInteger(aFirstInd)) 
+  else if (!aFirstIndex.GetInteger(aFirstInd))
   {
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve the first index"
                                  " for IntegerList attribute as \"")
-        + aFirstIndex + "\"";
-    myMessageDriver->Send (aMessageString, Message_Fail);
+      + aFirstIndex + "\"";
+    myMessageDriver->Send(aMessageString, Message_Fail);
     return Standard_False;
   }
 
   // Read the LastIndex; the attribute should be present
-  if (!anElement.getAttribute(::LastIndexString()).GetInteger(aLastInd)) 
+  if (!anElement.getAttribute(::LastIndexString()).GetInteger(aLastInd))
   {
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve the last index"
                                  " for IntegerList attribute as \"")
-        + aFirstIndex + "\"";
-    myMessageDriver->Send (aMessageString, Message_Fail);
+      + aFirstIndex + "\"";
+    myMessageDriver->Send(aMessageString, Message_Fail);
     return Standard_False;
   }
 
   const Handle(TDataStd_IntegerList) anIntList = Handle(TDataStd_IntegerList)::DownCast(theTarget);
-  
+
   // attribute id
-  Standard_GUID aGUID;
+  Standard_GUID       aGUID;
   XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
   if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
-    aGUID = TDataStd_IntegerList::GetID(); //default case
+    aGUID = TDataStd_IntegerList::GetID(); // default case
   else
     aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
 
   anIntList->SetID(aGUID);
 
-  if(aLastInd == 0) aFirstInd = 0;
-  if (aFirstInd == aLastInd && aLastInd > 0) 
+  if (aLastInd == 0)
+    aFirstInd = 0;
+  if (aFirstInd == aLastInd && aLastInd > 0)
   {
-    if (!XmlObjMgt::GetStringValue(anElement).GetInteger(aValue)) 
+    if (!XmlObjMgt::GetStringValue(anElement).GetInteger(aValue))
     {
       TCollection_ExtendedString aMessageString =
         TCollection_ExtendedString("Cannot retrieve integer member"
                                    " for IntegerList attribute as \"");
-      myMessageDriver->Send (aMessageString, Message_Warning);
+      myMessageDriver->Send(aMessageString, Message_Warning);
       aValue = 0;
     }
     anIntList->Append(aValue);
   }
-  else if(aLastInd >= 1)
+  else if (aLastInd >= 1)
   {
     Standard_CString aValueStr = Standard_CString(XmlObjMgt::GetStringValue(anElement).GetString());
     for (ind = aFirstInd; ind <= aLastInd; ind++)
     {
-      if (!XmlObjMgt::GetInteger(aValueStr, aValue)) 
+      if (!XmlObjMgt::GetInteger(aValueStr, aValue))
       {
         TCollection_ExtendedString aMessageString =
           TCollection_ExtendedString("Cannot retrieve integer member"
                                      " for IntegerList attribute as \"")
-            + aValueStr + "\"";
-        myMessageDriver->Send (aMessageString, Message_Warning);
+          + aValueStr + "\"";
+        myMessageDriver->Send(aMessageString, Message_Warning);
         aValue = 0;
       }
       anIntList->Append(aValue);
@@ -130,40 +126,41 @@ Standard_Boolean XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataStd_IntegerListDriver::Paste(const Handle(TDF_Attribute)& theSource,
                                           XmlObjMgt_Persistent&        theTarget,
-                                          XmlObjMgt_SRelocationTable&  ) const
+                                          XmlObjMgt_SRelocationTable&) const
 {
   const Handle(TDataStd_IntegerList) anIntList = Handle(TDataStd_IntegerList)::DownCast(theSource);
 
   Standard_Integer anU = anIntList->Extent();
   theTarget.Element().setAttribute(::LastIndexString(), anU);
   NCollection_LocalArray<Standard_Character> str(12 * anU + 1);
-  if(anU == 0)
+  if (anU == 0)
     str[0] = 0;
   else if (anU >= 1)
   {
     // Allocation of 12 chars for each integer including the space.
     // An example: -2 147 483 648
-    Standard_Integer iChar = 0;
+    Standard_Integer                    iChar = 0;
     TColStd_ListIteratorOfListOfInteger itr(anIntList->List());
     for (; itr.More(); itr.Next())
     {
       const Standard_Integer& intValue = itr.Value();
       iChar += Sprintf(&(str[iChar]), "%d ", intValue);
-    }  
+    }
   }
   // No occurrence of '&', '<' and other irregular XML characters
-  XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
+  XmlObjMgt::SetStringValue(theTarget, (Standard_Character*)str, Standard_True);
 
-  if(anIntList->ID() != TDataStd_IntegerList::GetID()) {
-    //convert GUID
-    Standard_Character aGuidStr [Standard_GUID_SIZE_ALLOC];
+  if (anIntList->ID() != TDataStd_IntegerList::GetID())
+  {
+    // convert GUID
+    Standard_Character  aGuidStr[Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
-    anIntList->ID().ToCString (pGuidStr);
-    theTarget.Element().setAttribute (::AttributeIDString(), aGuidStr);
+    anIntList->ID().ToCString(pGuidStr);
+    theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);
   }
 }

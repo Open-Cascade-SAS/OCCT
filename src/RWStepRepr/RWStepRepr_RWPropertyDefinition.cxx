@@ -21,82 +21,72 @@
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_PropertyDefinition.hxx>
 
-//=======================================================================
-//function : RWStepRepr_RWPropertyDefinition
-//purpose  : 
-//=======================================================================
-RWStepRepr_RWPropertyDefinition::RWStepRepr_RWPropertyDefinition ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
+RWStepRepr_RWPropertyDefinition::RWStepRepr_RWPropertyDefinition() {}
 
-void RWStepRepr_RWPropertyDefinition::ReadStep (const Handle(StepData_StepReaderData)& data,
-                                                const Standard_Integer num,
-                                                Handle(Interface_Check)& ach,
-                                                const Handle(StepRepr_PropertyDefinition) &ent) const
+//=================================================================================================
+
+void RWStepRepr_RWPropertyDefinition::ReadStep(const Handle(StepData_StepReaderData)&     data,
+                                               const Standard_Integer                     num,
+                                               Handle(Interface_Check)&                   ach,
+                                               const Handle(StepRepr_PropertyDefinition)& ent) const
 {
   // Check number of parameters
-  if ( ! data->CheckNbParams(num,3,ach,"property_definition") ) return;
+  if (!data->CheckNbParams(num, 3, ach, "property_definition"))
+    return;
 
   // Own fields of PropertyDefinition
 
   Handle(TCollection_HAsciiString) aName;
-  data->ReadString (num, 1, "name", ach, aName);
+  data->ReadString(num, 1, "name", ach, aName);
 
   Handle(TCollection_HAsciiString) aDescription;
-  Standard_Boolean hasDescription = Standard_True;
-  if ( data->IsParamDefined (num,2) ) {
-    data->ReadString (num, 2, "description", ach, aDescription);
+  Standard_Boolean                 hasDescription = Standard_True;
+  if (data->IsParamDefined(num, 2))
+  {
+    data->ReadString(num, 2, "description", ach, aDescription);
   }
-  else {
+  else
+  {
     hasDescription = Standard_False;
   }
 
   StepRepr_CharacterizedDefinition aDefinition;
-  data->ReadEntity (num, 3, "definition", ach, aDefinition);
+  data->ReadEntity(num, 3, "definition", ach, aDefinition);
 
   // Initialize entity
-  ent->Init(aName,
-            hasDescription,
-            aDescription,
-            aDefinition);
+  ent->Init(aName, hasDescription, aDescription, aDefinition);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepRepr_RWPropertyDefinition::WriteStep (StepData_StepWriter& SW,
-                                                 const Handle(StepRepr_PropertyDefinition) &ent) const
+void RWStepRepr_RWPropertyDefinition::WriteStep(
+  StepData_StepWriter&                       SW,
+  const Handle(StepRepr_PropertyDefinition)& ent) const
 {
 
   // Own fields of PropertyDefinition
 
-  SW.Send (ent->Name());
+  SW.Send(ent->Name());
 
-  if ( ent->HasDescription() ) {
-    SW.Send (ent->Description());
+  if (ent->HasDescription())
+  {
+    SW.Send(ent->Description());
   }
-  else SW.SendUndef();
+  else
+    SW.SendUndef();
 
-  SW.Send (ent->Definition().Value());
+  SW.Send(ent->Definition().Value());
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepRepr_RWPropertyDefinition::Share (const Handle(StepRepr_PropertyDefinition) &ent,
-                                             Interface_EntityIterator& iter) const
+void RWStepRepr_RWPropertyDefinition::Share(const Handle(StepRepr_PropertyDefinition)& ent,
+                                            Interface_EntityIterator&                  iter) const
 {
 
   // Own fields of PropertyDefinition
 
-  iter.AddItem (ent->Definition().Value());
+  iter.AddItem(ent->Definition().Value());
 }

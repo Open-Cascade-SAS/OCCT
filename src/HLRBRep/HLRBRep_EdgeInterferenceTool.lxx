@@ -17,77 +17,85 @@
 #include <HLRAlgo_Interference.hxx>
 
 //=======================================================================
-//function : InitVertices
-//purpose  : 
+// function : InitVertices
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_EdgeInterferenceTool::InitVertices()
-{ cur = 0; }
-
-//=======================================================================
-//function : MoreVertices
-//purpose  : 
-//=======================================================================
-
-inline Standard_Boolean
-HLRBRep_EdgeInterferenceTool::MoreVertices() const
-{ return cur < 2; }
-
-//=======================================================================
-//function : NextVertex
-//purpose  : 
-//=======================================================================
-
-inline void HLRBRep_EdgeInterferenceTool::NextVertex()
-{ cur++; }
-
-//=======================================================================
-//function : CurrentVertex
-//purpose  : 
-//=======================================================================
-
-inline const HLRAlgo_Intersection&
-HLRBRep_EdgeInterferenceTool::CurrentVertex
-  () const
-{ return inter[cur]; }
-
-//=======================================================================
-//function : CurrentOrientation
-//purpose  : 
-//=======================================================================
-
-inline TopAbs_Orientation
-HLRBRep_EdgeInterferenceTool::CurrentOrientation
-  () const
 {
-  if (cur == 0) return TopAbs_FORWARD;
-  else          return TopAbs_REVERSED;
+  cur = 0;
 }
 
 //=======================================================================
-//function : CurrentParameter
-//purpose  : 
+// function : MoreVertices
+// purpose  :
 //=======================================================================
 
-inline Standard_Real
-HLRBRep_EdgeInterferenceTool::CurrentParameter() const
-{ return inter[cur].Parameter(); }
+inline Standard_Boolean HLRBRep_EdgeInterferenceTool::MoreVertices() const
+{
+  return cur < 2;
+}
 
 //=======================================================================
-//function : IsPeriodic
-//purpose  : 
+// function : NextVertex
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean 
-HLRBRep_EdgeInterferenceTool::IsPeriodic() const
-{ return Standard_False; }
+inline void HLRBRep_EdgeInterferenceTool::NextVertex()
+{
+  cur++;
+}
 
 //=======================================================================
-//function : ParameterOfInterference
-//purpose  : 
+// function : CurrentVertex
+// purpose  :
 //=======================================================================
 
-inline Standard_Real
-HLRBRep_EdgeInterferenceTool::ParameterOfInterference
-  (const HLRAlgo_Interference& I) const
-{ return I.Intersection().Parameter(); }
+inline const HLRAlgo_Intersection& HLRBRep_EdgeInterferenceTool::CurrentVertex() const
+{
+  return inter[cur];
+}
+
+//=======================================================================
+// function : CurrentOrientation
+// purpose  :
+//=======================================================================
+
+inline TopAbs_Orientation HLRBRep_EdgeInterferenceTool::CurrentOrientation() const
+{
+  if (cur == 0)
+    return TopAbs_FORWARD;
+  else
+    return TopAbs_REVERSED;
+}
+
+//=======================================================================
+// function : CurrentParameter
+// purpose  :
+//=======================================================================
+
+inline Standard_Real HLRBRep_EdgeInterferenceTool::CurrentParameter() const
+{
+  return inter[cur].Parameter();
+}
+
+//=======================================================================
+// function : IsPeriodic
+// purpose  :
+//=======================================================================
+
+inline Standard_Boolean HLRBRep_EdgeInterferenceTool::IsPeriodic() const
+{
+  return Standard_False;
+}
+
+//=======================================================================
+// function : ParameterOfInterference
+// purpose  :
+//=======================================================================
+
+inline Standard_Real HLRBRep_EdgeInterferenceTool::ParameterOfInterference(
+  const HLRAlgo_Interference& I) const
+{
+  return I.Intersection().Parameter();
+}

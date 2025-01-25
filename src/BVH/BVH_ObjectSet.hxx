@@ -22,16 +22,14 @@
 //! Array of abstract entities (bounded by BVH boxes) to built BVH.
 //! \tparam T Numeric data type
 //! \tparam N Vector dimension
-template<class T, int N>
+template <class T, int N>
 class BVH_ObjectSet : public BVH_Set<T, N>
 {
 public:
-
   //! Type of array of geometric objects.
-  typedef NCollection_Vector<opencascade::handle<BVH_Object<T, N> > > BVH_ObjectList;
+  typedef NCollection_Vector<opencascade::handle<BVH_Object<T, N>>> BVH_ObjectList;
 
 public:
-
   //! Creates new set of geometric objects.
   BVH_ObjectSet() {}
 
@@ -39,11 +37,11 @@ public:
   virtual ~BVH_ObjectSet() {}
 
 public:
-
   //! Removes all geometric objects.
   virtual void Clear()
   {
-    for (typename BVH_ObjectList::Iterator anObjectIter (myObjects); anObjectIter.More(); anObjectIter.Next())
+    for (typename BVH_ObjectList::Iterator anObjectIter(myObjects); anObjectIter.More();
+         anObjectIter.Next())
     {
       anObjectIter.ChangeValue().Nullify();
     }
@@ -57,7 +55,6 @@ public:
   const BVH_ObjectList& Objects() const { return myObjects; }
 
 public:
-
   //! Return total number of objects.
   virtual Standard_Integer Size() const Standard_OVERRIDE { return myObjects.Size(); }
 
@@ -65,26 +62,28 @@ public:
   using BVH_Set<T, N>::Box;
 
   //! Returns AABB of the given object.
-  virtual BVH_Box<T, N> Box (const Standard_Integer theIndex) const Standard_OVERRIDE { return myObjects.Value (theIndex)->Box(); }
+  virtual BVH_Box<T, N> Box(const Standard_Integer theIndex) const Standard_OVERRIDE
+  {
+    return myObjects.Value(theIndex)->Box();
+  }
 
   //! Returns centroid position along the given axis.
-  virtual T Center (const Standard_Integer theIndex, const Standard_Integer theAxis) const Standard_OVERRIDE
+  virtual T Center(const Standard_Integer theIndex,
+                   const Standard_Integer theAxis) const Standard_OVERRIDE
   {
     // Note: general implementation, not optimal
-    return BVH::CenterAxis<T, N>::Center (myObjects.Value (theIndex)->Box(), theAxis);
+    return BVH::CenterAxis<T, N>::Center(myObjects.Value(theIndex)->Box(), theAxis);
   }
 
   //! Performs transposing the two given objects in the set.
-  virtual void Swap (const Standard_Integer theIndex1, const Standard_Integer theIndex2) Standard_OVERRIDE
+  virtual void Swap(const Standard_Integer theIndex1,
+                    const Standard_Integer theIndex2) Standard_OVERRIDE
   {
-    std::swap (myObjects.ChangeValue (theIndex1),
-               myObjects.ChangeValue (theIndex2));
+    std::swap(myObjects.ChangeValue(theIndex1), myObjects.ChangeValue(theIndex2));
   }
 
 protected:
-
   BVH_ObjectList myObjects; //!< Array of geometric objects
-
 };
 
 #endif // _BVH_ObjectSet_Header

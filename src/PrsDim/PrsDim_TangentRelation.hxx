@@ -28,15 +28,17 @@ class PrsDim_TangentRelation : public PrsDim_Relation
 {
   DEFINE_STANDARD_RTTIEXT(PrsDim_TangentRelation, PrsDim_Relation)
 public:
-
   //! TwoFacesTangent or TwoEdgesTangent relation
   //! Constructs an object to display tangency constraints.
   //! This object is defined by the first shape aFShape, the
   //! second shape aSShape, the plane aPlane and the index anExternRef.
   //! aPlane serves as an optional axis.
   //! anExternRef set to 0 indicates that there is no relation.
-  Standard_EXPORT PrsDim_TangentRelation(const TopoDS_Shape& aFShape, const TopoDS_Shape& aSShape, const Handle(Geom_Plane)& aPlane, const Standard_Integer anExternRef = 0);
-  
+  Standard_EXPORT PrsDim_TangentRelation(const TopoDS_Shape&       aFShape,
+                                         const TopoDS_Shape&       aSShape,
+                                         const Handle(Geom_Plane)& aPlane,
+                                         const Standard_Integer    anExternRef = 0);
+
   //! Returns the external reference for tangency.
   //! The values are as follows:
   //! -   0 - there is no connection;
@@ -51,28 +53,25 @@ public:
   //! -   1 - there is a connection to the first shape;
   //! -   2 - there is a connection to the second shape.
   //! This reference is initially defined at construction time.
-  void SetExternRef (const Standard_Integer aRef) { myExternRef = aRef; }
+  void SetExternRef(const Standard_Integer aRef) { myExternRef = aRef; }
 
 private:
+  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                       const Handle(Prs3d_Presentation)&         thePrs,
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                        const Handle(Prs3d_Presentation)& thePrs,
-                                        const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
-                                                 const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT void ComputeTwoFacesTangent(const Handle(Prs3d_Presentation)& aPresentation);
 
-  Standard_EXPORT void ComputeTwoFacesTangent (const Handle(Prs3d_Presentation)& aPresentation);
-
-  Standard_EXPORT void ComputeTwoEdgesTangent (const Handle(Prs3d_Presentation)& aPresentation);
+  Standard_EXPORT void ComputeTwoEdgesTangent(const Handle(Prs3d_Presentation)& aPresentation);
 
 private:
-
-  gp_Pnt myAttach;
-  gp_Dir myDir;
-  Standard_Real myLength;
+  gp_Pnt           myAttach;
+  gp_Dir           myDir;
+  Standard_Real    myLength;
   Standard_Integer myExternRef;
-
 };
 
 #endif // _PrsDim_TangentRelation_HeaderFile

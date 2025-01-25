@@ -16,6 +16,6 @@
 
 #include <TCollection_HAsciiString.hxx>
 
-typedef Standard_Boolean (*Interface_StaticSatisfies) (const Handle(TCollection_HAsciiString)& val);
+typedef Standard_Boolean (*Interface_StaticSatisfies)(const Handle(TCollection_HAsciiString)& val);
 
 #endif

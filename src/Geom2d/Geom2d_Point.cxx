@@ -14,37 +14,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Geom2d_Point.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Point,Geom2d_Geometry)
+IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Point, Geom2d_Geometry)
 
 typedef Geom2d_Point Point;
 
-Standard_Real Geom2d_Point::Distance (const Handle(Geom2d_Point)& Other) const {
-
-  gp_Pnt2d P1 = this-> Pnt2d ();
-  gp_Pnt2d P2 = Other->Pnt2d ();
-  return P1.Distance (P2);
-}
-
-
-Standard_Real Geom2d_Point::SquareDistance (const Handle(Geom2d_Point)& Other) const {
-
-  gp_Pnt2d P1 = this-> Pnt2d ();
-  gp_Pnt2d P2 = Other->Pnt2d ();
-  return P1.SquareDistance (P2);
-}
-
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void Geom2d_Point::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+Standard_Real Geom2d_Point::Distance(const Handle(Geom2d_Point)& Other) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom2d_Geometry)
+  gp_Pnt2d P1 = this->Pnt2d();
+  gp_Pnt2d P2 = Other->Pnt2d();
+  return P1.Distance(P2);
+}
+
+Standard_Real Geom2d_Point::SquareDistance(const Handle(Geom2d_Point)& Other) const
+{
+
+  gp_Pnt2d P1 = this->Pnt2d();
+  gp_Pnt2d P2 = Other->Pnt2d();
+  return P1.SquareDistance(P2);
+}
+
+//=================================================================================================
+
+void Geom2d_Point::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Geom2d_Geometry)
 }

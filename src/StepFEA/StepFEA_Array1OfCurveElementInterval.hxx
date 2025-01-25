@@ -17,7 +17,7 @@
 #include <StepFEA_CurveElementInterval.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<Handle(StepFEA_CurveElementInterval)> StepFEA_Array1OfCurveElementInterval;
-
+typedef NCollection_Array1<Handle(StepFEA_CurveElementInterval)>
+  StepFEA_Array1OfCurveElementInterval;
 
 #endif

@@ -23,37 +23,31 @@
 class TCollection_HAsciiString;
 class StepRepr_RepresentationContext;
 
-
 class StepRepr_CharacterizedRepresentation;
 DEFINE_STANDARD_HANDLE(StepRepr_CharacterizedRepresentation, StepRepr_Representation)
-
 
 class StepRepr_CharacterizedRepresentation : public StepRepr_Representation
 {
 
 public:
-
   Standard_EXPORT StepRepr_CharacterizedRepresentation();
-  
+
   //! Returns a CharacterizedRepresentation
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theName,
-                             const Handle(TCollection_HAsciiString)& theDescription,
-                             const Handle(StepRepr_HArray1OfRepresentationItem)& theItems,
-                             const Handle(StepRepr_RepresentationContext)& theContextOfItems);
-  
-  void SetDescription (const Handle(TCollection_HAsciiString)& theDescription) {
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&             theName,
+                            const Handle(TCollection_HAsciiString)&             theDescription,
+                            const Handle(StepRepr_HArray1OfRepresentationItem)& theItems,
+                            const Handle(StepRepr_RepresentationContext)&       theContextOfItems);
+
+  void SetDescription(const Handle(TCollection_HAsciiString)& theDescription)
+  {
     myDescription = theDescription;
   }
-  
-  Handle(TCollection_HAsciiString) Description() const {
-    return myDescription;
-  }
+
+  Handle(TCollection_HAsciiString) Description() const { return myDescription; }
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_CharacterizedRepresentation, StepRepr_Representation)
 
 private:
-
   Handle(TCollection_HAsciiString) myDescription;
-
 };
 #endif // _StepRepr_CharacterizedRepresentation_HeaderFile

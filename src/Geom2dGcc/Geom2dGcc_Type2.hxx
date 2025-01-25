@@ -17,21 +17,20 @@
 #ifndef _Geom2dGcc_Type2_HeaderFile
 #define _Geom2dGcc_Type2_HeaderFile
 
-
 enum Geom2dGcc_Type2
 {
-Geom2dGcc_CuCuOnCu,
-Geom2dGcc_CiCuOnCu,
-Geom2dGcc_LiCuOnCu,
-Geom2dGcc_CuPtOnCu,
-Geom2dGcc_CuCuOnLi,
-Geom2dGcc_CiCuOnLi,
-Geom2dGcc_LiCuOnLi,
-Geom2dGcc_CuPtOnLi,
-Geom2dGcc_CuCuOnCi,
-Geom2dGcc_CiCuOnCi,
-Geom2dGcc_LiCuOnCi,
-Geom2dGcc_CuPtOnCi
+  Geom2dGcc_CuCuOnCu,
+  Geom2dGcc_CiCuOnCu,
+  Geom2dGcc_LiCuOnCu,
+  Geom2dGcc_CuPtOnCu,
+  Geom2dGcc_CuCuOnLi,
+  Geom2dGcc_CiCuOnLi,
+  Geom2dGcc_LiCuOnLi,
+  Geom2dGcc_CuPtOnLi,
+  Geom2dGcc_CuCuOnCi,
+  Geom2dGcc_CiCuOnCi,
+  Geom2dGcc_LiCuOnCi,
+  Geom2dGcc_CuPtOnCi
 };
 
 #endif // _Geom2dGcc_Type2_HeaderFile

@@ -12,35 +12,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_OrFilter.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_OrFilter,SelectMgr_CompositionFilter)
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_OrFilter, SelectMgr_CompositionFilter)
 
-//=============================================================================
-//function : SelectMgr_OrFilter
-//purpose  :
-//=============================================================================
-SelectMgr_OrFilter::SelectMgr_OrFilter()
-{
-}
+//=================================================================================================
 
-//=============================================================================
-//function : IsOk
-//purpose  :
-//=============================================================================
-Standard_Boolean SelectMgr_OrFilter::IsOk (const Handle(SelectMgr_EntityOwner)& theObj) const
+SelectMgr_OrFilter::SelectMgr_OrFilter() {}
+
+//=================================================================================================
+
+Standard_Boolean SelectMgr_OrFilter::IsOk(const Handle(SelectMgr_EntityOwner)& theObj) const
 {
   if (myFilters.IsEmpty())
   {
     return Standard_True;
   }
 
-  for (SelectMgr_ListIteratorOfListOfFilter aFilterIter (myFilters); aFilterIter.More(); aFilterIter.Next())
+  for (SelectMgr_ListIteratorOfListOfFilter aFilterIter(myFilters); aFilterIter.More();
+       aFilterIter.Next())
   {
-    if (aFilterIter.Value()->IsOk (theObj))
+    if (aFilterIter.Value()->IsOk(theObj))
     {
       return Standard_True;
     }

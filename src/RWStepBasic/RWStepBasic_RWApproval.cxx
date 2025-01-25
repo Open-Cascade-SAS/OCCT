@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_EntityIterator.hxx>
 #include "RWStepBasic_RWApproval.pxx"
 #include <StepBasic_Approval.hxx>
@@ -19,57 +18,52 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWApproval::RWStepBasic_RWApproval () {}
+RWStepBasic_RWApproval::RWStepBasic_RWApproval() {}
 
-void RWStepBasic_RWApproval::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepBasic_Approval)& ent) const
+void RWStepBasic_RWApproval::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                      const Standard_Integer                 num,
+                                      Handle(Interface_Check)&               ach,
+                                      const Handle(StepBasic_Approval)&      ent) const
 {
 
+  // --- Number of Parameter Control ---
 
-	// --- Number of Parameter Control ---
+  if (!data->CheckNbParams(num, 2, ach, "approval"))
+    return;
 
-	if (!data->CheckNbParams(num,2,ach,"approval")) return;
+  // --- own field : status ---
 
-	// --- own field : status ---
+  Handle(StepBasic_ApprovalStatus) aStatus;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadEntity(num, 1, "status", ach, STANDARD_TYPE(StepBasic_ApprovalStatus), aStatus);
 
-	Handle(StepBasic_ApprovalStatus) aStatus;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	data->ReadEntity(num, 1,"status", ach, STANDARD_TYPE(StepBasic_ApprovalStatus), aStatus);
+  // --- own field : level ---
 
-	// --- own field : level ---
+  Handle(TCollection_HAsciiString) aLevel;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  data->ReadString(num, 2, "level", ach, aLevel);
 
-	Handle(TCollection_HAsciiString) aLevel;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
-	data->ReadString (num,2,"level",ach,aLevel);
+  //--- Initialisation of the read entity ---
 
-	//--- Initialisation of the read entity ---
-
-
-	ent->Init(aStatus, aLevel);
+  ent->Init(aStatus, aLevel);
 }
 
-
-void RWStepBasic_RWApproval::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepBasic_Approval)& ent) const
+void RWStepBasic_RWApproval::WriteStep(StepData_StepWriter&              SW,
+                                       const Handle(StepBasic_Approval)& ent) const
 {
 
-	// --- own field : status ---
+  // --- own field : status ---
 
-	SW.Send(ent->Status());
+  SW.Send(ent->Status());
 
-	// --- own field : level ---
+  // --- own field : level ---
 
-	SW.Send(ent->Level());
+  SW.Send(ent->Level());
 }
 
-
-void RWStepBasic_RWApproval::Share(const Handle(StepBasic_Approval)& ent, Interface_EntityIterator& iter) const
+void RWStepBasic_RWApproval::Share(const Handle(StepBasic_Approval)& ent,
+                                   Interface_EntityIterator&         iter) const
 {
 
-	iter.GetOneItem(ent->Status());
+  iter.GetOneItem(ent->Status());
 }
-

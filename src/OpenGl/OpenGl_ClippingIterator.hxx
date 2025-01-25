@@ -20,14 +20,13 @@
 class OpenGl_ClippingIterator
 {
 public:
-
   //! Main constructor.
   OpenGl_ClippingIterator(const OpenGl_Clipping& theClipping)
-  : myDisabled  (&theClipping.myDisabledPlanes),
-    myCurrIndex (1)
+      : myDisabled(&theClipping.myDisabledPlanes),
+        myCurrIndex(1)
   {
-    myIter1.Init (theClipping.myPlanesGlobal);
-    myIter2.Init (theClipping.myPlanesLocal);
+    myIter1.Init(theClipping.myPlanesGlobal);
+    myIter2.Init(theClipping.myPlanesLocal);
   }
 
   //! Return true if iterator points to the valid clipping plane.
@@ -47,16 +46,15 @@ public:
     }
   }
 
-  //! Return true if plane has been temporarily disabled either by Graphic3d_ClipPlane->IsOn() property or by temporary filter.
-  //! Beware that this method does NOT handle a Chain filter for Capping algorithm OpenGl_Clipping::CappedChain()!
-  bool IsDisabled() const { return myDisabled->Value (myCurrIndex) || !Value()->IsOn(); }
+  //! Return true if plane has been temporarily disabled either by Graphic3d_ClipPlane->IsOn()
+  //! property or by temporary filter. Beware that this method does NOT handle a Chain filter for
+  //! Capping algorithm OpenGl_Clipping::CappedChain()!
+  bool IsDisabled() const { return myDisabled->Value(myCurrIndex) || !Value()->IsOn(); }
 
   //! Return the plane at current iterator position.
   const Handle(Graphic3d_ClipPlane)& Value() const
   {
-    return myIter1.More()
-         ? myIter1.Value()
-         : myIter2.Value();
+    return myIter1.More() ? myIter1.Value() : myIter2.Value();
   }
 
   //! Return true if plane from the global (view) list.
@@ -66,12 +64,10 @@ public:
   Standard_Integer PlaneIndex() const { return myCurrIndex; }
 
 private:
-
-  Graphic3d_SequenceOfHClipPlane::Iterator myIter1;
-  Graphic3d_SequenceOfHClipPlane::Iterator myIter2;
+  Graphic3d_SequenceOfHClipPlane::Iterator    myIter1;
+  Graphic3d_SequenceOfHClipPlane::Iterator    myIter2;
   const NCollection_Vector<Standard_Boolean>* myDisabled;
-  Standard_Integer myCurrIndex;
-
+  Standard_Integer                            myCurrIndex;
 };
 
 #endif // OpenGl_ClippingIterator_Header

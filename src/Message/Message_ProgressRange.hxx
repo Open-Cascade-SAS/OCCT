@@ -29,7 +29,7 @@ class Message_ProgressScope;
 //!
 //! - Otherwise, a range advances progress directly upon destruction.
 //!
-//! A range object can be copied, the responsibility for progress advancement is 
+//! A range object can be copied, the responsibility for progress advancement is
 //! then taken by the copy.
 //! The same range object may be used (either copied or used to create scope) only once.
 //! Any consequent attempts to use range will give no result on the progress;
@@ -41,15 +41,19 @@ class Message_ProgressRange
 public:
   //! Constructor of the empty range
   Message_ProgressRange()
-    : myParentScope (0), myStart(0.), myDelta (0.), myWasUsed (false)
-  {}
+      : myParentScope(0),
+        myStart(0.),
+        myDelta(0.),
+        myWasUsed(false)
+  {
+  }
 
   //! Copy constructor disarms the source
-  Message_ProgressRange (const Message_ProgressRange& theOther)
-    : myParentScope (theOther.myParentScope),
-      myStart (theOther.myStart),
-      myDelta (theOther.myDelta),
-      myWasUsed (theOther.myWasUsed)
+  Message_ProgressRange(const Message_ProgressRange& theOther)
+      : myParentScope(theOther.myParentScope),
+        myStart(theOther.myStart),
+        myDelta(theOther.myDelta),
+        myWasUsed(theOther.myWasUsed)
   {
     // discharge theOther
     theOther.myWasUsed = true;
@@ -58,10 +62,10 @@ public:
   //! Copy assignment disarms the source
   Message_ProgressRange& operator=(const Message_ProgressRange& theOther)
   {
-    myParentScope = theOther.myParentScope;
-    myStart = theOther.myStart;
-    myDelta = theOther.myDelta;
-    myWasUsed = theOther.myWasUsed;
+    myParentScope      = theOther.myParentScope;
+    myStart            = theOther.myStart;
+    myDelta            = theOther.myDelta;
+    myWasUsed          = theOther.myWasUsed;
     theOther.myWasUsed = true;
     return *this;
   }
@@ -70,10 +74,7 @@ public:
   Standard_Boolean UserBreak() const;
 
   //! Returns false if ProgressIndicator signals UserBreak
-  Standard_Boolean More() const
-  {
-    return !UserBreak();
-  }
+  Standard_Boolean More() const { return !UserBreak(); }
 
   //! Returns true if this progress range is attached to some indicator.
   Standard_Boolean IsActive() const;
@@ -82,28 +83,27 @@ public:
   void Close();
 
   //! Destructor
-  ~Message_ProgressRange()
-  {
-    Close();
-  }
+  ~Message_ProgressRange() { Close(); }
 
 private:
   //! Constructor is private
-  Message_ProgressRange (const Message_ProgressScope& theParent, 
-                         Standard_Real theStart, Standard_Real theDelta)
-    : myParentScope (&theParent),
-      myStart (theStart),
-      myDelta (theDelta),
-      myWasUsed (false)
-  {}
+  Message_ProgressRange(const Message_ProgressScope& theParent,
+                        Standard_Real                theStart,
+                        Standard_Real                theDelta)
+      : myParentScope(&theParent),
+        myStart(theStart),
+        myDelta(theDelta),
+        myWasUsed(false)
+  {
+  }
 
 private:
-  const Message_ProgressScope* myParentScope;  //!< Pointer to parent scope
-  Standard_Real                myStart;        //!< Start point on the global scale
-  Standard_Real                myDelta;        //!< Step of incrementation on the global scale
+  const Message_ProgressScope* myParentScope; //!< Pointer to parent scope
+  Standard_Real                myStart;       //!< Start point on the global scale
+  Standard_Real                myDelta;       //!< Step of incrementation on the global scale
 
-  mutable Standard_Boolean     myWasUsed;      //!< Flag indicating that this range
-                                               //!  was used to create a new scope
+  mutable Standard_Boolean myWasUsed; //!< Flag indicating that this range
+                                      //!  was used to create a new scope
 
   friend class Message_ProgressScope;
 };
@@ -111,8 +111,8 @@ private:
 #include <Message_ProgressIndicator.hxx>
 
 //=======================================================================
-//function : IsActive
-//purpose  :
+// function : IsActive
+// purpose  :
 //=======================================================================
 inline Standard_Boolean Message_ProgressRange::IsActive() const
 {
@@ -120,8 +120,8 @@ inline Standard_Boolean Message_ProgressRange::IsActive() const
 }
 
 //=======================================================================
-//function : UserBreak
-//purpose  :
+// function : UserBreak
+// purpose  :
 //=======================================================================
 inline Standard_Boolean Message_ProgressRange::UserBreak() const
 {
@@ -129,8 +129,8 @@ inline Standard_Boolean Message_ProgressRange::UserBreak() const
 }
 
 //=======================================================================
-//function : Close
-//purpose  :
+// function : Close
+// purpose  :
 //=======================================================================
 inline void Message_ProgressRange::Close()
 {
@@ -139,7 +139,7 @@ inline void Message_ProgressRange::Close()
 
   myParentScope->myProgress->Increment(myDelta, *myParentScope);
   myParentScope = 0;
-  myWasUsed = true;
+  myWasUsed     = true;
 }
 
 #endif // _Message_ProgressRange_HeaderFile

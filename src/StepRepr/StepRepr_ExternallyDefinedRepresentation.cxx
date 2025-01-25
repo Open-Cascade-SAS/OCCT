@@ -11,10 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepRepr_ExternallyDefinedRepresentation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ExternallyDefinedRepresentation,StepRepr_Representation)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ExternallyDefinedRepresentation, StepRepr_Representation)
 
-StepRepr_ExternallyDefinedRepresentation::StepRepr_ExternallyDefinedRepresentation ()    {  }
+StepRepr_ExternallyDefinedRepresentation::StepRepr_ExternallyDefinedRepresentation() {}

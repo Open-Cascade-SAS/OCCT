@@ -270,12 +270,12 @@ protected:
   void sort(const Handle(DE_ConfigurationContext)& theResource);
 
 public:
-// clang-format off
+  // clang-format off
   DE_ConfigurationNode::DE_SectionGlobal GlobalParameters; //!< Internal parameters for the all translators
 
 private:
   Standard_Boolean myKeepUpdates; //!< Flag that keeps changes on configuration nodes which are being updated
-// clang-format on
+  // clang-format on
   DE_ConfigurationFormatMap myConfiguration; //!< Internal map of formats
 };
 

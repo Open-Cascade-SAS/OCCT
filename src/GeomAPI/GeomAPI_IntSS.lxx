@@ -15,67 +15,62 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : GeomAPI_IntSS
-//purpose  : 
+// function : GeomAPI_IntSS
+// purpose  :
 //=======================================================================
 
-inline GeomAPI_IntSS::GeomAPI_IntSS () {}
-
-
-//=======================================================================
-//function : GeomAPI_IntSS
-//purpose  : 
-//=======================================================================
-
-inline GeomAPI_IntSS::GeomAPI_IntSS (const Handle(Geom_Surface)& S1,
-				     const Handle(Geom_Surface)& S2,
-				     const Standard_Real Tol) :
-	myIntersec(S1,S2,Tol,Standard_True)
-{}
-
+inline GeomAPI_IntSS::GeomAPI_IntSS() {}
 
 //=======================================================================
-//function : Perform
-//purpose  : 
+// function : GeomAPI_IntSS
+// purpose  :
+//=======================================================================
+
+inline GeomAPI_IntSS::GeomAPI_IntSS(const Handle(Geom_Surface)& S1,
+                                    const Handle(Geom_Surface)& S2,
+                                    const Standard_Real         Tol)
+    : myIntersec(S1, S2, Tol, Standard_True)
+{
+}
+
+//=======================================================================
+// function : Perform
+// purpose  :
 //=======================================================================
 
 inline void GeomAPI_IntSS::Perform(const Handle(Geom_Surface)& S1,
-				   const Handle(Geom_Surface)& S2,
-				   const Standard_Real Tol)
+                                   const Handle(Geom_Surface)& S2,
+                                   const Standard_Real         Tol)
 {
-  myIntersec.Perform(S1,S2,Tol,Standard_True);
+  myIntersec.Perform(S1, S2, Tol, Standard_True);
 }
 
-
 //=======================================================================
-//function : IsDone
-//purpose  : 
+// function : IsDone
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean GeomAPI_IntSS::IsDone () const
+inline Standard_Boolean GeomAPI_IntSS::IsDone() const
 {
   return myIntersec.IsDone();
 }
 
-
 //=======================================================================
-//function : NbLines
-//purpose  : 
+// function : NbLines
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer GeomAPI_IntSS::NbLines () const
+inline Standard_Integer GeomAPI_IntSS::NbLines() const
 {
   return myIntersec.NbLines();
 }
 
-
 //=======================================================================
-//function : Line
-//purpose  : 
+// function : Line
+// purpose  :
 //=======================================================================
 
-inline const Handle(Geom_Curve)& 
-        GeomAPI_IntSS::Line(const Standard_Integer I) const
+inline const Handle(Geom_Curve)& GeomAPI_IntSS::Line(const Standard_Integer I) const
 {
   return myIntersec.Line(I);
 }

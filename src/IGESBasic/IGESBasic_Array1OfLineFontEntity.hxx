@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(IGESData_LineFontEntity)> IGESBasic_Array1OfLineFontEntity;
 
-
 #endif

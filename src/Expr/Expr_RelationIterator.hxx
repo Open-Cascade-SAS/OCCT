@@ -27,50 +27,28 @@
 class Expr_GeneralRelation;
 class Expr_SingleRelation;
 
-
 //! Iterates on every basic relation contained in
 //! a GeneralRelation.
-class Expr_RelationIterator 
+class Expr_RelationIterator
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Expr_RelationIterator(const Handle(Expr_GeneralRelation)& rel);
-  
+
   //! Returns False if no other relation remains.
   Standard_EXPORT Standard_Boolean More() const;
-  
+
   Standard_EXPORT void Next();
-  
+
   //! Returns current basic relation.
   //! Exception is raised if no more relation remains.
   Standard_EXPORT Handle(Expr_SingleRelation) Value() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   Expr_Array1OfSingleRelation myRelation;
-  Standard_Integer current;
-
-
+  Standard_Integer            current;
 };
-
-
-
-
-
-
 
 #endif // _Expr_RelationIterator_HeaderFile

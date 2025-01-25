@@ -23,50 +23,28 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
-
-
-class LocOpe_BuildShape 
+class LocOpe_BuildShape
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-    LocOpe_BuildShape();
-  
+  LocOpe_BuildShape();
+
   //! Builds shape(s) from  the list <L>.  Uses only the
   //! faces of <L>.
-    LocOpe_BuildShape(const TopTools_ListOfShape& L);
-  
+  LocOpe_BuildShape(const TopTools_ListOfShape& L);
+
   //! Builds shape(s) from  the list <L>.  Uses only the
   //! faces of <L>.
-  Standard_EXPORT void Perform (const TopTools_ListOfShape& L);
-  
-    const TopoDS_Shape& Shape() const;
+  Standard_EXPORT void Perform(const TopTools_ListOfShape& L);
 
-
-
+  const TopoDS_Shape& Shape() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   TopoDS_Shape myRes;
-
-
 };
 
-
 #include <LocOpe_BuildShape.lxx>
-
-
-
-
 
 #endif // _LocOpe_BuildShape_HeaderFile

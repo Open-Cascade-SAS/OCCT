@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowser_DumpView.hxx>
 
@@ -34,29 +34,31 @@
 // function : onSelectionChanged
 // purpose :
 // =======================================================================
-void DFBrowser_DumpView::OnTreeViewSelectionChanged (const QItemSelection& theSelected,
-                                                     const QItemSelection&)
+void DFBrowser_DumpView::OnTreeViewSelectionChanged(const QItemSelection& theSelected,
+                                                    const QItemSelection&)
 {
-  myTextEdit->setVisible (false);
+  myTextEdit->setVisible(false);
   myTextEdit->clear();
 
   QModelIndexList aSelectedIndices = theSelected.indexes();
   QModelIndexList aFirstColumnSelectedIndices;
-  for (QModelIndexList::const_iterator aSelIt = aSelectedIndices.begin(); aSelIt != aSelectedIndices.end(); aSelIt++)
+  for (QModelIndexList::const_iterator aSelIt = aSelectedIndices.begin();
+       aSelIt != aSelectedIndices.end();
+       aSelIt++)
   {
     QModelIndex anIndex = *aSelIt;
     if (anIndex.column() == 0)
-      aFirstColumnSelectedIndices.append (anIndex);
+      aFirstColumnSelectedIndices.append(anIndex);
   }
   if (aFirstColumnSelectedIndices.size() != 1)
     return;
 
-  QString aDumpInfo;
-  const QModelIndex& anIndex = aFirstColumnSelectedIndices.first();
-  TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (anIndex);
-  DFBrowser_ItemPtr anItem;
+  QString               aDumpInfo;
+  const QModelIndex&    anIndex    = aFirstColumnSelectedIndices.first();
+  TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex(anIndex);
+  DFBrowser_ItemPtr     anItem;
   if (anItemBase)
-    anItem = itemDynamicCast<DFBrowser_Item> (anItemBase);
+    anItem = itemDynamicCast<DFBrowser_Item>(anItemBase);
 
   if (!anItem)
     return;
@@ -77,20 +79,20 @@ void DFBrowser_DumpView::OnTreeViewSelectionChanged (const QItemSelection& theSe
   aFileStream.close();
 
   // read dumped file to fill view
-  QFile aFile (aFileName.ToCString());
-  if (!aFile.open (QIODevice::ReadOnly | QIODevice::Text))
-      return;
-  QTextStream aStream (&aFile);
+  QFile aFile(aFileName.ToCString());
+  if (!aFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    return;
+  QTextStream aStream(&aFile);
   while (!aStream.atEnd())
   {
-    aDumpInfo.append (QString ("%1\n").arg (aStream.readLine()));
+    aDumpInfo.append(QString("%1\n").arg(aStream.readLine()));
   }
   aFile.close();
   QDir aDir;
-  aDir.remove (aFileName.ToCString());
+  aDir.remove(aFileName.ToCString());
   if (!aDumpInfo.isEmpty())
   {
-    myTextEdit->setVisible (true);
-    myTextEdit->setPlainText (aDumpInfo);
+    myTextEdit->setVisible(true);
+    myTextEdit->setPlainText(aDumpInfo);
   }
 }

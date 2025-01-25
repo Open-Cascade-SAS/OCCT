@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef MessageView_Window_H
 #define MessageView_Window_H
@@ -56,9 +56,8 @@ class MessageView_Window : public QObject
 {
   Q_OBJECT
 public:
-
   //! Constructor
-  Standard_EXPORT MessageView_Window (QWidget* theParent);
+  Standard_EXPORT MessageView_Window(QWidget* theParent);
 
   //! Destructor
   virtual ~MessageView_Window() {}
@@ -66,26 +65,30 @@ public:
   //! Provides the container with a parent where this container should be inserted.
   //! If Qt implementation, it should be QWidget with QLayout set inside
   //! \param theParent a parent class
-  Standard_EXPORT void SetParent (void* theParent);
+  Standard_EXPORT void SetParent(void* theParent);
 
-  //! Sets parameters container, it should be used when the plugin is initialized or in update content
-  //! \param theParameters a parameters container
-  void SetParameters (const Handle(TInspectorAPI_PluginParameters)& theParameters)
-  { myParameters = theParameters; myTreeViewActions->SetParameters (theParameters); }
+  //! Sets parameters container, it should be used when the plugin is initialized or in update
+  //! content \param theParameters a parameters container
+  void SetParameters(const Handle(TInspectorAPI_PluginParameters)& theParameters)
+  {
+    myParameters = theParameters;
+    myTreeViewActions->SetParameters(theParameters);
+  }
 
   //! Provide container for actions available in inspector on general level
   //! \param theMenu if Qt implementation, it is QMenu object
-  Standard_EXPORT virtual void FillActionsMenu (void* theMenu);
+  Standard_EXPORT virtual void FillActionsMenu(void* theMenu);
 
   //! Returns plugin preferences: dock widgets state, tree view columns.
   //! \param theItem container of preference elements
-  Standard_EXPORT void GetPreferences (TInspectorAPI_PreferencesDataMap& theItem);
+  Standard_EXPORT void GetPreferences(TInspectorAPI_PreferencesDataMap& theItem);
 
   //! Applies plugin preferences
   //! \param theItem container of preference elements
-  Standard_EXPORT void SetPreferences (const TInspectorAPI_PreferencesDataMap& theItem);
+  Standard_EXPORT void SetPreferences(const TInspectorAPI_PreferencesDataMap& theItem);
 
-  //! Applies parameters to Init controls, opens files if there are in parameters, updates OCAF tree view model
+  //! Applies parameters to Init controls, opens files if there are in parameters, updates OCAF tree
+  //! view model
   Standard_EXPORT void UpdateContent();
 
   //! Returns main control
@@ -98,15 +101,14 @@ protected:
   //! Appends shape into tree view model
   //! \param theShape a shape instance
   //! \param theReportDescription an additional report information
-  void addReport (const Handle(Message_Report)& theReport,
-                  const TCollection_AsciiString& theReportDescription = "");
+  void addReport(const Handle(Message_Report)&  theReport,
+                 const TCollection_AsciiString& theReportDescription = "");
 
 private:
-
   //! Fills controls of the plugin by parameters:
   //! - Fine AIS_InteractiveObject and fills View if it if it differs from the current context
   //! \param theParameters a parameters container
-  void Init (NCollection_List<Handle(Standard_Transient)>& theParameters);
+  void Init(NCollection_List<Handle(Standard_Transient)>& theParameters);
 
   //! Updates tree model
   void updateTreeModel();
@@ -119,21 +121,22 @@ protected slots:
   //! Updates all controls by changed selection in OCAF tree view
   //! \param theSelected list of selected tree view items
   //! \param theDeselected list of deselected tree view items
-  void onTreeViewSelectionChanged (const QItemSelection& theSelected, const QItemSelection& theDeselected);
+  void onTreeViewSelectionChanged(const QItemSelection& theSelected,
+                                  const QItemSelection& theDeselected);
 
   //! Shows context menu for tree view selected item. It contains expand/collapse actions.
   //! \param thePosition a clicked point
-  void onTreeViewContextMenuRequested (const QPoint& thePosition);
+  void onTreeViewContextMenuRequested(const QPoint& thePosition);
 
   //! Display content of selected tree view item if isToggled is true
   //! \param isToggled true if the property dock widget is shown
-  void onPropertyPanelShown (bool isToggled);
+  void onPropertyPanelShown(bool isToggled);
 
   //! Update tree view item, preview presentation by item value change
   void onPropertyViewDataChanged();
 
   //! Update tree view header item width
-  void onHeaderResized (int theSectionId, int, int);
+  void onHeaderResized(int theSectionId, int, int);
 
   //! Updates visibility states by erase all in context
   void onEraseAllPerformed();
@@ -159,7 +162,7 @@ protected slots:
 
 protected:
   //! Appends items to activate report metrics
-  void addActivateMetricActions (QMenu* theMenu);
+  void addActivateMetricActions(QMenu* theMenu);
 
   //! Returns displayer where the presentations/preview should be shown/erased
   //! If default view is created, it returns displayer of this view
@@ -175,23 +178,25 @@ protected:
   void updateVisibleColumns();
 
 private:
-  QMainWindow* myMainWindow; //!< main control, parent for all MessageView controls
+  QMainWindow* myMainWindow;     //!< main control, parent for all MessageView controls
   QDockWidget* myViewDockWidget; //!< view dock widget to hide/show
 
   QDockWidget* myPropertyPanelWidget; //!< property pane dockable widget
-  ViewControl_PropertyView* myPropertyView; //!< property control to display model item values if exist
+  ViewControl_PropertyView*
+    myPropertyView; //!< property control to display model item values if exist
 
-  View_Window* myViewWindow; //!< OCC 3d view to visualize presentations
-  QTreeView* myTreeView; //!< tree view visualized shapes
-  MessageModel_Actions* myTreeViewActions; //!< processing history view actions
+  View_Window*             myViewWindow;      //!< OCC 3d view to visualize presentations
+  QTreeView*               myTreeView;        //!< tree view visualized shapes
+  MessageModel_Actions*    myTreeViewActions; //!< processing history view actions
   MessageView_ActionsTest* myTestViewActions; //!< check view actions
 
-  QTableView* myCustomView;         //!< table that units messages by name.
+  QTableView*  myCustomView;        //!< table that units messages by name.
   QDockWidget* myCustomPanelWidget; //!< panel for table that units messages by name.
 
   Handle(TInspectorAPI_PluginParameters) myParameters; //!< plugins parameters container
 
-  Handle(AIS_InteractiveObject) myPreviewPresentation; //!< presentation of preview for a selected object
+  Handle(AIS_InteractiveObject)
+    myPreviewPresentation; //!< presentation of preview for a selected object
 };
 
 #endif

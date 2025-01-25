@@ -15,57 +15,51 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Index
-//purpose  : 
+// function : Index
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer  Sweep_NumShape::Index()const 
+inline Standard_Integer Sweep_NumShape::Index() const
 {
   return myIndex;
 }
 
-
 //=======================================================================
-//function : Type
-//purpose  : 
+// function : Type
+// purpose  :
 //=======================================================================
 
-inline TopAbs_ShapeEnum  Sweep_NumShape::Type()const 
+inline TopAbs_ShapeEnum Sweep_NumShape::Type() const
 {
   return myType;
 }
 
-
 //=======================================================================
-//function : Closed
-//purpose  : 
+// function : Closed
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean  Sweep_NumShape::Closed()const 
+inline Standard_Boolean Sweep_NumShape::Closed() const
 {
   return myClosed;
 }
 
-
 //=======================================================================
-//function : BegInfinite
-//purpose  : 
+// function : BegInfinite
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean  Sweep_NumShape::BegInfinite()const 
+inline Standard_Boolean Sweep_NumShape::BegInfinite() const
 {
   return myBegInf;
 }
 
-
 //=======================================================================
-//function : EndInfinite
-//purpose  : 
+// function : EndInfinite
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean  Sweep_NumShape::EndInfinite()const 
+inline Standard_Boolean Sweep_NumShape::EndInfinite() const
 {
   return myEndInf;
 }
-
-

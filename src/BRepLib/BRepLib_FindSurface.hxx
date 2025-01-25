@@ -25,7 +25,6 @@
 class Geom_Surface;
 class TopoDS_Shape;
 
-
 //! Provides an  algorithm to find  a Surface  through a
 //! set of edges.
 //!
@@ -46,15 +45,13 @@ class TopoDS_Shape;
 //!
 //! When Existed  returns True  the  Surface  may have a
 //! location given by the Location method.
-class BRepLib_FindSurface 
+class BRepLib_FindSurface
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT BRepLib_FindSurface();
-  
+
   //! Computes the Surface from the edges of  <S> with the
   //! given tolerance.
   //! if <OnlyPlane> is true, the computed surface will be
@@ -63,8 +60,11 @@ public:
   //! If <OnlyClosed> is true,  then  S  should be a wire
   //! and the existing surface,  on  which wire S is not
   //! closed in 2D, will be ignored.
-  Standard_EXPORT BRepLib_FindSurface(const TopoDS_Shape& S, const Standard_Real Tol = -1, const Standard_Boolean OnlyPlane = Standard_False, const Standard_Boolean OnlyClosed = Standard_False);
-  
+  Standard_EXPORT BRepLib_FindSurface(const TopoDS_Shape&    S,
+                                      const Standard_Real    Tol        = -1,
+                                      const Standard_Boolean OnlyPlane  = Standard_False,
+                                      const Standard_Boolean OnlyClosed = Standard_False);
+
   //! Computes the Surface from the edges of  <S> with the
   //! given tolerance.
   //! if <OnlyPlane> is true, the computed surface will be
@@ -73,46 +73,30 @@ public:
   //! If <OnlyClosed> is true,  then  S  should be a wire
   //! and the existing surface,  on  which wire S is not
   //! closed in 2D, will be ignored.
-  Standard_EXPORT void Init (const TopoDS_Shape& S, const Standard_Real Tol = -1, const Standard_Boolean OnlyPlane = Standard_False, const Standard_Boolean OnlyClosed = Standard_False);
-  
+  Standard_EXPORT void Init(const TopoDS_Shape&    S,
+                            const Standard_Real    Tol        = -1,
+                            const Standard_Boolean OnlyPlane  = Standard_False,
+                            const Standard_Boolean OnlyClosed = Standard_False);
+
   Standard_EXPORT Standard_Boolean Found() const;
-  
+
   Standard_EXPORT Handle(Geom_Surface) Surface() const;
-  
+
   Standard_EXPORT Standard_Real Tolerance() const;
-  
+
   Standard_EXPORT Standard_Real ToleranceReached() const;
-  
+
   Standard_EXPORT Standard_Boolean Existed() const;
-  
+
   Standard_EXPORT TopLoc_Location Location() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(Geom_Surface) mySurface;
-  Standard_Real myTolerance;
-  Standard_Real myTolReached;
-  Standard_Boolean isExisted;
-  TopLoc_Location myLocation;
-
-
+  Standard_Real        myTolerance;
+  Standard_Real        myTolReached;
+  Standard_Boolean     isExisted;
+  TopLoc_Location      myLocation;
 };
-
-
-
-
-
-
 
 #endif // _BRepLib_FindSurface_HeaderFile

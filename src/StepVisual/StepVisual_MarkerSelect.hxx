@@ -27,52 +27,31 @@ class Standard_Transient;
 class StepData_SelectMember;
 class StepVisual_MarkerMember;
 
-
-
-class StepVisual_MarkerSelect  : public StepData_SelectType
+class StepVisual_MarkerSelect : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a MarkerSelect SelectType
   Standard_EXPORT StepVisual_MarkerSelect();
-  
+
   //! Recognizes a MarkerSelect Kind Entity that is :
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Integer
+    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+
   //! Returns a new MarkerMember
   Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
-  
+
   //! Returns 1 for a SelectMember enum, named MARKER_TYPE
-  Standard_EXPORT virtual Standard_Integer CaseMem (const Handle(StepData_SelectMember)& sm) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Standard_Integer CaseMem(const Handle(StepData_SelectMember)& sm) const
+    Standard_OVERRIDE;
+
   //! Gives access to the MarkerMember in order to get/set its value
   Standard_EXPORT Handle(StepVisual_MarkerMember) MarkerMember() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_MarkerSelect_HeaderFile

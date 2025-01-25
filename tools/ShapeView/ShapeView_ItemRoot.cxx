@@ -11,8 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
-
+// commercial license or contractual agreement.
 
 #include <inspector/ShapeView_ItemRoot.hxx>
 #include <inspector/ShapeView_ItemShape.hxx>
@@ -21,9 +20,9 @@
 // function : Shape
 // purpose :
 // =======================================================================
-const TopoDS_Shape& ShapeView_ItemRoot::Shape (const int theRowId)
+const TopoDS_Shape& ShapeView_ItemRoot::Shape(const int theRowId)
 {
-  NCollection_List<TopoDS_Shape>::Iterator aShapesIt (myShapes);
+  NCollection_List<TopoDS_Shape>::Iterator aShapesIt(myShapes);
   for (int aRowId = 0; aShapesIt.More(); aShapesIt.Next(), aRowId++)
   {
     if (aRowId == theRowId)
@@ -51,8 +50,7 @@ QVariant ShapeView_ItemRoot::initValue(const int theRole) const
 // function : createChild
 // purpose :
 // =======================================================================
-TreeModel_ItemBasePtr ShapeView_ItemRoot::createChild (int theRow, int theColumn)
+TreeModel_ItemBasePtr ShapeView_ItemRoot::createChild(int theRow, int theColumn)
 {
-  return ShapeView_ItemShape::CreateItem (currentItem(), theRow, theColumn);
+  return ShapeView_ItemShape::CreateItem(currentItem(), theRow, theColumn);
 }
-

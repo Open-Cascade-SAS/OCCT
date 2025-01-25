@@ -25,83 +25,84 @@ class gp_XYZ;
  */
 class VrmlData_ArrayVec3d : public VrmlData_Node
 {
- public:
+public:
   // ---------- PUBLIC METHODS ----------
 
   /**
    * Empty constructor
    */
-  inline VrmlData_ArrayVec3d ()
-    : myArray (0L), myLength (0)
-  {}
+  inline VrmlData_ArrayVec3d()
+      : myArray(0L),
+        myLength(0)
+  {
+  }
 
   /**
    * Constructor
    */
-  inline VrmlData_ArrayVec3d (const VrmlData_Scene& theScene,
-                              const char            * theName,
-                              const Standard_Size   nVec,
-                              const gp_XYZ          * arrVec)
-    : VrmlData_Node     (theScene, theName),
-      myArray           (arrVec),
-      myLength          (nVec)
-  {}
+  inline VrmlData_ArrayVec3d(const VrmlData_Scene& theScene,
+                             const char*           theName,
+                             const Standard_Size   nVec,
+                             const gp_XYZ*         arrVec)
+      : VrmlData_Node(theScene, theName),
+        myArray(arrVec),
+        myLength(nVec)
+  {
+  }
 
   /**
    * Query the number of vectors
    */
-  inline Standard_Size  Length          () const { return myLength; }
+  inline Standard_Size Length() const { return myLength; }
 
   /**
    * Query the array
    */
-  inline const gp_XYZ * Values          () const { return myArray; }
+  inline const gp_XYZ* Values() const { return myArray; }
 
   /**
    * Create a data array and assign the field myArray.
    * @return
    *   True if allocation was successful.
-   */ 
-  Standard_EXPORT Standard_Boolean
-                        AllocateValues  (const Standard_Size theLength);
+   */
+  Standard_EXPORT Standard_Boolean AllocateValues(const Standard_Size theLength);
 
   /**
    * Set the array data
    */
-  inline void           SetValues (const Standard_Size nValues,
-                                   const gp_XYZ * arrValues)
-  { myLength = nValues; myArray = arrValues; }
+  inline void SetValues(const Standard_Size nValues, const gp_XYZ* arrValues)
+  {
+    myLength = nValues;
+    myArray  = arrValues;
+  }
 
   /**
    * Create a copy of this node.
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.
    */
-//   Standard_EXPORT virtual Handle(VrmlData_Node)
-//                         Clone     (const Handle(VrmlData_Node)& theOther)const;
+  //   Standard_EXPORT virtual Handle(VrmlData_Node)
+  //                         Clone     (const Handle(VrmlData_Node)& theOther)const;
 
   /**
    * Read the Node from input stream.
    */
-  Standard_EXPORT VrmlData_ErrorStatus
-                        ReadArray (VrmlData_InBuffer&     theBuffer,
-                                   const char *           theName,
-                                   const Standard_Boolean isScale);
+  Standard_EXPORT VrmlData_ErrorStatus ReadArray(VrmlData_InBuffer&     theBuffer,
+                                                 const char*            theName,
+                                                 const Standard_Boolean isScale);
 
   /**
    * Write the Node to the output stream currently opened in Scene.
    */
-  Standard_EXPORT VrmlData_ErrorStatus
-                        WriteArray(const char *           theName,
-                                   const Standard_Boolean isScale) const;
+  Standard_EXPORT VrmlData_ErrorStatus WriteArray(const char*            theName,
+                                                  const Standard_Boolean isScale) const;
 
   /**
    * Returns True if the node is default, so that it should not be written.
    */
-  Standard_EXPORT virtual Standard_Boolean
-                        IsDefault () const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsDefault() const Standard_OVERRIDE;
 
- protected:
+protected:
   // ---------- PROTECTED METHODS ----------
   /**
    * Query one vector
@@ -110,21 +111,20 @@ class VrmlData_ArrayVec3d : public VrmlData_Node
    * @return
    *   the vector for the index. If index irrelevant, returns (0., 0., 0.)
    */
-  Standard_EXPORT const gp_XYZ& Value (const Standard_Size i) const;
+  Standard_EXPORT const gp_XYZ& Value(const Standard_Size i) const;
 
- protected:
+protected:
   // ---------- PROTECTED FIELDS ----------
 
-  const gp_XYZ  * myArray;
-  Standard_Size   myLength;
+  const gp_XYZ* myArray;
+  Standard_Size myLength;
 
- public:
-// Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI_INLINE(VrmlData_ArrayVec3d,VrmlData_Node)
+public:
+  // Declaration of CASCADE RTTI
+  DEFINE_STANDARD_RTTI_INLINE(VrmlData_ArrayVec3d, VrmlData_Node)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE (VrmlData_ArrayVec3d, VrmlData_Node)
-
+DEFINE_STANDARD_HANDLE(VrmlData_ArrayVec3d, VrmlData_Node)
 
 #endif

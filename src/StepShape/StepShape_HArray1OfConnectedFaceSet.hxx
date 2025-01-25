@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(StepShape_HArray1OfConnectedFaceSet, StepShape_Array1OfConnectedFaceSet)
 
-
 #endif

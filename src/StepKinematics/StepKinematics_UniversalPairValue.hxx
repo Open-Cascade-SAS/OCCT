@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:16 2020 
+// Created on : Sat May 02 12:41:16 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -28,32 +28,30 @@ DEFINE_STANDARD_HANDLE(StepKinematics_UniversalPairValue, StepKinematics_PairVal
 //! Representation of STEP entity UniversalPairValue
 class StepKinematics_UniversalPairValue : public StepKinematics_PairValue
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_UniversalPairValue();
 
   //! Initialize all fields (own and inherited)
- Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                           const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                           const Standard_Real theFirstRotationAngle,
-                           const Standard_Real theSecondRotationAngle);
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
+                            const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
+                            const Standard_Real                         theFirstRotationAngle,
+                            const Standard_Real                         theSecondRotationAngle);
 
   //! Returns field FirstRotationAngle
   Standard_EXPORT Standard_Real FirstRotationAngle() const;
   //! Sets field FirstRotationAngle
-  Standard_EXPORT void SetFirstRotationAngle (const Standard_Real theFirstRotationAngle);
+  Standard_EXPORT void SetFirstRotationAngle(const Standard_Real theFirstRotationAngle);
 
   //! Returns field SecondRotationAngle
   Standard_EXPORT Standard_Real SecondRotationAngle() const;
   //! Sets field SecondRotationAngle
-  Standard_EXPORT void SetSecondRotationAngle (const Standard_Real theSecondRotationAngle);
+  Standard_EXPORT void SetSecondRotationAngle(const Standard_Real theSecondRotationAngle);
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_UniversalPairValue, StepKinematics_PairValue)
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_UniversalPairValue, StepKinematics_PairValue)
 
 private:
   Standard_Real myFirstRotationAngle;
   Standard_Real mySecondRotationAngle;
-
 };
 #endif // _StepKinematics_UniversalPairValue_HeaderFile_

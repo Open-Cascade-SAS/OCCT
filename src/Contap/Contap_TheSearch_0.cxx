@@ -54,4 +54,3 @@
 #define IntStart_SearchOnBoundaries Contap_TheSearch
 #define IntStart_SearchOnBoundaries_hxx <Contap_TheSearch.hxx>
 #include "../IntStart/IntStart_SearchOnBoundaries.gxx"
-

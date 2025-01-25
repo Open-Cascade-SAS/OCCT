@@ -17,13 +17,12 @@
 #ifndef _CDF_SubComponentStatus_HeaderFile
 #define _CDF_SubComponentStatus_HeaderFile
 
-
 enum CDF_SubComponentStatus
 {
-CDF_SCS_Consistent,
-CDF_SCS_Unconsistent,
-CDF_SCS_Stored,
-CDF_SCS_Modified
+  CDF_SCS_Consistent,
+  CDF_SCS_Unconsistent,
+  CDF_SCS_Stored,
+  CDF_SCS_Modified
 };
 
 #endif // _CDF_SubComponentStatus_HeaderFile

@@ -13,54 +13,44 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepShape_QualifiedRepresentationItem.hxx>
 #include <StepRepr_ReprItemAndMeasureWithUnitAndQRI.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ReprItemAndMeasureWithUnitAndQRI,StepRepr_ReprItemAndMeasureWithUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ReprItemAndMeasureWithUnitAndQRI,
+                           StepRepr_ReprItemAndMeasureWithUnit)
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepRepr_ReprItemAndMeasureWithUnitAndQRI::Init (const Handle(StepBasic_MeasureWithUnit)& aMWU, 
-                                                      const Handle(StepRepr_RepresentationItem)& aRI, 
-                                                      const Handle(StepShape_QualifiedRepresentationItem)& aQRI)
+void StepRepr_ReprItemAndMeasureWithUnitAndQRI::Init(
+  const Handle(StepBasic_MeasureWithUnit)&             aMWU,
+  const Handle(StepRepr_RepresentationItem)&           aRI,
+  const Handle(StepShape_QualifiedRepresentationItem)& aQRI)
 {
   StepRepr_ReprItemAndMeasureWithUnit::Init(aMWU, aRI);
   myQualifiedRepresentationItem = aQRI;
 }
 
-//=======================================================================
-//function : StepRepr_ReprItemAndMeasureWithUnitAndQRI
-//purpose  : 
-//=======================================================================
-StepRepr_ReprItemAndMeasureWithUnitAndQRI::StepRepr_ReprItemAndMeasureWithUnitAndQRI() : StepRepr_ReprItemAndMeasureWithUnit()
+//=================================================================================================
+
+StepRepr_ReprItemAndMeasureWithUnitAndQRI::StepRepr_ReprItemAndMeasureWithUnitAndQRI()
+    : StepRepr_ReprItemAndMeasureWithUnit()
 {
   myQualifiedRepresentationItem = new StepShape_QualifiedRepresentationItem();
 }
 
-//=======================================================================
-//function : SetQualifiedRepresentationItem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepRepr_ReprItemAndMeasureWithUnitAndQRI::SetQualifiedRepresentationItem
-  (const Handle(StepShape_QualifiedRepresentationItem)& aQRI) 
+void StepRepr_ReprItemAndMeasureWithUnitAndQRI::SetQualifiedRepresentationItem(
+  const Handle(StepShape_QualifiedRepresentationItem)& aQRI)
 {
   myQualifiedRepresentationItem = aQRI;
 }
 
-
-//=======================================================================
-//function : GetPlaneAngleMeasureWithUnit
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(StepShape_QualifiedRepresentationItem) StepRepr_ReprItemAndMeasureWithUnitAndQRI::
-       GetQualifiedRepresentationItem() const
+  GetQualifiedRepresentationItem() const
 {
   return myQualifiedRepresentationItem;
 }

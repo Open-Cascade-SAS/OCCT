@@ -15,17 +15,16 @@
 
 #include <BVH_BuildThread.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BVH_BuildThread,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(BVH_BuildThread, Standard_Transient)
 
 // =======================================================================
 // function : BVH_BuildThread
 // purpose  : Creates new BVH build thread
 // =======================================================================
-BVH_BuildThread::BVH_BuildThread (BVH_BuildTool&  theBuildTool,
-                                  BVH_BuildQueue& theBuildQueue)
-: myBuildTool  (theBuildTool),
-  myBuildQueue (theBuildQueue),
-  myWorkThread (threadFunction)
+BVH_BuildThread::BVH_BuildThread(BVH_BuildTool& theBuildTool, BVH_BuildQueue& theBuildQueue)
+    : myBuildTool(theBuildTool),
+      myBuildQueue(theBuildQueue),
+      myWorkThread(threadFunction)
 {
   //
 }
@@ -38,7 +37,7 @@ void BVH_BuildThread::execute()
 {
   for (Standard_Boolean wasBusy = Standard_False; /**/; /**/)
   {
-    const Standard_Integer aNode = myBuildQueue.Fetch (wasBusy);
+    const Standard_Integer aNode = myBuildQueue.Fetch(wasBusy);
 
     if (aNode == -1) // queue is empty
     {
@@ -49,7 +48,7 @@ void BVH_BuildThread::execute()
     }
     else
     {
-      myBuildTool.Perform (aNode);
+      myBuildTool.Perform(aNode);
     }
   }
 }
@@ -58,9 +57,9 @@ void BVH_BuildThread::execute()
 // function : threadFunction
 // purpose  : Thread function for BVH build thread
 // =======================================================================
-Standard_Address BVH_BuildThread::threadFunction (Standard_Address theData)
+Standard_Address BVH_BuildThread::threadFunction(Standard_Address theData)
 {
-  static_cast<BVH_BuildThread*> (theData)->execute();
+  static_cast<BVH_BuildThread*>(theData)->execute();
 
   return NULL;
 }

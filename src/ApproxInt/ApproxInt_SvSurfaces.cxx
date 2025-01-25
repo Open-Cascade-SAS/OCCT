@@ -15,8 +15,5 @@
 #include <ApproxInt_SvSurfaces.hxx>
 
 //=================================================================================================
-// function : ~ApproxInt_SvSurfaces
-// purpose  : Destructor
-//=================================================================================================
 
 ApproxInt_SvSurfaces::~ApproxInt_SvSurfaces() {}

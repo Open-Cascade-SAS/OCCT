@@ -31,7 +31,6 @@ class IntCurveSurface_IntersectionPoint;
 class gp_Pnt;
 class TopoDS_Face;
 
-
 //! Computes the intersection between a face and a
 //! curve. To intersect one curve with shape method
 //! Init(Shape, curve, tTol) should be used.  To
@@ -52,107 +51,90 @@ class TopoDS_Face;
 //! .......
 //! }
 //! }
-class BRepIntCurveSurface_Inter 
+class BRepIntCurveSurface_Inter
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor;
   Standard_EXPORT BRepIntCurveSurface_Inter();
-  
+
   //! Load the Shape, the curve  and initialize the
   //! tolerance used for the classification.
-  Standard_EXPORT void Init (const TopoDS_Shape& theShape, const GeomAdaptor_Curve& theCurve, const Standard_Real theTol);
-  
+  Standard_EXPORT void Init(const TopoDS_Shape&      theShape,
+                            const GeomAdaptor_Curve& theCurve,
+                            const Standard_Real      theTol);
+
   //! Load the Shape, the curve  and initialize the
   //! tolerance used for the classification.
-  Standard_EXPORT void Init (const TopoDS_Shape& theShape, const gp_Lin& theLine, const Standard_Real theTol);
-  
+  Standard_EXPORT void Init(const TopoDS_Shape& theShape,
+                            const gp_Lin&       theLine,
+                            const Standard_Real theTol);
+
   //! Load the Shape,   and initialize the
   //! tolerance used for the classification.
-  Standard_EXPORT void Load (const TopoDS_Shape& theShape, const Standard_Real theTol);
-  
+  Standard_EXPORT void Load(const TopoDS_Shape& theShape, const Standard_Real theTol);
+
   //! Method to find intersections of specified curve with loaded shape.
-  Standard_EXPORT void Init (const GeomAdaptor_Curve& theCurve);
-  
+  Standard_EXPORT void Init(const GeomAdaptor_Curve& theCurve);
+
   //! returns True if there is a current face.
   Standard_EXPORT Standard_Boolean More() const;
-  
+
   //! Sets the next intersection point to check.
   Standard_EXPORT void Next();
-  
+
   //! returns the current Intersection point.
   Standard_EXPORT IntCurveSurface_IntersectionPoint Point() const;
-  
+
   //! returns the current geometric Point
   Standard_EXPORT const gp_Pnt& Pnt() const;
-  
+
   //! returns the U parameter of the current point
   //! on the current face.
   Standard_EXPORT Standard_Real U() const;
-  
+
   //! returns the V parameter of the current point
   //! on the current face.
   Standard_EXPORT Standard_Real V() const;
-  
+
   //! returns the  parameter of the current point
   //! on the curve.
   Standard_EXPORT Standard_Real W() const;
-  
+
   //! returns the current state  (IN or ON)
   Standard_EXPORT TopAbs_State State() const;
-  
+
   //! returns the transition of the line on the surface (IN or OUT or UNKNOWN)
   Standard_EXPORT IntCurveSurface_TransitionOnCurve Transition() const;
-  
+
   //! returns the current face.
   Standard_EXPORT const TopoDS_Face& Face() const;
 
-
-
-
 protected:
-
-  
   //! Internal function
   Standard_EXPORT void Find();
-  
+
   //! Method chec found intersection point
   Standard_EXPORT Standard_Boolean FindPoint();
-  
+
   //! Method to clear fields of class
   Standard_EXPORT void Clear();
 
-
-
-
 private:
-
-
-
-  Standard_Real myTolerance;
-  Handle(GeomAdaptor_Curve) myCurve;
-  IntCurveSurface_HInter myIntcs;
-  Standard_Integer myCurrentindex;
-  Standard_Integer myCurrentnbpoints;
+  Standard_Real                    myTolerance;
+  Handle(GeomAdaptor_Curve)        myCurve;
+  IntCurveSurface_HInter           myIntcs;
+  Standard_Integer                 myCurrentindex;
+  Standard_Integer                 myCurrentnbpoints;
   Handle(BRepTopAdaptor_TopolTool) myFastClass;
-  TopAbs_State myCurrentstate;
-  Standard_Real myCurrentU;
-  Standard_Real myCurrentV;
-  Bnd_Box myCurveBox;
-  Standard_Integer myIndFace;
-  TopTools_SequenceOfShape myFaces;
-  Handle(Bnd_HArray1OfBox) myFaceBoxes;
-
-
+  TopAbs_State                     myCurrentstate;
+  Standard_Real                    myCurrentU;
+  Standard_Real                    myCurrentV;
+  Bnd_Box                          myCurveBox;
+  Standard_Integer                 myIndFace;
+  TopTools_SequenceOfShape         myFaces;
+  Handle(Bnd_HArray1OfBox)         myFaceBoxes;
 };
-
-
-
-
-
-
 
 #endif // _BRepIntCurveSurface_Inter_HeaderFile

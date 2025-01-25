@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<gp_XYZ> TColgp_SequenceOfXYZ;
 
-
 #endif

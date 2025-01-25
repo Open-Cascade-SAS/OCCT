@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMXCAFDoc_DatumDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <Message_Messenger.hxx>
@@ -23,66 +22,57 @@
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_Datum.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_DatumDriver,BinMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_DatumDriver, BinMDF_ADriver)
 
-//=======================================================================
-//function : Constructor
-//purpose  : 
-//=======================================================================
-BinMXCAFDoc_DatumDriver::BinMXCAFDoc_DatumDriver
-  (const Handle(Message_Messenger)& theMsgDriver)
-: BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_Datum)->Name())
+//=================================================================================================
+
+BinMXCAFDoc_DatumDriver::BinMXCAFDoc_DatumDriver(const Handle(Message_Messenger)& theMsgDriver)
+    : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_Datum)->Name())
 {
 }
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Handle(TDF_Attribute) BinMXCAFDoc_DatumDriver::NewEmpty() const
 {
   return new XCAFDoc_Datum();
 }
 
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-Standard_Boolean BinMXCAFDoc_DatumDriver::Paste(const BinObjMgt_Persistent& theSource,
-                                                 const Handle(TDF_Attribute)& theTarget,
-                                                 BinObjMgt_RRelocationTable& /*theRelocTable*/) const 
+//=================================================================================================
+
+Standard_Boolean BinMXCAFDoc_DatumDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                const Handle(TDF_Attribute)& theTarget,
+                                                BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
-  Handle(XCAFDoc_Datum) anAtt = Handle(XCAFDoc_Datum)::DownCast(theTarget);
+  Handle(XCAFDoc_Datum)   anAtt = Handle(XCAFDoc_Datum)::DownCast(theTarget);
   TCollection_AsciiString aName, aDescr, anId;
-  if ( !(theSource >> aName >> aDescr >> anId) )
+  if (!(theSource >> aName >> aDescr >> anId))
     return Standard_False;
 
-  anAtt->Set(new TCollection_HAsciiString( aName ),
-             new TCollection_HAsciiString( aDescr ),
-             new TCollection_HAsciiString( anId ));
+  anAtt->Set(new TCollection_HAsciiString(aName),
+             new TCollection_HAsciiString(aDescr),
+             new TCollection_HAsciiString(anId));
   return Standard_True;
 }
 
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BinMXCAFDoc_DatumDriver::Paste(const Handle(TDF_Attribute)& theSource,
-                                     BinObjMgt_Persistent& theTarget,
-                                     BinObjMgt_SRelocationTable& /*theRelocTable*/) const
+                                    BinObjMgt_Persistent&        theTarget,
+                                    BinObjMgt_SRelocationTable& /*theRelocTable*/) const
 {
   Handle(XCAFDoc_Datum) anAtt = Handle(XCAFDoc_Datum)::DownCast(theSource);
-  if ( !anAtt->GetName().IsNull() )
+  if (!anAtt->GetName().IsNull())
     theTarget << anAtt->GetName()->String();
   else
     theTarget << TCollection_AsciiString("");
 
-  if ( !anAtt->GetDescription().IsNull() )
+  if (!anAtt->GetDescription().IsNull())
     theTarget << anAtt->GetDescription()->String();
   else
     theTarget << TCollection_AsciiString("");
 
-  if ( !anAtt->GetIdentification().IsNull() )
+  if (!anAtt->GetIdentification().IsNull())
     theTarget << anAtt->GetIdentification()->String();
   else
     theTarget << TCollection_AsciiString("");

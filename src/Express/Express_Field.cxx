@@ -20,68 +20,50 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Express_Field, Standard_Transient)
 
-//=======================================================================
-// function : Express_Field
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
-Express_Field::Express_Field (const Standard_CString theName,
-                              const Handle(Express_Type)& theType,
-                              const Standard_Boolean theOpt)
+Express_Field::Express_Field(const Standard_CString      theName,
+                             const Handle(Express_Type)& theType,
+                             const Standard_Boolean      theOpt)
 {
-  myName = new TCollection_HAsciiString (theName);
+  myName = new TCollection_HAsciiString(theName);
   myType = theType;
-  myOpt = theOpt;
+  myOpt  = theOpt;
 }
 
-//=======================================================================
-// function : Express_Field
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
-Express_Field::Express_Field (const Handle(TCollection_HAsciiString)& theName,
-                              const Handle(Express_Type)& theType,
-                              const Standard_Boolean theOpt)
+Express_Field::Express_Field(const Handle(TCollection_HAsciiString)& theName,
+                             const Handle(Express_Type)&             theType,
+                             const Standard_Boolean                  theOpt)
 {
   myName = theName;
   myType = theType;
-  myOpt = theOpt;
+  myOpt  = theOpt;
 }
 
-//=======================================================================
-// function : Name
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 const TCollection_AsciiString& Express_Field::Name() const
 {
   return myName->String();
 }
 
-//=======================================================================
-// function : HName
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 Handle(TCollection_HAsciiString) Express_Field::HName() const
 {
   return myName;
 }
 
-//=======================================================================
-// function : Type
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 const Handle(Express_Type)& Express_Field::Type() const
 {
   return myType;
 }
 
-//=======================================================================
-// function : IsOptional
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean Express_Field::IsOptional() const
 {

@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef TreeModel_PropertyView_H
 #define TreeModel_PropertyView_H
@@ -39,9 +39,9 @@ class ViewControl_PropertyView : public QObject
 {
   Q_OBJECT
 public:
-
   //! Constructor
-  Standard_EXPORT ViewControl_PropertyView (QWidget* theParent, const QSize& thePredefinedSize = QSize());
+  Standard_EXPORT ViewControl_PropertyView(QWidget*     theParent,
+                                           const QSize& thePredefinedSize = QSize());
 
   //! Destructor
   virtual ~ViewControl_PropertyView() {}
@@ -49,11 +49,11 @@ public:
   //! Fills the view content with values. Number of visible tables is size of container,
   //! Each element of container is values of the corresponded table
   //! \param theTableValues values
-  Standard_EXPORT void Init (ViewControl_TableModelValues* theTableValues);
+  Standard_EXPORT void Init(ViewControl_TableModelValues* theTableValues);
 
   //! Fills the view content with the parameter custom widget.
   //! \param theWidget control
-  Standard_EXPORT void Init (QWidget* theWidget);
+  Standard_EXPORT void Init(QWidget* theWidget);
 
   //! Clears layout of the view and tables models.
   Standard_EXPORT void Clear();
@@ -73,9 +73,9 @@ public:
   //! \param theTreeView a view instance
   //! \param[out] theItems  properties
   //! \param thePrefix preference item prefix
-  Standard_EXPORT static void SaveState (ViewControl_PropertyView* theParameters,
-                                         QMap<QString, QString>& theItems,
-                                         const QString& thePrefix = QString());
+  Standard_EXPORT static void SaveState(ViewControl_PropertyView* theParameters,
+                                        QMap<QString, QString>&   theItems,
+                                        const QString&            thePrefix = QString());
 
   //! Restores state of property view by a container
   //! \param theTreeView a view instance
@@ -83,9 +83,10 @@ public:
   //! \param theValue property value
   //! \param thePrefix preference item prefix
   //! \return boolean value whether the property is applied to the tree view
-  Standard_EXPORT static bool RestoreState (ViewControl_PropertyView* theParameters,
-                                            const QString& theKey, const QString& theValue,
-                                            const QString& thePrefix = QString());
+  Standard_EXPORT static bool RestoreState(ViewControl_PropertyView* theParameters,
+                                           const QString&            theKey,
+                                           const QString&            theValue,
+                                           const QString&            thePrefix = QString());
 
 signals:
   //! Signal about selection change in property view table
@@ -98,7 +99,8 @@ protected slots:
   //! Emits signal about selection is changed
   //! \param theSelected container of selected table cells
   //! \param theDeselected container of selected table cells
-  void onTableSelectionChanged (const QItemSelection& theSelected, const QItemSelection& theDeselected);
+  void onTableSelectionChanged(const QItemSelection& theSelected,
+                               const QItemSelection& theDeselected);
 
 private:
   bool myOwnSelectionChangeBlocked; //!< blocking emit of selection changed signal
@@ -106,11 +108,12 @@ private:
   QWidget* myMainWidget; //!< parent of all controls
 
   QStackedWidget* myAttributesStack; //!< container of already created panes
-  QWidget* myEmptyWidget; //!< an empty widget when nothing is selected in tree view
+  QWidget*        myEmptyWidget;     //!< an empty widget when nothing is selected in tree view
 
   QWidget* myTableWidget; //!< widget of tables in vertical layout
-  QVBoxLayout* myTableWidgetLayout; //!< main view layout where tables or custom widgets are presented
+  QVBoxLayout*
+    myTableWidgetLayout;      //!< main view layout where tables or custom widgets are presented
   ViewControl_Table* myTable; //!< table view, shown only first tables filled in Init method
-  QWidget* myCustomWidget; //!< custom view widget
+  QWidget*           myCustomWidget; //!< custom view widget
 };
 #endif

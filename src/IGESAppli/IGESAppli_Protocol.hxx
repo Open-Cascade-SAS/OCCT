@@ -24,7 +24,6 @@
 #include <Standard_Integer.hxx>
 class Interface_Protocol;
 
-
 class IGESAppli_Protocol;
 DEFINE_STANDARD_HANDLE(IGESAppli_Protocol, IGESData_Protocol)
 
@@ -33,45 +32,28 @@ class IGESAppli_Protocol : public IGESData_Protocol
 {
 
 public:
-
-  
   Standard_EXPORT IGESAppli_Protocol();
-  
+
   //! Gives the count of direct Resource Protocol. Here, two
   //! (Protocols from IGESDefs and IGESDraw)
   Standard_EXPORT virtual Standard_Integer NbResources() const Standard_OVERRIDE;
-  
+
   //! Returns a Resource, given a rank.
-  Standard_EXPORT virtual Handle(Interface_Protocol) Resource (const Standard_Integer num) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Handle(Interface_Protocol) Resource(const Standard_Integer num) const
+    Standard_OVERRIDE;
+
   //! Returns a Case Number, specific of each recognized Type
   //! This Case Number is then used in Libraries : the various
   //! Modules attached to this class of Protocol must use them
   //! in accordance (for a given value of TypeNumber, they must
   //! consider the same Type as the Protocol defines)
-  Standard_EXPORT virtual Standard_Integer TypeNumber (const Handle(Standard_Type)& atype) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer TypeNumber(const Handle(Standard_Type)& atype) const
+    Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESAppli_Protocol,IGESData_Protocol)
+  DEFINE_STANDARD_RTTIEXT(IGESAppli_Protocol, IGESData_Protocol)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESAppli_Protocol_HeaderFile

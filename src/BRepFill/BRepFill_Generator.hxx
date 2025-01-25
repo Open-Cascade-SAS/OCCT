@@ -34,59 +34,51 @@ class TopoDS_Shape;
 //! generating wires. The face of the shell will be
 //! ruled surfaces passing by the wires.
 //! The wires must have the same number of edges.
-class BRepFill_Generator 
+class BRepFill_Generator
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT BRepFill_Generator();
-  
-  Standard_EXPORT void AddWire (const TopoDS_Wire& Wire);
-  
+
+  Standard_EXPORT void AddWire(const TopoDS_Wire& Wire);
+
   //! Compute the  shell.
   Standard_EXPORT void Perform();
-  
-    const TopoDS_Shell& Shell() const;
-  
+
+  const TopoDS_Shell& Shell() const;
+
   //! Returns  all   the shapes created
   Standard_EXPORT const TopTools_DataMapOfShapeListOfShape& Generated() const;
-  
+
   //! Returns   the  shapes  created  from   a  subshape
   //! <SSection>  of a  section.
-  Standard_EXPORT const TopTools_ListOfShape& GeneratedShapes (const TopoDS_Shape& SSection) const;
+  Standard_EXPORT const TopTools_ListOfShape& GeneratedShapes(const TopoDS_Shape& SSection) const;
 
   //! Returns a modified shape in the constructed shell,
   //! If shape is not changed (replaced) during operation => returns the same shape
-  Standard_EXPORT TopoDS_Shape ResultShape (const TopoDS_Shape& theShape) const;
+  Standard_EXPORT TopoDS_Shape ResultShape(const TopoDS_Shape& theShape) const;
 
   //! Sets the mutable input state
-  //! If true then the input profile can be modified 
+  //! If true then the input profile can be modified
   //! inside the operation. Default value is true.
   Standard_EXPORT void SetMutableInput(const Standard_Boolean theIsMutableInput);
-    
+
   //! Returns the current mutable input state
   Standard_EXPORT Standard_Boolean IsMutableInput() const;
 
   //! Returns status of the operation
-  BRepFill_ThruSectionErrorStatus GetStatus() const
-  {
-    return myStatus;
-  }
+  BRepFill_ThruSectionErrorStatus GetStatus() const { return myStatus; }
 
 protected:
-
 private:
-
-  TopTools_SequenceOfShape myWires;
-  TopoDS_Shell myShell;
+  TopTools_SequenceOfShape           myWires;
+  TopoDS_Shell                       myShell;
   TopTools_DataMapOfShapeListOfShape myMap;
-  TopTools_DataMapOfShapeShape myOldNewShapes;
-  BRepTools_ReShape myReshaper;
-  Standard_Boolean myMutableInput;
-  BRepFill_ThruSectionErrorStatus myStatus;
-
+  TopTools_DataMapOfShapeShape       myOldNewShapes;
+  BRepTools_ReShape                  myReshaper;
+  Standard_Boolean                   myMutableInput;
+  BRepFill_ThruSectionErrorStatus    myStatus;
 };
 
 #include <BRepFill_Generator.lxx>

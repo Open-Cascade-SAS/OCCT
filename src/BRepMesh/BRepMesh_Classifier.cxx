@@ -22,31 +22,21 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_Classifier, Standard_Transient)
 
-//=======================================================================
-//function : Constructor
-//purpose  : 
-//=======================================================================
-BRepMesh_Classifier::BRepMesh_Classifier()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Destructor
-//purpose  : 
-//=======================================================================
-BRepMesh_Classifier::~BRepMesh_Classifier()
-{
-}
+BRepMesh_Classifier::BRepMesh_Classifier() {}
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
+BRepMesh_Classifier::~BRepMesh_Classifier() {}
+
+//=================================================================================================
+
 TopAbs_State BRepMesh_Classifier::Perform(const gp_Pnt2d& thePoint) const
 {
   Standard_Boolean isOut = Standard_False;
   Standard_Integer aNb   = myTabClass.Length();
-  
+
   for (Standard_Integer i = 0; i < aNb; i++)
   {
     const Standard_Integer aCur = myTabClass(i)->SiDans(thePoint);
@@ -59,7 +49,7 @@ TopAbs_State BRepMesh_Classifier::Perform(const gp_Pnt2d& thePoint) const
     {
       isOut = myTabOrient(i) ? (aCur == -1) : (aCur == 1);
     }
-    
+
     if (isOut)
     {
       return TopAbs_OUT;
@@ -69,15 +59,12 @@ TopAbs_State BRepMesh_Classifier::Perform(const gp_Pnt2d& thePoint) const
   return TopAbs_IN;
 }
 
-//=======================================================================
-//function : RegisterWire
-//purpose  : 
-//=======================================================================
-void BRepMesh_Classifier::RegisterWire(
-  const NCollection_Sequence<const gp_Pnt2d*>&   theWire,
-  const std::pair<Standard_Real, Standard_Real>& theTolUV,
-  const std::pair<Standard_Real, Standard_Real>& theRangeU,
-  const std::pair<Standard_Real, Standard_Real>& theRangeV)
+//=================================================================================================
+
+void BRepMesh_Classifier::RegisterWire(const NCollection_Sequence<const gp_Pnt2d*>&   theWire,
+                                       const std::pair<Standard_Real, Standard_Real>& theTolUV,
+                                       const std::pair<Standard_Real, Standard_Real>& theRangeU,
+                                       const std::pair<Standard_Real, Standard_Real>& theRangeV)
 {
   const Standard_Integer aNbPnts = theWire.Length();
   if (aNbPnts < 2)
@@ -87,17 +74,16 @@ void BRepMesh_Classifier::RegisterWire(
 
   // Accumulate angle
   TColgp_Array1OfPnt2d aPClass(1, aNbPnts);
-  Standard_Real anAngle = 0.0;
-  const gp_Pnt2d *p1 = theWire(1), *p2 = theWire(2), *p3;
+  Standard_Real        anAngle = 0.0;
+  const gp_Pnt2d *     p1 = theWire(1), *p2 = theWire(2), *p3;
   aPClass(1) = *p1;
   aPClass(2) = *p2;
 
-  constexpr Standard_Real aAngTol = Precision::Angular();
-  constexpr Standard_Real aSqConfusion =
-    Precision::PConfusion() * Precision::PConfusion();
+  constexpr Standard_Real aAngTol      = Precision::Angular();
+  constexpr Standard_Real aSqConfusion = Precision::PConfusion() * Precision::PConfusion();
 
   for (Standard_Integer i = 1; i <= aNbPnts; i++)
-  { 
+  {
     Standard_Integer ii = i + 2;
     if (ii > aNbPnts)
     {
@@ -105,13 +91,12 @@ void BRepMesh_Classifier::RegisterWire(
     }
     else
     {
-      p3 = theWire.Value(ii);
+      p3          = theWire.Value(ii);
       aPClass(ii) = *p3;
     }
 
-    const gp_Vec2d A(*p1,*p2), B(*p2,*p3);
-    if (A.SquareMagnitude() > aSqConfusion && 
-        B.SquareMagnitude() > aSqConfusion)
+    const gp_Vec2d A(*p1, *p2), B(*p2, *p3);
+    if (A.SquareMagnitude() > aSqConfusion && B.SquareMagnitude() > aSqConfusion)
     {
       const Standard_Real aCurAngle    = A.Angle(B);
       const Standard_Real aCurAngleAbs = Abs(aCurAngle);
@@ -128,10 +113,13 @@ void BRepMesh_Classifier::RegisterWire(
   if (Abs(anAngle) < aAngTol)
     anAngle = 0.0;
 
-  myTabClass.Append(new CSLib_Class2d(
-                    aPClass, theTolUV.first, theTolUV.second,
-                    theRangeU.first, theRangeV.first,
-                    theRangeU.second, theRangeV.second));
+  myTabClass.Append(new CSLib_Class2d(aPClass,
+                                      theTolUV.first,
+                                      theTolUV.second,
+                                      theRangeU.first,
+                                      theRangeV.first,
+                                      theRangeU.second,
+                                      theRangeV.second));
 
-  myTabOrient.Append( !(anAngle < 0.0) );
+  myTabOrient.Append(!(anAngle < 0.0));
 }

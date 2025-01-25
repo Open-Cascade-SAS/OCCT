@@ -11,44 +11,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepGeom_Hyperbola.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Hyperbola,StepGeom_Conic)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Hyperbola, StepGeom_Conic)
 
-StepGeom_Hyperbola::StepGeom_Hyperbola ()  {}
+StepGeom_Hyperbola::StepGeom_Hyperbola() {}
 
-void StepGeom_Hyperbola::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const StepGeom_Axis2Placement& aPosition,
-	const Standard_Real aSemiAxis,
-	const Standard_Real aSemiImagAxis)
+void StepGeom_Hyperbola::Init(const Handle(TCollection_HAsciiString)& aName,
+                              const StepGeom_Axis2Placement&          aPosition,
+                              const Standard_Real                     aSemiAxis,
+                              const Standard_Real                     aSemiImagAxis)
 {
-	// --- classe own fields ---
-	semiAxis = aSemiAxis;
-	semiImagAxis = aSemiImagAxis;
-	// --- classe inherited fields ---
-	StepGeom_Conic::Init(aName, aPosition);
+  // --- classe own fields ---
+  semiAxis     = aSemiAxis;
+  semiImagAxis = aSemiImagAxis;
+  // --- classe inherited fields ---
+  StepGeom_Conic::Init(aName, aPosition);
 }
-
 
 void StepGeom_Hyperbola::SetSemiAxis(const Standard_Real aSemiAxis)
 {
-	semiAxis = aSemiAxis;
+  semiAxis = aSemiAxis;
 }
 
 Standard_Real StepGeom_Hyperbola::SemiAxis() const
 {
-	return semiAxis;
+  return semiAxis;
 }
 
 void StepGeom_Hyperbola::SetSemiImagAxis(const Standard_Real aSemiImagAxis)
 {
-	semiImagAxis = aSemiImagAxis;
+  semiImagAxis = aSemiImagAxis;
 }
 
 Standard_Real StepGeom_Hyperbola::SemiImagAxis() const
 {
-	return semiImagAxis;
+  return semiImagAxis;
 }

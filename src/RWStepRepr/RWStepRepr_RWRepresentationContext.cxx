@@ -11,55 +11,52 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include "RWStepRepr_RWRepresentationContext.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_RepresentationContext.hxx>
 
-RWStepRepr_RWRepresentationContext::RWStepRepr_RWRepresentationContext () {}
+RWStepRepr_RWRepresentationContext::RWStepRepr_RWRepresentationContext() {}
 
-void RWStepRepr_RWRepresentationContext::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepRepr_RepresentationContext)& ent) const
+void RWStepRepr_RWRepresentationContext::ReadStep(
+  const Handle(StepData_StepReaderData)&        data,
+  const Standard_Integer                        num,
+  Handle(Interface_Check)&                      ach,
+  const Handle(StepRepr_RepresentationContext)& ent) const
 {
 
+  // --- Number of Parameter Control ---
 
-	// --- Number of Parameter Control ---
+  if (!data->CheckNbParams(num, 2, ach, "representation_context"))
+    return;
 
-	if (!data->CheckNbParams(num,2,ach,"representation_context")) return;
+  // --- own field : contextIdentifier ---
 
-	// --- own field : contextIdentifier ---
+  Handle(TCollection_HAsciiString) aContextIdentifier;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadString(num, 1, "context_identifier", ach, aContextIdentifier);
 
-	Handle(TCollection_HAsciiString) aContextIdentifier;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	data->ReadString (num,1,"context_identifier",ach,aContextIdentifier);
+  // --- own field : contextType ---
 
-	// --- own field : contextType ---
+  Handle(TCollection_HAsciiString) aContextType;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  data->ReadString(num, 2, "context_type", ach, aContextType);
 
-	Handle(TCollection_HAsciiString) aContextType;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
-	data->ReadString (num,2,"context_type",ach,aContextType);
+  //--- Initialisation of the read entity ---
 
-	//--- Initialisation of the read entity ---
-
-
-	ent->Init(aContextIdentifier, aContextType);
+  ent->Init(aContextIdentifier, aContextType);
 }
 
-
-void RWStepRepr_RWRepresentationContext::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepRepr_RepresentationContext)& ent) const
+void RWStepRepr_RWRepresentationContext::WriteStep(
+  StepData_StepWriter&                          SW,
+  const Handle(StepRepr_RepresentationContext)& ent) const
 {
 
-	// --- own field : contextIdentifier ---
+  // --- own field : contextIdentifier ---
 
-	SW.Send(ent->ContextIdentifier());
+  SW.Send(ent->ContextIdentifier());
 
-	// --- own field : contextType ---
+  // --- own field : contextType ---
 
-	SW.Send(ent->ContextType());
+  SW.Send(ent->ContextType());
 }

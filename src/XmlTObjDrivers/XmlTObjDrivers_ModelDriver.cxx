@@ -15,7 +15,6 @@
 
 // The original implementation Copyright: (C) RINA S.p.A
 
-
 #include "XmlTObjDrivers_ModelDriver.hxx"
 
 #include <XmlObjMgt_Persistent.hxx>
@@ -27,25 +26,19 @@
 #include <TObj_Model.hxx>
 #include <TObj_Assistant.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_ModelDriver, XmlMDF_ADriver)
 
+//=================================================================================================
 
-
-IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_ModelDriver,XmlMDF_ADriver)
-
-//=======================================================================
-//function : XmlTObjDrivers_ModelDriver
-//purpose  : constructor
-//=======================================================================
-
-XmlTObjDrivers_ModelDriver::XmlTObjDrivers_ModelDriver
-                         (const Handle(Message_Messenger)& theMessageDriver)
-: XmlMDF_ADriver( theMessageDriver, NULL)
+XmlTObjDrivers_ModelDriver::XmlTObjDrivers_ModelDriver(
+  const Handle(Message_Messenger)& theMessageDriver)
+    : XmlMDF_ADriver(theMessageDriver, NULL)
 {
 }
 
 //=======================================================================
-//function : NewEmpty
-//purpose  : Creates a new attribute
+// function : NewEmpty
+// purpose  : Creates a new attribute
 //=======================================================================
 
 Handle(TDF_Attribute) XmlTObjDrivers_ModelDriver::NewEmpty() const
@@ -54,29 +47,28 @@ Handle(TDF_Attribute) XmlTObjDrivers_ModelDriver::NewEmpty() const
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : Translate the contents of <aSource> and put it
+// function : Paste
+// purpose  : Translate the contents of <aSource> and put it
 //           into <aTarget>, using the relocation table
 //           <aRelocTable> to keep the sharings.
 //           Set CurrentModel of TObj_Assistant into Target TObj_TModel
 //           if its GUID and GUID stored in Source are same
 //=======================================================================
 
-Standard_Boolean XmlTObjDrivers_ModelDriver::Paste
-                         (const XmlObjMgt_Persistent&  Source,
-                          const Handle(TDF_Attribute)& Target,
-                          XmlObjMgt_RRelocationTable&  /*RelocTable*/) const
+Standard_Boolean XmlTObjDrivers_ModelDriver::Paste(const XmlObjMgt_Persistent&  Source,
+                                                   const Handle(TDF_Attribute)& Target,
+                                                   XmlObjMgt_RRelocationTable& /*RelocTable*/) const
 {
   TCollection_ExtendedString aString;
-  if (XmlObjMgt::GetExtendedString (Source, aString))
+  if (XmlObjMgt::GetExtendedString(Source, aString))
   {
-    Standard_GUID aGUID (aString.ToExtString());
+    Standard_GUID      aGUID(aString.ToExtString());
     Handle(TObj_Model) aCurrentModel = TObj_Assistant::GetCurrentModel();
-    if (aGUID == aCurrentModel->GetGUID()) 
+    if (aGUID == aCurrentModel->GetGUID())
     {
-      Handle(TObj_TModel) aTModel = Handle(TObj_TModel)::DownCast( Target );
-      aCurrentModel->SetLabel ( aTModel->Label() );
-      aTModel->Set( aCurrentModel );
+      Handle(TObj_TModel) aTModel = Handle(TObj_TModel)::DownCast(Target);
+      aCurrentModel->SetLabel(aTModel->Label());
+      aTModel->Set(aCurrentModel);
       return Standard_True;
     }
     myMessageDriver->Send("TObj_TModel retrieval: wrong model GUID", Message_Fail);
@@ -87,25 +79,23 @@ Standard_Boolean XmlTObjDrivers_ModelDriver::Paste
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : Translate the contents of <aSource> and put it
+// function : Paste
+// purpose  : Translate the contents of <aSource> and put it
 //           into <aTarget>, using the relocation table
 //           <aRelocTable> to keep the sharings.
 //           a Model is stored as its GUID
 //=======================================================================
 
-void XmlTObjDrivers_ModelDriver::Paste
-                         (const Handle(TDF_Attribute)& Source,
-                          XmlObjMgt_Persistent&        Target,
-                          XmlObjMgt_SRelocationTable&  /*RelocTable*/) const
+void XmlTObjDrivers_ModelDriver::Paste(const Handle(TDF_Attribute)& Source,
+                                       XmlObjMgt_Persistent&        Target,
+                                       XmlObjMgt_SRelocationTable& /*RelocTable*/) const
 {
-  Handle(TObj_TModel) aTModel =
-    Handle(TObj_TModel)::DownCast( Source );
-  Handle(TObj_Model) aModel = aTModel->Model();
+  Handle(TObj_TModel) aTModel = Handle(TObj_TModel)::DownCast(Source);
+  Handle(TObj_Model)  aModel  = aTModel->Model();
 
   // Store model GUID.
   Standard_PCharacter aPGuidString = new Standard_Character[256];
-  aModel->GetGUID().ToCString( aPGuidString );
-  XmlObjMgt::SetExtendedString (Target, aPGuidString);
-  delete []aPGuidString;
+  aModel->GetGUID().ToCString(aPGuidString);
+  XmlObjMgt::SetExtendedString(Target, aPGuidString);
+  delete[] aPGuidString;
 }

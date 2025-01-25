@@ -17,96 +17,97 @@
 #include <Standard_ProgramError.hxx>
 
 //=======================================================================
-//function : Poly_CoherentTriangle()
-//purpose  : Empty Constructor
+// function : Poly_CoherentTriangle()
+// purpose  : Empty Constructor
 //=======================================================================
 
-Poly_CoherentTriangle::Poly_CoherentTriangle ()
-  : myNConnections (0)
+Poly_CoherentTriangle::Poly_CoherentTriangle()
+    : myNConnections(0)
 {
-  myNodes[0] = -1;
-  myNodes[1] = -1;
-  myNodes[2] = -1;
+  myNodes[0]            = -1;
+  myNodes[1]            = -1;
+  myNodes[2]            = -1;
   myNodesOnConnected[0] = -1;
   myNodesOnConnected[1] = -1;
   myNodesOnConnected[2] = -1;
-  mypConnected[0] = 0L;
-  mypConnected[1] = 0L;
-  mypConnected[2] = 0L;
-  mypLink[0] = 0L;
-  mypLink[1] = 0L;
-  mypLink[2] = 0L;
+  mypConnected[0]       = 0L;
+  mypConnected[1]       = 0L;
+  mypConnected[2]       = 0L;
+  mypLink[0]            = 0L;
+  mypLink[1]            = 0L;
+  mypLink[2]            = 0L;
 }
 
-//=======================================================================
-//function : Poly_CoherentTriangle()
-//purpose  : Constructor
-//=======================================================================
+//=================================================================================================
 
-Poly_CoherentTriangle::Poly_CoherentTriangle (const Standard_Integer iNode0,
-                                              const Standard_Integer iNode1,
-                                              const Standard_Integer iNode2)
-  : myNConnections (0)
+Poly_CoherentTriangle::Poly_CoherentTriangle(const Standard_Integer iNode0,
+                                             const Standard_Integer iNode1,
+                                             const Standard_Integer iNode2)
+    : myNConnections(0)
 {
-  myNodes[0] = iNode0;
-  myNodes[1] = iNode1;
-  myNodes[2] = iNode2;
+  myNodes[0]            = iNode0;
+  myNodes[1]            = iNode1;
+  myNodes[2]            = iNode2;
   myNodesOnConnected[0] = -1;
   myNodesOnConnected[1] = -1;
   myNodesOnConnected[2] = -1;
-  mypConnected[0] = 0L;
-  mypConnected[1] = 0L;
-  mypConnected[2] = 0L;
-  mypLink[0] = 0L;
-  mypLink[1] = 0L;
-  mypLink[2] = 0L;
+  mypConnected[0]       = 0L;
+  mypConnected[1]       = 0L;
+  mypConnected[2]       = 0L;
+  mypLink[0]            = 0L;
+  mypLink[1]            = 0L;
+  mypLink[2]            = 0L;
 }
 
-//=======================================================================
-//function : SetConnection
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean Poly_CoherentTriangle::SetConnection
-                                        (const Standard_Integer iConn,
-                                         Poly_CoherentTriangle& theTr)
+Standard_Boolean Poly_CoherentTriangle::SetConnection(const Standard_Integer iConn,
+                                                      Poly_CoherentTriangle& theTr)
 {
-  Standard_Boolean aResult(Standard_False);
-  static const Standard_Integer II[] = { 2, 0, 1, 2, 0 };
+  Standard_Boolean              aResult(Standard_False);
+  static const Standard_Integer II[] = {2, 0, 1, 2, 0};
 
-  if (theTr.Node(0) == myNodes[II[iConn+2]]) {
-    if (theTr.Node(2) == myNodes[II[iConn]]) {
+  if (theTr.Node(0) == myNodes[II[iConn + 2]])
+  {
+    if (theTr.Node(2) == myNodes[II[iConn]])
+    {
       RemoveConnection(iConn);
       myNodesOnConnected[iConn] = theTr.Node(1);
-      mypConnected[iConn] = &theTr;
+      mypConnected[iConn]       = &theTr;
       myNConnections++;
       theTr.RemoveConnection(1);
       theTr.myNodesOnConnected[1] = myNodes[iConn];
-      theTr.mypConnected[1] = this;
+      theTr.mypConnected[1]       = this;
       theTr.myNConnections++;
       aResult = Standard_True;
     }
-  } else if (theTr.Node(1) == myNodes[II[iConn+2]]) {
-    if (theTr.Node(0) == myNodes[II[iConn]]) {
+  }
+  else if (theTr.Node(1) == myNodes[II[iConn + 2]])
+  {
+    if (theTr.Node(0) == myNodes[II[iConn]])
+    {
       RemoveConnection(iConn);
       myNodesOnConnected[iConn] = theTr.Node(2);
-      mypConnected[iConn] = &theTr;
+      mypConnected[iConn]       = &theTr;
       myNConnections++;
       theTr.RemoveConnection(2);
       theTr.myNodesOnConnected[2] = myNodes[iConn];
-      theTr.mypConnected[2] = this;
+      theTr.mypConnected[2]       = this;
       theTr.myNConnections++;
       aResult = Standard_True;
     }
-  } else if (theTr.Node(2) == myNodes[II[iConn+2]]) {
-    if (theTr.Node(1) == myNodes[II[iConn]]) {
+  }
+  else if (theTr.Node(2) == myNodes[II[iConn + 2]])
+  {
+    if (theTr.Node(1) == myNodes[II[iConn]])
+    {
       RemoveConnection(iConn);
       myNodesOnConnected[iConn] = theTr.Node(0);
-      mypConnected[iConn] = &theTr;
+      mypConnected[iConn]       = &theTr;
       myNConnections++;
       theTr.RemoveConnection(0);
       theTr.myNodesOnConnected[0] = myNodes[iConn];
-      theTr.mypConnected[0] = this;
+      theTr.mypConnected[0]       = this;
       theTr.myNConnections++;
       aResult = Standard_True;
     }
@@ -114,110 +115,127 @@ Standard_Boolean Poly_CoherentTriangle::SetConnection
   return aResult;
 }
 
-//=======================================================================
-//function : SetConnection
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean Poly_CoherentTriangle::SetConnection
-                                        (Poly_CoherentTriangle& theTr)
+Standard_Boolean Poly_CoherentTriangle::SetConnection(Poly_CoherentTriangle& theTr)
 {
   Standard_Boolean aResult(Standard_False);
-  if (myNodes[0] == theTr.Node(0)) {
-    if (myNodes[1] == theTr.Node(2) && mypConnected[2] != &theTr) {
+  if (myNodes[0] == theTr.Node(0))
+  {
+    if (myNodes[1] == theTr.Node(2) && mypConnected[2] != &theTr)
+    {
       RemoveConnection(2);
       myNodesOnConnected[2] = theTr.Node(1);
-      mypConnected[2] = &theTr;
+      mypConnected[2]       = &theTr;
       myNConnections++;
       theTr.RemoveConnection(1);
       theTr.myNodesOnConnected[1] = myNodes[2];
-      theTr.mypConnected[1] = this;
+      theTr.mypConnected[1]       = this;
       theTr.myNConnections++;
       aResult = Standard_True;
-    } else if (myNodes[2] == theTr.Node(1) && mypConnected[1] != &theTr) {
+    }
+    else if (myNodes[2] == theTr.Node(1) && mypConnected[1] != &theTr)
+    {
       RemoveConnection(1);
       myNodesOnConnected[1] = theTr.Node(2);
-      mypConnected[1] = &theTr;
+      mypConnected[1]       = &theTr;
       myNConnections++;
       theTr.RemoveConnection(2);
       theTr.myNodesOnConnected[2] = myNodes[1];
-      theTr.mypConnected[2] = this;
+      theTr.mypConnected[2]       = this;
       theTr.myNConnections++;
       aResult = Standard_True;
     }
-  } else if (myNodes[0] == theTr.Node(1)) {
-    if (myNodes[1] == theTr.Node(0) && mypConnected[2] != &theTr) {
+  }
+  else if (myNodes[0] == theTr.Node(1))
+  {
+    if (myNodes[1] == theTr.Node(0) && mypConnected[2] != &theTr)
+    {
       RemoveConnection(2);
       myNodesOnConnected[2] = theTr.Node(2);
-      mypConnected[2] = &theTr;
+      mypConnected[2]       = &theTr;
       myNConnections++;
       theTr.RemoveConnection(2);
       theTr.myNodesOnConnected[2] = myNodes[2];
-      theTr.mypConnected[2] = this;
+      theTr.mypConnected[2]       = this;
       theTr.myNConnections++;
       aResult = Standard_True;
-    } else if (myNodes[2] == theTr.Node(2) && mypConnected[1] != &theTr) {
+    }
+    else if (myNodes[2] == theTr.Node(2) && mypConnected[1] != &theTr)
+    {
       RemoveConnection(1);
       myNodesOnConnected[1] = theTr.Node(0);
-      mypConnected[1] = &theTr;
+      mypConnected[1]       = &theTr;
       myNConnections++;
       theTr.RemoveConnection(0);
       theTr.myNodesOnConnected[0] = myNodes[1];
-      theTr.mypConnected[0] = this;
+      theTr.mypConnected[0]       = this;
       theTr.myNConnections++;
       aResult = Standard_True;
     }
-  } else if (myNodes[0] == theTr.Node(2)) {
-    if (myNodes[1] == theTr.Node(1) && mypConnected[2] != &theTr) {
+  }
+  else if (myNodes[0] == theTr.Node(2))
+  {
+    if (myNodes[1] == theTr.Node(1) && mypConnected[2] != &theTr)
+    {
       RemoveConnection(2);
       myNodesOnConnected[2] = theTr.Node(0);
-      mypConnected[2] = &theTr;
+      mypConnected[2]       = &theTr;
       myNConnections++;
       theTr.RemoveConnection(0);
       theTr.myNodesOnConnected[0] = myNodes[2];
-      theTr.mypConnected[0] = this;
-      theTr.myNConnections++;
-      aResult = Standard_True;
-    } else if (myNodes[2] == theTr.Node(0) && mypConnected[1] != &theTr) {
-      RemoveConnection(1);
-      myNodesOnConnected[1] = theTr.Node(1);
-      mypConnected[1] = &theTr;
-      myNConnections++;
-      theTr.RemoveConnection(1);
-      theTr.myNodesOnConnected[1] = myNodes[1];
-      theTr.mypConnected[1] = this;
+      theTr.mypConnected[0]       = this;
       theTr.myNConnections++;
       aResult = Standard_True;
     }
-  } else if (mypConnected[0] != &theTr) {
-    if (myNodes[1] == theTr.Node(0) && myNodes[2] == theTr.Node(2)) {
+    else if (myNodes[2] == theTr.Node(0) && mypConnected[1] != &theTr)
+    {
+      RemoveConnection(1);
+      myNodesOnConnected[1] = theTr.Node(1);
+      mypConnected[1]       = &theTr;
+      myNConnections++;
+      theTr.RemoveConnection(1);
+      theTr.myNodesOnConnected[1] = myNodes[1];
+      theTr.mypConnected[1]       = this;
+      theTr.myNConnections++;
+      aResult = Standard_True;
+    }
+  }
+  else if (mypConnected[0] != &theTr)
+  {
+    if (myNodes[1] == theTr.Node(0) && myNodes[2] == theTr.Node(2))
+    {
       RemoveConnection(0);
       myNodesOnConnected[0] = theTr.Node(1);
-      mypConnected[0] = &theTr;
+      mypConnected[0]       = &theTr;
       myNConnections++;
       theTr.RemoveConnection(1);
       theTr.myNodesOnConnected[1] = myNodes[0];
-      theTr.mypConnected[1] = this;
+      theTr.mypConnected[1]       = this;
       theTr.myNConnections++;
       aResult = Standard_True;
-    } else if (myNodes[1] == theTr.Node(2) && myNodes[2] == theTr.Node(1)) {
+    }
+    else if (myNodes[1] == theTr.Node(2) && myNodes[2] == theTr.Node(1))
+    {
       RemoveConnection(0);
       myNodesOnConnected[0] = theTr.Node(0);
-      mypConnected[0] = &theTr;
+      mypConnected[0]       = &theTr;
       myNConnections++;
       theTr.RemoveConnection(0);
       theTr.myNodesOnConnected[0] = myNodes[0];
-      theTr.mypConnected[0] = this;
+      theTr.mypConnected[0]       = this;
       theTr.myNConnections++;
       aResult = Standard_True;
-    } else if (myNodes[1] == theTr.Node(1) && myNodes[2] == theTr.Node(0)) {
+    }
+    else if (myNodes[1] == theTr.Node(1) && myNodes[2] == theTr.Node(0))
+    {
       RemoveConnection(0);
       myNodesOnConnected[0] = theTr.Node(2);
-      mypConnected[0] = &theTr;
+      mypConnected[0]       = &theTr;
       myNConnections++;
       theTr.RemoveConnection(2);
       theTr.myNodesOnConnected[2] = myNodes[0];
-      theTr.mypConnected[2] = this;
+      theTr.mypConnected[2]       = this;
       theTr.myNConnections++;
       aResult = Standard_True;
     }
@@ -225,18 +243,16 @@ Standard_Boolean Poly_CoherentTriangle::SetConnection
   return aResult;
 }
 
-//=======================================================================
-//function : RemoveConnection
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void Poly_CoherentTriangle::RemoveConnection(const Standard_Integer iConn)
 {
-  Poly_CoherentTriangle * pConnectedTri = 
-    const_cast<Poly_CoherentTriangle *> (mypConnected[iConn]);
-  if (pConnectedTri) {
+  Poly_CoherentTriangle* pConnectedTri = const_cast<Poly_CoherentTriangle*>(mypConnected[iConn]);
+  if (pConnectedTri)
+  {
     Standard_Integer iConn1(0);
-    if (pConnectedTri->mypConnected[0] != this) {      
+    if (pConnectedTri->mypConnected[0] != this)
+    {
       if (pConnectedTri->mypConnected[1] == this)
         iConn1 = 1;
       else if (pConnectedTri->mypConnected[2] == this)
@@ -245,22 +261,18 @@ void Poly_CoherentTriangle::RemoveConnection(const Standard_Integer iConn)
         throw Standard_ProgramError("Poly_CoherentTriangle::RemoveConnection: "
                                     "wrong connection between triangles");
     }
-    pConnectedTri->mypConnected[iConn1] = 0L;
+    pConnectedTri->mypConnected[iConn1]       = 0L;
     pConnectedTri->myNodesOnConnected[iConn1] = -1;
     pConnectedTri->myNConnections--;
-    mypConnected[iConn] = 0L;
+    mypConnected[iConn]       = 0L;
     myNodesOnConnected[iConn] = -1;
     myNConnections--;
   }
 }
 
-//=======================================================================
-//function : RemoveConnection
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean Poly_CoherentTriangle::RemoveConnection
-                                                (Poly_CoherentTriangle& theTri)
+Standard_Boolean Poly_CoherentTriangle::RemoveConnection(Poly_CoherentTriangle& theTri)
 {
   const Standard_Integer iConn = FindConnection(theTri);
   if (iConn >= 0)
@@ -268,13 +280,9 @@ Standard_Boolean Poly_CoherentTriangle::RemoveConnection
   return (iConn >= 0);
 }
 
-//=======================================================================
-//function : FindConnection
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer Poly_CoherentTriangle::FindConnection
-                                (const Poly_CoherentTriangle& theTri) const
+Standard_Integer Poly_CoherentTriangle::FindConnection(const Poly_CoherentTriangle& theTri) const
 {
   Standard_Integer aResult;
   if (mypConnected[0] == &theTri)

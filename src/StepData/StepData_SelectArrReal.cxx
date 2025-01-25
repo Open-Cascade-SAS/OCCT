@@ -11,55 +11,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepData_SelectArrReal.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepData_SelectArrReal,StepData_SelectNamed)
+IMPLEMENT_STANDARD_RTTIEXT(StepData_SelectArrReal, StepData_SelectNamed)
 
 //  Definitions : cf Field
 #define myKindArrReal 8
 
+//=================================================================================================
 
-//=======================================================================
-//function : StepData_SelectSeqReal
-//purpose  : 
-//=======================================================================
+StepData_SelectArrReal::StepData_SelectArrReal() {}
 
-StepData_SelectArrReal::StepData_SelectArrReal ()
+//=================================================================================================
+
+Standard_Integer StepData_SelectArrReal::Kind() const
 {
+  return myKindArrReal;
 }
 
+//=================================================================================================
 
-
-
-//=======================================================================
-//function : Kind
-//purpose  : 
-//=======================================================================
-
-Standard_Integer StepData_SelectArrReal::Kind () const
+Handle(TColStd_HArray1OfReal) StepData_SelectArrReal::ArrReal() const
 {
-  return myKindArrReal;  
+  return theArr;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : ArrReal
-//purpose  : 
-//=======================================================================
-
-Handle(TColStd_HArray1OfReal) StepData_SelectArrReal::ArrReal () const
+void StepData_SelectArrReal::SetArrReal(const Handle(TColStd_HArray1OfReal)& arr)
 {
- return theArr;  
-}
-
-
-//=======================================================================
-//function : SetArrReal
-//purpose  : 
-//=======================================================================
-
-void StepData_SelectArrReal::SetArrReal (const Handle(TColStd_HArray1OfReal)& arr)
-{
-  theArr = arr;  
+  theArr = arr;
 }

@@ -23,48 +23,28 @@
 #include <StepRepr_RepresentationItem.hxx>
 class TCollection_HAsciiString;
 
-
 class StepRepr_DescriptiveRepresentationItem;
 DEFINE_STANDARD_HANDLE(StepRepr_DescriptiveRepresentationItem, StepRepr_RepresentationItem)
-
 
 class StepRepr_DescriptiveRepresentationItem : public StepRepr_RepresentationItem
 {
 
 public:
-
-  
   //! Returns a DescriptiveRepresentationItem
   Standard_EXPORT StepRepr_DescriptiveRepresentationItem();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription);
-  
-  Standard_EXPORT void SetDescription (const Handle(TCollection_HAsciiString)& aDescription);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Handle(TCollection_HAsciiString)& aDescription);
+
+  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& aDescription);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepRepr_DescriptiveRepresentationItem,StepRepr_RepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_DescriptiveRepresentationItem, StepRepr_RepresentationItem)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TCollection_HAsciiString) description;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepRepr_DescriptiveRepresentationItem_HeaderFile

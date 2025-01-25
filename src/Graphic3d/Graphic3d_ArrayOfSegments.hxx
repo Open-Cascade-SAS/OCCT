@@ -22,7 +22,6 @@ class Graphic3d_ArrayOfSegments : public Graphic3d_ArrayOfPrimitives
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfSegments, Graphic3d_ArrayOfPrimitives)
 public:
-
   //! Creates an array of segments (Graphic3d_TOPA_SEGMENTS), a segment can be filled as:
   //! 1) Creating a set of segments defined with his vertexes, i.e:
   //! @code
@@ -45,21 +44,33 @@ public:
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
   //! @param theMaxEdges   defines the maximum allowed edge   number in the array
   //! @param theArrayFlags array flags
-  Graphic3d_ArrayOfSegments (Standard_Integer theMaxVertexs,
-                             Standard_Integer theMaxEdges,
-                             Graphic3d_ArrayFlags theArrayFlags)
-  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_SEGMENTS, theMaxVertexs, 0, theMaxEdges, theArrayFlags) {}
+  Graphic3d_ArrayOfSegments(Standard_Integer     theMaxVertexs,
+                            Standard_Integer     theMaxEdges,
+                            Graphic3d_ArrayFlags theArrayFlags)
+      : Graphic3d_ArrayOfPrimitives(Graphic3d_TOPA_SEGMENTS,
+                                    theMaxVertexs,
+                                    0,
+                                    theMaxEdges,
+                                    theArrayFlags)
+  {
+  }
 
   //! Creates an array of segments (Graphic3d_TOPA_SEGMENTS).
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
   //! @param theMaxEdges   defines the maximum allowed edge   number in the array
-  //! @param theHasVColors when TRUE, AddVertex(Point,Color) should be used for specifying vertex color
-  Graphic3d_ArrayOfSegments (Standard_Integer theMaxVertexs,
-                             Standard_Integer theMaxEdges   = 0,
-                             Standard_Boolean theHasVColors = Standard_False)
-  : Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_SEGMENTS, theMaxVertexs, 0, theMaxEdges, theHasVColors ? Graphic3d_ArrayFlags_VertexColor : Graphic3d_ArrayFlags_None) {}
-
-
+  //! @param theHasVColors when TRUE, AddVertex(Point,Color) should be used for specifying vertex
+  //! color
+  Graphic3d_ArrayOfSegments(Standard_Integer theMaxVertexs,
+                            Standard_Integer theMaxEdges   = 0,
+                            Standard_Boolean theHasVColors = Standard_False)
+      : Graphic3d_ArrayOfPrimitives(Graphic3d_TOPA_SEGMENTS,
+                                    theMaxVertexs,
+                                    0,
+                                    theMaxEdges,
+                                    theHasVColors ? Graphic3d_ArrayFlags_VertexColor
+                                                  : Graphic3d_ArrayFlags_None)
+  {
+  }
 };
 
 DEFINE_STANDARD_HANDLE(Graphic3d_ArrayOfSegments, Graphic3d_ArrayOfPrimitives)

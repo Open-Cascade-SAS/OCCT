@@ -35,137 +35,155 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 
-IGESGraph_ToolTextDisplayTemplate::IGESGraph_ToolTextDisplayTemplate ()    {  }
+IGESGraph_ToolTextDisplayTemplate::IGESGraph_ToolTextDisplayTemplate() {}
 
+void IGESGraph_ToolTextDisplayTemplate::ReadOwnParams(
+  const Handle(IGESGraph_TextDisplayTemplate)& ent,
+  const Handle(IGESData_IGESReaderData)&       IR,
+  IGESData_ParamReader&                        PR) const
+{
+  // Standard_Boolean              st; //szv#4:S4163:12Mar99 not needed
 
-void IGESGraph_ToolTextDisplayTemplate::ReadOwnParams
-  (const Handle(IGESGraph_TextDisplayTemplate)& ent,
-   const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const
-{ 
-  //Standard_Boolean              st; //szv#4:S4163:12Mar99 not needed
-
-  Standard_Real                 boxWidth; 
-  Standard_Real                 boxHeight; 
-  Standard_Integer              fontCode; 
+  Standard_Real                 boxWidth;
+  Standard_Real                 boxHeight;
+  Standard_Integer              fontCode;
   Handle(IGESGraph_TextFontDef) fontEnt;
-  Standard_Real                 slantAngle; 
-  Standard_Real                 rotationAngle; 
-  Standard_Integer              mirrorFlag; 
-  Standard_Integer              rotateFlag; 
+  Standard_Real                 slantAngle;
+  Standard_Real                 rotationAngle;
+  Standard_Integer              mirrorFlag;
+  Standard_Integer              rotateFlag;
   gp_XYZ                        corner;
 
   // Reading boxWidth(Real)
-// clang-format off
+  // clang-format off
   PR.ReadReal(PR.Current(), "Character box width", boxWidth); //szv#4:S4163:12Mar99 `st=` not needed
 
   // Reading boxHeight(Real)
   PR.ReadReal(PR.Current(), "Character box height", boxHeight); //szv#4:S4163:12Mar99 `st=` not needed
-// clang-format on
+  // clang-format on
 
   Standard_Integer curnum = PR.CurrentNumber();
   if (PR.DefinedElseSkip())
+  {
+    // Reading fontCode(Integer, must be positive)
+    PR.ReadInteger(PR.Current(), "Font Code", fontCode); // szv#4:S4163:12Mar99 `st=` not needed
+    // Reading fontEnt(TextFontDef) ?
+    if (fontCode < 0)
     {
-      // Reading fontCode(Integer, must be positive)
-      PR.ReadInteger (PR.Current(), "Font Code", fontCode); //szv#4:S4163:12Mar99 `st=` not needed
-      // Reading fontEnt(TextFontDef) ?
-      if (fontCode < 0) {
-	fontEnt = GetCasted(IGESGraph_TextFontDef,PR.ParamEntity (IR,curnum));
-	if (fontEnt.IsNull()) PR.AddFail("Font Entity : incorrect reference");
-      }
+      fontEnt = GetCasted(IGESGraph_TextFontDef, PR.ParamEntity(IR, curnum));
+      if (fontEnt.IsNull())
+        PR.AddFail("Font Entity : incorrect reference");
     }
+  }
   else
     fontCode = 1; // Default Value
 
   if (PR.DefinedElseSkip())
     // Reading slantAngle(Real)
-    PR.ReadReal (PR.Current(), "Slant Angle", slantAngle); //szv#4:S4163:12Mar99 `st=` not needed
+    PR.ReadReal(PR.Current(), "Slant Angle", slantAngle); // szv#4:S4163:12Mar99 `st=` not needed
   else
-    slantAngle = M_PI/2.0; // Default Value
+    slantAngle = M_PI / 2.0; // Default Value
 
   // Reading rotationAngle(Real)
-// clang-format off
+  // clang-format off
   PR.ReadReal (PR.Current(), "Rotation Angle", rotationAngle); //szv#4:S4163:12Mar99 `st=` not needed
-// clang-format on
+  // clang-format on
 
   // Reading mirrorFlag(Integer)
-  PR.ReadInteger (PR.Current(), "Mirror Flag", mirrorFlag); //szv#4:S4163:12Mar99 `st=` not needed
+  PR.ReadInteger(PR.Current(), "Mirror Flag", mirrorFlag); // szv#4:S4163:12Mar99 `st=` not needed
 
   // Reading rotateFlag(Integer)
-  PR.ReadInteger (PR.Current(), "Rotate Flag", rotateFlag); //szv#4:S4163:12Mar99 `st=` not needed
+  PR.ReadInteger(PR.Current(), "Rotate Flag", rotateFlag); // szv#4:S4163:12Mar99 `st=` not needed
 
   // Reading corner(XYZ)
-  PR.ReadXYZ( PR.CurrentList(1, 3), "Lower left coordinates/Increments", corner); //szv#4:S4163:12Mar99 `st=` not needed
+  PR.ReadXYZ(PR.CurrentList(1, 3),
+             "Lower left coordinates/Increments",
+             corner); // szv#4:S4163:12Mar99 `st=` not needed
 
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
-  ent->Init
-    (boxWidth, boxHeight, fontCode, fontEnt,
-     slantAngle, rotationAngle, mirrorFlag, rotateFlag, corner);
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
+  ent->Init(boxWidth,
+            boxHeight,
+            fontCode,
+            fontEnt,
+            slantAngle,
+            rotationAngle,
+            mirrorFlag,
+            rotateFlag,
+            corner);
 }
 
-void IGESGraph_ToolTextDisplayTemplate::WriteOwnParams
-  (const Handle(IGESGraph_TextDisplayTemplate)& ent, IGESData_IGESWriter& IW)  const
-{ 
-  IW.Send( ent->BoxWidth() );
-  IW.Send( ent->BoxHeight() );
-
-  if ( ent->IsFontEntity() )
-    IW.Send( ent->FontEntity(), Standard_True );  // negative
-  else
-    IW.Send( ent->FontCode() );
-
-  IW.Send( ent->SlantAngle() );
-  IW.Send( ent->RotationAngle() );
-  IW.Send( ent->MirrorFlag() );
-  IW.Send( ent->RotateFlag() );
-  IW.Send( ent->StartingCorner().X() );
-  IW.Send( ent->StartingCorner().Y() );
-  IW.Send( ent->StartingCorner().Z() );
-}
-
-void  IGESGraph_ToolTextDisplayTemplate::OwnShared
-  (const Handle(IGESGraph_TextDisplayTemplate)& ent, Interface_EntityIterator& iter) const
+void IGESGraph_ToolTextDisplayTemplate::WriteOwnParams(
+  const Handle(IGESGraph_TextDisplayTemplate)& ent,
+  IGESData_IGESWriter&                         IW) const
 {
-  if ( ent->IsFontEntity() )
-    iter.GetOneItem( ent->FontEntity() );
+  IW.Send(ent->BoxWidth());
+  IW.Send(ent->BoxHeight());
+
+  if (ent->IsFontEntity())
+    IW.Send(ent->FontEntity(), Standard_True); // negative
+  else
+    IW.Send(ent->FontCode());
+
+  IW.Send(ent->SlantAngle());
+  IW.Send(ent->RotationAngle());
+  IW.Send(ent->MirrorFlag());
+  IW.Send(ent->RotateFlag());
+  IW.Send(ent->StartingCorner().X());
+  IW.Send(ent->StartingCorner().Y());
+  IW.Send(ent->StartingCorner().Z());
 }
 
-void IGESGraph_ToolTextDisplayTemplate::OwnCopy
-  (const Handle(IGESGraph_TextDisplayTemplate)& another,
-   const Handle(IGESGraph_TextDisplayTemplate)& ent, Interface_CopyTool& TC) const
-{ 
-  Standard_Real                 boxWidth; 
-  Standard_Real                 boxHeight; 
-  Standard_Integer              fontCode=0; 
+void IGESGraph_ToolTextDisplayTemplate::OwnShared(const Handle(IGESGraph_TextDisplayTemplate)& ent,
+                                                  Interface_EntityIterator& iter) const
+{
+  if (ent->IsFontEntity())
+    iter.GetOneItem(ent->FontEntity());
+}
+
+void IGESGraph_ToolTextDisplayTemplate::OwnCopy(
+  const Handle(IGESGraph_TextDisplayTemplate)& another,
+  const Handle(IGESGraph_TextDisplayTemplate)& ent,
+  Interface_CopyTool&                          TC) const
+{
+  Standard_Real                 boxWidth;
+  Standard_Real                 boxHeight;
+  Standard_Integer              fontCode = 0;
   Handle(IGESGraph_TextFontDef) fontEntity;
-  Standard_Real                 slantAngle; 
-  Standard_Real                 rotationAngle; 
-  Standard_Integer              mirrorFlag; 
-  Standard_Integer              rotateFlag; 
+  Standard_Real                 slantAngle;
+  Standard_Real                 rotationAngle;
+  Standard_Integer              mirrorFlag;
+  Standard_Integer              rotateFlag;
   gp_XYZ                        corner;
 
-  boxWidth  = another->BoxWidth(); 
-  boxHeight = another->BoxHeight(); 
+  boxWidth  = another->BoxWidth();
+  boxHeight = another->BoxHeight();
 
-  if ( another->IsFontEntity() )
-    fontEntity = 
-      Handle(IGESGraph_TextFontDef)::DownCast (TC.Transferred(another->FontEntity()));
+  if (another->IsFontEntity())
+    fontEntity = Handle(IGESGraph_TextFontDef)::DownCast(TC.Transferred(another->FontEntity()));
   else
     fontCode = another->FontCode();
 
-  slantAngle    = another->SlantAngle(); 
-  rotationAngle = another->RotationAngle(); 
-  mirrorFlag    = another->MirrorFlag(); 
-  rotateFlag    = another->RotateFlag(); 
+  slantAngle    = another->SlantAngle();
+  rotationAngle = another->RotationAngle();
+  mirrorFlag    = another->MirrorFlag();
+  rotateFlag    = another->RotateFlag();
   corner        = another->StartingCorner().XYZ();
 
-  ent->Init(boxWidth, boxHeight, fontCode, fontEntity,
-	    slantAngle, rotationAngle, mirrorFlag, rotateFlag, corner);
+  ent->Init(boxWidth,
+            boxHeight,
+            fontCode,
+            fontEntity,
+            slantAngle,
+            rotationAngle,
+            mirrorFlag,
+            rotateFlag,
+            corner);
 }
 
-IGESData_DirChecker IGESGraph_ToolTextDisplayTemplate::DirChecker
-  (const Handle(IGESGraph_TextDisplayTemplate)& /*ent*/)  const
-{ 
-  IGESData_DirChecker DC (312, 0, 1);
+IGESData_DirChecker IGESGraph_ToolTextDisplayTemplate::DirChecker(
+  const Handle(IGESGraph_TextDisplayTemplate)& /*ent*/) const
+{
+  IGESData_DirChecker DC(312, 0, 1);
   DC.Structure(IGESData_DefVoid);
   DC.LineFont(IGESData_DefVoid);
   DC.LineWeight(IGESData_DefVoid);
@@ -176,38 +194,40 @@ IGESData_DirChecker IGESGraph_ToolTextDisplayTemplate::DirChecker
   return DC;
 }
 
-void IGESGraph_ToolTextDisplayTemplate::OwnCheck
-  (const Handle(IGESGraph_TextDisplayTemplate)& /*ent*/,
-   const Interface_ShareTool& , Handle(Interface_Check)& /*ach*/)  const
+void IGESGraph_ToolTextDisplayTemplate::OwnCheck(
+  const Handle(IGESGraph_TextDisplayTemplate)& /*ent*/,
+  const Interface_ShareTool&,
+  Handle(Interface_Check)& /*ach*/) const
 {
 }
 
-void IGESGraph_ToolTextDisplayTemplate::OwnDump
-  (const Handle(IGESGraph_TextDisplayTemplate)& ent, const IGESData_IGESDumper& dumper,
-   Standard_OStream& S, const Standard_Integer level)  const
+void IGESGraph_ToolTextDisplayTemplate::OwnDump(const Handle(IGESGraph_TextDisplayTemplate)& ent,
+                                                const IGESData_IGESDumper&                   dumper,
+                                                Standard_OStream&                            S,
+                                                const Standard_Integer level) const
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
   S << "IGESGraph_TextDisplayTemplate\n"
-    << "Character box width  : "  << ent->BoxWidth() << "  "
-    << "Character box height : "  << ent->BoxHeight() << "\n";
-  if ( ent->IsFontEntity() )
-    {
-      S << "Font Entity : ";
-      dumper.Dump(ent->FontEntity(),S, sublevel);
-    }
+    << "Character box width  : " << ent->BoxWidth() << "  "
+    << "Character box height : " << ent->BoxHeight() << "\n";
+  if (ent->IsFontEntity())
+  {
+    S << "Font Entity : ";
+    dumper.Dump(ent->FontEntity(), S, sublevel);
+  }
   else
     S << "Font code : " << ent->FontCode();
 
   S << "\n"
-    << "Slant angle    : "  << ent->SlantAngle() << "  "
-    << "Rotation angle : "  << ent->RotationAngle() << "\n"
-    << "Mirror flag    : "  << ent->MirrorFlag() << "  "
-    << "Rotate flag    : "  << ent->RotateFlag() << "\n";
-  if ( ent->FormNumber() == 0 )
+    << "Slant angle    : " << ent->SlantAngle() << "  "
+    << "Rotation angle : " << ent->RotationAngle() << "\n"
+    << "Mirror flag    : " << ent->MirrorFlag() << "  "
+    << "Rotate flag    : " << ent->RotateFlag() << "\n";
+  if (ent->FormNumber() == 0)
     S << "Lower Left Corner coordinates : ";
   else
-    S << "Increments from coordinates : "; 
-  IGESData_DumpXYZL(S,level, ent->StartingCorner(), ent->Location());
+    S << "Increments from coordinates : ";
+  IGESData_DumpXYZL(S, level, ent->StartingCorner(), ent->Location());
   S << std::endl;
 }

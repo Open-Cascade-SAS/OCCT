@@ -32,77 +32,76 @@
 #include <TCollection_ExtendedString.hxx>
 
 #include <stdio.h>
-//=======================================================================
-//function : Add
-//purpose  : 
-//=======================================================================
-void DsgPrs_FilletRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aPresentation,
-					   const Handle(Prs3d_Drawer)& aDrawer,
-					   const Standard_Real theval,
-					   const TCollection_ExtendedString & aText,
-					   const gp_Pnt & aPosition,
-					   const gp_Dir & aNormalDir,
-					   const gp_Pnt & aBasePnt,
-					   const gp_Pnt & aFirstPoint,
-					   const gp_Pnt & aSecondPoint,
-					   const gp_Pnt & aCenter,
-					   const DsgPrs_ArrowSide ArrowPrs,
-					   const Standard_Boolean drawRevers,
-					         gp_Pnt & DrawPosition,
-					         gp_Pnt & EndOfArrow,
-					         Handle(Geom_TrimmedCurve)& TrimCurve,
-					         Standard_Boolean & HasCircle )
+
+//=================================================================================================
+
+void DsgPrs_FilletRadiusPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
+                                          const Handle(Prs3d_Drawer)&       aDrawer,
+                                          const Standard_Real               theval,
+                                          const TCollection_ExtendedString& aText,
+                                          const gp_Pnt&                     aPosition,
+                                          const gp_Dir&                     aNormalDir,
+                                          const gp_Pnt&                     aBasePnt,
+                                          const gp_Pnt&                     aFirstPoint,
+                                          const gp_Pnt&                     aSecondPoint,
+                                          const gp_Pnt&                     aCenter,
+                                          const DsgPrs_ArrowSide            ArrowPrs,
+                                          const Standard_Boolean            drawRevers,
+                                          gp_Pnt&                           DrawPosition,
+                                          gp_Pnt&                           EndOfArrow,
+                                          Handle(Geom_TrimmedCurve)&        TrimCurve,
+                                          Standard_Boolean&                 HasCircle)
 {
   char valcar[80];
-  sprintf(valcar,"%5.2f",theval);
+  sprintf(valcar, "%5.2f", theval);
 
-  Standard_Real FirstParCirc, LastParCirc;
+  Standard_Real    FirstParCirc, LastParCirc;
   Standard_Boolean SpecCase;
-  gp_Dir DirOfArrow;
-  gp_Circ FilletCirc;
+  gp_Dir           DirOfArrow;
+  gp_Circ          FilletCirc;
   //  gp_Pnt NewPosition, EndOfArrow;
-  Handle( Prs3d_DimensionAspect ) LA = aDrawer->DimensionAspect();
-  aPresentation->CurrentGroup()->SetPrimitivesAspect( LA->LineAspect()->Aspect() );
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   Standard_Real ArrowLength = LA->ArrowAspect()->Length();
-  DsgPrs::ComputeFilletRadiusPresentation( ArrowLength,
-					   theval,
-					   aPosition,
-					   aNormalDir,
-					   aFirstPoint,
-					   aSecondPoint,
-					   aCenter,
-					   aBasePnt,
-					   drawRevers,
-					   SpecCase,
-					   FilletCirc,
-					   FirstParCirc,
-					   LastParCirc,
-					   EndOfArrow,
-					   DirOfArrow,
-					   DrawPosition //NewPosition
-					   );
-  // Creating the fillet's arc 				      
-  if( !SpecCase )
+  DsgPrs::ComputeFilletRadiusPresentation(ArrowLength,
+                                          theval,
+                                          aPosition,
+                                          aNormalDir,
+                                          aFirstPoint,
+                                          aSecondPoint,
+                                          aCenter,
+                                          aBasePnt,
+                                          drawRevers,
+                                          SpecCase,
+                                          FilletCirc,
+                                          FirstParCirc,
+                                          LastParCirc,
+                                          EndOfArrow,
+                                          DirOfArrow,
+                                          DrawPosition // NewPosition
+  );
+  // Creating the fillet's arc
+  if (!SpecCase)
   {
-    const Standard_Real Alpha = Abs(LastParCirc - FirstParCirc);
-    const Standard_Integer NodeNumber = Max (4 , Standard_Integer (50. * Alpha / M_PI));
-    const Standard_Real delta = Alpha / ( NodeNumber - 1 );
+    const Standard_Real    Alpha      = Abs(LastParCirc - FirstParCirc);
+    const Standard_Integer NodeNumber = Max(4, Standard_Integer(50. * Alpha / M_PI));
+    const Standard_Real    delta      = Alpha / (NodeNumber - 1);
 
     Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(NodeNumber);
-    for (Standard_Integer i = 0 ; i < NodeNumber; i++, FirstParCirc += delta)
-	  aPrims->AddVertex(ElCLib::Value( FirstParCirc, FilletCirc ));
+    for (Standard_Integer i = 0; i < NodeNumber; i++, FirstParCirc += delta)
+      aPrims->AddVertex(ElCLib::Value(FirstParCirc, FilletCirc));
     aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
-    HasCircle = Standard_True;
-    Handle(Geom_Circle) Circle = new Geom_Circle( FilletCirc );
-    TrimCurve = new Geom_TrimmedCurve( Circle,  FirstParCirc, LastParCirc );
+    HasCircle                  = Standard_True;
+    Handle(Geom_Circle) Circle = new Geom_Circle(FilletCirc);
+    TrimCurve                  = new Geom_TrimmedCurve(Circle, FirstParCirc, LastParCirc);
   }
   else // null or PI anle or Radius = 0
   {
     HasCircle = Standard_False;
   }
-  
+
   // Line from position to intersection point on fillet's circle (EndOfArrow)
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(DrawPosition);
@@ -110,8 +109,14 @@ void DsgPrs_FilletRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aPr
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   // Drawing the text
-  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, DrawPosition);
-   
+  Prs3d_Text::Draw(aPresentation->CurrentGroup(), LA->TextAspect(), aText, DrawPosition);
+
   // Add presentation of arrows
-  DsgPrs::ComputeSymbol( aPresentation, LA, EndOfArrow, EndOfArrow, DirOfArrow, DirOfArrow, ArrowPrs );
+  DsgPrs::ComputeSymbol(aPresentation,
+                        LA,
+                        EndOfArrow,
+                        EndOfArrow,
+                        DirOfArrow,
+                        DirOfArrow,
+                        ArrowPrs);
 }

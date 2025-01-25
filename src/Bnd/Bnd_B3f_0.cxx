@@ -21,11 +21,9 @@
 #include <gp_Trsf.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax3.hxx>
- 
 
 #define RealType Standard_ShortReal
 #define RealType_hxx <Standard_ShortReal.hxx>
 #define Bnd_B3x Bnd_B3f
 #define Bnd_B3x_hxx <Bnd_B3f.hxx>
 #include "../Bnd/Bnd_B3x.gxx"
-

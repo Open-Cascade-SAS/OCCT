@@ -13,8 +13,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Intersection
-//purpose  : 
+// function : Intersection
+// purpose  :
 //=======================================================================
 
 inline void TopBas_Interference::Intersection(const TheSubShape& I)
@@ -23,8 +23,8 @@ inline void TopBas_Interference::Intersection(const TheSubShape& I)
 }
 
 //=======================================================================
-//function : Boundary
-//purpose  : 
+// function : Boundary
+// purpose  :
 //=======================================================================
 
 inline void TopBas_Interference::Boundary(const TheShape& B)
@@ -33,8 +33,8 @@ inline void TopBas_Interference::Boundary(const TheShape& B)
 }
 
 //=======================================================================
-//function : Orientation
-//purpose  : 
+// function : Orientation
+// purpose  :
 //=======================================================================
 
 inline void TopBas_Interference::Orientation(const TopAbs_Orientation Or)
@@ -43,8 +43,8 @@ inline void TopBas_Interference::Orientation(const TopAbs_Orientation Or)
 }
 
 //=======================================================================
-//function : Transition
-//purpose  : 
+// function : Transition
+// purpose  :
 //=======================================================================
 
 inline void TopBas_Interference::Transition(const TopAbs_Orientation Or)
@@ -53,19 +53,18 @@ inline void TopBas_Interference::Transition(const TopAbs_Orientation Or)
 }
 
 //=======================================================================
-//function : BoundaryTransition
-//purpose  : 
+// function : BoundaryTransition
+// purpose  :
 //=======================================================================
 
-inline void TopBas_Interference::BoundaryTransition
-  (const TopAbs_Orientation Or)
+inline void TopBas_Interference::BoundaryTransition(const TopAbs_Orientation Or)
 {
   myBTransition = Or;
 }
 
 //=======================================================================
-//function : Intersection
-//purpose  : 
+// function : Intersection
+// purpose  :
 //=======================================================================
 
 inline const TheSubShape& TopBas_Interference::Intersection() const
@@ -74,8 +73,8 @@ inline const TheSubShape& TopBas_Interference::Intersection() const
 }
 
 //=======================================================================
-//function : ChangeIntersection
-//purpose  : 
+// function : ChangeIntersection
+// purpose  :
 //=======================================================================
 
 inline TheSubShape& TopBas_Interference::ChangeIntersection()
@@ -84,28 +83,28 @@ inline TheSubShape& TopBas_Interference::ChangeIntersection()
 }
 
 //=======================================================================
-//function : Boundary
-//purpose  : 
+// function : Boundary
+// purpose  :
 //=======================================================================
 
-inline const TheShape& TopBas_Interference::Boundary() const 
+inline const TheShape& TopBas_Interference::Boundary() const
 {
   return myBoundary;
 }
 
 //=======================================================================
-//function : ChangeBoundary
-//purpose  : 
+// function : ChangeBoundary
+// purpose  :
 //=======================================================================
 
-inline TheShape& TopBas_Interference::ChangeBoundary() 
+inline TheShape& TopBas_Interference::ChangeBoundary()
 {
   return myBoundary;
 }
 
 //=======================================================================
-//function : Orientation
-//purpose  : 
+// function : Orientation
+// purpose  :
 //=======================================================================
 
 inline TopAbs_Orientation TopBas_Interference::Orientation() const
@@ -114,8 +113,8 @@ inline TopAbs_Orientation TopBas_Interference::Orientation() const
 }
 
 //=======================================================================
-//function : Transition
-//purpose  : 
+// function : Transition
+// purpose  :
 //=======================================================================
 
 inline TopAbs_Orientation TopBas_Interference::Transition() const
@@ -124,8 +123,8 @@ inline TopAbs_Orientation TopBas_Interference::Transition() const
 }
 
 //=======================================================================
-//function : BoundaryTransition
-//purpose  : 
+// function : BoundaryTransition
+// purpose  :
 //=======================================================================
 
 inline TopAbs_Orientation TopBas_Interference::BoundaryTransition() const

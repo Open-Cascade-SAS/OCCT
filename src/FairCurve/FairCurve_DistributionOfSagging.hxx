@@ -28,45 +28,29 @@
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <math_Vector.hxx>
 
-
 //! Compute the Sagging Distribution
-class FairCurve_DistributionOfSagging  : public FairCurve_DistributionOfEnergy
+class FairCurve_DistributionOfSagging : public FairCurve_DistributionOfEnergy
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT FairCurve_DistributionOfSagging(const Standard_Integer BSplOrder, const Handle(TColStd_HArray1OfReal)& FlatKnots, const Handle(TColgp_HArray1OfPnt2d)& Poles, const Standard_Integer DerivativeOrder, const FairCurve_BattenLaw& Law, const Standard_Integer NbValAux = 0);
-  
+  Standard_EXPORT FairCurve_DistributionOfSagging(const Standard_Integer               BSplOrder,
+                                                  const Handle(TColStd_HArray1OfReal)& FlatKnots,
+                                                  const Handle(TColgp_HArray1OfPnt2d)& Poles,
+                                                  const Standard_Integer     DerivativeOrder,
+                                                  const FairCurve_BattenLaw& Law,
+                                                  const Standard_Integer     NbValAux = 0);
+
   //! computes the values <F> of the functions for the
   //! variable <X>.
   //! returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Value (const math_Vector& X, math_Vector& F) Standard_OVERRIDE;
-
-
-
+  Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& X,
+                                                 math_Vector&       F) Standard_OVERRIDE;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   FairCurve_BattenLaw MyLaw;
-
-
 };
-
-
-
-
-
-
 
 #endif // _FairCurve_DistributionOfSagging_HeaderFile

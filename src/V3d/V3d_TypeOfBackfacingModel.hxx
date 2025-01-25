@@ -19,7 +19,8 @@
 
 #include <Graphic3d_TypeOfBackfacingModel.hxx>
 
-Standard_DEPRECATED("Deprecated alias - Graphic3d_TypeOfBackfacingModel should be used instead")
+Standard_DEPRECATED("Deprecated alias - Graphic3d_TypeOfBackfacingModel should be used "
+                    "instead")
 typedef Graphic3d_TypeOfBackfacingModel V3d_TypeOfBackfacingModel;
 
 #endif // _V3d_TypeOfBackfacingModel_HeaderFile

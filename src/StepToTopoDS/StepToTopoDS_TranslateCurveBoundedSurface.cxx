@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//#4  szv          S4163: optimization
+// #4  szv          S4163: optimization
 //:   abv 07.04.99 S4136: turn off fixing intersection of non-adjacent edges
 
 #include <BRep_Builder.hxx>
@@ -35,97 +35,93 @@
 #include <TopoDS_Face.hxx>
 #include <Transfer_TransientProcess.hxx>
 
-//=======================================================================
-//function : StepToTopoDS_TranslateCurveBoundedSurface
-//purpose  : 
-//=======================================================================
-StepToTopoDS_TranslateCurveBoundedSurface::StepToTopoDS_TranslateCurveBoundedSurface ()
+//=================================================================================================
+
+StepToTopoDS_TranslateCurveBoundedSurface::StepToTopoDS_TranslateCurveBoundedSurface() {}
+
+//=================================================================================================
+
+StepToTopoDS_TranslateCurveBoundedSurface::StepToTopoDS_TranslateCurveBoundedSurface(
+  const Handle(StepGeom_CurveBoundedSurface)& CBS,
+  const Handle(Transfer_TransientProcess)&    TP,
+  const StepData_Factors&                     theLocalFactors)
 {
+  Init(CBS, TP, theLocalFactors);
 }
 
-//=======================================================================
-//function : StepToTopoDS_TranslateCurveBoundedSurface
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepToTopoDS_TranslateCurveBoundedSurface::StepToTopoDS_TranslateCurveBoundedSurface (
-					   const Handle(StepGeom_CurveBoundedSurface) &CBS, 
-					   const Handle(Transfer_TransientProcess) &TP,
-             const StepData_Factors& theLocalFactors)
-{
-  Init ( CBS, TP, theLocalFactors );
-}
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean StepToTopoDS_TranslateCurveBoundedSurface::Init (
-		 const Handle(StepGeom_CurveBoundedSurface) &CBS, 
-		 const Handle(Transfer_TransientProcess) &TP,
-     const StepData_Factors& theLocalFactors)
+Standard_Boolean StepToTopoDS_TranslateCurveBoundedSurface::Init(
+  const Handle(StepGeom_CurveBoundedSurface)& CBS,
+  const Handle(Transfer_TransientProcess)&    TP,
+  const StepData_Factors&                     theLocalFactors)
 {
   myFace.Nullify();
-  if ( CBS.IsNull() ) return Standard_False;
-  
-  // translate basis surface 
-  Handle(StepGeom_Surface) S = CBS->BasisSurface();
-  Handle(Geom_Surface) Surf = StepToGeom::MakeSurface (S, theLocalFactors);
+  if (CBS.IsNull())
+    return Standard_False;
+
+  // translate basis surface
+  Handle(StepGeom_Surface) S    = CBS->BasisSurface();
+  Handle(Geom_Surface)     Surf = StepToGeom::MakeSurface(S, theLocalFactors);
   if (Surf.IsNull())
   {
-    TP->AddFail ( CBS, "Basis surface not translated" );
+    TP->AddFail(CBS, "Basis surface not translated");
     return Standard_False;
   }
 
   // abv 30.06.00: trj4_k1_geo-tu.stp #108: do as in TranslateFace
   // pdn to force bsplsurf to be periodic
   Handle(StepGeom_BSplineSurface) sgbss = Handle(StepGeom_BSplineSurface)::DownCast(S);
-  if (!sgbss.IsNull()) {
+  if (!sgbss.IsNull())
+  {
     Handle(Geom_Surface) periodicSurf = ShapeAlgo::AlgoContainer()->ConvertToPeriodic(Surf);
-    if (!periodicSurf.IsNull()) {
+    if (!periodicSurf.IsNull())
+    {
       TP->AddWarning(S, "Surface forced to be periodic");
       Surf = periodicSurf;
     }
   }
-    
+
   // create face
   BRep_Builder B;
-  B.MakeFace ( myFace, Surf, Precision::Confusion() );
+  B.MakeFace(myFace, Surf, Precision::Confusion());
 
   // add natural bound if implicit
-  if ( CBS->ImplicitOuter() ) { 
-    if ( Surf->IsKind(STANDARD_TYPE(Geom_BoundedSurface)) ) {
-      BRepBuilderAPI_MakeFace mf (Surf, Precision::Confusion());
+  if (CBS->ImplicitOuter())
+  {
+    if (Surf->IsKind(STANDARD_TYPE(Geom_BoundedSurface)))
+    {
+      BRepBuilderAPI_MakeFace mf(Surf, Precision::Confusion());
       myFace = mf.Face();
     }
-    else TP->AddWarning ( CBS, "Cannot make natural bounds on infinite surface" );
+    else
+      TP->AddWarning(CBS, "Cannot make natural bounds on infinite surface");
   }
 
-  // translate boundaries 
+  // translate boundaries
   Handle(StepGeom_HArray1OfSurfaceBoundary) bnd = CBS->Boundaries();
-  Standard_Integer nb = bnd->Length();
-  for ( Standard_Integer i=1; i <= nb; i++ ) {
-    Handle(StepGeom_CompositeCurve) cc = bnd->Value ( i ).BoundaryCurve();
-    if ( cc.IsNull() ) continue;
-    StepToTopoDS_TranslateCompositeCurve TrCC ( cc, TP, S, Surf, theLocalFactors );
-    if ( ! TrCC.IsDone() ) {
-      TP->AddWarning ( CBS, "Boundary not translated" );
+  Standard_Integer                          nb  = bnd->Length();
+  for (Standard_Integer i = 1; i <= nb; i++)
+  {
+    Handle(StepGeom_CompositeCurve) cc = bnd->Value(i).BoundaryCurve();
+    if (cc.IsNull())
+      continue;
+    StepToTopoDS_TranslateCompositeCurve TrCC(cc, TP, S, Surf, theLocalFactors);
+    if (!TrCC.IsDone())
+    {
+      TP->AddWarning(CBS, "Boundary not translated");
       continue;
     }
-    B.Add ( myFace, TrCC.Value() );
+    B.Add(myFace, TrCC.Value());
   }
 
-  done = ! myFace.IsNull();
+  done = !myFace.IsNull();
   return done;
 }
-	
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
 
-const TopoDS_Face &StepToTopoDS_TranslateCurveBoundedSurface::Value () const
+//=================================================================================================
+
+const TopoDS_Face& StepToTopoDS_TranslateCurveBoundedSurface::Value() const
 {
   return myFace;
 }

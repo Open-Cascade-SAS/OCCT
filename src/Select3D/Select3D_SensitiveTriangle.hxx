@@ -21,7 +21,6 @@
 #include <Select3D_SensitivePoly.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
 
-
 //! A framework to define selection of triangles in a view.
 //! This comes into play in the detection of meshing and triangulation in surfaces.
 //! In some cases this class can raise Standard_ConstructionError and
@@ -29,21 +28,22 @@
 class Select3D_SensitiveTriangle : public Select3D_SensitiveEntity
 {
 public:
-
   //! Constructs a sensitive triangle object defined by the
   //! owner theOwnerId, the points P1, P2, P3, and the type of sensitivity Sensitivity.
-  Standard_EXPORT Select3D_SensitiveTriangle (const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                              const gp_Pnt& thePnt0,
-                                              const gp_Pnt& thePnt1,
-                                              const gp_Pnt& thePnt2,
-                                              const Select3D_TypeOfSensitivity theType = Select3D_TOS_INTERIOR);
+  Standard_EXPORT Select3D_SensitiveTriangle(
+    const Handle(SelectMgr_EntityOwner)& theOwnerId,
+    const gp_Pnt&                        thePnt0,
+    const gp_Pnt&                        thePnt1,
+    const gp_Pnt&                        thePnt2,
+    const Select3D_TypeOfSensitivity     theType = Select3D_TOS_INTERIOR);
 
   //! Checks whether the triangle overlaps current selecting volume
-  Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
-                                                    SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                                   SelectBasics_PickResult& thePickResult)
+    Standard_OVERRIDE;
 
   //! Returns the 3D points P1, P2, P3 used at the time of construction.
-  void Points3D (gp_Pnt& thePnt0, gp_Pnt& thePnt1, gp_Pnt& thePnt2) const
+  void Points3D(gp_Pnt& thePnt0, gp_Pnt& thePnt1, gp_Pnt& thePnt2) const
   {
     thePnt0 = myPoints[0];
     thePnt1 = myPoints[1];
@@ -69,14 +69,14 @@ public:
   virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE { return myCentroid; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveTriangle,Select3D_SensitiveEntity)
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveTriangle, Select3D_SensitiveEntity)
 
 private:
-
-  Select3D_TypeOfSensitivity mySensType;     //!< Type of sensitivity: boundary or interior
-  gp_Pnt                     myCentroid;     //!< Center of triangle
+  Select3D_TypeOfSensitivity mySensType; //!< Type of sensitivity: boundary or interior
+  gp_Pnt                     myCentroid; //!< Center of triangle
   gp_Pnt                     myPoints[3];
 };
 

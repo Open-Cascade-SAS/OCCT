@@ -23,7 +23,6 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-
 class StepBasic_GeneralProperty;
 DEFINE_STANDARD_HANDLE(StepBasic_GeneralProperty, Standard_Transient)
 
@@ -32,60 +31,44 @@ class StepBasic_GeneralProperty : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepBasic_GeneralProperty();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aId, const Handle(TCollection_HAsciiString)& aName, const Standard_Boolean hasDescription, const Handle(TCollection_HAsciiString)& aDescription);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aId,
+                            const Handle(TCollection_HAsciiString)& aName,
+                            const Standard_Boolean                  hasDescription,
+                            const Handle(TCollection_HAsciiString)& aDescription);
+
   //! Returns field Id
   Standard_EXPORT Handle(TCollection_HAsciiString) Id() const;
-  
+
   //! Set field Id
-  Standard_EXPORT void SetId (const Handle(TCollection_HAsciiString)& Id);
-  
+  Standard_EXPORT void SetId(const Handle(TCollection_HAsciiString)& Id);
+
   //! Returns field Name
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
-  
+
   //! Set field Name
-  Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& Name);
-  
+  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& Name);
+
   //! Returns field Description
   Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
-  
+
   //! Set field Description
-  Standard_EXPORT void SetDescription (const Handle(TCollection_HAsciiString)& Description);
-  
+  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& Description);
+
   //! Returns True if optional field Description is defined
   Standard_EXPORT Standard_Boolean HasDescription() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_GeneralProperty,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_GeneralProperty, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TCollection_HAsciiString) theId;
   Handle(TCollection_HAsciiString) theName;
   Handle(TCollection_HAsciiString) theDescription;
-  Standard_Boolean defDescription;
-
-
+  Standard_Boolean                 defDescription;
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_GeneralProperty_HeaderFile

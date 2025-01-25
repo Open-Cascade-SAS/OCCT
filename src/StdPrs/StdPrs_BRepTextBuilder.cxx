@@ -21,36 +21,40 @@
 // Function : Perform
 // Purpose  :
 // =======================================================================
-TopoDS_Shape StdPrs_BRepTextBuilder::Perform (StdPrs_BRepFont&          theFont,
-                                              const Handle(Font_TextFormatter)& theFormatter,
-                                              const gp_Ax3&             thePenLoc)
+TopoDS_Shape StdPrs_BRepTextBuilder::Perform(StdPrs_BRepFont&                  theFont,
+                                             const Handle(Font_TextFormatter)& theFormatter,
+                                             const gp_Ax3&                     thePenLoc)
 {
-  gp_Trsf          aTrsf;
-  gp_XYZ           aPen;
-  TopoDS_Shape     aGlyphShape;
-  TopoDS_Compound  aResult;
-  Standard_Mutex::Sentry aSentry (theFont.Mutex());
+  gp_Trsf                aTrsf;
+  gp_XYZ                 aPen;
+  TopoDS_Shape           aGlyphShape;
+  TopoDS_Compound        aResult;
+  Standard_Mutex::Sentry aSentry(theFont.Mutex());
 
-  myBuilder.MakeCompound (aResult);
+  myBuilder.MakeCompound(aResult);
 
-  Standard_Real aScaleUnits    = theFont.Scale();
-  for (Font_TextFormatter::Iterator aFormatterIt (*theFormatter, Font_TextFormatter::IterationFilter_ExcludeInvisible);
-       aFormatterIt.More(); aFormatterIt.Next())
+  Standard_Real aScaleUnits = theFont.Scale();
+  for (Font_TextFormatter::Iterator aFormatterIt(
+         *theFormatter,
+         Font_TextFormatter::IterationFilter_ExcludeInvisible);
+       aFormatterIt.More();
+       aFormatterIt.Next())
   {
-    const NCollection_Vec2<Standard_ShortReal>& aCorner = theFormatter->BottomLeft (aFormatterIt.SymbolPosition());
+    const NCollection_Vec2<Standard_ShortReal>& aCorner =
+      theFormatter->BottomLeft(aFormatterIt.SymbolPosition());
 
-    aPen.SetCoord (aCorner.x() * aScaleUnits, aCorner.y() * aScaleUnits, 0.0);
-    aGlyphShape = theFont.RenderGlyph (aFormatterIt.Symbol());
+    aPen.SetCoord(aCorner.x() * aScaleUnits, aCorner.y() * aScaleUnits, 0.0);
+    aGlyphShape = theFont.RenderGlyph(aFormatterIt.Symbol());
     if (!aGlyphShape.IsNull())
     {
-      aTrsf.SetTranslation (gp_Vec (aPen));
-      aGlyphShape.Move (aTrsf);
-      myBuilder.Add (aResult, aGlyphShape);
+      aTrsf.SetTranslation(gp_Vec(aPen));
+      aGlyphShape.Move(aTrsf);
+      myBuilder.Add(aResult, aGlyphShape);
     }
   }
 
-  aTrsf.SetTransformation (thePenLoc, gp_Ax3 (gp::XOY()));
-  aResult.Move (aTrsf);
+  aTrsf.SetTransformation(thePenLoc, gp_Ax3(gp::XOY()));
+  aResult.Move(aTrsf);
 
   return aResult;
 }
@@ -59,19 +63,19 @@ TopoDS_Shape StdPrs_BRepTextBuilder::Perform (StdPrs_BRepFont&          theFont,
 // Function : Perform
 // Purpose  :
 // =======================================================================
-TopoDS_Shape StdPrs_BRepTextBuilder::Perform (StdPrs_BRepFont&                        theFont,
-                                              const NCollection_String&               theString,
-                                              const gp_Ax3&                           thePenLoc,
-                                              const Graphic3d_HorizontalTextAlignment theHAlign,
-                                              const Graphic3d_VerticalTextAlignment   theVAlign)
+TopoDS_Shape StdPrs_BRepTextBuilder::Perform(StdPrs_BRepFont&                        theFont,
+                                             const NCollection_String&               theString,
+                                             const gp_Ax3&                           thePenLoc,
+                                             const Graphic3d_HorizontalTextAlignment theHAlign,
+                                             const Graphic3d_VerticalTextAlignment   theVAlign)
 {
   Handle(Font_TextFormatter) aFormatter = new Font_TextFormatter();
 
   aFormatter->Reset();
-  aFormatter->SetupAlignment (theHAlign, theVAlign);
+  aFormatter->SetupAlignment(theHAlign, theVAlign);
 
-  aFormatter->Append (theString, *theFont.FTFont());
+  aFormatter->Append(theString, *theFont.FTFont());
   aFormatter->Format();
 
-  return Perform (theFont, aFormatter, thePenLoc);
+  return Perform(theFont, aFormatter, thePenLoc);
 }

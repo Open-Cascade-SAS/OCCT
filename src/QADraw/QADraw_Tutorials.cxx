@@ -46,79 +46,88 @@ class MyAisObject : public AIS_InteractiveObject
 {
   DEFINE_STANDARD_RTTI_INLINE(MyAisObject, AIS_InteractiveObject)
 public:
-  enum MyDispMode { MyDispMode_Main = 0, MyDispMode_Highlight = 1 };
+  enum MyDispMode
+  {
+    MyDispMode_Main      = 0,
+    MyDispMode_Highlight = 1
+  };
+
 public:
   MyAisObject();
-  void SetAnimation (const Handle(AIS_Animation)& theAnim) { myAnim = theAnim; }
+
+  void SetAnimation(const Handle(AIS_Animation)& theAnim) { myAnim = theAnim; }
+
 public:
-  virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                        const Handle(Prs3d_Presentation)& thePrs,
-                        const Standard_Integer theMode) override;
+  virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                       const Handle(Prs3d_Presentation)&         thePrs,
+                       const Standard_Integer                    theMode) override;
 
-  virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
-                                 const Standard_Integer theMode) override;
+  virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
+                                const Standard_Integer             theMode) override;
 
-  virtual bool AcceptDisplayMode (const Standard_Integer theMode) const override
+  virtual bool AcceptDisplayMode(const Standard_Integer theMode) const override
   {
     return theMode == MyDispMode_Main || theMode == MyDispMode_Highlight;
   }
+
 protected:
   Handle(AIS_Animation) myAnim;
-  gp_Pnt myDragPntFrom;
+  gp_Pnt                myDragPntFrom;
 };
 
 MyAisObject::MyAisObject()
 {
   // highlighting might use different display mode (see tutorial)
-  //SetHilightMode (MyDispMode_Highlight);
+  // SetHilightMode (MyDispMode_Highlight);
 
   myDrawer->SetupOwnShadingAspect();
-  myDrawer->ShadingAspect()->SetMaterial (Graphic3d_NameOfMaterial_Silver);
-  myDrawer->SetWireAspect (new Prs3d_LineAspect (Quantity_NOC_GREEN, Aspect_TOL_SOLID, 2.0));
+  myDrawer->ShadingAspect()->SetMaterial(Graphic3d_NameOfMaterial_Silver);
+  myDrawer->SetWireAspect(new Prs3d_LineAspect(Quantity_NOC_GREEN, Aspect_TOL_SOLID, 2.0));
 }
 
-void MyAisObject::Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                           const Handle(Prs3d_Presentation)& thePrs,
-                           const Standard_Integer theMode)
+void MyAisObject::Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                          const Handle(Prs3d_Presentation)&         thePrs,
+                          const Standard_Integer                    theMode)
 {
-  (void )thePrsMgr;
+  (void)thePrsMgr;
   const double aRadius = 100.0, aHeight = 100.0;
-  TopoDS_Shape aShape = BRepPrimAPI_MakeCylinder (aRadius, aHeight);
+  TopoDS_Shape aShape = BRepPrimAPI_MakeCylinder(aRadius, aHeight);
   if (theMode == MyDispMode_Main)
   {
     // use standard shape builders
-    //StdPrs_ShadedShape::Add (thePrs, aShape, myDrawer);
-    //StdPrs_WFShape::Add (thePrs, aShape, myDrawer); // add wireframe
+    // StdPrs_ShadedShape::Add (thePrs, aShape, myDrawer);
+    // StdPrs_WFShape::Add (thePrs, aShape, myDrawer); // add wireframe
 
     // use quadric builders for cylinder surface and disks
-    const int aNbSlices = 25;
-    Prs3d_ToolCylinder aCyl (aRadius, aRadius, aHeight, aNbSlices, aNbSlices);
-    Prs3d_ToolDisk aDisk (0.0, aRadius, 25, 1);
+    const int          aNbSlices = 25;
+    Prs3d_ToolCylinder aCyl(aRadius, aRadius, aHeight, aNbSlices, aNbSlices);
+    Prs3d_ToolDisk     aDisk(0.0, aRadius, 25, 1);
 
     Handle(Graphic3d_ArrayOfTriangles) aTris =
-      new Graphic3d_ArrayOfTriangles (aCyl.VerticesNb() + 2 * aDisk.VerticesNb(),
-                                      3 * (aCyl.TrianglesNb() + 2 * aDisk.TrianglesNb()),
-                                      Graphic3d_ArrayFlags_VertexNormal);
-    aCyl .FillArray (aTris, gp_Trsf());
-    aDisk.FillArray (aTris, gp_Trsf());
+      new Graphic3d_ArrayOfTriangles(aCyl.VerticesNb() + 2 * aDisk.VerticesNb(),
+                                     3 * (aCyl.TrianglesNb() + 2 * aDisk.TrianglesNb()),
+                                     Graphic3d_ArrayFlags_VertexNormal);
+    aCyl.FillArray(aTris, gp_Trsf());
+    aDisk.FillArray(aTris, gp_Trsf());
 
     gp_Trsf aDisk2Trsf;
-    aDisk2Trsf.SetTransformation (gp_Ax3 (gp_Pnt (0.0, 0.0, aHeight), -gp::DZ(), gp::DX()), gp::XOY());
-    aDisk.FillArray (aTris, aDisk2Trsf);
+    aDisk2Trsf.SetTransformation(gp_Ax3(gp_Pnt(0.0, 0.0, aHeight), -gp::DZ(), gp::DX()), gp::XOY());
+    aDisk.FillArray(aTris, aDisk2Trsf);
 
     Handle(Graphic3d_Group) aGroupTris = thePrs->NewGroup();
-    aGroupTris->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
-    aGroupTris->AddPrimitiveArray (aTris);
-    aGroupTris->SetClosed (true); // will allow backface culling / capping for our solid object
+    aGroupTris->SetGroupPrimitivesAspect(myDrawer->ShadingAspect()->Aspect());
+    aGroupTris->AddPrimitiveArray(aTris);
+    aGroupTris->SetClosed(true); // will allow backface culling / capping for our solid object
 
     // manually tessellated disk
     /*Handle(Graphic3d_ArrayOfTriangles) aTris2 =
-      new Graphic3d_ArrayOfTriangles (aNbSlices + 1, aNbSlices * 3, Graphic3d_ArrayFlags_VertexNormal);
-    aTris2->AddVertex (gp_Pnt (0.0, 0.0, aHeight), gp::DZ());
+      new Graphic3d_ArrayOfTriangles (aNbSlices + 1, aNbSlices * 3,
+    Graphic3d_ArrayFlags_VertexNormal); aTris2->AddVertex (gp_Pnt (0.0, 0.0, aHeight), gp::DZ());
     for (int aSliceIter = 0; aSliceIter < aNbSlices; ++aSliceIter)
     {
       double anAngle = M_PI * 2.0 * double(aSliceIter) / double(aNbSlices);
-      aTris2->AddVertex (gp_Pnt (Cos (anAngle) * aRadius, Sin (anAngle) * aRadius, aHeight), gp::DZ());
+      aTris2->AddVertex (gp_Pnt (Cos (anAngle) * aRadius, Sin (anAngle) * aRadius, aHeight),
+    gp::DZ());
     }
     for (int aSliceIter = 0; aSliceIter < aNbSlices; ++aSliceIter)
     {
@@ -127,25 +136,26 @@ void MyAisObject::Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
     aGroupTris->AddPrimitiveArray (aTris2);*/
 
     // manually tessellate cylinder section as a polyline
-    Handle(Graphic3d_ArrayOfSegments) aSegs = new Graphic3d_ArrayOfSegments (4, 4 * 2, Graphic3d_ArrayFlags_None);
-    aSegs->AddVertex (gp_Pnt (0.0, -aRadius, 0.0));
-    aSegs->AddVertex (gp_Pnt (0.0, -aRadius, aHeight));
-    aSegs->AddVertex (gp_Pnt (0.0,  aRadius, aHeight));
-    aSegs->AddVertex (gp_Pnt (0.0,  aRadius, 0.0));
-    aSegs->AddEdges (1, 2);
-    aSegs->AddEdges (2, 3);
-    aSegs->AddEdges (3, 4);
-    aSegs->AddEdges (4, 1);
+    Handle(Graphic3d_ArrayOfSegments) aSegs =
+      new Graphic3d_ArrayOfSegments(4, 4 * 2, Graphic3d_ArrayFlags_None);
+    aSegs->AddVertex(gp_Pnt(0.0, -aRadius, 0.0));
+    aSegs->AddVertex(gp_Pnt(0.0, -aRadius, aHeight));
+    aSegs->AddVertex(gp_Pnt(0.0, aRadius, aHeight));
+    aSegs->AddVertex(gp_Pnt(0.0, aRadius, 0.0));
+    aSegs->AddEdges(1, 2);
+    aSegs->AddEdges(2, 3);
+    aSegs->AddEdges(3, 4);
+    aSegs->AddEdges(4, 1);
 
     Handle(Graphic3d_Group) aGroupSegs = thePrs->NewGroup();
-    aGroupSegs->SetGroupPrimitivesAspect (myDrawer->WireAspect()->Aspect());
-    aGroupSegs->AddPrimitiveArray (aSegs);
+    aGroupSegs->SetGroupPrimitivesAspect(myDrawer->WireAspect()->Aspect());
+    aGroupSegs->AddPrimitiveArray(aSegs);
   }
   else if (theMode == MyDispMode_Highlight)
   {
     Bnd_Box aBox;
-    BRepBndLib::Add (aShape, aBox);
-    Prs3d_BndBox::Add (thePrs, aBox, myDrawer);
+    BRepBndLib::Add(aShape, aBox);
+    Prs3d_BndBox::Add(thePrs, aBox, myDrawer);
   }
 }
 
@@ -154,109 +164,120 @@ class MyAisOwner : public SelectMgr_EntityOwner
 {
   DEFINE_STANDARD_RTTI_INLINE(MyAisOwner, SelectMgr_EntityOwner)
 public:
-  MyAisOwner (const Handle(MyAisObject)& theObj, int thePriority = 0)
-    : SelectMgr_EntityOwner (theObj, thePriority) {}
+  MyAisOwner(const Handle(MyAisObject)& theObj, int thePriority = 0)
+      : SelectMgr_EntityOwner(theObj, thePriority)
+  {
+  }
 
-  void SetAnimation (const Handle(AIS_Animation)& theAnim) { myAnim = theAnim; }
+  void SetAnimation(const Handle(AIS_Animation)& theAnim) { myAnim = theAnim; }
 
-  virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                 const Handle(Prs3d_Drawer)& theStyle,
-                                 const Standard_Integer theMode) override;
-  virtual void Unhilight (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                          const Standard_Integer theMode) override;
+  virtual void HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                const Handle(Prs3d_Drawer)&               theStyle,
+                                const Standard_Integer                    theMode) override;
+  virtual void Unhilight(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                         const Standard_Integer                    theMode) override;
 
   virtual bool IsForcedHilight() const override { return true; }
-  virtual bool HandleMouseClick (const Graphic3d_Vec2i& thePoint,
-                                 Aspect_VKeyMouse theButton,
-                                 Aspect_VKeyFlags theModifiers,
-                                 bool theIsDoubleClick) override;
-  virtual void SetLocation (const TopLoc_Location& theLocation) override
+
+  virtual bool HandleMouseClick(const Graphic3d_Vec2i& thePoint,
+                                Aspect_VKeyMouse       theButton,
+                                Aspect_VKeyFlags       theModifiers,
+                                bool                   theIsDoubleClick) override;
+
+  virtual void SetLocation(const TopLoc_Location& theLocation) override
   {
-    if (!myPrs.IsNull()) { myPrs->SetTransformation (new TopLoc_Datum3D (theLocation.Transformation())); }
+    if (!myPrs.IsNull())
+    {
+      myPrs->SetTransformation(new TopLoc_Datum3D(theLocation.Transformation()));
+    }
   }
+
 protected:
   Handle(Prs3d_Presentation) myPrs;
-  Handle(AIS_Animation) myAnim;
+  Handle(AIS_Animation)      myAnim;
 };
 
-void MyAisOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                   const Handle(Prs3d_Drawer)& theStyle,
-                                   const Standard_Integer theMode)
+void MyAisOwner::HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                  const Handle(Prs3d_Drawer)&               theStyle,
+                                  const Standard_Integer                    theMode)
 {
-  (void )theMode;
-  MyAisObject* anObj = dynamic_cast<MyAisObject*> (mySelectable);
+  (void)theMode;
+  MyAisObject* anObj = dynamic_cast<MyAisObject*>(mySelectable);
   if (myPrs.IsNull())
   {
-    myPrs = new Prs3d_Presentation (thePrsMgr->StructureManager());
-    anObj->Compute (thePrsMgr, myPrs, MyAisObject::MyDispMode_Highlight);
+    myPrs = new Prs3d_Presentation(thePrsMgr->StructureManager());
+    anObj->Compute(thePrsMgr, myPrs, MyAisObject::MyDispMode_Highlight);
   }
   if (thePrsMgr->IsImmediateModeOn())
   {
     Handle(StdSelect_ViewerSelector3d) aSelector = anObj->InteractiveContext()->MainSelector();
-    SelectMgr_SortCriterion aPickPnt;
+    SelectMgr_SortCriterion            aPickPnt;
     for (int aPickIter = 1; aPickIter <= aSelector->NbPicked(); ++aPickIter)
     {
-      if (aSelector->Picked (aPickIter) == this)
+      if (aSelector->Picked(aPickIter) == this)
       {
-        aPickPnt = aSelector->PickedData (aPickIter);
+        aPickPnt = aSelector->PickedData(aPickIter);
         break;
       }
     }
 
-    Handle(Prs3d_Presentation) aPrs = mySelectable->GetHilightPresentation (thePrsMgr);
+    Handle(Prs3d_Presentation) aPrs = mySelectable->GetHilightPresentation(thePrsMgr);
     aPrs->Clear();
     Handle(Graphic3d_Group) aGroupPnt = aPrs->NewGroup();
-    aGroupPnt->SetGroupPrimitivesAspect (theStyle->ArrowAspect()->Aspect());
+    aGroupPnt->SetGroupPrimitivesAspect(theStyle->ArrowAspect()->Aspect());
 
-    gp_Trsf aTrsfInv (mySelectable->InversedTransformation().Trsf());
-    gp_Dir  aNorm (aPickPnt.Normal.x(), aPickPnt.Normal.y(), aPickPnt.Normal.z());
+    gp_Trsf aTrsfInv(mySelectable->InversedTransformation().Trsf());
+    gp_Dir  aNorm(aPickPnt.Normal.x(), aPickPnt.Normal.y(), aPickPnt.Normal.z());
     Handle(Graphic3d_ArrayOfTriangles) aTris =
-      Prs3d_Arrow::DrawShaded (gp_Ax1(aPickPnt.Point, aNorm).Transformed (aTrsfInv),
-                               1.0, 15.0,
-                               3.0, 4.0, 10);
-    aGroupPnt->AddPrimitiveArray (aTris);
+      Prs3d_Arrow::DrawShaded(gp_Ax1(aPickPnt.Point, aNorm).Transformed(aTrsfInv),
+                              1.0,
+                              15.0,
+                              3.0,
+                              4.0,
+                              10);
+    aGroupPnt->AddPrimitiveArray(aTris);
 
-    aPrs->SetZLayer (Graphic3d_ZLayerId_Top);
-    thePrsMgr->AddToImmediateList (aPrs);
+    aPrs->SetZLayer(Graphic3d_ZLayerId_Top);
+    thePrsMgr->AddToImmediateList(aPrs);
 
-    //Handle(Prs3d_PresentationShadow) aShadow = new Prs3d_PresentationShadow (thePrsMgr->StructureManager(), myPrs);
-    //aShadow->SetZLayer (Graphic3d_ZLayerId_Top);
-    //aShadow->Highlight (theStyle);
-    //thePrsMgr->AddToImmediateList (aShadow);
+    // Handle(Prs3d_PresentationShadow) aShadow = new Prs3d_PresentationShadow
+    // (thePrsMgr->StructureManager(), myPrs); aShadow->SetZLayer (Graphic3d_ZLayerId_Top);
+    // aShadow->Highlight (theStyle);
+    // thePrsMgr->AddToImmediateList (aShadow);
   }
   else
   {
-    myPrs->SetTransformation (mySelectable->TransformationGeom());
+    myPrs->SetTransformation(mySelectable->TransformationGeom());
     myPrs->Display();
   }
 }
 
-void MyAisOwner::Unhilight (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                            const Standard_Integer theMode)
+void MyAisOwner::Unhilight(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                           const Standard_Integer                    theMode)
 {
-  (void )thePrsMgr;
-  (void )theMode;
+  (void)thePrsMgr;
+  (void)theMode;
   if (!myPrs.IsNull())
   {
     myPrs->Erase();
   }
 }
 
-bool MyAisOwner::HandleMouseClick (const Graphic3d_Vec2i& thePoint,
-                                   Aspect_VKeyMouse theButton,
-                                   Aspect_VKeyFlags theModifiers,
-                                   bool theIsDoubleClick)
+bool MyAisOwner::HandleMouseClick(const Graphic3d_Vec2i& thePoint,
+                                  Aspect_VKeyMouse       theButton,
+                                  Aspect_VKeyFlags       theModifiers,
+                                  bool                   theIsDoubleClick)
 {
-  (void )thePoint;
-  (void )theButton;
-  (void )theModifiers;
-  (void )theIsDoubleClick;
+  (void)thePoint;
+  (void)theButton;
+  (void)theModifiers;
+  (void)theIsDoubleClick;
   {
     static math_BullardGenerator aRandGen;
-    Quantity_Color aRandColor (float(aRandGen.NextInt() % 256) / 255.0f,
-                               float(aRandGen.NextInt() % 256) / 255.0f,
-                               float(aRandGen.NextInt() % 256) / 255.0f,
-                               Quantity_TOC_sRGB);
+    Quantity_Color               aRandColor(float(aRandGen.NextInt() % 256) / 255.0f,
+                                            float(aRandGen.NextInt() % 256) / 255.0f,
+                                            float(aRandGen.NextInt() % 256) / 255.0f,
+                                            Quantity_TOC_sRGB);
     mySelectable->Attributes()->ShadingAspect()->SetColor(aRandColor);
     mySelectable->SynchronizeAspects();
   }
@@ -264,25 +285,26 @@ bool MyAisOwner::HandleMouseClick (const Graphic3d_Vec2i& thePoint,
   if (!myAnim.IsNull())
   {
     static bool isFirst = true;
-    isFirst = !isFirst;
-    MyAisObject* anObj = dynamic_cast<MyAisObject*> (mySelectable);
+    isFirst             = !isFirst;
+    MyAisObject* anObj  = dynamic_cast<MyAisObject*>(mySelectable);
 
     gp_Trsf aTrsfTo;
-    aTrsfTo.SetRotation (gp_Ax1 (gp::Origin(), gp::DX()), isFirst ? M_PI * 0.5 : -M_PI * 0.5);
-    gp_Trsf aTrsfFrom = anObj->LocalTransformation();
-    Handle(AIS_AnimationObject) anAnim = new AIS_AnimationObject ("MyAnim", anObj->InteractiveContext(), anObj, aTrsfFrom, aTrsfTo);
-    anAnim->SetOwnDuration (2.0);
+    aTrsfTo.SetRotation(gp_Ax1(gp::Origin(), gp::DX()), isFirst ? M_PI * 0.5 : -M_PI * 0.5);
+    gp_Trsf                     aTrsfFrom = anObj->LocalTransformation();
+    Handle(AIS_AnimationObject) anAnim =
+      new AIS_AnimationObject("MyAnim", anObj->InteractiveContext(), anObj, aTrsfFrom, aTrsfTo);
+    anAnim->SetOwnDuration(2.0);
 
     myAnim->Clear();
-    myAnim->Add (anAnim);
-    myAnim->StartTimer (0.0, 1.0, true);
+    myAnim->Add(anAnim);
+    myAnim->StartTimer(0.0, 1.0, true);
   }
 
   return true;
 }
 
-void MyAisObject::ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
-                                    const Standard_Integer theMode)
+void MyAisObject::ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
+                                   const Standard_Integer             theMode)
 {
   if (theMode != 0)
   {
@@ -290,31 +312,30 @@ void MyAisObject::ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
   }
 
   const double aRadius = 100.0, aHeight = 100.0;
-  TopoDS_Shape aShape = BRepPrimAPI_MakeCylinder (aRadius, aHeight);
-  Bnd_Box aBox;
-  BRepBndLib::Add (aShape, aBox);
-  Handle(MyAisOwner) anOwner = new MyAisOwner (this);
-  anOwner->SetAnimation (myAnim);
+  TopoDS_Shape aShape = BRepPrimAPI_MakeCylinder(aRadius, aHeight);
+  Bnd_Box      aBox;
+  BRepBndLib::Add(aShape, aBox);
+  Handle(MyAisOwner) anOwner = new MyAisOwner(this);
+  anOwner->SetAnimation(myAnim);
 
-  Handle(Graphic3d_ArrayOfTriangles) aTris = Prs3d_ToolCylinder::Create (aRadius, aRadius, aHeight, 25, 25, gp_Trsf());
-  Handle(Select3D_SensitivePrimitiveArray) aSensTri = new Select3D_SensitivePrimitiveArray (anOwner);
-  aSensTri->InitTriangulation (aTris->Attributes(), aTris->Indices(), TopLoc_Location());
-  theSel->Add (aSensTri);
+  Handle(Graphic3d_ArrayOfTriangles) aTris =
+    Prs3d_ToolCylinder::Create(aRadius, aRadius, aHeight, 25, 25, gp_Trsf());
+  Handle(Select3D_SensitivePrimitiveArray) aSensTri = new Select3D_SensitivePrimitiveArray(anOwner);
+  aSensTri->InitTriangulation(aTris->Attributes(), aTris->Indices(), TopLoc_Location());
+  theSel->Add(aSensTri);
 
-  //Handle(SelectMgr_EntityOwner) anOwner = new SelectMgr_EntityOwner (this);
-  //Handle(Select3D_SensitiveBox) aSensBox = new Select3D_SensitiveBox (anOwner, aBox);
-  //theSel->Add (aSensBox);
+  // Handle(SelectMgr_EntityOwner) anOwner = new SelectMgr_EntityOwner (this);
+  // Handle(Select3D_SensitiveBox) aSensBox = new Select3D_SensitiveBox (anOwner, aBox);
+  // theSel->Add (aSensBox);
 }
 
-}
+} // namespace
 
-//=======================================================================
-//function : QATutorialAisObject
-//purpose  :
-//=======================================================================
-static Standard_Integer QATutorialAisObject (Draw_Interpretor& theDi,
-                                             Standard_Integer  theNbArgs,
-                                             const char**      theArgVec)
+//=================================================================================================
+
+static Standard_Integer QATutorialAisObject(Draw_Interpretor& theDi,
+                                            Standard_Integer  theNbArgs,
+                                            const char**      theArgVec)
 {
   if (theNbArgs != 2)
   {
@@ -327,23 +348,23 @@ static Standard_Integer QATutorialAisObject (Draw_Interpretor& theDi,
     return 1;
   }
 
-  const TCollection_AsciiString aPrsName (theArgVec[1]);
+  const TCollection_AsciiString aPrsName(theArgVec[1]);
 
   Handle(MyAisObject) aPrs = new MyAisObject();
-  aPrs->SetAnimation (ViewerTest::CurrentEventManager()->ObjectsAnimation());
-  ViewerTest::Display (aPrsName, aPrs);
+  aPrs->SetAnimation(ViewerTest::CurrentEventManager()->ObjectsAnimation());
+  ViewerTest::Display(aPrsName, aPrs);
   return 0;
 }
 
-//=======================================================================
-//function : TutorialCommands
-//purpose  :
-//=======================================================================
-void QADraw::TutorialCommands (Draw_Interpretor& theCommands)
+//=================================================================================================
+
+void QADraw::TutorialCommands(Draw_Interpretor& theCommands)
 {
   const char* aGroup = "QA_Commands";
 
-  theCommands.Add ("QATutorialAisObject",
-                   "QATutorialAisObject name",
-                   __FILE__, QATutorialAisObject, aGroup);
+  theCommands.Add("QATutorialAisObject",
+                  "QATutorialAisObject name",
+                  __FILE__,
+                  QATutorialAisObject,
+                  aGroup);
 }

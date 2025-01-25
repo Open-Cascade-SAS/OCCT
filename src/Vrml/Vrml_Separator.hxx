@@ -25,7 +25,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 
-
 //! defines a Separator node of VRML specifying group properties.
 //! This group node performs a push (save) of the traversal state before traversing its children
 //! and a pop (restore) after traversing them. This isolates the separator's children from the
@@ -36,46 +35,25 @@
 //! separator's bounding box with the current view volume. Culling is controlled by the
 //! renderCulling field. These are set to AUTO by default, allowing the implementation to
 //! decide whether or not to cull.
-class Vrml_Separator 
+class Vrml_Separator
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Vrml_Separator(const Vrml_SeparatorRenderCulling aRenderCulling);
-  
+
   Standard_EXPORT Vrml_Separator();
-  
-  Standard_EXPORT void SetRenderCulling (const Vrml_SeparatorRenderCulling aRenderCulling);
-  
+
+  Standard_EXPORT void SetRenderCulling(const Vrml_SeparatorRenderCulling aRenderCulling);
+
   Standard_EXPORT Vrml_SeparatorRenderCulling RenderCulling() const;
-  
-  Standard_EXPORT Standard_OStream& Print (Standard_OStream& anOStream);
 
-
-
+  Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream);
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Vrml_SeparatorRenderCulling myRenderCulling;
-  Standard_Boolean myFlagPrint;
-
-
+  Standard_Boolean            myFlagPrint;
 };
-
-
-
-
-
-
 
 #endif // _Vrml_Separator_HeaderFile

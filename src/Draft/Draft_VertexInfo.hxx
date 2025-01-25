@@ -27,60 +27,37 @@
 #include <Standard_Boolean.hxx>
 class TopoDS_Edge;
 
-
-
-class Draft_VertexInfo 
+class Draft_VertexInfo
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Draft_VertexInfo();
-  
-  Standard_EXPORT void Add (const TopoDS_Edge& E);
-  
+
+  Standard_EXPORT void Add(const TopoDS_Edge& E);
+
   Standard_EXPORT const gp_Pnt& Geometry() const;
-  
-  Standard_EXPORT Standard_Real Parameter (const TopoDS_Edge& E);
-  
+
+  Standard_EXPORT Standard_Real Parameter(const TopoDS_Edge& E);
+
   Standard_EXPORT void InitEdgeIterator();
-  
+
   Standard_EXPORT const TopoDS_Edge& Edge() const;
-  
+
   Standard_EXPORT void NextEdge();
-  
+
   Standard_EXPORT Standard_Boolean MoreEdge() const;
-  
+
   Standard_EXPORT gp_Pnt& ChangeGeometry();
-  
-  Standard_EXPORT Standard_Real& ChangeParameter (const TopoDS_Edge& E);
 
-
-
+  Standard_EXPORT Standard_Real& ChangeParameter(const TopoDS_Edge& E);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  gp_Pnt myGeom;
-  TopTools_ListOfShape myEdges;
-  TColStd_ListOfReal myParams;
+  gp_Pnt                             myGeom;
+  TopTools_ListOfShape               myEdges;
+  TColStd_ListOfReal                 myParams;
   TopTools_ListIteratorOfListOfShape myItEd;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Draft_VertexInfo_HeaderFile

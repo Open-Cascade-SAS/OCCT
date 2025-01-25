@@ -38,37 +38,48 @@ class Poly_Triangulation;
 //! -   a root object which provides the abstract
 //! framework for the DsgPrs definitions at work in
 //! display of dimensions, relations and trihedra.
-class Prs3d 
+class Prs3d
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-  
+
   //! draws an arrow at a given location, with respect
   //! to a given direction.
-  Standard_EXPORT static Standard_Boolean MatchSegment (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const gp_Pnt& p1, const gp_Pnt& p2, Standard_Real& dist);
+  Standard_EXPORT static Standard_Boolean MatchSegment(const Standard_Real X,
+                                                       const Standard_Real Y,
+                                                       const Standard_Real Z,
+                                                       const Standard_Real aDistance,
+                                                       const gp_Pnt&       p1,
+                                                       const gp_Pnt&       p2,
+                                                       Standard_Real&      dist);
 
-  //! Computes the absolute deflection value based on relative deflection Prs3d_Drawer::DeviationCoefficient().
+  //! Computes the absolute deflection value based on relative deflection
+  //! Prs3d_Drawer::DeviationCoefficient().
   //! @param[in] theBndMin  bounding box min corner
   //! @param[in] theBndMax  bounding box max corner
-  //! @param[in] theDeviationCoefficient  relative deflection coefficient from Prs3d_Drawer::DeviationCoefficient()
+  //! @param[in] theDeviationCoefficient  relative deflection coefficient from
+  //! Prs3d_Drawer::DeviationCoefficient()
   //! @return absolute deflection coefficient based on bounding box dimensions
-  static Standard_Real GetDeflection (const Graphic3d_Vec3d& theBndMin,
-                                      const Graphic3d_Vec3d& theBndMax,
-                                      const Standard_Real theDeviationCoefficient)
+  static Standard_Real GetDeflection(const Graphic3d_Vec3d& theBndMin,
+                                     const Graphic3d_Vec3d& theBndMax,
+                                     const Standard_Real    theDeviationCoefficient)
   {
     const Graphic3d_Vec3d aDiag = theBndMax - theBndMin;
-    return Max (aDiag.maxComp() * theDeviationCoefficient * 4.0, Precision::Confusion());
+    return Max(aDiag.maxComp() * theDeviationCoefficient * 4.0, Precision::Confusion());
   }
 
-  //! Computes the absolute deflection value based on relative deflection Prs3d_Drawer::DeviationCoefficient().
+  //! Computes the absolute deflection value based on relative deflection
+  //! Prs3d_Drawer::DeviationCoefficient().
   //! @param[in] theBndBox  bounding box
-  //! @param[in] theDeviationCoefficient  relative deflection coefficient from Prs3d_Drawer::DeviationCoefficient()
-  //! @param[in] theMaximalChordialDeviation  absolute deflection coefficient from Prs3d_Drawer::MaximalChordialDeviation()
-  //! @return absolute deflection coefficient based on bounding box dimensions or theMaximalChordialDeviation if bounding box is Void or Infinite
-  static Standard_Real GetDeflection (const Bnd_Box& theBndBox,
-                                      const Standard_Real theDeviationCoefficient,
-                                      const Standard_Real theMaximalChordialDeviation)
+  //! @param[in] theDeviationCoefficient  relative deflection coefficient from
+  //! Prs3d_Drawer::DeviationCoefficient()
+  //! @param[in] theMaximalChordialDeviation  absolute deflection coefficient from
+  //! Prs3d_Drawer::MaximalChordialDeviation()
+  //! @return absolute deflection coefficient based on bounding box dimensions or
+  //! theMaximalChordialDeviation if bounding box is Void or Infinite
+  static Standard_Real GetDeflection(const Bnd_Box&      theBndBox,
+                                     const Standard_Real theDeviationCoefficient,
+                                     const Standard_Real theMaximalChordialDeviation)
   {
     if (theBndBox.IsVoid())
     {
@@ -86,28 +97,28 @@ public:
     }
 
     Graphic3d_Vec3d aVecMin, aVecMax;
-    aBndBox.Get (aVecMin.x(), aVecMin.y(), aVecMin.z(), aVecMax.x(), aVecMax.y(), aVecMax.z());
-    return GetDeflection (aVecMin, aVecMax, theDeviationCoefficient);
+    aBndBox.Get(aVecMin.x(), aVecMin.y(), aVecMin.z(), aVecMax.x(), aVecMax.y(), aVecMax.z());
+    return GetDeflection(aVecMin, aVecMax, theDeviationCoefficient);
   }
 
   //! Assembles array of primitives for sequence of polylines.
   //! @param[in] thePoints  the polylines sequence
   //! @return array of primitives
-  Standard_EXPORT static Handle(Graphic3d_ArrayOfPrimitives) PrimitivesFromPolylines (const Prs3d_NListOfSequenceOfPnt& thePoints);
+  Standard_EXPORT static Handle(Graphic3d_ArrayOfPrimitives) PrimitivesFromPolylines(
+    const Prs3d_NListOfSequenceOfPnt& thePoints);
 
   //! Add primitives into new group in presentation and clear the list of polylines.
-  Standard_EXPORT static void AddPrimitivesGroup (const Handle(Prs3d_Presentation)& thePrs,
-                                                  const Handle(Prs3d_LineAspect)&   theAspect,
-                                                  Prs3d_NListOfSequenceOfPnt&       thePolylines);
+  Standard_EXPORT static void AddPrimitivesGroup(const Handle(Prs3d_Presentation)& thePrs,
+                                                 const Handle(Prs3d_LineAspect)&   theAspect,
+                                                 Prs3d_NListOfSequenceOfPnt&       thePolylines);
 
   //! Add triangulation free edges into sequence of line segments.
   //! @param[out] theSegments  sequence of line segments to fill
   //! @param[in] thePolyTri    triangulation to process
   //! @param[in] theLocation   transformation to apply
-  Standard_EXPORT static void AddFreeEdges (TColgp_SequenceOfPnt& theSegments,
-                                            const Handle(Poly_Triangulation)& thePolyTri,
-                                            const gp_Trsf& theLocation);
-
+  Standard_EXPORT static void AddFreeEdges(TColgp_SequenceOfPnt&             theSegments,
+                                           const Handle(Poly_Triangulation)& thePolyTri,
+                                           const gp_Trsf&                    theLocation);
 };
 
 #endif // _Prs3d_HeaderFile

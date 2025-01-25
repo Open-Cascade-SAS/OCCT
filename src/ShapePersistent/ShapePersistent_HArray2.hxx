@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _ShapePersistent_HArray2_HeaderFile
 #define _ShapePersistent_HArray2_HeaderFile
 
@@ -29,7 +28,6 @@
 #include <TColgp_HArray2OfVec2d.hxx>
 #include <TColgp_HArray2OfLin2d.hxx>
 #include <TColgp_HArray2OfCirc2d.hxx>
-
 
 class ShapePersistent_HArray2 : private StdLPersistent_HArray2
 {

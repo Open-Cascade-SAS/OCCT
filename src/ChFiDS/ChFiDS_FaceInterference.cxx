@@ -14,37 +14,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <ChFiDS_FaceInterference.hxx>
 #include <Geom2d_Curve.hxx>
 
-//=======================================================================
-//function : ChFiDS_FaceInterference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 ChFiDS_FaceInterference::ChFiDS_FaceInterference()
-: firstParam (0.0),
-  lastParam (0.0),
-  lineindex (0),
-  LineTransition (TopAbs_FORWARD)
+    : firstParam(0.0),
+      lastParam(0.0),
+      lineindex(0),
+      LineTransition(TopAbs_FORWARD)
 {
 }
 
-void ChFiDS_FaceInterference::SetParameter(const Standard_Real U1,
-					    const Standard_Boolean IsFirst)
+void ChFiDS_FaceInterference::SetParameter(const Standard_Real U1, const Standard_Boolean IsFirst)
 {
-  if(IsFirst) SetFirstParameter(U1);
-  else SetLastParameter(U1);
+  if (IsFirst)
+    SetFirstParameter(U1);
+  else
+    SetLastParameter(U1);
 }
 
 void ChFiDS_FaceInterference::SetTransition(const TopAbs_Orientation Trans)
 {
-  LineTransition = Trans; 
+  LineTransition = Trans;
 }
 
-Standard_Real ChFiDS_FaceInterference::Parameter
-(const Standard_Boolean IsFirst)const
+Standard_Real ChFiDS_FaceInterference::Parameter(const Standard_Boolean IsFirst) const
 {
-  if(IsFirst) return FirstParameter();
-  else return LastParameter();
+  if (IsFirst)
+    return FirstParameter();
+  else
+    return LastParameter();
 }

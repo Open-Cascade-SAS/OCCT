@@ -17,4 +17,4 @@
 inline Standard_Boolean TNaming_Iterator::More() const
 {
   return (myNode != 0L);
-} 
+}

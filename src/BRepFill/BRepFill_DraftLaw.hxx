@@ -24,7 +24,6 @@
 class TopoDS_Wire;
 class GeomFill_LocationDraft;
 
-
 class BRepFill_DraftLaw;
 DEFINE_STANDARD_HANDLE(BRepFill_DraftLaw, BRepFill_Edge3DLaw)
 
@@ -33,34 +32,16 @@ class BRepFill_DraftLaw : public BRepFill_Edge3DLaw
 {
 
 public:
+  Standard_EXPORT BRepFill_DraftLaw(const TopoDS_Wire&                    Path,
+                                    const Handle(GeomFill_LocationDraft)& Law);
 
-  
-  Standard_EXPORT BRepFill_DraftLaw(const TopoDS_Wire& Path, const Handle(GeomFill_LocationDraft)& Law);
-  
   //! To clean the little discontinuities.
-  Standard_EXPORT void CleanLaw (const Standard_Real TolAngular);
+  Standard_EXPORT void CleanLaw(const Standard_Real TolAngular);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(BRepFill_DraftLaw,BRepFill_Edge3DLaw)
+  DEFINE_STANDARD_RTTIEXT(BRepFill_DraftLaw, BRepFill_Edge3DLaw)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepFill_DraftLaw_HeaderFile

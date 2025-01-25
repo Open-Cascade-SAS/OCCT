@@ -34,61 +34,45 @@
 #include <TCollection_ExtendedString.hxx>
 #include <UTL.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(CDM_Document,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(CDM_Document, Standard_Transient)
 
-//=======================================================================
-//function : CDM_Document
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-CDM_Document::CDM_Document():
-  myResourcesAreLoaded          (Standard_False),
-  myVersion                     (1),
-  myActualReferenceIdentifier   (0),
-  myStorageVersion              (0),
-  myRequestedComment            (""),
-  myRequestedFolderIsDefined    (Standard_False),
-  myRequestedNameIsDefined      (Standard_False),
-  myRequestedPreviousVersionIsDefined(Standard_False),
-  myFileExtensionWasFound       (Standard_False),
-  myDescriptionWasFound         (Standard_False)
-{}
+CDM_Document::CDM_Document()
+    : myResourcesAreLoaded(Standard_False),
+      myVersion(1),
+      myActualReferenceIdentifier(0),
+      myStorageVersion(0),
+      myRequestedComment(""),
+      myRequestedFolderIsDefined(Standard_False),
+      myRequestedNameIsDefined(Standard_False),
+      myRequestedPreviousVersionIsDefined(Standard_False),
+      myFileExtensionWasFound(Standard_False),
+      myDescriptionWasFound(Standard_False)
+{
+}
 
-
-//=======================================================================
-//function : ~CDM_Document
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 CDM_Document::~CDM_Document()
 {
-  if(!myMetaData.IsNull()) myMetaData->UnsetDocument();
+  if (!myMetaData.IsNull())
+    myMetaData->UnsetDocument();
 }
 
-//=======================================================================
-//function : Update
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void CDM_Document::Update (const Handle(CDM_Document)& /*aToDocument*/,
-                           const Standard_Integer /*aReferenceIdentifier*/,
-                           const Standard_Address /*aModifContext*/)
+void CDM_Document::Update(const Handle(CDM_Document)& /*aToDocument*/,
+                          const Standard_Integer /*aReferenceIdentifier*/,
+                          const Standard_Address /*aModifContext*/)
 {
 }
 
-//=======================================================================
-//function : Update
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void CDM_Document::Update()
-{
-}
+void CDM_Document::Update() {}
 
-//=======================================================================
-//function : Update
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean CDM_Document::Update(TCollection_ExtendedString& ErrorString)
 {
@@ -97,79 +81,66 @@ Standard_Boolean CDM_Document::Update(TCollection_ExtendedString& ErrorString)
   return Standard_True;
 }
 
-//=======================================================================
-//function : GetAlternativeDocument
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean CDM_Document::GetAlternativeDocument
-                                (const TCollection_ExtendedString& aFormat,
-                                 Handle(CDM_Document)& anAlternativeDocument)
+Standard_Boolean CDM_Document::GetAlternativeDocument(const TCollection_ExtendedString& aFormat,
+                                                      Handle(CDM_Document)& anAlternativeDocument)
 {
   anAlternativeDocument = this;
   return aFormat == StorageFormat();
 }
 
-//=======================================================================
-//function : Extensions
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void CDM_Document::Extensions (TColStd_SequenceOfExtendedString& Extensions) const
+void CDM_Document::Extensions(TColStd_SequenceOfExtendedString& Extensions) const
 {
   Extensions.Clear();
 }
 
-//=======================================================================
-//function : CreateReference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer CDM_Document::CreateReference
-                                (const Handle(CDM_Document)& anOtherDocument)
+Standard_Integer CDM_Document::CreateReference(const Handle(CDM_Document)& anOtherDocument)
 {
   CDM_ListIteratorOfListOfReferences it(myToReferences);
-  
-  for(; it.More(); it.Next()) {
-    if(anOtherDocument == it.Value()->Document())
+
+  for (; it.More(); it.Next())
+  {
+    if (anOtherDocument == it.Value()->Document())
       return it.Value()->ReferenceIdentifier();
   }
 
-  Handle(CDM_Reference) r = new CDM_Reference (this,
-                                               anOtherDocument,
-                                               ++myActualReferenceIdentifier,
-                                               anOtherDocument->Modifications());
+  Handle(CDM_Reference) r = new CDM_Reference(this,
+                                              anOtherDocument,
+                                              ++myActualReferenceIdentifier,
+                                              anOtherDocument->Modifications());
   AddToReference(r);
   anOtherDocument->AddFromReference(r);
-  return  r->ReferenceIdentifier();
+  return r->ReferenceIdentifier();
 }
 
-//=======================================================================
-//function : RemoveAllReferences
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::RemoveAllReferences()
 {
   CDM_ListIteratorOfListOfReferences it(myToReferences);
 
-  for(; it.More(); it.Next()) {
+  for (; it.More(); it.Next())
+  {
     it.Value()->ToDocument()->RemoveFromReference(it.Value()->ReferenceIdentifier());
   }
   myToReferences.Clear();
 }
 
-//=======================================================================
-//function : RemoveReference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::RemoveReference(const Standard_Integer aReferenceIdentifier)
 {
   CDM_ListIteratorOfListOfReferences it(myToReferences);
-  
-  for(; it.More(); it.Next()) {
-    if(aReferenceIdentifier == it.Value()->ReferenceIdentifier()) {
+
+  for (; it.More(); it.Next())
+  {
+    if (aReferenceIdentifier == it.Value()->ReferenceIdentifier())
+    {
       it.Value()->ToDocument()->RemoveFromReference(aReferenceIdentifier);
       myToReferences.Remove(it);
       return;
@@ -177,205 +148,187 @@ void CDM_Document::RemoveReference(const Standard_Integer aReferenceIdentifier)
   }
 }
 
-//=======================================================================
-//function : Document
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(CDM_Document) CDM_Document::Document
-                                (const Standard_Integer aReferenceIdentifier) const
+Handle(CDM_Document) CDM_Document::Document(const Standard_Integer aReferenceIdentifier) const
 {
   Handle(CDM_Document) theDocument;
 
-  if(aReferenceIdentifier == 0) 
+  if (aReferenceIdentifier == 0)
     theDocument = this;
-  
-  else {
+
+  else
+  {
     Handle(CDM_Reference) theReference = Reference(aReferenceIdentifier);
-    if(!theReference.IsNull()) theDocument = theReference->ToDocument();
+    if (!theReference.IsNull())
+      theDocument = theReference->ToDocument();
   }
   return theDocument;
 }
 
-//=======================================================================
-//function : Reference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(CDM_Reference) CDM_Document::Reference
-                                (const Standard_Integer aReferenceIdentifier) const
+Handle(CDM_Reference) CDM_Document::Reference(const Standard_Integer aReferenceIdentifier) const
 {
   Handle(CDM_Reference) theReference;
 
   CDM_ListIteratorOfListOfReferences it(myToReferences);
-    
+
   Standard_Boolean found = Standard_False;
-    
-  for(; it.More() && !found; it.Next()) {
+
+  for (; it.More() && !found; it.Next())
+  {
     found = aReferenceIdentifier == it.Value()->ReferenceIdentifier();
-    if(found) theReference = it.Value();
+    if (found)
+      theReference = it.Value();
   }
   return theReference;
 }
 
-//=======================================================================
-//function : IsInSession
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean CDM_Document::IsInSession
-                                (const Standard_Integer aReferenceIdentifier) const
+Standard_Boolean CDM_Document::IsInSession(const Standard_Integer aReferenceIdentifier) const
 {
-  if(aReferenceIdentifier == 0) return Standard_True;
-  Handle(CDM_Reference) theReference=Reference(aReferenceIdentifier);
-  if(theReference.IsNull())
+  if (aReferenceIdentifier == 0)
+    return Standard_True;
+  Handle(CDM_Reference) theReference = Reference(aReferenceIdentifier);
+  if (theReference.IsNull())
     throw Standard_NoSuchObject("CDM_Document::IsInSession: "
-                                 "invalid reference identifier");
+                                "invalid reference identifier");
   return theReference->IsInSession();
 }
 
-//=======================================================================
-//function : IsStored
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean CDM_Document::IsStored
-                                (const Standard_Integer aReferenceIdentifier) const
+Standard_Boolean CDM_Document::IsStored(const Standard_Integer aReferenceIdentifier) const
 {
-  if(aReferenceIdentifier == 0) return IsStored();
-  Handle(CDM_Reference) theReference=Reference(aReferenceIdentifier);
-  if(theReference.IsNull())
+  if (aReferenceIdentifier == 0)
+    return IsStored();
+  Handle(CDM_Reference) theReference = Reference(aReferenceIdentifier);
+  if (theReference.IsNull())
     throw Standard_NoSuchObject("CDM_Document::IsInSession: "
-                                 "invalid reference identifier");
+                                "invalid reference identifier");
   return theReference->IsStored();
 }
 
-//=======================================================================
-//function : Name
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TCollection_ExtendedString CDM_Document::Name
-                                (const Standard_Integer aReferenceIdentifier) const
+TCollection_ExtendedString CDM_Document::Name(const Standard_Integer aReferenceIdentifier) const
 {
-  if(!IsStored(aReferenceIdentifier))
+  if (!IsStored(aReferenceIdentifier))
     throw Standard_DomainError("CDM_Document::Name: document is not stored");
 
-  if(aReferenceIdentifier == 0) return myMetaData->Name();
+  if (aReferenceIdentifier == 0)
+    return myMetaData->Name();
 
   return Reference(aReferenceIdentifier)->MetaData()->Name();
 }
 
-//=======================================================================
-//function : UpdateFromDocuments
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void CDM_Document::UpdateFromDocuments(const Standard_Address aModifContext) const
 {
-  CDM_ListOfDocument aListOfDocumentsToUpdate;
-  Standard_Boolean StartUpdateCycle = aListOfDocumentsToUpdate.IsEmpty();
+  CDM_ListOfDocument                 aListOfDocumentsToUpdate;
+  Standard_Boolean                   StartUpdateCycle = aListOfDocumentsToUpdate.IsEmpty();
   CDM_ListIteratorOfListOfReferences it(myFromReferences);
-  for(; it.More() ; it.Next()) {
-    Handle(CDM_Document) theFromDocument=it.Value()->FromDocument();
+  for (; it.More(); it.Next())
+  {
+    Handle(CDM_Document)             theFromDocument = it.Value()->FromDocument();
     CDM_ListIteratorOfListOfDocument itUpdate;
-    for(; itUpdate.More(); itUpdate.Next()) {
-      if(itUpdate.Value() == theFromDocument) break;
+    for (; itUpdate.More(); itUpdate.Next())
+    {
+      if (itUpdate.Value() == theFromDocument)
+        break;
 
-      if(itUpdate.Value()->ShallowReferences(theFromDocument)) {
-        aListOfDocumentsToUpdate.InsertBefore(theFromDocument,itUpdate);
-	break;
+      if (itUpdate.Value()->ShallowReferences(theFromDocument))
+      {
+        aListOfDocumentsToUpdate.InsertBefore(theFromDocument, itUpdate);
+        break;
       }
     }
-    if(!itUpdate.More()) aListOfDocumentsToUpdate.Append(theFromDocument);
-    theFromDocument->Update(this,it.Value()->ReferenceIdentifier(),aModifContext);
+    if (!itUpdate.More())
+      aListOfDocumentsToUpdate.Append(theFromDocument);
+    theFromDocument->Update(this, it.Value()->ReferenceIdentifier(), aModifContext);
   }
-  
-  if(StartUpdateCycle) {
 
-    Handle(CDM_Document) theDocumentToUpdate;
-    Handle(CDM_Application) theApplication;
+  if (StartUpdateCycle)
+  {
+
+    Handle(CDM_Document)       theDocumentToUpdate;
+    Handle(CDM_Application)    theApplication;
     TCollection_ExtendedString ErrorString;
 
-    while(!aListOfDocumentsToUpdate.IsEmpty()) {
+    while (!aListOfDocumentsToUpdate.IsEmpty())
+    {
       theDocumentToUpdate = aListOfDocumentsToUpdate.First();
-      theApplication=theDocumentToUpdate->Application();
+      theApplication      = theDocumentToUpdate->Application();
       ErrorString.Clear();
       theApplication->BeginOfUpdate(theDocumentToUpdate);
-      theApplication->EndOfUpdate (theDocumentToUpdate,
-                                   theDocumentToUpdate->Update(ErrorString),
-                                   ErrorString);
+      theApplication->EndOfUpdate(theDocumentToUpdate,
+                                  theDocumentToUpdate->Update(ErrorString),
+                                  ErrorString);
       aListOfDocumentsToUpdate.RemoveFirst();
     }
   }
 }
 
-//=======================================================================
-//function : ToReferencesNumber
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer CDM_Document::ToReferencesNumber() const
 {
   return myToReferences.Extent();
 }
 
-//=======================================================================
-//function : FromReferencesNumber
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer CDM_Document::FromReferencesNumber() const
 {
   return myFromReferences.Extent();
 }
 
-//=======================================================================
-//function : ShallowReferences
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean CDM_Document::ShallowReferences
-                                (const Handle(CDM_Document)& aDocument) const
+Standard_Boolean CDM_Document::ShallowReferences(const Handle(CDM_Document)& aDocument) const
 {
   CDM_ListIteratorOfListOfReferences it(myFromReferences);
-  for(; it.More() ; it.Next()) {
-    if(it.Value()->Document() == aDocument) return Standard_True;
+  for (; it.More(); it.Next())
+  {
+    if (it.Value()->Document() == aDocument)
+      return Standard_True;
   }
   return Standard_False;
 }
 
-//=======================================================================
-//function : DeepReferences
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean CDM_Document::DeepReferences
-                                (const Handle(CDM_Document)& aDocument) const
+Standard_Boolean CDM_Document::DeepReferences(const Handle(CDM_Document)& aDocument) const
 {
   CDM_ListIteratorOfListOfReferences it(myFromReferences);
-  for(; it.More() ; it.Next()) {
-    Handle(CDM_Document) theToDocument=it.Value()->Document();
-    if(!theToDocument.IsNull()) {
-      if(theToDocument == aDocument) return Standard_True;
-      if(theToDocument->DeepReferences(aDocument)) return Standard_True;
+  for (; it.More(); it.Next())
+  {
+    Handle(CDM_Document) theToDocument = it.Value()->Document();
+    if (!theToDocument.IsNull())
+    {
+      if (theToDocument == aDocument)
+        return Standard_True;
+      if (theToDocument->DeepReferences(aDocument))
+        return Standard_True;
     }
   }
   return Standard_False;
 }
 
-//=======================================================================
-//function : CopyReference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer CDM_Document::CopyReference
-                                (const Handle(CDM_Document)& /*aFromDocument*/,
-                                 const Standard_Integer aReferenceIdentifier)
+Standard_Integer CDM_Document::CopyReference(const Handle(CDM_Document)& /*aFromDocument*/,
+                                             const Standard_Integer aReferenceIdentifier)
 {
   Handle(CDM_Reference) theReference = Reference(aReferenceIdentifier);
-  if(!theReference.IsNull()) {
+  if (!theReference.IsNull())
+  {
     Handle(CDM_Document) theDocument = theReference->Document();
-    if(!theDocument.IsNull()) {
+    if (!theDocument.IsNull())
+    {
       return CreateReference(theDocument);
     }
     else
@@ -384,74 +337,52 @@ Standard_Integer CDM_Document::CopyReference
                              theReference->DocumentVersion(),
                              theReference->UseStorageConfiguration());
   }
-  return 0; //for NT ...
+  return 0; // for NT ...
 }
 
-//=======================================================================
-//function : Modify
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::Modify()
 {
   myVersion++;
 }
 
-//=======================================================================
-//function : UnModify
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::UnModify()
 {
   myVersion = myStorageVersion;
 }
 
-//=======================================================================
-//function : Modifications
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer CDM_Document::Modifications() const
 {
   return myVersion;
 }
 
-//=======================================================================
-//function : SetModifications
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::SetModifications(const Standard_Integer Modifications)
 {
   myVersion = Modifications;
 }
 
-//=======================================================================
-//function : IsUpToDate
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean CDM_Document::IsUpToDate
-                                (const Standard_Integer aReferenceIdentifier) const
+Standard_Boolean CDM_Document::IsUpToDate(const Standard_Integer aReferenceIdentifier) const
 {
-  return  Reference(aReferenceIdentifier)->IsUpToDate();
+  return Reference(aReferenceIdentifier)->IsUpToDate();
 }
 
-//=======================================================================
-//function : SetIsUpToDate
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void CDM_Document::SetIsUpToDate (const Standard_Integer aReferenceIdentifier)
+void CDM_Document::SetIsUpToDate(const Standard_Integer aReferenceIdentifier)
 {
   Reference(aReferenceIdentifier)->SetIsUpToDate();
-}  
+}
 
-//=======================================================================
-//function : SetComment
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::SetComment(const TCollection_ExtendedString& aComment)
 {
@@ -459,40 +390,28 @@ void CDM_Document::SetComment(const TCollection_ExtendedString& aComment)
   myComments.Append(aComment);
 }
 
-//=======================================================================
-//function : AddComment
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::AddComment(const TCollection_ExtendedString& aComment)
 {
   myComments.Append(aComment);
 }
 
-//=======================================================================
-//function : SetComments
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::SetComments(const TColStd_SequenceOfExtendedString& aComments)
 {
   myComments = aComments;
 }
 
-//=======================================================================
-//function : Comments
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::Comments(TColStd_SequenceOfExtendedString& aComments) const
 {
   aComments = myComments;
 }
 
-//=======================================================================
-//function : Comment
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_ExtString CDM_Document::Comment() const
 {
@@ -501,582 +420,483 @@ Standard_ExtString CDM_Document::Comment() const
   return myComments(1).ToExtString();
 }
 
-//=======================================================================
-//function : IsStored
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean CDM_Document::IsStored() const
 {
   return !myMetaData.IsNull();
 }
 
-//=======================================================================
-//function : StorageVersion
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer CDM_Document::StorageVersion() const
 {
   return myStorageVersion;
 }
 
-//=======================================================================
-//function : SetMetaData
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::SetMetaData(const Handle(CDM_MetaData)& aMetaData)
 {
-  if(!aMetaData->IsRetrieved() || aMetaData->Document() != This()) {
+  if (!aMetaData->IsRetrieved() || aMetaData->Document() != This())
+  {
 
     aMetaData->SetDocument(this);
 
     // Update the document referencing this MetaData:
     CDM_DataMapIteratorOfMetaDataLookUpTable it(Application()->MetaDataLookUpTable());
-    for(;it.More();it.Next()) {
-      const Handle(CDM_MetaData)& theMetaData=it.Value();
-      if(theMetaData != aMetaData && theMetaData->IsRetrieved()) {
+    for (; it.More(); it.Next())
+    {
+      const Handle(CDM_MetaData)& theMetaData = it.Value();
+      if (theMetaData != aMetaData && theMetaData->IsRetrieved())
+      {
         CDM_ListIteratorOfListOfReferences rit(theMetaData->Document()->myToReferences);
-        for(;rit.More();rit.Next()) {
-	  rit.Value()->Update(aMetaData);
+        for (; rit.More(); rit.Next())
+        {
+          rit.Value()->Update(aMetaData);
         }
       }
     }
-    if(!myMetaData.IsNull()) {
+    if (!myMetaData.IsNull())
+    {
       myMetaData->UnsetDocument();
     }
   }
 
   myStorageVersion = Modifications();
-  
+
   myMetaData = aMetaData;
-  
+
   SetRequestedFolder(aMetaData->Folder());
-  if(aMetaData->HasVersion()) SetRequestedPreviousVersion(aMetaData->Version());
+  if (aMetaData->HasVersion())
+    SetRequestedPreviousVersion(aMetaData->Version());
 }
 
-//=======================================================================
-//function : UnsetIsStored
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::UnsetIsStored()
 {
-  if(!myMetaData.IsNull()) { 
+  if (!myMetaData.IsNull())
+  {
     myMetaData->UnsetDocument();
   }
 }
 
-//=======================================================================
-//function : MetaData
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(CDM_MetaData) CDM_Document::MetaData() const
 {
-  if(myMetaData.IsNull())
+  if (myMetaData.IsNull())
     throw Standard_NoSuchObject("cannot furnish the MetaData of an object "
-                                 "which is not stored");
+                                "which is not stored");
   return myMetaData;
 }
 
-//=======================================================================
-//function : SetRequestedComment
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::SetRequestedComment(const TCollection_ExtendedString& aComment)
 {
-  myRequestedComment=aComment;
+  myRequestedComment = aComment;
 }
 
-//=======================================================================
-//function : RequestedComment
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TCollection_ExtendedString CDM_Document::RequestedComment() const
 {
   return myRequestedComment.ToExtString();
 }
 
-//=======================================================================
-//function : Folder
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TCollection_ExtendedString CDM_Document::Folder() const {
-  if(myMetaData.IsNull())
+TCollection_ExtendedString CDM_Document::Folder() const
+{
+  if (myMetaData.IsNull())
     throw Standard_NoSuchObject("cannot furnish the folder of an object "
-                                 "which is not stored");
+                                "which is not stored");
   return myMetaData->Folder();
 }
 
-//=======================================================================
-//function : SetRequestedFolder
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::SetRequestedFolder(const TCollection_ExtendedString& aFolder)
 {
   const TCollection_ExtendedString& f = aFolder;
-  if(f.Length() != 0) {
-    myRequestedFolderIsDefined=Standard_True;
-    myRequestedFolder=aFolder;
+  if (f.Length() != 0)
+  {
+    myRequestedFolderIsDefined = Standard_True;
+    myRequestedFolder          = aFolder;
   }
 }
 
-//=======================================================================
-//function : RequestedFolder
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TCollection_ExtendedString CDM_Document::RequestedFolder() const
 {
-  Standard_NoSuchObject_Raise_if (!myRequestedFolderIsDefined,
-                                  "storage folder is undefined for this document");
+  Standard_NoSuchObject_Raise_if(!myRequestedFolderIsDefined,
+                                 "storage folder is undefined for this document");
   return myRequestedFolder;
 }
 
-//=======================================================================
-//function : HasRequestedFolder
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean CDM_Document::HasRequestedFolder() const
 {
   return myRequestedFolderIsDefined;
 }
 
-//=======================================================================
-//function : SetRequestedName
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::SetRequestedName(const TCollection_ExtendedString& aName)
 {
-  myRequestedName=aName;
-  myRequestedNameIsDefined=Standard_True;
+  myRequestedName          = aName;
+  myRequestedNameIsDefined = Standard_True;
 }
 
-//=======================================================================
-//function : RequestedName
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TCollection_ExtendedString CDM_Document::RequestedName()
 {
-  if(!myRequestedNameIsDefined) {
-    if(!myMetaData.IsNull())
-      myRequestedName=myMetaData->Name();
+  if (!myRequestedNameIsDefined)
+  {
+    if (!myMetaData.IsNull())
+      myRequestedName = myMetaData->Name();
     else
-      myRequestedName="Document_";
+      myRequestedName = "Document_";
   }
-  myRequestedNameIsDefined=Standard_True;
+  myRequestedNameIsDefined = Standard_True;
   return myRequestedName;
 }
 
-//=======================================================================
-//function : SetRequestedPreviousVersion
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void CDM_Document::SetRequestedPreviousVersion
-                             (const TCollection_ExtendedString& aPreviousVersion)
+void CDM_Document::SetRequestedPreviousVersion(const TCollection_ExtendedString& aPreviousVersion)
 {
-  myRequestedPreviousVersionIsDefined=Standard_True;
-  myRequestedPreviousVersion=aPreviousVersion;
+  myRequestedPreviousVersionIsDefined = Standard_True;
+  myRequestedPreviousVersion          = aPreviousVersion;
 }
 
-//=======================================================================
-//function : RequestedPreviousVersion
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TCollection_ExtendedString CDM_Document::RequestedPreviousVersion() const
 {
-  Standard_NoSuchObject_Raise_if (!myRequestedPreviousVersionIsDefined,
-                                  "PreviousVersion is undefined fro this document");
+  Standard_NoSuchObject_Raise_if(!myRequestedPreviousVersionIsDefined,
+                                 "PreviousVersion is undefined fro this document");
   return myRequestedPreviousVersion;
 }
 
-//=======================================================================
-//function : HasRequestedPreviousVersion
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean CDM_Document::HasRequestedPreviousVersion() const
 {
   return myRequestedPreviousVersionIsDefined;
 }
 
-//=======================================================================
-//function : UnsetRequestedPreviousVersion
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::UnsetRequestedPreviousVersion()
 {
-  myRequestedPreviousVersionIsDefined=Standard_False;
+  myRequestedPreviousVersionIsDefined = Standard_False;
 }
 
-//=======================================================================
-//function : IsOpened
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean CDM_Document::IsOpened() const
 {
   return !myApplication.IsNull();
 }
 
-//=======================================================================
-//function : IsOpened
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean CDM_Document::IsOpened
-                                (const Standard_Integer aReferenceIdentifier) const
+Standard_Boolean CDM_Document::IsOpened(const Standard_Integer aReferenceIdentifier) const
 {
   CDM_ListIteratorOfListOfReferences it(myToReferences);
-  
-  for (; it.More(); it.Next()) {
+
+  for (; it.More(); it.Next())
+  {
     if (aReferenceIdentifier == it.Value()->ReferenceIdentifier())
       return it.Value()->IsOpened();
   }
   return Standard_False;
 }
 
-//=======================================================================
-//function : Open
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::Open(const Handle(CDM_Application)& anApplication)
 {
-  myApplication=anApplication;
+  myApplication = anApplication;
 }
 
-//=======================================================================
-//function : Close
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::Close()
 {
-  switch (CanClose()) {
-  case CDM_CCS_NotOpen: 
-    throw Standard_Failure("cannot close a document that has not been opened");
-    break;
-  case CDM_CCS_UnstoredReferenced:
-     throw Standard_Failure("cannot close an unstored document which is referenced");
-    break;
-  case CDM_CCS_ModifiedReferenced:
-    throw Standard_Failure("cannot close a document which is referenced when "
-                            "the document has been modified since it was stored.");
-    break;
-  case CDM_CCS_ReferenceRejection:
-    throw Standard_Failure("cannot close this document because a document "
-                            "referencing it refuses");
-    break;
-  default:
-    break;
+  switch (CanClose())
+  {
+    case CDM_CCS_NotOpen:
+      throw Standard_Failure("cannot close a document that has not been opened");
+      break;
+    case CDM_CCS_UnstoredReferenced:
+      throw Standard_Failure("cannot close an unstored document which is referenced");
+      break;
+    case CDM_CCS_ModifiedReferenced:
+      throw Standard_Failure("cannot close a document which is referenced when "
+                             "the document has been modified since it was stored.");
+      break;
+    case CDM_CCS_ReferenceRejection:
+      throw Standard_Failure("cannot close this document because a document "
+                             "referencing it refuses");
+      break;
+    default:
+      break;
   }
-  if(FromReferencesNumber() != 0) {
+  if (FromReferencesNumber() != 0)
+  {
     CDM_ListIteratorOfListOfReferences it(myFromReferences);
-    for(; it.More(); it.Next()) {
-      it.Value()->UnsetToDocument(MetaData(),myApplication);
+    for (; it.More(); it.Next())
+    {
+      it.Value()->UnsetToDocument(MetaData(), myApplication);
     }
   }
   RemoveAllReferences();
   UnsetIsStored();
   myApplication.Nullify();
-
 }
 
-//=======================================================================
-//function : CanClose
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 CDM_CanCloseStatus CDM_Document::CanClose() const
 {
-  if(!IsOpened()) return CDM_CCS_NotOpen;
+  if (!IsOpened())
+    return CDM_CCS_NotOpen;
 
-  if(FromReferencesNumber() != 0) {
-    if(!IsStored()) return CDM_CCS_UnstoredReferenced;
-    if(IsModified()) return CDM_CCS_ModifiedReferenced;
-
+  if (FromReferencesNumber() != 0)
+  {
+    if (!IsStored())
+      return CDM_CCS_UnstoredReferenced;
+    if (IsModified())
+      return CDM_CCS_ModifiedReferenced;
 
     CDM_ListIteratorOfListOfReferences it(myFromReferences);
-    for(; it.More(); it.Next()) {
-      if(!it.Value()->FromDocument()->CanCloseReference(this, it.Value()->ReferenceIdentifier()))
-	return CDM_CCS_ReferenceRejection;
+    for (; it.More(); it.Next())
+    {
+      if (!it.Value()->FromDocument()->CanCloseReference(this, it.Value()->ReferenceIdentifier()))
+        return CDM_CCS_ReferenceRejection;
     }
-  } 
+  }
   return CDM_CCS_OK;
 }
 
-//=======================================================================
-//function : CanCloseReference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean CDM_Document::CanCloseReference
-                                (const Handle(CDM_Document)& /*aDocument*/,
-                                 const Standard_Integer /*(aReferenceIdent*/) const
+Standard_Boolean CDM_Document::CanCloseReference(const Handle(CDM_Document)& /*aDocument*/,
+                                                 const Standard_Integer /*(aReferenceIdent*/) const
 {
   return Standard_True;
 }
 
-//=======================================================================
-//function : CloseReference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void CDM_Document::CloseReference (const Handle(CDM_Document)& /*aDocument*/,
-                                   const Standard_Integer /*aReferenceIdentifier*/)
+void CDM_Document::CloseReference(const Handle(CDM_Document)& /*aDocument*/,
+                                  const Standard_Integer /*aReferenceIdentifier*/)
 {
 }
 
-//=======================================================================
-//function : Application
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 const Handle(CDM_Application)& CDM_Document::Application() const
 {
-  if(!IsOpened())
+  if (!IsOpened())
     throw Standard_Failure("this document has not yet been opened "
-                            "by any application");
+                           "by any application");
   return myApplication;
 }
 
-//=======================================================================
-//function : IsModified
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean CDM_Document::IsModified() const
 {
   return Modifications() > StorageVersion();
 }
 
-//=======================================================================
-//function : Print
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_OStream& CDM_Document::Print(Standard_OStream& anOStream) const
 {
   return anOStream;
 }
 
-//=======================================================================
-//function : CreateReference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void CDM_Document::CreateReference(const Handle(CDM_MetaData)& aMetaData,
-                                   const Standard_Integer aReferenceIdentifier,
+void CDM_Document::CreateReference(const Handle(CDM_MetaData)&    aMetaData,
+                                   const Standard_Integer         aReferenceIdentifier,
                                    const Handle(CDM_Application)& anApplication,
-                                   const Standard_Integer aToDocumentVersion,
-                                   const Standard_Boolean UseStorageConfiguration)
+                                   const Standard_Integer         aToDocumentVersion,
+                                   const Standard_Boolean         UseStorageConfiguration)
 {
-  myActualReferenceIdentifier=Max(myActualReferenceIdentifier,aReferenceIdentifier);
+  myActualReferenceIdentifier = Max(myActualReferenceIdentifier, aReferenceIdentifier);
 
-  if(aMetaData->IsRetrieved()) {
-    Handle(CDM_Reference) r = new CDM_Reference (this,
-                                                 aMetaData->Document(),
-                                                 aReferenceIdentifier,
-                                                 aToDocumentVersion);
+  if (aMetaData->IsRetrieved())
+  {
+    Handle(CDM_Reference) r =
+      new CDM_Reference(this, aMetaData->Document(), aReferenceIdentifier, aToDocumentVersion);
     AddToReference(r);
     aMetaData->Document()->AddFromReference(r);
-    
   }
-  else  {
-      Handle(CDM_Reference) r = new CDM_Reference (this,
-                                                   aMetaData,
-                                                   aReferenceIdentifier,
-                                                   anApplication,
-                                                   aToDocumentVersion,
-                                                   UseStorageConfiguration);
-      AddToReference(r);
-    }
+  else
+  {
+    Handle(CDM_Reference) r = new CDM_Reference(this,
+                                                aMetaData,
+                                                aReferenceIdentifier,
+                                                anApplication,
+                                                aToDocumentVersion,
+                                                UseStorageConfiguration);
+    AddToReference(r);
+  }
 }
 
-//=======================================================================
-//function : CreateReference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer CDM_Document::CreateReference
-                                (const Handle(CDM_MetaData)& aMetaData,
-                                 const Handle(CDM_Application)& anApplication,
-                                 const Standard_Integer aDocumentVersion,
-                                 const Standard_Boolean UseStorageConfiguration)
+Standard_Integer CDM_Document::CreateReference(const Handle(CDM_MetaData)&    aMetaData,
+                                               const Handle(CDM_Application)& anApplication,
+                                               const Standard_Integer         aDocumentVersion,
+                                               const Standard_Boolean UseStorageConfiguration)
 {
   CDM_ListIteratorOfListOfReferences it(myToReferences);
 
-  for(; it.More(); it.Next()) {
-    if(aMetaData == it.Value()->MetaData())
+  for (; it.More(); it.Next())
+  {
+    if (aMetaData == it.Value()->MetaData())
       return it.Value()->ReferenceIdentifier();
   }
-  Handle(CDM_Reference) r = new CDM_Reference (this,
-                                               aMetaData,
-                                               ++myActualReferenceIdentifier,
-                                               anApplication,
-                                               aDocumentVersion,
-                                               UseStorageConfiguration);
+  Handle(CDM_Reference) r = new CDM_Reference(this,
+                                              aMetaData,
+                                              ++myActualReferenceIdentifier,
+                                              anApplication,
+                                              aDocumentVersion,
+                                              UseStorageConfiguration);
   AddToReference(r);
-  return  r->ReferenceIdentifier();
+  return r->ReferenceIdentifier();
 }
 
-//=======================================================================
-//function : AddToReference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::AddToReference(const Handle(CDM_Reference)& aReference)
 {
   myToReferences.Append(aReference);
 }
 
-//=======================================================================
-//function : AddFromReference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::AddFromReference(const Handle(CDM_Reference)& aReference)
 {
   myFromReferences.Append(aReference);
 }
 
-//=======================================================================
-//function : RemoveFromReference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::RemoveFromReference(const Standard_Integer aReferenceIdentifier)
 {
   CDM_ListIteratorOfListOfReferences it(myFromReferences);
-  
-  for(; it.More(); it.Next()) {
-    if(aReferenceIdentifier == it.Value()->ReferenceIdentifier()) {
+
+  for (; it.More(); it.Next())
+  {
+    if (aReferenceIdentifier == it.Value()->ReferenceIdentifier())
+    {
       myFromReferences.Remove(it);
       return;
     }
   }
 }
 
-//=======================================================================
-//function : GetResource
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TCollection_ExtendedString GetResource (const TCollection_ExtendedString& aFormat,
-                                        const TCollection_ExtendedString& anItem)
+TCollection_ExtendedString GetResource(const TCollection_ExtendedString& aFormat,
+                                       const TCollection_ExtendedString& anItem)
 {
   TCollection_ExtendedString theResource;
-  theResource+= aFormat;
-  theResource+= ".";
-  theResource+= anItem;
+  theResource += aFormat;
+  theResource += ".";
+  theResource += anItem;
   return theResource;
 }
 
-static void FIND (const Handle(Resource_Manager)& theDocumentResource,
-                  const TCollection_ExtendedString& theResourceName,
-                  Standard_Boolean& IsDef,
-                  TCollection_ExtendedString& theValue)
+static void FIND(const Handle(Resource_Manager)&   theDocumentResource,
+                 const TCollection_ExtendedString& theResourceName,
+                 Standard_Boolean&                 IsDef,
+                 TCollection_ExtendedString&       theValue)
 {
-  IsDef=UTL::Find(theDocumentResource,theResourceName);
-  if(IsDef) theValue=UTL::Value(theDocumentResource,theResourceName);
-  
+  IsDef = UTL::Find(theDocumentResource, theResourceName);
+  if (IsDef)
+    theValue = UTL::Value(theDocumentResource, theResourceName);
 }
 
-//=======================================================================
-//function : StorageResource
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(Resource_Manager) CDM_Document::StorageResource()
 {
-  if(myApplication.IsNull()) {
+  if (myApplication.IsNull())
+  {
     Standard_SStream aMsg;
-    aMsg << "this document of format "<< StorageFormat()
-         << " has not yet been opened by any application. "<< std::endl;
+    aMsg << "this document of format " << StorageFormat()
+         << " has not yet been opened by any application. " << std::endl;
     throw Standard_Failure(aMsg.str().c_str());
   }
   return myApplication->Resources();
-}  
+}
 
-//=======================================================================
-//function : LoadResources
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::LoadResources()
 {
-  if(!myResourcesAreLoaded) {
+  if (!myResourcesAreLoaded)
+  {
     Handle(Resource_Manager) theDocumentResource = StorageResource();
- 
-    TCollection_ExtendedString theFormat=StorageFormat(); theFormat+=".";
+
+    TCollection_ExtendedString theFormat = StorageFormat();
+    theFormat += ".";
     TCollection_ExtendedString theResourceName;
-    
-    theResourceName=theFormat;
-    theResourceName+="FileExtension";
-    FIND(theDocumentResource,
-         theResourceName,myFileExtensionWasFound,myFileExtension);
-    
-    theResourceName=theFormat;
-    theResourceName+="Description";
-    FIND(theDocumentResource,theResourceName,myDescriptionWasFound,myDescription);
-    
-    myResourcesAreLoaded=Standard_True;
-    
-//    std::cout << "resource Loaded: Format: " << theFormat << ", FileExtension:" << myFileExtension << ", Description:" << myDescription << std::endl;
+
+    theResourceName = theFormat;
+    theResourceName += "FileExtension";
+    FIND(theDocumentResource, theResourceName, myFileExtensionWasFound, myFileExtension);
+
+    theResourceName = theFormat;
+    theResourceName += "Description";
+    FIND(theDocumentResource, theResourceName, myDescriptionWasFound, myDescription);
+
+    myResourcesAreLoaded = Standard_True;
+
+    //    std::cout << "resource Loaded: Format: " << theFormat << ", FileExtension:" <<
+    //    myFileExtension << ", Description:" << myDescription << std::endl;
   }
   return;
 }
 
-//=======================================================================
-//function : FindFileExtension
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean CDM_Document::FindFileExtension ()
+Standard_Boolean CDM_Document::FindFileExtension()
 {
   LoadResources();
   return myFileExtensionWasFound;
 }
 
-//=======================================================================
-//function : FileExtension
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TCollection_ExtendedString CDM_Document::FileExtension()
 {
   LoadResources();
-  return  myFileExtension;
+  return myFileExtension;
 }
 
-//=======================================================================
-//function : FindDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean CDM_Document::FindDescription ()
+Standard_Boolean CDM_Document::FindDescription()
 {
   LoadResources();
   return myDescriptionWasFound;
 }
 
-//=======================================================================
-//function : Description
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TCollection_ExtendedString CDM_Document::Description()
 {
@@ -1084,111 +904,96 @@ TCollection_ExtendedString CDM_Document::Description()
   return myDescription;
 }
 
-//=======================================================================
-//function : IsReadOnly
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean CDM_Document::IsReadOnly() const
 {
-  if(IsStored()) return myMetaData->IsReadOnly();
+  if (IsStored())
+    return myMetaData->IsReadOnly();
   return Standard_False;
 }
 
-//=======================================================================
-//function : IsReadOnly
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean CDM_Document::IsReadOnly
-                                (const Standard_Integer aReferenceIdentifier) const
+Standard_Boolean CDM_Document::IsReadOnly(const Standard_Integer aReferenceIdentifier) const
 {
   return Reference(aReferenceIdentifier)->IsReadOnly();
 }
 
-//=======================================================================
-//function : SetIsReadOnly
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void CDM_Document::SetIsReadOnly()
 {
-  if(IsStored()) myMetaData->SetIsReadOnly();
+  if (IsStored())
+    myMetaData->SetIsReadOnly();
 }
-    
-//=======================================================================
-//function : UnsetIsReadOnly
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
 
 void CDM_Document::UnsetIsReadOnly()
 {
-  if(IsStored()) myMetaData->UnsetIsReadOnly();
+  if (IsStored())
+    myMetaData->UnsetIsReadOnly();
 }
 
-//=======================================================================
-//function : ReferenceCounter
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer CDM_Document::ReferenceCounter() const
 {
   return myActualReferenceIdentifier;
 }
 
-//=======================================================================
-//function : SetReferenceCounter
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void CDM_Document::SetReferenceCounter (const Standard_Integer aReferenceCounter)
+void CDM_Document::SetReferenceCounter(const Standard_Integer aReferenceCounter)
 {
-  myActualReferenceIdentifier=aReferenceCounter;
+  myActualReferenceIdentifier = aReferenceCounter;
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void CDM_Document::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+//=================================================================================================
 
-  for (TColStd_SequenceOfExtendedString::Iterator aCommentIt (myComments); aCommentIt.More(); aCommentIt.Next())
+void CDM_Document::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+
+  for (TColStd_SequenceOfExtendedString::Iterator aCommentIt(myComments); aCommentIt.More();
+       aCommentIt.Next())
   {
     const TCollection_ExtendedString& aComment = aCommentIt.Value();
-    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aComment)
+    OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aComment)
   }
 
-  for (CDM_ListOfReferences::Iterator aFromReferenceIt (myFromReferences); aFromReferenceIt.More(); aFromReferenceIt.Next())
+  for (CDM_ListOfReferences::Iterator aFromReferenceIt(myFromReferences); aFromReferenceIt.More();
+       aFromReferenceIt.Next())
   {
     const Handle(CDM_Reference)& aFromReference = aFromReferenceIt.Value().get();
-    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aFromReference.get())
+    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aFromReference.get())
   }
 
-  for (CDM_ListOfReferences::Iterator aToReferenceIt (myToReferences); aToReferenceIt.More(); aToReferenceIt.Next())
+  for (CDM_ListOfReferences::Iterator aToReferenceIt(myToReferences); aToReferenceIt.More();
+       aToReferenceIt.Next())
   {
     const Handle(CDM_Reference)& aToReference = aToReferenceIt.Value().get();
-    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aToReference.get())
+    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aToReference.get())
   }
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myVersion)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myActualReferenceIdentifier)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myStorageVersion)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myVersion)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myActualReferenceIdentifier)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myStorageVersion)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myMetaData.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myMetaData.get())
 
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myRequestedComment)
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myRequestedFolder)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myRequestedFolderIsDefined)
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myRequestedName)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myRequestedNameIsDefined)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myRequestedPreviousVersionIsDefined)
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myRequestedPreviousVersion)
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myFileExtension)
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myDescription)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFileExtensionWasFound)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDescriptionWasFound)
+  OCCT_DUMP_FIELD_VALUE_STRING(theOStream, myRequestedComment)
+  OCCT_DUMP_FIELD_VALUE_STRING(theOStream, myRequestedFolder)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myRequestedFolderIsDefined)
+  OCCT_DUMP_FIELD_VALUE_STRING(theOStream, myRequestedName)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myRequestedNameIsDefined)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myRequestedPreviousVersionIsDefined)
+  OCCT_DUMP_FIELD_VALUE_STRING(theOStream, myRequestedPreviousVersion)
+  OCCT_DUMP_FIELD_VALUE_STRING(theOStream, myFileExtension)
+  OCCT_DUMP_FIELD_VALUE_STRING(theOStream, myDescription)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myFileExtensionWasFound)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myDescriptionWasFound)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myApplication.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myApplication.get())
 }

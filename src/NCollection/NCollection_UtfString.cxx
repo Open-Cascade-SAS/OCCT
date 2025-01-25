@@ -20,20 +20,16 @@
 #include <NCollection_UtfString.hxx>
 
 #if !defined(__ANDROID__)
-//=======================================================================
-//function : ~NCollection_UtfStringTool
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 NCollection_UtfStringTool::~NCollection_UtfStringTool()
 {
   delete[] myWideBuffer;
 }
 
-//=======================================================================
-//function : FromLocale()
-//purpose  :
-//=======================================================================
-wchar_t* NCollection_UtfStringTool::FromLocale (const char* theString)
+//=================================================================================================
+
+wchar_t* NCollection_UtfStringTool::FromLocale(const char* theString)
 {
   if (myWideBuffer != NULL)
   {
@@ -41,46 +37,45 @@ wchar_t* NCollection_UtfStringTool::FromLocale (const char* theString)
     myWideBuffer = NULL;
   }
 
-#if defined(_WIN32)
+  #if defined(_WIN32)
   // use WinAPI
-  int aWideSize = MultiByteToWideChar (CP_ACP, MB_PRECOMPOSED, theString, -1, NULL, 0);
+  int aWideSize = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, theString, -1, NULL, 0);
   if (aWideSize <= 0)
   {
     return NULL;
   }
 
   myWideBuffer = new wchar_t[aWideSize + 1];
-  MultiByteToWideChar (CP_ACP, MB_PRECOMPOSED, theString, -1, myWideBuffer, aWideSize);
+  MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, theString, -1, myWideBuffer, aWideSize);
   myWideBuffer[aWideSize] = L'\0';
-#else
+  #else
   // this is size in bytes but should probably be enough to store string in wide chars
   // notice that these functions are sensitive to locale set by application!
-  int aMbLen = mblen (theString, MB_CUR_MAX);
+  int aMbLen = mblen(theString, MB_CUR_MAX);
   if (aMbLen <= 0)
   {
     return NULL;
   }
 
   myWideBuffer = new wchar_t[aMbLen + 1];
-  mbstowcs (myWideBuffer, theString, aMbLen);
+  mbstowcs(myWideBuffer, theString, aMbLen);
   myWideBuffer[aMbLen] = L'\0';
-#endif
+  #endif
   return myWideBuffer;
 }
 
-//=======================================================================
-//function : ToLocale()
-//purpose  :
-//=======================================================================
-bool NCollection_UtfStringTool::ToLocale (const wchar_t*         theWideString,
-                                          char*                  theBuffer,
-                                          const Standard_Integer theSizeBytes)
+//=================================================================================================
+
+bool NCollection_UtfStringTool::ToLocale(const wchar_t*         theWideString,
+                                         char*                  theBuffer,
+                                         const Standard_Integer theSizeBytes)
 {
-#if defined(_WIN32)
-  int aMbBytes = WideCharToMultiByte (CP_ACP, 0, theWideString, -1, theBuffer, theSizeBytes, NULL, NULL);
-#else
-  std::size_t aMbBytes = std::wcstombs (theBuffer, theWideString, theSizeBytes);
-#endif
+  #if defined(_WIN32)
+  int aMbBytes =
+    WideCharToMultiByte(CP_ACP, 0, theWideString, -1, theBuffer, theSizeBytes, NULL, NULL);
+  #else
+  std::size_t aMbBytes = std::wcstombs(theBuffer, theWideString, theSizeBytes);
+  #endif
   if (aMbBytes <= 0)
   {
     *theBuffer = '\0';

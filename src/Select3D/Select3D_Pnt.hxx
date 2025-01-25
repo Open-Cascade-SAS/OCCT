@@ -24,11 +24,11 @@ struct Select3D_Pnt
 
   operator gp_XYZ() const { return gp_XYZ(x, y, z); }
 
-  gp_Pnt operator= (const gp_Pnt& thePnt)
+  gp_Pnt operator=(const gp_Pnt& thePnt)
   {
-    x = RealToShortReal (thePnt.X());
-    y = RealToShortReal (thePnt.Y());
-    z = RealToShortReal (thePnt.Z());
+    x = RealToShortReal(thePnt.X());
+    y = RealToShortReal(thePnt.Y());
+    z = RealToShortReal(thePnt.Z());
     return *this;
   }
 };

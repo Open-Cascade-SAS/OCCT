@@ -20,36 +20,47 @@
 #include <StepRepr_MeasureRepresentationItem.hxx>
 #include <StepGeom_Placement.hxx>
 
-//=======================================================================
-//function : StepShape_ShapeDimensionRepresentationItem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepShape_ShapeDimensionRepresentationItem::StepShape_ShapeDimensionRepresentationItem () {  }
+StepShape_ShapeDimensionRepresentationItem::StepShape_ShapeDimensionRepresentationItem() {}
 
-//=======================================================================
-//function : CaseNum
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer StepShape_ShapeDimensionRepresentationItem::CaseNum(const Handle(Standard_Transient)& ent) const
+Standard_Integer StepShape_ShapeDimensionRepresentationItem::CaseNum(
+  const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepRepr_CompoundRepresentationItem))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepRepr_DescriptiveRepresentationItem))) return 2;
-  if (ent->IsKind(STANDARD_TYPE(StepRepr_MeasureRepresentationItem))) return 3;
-  if (ent->IsKind(STANDARD_TYPE(StepGeom_Placement))) return 4;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepRepr_CompoundRepresentationItem)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepRepr_DescriptiveRepresentationItem)))
+    return 2;
+  if (ent->IsKind(STANDARD_TYPE(StepRepr_MeasureRepresentationItem)))
+    return 3;
+  if (ent->IsKind(STANDARD_TYPE(StepGeom_Placement)))
+    return 4;
   return 0;
 }
 
-Handle(StepRepr_CompoundRepresentationItem) StepShape_ShapeDimensionRepresentationItem::CompoundRepresentationItem() const
-{  return GetCasted(StepRepr_CompoundRepresentationItem,Value());  }
+Handle(StepRepr_CompoundRepresentationItem) StepShape_ShapeDimensionRepresentationItem::
+  CompoundRepresentationItem() const
+{
+  return GetCasted(StepRepr_CompoundRepresentationItem, Value());
+}
 
-Handle(StepRepr_DescriptiveRepresentationItem) StepShape_ShapeDimensionRepresentationItem::DescriptiveRepresentationItem() const
-{  return GetCasted(StepRepr_DescriptiveRepresentationItem,Value());  }
+Handle(StepRepr_DescriptiveRepresentationItem) StepShape_ShapeDimensionRepresentationItem::
+  DescriptiveRepresentationItem() const
+{
+  return GetCasted(StepRepr_DescriptiveRepresentationItem, Value());
+}
 
-Handle(StepRepr_MeasureRepresentationItem) StepShape_ShapeDimensionRepresentationItem::MeasureRepresentationItem() const
-{  return GetCasted(StepRepr_MeasureRepresentationItem,Value());  }
+Handle(StepRepr_MeasureRepresentationItem) StepShape_ShapeDimensionRepresentationItem::
+  MeasureRepresentationItem() const
+{
+  return GetCasted(StepRepr_MeasureRepresentationItem, Value());
+}
 
 Handle(StepGeom_Placement) StepShape_ShapeDimensionRepresentationItem::Placement() const
-{  return GetCasted(StepGeom_Placement,Value());  }
+{
+  return GetCasted(StepGeom_Placement, Value());
+}

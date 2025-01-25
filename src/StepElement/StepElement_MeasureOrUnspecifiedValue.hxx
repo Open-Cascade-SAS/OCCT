@@ -26,64 +26,44 @@
 class Standard_Transient;
 class StepData_SelectMember;
 
-
 //! Representation of STEP SELECT type MeasureOrUnspecifiedValue
-class StepElement_MeasureOrUnspecifiedValue  : public StepData_SelectType
+class StepElement_MeasureOrUnspecifiedValue : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_EXPORT StepElement_MeasureOrUnspecifiedValue();
-  
+
   //! Recognizes a kind of MeasureOrUnspecifiedValue select type
   //! return 0
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Integer
+    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+
   //! Recognizes a items of select member MeasureOrUnspecifiedValueMember
   //! 1 -> ContextDependentMeasure
   //! 2 -> UnspecifiedValue
   //! 0 else
-  Standard_EXPORT virtual Standard_Integer CaseMem (const Handle(StepData_SelectMember)& ent) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Standard_Integer CaseMem(const Handle(StepData_SelectMember)& ent) const
+    Standard_OVERRIDE;
+
   //! Returns a new select member the type MeasureOrUnspecifiedValueMember
   Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
-  
+
   //! Set Value for ContextDependentMeasure
-  Standard_EXPORT void SetContextDependentMeasure (const Standard_Real aVal);
-  
+  Standard_EXPORT void SetContextDependentMeasure(const Standard_Real aVal);
+
   //! Returns Value as ContextDependentMeasure (or Null if another type)
   Standard_EXPORT Standard_Real ContextDependentMeasure() const;
-  
+
   //! Set Value for UnspecifiedValue
-  Standard_EXPORT void SetUnspecifiedValue (const StepElement_UnspecifiedValue aVal);
-  
+  Standard_EXPORT void SetUnspecifiedValue(const StepElement_UnspecifiedValue aVal);
+
   //! Returns Value as UnspecifiedValue (or Null if another type)
   Standard_EXPORT StepElement_UnspecifiedValue UnspecifiedValue() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepElement_MeasureOrUnspecifiedValue_HeaderFile

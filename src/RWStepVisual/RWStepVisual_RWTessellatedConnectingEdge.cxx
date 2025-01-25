@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -27,23 +27,16 @@
 #include <StepData_Logical.hxx>
 #include <StepVisual_TessellatedFace.hxx>
 
-//=======================================================================
-//function : RWStepVisual_RWTessellatedConnectingEdge
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 RWStepVisual_RWTessellatedConnectingEdge::RWStepVisual_RWTessellatedConnectingEdge() {}
 
-
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void RWStepVisual_RWTessellatedConnectingEdge::ReadStep(
-  const Handle(StepData_StepReaderData)& theData,
-  const Standard_Integer theNum,
-  Handle(Interface_Check)& theCheck,
+  const Handle(StepData_StepReaderData)&              theData,
+  const Standard_Integer                              theNum,
+  Handle(Interface_Check)&                            theCheck,
   const Handle(StepVisual_TessellatedConnectingEdge)& theEnt) const
 {
   // Check number of parameters
@@ -60,28 +53,36 @@ void RWStepVisual_RWTessellatedConnectingEdge::ReadStep(
   // Inherited fields of TessellatedEdge
 
   Handle(StepVisual_CoordinatesList) aTessellatedEdge_Coordinates;
-  theData->ReadEntity(theNum, 2, "tessellated_edge.coordinates", theCheck,
-    STANDARD_TYPE(StepVisual_CoordinatesList), aTessellatedEdge_Coordinates);
+  theData->ReadEntity(theNum,
+                      2,
+                      "tessellated_edge.coordinates",
+                      theCheck,
+                      STANDARD_TYPE(StepVisual_CoordinatesList),
+                      aTessellatedEdge_Coordinates);
 
   StepVisual_EdgeOrCurve aTessellatedEdge_GeometricLink;
-  Standard_Boolean hasTessellatedEdge_GeometricLink = Standard_True;
+  Standard_Boolean       hasTessellatedEdge_GeometricLink = Standard_True;
   if (theData->IsParamDefined(theNum, 3))
   {
-    theData->ReadEntity(theNum, 3, "tessellated_edge.geometric_link", theCheck, aTessellatedEdge_GeometricLink);
+    theData->ReadEntity(theNum,
+                        3,
+                        "tessellated_edge.geometric_link",
+                        theCheck,
+                        aTessellatedEdge_GeometricLink);
   }
   else
   {
     hasTessellatedEdge_GeometricLink = Standard_False;
-    aTessellatedEdge_GeometricLink = StepVisual_EdgeOrCurve();
+    aTessellatedEdge_GeometricLink   = StepVisual_EdgeOrCurve();
   }
 
   Handle(TColStd_HArray1OfInteger) aTessellatedEdge_LineStrip;
-  Standard_Integer sub4 = 0;
+  Standard_Integer                 sub4 = 0;
   if (theData->ReadSubList(theNum, 4, "tessellated_edge.line_strip", theCheck, sub4))
   {
-    Standard_Integer nb0 = theData->NbParams(sub4);
+    Standard_Integer nb0       = theData->NbParams(sub4);
     aTessellatedEdge_LineStrip = new TColStd_HArray1OfInteger(1, nb0);
-    Standard_Integer num2 = sub4;
+    Standard_Integer num2      = sub4;
     for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
     {
       Standard_Integer anIt0;
@@ -96,19 +97,19 @@ void RWStepVisual_RWTessellatedConnectingEdge::ReadStep(
   theData->ReadLogical(theNum, 5, "smooth", theCheck, aSmooth);
 
   Handle(StepVisual_TessellatedFace) aFace1;
-  theData->ReadEntity(theNum, 6, "face1", theCheck,
-    STANDARD_TYPE(StepVisual_TessellatedFace), aFace1);
+  theData
+    ->ReadEntity(theNum, 6, "face1", theCheck, STANDARD_TYPE(StepVisual_TessellatedFace), aFace1);
 
   Handle(StepVisual_TessellatedFace) aFace2;
-  theData->ReadEntity(theNum, 7, "face2", theCheck,
-    STANDARD_TYPE(StepVisual_TessellatedFace), aFace2);
+  theData
+    ->ReadEntity(theNum, 7, "face2", theCheck, STANDARD_TYPE(StepVisual_TessellatedFace), aFace2);
 
   Handle(TColStd_HArray1OfInteger) aLineStripFace1;
-  Standard_Integer sub8 = 0;
+  Standard_Integer                 sub8 = 0;
   if (theData->ReadSubList(theNum, 8, "line_strip_face1", theCheck, sub8))
   {
-    Standard_Integer nb0 = theData->NbParams(sub8);
-    aLineStripFace1 = new TColStd_HArray1OfInteger(1, nb0);
+    Standard_Integer nb0  = theData->NbParams(sub8);
+    aLineStripFace1       = new TColStd_HArray1OfInteger(1, nb0);
     Standard_Integer num2 = sub8;
     for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
     {
@@ -119,11 +120,11 @@ void RWStepVisual_RWTessellatedConnectingEdge::ReadStep(
   }
 
   Handle(TColStd_HArray1OfInteger) aLineStripFace2;
-  Standard_Integer sub9 = 0;
+  Standard_Integer                 sub9 = 0;
   if (theData->ReadSubList(theNum, 9, "line_strip_face2", theCheck, sub9))
   {
-    Standard_Integer nb0 = theData->NbParams(sub9);
-    aLineStripFace2 = new TColStd_HArray1OfInteger(1, nb0);
+    Standard_Integer nb0  = theData->NbParams(sub9);
+    aLineStripFace2       = new TColStd_HArray1OfInteger(1, nb0);
     Standard_Integer num2 = sub9;
     for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
     {
@@ -134,16 +135,22 @@ void RWStepVisual_RWTessellatedConnectingEdge::ReadStep(
   }
 
   // Initialize entity
-  theEnt->Init(aRepresentationItem_Name, aTessellatedEdge_Coordinates, hasTessellatedEdge_GeometricLink, aTessellatedEdge_GeometricLink, aTessellatedEdge_LineStrip, aSmooth, aFace1, aFace2, aLineStripFace1, aLineStripFace2);
+  theEnt->Init(aRepresentationItem_Name,
+               aTessellatedEdge_Coordinates,
+               hasTessellatedEdge_GeometricLink,
+               aTessellatedEdge_GeometricLink,
+               aTessellatedEdge_LineStrip,
+               aSmooth,
+               aFace1,
+               aFace2,
+               aLineStripFace1,
+               aLineStripFace2);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void RWStepVisual_RWTessellatedConnectingEdge::WriteStep(
-  StepData_StepWriter& theSW,
+  StepData_StepWriter&                                theSW,
   const Handle(StepVisual_TessellatedConnectingEdge)& theEnt) const
 {
 
@@ -197,14 +204,11 @@ void RWStepVisual_RWTessellatedConnectingEdge::WriteStep(
   theSW.CloseSub();
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void RWStepVisual_RWTessellatedConnectingEdge::Share(
-  const Handle(StepVisual_TessellatedConnectingEdge)&theEnt,
-Interface_EntityIterator& theIter) const
+  const Handle(StepVisual_TessellatedConnectingEdge)& theEnt,
+  Interface_EntityIterator&                           theIter) const
 {
 
   // Inherited fields of RepresentationItem

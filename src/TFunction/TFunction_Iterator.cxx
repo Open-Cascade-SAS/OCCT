@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TDataStd_Name.hxx>
 #include <TDF_LabelIntegerMap.hxx>
 #include <TFunction_GraphNode.hxx>
@@ -21,28 +20,24 @@
 #include <TFunction_Iterator.hxx>
 #include <TFunction_Scope.hxx>
 
-//=======================================================================
-//function : Create
-//purpose  : Constructor
-//=======================================================================
-TFunction_Iterator::TFunction_Iterator():myUsageOfExecutionStatus(Standard_False)
-{  
+//=================================================================================================
 
+TFunction_Iterator::TFunction_Iterator()
+    : myUsageOfExecutionStatus(Standard_False)
+{
 }
 
-//=======================================================================
-//function : Create
-//purpose  : Constructor
-//=======================================================================
+//=================================================================================================
 
-TFunction_Iterator::TFunction_Iterator(const TDF_Label& Access):myUsageOfExecutionStatus(Standard_False)
+TFunction_Iterator::TFunction_Iterator(const TDF_Label& Access)
+    : myUsageOfExecutionStatus(Standard_False)
 {
   Init(Access);
 }
 
 //=======================================================================
-//function : Init
-//purpose  : Initializes the Iterator.
+// function : Init
+// purpose  : Initializes the Iterator.
 //=======================================================================
 
 void TFunction_Iterator::Init(const TDF_Label& Access)
@@ -59,9 +54,9 @@ void TFunction_Iterator::Init(const TDF_Label& Access)
   {
     const TDF_Label& L = itrm.Key2();
 
-    TFunction_IFunction iFunction(L);
+    TFunction_IFunction         iFunction(L);
     Handle(TFunction_GraphNode) graphNode = iFunction.GetGraphNode();
-    TFunction_ExecutionStatus status = graphNode->GetStatus();
+    TFunction_ExecutionStatus   status    = graphNode->GetStatus();
 
     // Check whether the function is a root function
     if (!graphNode->GetPrevious().IsEmpty())
@@ -80,8 +75,8 @@ void TFunction_Iterator::Init(const TDF_Label& Access)
 }
 
 //=======================================================================
-//function : SetUsageOfExecutionStatus
-//purpose  : Defines usage of execution status
+// function : SetUsageOfExecutionStatus
+// purpose  : Defines usage of execution status
 //=======================================================================
 
 void TFunction_Iterator::SetUsageOfExecutionStatus(const Standard_Boolean usage)
@@ -90,8 +85,8 @@ void TFunction_Iterator::SetUsageOfExecutionStatus(const Standard_Boolean usage)
 }
 
 //=======================================================================
-//function : GetUsageOfExecutionStatus
-//purpose  : Returns usage of execution status
+// function : GetUsageOfExecutionStatus
+// purpose  : Returns usage of execution status
 //=======================================================================
 
 Standard_Boolean TFunction_Iterator::GetUsageOfExecutionStatus() const
@@ -100,13 +95,13 @@ Standard_Boolean TFunction_Iterator::GetUsageOfExecutionStatus() const
 }
 
 //=======================================================================
-//function : GetMaxNbThreads
-//purpose  : Defines the maximum number of threads
+// function : GetMaxNbThreads
+// purpose  : Defines the maximum number of threads
 //=======================================================================
 
 Standard_Integer TFunction_Iterator::GetMaxNbThreads() const
 {
-  int nb_threads = 0;
+  int                nb_threads = 0;
   TFunction_Iterator fIterator;
   fIterator.myUsageOfExecutionStatus = Standard_False;
 
@@ -130,8 +125,8 @@ Standard_Integer TFunction_Iterator::GetMaxNbThreads() const
 }
 
 //=======================================================================
-//function : Current
-//purpose  : Returns the current list of functions
+// function : Current
+// purpose  : Returns the current list of functions
 //=======================================================================
 
 const TDF_LabelList& TFunction_Iterator::Current() const
@@ -140,8 +135,8 @@ const TDF_LabelList& TFunction_Iterator::Current() const
 }
 
 //=======================================================================
-//function : More
-//purpose  : Returns true if the iteration is ended
+// function : More
+// purpose  : Returns true if the iteration is ended
 //=======================================================================
 
 Standard_Boolean TFunction_Iterator::More() const
@@ -153,7 +148,7 @@ Standard_Boolean TFunction_Iterator::More() const
     {
       const TDF_Label& L = itrm.Key2();
       if (GetStatus(L) == TFunction_ES_NotExecuted)
-	return Standard_True;
+        return Standard_True;
     }
     return Standard_False;
   }
@@ -161,17 +156,17 @@ Standard_Boolean TFunction_Iterator::More() const
 }
 
 //=======================================================================
-//function : Next
-//purpose  : Switches the iterator to the next functions
+// function : Next
+// purpose  : Switches the iterator to the next functions
 //=======================================================================
 
 void TFunction_Iterator::Next()
 {
-  TDF_LabelMap next_current;
+  TDF_LabelMap                next_current;
   TDF_ListIteratorOfLabelList itrl(myCurrent);
   for (; itrl.More(); itrl.Next())
   {
-    const TDF_Label& L = itrl.Value();
+    const TDF_Label&    L = itrl.Value();
     TFunction_IFunction iFunction(L);
 
     Handle(TFunction_GraphNode) graphNode = iFunction.GetGraphNode();
@@ -183,12 +178,12 @@ void TFunction_Iterator::Next()
     {
       if (status == TFunction_ES_NotExecuted || status == TFunction_ES_Executing)
       {
-	next_current.Add(L);
-	continue;
+        next_current.Add(L);
+        continue;
       }
       else if (status == TFunction_ES_WrongDefinition || status == TFunction_ES_Failed)
       {
-	continue;
+        continue;
       }
 
       // if "succeeded", we consider the next functions... see below.
@@ -199,54 +194,54 @@ void TFunction_Iterator::Next()
     for (; itrm.More(); itrm.Next())
     {
       const Standard_Integer IDnext = itrm.Key();
-      const TDF_Label& Lnext = myScope->GetFunctions().Find1(IDnext);
+      const TDF_Label&       Lnext  = myScope->GetFunctions().Find1(IDnext);
 
       if (myUsageOfExecutionStatus)
       {
-	// A previous function is "succeeded", check status of next functions and 
-	// all other previous functions of the next functions.
+        // A previous function is "succeeded", check status of next functions and
+        // all other previous functions of the next functions.
 
-	// Check status, it should be "not executed"
-	TFunction_IFunction iNextFunction(Lnext);
-	Handle(TFunction_GraphNode) nextGraphNode = iNextFunction.GetGraphNode();
-	TFunction_ExecutionStatus next_status = nextGraphNode->GetStatus();
-	if (next_status != TFunction_ES_NotExecuted && next_status != TFunction_ES_Executing)
-	{
-	  continue;
-	}
+        // Check status, it should be "not executed"
+        TFunction_IFunction         iNextFunction(Lnext);
+        Handle(TFunction_GraphNode) nextGraphNode = iNextFunction.GetGraphNode();
+        TFunction_ExecutionStatus   next_status   = nextGraphNode->GetStatus();
+        if (next_status != TFunction_ES_NotExecuted && next_status != TFunction_ES_Executing)
+        {
+          continue;
+        }
 
-	// Check all previous functions: all of them should be "succeeded"
-	Standard_Boolean is_prev_succeeded = Standard_True;
-	const TColStd_MapOfInteger& prevOfNext = nextGraphNode->GetPrevious();
-	TColStd_MapIteratorOfMapOfInteger itrp(prevOfNext);
-	for (; itrp.More(); itrp.Next())
-	{
-	  const Standard_Integer IDprevOfNext = itrp.Key();
-	  const TDF_Label& LprevOfNext = myScope->GetFunctions().Find1(IDprevOfNext);
-	  Handle(TFunction_GraphNode) GprevOfNext;
-	  LprevOfNext.FindAttribute(TFunction_GraphNode::GetID(), GprevOfNext);
-	  TFunction_ExecutionStatus prev_status = GprevOfNext->GetStatus();
-	  if (prev_status != TFunction_ES_Succeeded)
-	  {
-	    is_prev_succeeded = Standard_False;
-	    break;
-	  }
-	}
-	if (!is_prev_succeeded)
-	{
-	  continue;
-	}
+        // Check all previous functions: all of them should be "succeeded"
+        Standard_Boolean                  is_prev_succeeded = Standard_True;
+        const TColStd_MapOfInteger&       prevOfNext        = nextGraphNode->GetPrevious();
+        TColStd_MapIteratorOfMapOfInteger itrp(prevOfNext);
+        for (; itrp.More(); itrp.Next())
+        {
+          const Standard_Integer      IDprevOfNext = itrp.Key();
+          const TDF_Label&            LprevOfNext  = myScope->GetFunctions().Find1(IDprevOfNext);
+          Handle(TFunction_GraphNode) GprevOfNext;
+          LprevOfNext.FindAttribute(TFunction_GraphNode::GetID(), GprevOfNext);
+          TFunction_ExecutionStatus prev_status = GprevOfNext->GetStatus();
+          if (prev_status != TFunction_ES_Succeeded)
+          {
+            is_prev_succeeded = Standard_False;
+            break;
+          }
+        }
+        if (!is_prev_succeeded)
+        {
+          continue;
+        }
       }
 
       // Ignore already passed functions (for the mode of ignoring the execution status).
       if (!myUsageOfExecutionStatus && myPassedFunctions.Contains(Lnext))
-	continue;
+        continue;
 
       next_current.Add(Lnext);
 
       // Register already passed functions
       if (!myUsageOfExecutionStatus)
-	myPassedFunctions.Add(Lnext);
+        myPassedFunctions.Add(Lnext);
     }
   }
 
@@ -259,8 +254,8 @@ void TFunction_Iterator::Next()
 }
 
 //=======================================================================
-//function : GetStatus
-//purpose  : Returns the execution status of the function
+// function : GetStatus
+// purpose  : Returns the execution status of the function
 //=======================================================================
 
 TFunction_ExecutionStatus TFunction_Iterator::GetStatus(const TDF_Label& func) const
@@ -270,40 +265,38 @@ TFunction_ExecutionStatus TFunction_Iterator::GetStatus(const TDF_Label& func) c
 }
 
 //=======================================================================
-//function : SetStatus
-//purpose  : Defines an execution status for a function
+// function : SetStatus
+// purpose  : Defines an execution status for a function
 //=======================================================================
 
-void TFunction_Iterator::SetStatus(const TDF_Label& func,
-				   const TFunction_ExecutionStatus status) const
+void TFunction_Iterator::SetStatus(const TDF_Label&                func,
+                                   const TFunction_ExecutionStatus status) const
 {
   TFunction_IFunction iFunction(func);
   iFunction.GetGraphNode()->SetStatus(status);
 }
 
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-Standard_OStream& TFunction_Iterator::Dump (Standard_OStream& anOS) const
-{  
-  anOS << "Functions:" << std::endl ;
+//=================================================================================================
+
+Standard_OStream& TFunction_Iterator::Dump(Standard_OStream& anOS) const
+{
+  anOS << "Functions:" << std::endl;
 
   if (myCurrent.IsEmpty())
     return anOS;
 
   // Memorize the status of each function
   // in order to recover it after iteration.
-  TDF_LabelIntegerMap saved_status;
+  TDF_LabelIntegerMap     saved_status;
   Handle(TFunction_Scope) scope = TFunction_Scope::Set(myCurrent.First());
   TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel itrd(scope->GetFunctions());
   for (; itrd.More(); itrd.Next())
   {
-    const TDF_Label& L = itrd.Key2();
+    const TDF_Label&            L = itrd.Key2();
     Handle(TFunction_GraphNode) G;
     if (L.FindAttribute(TFunction_GraphNode::GetID(), G))
     {
-      saved_status.Bind(L, (Standard_Integer) G->GetStatus());
+      saved_status.Bind(L, (Standard_Integer)G->GetStatus());
       G->SetStatus(TFunction_ES_NotExecuted);
     }
   }
@@ -324,20 +317,20 @@ Standard_OStream& TFunction_Iterator::Dump (Standard_OStream& anOS) const
       Handle(TDataStd_Name) N;
       if (L.FindAttribute(TDataStd_Name::GetID(), N))
       {
-	anOS << TCollection_AsciiString(N->Get()).ToCString() ;
+        anOS << TCollection_AsciiString(N->Get()).ToCString();
       }
 
       Handle(TFunction_GraphNode) G;
       if (L.FindAttribute(TFunction_GraphNode::GetID(), G))
       {
-	G->SetStatus(TFunction_ES_Succeeded);
+        G->SetStatus(TFunction_ES_Succeeded);
       }
 
-      anOS << "\t" ;
+      anOS << "\t";
     }
 
     fIterator.Next();
-    
+
     anOS << std::endl;
   }
 
@@ -345,9 +338,9 @@ Standard_OStream& TFunction_Iterator::Dump (Standard_OStream& anOS) const
   TDF_DataMapIteratorOfLabelIntegerMap itrm(saved_status);
   for (; itrm.More(); itrm.Next())
   {
-    const TDF_Label& L = itrm.Key();
-    TFunction_ExecutionStatus status = (TFunction_ExecutionStatus) itrm.Value();
-    
+    const TDF_Label&          L      = itrm.Key();
+    TFunction_ExecutionStatus status = (TFunction_ExecutionStatus)itrm.Value();
+
     Handle(TFunction_GraphNode) G;
     if (L.FindAttribute(TFunction_GraphNode::GetID(), G))
     {

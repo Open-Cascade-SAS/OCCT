@@ -24,139 +24,170 @@
 #include <gp_Parab.hxx>
 #include <gp_Hypr.hxx>
 
-
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 
 #include <TColStd_Array1OfReal.hxx>
 
 //============================================================
-inline Standard_Real BRepBlend_HCurveTool::FirstParameter (const Handle(Adaptor3d_Curve)& C) {
-  return(C->FirstParameter());
+inline Standard_Real BRepBlend_HCurveTool::FirstParameter(const Handle(Adaptor3d_Curve)& C)
+{
+  return (C->FirstParameter());
 }
+
 //============================================================
-inline Standard_Real BRepBlend_HCurveTool::LastParameter (const Handle(Adaptor3d_Curve)& C) {
-  return(C->LastParameter());
+inline Standard_Real BRepBlend_HCurveTool::LastParameter(const Handle(Adaptor3d_Curve)& C)
+{
+  return (C->LastParameter());
 }
+
 //============================================================
-inline GeomAbs_Shape BRepBlend_HCurveTool::Continuity (const Handle(Adaptor3d_Curve)& C) {
-  return(C->Continuity());
+inline GeomAbs_Shape BRepBlend_HCurveTool::Continuity(const Handle(Adaptor3d_Curve)& C)
+{
+  return (C->Continuity());
 }
+
 //============================================================
-inline Standard_Integer BRepBlend_HCurveTool::NbIntervals(const Handle(Adaptor3d_Curve)& C,const GeomAbs_Shape Sh) {
-  return(C->NbIntervals(Sh));
+inline Standard_Integer BRepBlend_HCurveTool::NbIntervals(const Handle(Adaptor3d_Curve)& C,
+                                                          const GeomAbs_Shape            Sh)
+{
+  return (C->NbIntervals(Sh));
 }
+
 //============================================================
 inline void BRepBlend_HCurveTool::Intervals(const Handle(Adaptor3d_Curve)& C,
-							     TColStd_Array1OfReal& Tab,
-							     const GeomAbs_Shape Sh) {
-  C->Intervals(Tab,Sh);
+                                            TColStd_Array1OfReal&          Tab,
+                                            const GeomAbs_Shape            Sh)
+{
+  C->Intervals(Tab, Sh);
 }
+
 //============================================================
-inline Standard_Boolean BRepBlend_HCurveTool::IsClosed(const Handle(Adaptor3d_Curve)& C) {
-  return(C->IsClosed());
+inline Standard_Boolean BRepBlend_HCurveTool::IsClosed(const Handle(Adaptor3d_Curve)& C)
+{
+  return (C->IsClosed());
 }
+
 //============================================================
-inline Standard_Boolean BRepBlend_HCurveTool::IsPeriodic(const Handle(Adaptor3d_Curve)& C) {
-  return(C->IsPeriodic());
+inline Standard_Boolean BRepBlend_HCurveTool::IsPeriodic(const Handle(Adaptor3d_Curve)& C)
+{
+  return (C->IsPeriodic());
 }
+
 //============================================================
-inline Standard_Real BRepBlend_HCurveTool::Period(const Handle(Adaptor3d_Curve)& C) {
-  return(C->Period());
+inline Standard_Real BRepBlend_HCurveTool::Period(const Handle(Adaptor3d_Curve)& C)
+{
+  return (C->Period());
 }
+
 //============================================================
-inline gp_Pnt BRepBlend_HCurveTool::Value (const Handle(Adaptor3d_Curve)& C,
-						const Standard_Real U) {
-  return(C->Value(U));
+inline gp_Pnt BRepBlend_HCurveTool::Value(const Handle(Adaptor3d_Curve)& C, const Standard_Real U)
+{
+  return (C->Value(U));
 }
+
 //============================================================
 inline void BRepBlend_HCurveTool::D0(const Handle(Adaptor3d_Curve)& C,
-					  const Standard_Real U,
-					  gp_Pnt& P) {
-  C->D0(U,P);
+                                     const Standard_Real            U,
+                                     gp_Pnt&                        P)
+{
+  C->D0(U, P);
 }
+
 //============================================================
-inline void BRepBlend_HCurveTool::D1 (const Handle(Adaptor3d_Curve)& C,
-					   const Standard_Real U,
-					   gp_Pnt& P,
-					   gp_Vec& T) {
-  C->D1(U,P,T);
+inline void BRepBlend_HCurveTool::D1(const Handle(Adaptor3d_Curve)& C,
+                                     const Standard_Real            U,
+                                     gp_Pnt&                        P,
+                                     gp_Vec&                        T)
+{
+  C->D1(U, P, T);
 }
+
 //============================================================
-inline void BRepBlend_HCurveTool::D2 (const Handle(Adaptor3d_Curve)& C,
-					   const Standard_Real U,
-					   gp_Pnt& P,
-					   gp_Vec& T,
-					   gp_Vec& N) {
-  
-  C->D2(U,P,T,N);
+inline void BRepBlend_HCurveTool::D2(const Handle(Adaptor3d_Curve)& C,
+                                     const Standard_Real            U,
+                                     gp_Pnt&                        P,
+                                     gp_Vec&                        T,
+                                     gp_Vec&                        N)
+{
+
+  C->D2(U, P, T, N);
 }
+
 //============================================================
-inline void BRepBlend_HCurveTool::D3 (const Handle(Adaptor3d_Curve)& C,
-					   const Standard_Real U,
-					   gp_Pnt& P,
-					   gp_Vec& V1,
-					   gp_Vec& V2,
-					   gp_Vec& V3) {
-  
-  C->D3(U,P,V1,V2,V3);
+inline void BRepBlend_HCurveTool::D3(const Handle(Adaptor3d_Curve)& C,
+                                     const Standard_Real            U,
+                                     gp_Pnt&                        P,
+                                     gp_Vec&                        V1,
+                                     gp_Vec&                        V2,
+                                     gp_Vec&                        V3)
+{
+
+  C->D3(U, P, V1, V2, V3);
 }
+
 //============================================================
-inline gp_Vec BRepBlend_HCurveTool::DN (const Handle(Adaptor3d_Curve)& C,
-					     const Standard_Real U,
-					     const Standard_Integer N) { 
-  
-  return(C->DN(U,N));
+inline gp_Vec BRepBlend_HCurveTool::DN(const Handle(Adaptor3d_Curve)& C,
+                                       const Standard_Real            U,
+                                       const Standard_Integer         N)
+{
+
+  return (C->DN(U, N));
 }
+
 //============================================================
 inline Standard_Real BRepBlend_HCurveTool::Resolution(const Handle(Adaptor3d_Curve)& C,
-							   const Standard_Real R3d) {
-  return(C->Resolution(R3d));
+                                                      const Standard_Real            R3d)
+{
+  return (C->Resolution(R3d));
 }
+
 //============================================================
-inline GeomAbs_CurveType BRepBlend_HCurveTool::GetType(const Handle(Adaptor3d_Curve)& C) {
-  return(C->GetType());
+inline GeomAbs_CurveType BRepBlend_HCurveTool::GetType(const Handle(Adaptor3d_Curve)& C)
+{
+  return (C->GetType());
 }
+
 //============================================================
-inline gp_Lin BRepBlend_HCurveTool::Line (const Handle(Adaptor3d_Curve)& C) {
-  return(C->Line());
+inline gp_Lin BRepBlend_HCurveTool::Line(const Handle(Adaptor3d_Curve)& C)
+{
+  return (C->Line());
 }
+
 //============================================================
-inline gp_Circ BRepBlend_HCurveTool::Circle (const Handle(Adaptor3d_Curve)& C) {
-  return(C->Circle());
+inline gp_Circ BRepBlend_HCurveTool::Circle(const Handle(Adaptor3d_Curve)& C)
+{
+  return (C->Circle());
 }
+
 //============================================================
-inline gp_Elips BRepBlend_HCurveTool::Ellipse (const Handle(Adaptor3d_Curve)& C) {
-  return(C->Ellipse());
+inline gp_Elips BRepBlend_HCurveTool::Ellipse(const Handle(Adaptor3d_Curve)& C)
+{
+  return (C->Ellipse());
 }
+
 //============================================================
-inline gp_Parab BRepBlend_HCurveTool::Parabola (const Handle(Adaptor3d_Curve)& C) {
-  return(C->Parabola());
+inline gp_Parab BRepBlend_HCurveTool::Parabola(const Handle(Adaptor3d_Curve)& C)
+{
+  return (C->Parabola());
 }
+
 //============================================================
-inline gp_Hypr BRepBlend_HCurveTool::Hyperbola (const Handle(Adaptor3d_Curve)& C) {
-  return(C->Hyperbola());
+inline gp_Hypr BRepBlend_HCurveTool::Hyperbola(const Handle(Adaptor3d_Curve)& C)
+{
+  return (C->Hyperbola());
 }
+
 //============================================================
-inline Handle(Geom_BezierCurve) BRepBlend_HCurveTool::Bezier (const Handle(Adaptor3d_Curve)& C) {
-  return(C->Bezier());
+inline Handle(Geom_BezierCurve) BRepBlend_HCurveTool::Bezier(const Handle(Adaptor3d_Curve)& C)
+{
+  return (C->Bezier());
 }
+
 //============================================================
-inline Handle(Geom_BSplineCurve) BRepBlend_HCurveTool::BSpline (const Handle(Adaptor3d_Curve)& C) {
-  return(C->BSpline());
+inline Handle(Geom_BSplineCurve) BRepBlend_HCurveTool::BSpline(const Handle(Adaptor3d_Curve)& C)
+{
+  return (C->BSpline());
 }
+
 //============================================================
-
-
-
-
-
-
-
-
-
-
-
-
-
-

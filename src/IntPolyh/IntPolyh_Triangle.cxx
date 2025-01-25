@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IntPolyh_Triangle.hxx>
 
 #include <stdio.h>
@@ -22,57 +21,52 @@
 #define MyConfusionPrecision 10.0e-12
 #define SquareMyConfusionPrecision 10.0e-24
 
-static
-  void GetInfoTA(const Standard_Integer numP1,
-		 const Standard_Integer numP2,
-		 const Standard_Integer numTA,
-		 const IntPolyh_ArrayOfTriangles & TTriangles,
-		 Standard_Integer & numP3b,
-		 Standard_Integer & P3bIndex,
-		 Standard_Integer & Edge2b,
-		 Standard_Integer & Edge3b);
-static
-  void NewTriangle(const Standard_Integer P1,
-		   const Standard_Integer P2,
-		   const Standard_Integer P3,
-		   IntPolyh_ArrayOfTriangles &TTriangles,
-		   const Handle(Adaptor3d_Surface)& MySurface,
-		   IntPolyh_ArrayOfPoints &TPoints);
-static
-  void NewEdge(const Standard_Integer P1,
-	       const Standard_Integer P2,
-	       const Standard_Integer T1,
-	       const Standard_Integer T2,
-	     IntPolyh_ArrayOfEdges & TEdges); 
-static
-  void OldEdge(const Standard_Integer EdgeN,
-	       const Standard_Integer NumTri,
-	       const Standard_Integer NewTriNum,
-	       IntPolyh_ArrayOfEdges & TEdges) ;
+static void GetInfoTA(const Standard_Integer           numP1,
+                      const Standard_Integer           numP2,
+                      const Standard_Integer           numTA,
+                      const IntPolyh_ArrayOfTriangles& TTriangles,
+                      Standard_Integer&                numP3b,
+                      Standard_Integer&                P3bIndex,
+                      Standard_Integer&                Edge2b,
+                      Standard_Integer&                Edge3b);
+static void NewTriangle(const Standard_Integer           P1,
+                        const Standard_Integer           P2,
+                        const Standard_Integer           P3,
+                        IntPolyh_ArrayOfTriangles&       TTriangles,
+                        const Handle(Adaptor3d_Surface)& MySurface,
+                        IntPolyh_ArrayOfPoints&          TPoints);
+static void NewEdge(const Standard_Integer P1,
+                    const Standard_Integer P2,
+                    const Standard_Integer T1,
+                    const Standard_Integer T2,
+                    IntPolyh_ArrayOfEdges& TEdges);
+static void OldEdge(const Standard_Integer EdgeN,
+                    const Standard_Integer NumTri,
+                    const Standard_Integer NewTriNum,
+                    IntPolyh_ArrayOfEdges& TEdges);
 
 //=======================================================================
-//function : ComputeDeflection
-//purpose  : Computes the deflection of the triangle.
+// function : ComputeDeflection
+// purpose  : Computes the deflection of the triangle.
 //           It is computed as a distance between triangles plane and
 //           barycenter of the triangle in UV space.
 //=======================================================================
-Standard_Real
-  IntPolyh_Triangle::ComputeDeflection(const Handle(Adaptor3d_Surface)& theSurface,
-                                       const IntPolyh_ArrayOfPoints& TPoints)
+Standard_Real IntPolyh_Triangle::ComputeDeflection(const Handle(Adaptor3d_Surface)& theSurface,
+                                                   const IntPolyh_ArrayOfPoints&    TPoints)
 {
   myDeflection = 0.;
   //
-  const IntPolyh_Point & P1 = TPoints[myPoints[0]];
-  const IntPolyh_Point & P2 = TPoints[myPoints[1]];
-  const IntPolyh_Point & P3 = TPoints[myPoints[2]];
+  const IntPolyh_Point& P1 = TPoints[myPoints[0]];
+  const IntPolyh_Point& P2 = TPoints[myPoints[1]];
+  const IntPolyh_Point& P3 = TPoints[myPoints[2]];
   //
   {
     // check if the triangle is not degenerated - no more than one point
     // has a degenerated flag
-    Standard_Integer iDeg = (P1.Degenerated() ? 1 : 0) +
-                            (P2.Degenerated() ? 1 : 0) +
-                            (P3.Degenerated() ? 1 : 0);
-    if (iDeg > 1) {
+    Standard_Integer iDeg =
+      (P1.Degenerated() ? 1 : 0) + (P2.Degenerated() ? 1 : 0) + (P3.Degenerated() ? 1 : 0);
+    if (iDeg > 1)
+    {
       myIsDegenerated = Standard_True;
       return myDeflection;
     }
@@ -80,56 +74,54 @@ Standard_Real
   //
   // Plane of the triangle
   IntPolyh_Point NormaleTri;
-  NormaleTri.Cross(P2-P1,P3-P1);
+  NormaleTri.Cross(P2 - P1, P3 - P1);
   Standard_Real SqNorm = NormaleTri.SquareModulus();
-  if (SqNorm < SquareMyConfusionPrecision) {
+  if (SqNorm < SquareMyConfusionPrecision)
+  {
     // The triangle is degenerated
     myIsDegenerated = Standard_True;
     return myDeflection;
   }
   //
   // Compute point on the surface
-  Standard_Real Gu=(P1.U()+P2.U()+P3.U())/3.0;
-  Standard_Real Gv=(P1.V()+P2.V()+P3.V())/3.0;
-  gp_Pnt PtXYZ = theSurface->Value( Gu, Gv);
+  Standard_Real Gu    = (P1.U() + P2.U() + P3.U()) / 3.0;
+  Standard_Real Gv    = (P1.V() + P2.V() + P3.V()) / 3.0;
+  gp_Pnt        PtXYZ = theSurface->Value(Gu, Gv);
   // Point on the surface
   IntPolyh_Point BarycentreReel(PtXYZ.X(), PtXYZ.Y(), PtXYZ.Z(), Gu, Gv);
   // compute distance to plane
-  NormaleTri = NormaleTri / sqrt(SqNorm);
+  NormaleTri   = NormaleTri / sqrt(SqNorm);
   myDeflection = Abs(NormaleTri.Dot(BarycentreReel - P1));
   return myDeflection;
 }
 
-//=======================================================================
-//function : GetNextTriangle
-//purpose  : 
-//=======================================================================
-Standard_Integer
-  IntPolyh_Triangle::GetNextTriangle(const Standard_Integer theTriangle,
-                                     const Standard_Integer theEdgeNum,
-                                     const IntPolyh_ArrayOfEdges& TEdges) const
+//=================================================================================================
+
+Standard_Integer IntPolyh_Triangle::GetNextTriangle(const Standard_Integer       theTriangle,
+                                                    const Standard_Integer       theEdgeNum,
+                                                    const IntPolyh_ArrayOfEdges& TEdges) const
 {
   Standard_Integer aNextTriangle = -1;
-  if (theEdgeNum < 1 || theEdgeNum > 3) {
+  if (theEdgeNum < 1 || theEdgeNum > 3)
+  {
     return aNextTriangle;
   }
   //
-  const IntPolyh_Edge & anEdge = TEdges[myEdges[theEdgeNum-1]];
-  aNextTriangle = ((anEdge.FirstTriangle() == theTriangle) ?
-    anEdge.SecondTriangle() : anEdge.FirstTriangle());
+  const IntPolyh_Edge& anEdge = TEdges[myEdges[theEdgeNum - 1]];
+  aNextTriangle =
+    ((anEdge.FirstTriangle() == theTriangle) ? anEdge.SecondTriangle() : anEdge.FirstTriangle());
   return aNextTriangle;
 }
 
-//=======================================================================
-//function : LinkEdges2Triangle
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntPolyh_Triangle::LinkEdges2Triangle(const IntPolyh_ArrayOfEdges& TEdges,
-                                           const Standard_Integer theEdge1,
-                                           const Standard_Integer theEdge2,
-                                           const Standard_Integer theEdge3)
+                                           const Standard_Integer       theEdge1,
+                                           const Standard_Integer       theEdge2,
+                                           const Standard_Integer       theEdge3)
 {
-  if (theEdge1 < 0 || theEdge2 < 0 || theEdge3 < 0) {
+  if (theEdge1 < 0 || theEdge2 < 0 || theEdge3 < 0)
+  {
     return;
   }
   //
@@ -142,80 +134,86 @@ void IntPolyh_Triangle::LinkEdges2Triangle(const IntPolyh_ArrayOfEdges& TEdges,
   myEdgesOrientations[2] = ((TEdges[myEdges[2]].FirstPoint() == myPoints[2]) ? 1 : -1);
 }
 
-//=======================================================================
-//function : GetInfoTA
-//purpose  : 
-//=======================================================================
-void GetInfoTA(const Standard_Integer numP1,
-	       const Standard_Integer numP2,
-	       const Standard_Integer numTA,
-	       const IntPolyh_ArrayOfTriangles & TTriangles,
-	       Standard_Integer & numP3b,
-	       Standard_Integer & P3bIndex,
-	       Standard_Integer & Edge2b,
-	       Standard_Integer & Edge3b)
+//=================================================================================================
+
+void GetInfoTA(const Standard_Integer           numP1,
+               const Standard_Integer           numP2,
+               const Standard_Integer           numTA,
+               const IntPolyh_ArrayOfTriangles& TTriangles,
+               Standard_Integer&                numP3b,
+               Standard_Integer&                P3bIndex,
+               Standard_Integer&                Edge2b,
+               Standard_Integer&                Edge3b)
 {
   /// On veut savoir quel est le troisieme point du triangle
   /// adjacent (TriAdj) et quel sont les edges partant de ce point
-  const IntPolyh_Triangle & TriAdj=TTriangles[numTA];
-  Standard_Integer P1b=TriAdj.FirstPoint();
-  Standard_Integer P2b=TriAdj.SecondPoint();
-  Standard_Integer P3b=TriAdj.ThirdPoint();
+  const IntPolyh_Triangle& TriAdj = TTriangles[numTA];
+  Standard_Integer         P1b    = TriAdj.FirstPoint();
+  Standard_Integer         P2b    = TriAdj.SecondPoint();
+  Standard_Integer         P3b    = TriAdj.ThirdPoint();
 
-  if ( (P1b!=numP1)&&(P1b!=numP2) ) { 
-    numP3b=P1b; 
-    P3bIndex=1;
-    if (P2b==numP1) {
-      ///P1bP2b==numP3bnumP1:Edge3b donc dans ce cas
-     Edge3b=TriAdj.FirstEdge();
-     /// Donc P1bP3b==numP3bnumP2:Edge2b
-     Edge2b=TriAdj.ThirdEdge();
-   }
-    else {
-     Edge2b=TriAdj.FirstEdge();
-     Edge3b=TriAdj.ThirdEdge();
+  if ((P1b != numP1) && (P1b != numP2))
+  {
+    numP3b   = P1b;
+    P3bIndex = 1;
+    if (P2b == numP1)
+    {
+      /// P1bP2b==numP3bnumP1:Edge3b donc dans ce cas
+      Edge3b = TriAdj.FirstEdge();
+      /// Donc P1bP3b==numP3bnumP2:Edge2b
+      Edge2b = TriAdj.ThirdEdge();
+    }
+    else
+    {
+      Edge2b = TriAdj.FirstEdge();
+      Edge3b = TriAdj.ThirdEdge();
     }
   }
-  else if( (P2b!=numP1)&&(P2b!=numP2) ) { 
-    numP3b=P2b; 
-    P3bIndex=2;
-    if (P1b==numP1) {
-      ///P2bP1b==numP3bnumP1:Edge3b donc dans ce cas
-     Edge3b=TriAdj.FirstEdge();
-     /// Donc P2bP3b==numP3bnumP2:Edge2b
-     Edge2b=TriAdj.SecondEdge();
-   }
-    else {
-     Edge2b=TriAdj.FirstEdge();
-     Edge3b=TriAdj.SecondEdge();
+  else if ((P2b != numP1) && (P2b != numP2))
+  {
+    numP3b   = P2b;
+    P3bIndex = 2;
+    if (P1b == numP1)
+    {
+      /// P2bP1b==numP3bnumP1:Edge3b donc dans ce cas
+      Edge3b = TriAdj.FirstEdge();
+      /// Donc P2bP3b==numP3bnumP2:Edge2b
+      Edge2b = TriAdj.SecondEdge();
+    }
+    else
+    {
+      Edge2b = TriAdj.FirstEdge();
+      Edge3b = TriAdj.SecondEdge();
     }
   }
-  else if( (P3b!=numP1)&&(P3b!=numP2) ) { 
-    numP3b=P3b; 
-    P3bIndex=3; 
-    if (P2b==numP1) {
-      ///P3bP2b==numP3bnumP1:Edge3b donc dans ce cas
-     Edge3b=TriAdj.SecondEdge();
-     /// Donc P3bP1b==numP3bnumP2:Edge2b
-     Edge2b=TriAdj.ThirdEdge();
-   }
-    else {
-     Edge2b=TriAdj.SecondEdge();
-     Edge3b=TriAdj.ThirdEdge();
+  else if ((P3b != numP1) && (P3b != numP2))
+  {
+    numP3b   = P3b;
+    P3bIndex = 3;
+    if (P2b == numP1)
+    {
+      /// P3bP2b==numP3bnumP1:Edge3b donc dans ce cas
+      Edge3b = TriAdj.SecondEdge();
+      /// Donc P3bP1b==numP3bnumP2:Edge2b
+      Edge2b = TriAdj.ThirdEdge();
     }
-  }      
+    else
+    {
+      Edge2b = TriAdj.SecondEdge();
+      Edge3b = TriAdj.ThirdEdge();
+    }
+  }
 }
 
-//=======================================================================
-//function : NewTriangle
-//purpose  : 
-//=======================================================================
-void NewTriangle(const Standard_Integer P1,
-		 const Standard_Integer P2,
-		 const Standard_Integer P3,
-		 IntPolyh_ArrayOfTriangles &TTriangles,
-		 const Handle(Adaptor3d_Surface)& MySurface,
-		 IntPolyh_ArrayOfPoints &TPoints) {
+//=================================================================================================
+
+void NewTriangle(const Standard_Integer           P1,
+                 const Standard_Integer           P2,
+                 const Standard_Integer           P3,
+                 IntPolyh_ArrayOfTriangles&       TTriangles,
+                 const Handle(Adaptor3d_Surface)& MySurface,
+                 IntPolyh_ArrayOfPoints&          TPoints)
+{
   const Standard_Integer FinTT = TTriangles.NbItems();
   TTriangles[FinTT].SetFirstPoint(P1);
   TTriangles[FinTT].SetSecondPoint(P2);
@@ -224,15 +222,13 @@ void NewTriangle(const Standard_Integer P1,
   TTriangles.IncrementNbItems();
 }
 
-//=======================================================================
-//function : NewEdge
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void NewEdge(const Standard_Integer P1,
-	     const Standard_Integer P2,
-	     const Standard_Integer T1,
-	     const Standard_Integer T2,
-	     IntPolyh_ArrayOfEdges & TEdges)
+             const Standard_Integer P2,
+             const Standard_Integer T1,
+             const Standard_Integer T2,
+             IntPolyh_ArrayOfEdges& TEdges)
 {
 
   const Standard_Integer FinTE = TEdges.NbItems();
@@ -244,32 +240,30 @@ void NewEdge(const Standard_Integer P1,
   TEdges.IncrementNbItems();
 }
 
-//=======================================================================
-//function : OldEdge
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void OldEdge(const Standard_Integer EdgeN,
-	     const Standard_Integer NumTri,
-	     const Standard_Integer NewTriNum,
-	     IntPolyh_ArrayOfEdges & TEdges) 
+             const Standard_Integer NumTri,
+             const Standard_Integer NewTriNum,
+             IntPolyh_ArrayOfEdges& TEdges)
 {
-  if(TEdges[EdgeN].FirstTriangle()==NumTri){
+  if (TEdges[EdgeN].FirstTriangle() == NumTri)
+  {
     TEdges[EdgeN].SetFirstTriangle(NewTriNum);
   }
-  else{
+  else
+  {
     TEdges[EdgeN].SetSecondTriangle(NewTriNum);
   }
 }
 
-//=======================================================================
-//function : MiddleRefinement
-//purpose  : 
-//=======================================================================
-void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer NumTri,
+//=================================================================================================
+
+void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer           NumTri,
                                          const Handle(Adaptor3d_Surface)& MySurface,
-                                         IntPolyh_ArrayOfPoints &TPoints,
-                                         IntPolyh_ArrayOfTriangles &TTriangles,
-                                         IntPolyh_ArrayOfEdges & TEdges)
+                                         IntPolyh_ArrayOfPoints&          TPoints,
+                                         IntPolyh_ArrayOfTriangles&       TTriangles,
+                                         IntPolyh_ArrayOfEdges&           TEdges)
 {
 
   Standard_Integer FinTE = TEdges.NbItems();
@@ -289,310 +283,317 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer NumTri,
   Standard_Real L23 = P2.SquareDistance(P3);
   Standard_Real L31 = P3.SquareDistance(P1);
 
-  if ((L12>L23) && (L12>L31)) {
+  if ((L12 > L23) && (L12 > L31))
+  {
     const Standard_Integer FinTP = TPoints.NbItems();
-    (TPoints[FinTP]).Middle( MySurface,P1, P2);
-    
-    ///les nouveaux triangles
-    Standard_Integer T1,T2,T3,T4;
+    (TPoints[FinTP]).Middle(MySurface, P1, P2);
 
-    T1=FinTT;
-    NewTriangle(numP2,numP3,FinTP,TTriangles,MySurface,TPoints);
+    /// les nouveaux triangles
+    Standard_Integer T1, T2, T3, T4;
+
+    T1 = FinTT;
+    NewTriangle(numP2, numP3, FinTP, TTriangles, MySurface, TPoints);
     FinTT++;
-    T2=FinTT;
-    NewTriangle(numP3,numP1,FinTP,TTriangles,MySurface,TPoints);
+    T2 = FinTT;
+    NewTriangle(numP3, numP1, FinTP, TTriangles, MySurface, TPoints);
     FinTT++;
 
     ///***AFFINAGE DU TRIANGLE ADJACENT***
 
-    Standard_Integer numTA = GetNextTriangle(NumTri,1,TEdges);
+    Standard_Integer numTA = GetNextTriangle(NumTri, 1, TEdges);
 
-    if (numTA>=0) {
-      Standard_Integer numP3b = -1;
+    if (numTA >= 0)
+    {
+      Standard_Integer numP3b   = -1;
       Standard_Integer P3bIndex = -1;
 
       Standard_Integer Edge2b = -1;
       Standard_Integer Edge3b = -1;
-      
-      GetInfoTA(numP1,numP2,numTA,TTriangles,numP3b,P3bIndex,Edge2b,Edge3b);
-      
-      T3=FinTT;
-      NewTriangle(numP2,numP3b,FinTP,TTriangles,MySurface,TPoints);
+
+      GetInfoTA(numP1, numP2, numTA, TTriangles, numP3b, P3bIndex, Edge2b, Edge3b);
+
+      T3 = FinTT;
+      NewTriangle(numP2, numP3b, FinTP, TTriangles, MySurface, TPoints);
       FinTT++;
-      T4=FinTT;
-      NewTriangle(numP3b,numP1,FinTP,TTriangles,MySurface,TPoints);
+      T4 = FinTT;
+      NewTriangle(numP3b, numP1, FinTP, TTriangles, MySurface, TPoints);
 
-      ///On cree les nouveaux edges
-      Standard_Integer E1,E2,E3,E4;
-      
-      E1=FinTE;
-      NewEdge(numP1,FinTP,T2,T4,TEdges);
-      FinTE++;
-      E2=FinTE;
-      NewEdge(FinTP,numP2,T1,T3,TEdges);
-      FinTE++;
-      E3=FinTE;
-      NewEdge(FinTP,numP3,T1,T2,TEdges);
-      FinTE++;
-      E4=FinTE;
-      NewEdge(FinTP,numP3b,T3,T4,TEdges);
+      /// On cree les nouveaux edges
+      Standard_Integer E1, E2, E3, E4;
 
-      ///On met a jour les anciens edges
-      OldEdge(myEdges[1],NumTri,T1,TEdges);
-      OldEdge(myEdges[2],NumTri,T2,TEdges);
-      OldEdge(Edge2b,numTA,T3,TEdges);
-      OldEdge(Edge3b,numTA,T4,TEdges);
-      
+      E1 = FinTE;
+      NewEdge(numP1, FinTP, T2, T4, TEdges);
+      FinTE++;
+      E2 = FinTE;
+      NewEdge(FinTP, numP2, T1, T3, TEdges);
+      FinTE++;
+      E3 = FinTE;
+      NewEdge(FinTP, numP3, T1, T2, TEdges);
+      FinTE++;
+      E4 = FinTE;
+      NewEdge(FinTP, numP3b, T3, T4, TEdges);
+
+      /// On met a jour les anciens edges
+      OldEdge(myEdges[1], NumTri, T1, TEdges);
+      OldEdge(myEdges[2], NumTri, T2, TEdges);
+      OldEdge(Edge2b, numTA, T3, TEdges);
+      OldEdge(Edge3b, numTA, T4, TEdges);
+
       /// On remplit les nouveaux triangles avec les edges
-      TTriangles[T1].LinkEdges2Triangle(TEdges,myEdges[1],E3,E2);
-      TTriangles[T2].LinkEdges2Triangle(TEdges,myEdges[2],E1,E3);
-      TTriangles[T3].LinkEdges2Triangle(TEdges,Edge2b,E4,E2);
-      TTriangles[T4].LinkEdges2Triangle(TEdges,Edge3b,E1,E4);
+      TTriangles[T1].LinkEdges2Triangle(TEdges, myEdges[1], E3, E2);
+      TTriangles[T2].LinkEdges2Triangle(TEdges, myEdges[2], E1, E3);
+      TTriangles[T3].LinkEdges2Triangle(TEdges, Edge2b, E4, E2);
+      TTriangles[T4].LinkEdges2Triangle(TEdges, Edge3b, E1, E4);
 
-      ///On tue le triangle adjacent
+      /// On tue le triangle adjacent
       TTriangles[numTA].SetDeflection(-1.0);
       TTriangles[numTA].SetIntersectionPossible(Standard_False);
-
     }
-    else { ///seulement deux nouveaux triangles
-      //on cree les nouveaux edges avec T1 et T2
-      Standard_Integer E1,E2,E3;
-      
-      E1=FinTE;
-      NewEdge(numP1,FinTP,T2,-1,TEdges);
-      FinTE++;
-      E2=FinTE;
-      NewEdge(FinTP,numP2,T1,-1,TEdges);
-      FinTE++;
-      E3=FinTE;
-      NewEdge(FinTP,numP3,T1,T2,TEdges);
+    else
+    { /// seulement deux nouveaux triangles
+      // on cree les nouveaux edges avec T1 et T2
+      Standard_Integer E1, E2, E3;
 
-      ///On met a jour les anciens edges
-      OldEdge(myEdges[1],NumTri,T1,TEdges);
-      OldEdge(myEdges[2],NumTri,T2,TEdges);
-      
+      E1 = FinTE;
+      NewEdge(numP1, FinTP, T2, -1, TEdges);
+      FinTE++;
+      E2 = FinTE;
+      NewEdge(FinTP, numP2, T1, -1, TEdges);
+      FinTE++;
+      E3 = FinTE;
+      NewEdge(FinTP, numP3, T1, T2, TEdges);
+
+      /// On met a jour les anciens edges
+      OldEdge(myEdges[1], NumTri, T1, TEdges);
+      OldEdge(myEdges[2], NumTri, T2, TEdges);
+
       /// On remplit les nouveaux triangles avec les edges
-      TTriangles[T1].LinkEdges2Triangle(TEdges,myEdges[1],E3,E2);
-      TTriangles[T2].LinkEdges2Triangle(TEdges,myEdges[2],E1,E3);
+      TTriangles[T1].LinkEdges2Triangle(TEdges, myEdges[1], E3, E2);
+      TTriangles[T2].LinkEdges2Triangle(TEdges, myEdges[2], E1, E3);
     }
   }
-  
-  else if ((L23>L31) && (L23>L12)){
-    const Standard_Integer FinTP = TPoints.NbItems();
-    (TPoints[FinTP]).Middle(MySurface, P2,P3);
 
-    ///les nouveaux triangles
-    Standard_Integer T1,T2,T3,T4;    
-    
-    T1=FinTT;
-    NewTriangle(numP1,numP2,FinTP,TTriangles,MySurface,TPoints);
+  else if ((L23 > L31) && (L23 > L12))
+  {
+    const Standard_Integer FinTP = TPoints.NbItems();
+    (TPoints[FinTP]).Middle(MySurface, P2, P3);
+
+    /// les nouveaux triangles
+    Standard_Integer T1, T2, T3, T4;
+
+    T1 = FinTT;
+    NewTriangle(numP1, numP2, FinTP, TTriangles, MySurface, TPoints);
     FinTT++;
-    T2=FinTT;
-    NewTriangle(numP3,numP1,FinTP,TTriangles,MySurface,TPoints);
+    T2 = FinTT;
+    NewTriangle(numP3, numP1, FinTP, TTriangles, MySurface, TPoints);
     FinTT++;
-    
+
     ///*RAFFINAGE DU TRIANGLE ADJACENT***
 
-    Standard_Integer numTA = GetNextTriangle(NumTri,2,TEdges);
+    Standard_Integer numTA = GetNextTriangle(NumTri, 2, TEdges);
 
-    if (numTA>=0) {
-      Standard_Integer numP1b=-1;
+    if (numTA >= 0)
+    {
+      Standard_Integer numP1b   = -1;
       Standard_Integer P1bIndex = -1;
 
       Standard_Integer Edge1b = -1;
       Standard_Integer Edge3b = -1;
 
-      GetInfoTA(numP2,numP3,numTA,TTriangles,numP1b,P1bIndex,Edge3b,Edge1b);     
+      GetInfoTA(numP2, numP3, numTA, TTriangles, numP1b, P1bIndex, Edge3b, Edge1b);
 
-      T3=FinTT;
-      NewTriangle(numP2,numP1b,FinTP,TTriangles,MySurface,TPoints);
+      T3 = FinTT;
+      NewTriangle(numP2, numP1b, FinTP, TTriangles, MySurface, TPoints);
       FinTT++;
-      T4=FinTT;
-      NewTriangle(numP1b,numP3,FinTP,TTriangles,MySurface,TPoints);
+      T4 = FinTT;
+      NewTriangle(numP1b, numP3, FinTP, TTriangles, MySurface, TPoints);
 
-      ///Nouveaux Edges
-      Standard_Integer E1,E2,E3,E4;
+      /// Nouveaux Edges
+      Standard_Integer E1, E2, E3, E4;
 
-      E1=FinTE;
-      NewEdge(numP2,FinTP,T1,T3,TEdges);
+      E1 = FinTE;
+      NewEdge(numP2, FinTP, T1, T3, TEdges);
       FinTE++;
-      E2=FinTE;
-      NewEdge(FinTP,numP3,T2,T4,TEdges);
+      E2 = FinTE;
+      NewEdge(FinTP, numP3, T2, T4, TEdges);
       FinTE++;
-      E3=FinTE;
-      NewEdge(FinTP,numP1,T1,T2,TEdges);
+      E3 = FinTE;
+      NewEdge(FinTP, numP1, T1, T2, TEdges);
       FinTE++;
-      E4=FinTE;
-      NewEdge(FinTP,numP1b,T3,T4,TEdges);
+      E4 = FinTE;
+      NewEdge(FinTP, numP1b, T3, T4, TEdges);
 
-      ///On met a jour les anciens edges
-      OldEdge(myEdges[0],NumTri,T1,TEdges);
-      OldEdge(myEdges[2],NumTri,T2,TEdges);
-      OldEdge(Edge1b,numTA,T3,TEdges);
-      OldEdge(Edge3b,numTA,T4,TEdges);
-      
+      /// On met a jour les anciens edges
+      OldEdge(myEdges[0], NumTri, T1, TEdges);
+      OldEdge(myEdges[2], NumTri, T2, TEdges);
+      OldEdge(Edge1b, numTA, T3, TEdges);
+      OldEdge(Edge3b, numTA, T4, TEdges);
+
       /// On remplit les nouveaux triangles avec les edges
-      TTriangles[T1].LinkEdges2Triangle(TEdges,myEdges[0],E1,E3);
-      TTriangles[T2].LinkEdges2Triangle(TEdges,myEdges[2],E3,E2);
-      TTriangles[T3].LinkEdges2Triangle(TEdges,Edge1b,E4,E1);
-      TTriangles[T4].LinkEdges2Triangle(TEdges,Edge3b,E2,E4);
+      TTriangles[T1].LinkEdges2Triangle(TEdges, myEdges[0], E1, E3);
+      TTriangles[T2].LinkEdges2Triangle(TEdges, myEdges[2], E3, E2);
+      TTriangles[T3].LinkEdges2Triangle(TEdges, Edge1b, E4, E1);
+      TTriangles[T4].LinkEdges2Triangle(TEdges, Edge3b, E2, E4);
 
-      ///On tue le triangle adjacent
+      /// On tue le triangle adjacent
       TTriangles[numTA].SetDeflection(-1.0);
       TTriangles[numTA].SetIntersectionPossible(Standard_False);
     }
-    else { ///seulement deux nouveaux triangles
-      ///Nouveaux Edges
-      Standard_Integer E1,E2,E3;
+    else
+    { /// seulement deux nouveaux triangles
+      /// Nouveaux Edges
+      Standard_Integer E1, E2, E3;
 
-      E1=FinTE;
-      NewEdge(numP2,FinTP,T1,-1,TEdges);
+      E1 = FinTE;
+      NewEdge(numP2, FinTP, T1, -1, TEdges);
       FinTE++;
-      E2=FinTE;
-      NewEdge(FinTP,numP3,T2,-1,TEdges);
+      E2 = FinTE;
+      NewEdge(FinTP, numP3, T2, -1, TEdges);
       FinTE++;
-      E3=FinTE;
-      NewEdge(FinTP,numP1,T1,T2,TEdges);
+      E3 = FinTE;
+      NewEdge(FinTP, numP1, T1, T2, TEdges);
 
-      ///On met a jour les anciens edges
-      OldEdge(myEdges[0],NumTri,T1,TEdges);
-      OldEdge(myEdges[2],NumTri,T2,TEdges);
-      
+      /// On met a jour les anciens edges
+      OldEdge(myEdges[0], NumTri, T1, TEdges);
+      OldEdge(myEdges[2], NumTri, T2, TEdges);
+
       /// On remplit les nouveaux triangles avec les edges
-      TTriangles[T1].LinkEdges2Triangle(TEdges,myEdges[0],E1,E3);
-      TTriangles[T2].LinkEdges2Triangle(TEdges,myEdges[2],E3,E2);
+      TTriangles[T1].LinkEdges2Triangle(TEdges, myEdges[0], E1, E3);
+      TTriangles[T2].LinkEdges2Triangle(TEdges, myEdges[2], E3, E2);
     }
   }
-    else {
+  else
+  {
     const Standard_Integer FinTP = TPoints.NbItems();
-    (TPoints[FinTP]).Middle(MySurface, P3,P1);
+    (TPoints[FinTP]).Middle(MySurface, P3, P1);
 
-    Standard_Integer T1,T2,T3,T4;
-    
-    T1=FinTT;
-    NewTriangle(numP1,numP2,FinTP,TTriangles,MySurface,TPoints);
+    Standard_Integer T1, T2, T3, T4;
+
+    T1 = FinTT;
+    NewTriangle(numP1, numP2, FinTP, TTriangles, MySurface, TPoints);
     FinTT++;
-    T2=FinTT;
-    NewTriangle(numP2,numP3,FinTP,TTriangles,MySurface,TPoints);
+    T2 = FinTT;
+    NewTriangle(numP2, numP3, FinTP, TTriangles, MySurface, TPoints);
     FinTT++;
-    
+
     ///*RAFFINAGE DU TRIANGLE ADJACENT***
 
-    Standard_Integer numTA = GetNextTriangle(NumTri,3,TEdges);
+    Standard_Integer numTA = GetNextTriangle(NumTri, 3, TEdges);
 
-    if (numTA>=0) {
+    if (numTA >= 0)
+    {
 
-      Standard_Integer numP2b = -1;
+      Standard_Integer numP2b   = -1;
       Standard_Integer P2bIndex = -1;
-      
+
       Standard_Integer Edge1b = -1;
       Standard_Integer Edge2b = -1;
-     
-      GetInfoTA(numP3,numP1,numTA,TTriangles,numP2b,P2bIndex,Edge1b,Edge2b);
 
-      T3=FinTT;
-      NewTriangle(numP1,numP2b,FinTP,TTriangles,MySurface,TPoints);
+      GetInfoTA(numP3, numP1, numTA, TTriangles, numP2b, P2bIndex, Edge1b, Edge2b);
+
+      T3 = FinTT;
+      NewTriangle(numP1, numP2b, FinTP, TTriangles, MySurface, TPoints);
       FinTT++;
-      T4=FinTT;
-      NewTriangle(numP2b,numP3,FinTP,TTriangles,MySurface,TPoints);
+      T4 = FinTT;
+      NewTriangle(numP2b, numP3, FinTP, TTriangles, MySurface, TPoints);
 
-      ///Nouveaux Edges
-      Standard_Integer E1,E2,E3,E4;
+      /// Nouveaux Edges
+      Standard_Integer E1, E2, E3, E4;
 
-      E1=FinTE;
-      NewEdge(numP2,FinTP,T1,T2,TEdges);
+      E1 = FinTE;
+      NewEdge(numP2, FinTP, T1, T2, TEdges);
       FinTE++;
-      E2=FinTE;
-      NewEdge(FinTP,numP3,T2,T4,TEdges);
+      E2 = FinTE;
+      NewEdge(FinTP, numP3, T2, T4, TEdges);
       FinTE++;
-      E3=FinTE;
-      NewEdge(FinTP,numP2b,T4,T3,TEdges);
+      E3 = FinTE;
+      NewEdge(FinTP, numP2b, T4, T3, TEdges);
       FinTE++;
-      E4=FinTE;
-      NewEdge(FinTP,numP1,T1,T3,TEdges);
+      E4 = FinTE;
+      NewEdge(FinTP, numP1, T1, T3, TEdges);
 
-      ///On met a jour les anciens edges
-      OldEdge(myEdges[0],NumTri,T1,TEdges);
-      OldEdge(myEdges[1],NumTri,T2,TEdges);
-      OldEdge(Edge1b,numTA,T3,TEdges);
-      OldEdge(Edge2b,numTA,T4,TEdges);
-      
+      /// On met a jour les anciens edges
+      OldEdge(myEdges[0], NumTri, T1, TEdges);
+      OldEdge(myEdges[1], NumTri, T2, TEdges);
+      OldEdge(Edge1b, numTA, T3, TEdges);
+      OldEdge(Edge2b, numTA, T4, TEdges);
+
       /// On remplit les nouveaux triangles avec les edges
-      TTriangles[T1].LinkEdges2Triangle(TEdges,myEdges[0],E1,E4);
-      TTriangles[T2].LinkEdges2Triangle(TEdges,myEdges[1],E2,E1);
-      TTriangles[T3].LinkEdges2Triangle(TEdges,Edge1b,E3,E4);
-      TTriangles[T4].LinkEdges2Triangle(TEdges,Edge2b,E2,E3);
+      TTriangles[T1].LinkEdges2Triangle(TEdges, myEdges[0], E1, E4);
+      TTriangles[T2].LinkEdges2Triangle(TEdges, myEdges[1], E2, E1);
+      TTriangles[T3].LinkEdges2Triangle(TEdges, Edge1b, E3, E4);
+      TTriangles[T4].LinkEdges2Triangle(TEdges, Edge2b, E2, E3);
 
-      ///On tue le triangle adjacent
+      /// On tue le triangle adjacent
       TTriangles[numTA].SetDeflection(-1.0);
       TTriangles[numTA].SetIntersectionPossible(Standard_False);
     }
-    else { ///seulement deux nouveaux triangles
-      ///Nouveaux Edges
-      Standard_Integer E1,E2,E4;
+    else
+    { /// seulement deux nouveaux triangles
+      /// Nouveaux Edges
+      Standard_Integer E1, E2, E4;
 
-      E1=FinTE;
-      NewEdge(numP2,FinTP,T1,T2,TEdges);
+      E1 = FinTE;
+      NewEdge(numP2, FinTP, T1, T2, TEdges);
       FinTE++;
-      E2=FinTE;
-      NewEdge(FinTP,numP3,T2,-1,TEdges);
+      E2 = FinTE;
+      NewEdge(FinTP, numP3, T2, -1, TEdges);
       FinTE++;
-      E4=FinTE;
-      NewEdge(FinTP,numP1,T1,-1,TEdges);
+      E4 = FinTE;
+      NewEdge(FinTP, numP1, T1, -1, TEdges);
 
-      ///On met a jour les anciens edges
-      OldEdge(myEdges[0],NumTri,T1,TEdges);
-      OldEdge(myEdges[1],NumTri,T2,TEdges);
+      /// On met a jour les anciens edges
+      OldEdge(myEdges[0], NumTri, T1, TEdges);
+      OldEdge(myEdges[1], NumTri, T2, TEdges);
 
       /// On remplit les nouveaux triangles avec les edges
-      TTriangles[T1].LinkEdges2Triangle(TEdges,myEdges[0],E1,E4);
-      TTriangles[T2].LinkEdges2Triangle(TEdges,myEdges[1],E2,E1);
+      TTriangles[T1].LinkEdges2Triangle(TEdges, myEdges[0], E1, E4);
+      TTriangles[T2].LinkEdges2Triangle(TEdges, myEdges[1], E2, E1);
     }
   }
   TPoints.IncrementNbItems();
 
   // make the triangle obsolete
-  myDeflection = -1.0;
+  myDeflection             = -1.0;
   myIsIntersectionPossible = Standard_False;
 }
 
-//=======================================================================
-//function : MultipleMiddleRefinement
-//purpose  : 
-//=======================================================================
-void IntPolyh_Triangle::MultipleMiddleRefinement(const Standard_Real theRefineCriterion,
-                                                 const Bnd_Box& theBox,
+//=================================================================================================
+
+void IntPolyh_Triangle::MultipleMiddleRefinement(const Standard_Real    theRefineCriterion,
+                                                 const Bnd_Box&         theBox,
                                                  const Standard_Integer theTriangleNumber,
                                                  const Handle(Adaptor3d_Surface)& theSurface,
-                                                 IntPolyh_ArrayOfPoints& TPoints,
-                                                 IntPolyh_ArrayOfTriangles& TTriangles,
-                                                 IntPolyh_ArrayOfEdges& TEdges)
+                                                 IntPolyh_ArrayOfPoints&          TPoints,
+                                                 IntPolyh_ArrayOfTriangles&       TTriangles,
+                                                 IntPolyh_ArrayOfEdges&           TEdges)
 {
   // Number of triangles before refinement of current triangle
   const Standard_Integer FinTTInit = TTriangles.NbItems();
   // Criteria to stop splitting - double of the initial number of triangles,
   // i.e. allow each triangle to be split at least once. Add a constant
   // to allow the splits of triangles to be checked.
-  const Standard_Integer MaxNbTT = 2*FinTTInit + 1000;
+  const Standard_Integer MaxNbTT = 2 * FinTTInit + 1000;
   // Split the current triangle
   MiddleRefinement(theTriangleNumber, theSurface, TPoints, TTriangles, TEdges);
   // Refine the new triangles
-  for (Standard_Integer i = FinTTInit; i < TTriangles.NbItems() && i < MaxNbTT; ++i) {
+  for (Standard_Integer i = FinTTInit; i < TTriangles.NbItems() && i < MaxNbTT; ++i)
+  {
     IntPolyh_Triangle& aTriangle = TTriangles[i];
-    if(theBox.IsOut(aTriangle.BoundingBox(TPoints))) {
+    if (theBox.IsOut(aTriangle.BoundingBox(TPoints)))
+    {
       aTriangle.SetIntersectionPossible(Standard_False);
     }
-    else if (aTriangle.Deflection() > theRefineCriterion) {
+    else if (aTriangle.Deflection() > theRefineCriterion)
+    {
       aTriangle.MiddleRefinement(i, theSurface, TPoints, TTriangles, TEdges);
     }
   }
 }
 
-//=======================================================================
-//function : SetEdgeAndOrientation
-//purpose  : 
-//=======================================================================
-void IntPolyh_Triangle::SetEdgeAndOrientation(const IntPolyh_Edge& theEdge,
+//=================================================================================================
+
+void IntPolyh_Triangle::SetEdgeAndOrientation(const IntPolyh_Edge&   theEdge,
                                               const Standard_Integer theEdgeIndex)
 {
   // Points on the edge - pe1, pe2
@@ -608,31 +609,34 @@ void IntPolyh_Triangle::SetEdgeAndOrientation(const IntPolyh_Edge& theEdge,
   // In case the order of points on the edge is forward,
   // the orientation is positive, otherwise it is negative.
 
-  for (Standard_Integer i = 0, i1 = 1; i < 3; ++i, ++i1) {
-    if (i1 > 2) {
+  for (Standard_Integer i = 0, i1 = 1; i < 3; ++i, ++i1)
+  {
+    if (i1 > 2)
+    {
       i1 = 0;
     }
     //
-    if (pe1 == myPoints[i] && pe2 == myPoints[i1]) {
-      myEdges[i] = theEdgeIndex;
+    if (pe1 == myPoints[i] && pe2 == myPoints[i1])
+    {
+      myEdges[i]             = theEdgeIndex;
       myEdgesOrientations[i] = 1;
       break;
     }
-    if (pe1 == myPoints[i1] && pe2 == myPoints[i]) {
-      myEdges[i] = theEdgeIndex;
+    if (pe1 == myPoints[i1] && pe2 == myPoints[i])
+    {
+      myEdges[i]             = theEdgeIndex;
       myEdgesOrientations[i] = -1;
       break;
     }
   }
 }
 
-//=======================================================================
-//function : BoundingBox
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 const Bnd_Box& IntPolyh_Triangle::BoundingBox(const IntPolyh_ArrayOfPoints& thePoints)
 {
-  if (myBox.IsVoid()) {
+  if (myBox.IsVoid())
+  {
     const IntPolyh_Point& aP1 = thePoints[myPoints[0]];
     const IntPolyh_Point& aP2 = thePoints[myPoints[1]];
     const IntPolyh_Point& aP3 = thePoints[myPoints[2]];
@@ -643,15 +647,21 @@ const Bnd_Box& IntPolyh_Triangle::BoundingBox(const IntPolyh_ArrayOfPoints& theP
   }
   return myBox;
 }
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-void IntPolyh_Triangle::Dump (const Standard_Integer i) const
-{ 
+
+//=================================================================================================
+
+void IntPolyh_Triangle::Dump(const Standard_Integer i) const
+{
   printf("\nTriangle(%3d) : Points %5d %5d %5d Edges %5d %5d %5d deflection: %8f "
          "intersection possible %8d  intersection: %5d\n",
-         i, myPoints[0], myPoints[1], myPoints[2],
-         myEdges[0], myEdges[1], myEdges[2],
-         myDeflection, (myIsIntersectionPossible ? 1 : 0), (myHasIntersection ? 1 : 0));
+         i,
+         myPoints[0],
+         myPoints[1],
+         myPoints[2],
+         myEdges[0],
+         myEdges[1],
+         myEdges[2],
+         myDeflection,
+         (myIsIntersectionPossible ? 1 : 0),
+         (myHasIntersection ? 1 : 0));
 }

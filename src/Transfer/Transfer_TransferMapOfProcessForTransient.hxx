@@ -20,6 +20,7 @@
 #include <NCollection_IndexedDataMap.hxx>
 #include <Transfer_Binder.hxx>
 
-typedef NCollection_IndexedDataMap<Handle(Standard_Transient),Handle(Transfer_Binder)> Transfer_TransferMapOfProcessForTransient;
+typedef NCollection_IndexedDataMap<Handle(Standard_Transient), Handle(Transfer_Binder)>
+  Transfer_TransferMapOfProcessForTransient;
 
 #endif // _Transfer_TransferMapOfProcessForTransient_HeaderFile

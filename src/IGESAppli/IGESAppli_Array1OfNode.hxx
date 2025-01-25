@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(IGESAppli_Node)> IGESAppli_Array1OfNode;
 
-
 #endif

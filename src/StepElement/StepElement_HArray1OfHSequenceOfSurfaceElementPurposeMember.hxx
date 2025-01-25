@@ -17,7 +17,7 @@
 #include <StepElement_Array1OfHSequenceOfSurfaceElementPurposeMember.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember, StepElement_Array1OfHSequenceOfSurfaceElementPurposeMember)
-
+DEFINE_HARRAY1(StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember,
+               StepElement_Array1OfHSequenceOfSurfaceElementPurposeMember)
 
 #endif

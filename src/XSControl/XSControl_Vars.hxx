@@ -31,7 +31,6 @@ class gp_Pnt;
 class gp_Pnt2d;
 class TopoDS_Shape;
 
-
 class XSControl_Vars;
 DEFINE_STANDARD_HANDLE(XSControl_Vars, Standard_Transient)
 
@@ -49,56 +48,38 @@ class XSControl_Vars : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT XSControl_Vars();
-  
-  Standard_EXPORT virtual void Set (const Standard_CString name, const Handle(Standard_Transient)& val);
-  
-  Standard_EXPORT virtual Handle(Standard_Transient) Get (Standard_CString& name) const;
-  
-  Standard_EXPORT virtual Handle(Geom_Geometry) GetGeom (Standard_CString& name) const;
-  
-  Standard_EXPORT virtual Handle(Geom2d_Curve) GetCurve2d (Standard_CString& name) const;
-  
-  Standard_EXPORT virtual Handle(Geom_Curve) GetCurve (Standard_CString& name) const;
-  
-  Standard_EXPORT virtual Handle(Geom_Surface) GetSurface (Standard_CString& name) const;
-  
-  Standard_EXPORT virtual void SetPoint (const Standard_CString name, const gp_Pnt& val);
-  
-  Standard_EXPORT virtual void SetPoint2d (const Standard_CString name, const gp_Pnt2d& val);
-  
-  Standard_EXPORT virtual Standard_Boolean GetPoint (Standard_CString& name, gp_Pnt& pnt) const;
-  
-  Standard_EXPORT virtual Standard_Boolean GetPoint2d (Standard_CString& name, gp_Pnt2d& pnt) const;
-  
-  Standard_EXPORT virtual void SetShape (const Standard_CString name, const TopoDS_Shape& val);
-  
-  Standard_EXPORT virtual TopoDS_Shape GetShape (Standard_CString& name) const;
 
+  Standard_EXPORT virtual void Set(const Standard_CString            name,
+                                   const Handle(Standard_Transient)& val);
 
+  Standard_EXPORT virtual Handle(Standard_Transient) Get(Standard_CString& name) const;
 
+  Standard_EXPORT virtual Handle(Geom_Geometry) GetGeom(Standard_CString& name) const;
 
-  DEFINE_STANDARD_RTTIEXT(XSControl_Vars,Standard_Transient)
+  Standard_EXPORT virtual Handle(Geom2d_Curve) GetCurve2d(Standard_CString& name) const;
+
+  Standard_EXPORT virtual Handle(Geom_Curve) GetCurve(Standard_CString& name) const;
+
+  Standard_EXPORT virtual Handle(Geom_Surface) GetSurface(Standard_CString& name) const;
+
+  Standard_EXPORT virtual void SetPoint(const Standard_CString name, const gp_Pnt& val);
+
+  Standard_EXPORT virtual void SetPoint2d(const Standard_CString name, const gp_Pnt2d& val);
+
+  Standard_EXPORT virtual Standard_Boolean GetPoint(Standard_CString& name, gp_Pnt& pnt) const;
+
+  Standard_EXPORT virtual Standard_Boolean GetPoint2d(Standard_CString& name, gp_Pnt2d& pnt) const;
+
+  Standard_EXPORT virtual void SetShape(const Standard_CString name, const TopoDS_Shape& val);
+
+  Standard_EXPORT virtual TopoDS_Shape GetShape(Standard_CString& name) const;
+
+  DEFINE_STANDARD_RTTIEXT(XSControl_Vars, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> thevars;
-
-
 };
-
-
-
-
-
-
 
 #endif // _XSControl_Vars_HeaderFile

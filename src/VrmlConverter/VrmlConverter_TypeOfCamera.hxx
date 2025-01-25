@@ -17,12 +17,11 @@
 #ifndef _VrmlConverter_TypeOfCamera_HeaderFile
 #define _VrmlConverter_TypeOfCamera_HeaderFile
 
-
 enum VrmlConverter_TypeOfCamera
 {
-VrmlConverter_NoCamera,
-VrmlConverter_PerspectiveCamera,
-VrmlConverter_OrthographicCamera
+  VrmlConverter_NoCamera,
+  VrmlConverter_PerspectiveCamera,
+  VrmlConverter_OrthographicCamera
 };
 
 #endif // _VrmlConverter_TypeOfCamera_HeaderFile

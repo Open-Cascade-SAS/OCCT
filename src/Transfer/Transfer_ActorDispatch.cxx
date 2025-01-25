@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_GeneralLib.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Protocol.hxx>
@@ -23,47 +22,45 @@
 #include <Transfer_TransferDispatch.hxx>
 #include <Transfer_TransientProcess.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Transfer_ActorDispatch,Transfer_ActorOfTransientProcess)
+IMPLEMENT_STANDARD_RTTIEXT(Transfer_ActorDispatch, Transfer_ActorOfTransientProcess)
 
-Transfer_ActorDispatch::Transfer_ActorDispatch
-  (const Handle(Interface_InterfaceModel)& amodel,
-   const Interface_GeneralLib& lib)
-    :  thetool (amodel,lib)
+Transfer_ActorDispatch::Transfer_ActorDispatch(const Handle(Interface_InterfaceModel)& amodel,
+                                               const Interface_GeneralLib&             lib)
+    : thetool(amodel, lib)
 {
-  SetLast(Standard_True);  // actor par defaut
+  SetLast(Standard_True); // actor par defaut
   thetool.TransientProcess()->SetActor(this);
 }
 
-    Transfer_ActorDispatch::Transfer_ActorDispatch
-  (const Handle(Interface_InterfaceModel)& amodel,
-   const Handle(Interface_Protocol)& protocol)
-    :  thetool (amodel,protocol)
+Transfer_ActorDispatch::Transfer_ActorDispatch(const Handle(Interface_InterfaceModel)& amodel,
+                                               const Handle(Interface_Protocol)&       protocol)
+    : thetool(amodel, protocol)
 {
-  SetLast(Standard_True);  // actor par defaut
+  SetLast(Standard_True); // actor par defaut
   thetool.TransientProcess()->SetActor(this);
 }
 
-    Transfer_ActorDispatch::Transfer_ActorDispatch
-  (const Handle(Interface_InterfaceModel)& amodel)
-    :  thetool (amodel)
+Transfer_ActorDispatch::Transfer_ActorDispatch(const Handle(Interface_InterfaceModel)& amodel)
+    : thetool(amodel)
 {
-  SetLast(Standard_True);  // actor par defaut
+  SetLast(Standard_True); // actor par defaut
   thetool.TransientProcess()->SetActor(this);
 }
 
+void Transfer_ActorDispatch::AddActor(const Handle(Transfer_ActorOfTransientProcess)& actor)
+{
+  thetool.TransientProcess()->SetActor(actor);
+}
 
-    void  Transfer_ActorDispatch::AddActor
-  (const Handle(Transfer_ActorOfTransientProcess)& actor)
-      {  thetool.TransientProcess()->SetActor(actor);  }
+Transfer_TransferDispatch& Transfer_ActorDispatch::TransferDispatch()
+{
+  return thetool;
+}
 
-    Transfer_TransferDispatch&  Transfer_ActorDispatch::TransferDispatch ()
-      {  return thetool;  }
-
-
-    Handle(Transfer_Binder)  Transfer_ActorDispatch::Transfer
-  (const Handle(Standard_Transient)& start,
-   const Handle(Transfer_TransientProcess)& /*TP*/,
-   const Message_ProgressRange&)
+Handle(Transfer_Binder) Transfer_ActorDispatch::Transfer(
+  const Handle(Standard_Transient)& start,
+  const Handle(Transfer_TransientProcess)& /*TP*/,
+  const Message_ProgressRange&)
 {
   thetool.TransferEntity(start);
   return thetool.TransientProcess()->Find(start);

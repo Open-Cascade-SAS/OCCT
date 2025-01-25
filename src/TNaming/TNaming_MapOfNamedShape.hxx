@@ -20,8 +20,7 @@
 #include <TNaming_NamedShape.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_Map<Handle(TNaming_NamedShape)> TNaming_MapOfNamedShape;
+typedef NCollection_Map<Handle(TNaming_NamedShape)>           TNaming_MapOfNamedShape;
 typedef NCollection_Map<Handle(TNaming_NamedShape)>::Iterator TNaming_MapIteratorOfMapOfNamedShape;
-
 
 #endif

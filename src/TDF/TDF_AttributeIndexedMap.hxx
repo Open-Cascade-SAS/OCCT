@@ -21,5 +21,4 @@
 class TDF_Attribute;
 typedef NCollection_IndexedMap<Handle(TDF_Attribute)> TDF_AttributeIndexedMap;
 
-
 #endif

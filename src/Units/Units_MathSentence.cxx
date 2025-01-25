@@ -14,16 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Units.hxx>
 #include <Units_MathSentence.hxx>
 
-//=======================================================================
-//function : Units_MathSentence
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Units_MathSentence::Units_MathSentence(const Standard_CString astring)
-     : Units_Sentence(Units::LexiconFormula(), astring)
+    : Units_Sentence(Units::LexiconFormula(), astring)
 {
   SetConstants();
 }

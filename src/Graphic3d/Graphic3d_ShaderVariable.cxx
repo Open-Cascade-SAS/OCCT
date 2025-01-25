@@ -15,8 +15,7 @@
 
 #include <Graphic3d_ShaderVariable.hxx>
 
-
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ShaderVariable,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ShaderVariable, Standard_Transient)
 
 // Specific instantiations of struct templates to avoid compilation warnings
 template struct Graphic3d_UniformValue<Standard_Integer>;
@@ -41,9 +40,9 @@ Graphic3d_ValueInterface::~Graphic3d_ValueInterface()
 // function : Graphic3d_ShaderVariable
 // purpose  : Creates new abstract shader variable
 // =======================================================================
-Graphic3d_ShaderVariable::Graphic3d_ShaderVariable (const TCollection_AsciiString& theName)
-: myName (theName),
-  myValue (NULL)
+Graphic3d_ShaderVariable::Graphic3d_ShaderVariable(const TCollection_AsciiString& theName)
+    : myName(theName),
+      myValue(NULL)
 {
   //
 }

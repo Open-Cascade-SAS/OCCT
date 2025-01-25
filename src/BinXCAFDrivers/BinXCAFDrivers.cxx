@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinDrivers.hxx>
 #include <BinMDF_ADriverTable.hxx>
 #include <BinMXCAFDoc.hxx>
@@ -25,22 +24,20 @@
 #include <Standard_GUID.hxx>
 #include <TDocStd_Application.hxx>
 
-static Standard_GUID BinXCAFStorageDriver  ("a78ff496-a779-11d5-aab4-0050044b1af1");
+static Standard_GUID BinXCAFStorageDriver("a78ff496-a779-11d5-aab4-0050044b1af1");
 static Standard_GUID BinXCAFRetrievalDriver("a78ff497-a779-11d5-aab4-0050044b1af1");
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-const Handle(Standard_Transient)& BinXCAFDrivers::Factory(const Standard_GUID& theGUID) {
+//=================================================================================================
+
+const Handle(Standard_Transient)& BinXCAFDrivers::Factory(const Standard_GUID& theGUID)
+{
 
   if (theGUID == BinXCAFStorageDriver)
   {
 #ifdef OCCT_DEBUG
     std::cout << "BinXCAFDrivers : Storage Plugin" << std::endl;
 #endif
-    static Handle(Standard_Transient) model_sd =
-      new BinXCAFDrivers_DocumentStorageDriver;
+    static Handle(Standard_Transient) model_sd = new BinXCAFDrivers_DocumentStorageDriver;
     return model_sd;
   }
 
@@ -49,31 +46,29 @@ const Handle(Standard_Transient)& BinXCAFDrivers::Factory(const Standard_GUID& t
 #ifdef OCCT_DEBUG
     std::cout << "BinXCAFDrivers : Retrieval Plugin" << std::endl;
 #endif
-    static Handle(Standard_Transient) model_rd =
-      new BinXCAFDrivers_DocumentRetrievalDriver;
+    static Handle(Standard_Transient) model_rd = new BinXCAFDrivers_DocumentRetrievalDriver;
     return model_rd;
   }
-
 
   throw Standard_Failure("XCAFBinDrivers : unknown GUID");
 }
 
-//=======================================================================
-//function : DefineFormat
-//purpose  : 
-//=======================================================================
-void BinXCAFDrivers::DefineFormat (const Handle(TDocStd_Application)& theApp)
+//=================================================================================================
+
+void BinXCAFDrivers::DefineFormat(const Handle(TDocStd_Application)& theApp)
 {
-  theApp->DefineFormat ("BinXCAF", "Binary XCAF Document", "xbf",
-                        new BinXCAFDrivers_DocumentRetrievalDriver, 
-                        new BinXCAFDrivers_DocumentStorageDriver);
+  theApp->DefineFormat("BinXCAF",
+                       "Binary XCAF Document",
+                       "xbf",
+                       new BinXCAFDrivers_DocumentRetrievalDriver,
+                       new BinXCAFDrivers_DocumentStorageDriver);
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-Handle(BinMDF_ADriverTable) BinXCAFDrivers::AttributeDrivers(const Handle(Message_Messenger)& aMsgDrv) {
+//=================================================================================================
+
+Handle(BinMDF_ADriverTable) BinXCAFDrivers::AttributeDrivers(
+  const Handle(Message_Messenger)& aMsgDrv)
+{
   // Standard Drivers
   Handle(BinMDF_ADriverTable) aTable = BinDrivers::AttributeDrivers(aMsgDrv);
 

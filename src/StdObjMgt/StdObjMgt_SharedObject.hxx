@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _StdObjMgt_SharedObject_HeaderFile
 #define _StdObjMgt_SharedObject_HeaderFile
 
@@ -33,19 +32,16 @@ public:
   {
   public:
     //! Changes transient object
-    inline void Transient(const Handle(TransientT)& theTransient)
-      { myTransient = theTransient; }
+    inline void Transient(const Handle(TransientT)& theTransient) { myTransient = theTransient; }
 
     //! Import transient object from the persistent data.
-    inline const Handle(TransientT)& Import()  { return myTransient; }
+    inline const Handle(TransientT)& Import() { return myTransient; }
 
   protected:
     Handle(TransientT) myTransient;
   };
 
-  template <class Base,
-            class Transient,
-            class Persistent = AbstractPersistentBase<Transient> >
+  template <class Base, class Transient, class Persistent = AbstractPersistentBase<Transient>>
   class DelayedBase : public Base
   {
   public:
@@ -53,35 +49,36 @@ public:
     typedef Persistent PersistentBase;
 
     //! Import transient object from the persistent data.
-    virtual Handle(Transient) Import()
-      { return myTransient; }
+    virtual Handle(Transient) Import() { return myTransient; }
 
   public:
     Handle(Transient) myTransient;
   };
 
-  template <class Base,
-            class PersistentData,
-            class Transient = typename Base::TransientBase>
+  template <class Base, class PersistentData, class Transient = typename Base::TransientBase>
   class IgnoreData : public Base
   {
   public:
     //! Read persistent data from a file.
-    virtual void Read (StdObjMgt_ReadData& theReadData)
-      { PersistentData().Read (theReadData); }
+    virtual void Read(StdObjMgt_ReadData& theReadData) { PersistentData().Read(theReadData); }
+
     //! Write persistent data to a file.
-    virtual void Write (StdObjMgt_WriteData& theWriteData) const
-      { PersistentData().Write (theWriteData); }
+    virtual void Write(StdObjMgt_WriteData& theWriteData) const
+    {
+      PersistentData().Write(theWriteData);
+    }
+
     //! Gets persistent child objects
     virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
-      { PersistentData().PChildren(theChildren); }
+    {
+      PersistentData().PChildren(theChildren);
+    }
+
     //! Returns persistent type name
-    virtual Standard_CString PName() const
-      { return PersistentData().PName(); }
+    virtual Standard_CString PName() const { return PersistentData().PName(); }
 
     //! Import transient object from the persistent data.
-    virtual Handle(Transient) Import()
-      { return NULL; }
+    virtual Handle(Transient) Import() { return NULL; }
   };
 
 private:
@@ -111,49 +108,55 @@ public:
   {
   private:
     template <class T1, class T2>
-    struct DownCast {
-      static Handle(T1) make(const Handle(T2)& theT2)
-        { return Handle(T1)::DownCast(theT2); }
+    struct DownCast
+    {
+      static Handle(T1) make(const Handle(T2)& theT2) { return Handle(T1)::DownCast(theT2); }
     };
 
     template <class T>
-    struct DownCast<T, T> {
-      static Handle(T) make(const Handle(T)& theT)
-        { return theT; }
+    struct DownCast<T, T>
+    {
+      static Handle(T) make(const Handle(T)& theT) { return theT; }
     };
 
   public:
     //! Read persistent data from a file.
-    virtual void Read (StdObjMgt_ReadData& theReadData)
+    virtual void Read(StdObjMgt_ReadData& theReadData)
     {
       Handle(Persistent) aPersistent = new Persistent;
-      aPersistent->Read (theReadData);
+      aPersistent->Read(theReadData);
       this->myPersistent = aPersistent;
     }
+
     //! Write persistent data to a file.
     virtual void Write(StdObjMgt_WriteData& theWriteData) const
-    { 
-      Handle(Persistent) aPersistent = 
+    {
+      Handle(Persistent) aPersistent =
         DownCast<Persistent, typename Base::PersistentBase>::make(this->myPersistent);
-      Standard_NoSuchObject_Raise_if(aPersistent.IsNull(), 
+      Standard_NoSuchObject_Raise_if(
+        aPersistent.IsNull(),
         "StdObjMgt_SharedObject::Delayed::Write - persistent object wasn't set for writing!");
       aPersistent->Write(theWriteData);
     }
+
     //! Gets persistent child objects
     virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
     {
-      Handle(Persistent) aPersistent = 
+      Handle(Persistent) aPersistent =
         DownCast<Persistent, typename Base::PersistentBase>::make(this->myPersistent);
-      Standard_NoSuchObject_Raise_if(aPersistent.IsNull(), 
+      Standard_NoSuchObject_Raise_if(
+        aPersistent.IsNull(),
         "StdObjMgt_SharedObject::Delayed::PChildren - persistent object wasn't set for writing!");
       aPersistent->PChildren(theChildren);
     }
+
     //! Returns persistent type name
-    virtual Standard_CString PName() const 
-    { 
+    virtual Standard_CString PName() const
+    {
       Handle(Persistent) aPersistent =
         DownCast<Persistent, typename Base::PersistentBase>::make(this->myPersistent);
-      Standard_NoSuchObject_Raise_if(aPersistent.IsNull(), 
+      Standard_NoSuchObject_Raise_if(
+        aPersistent.IsNull(),
         "StdObjMgt_SharedObject::Delayed::PName - persistent object wasn't set for writing!");
       return aPersistent->PName();
     }

@@ -21,41 +21,23 @@
 
 #include <StepShape_ShapeRepresentation.hxx>
 
-
 class StepShape_NonManifoldSurfaceShapeRepresentation;
-DEFINE_STANDARD_HANDLE(StepShape_NonManifoldSurfaceShapeRepresentation, StepShape_ShapeRepresentation)
+DEFINE_STANDARD_HANDLE(StepShape_NonManifoldSurfaceShapeRepresentation,
+                       StepShape_ShapeRepresentation)
 
 //! Representation of STEP entity NonManifoldSurfaceShapeRepresentation
 class StepShape_NonManifoldSurfaceShapeRepresentation : public StepShape_ShapeRepresentation
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepShape_NonManifoldSurfaceShapeRepresentation();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_NonManifoldSurfaceShapeRepresentation,StepShape_ShapeRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepShape_NonManifoldSurfaceShapeRepresentation,
+                          StepShape_ShapeRepresentation)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_NonManifoldSurfaceShapeRepresentation_HeaderFile

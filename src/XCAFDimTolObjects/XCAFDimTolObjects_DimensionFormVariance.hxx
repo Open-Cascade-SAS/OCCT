@@ -13,42 +13,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _XCAFDimTolObjects_DimensionFormVariance_HeaderFile
 #define _XCAFDimTolObjects_DimensionFormVariance_HeaderFile
 
 //! Defines value of form variance
 enum XCAFDimTolObjects_DimensionFormVariance
 {
-XCAFDimTolObjects_DimensionFormVariance_None,
-XCAFDimTolObjects_DimensionFormVariance_A,
-XCAFDimTolObjects_DimensionFormVariance_B,
-XCAFDimTolObjects_DimensionFormVariance_C,
-XCAFDimTolObjects_DimensionFormVariance_CD,
-XCAFDimTolObjects_DimensionFormVariance_D,
-XCAFDimTolObjects_DimensionFormVariance_E,
-XCAFDimTolObjects_DimensionFormVariance_EF,
-XCAFDimTolObjects_DimensionFormVariance_F,
-XCAFDimTolObjects_DimensionFormVariance_FG,
-XCAFDimTolObjects_DimensionFormVariance_G,
-XCAFDimTolObjects_DimensionFormVariance_H,
-XCAFDimTolObjects_DimensionFormVariance_JS,
-XCAFDimTolObjects_DimensionFormVariance_J,
-XCAFDimTolObjects_DimensionFormVariance_K,
-XCAFDimTolObjects_DimensionFormVariance_M,
-XCAFDimTolObjects_DimensionFormVariance_N,
-XCAFDimTolObjects_DimensionFormVariance_P,
-XCAFDimTolObjects_DimensionFormVariance_R,
-XCAFDimTolObjects_DimensionFormVariance_S,
-XCAFDimTolObjects_DimensionFormVariance_T,
-XCAFDimTolObjects_DimensionFormVariance_U,
-XCAFDimTolObjects_DimensionFormVariance_V,
-XCAFDimTolObjects_DimensionFormVariance_X,
-XCAFDimTolObjects_DimensionFormVariance_Y,
-XCAFDimTolObjects_DimensionFormVariance_Z,
-XCAFDimTolObjects_DimensionFormVariance_ZA,
-XCAFDimTolObjects_DimensionFormVariance_ZB,
-XCAFDimTolObjects_DimensionFormVariance_ZC
+  XCAFDimTolObjects_DimensionFormVariance_None,
+  XCAFDimTolObjects_DimensionFormVariance_A,
+  XCAFDimTolObjects_DimensionFormVariance_B,
+  XCAFDimTolObjects_DimensionFormVariance_C,
+  XCAFDimTolObjects_DimensionFormVariance_CD,
+  XCAFDimTolObjects_DimensionFormVariance_D,
+  XCAFDimTolObjects_DimensionFormVariance_E,
+  XCAFDimTolObjects_DimensionFormVariance_EF,
+  XCAFDimTolObjects_DimensionFormVariance_F,
+  XCAFDimTolObjects_DimensionFormVariance_FG,
+  XCAFDimTolObjects_DimensionFormVariance_G,
+  XCAFDimTolObjects_DimensionFormVariance_H,
+  XCAFDimTolObjects_DimensionFormVariance_JS,
+  XCAFDimTolObjects_DimensionFormVariance_J,
+  XCAFDimTolObjects_DimensionFormVariance_K,
+  XCAFDimTolObjects_DimensionFormVariance_M,
+  XCAFDimTolObjects_DimensionFormVariance_N,
+  XCAFDimTolObjects_DimensionFormVariance_P,
+  XCAFDimTolObjects_DimensionFormVariance_R,
+  XCAFDimTolObjects_DimensionFormVariance_S,
+  XCAFDimTolObjects_DimensionFormVariance_T,
+  XCAFDimTolObjects_DimensionFormVariance_U,
+  XCAFDimTolObjects_DimensionFormVariance_V,
+  XCAFDimTolObjects_DimensionFormVariance_X,
+  XCAFDimTolObjects_DimensionFormVariance_Y,
+  XCAFDimTolObjects_DimensionFormVariance_Z,
+  XCAFDimTolObjects_DimensionFormVariance_ZA,
+  XCAFDimTolObjects_DimensionFormVariance_ZB,
+  XCAFDimTolObjects_DimensionFormVariance_ZC
 };
 
 #endif // _XCAFDimTolObjects_DimensionFormVariance_HeaderFile

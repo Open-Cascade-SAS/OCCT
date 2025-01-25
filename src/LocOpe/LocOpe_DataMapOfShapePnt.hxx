@@ -21,8 +21,8 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TopoDS_Shape,gp_Pnt,TopTools_ShapeMapHasher> LocOpe_DataMapOfShapePnt;
-typedef NCollection_DataMap<TopoDS_Shape,gp_Pnt,TopTools_ShapeMapHasher>::Iterator LocOpe_DataMapIteratorOfDataMapOfShapePnt;
-
+typedef NCollection_DataMap<TopoDS_Shape, gp_Pnt, TopTools_ShapeMapHasher> LocOpe_DataMapOfShapePnt;
+typedef NCollection_DataMap<TopoDS_Shape, gp_Pnt, TopTools_ShapeMapHasher>::Iterator
+  LocOpe_DataMapIteratorOfDataMapOfShapePnt;
 
 #endif

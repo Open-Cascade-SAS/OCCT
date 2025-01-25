@@ -28,52 +28,43 @@ class Geom_Curve;
 class Geom2d_Curve;
 class Geom_Surface;
 
-
 class GeomTools_UndefinedTypeHandler;
 DEFINE_STANDARD_HANDLE(GeomTools_UndefinedTypeHandler, Standard_Transient)
-
 
 class GeomTools_UndefinedTypeHandler : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT GeomTools_UndefinedTypeHandler();
-  
-  Standard_EXPORT virtual void PrintCurve (const Handle(Geom_Curve)& C, Standard_OStream& OS, const Standard_Boolean compact = Standard_False) const;
-  
-  Standard_EXPORT virtual Standard_IStream& ReadCurve (const Standard_Integer ctype, Standard_IStream& IS, Handle(Geom_Curve)& C) const;
-  
-  Standard_EXPORT virtual void PrintCurve2d (const Handle(Geom2d_Curve)& C, Standard_OStream& OS, const Standard_Boolean compact = Standard_False) const;
-  
-  Standard_EXPORT virtual Standard_IStream& ReadCurve2d (const Standard_Integer ctype, Standard_IStream& IS, Handle(Geom2d_Curve)& C) const;
-  
-  Standard_EXPORT virtual void PrintSurface (const Handle(Geom_Surface)& S, Standard_OStream& OS, const Standard_Boolean compact = Standard_False) const;
-  
-  Standard_EXPORT virtual Standard_IStream& ReadSurface (const Standard_Integer ctype, Standard_IStream& IS, Handle(Geom_Surface)& S) const;
 
+  Standard_EXPORT virtual void PrintCurve(const Handle(Geom_Curve)& C,
+                                          Standard_OStream&         OS,
+                                          const Standard_Boolean    compact = Standard_False) const;
 
+  Standard_EXPORT virtual Standard_IStream& ReadCurve(const Standard_Integer ctype,
+                                                      Standard_IStream&      IS,
+                                                      Handle(Geom_Curve)&    C) const;
 
+  Standard_EXPORT virtual void PrintCurve2d(const Handle(Geom2d_Curve)& C,
+                                            Standard_OStream&           OS,
+                                            const Standard_Boolean compact = Standard_False) const;
 
-  DEFINE_STANDARD_RTTIEXT(GeomTools_UndefinedTypeHandler,Standard_Transient)
+  Standard_EXPORT virtual Standard_IStream& ReadCurve2d(const Standard_Integer ctype,
+                                                        Standard_IStream&      IS,
+                                                        Handle(Geom2d_Curve)&  C) const;
+
+  Standard_EXPORT virtual void PrintSurface(const Handle(Geom_Surface)& S,
+                                            Standard_OStream&           OS,
+                                            const Standard_Boolean compact = Standard_False) const;
+
+  Standard_EXPORT virtual Standard_IStream& ReadSurface(const Standard_Integer ctype,
+                                                        Standard_IStream&      IS,
+                                                        Handle(Geom_Surface)&  S) const;
+
+  DEFINE_STANDARD_RTTIEXT(GeomTools_UndefinedTypeHandler, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeomTools_UndefinedTypeHandler_HeaderFile

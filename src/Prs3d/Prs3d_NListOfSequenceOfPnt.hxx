@@ -1,5 +1,5 @@
 // Created on: 2006-04-20
-// Created by: Sergey Kochetkov	
+// Created by: Sergey Kochetkov
 // Copyright (c) 2006-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.

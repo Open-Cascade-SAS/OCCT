@@ -33,13 +33,13 @@ struct cmd
   const char*      use;
 };
 
-Draw_Interpretor& operator << (Draw_Interpretor& di, const cmd& c)
+Draw_Interpretor& operator<<(Draw_Interpretor& di, const cmd& c)
 {
   di << "Use: " << c.use << "\n";
   return di;
 }
 
-Draw_Interpretor& operator << (Draw_Interpretor& di, const TDF_Label& L)
+Draw_Interpretor& operator<<(Draw_Interpretor& di, const TDF_Label& L)
 {
   TCollection_AsciiString anEntry;
   TDF_Tool::Entry(L, anEntry);
@@ -47,7 +47,7 @@ Draw_Interpretor& operator << (Draw_Interpretor& di, const TDF_Label& L)
   return di;
 }
 
-Draw_Interpretor& operator << (Draw_Interpretor& di, const Handle(XCAFDoc_Note)& note)
+Draw_Interpretor& operator<<(Draw_Interpretor& di, const Handle(XCAFDoc_Note)& note)
 {
   TCollection_AsciiString anEntry;
   TDF_Tool::Entry(note->Label(), anEntry);
@@ -55,7 +55,7 @@ Draw_Interpretor& operator << (Draw_Interpretor& di, const Handle(XCAFDoc_Note)&
   return di;
 }
 
-Draw_Interpretor& operator << (Draw_Interpretor& di, const Handle(XCAFDoc_AssemblyItemRef)& ref)
+Draw_Interpretor& operator<<(Draw_Interpretor& di, const Handle(XCAFDoc_AssemblyItemRef)& ref)
 {
   TCollection_AsciiString anEntry;
   TDF_Tool::Entry(ref->Label(), anEntry);
@@ -64,14 +64,12 @@ Draw_Interpretor& operator << (Draw_Interpretor& di, const Handle(XCAFDoc_Assemb
 }
 
 //=======================================================================
-//function : noteCount
-//purpose  : returns number of annotated items, notes and orphan notes
+// function : noteCount
+// purpose  : returns number of annotated items, notes and orphan notes
 //=======================================================================
-static const cmd XNoteCount = {
-  "XNoteCount", 2, "XNoteCount Doc"
-};
-static Standard_Integer
-noteCount(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static const cmd XNoteCount = {"XNoteCount", 2, "XNoteCount Doc"};
+
+static Standard_Integer noteCount(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   static const cmd& myCommand = XNoteCount;
 
@@ -90,23 +88,18 @@ noteCount(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 
   Handle(XCAFDoc_NotesTool) aNotesTool = XCAFDoc_DocumentTool::NotesTool(aDoc->Main());
 
-  di
-    << aNotesTool->NbAnnotatedItems() << " "
-    << aNotesTool->NbNotes() << " "
-    << aNotesTool->NbOrphanNotes()
-    ;
+  di << aNotesTool->NbAnnotatedItems() << " " << aNotesTool->NbNotes() << " "
+     << aNotesTool->NbOrphanNotes();
   return 0;
 }
 
 //=======================================================================
-//function : noteNotes
-//purpose  : returns list of all notes
+// function : noteNotes
+// purpose  : returns list of all notes
 //=======================================================================
-static const cmd XNoteNotes = {
-  "XNoteNotes", 2, "XNoteNotes Doc"
-};
-static Standard_Integer
-noteNotes(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static const cmd XNoteNotes = {"XNoteNotes", 2, "XNoteNotes Doc"};
+
+static Standard_Integer noteNotes(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   static const cmd& myCommand = XNoteNotes;
 
@@ -137,14 +130,14 @@ noteNotes(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 }
 
 //=======================================================================
-//function : noteAnnotations
-//purpose  : returns list of all notes
+// function : noteAnnotations
+// purpose  : returns list of all notes
 //=======================================================================
-static const cmd XNoteAnnotations = {
-  "XNoteAnnotations", 2, "XNoteAnnotations Doc"
-};
-static Standard_Integer
-noteAnnotations(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static const cmd XNoteAnnotations = {"XNoteAnnotations", 2, "XNoteAnnotations Doc"};
+
+static Standard_Integer noteAnnotations(Draw_Interpretor& di,
+                                        Standard_Integer  argc,
+                                        const char**      argv)
 {
   static const cmd& myCommand = XNoteAnnotations;
 
@@ -175,14 +168,17 @@ noteAnnotations(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 }
 
 //=======================================================================
-//function : noteCreateBalloon
-//purpose  : creates a 'balloon' note and returns a new note entry
+// function : noteCreateBalloon
+// purpose  : creates a 'balloon' note and returns a new note entry
 //=======================================================================
 static const cmd XNoteCreateBalloon = {
-  "XNoteCreateBalloon", 3, "XNoteCreateBalloon Doc comment [--user name] [--time stamp]"
-};
-static Standard_Integer
-noteCreateBalloon(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+  "XNoteCreateBalloon",
+  3,
+  "XNoteCreateBalloon Doc comment [--user name] [--time stamp]"};
+
+static Standard_Integer noteCreateBalloon(Draw_Interpretor& di,
+                                          Standard_Integer  argc,
+                                          const char**      argv)
 {
   static const cmd& myCommand = XNoteCreateBalloon;
 
@@ -214,7 +210,7 @@ noteCreateBalloon(Draw_Interpretor& di, Standard_Integer argc, const char** argv
         di << "Error: user name is expected.\n" << myCommand;
         return 1;
       }
-      aUsername = TCollection_ExtendedString (argv[iarg], Standard_True);
+      aUsername = TCollection_ExtendedString(argv[iarg], Standard_True);
     }
     else if (opt == "--time")
     {
@@ -223,12 +219,12 @@ noteCreateBalloon(Draw_Interpretor& di, Standard_Integer argc, const char** argv
         di << "Error: timestamp is expected.\n" << myCommand;
         return 1;
       }
-      aTimestamp = TCollection_ExtendedString (argv[iarg], Standard_True);
+      aTimestamp = TCollection_ExtendedString(argv[iarg], Standard_True);
     }
   }
 
   Handle(XCAFDoc_NotesTool) aNotesTool = XCAFDoc_DocumentTool::NotesTool(aDoc->Main());
-  Handle(XCAFDoc_Note) aNote = aNotesTool->CreateBalloon(aUsername, aTimestamp, aComment);
+  Handle(XCAFDoc_Note)      aNote      = aNotesTool->CreateBalloon(aUsername, aTimestamp, aComment);
   if (!aNote)
   {
     di << "Error: couldn't create a comment note.\n";
@@ -240,14 +236,17 @@ noteCreateBalloon(Draw_Interpretor& di, Standard_Integer argc, const char** argv
 }
 
 //=======================================================================
-//function : noteCreateComment
-//purpose  : creates a comment note and returns a new note entry
+// function : noteCreateComment
+// purpose  : creates a comment note and returns a new note entry
 //=======================================================================
 static const cmd XNoteCreateComment = {
-  "XNoteCreateComment", 3, "XNoteCreateComment Doc comment [--user name] [--time stamp]"
-};
-static Standard_Integer
-noteCreateComment(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+  "XNoteCreateComment",
+  3,
+  "XNoteCreateComment Doc comment [--user name] [--time stamp]"};
+
+static Standard_Integer noteCreateComment(Draw_Interpretor& di,
+                                          Standard_Integer  argc,
+                                          const char**      argv)
 {
   static const cmd& myCommand = XNoteCreateComment;
 
@@ -261,7 +260,7 @@ noteCreateComment(Draw_Interpretor& di, Standard_Integer argc, const char** argv
 
   Handle(TDocStd_Document) aDoc;
   DDocStd::GetDocument(argv[++iarg], aDoc);
-  if (aDoc.IsNull()) 
+  if (aDoc.IsNull())
   {
     return 1;
   }
@@ -279,7 +278,7 @@ noteCreateComment(Draw_Interpretor& di, Standard_Integer argc, const char** argv
         di << "Error: user name is expected.\n" << myCommand;
         return 1;
       }
-      aUsername = TCollection_ExtendedString (argv[iarg], Standard_True);
+      aUsername = TCollection_ExtendedString(argv[iarg], Standard_True);
     }
     else if (opt == "--time")
     {
@@ -288,12 +287,12 @@ noteCreateComment(Draw_Interpretor& di, Standard_Integer argc, const char** argv
         di << "Error: timestamp is expected.\n" << myCommand;
         return 1;
       }
-      aTimestamp = TCollection_ExtendedString (argv[iarg], Standard_True);
+      aTimestamp = TCollection_ExtendedString(argv[iarg], Standard_True);
     }
   }
 
   Handle(XCAFDoc_NotesTool) aNotesTool = XCAFDoc_DocumentTool::NotesTool(aDoc->Main());
-  Handle(XCAFDoc_Note) aNote = aNotesTool->CreateComment(aUsername, aTimestamp, aComment);
+  Handle(XCAFDoc_Note)      aNote      = aNotesTool->CreateComment(aUsername, aTimestamp, aComment);
   if (!aNote)
   {
     di << "Error: couldn't create a comment note.\n";
@@ -305,14 +304,17 @@ noteCreateComment(Draw_Interpretor& di, Standard_Integer argc, const char** argv
 }
 
 //=======================================================================
-//function : noteCreateBinData
-//purpose  : creates a binary data note and returns a new note entry
+// function : noteCreateBinData
+// purpose  : creates a binary data note and returns a new note entry
 //=======================================================================
-static const cmd XNoteCreateBinData = {
-  "XNoteCreateBinData", 5, "XNoteCreateBinData Doc title <--file path | --data data> [--mime type] [--user name] [--time stamp]"
-};
-static Standard_Integer
-noteCreateBinData(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static const cmd XNoteCreateBinData = {"XNoteCreateBinData",
+                                       5,
+                                       "XNoteCreateBinData Doc title <--file path | --data data> "
+                                       "[--mime type] [--user name] [--time stamp]"};
+
+static Standard_Integer noteCreateBinData(Draw_Interpretor& di,
+                                          Standard_Integer  argc,
+                                          const char**      argv)
 {
   static const cmd& myCommand = XNoteCreateBinData;
 
@@ -331,13 +333,13 @@ noteCreateBinData(Draw_Interpretor& di, Standard_Integer argc, const char** argv
     return 1;
   }
 
-  Standard_Boolean aFromFile = Standard_False;
-  Standard_Boolean aFromData = Standard_False;
-  TCollection_ExtendedString aFilename;
+  Standard_Boolean              aFromFile = Standard_False;
+  Standard_Boolean              aFromData = Standard_False;
+  TCollection_ExtendedString    aFilename;
   Handle(TColStd_HArray1OfByte) aData;
-  TCollection_ExtendedString aTitle = argv[++iarg];
-  TCollection_AsciiString aMIMEtype;
-  TCollection_ExtendedString aUsername, aTimestamp;
+  TCollection_ExtendedString    aTitle = argv[++iarg];
+  TCollection_AsciiString       aMIMEtype;
+  TCollection_ExtendedString    aUsername, aTimestamp;
 
   for (++iarg; iarg < argc; ++iarg)
   {
@@ -354,7 +356,7 @@ noteCreateBinData(Draw_Interpretor& di, Standard_Integer argc, const char** argv
         di << "Error: file path is expected.\n" << myCommand;
         return 1;
       }
-      aFilename = TCollection_ExtendedString (argv[iarg], Standard_True);
+      aFilename = TCollection_ExtendedString(argv[iarg], Standard_True);
       aFromFile = Standard_True;
     }
     else if (opt == "--data")
@@ -372,7 +374,7 @@ noteCreateBinData(Draw_Interpretor& di, Standard_Integer argc, const char** argv
       Standard_SStream ss(std::ios_base::in | std::ios_base::out | std::ios_base::binary);
       ss << argv[iarg];
       Standard_Integer len = static_cast<Standard_Integer>(ss.tellp());
-      aData = new TColStd_HArray1OfByte(1, len);
+      aData                = new TColStd_HArray1OfByte(1, len);
       for (Standard_Integer i = 1; i <= len && !ss.eof(); ++i)
       {
         ss >> aData->ChangeValue(i);
@@ -395,7 +397,7 @@ noteCreateBinData(Draw_Interpretor& di, Standard_Integer argc, const char** argv
         di << "Error: user name is expected.\n" << myCommand;
         return 1;
       }
-      aUsername = TCollection_ExtendedString (argv[iarg], Standard_True);
+      aUsername = TCollection_ExtendedString(argv[iarg], Standard_True);
     }
     else if (opt == "--time")
     {
@@ -404,7 +406,7 @@ noteCreateBinData(Draw_Interpretor& di, Standard_Integer argc, const char** argv
         di << "Error: timestamp is expected.\n" << myCommand;
         return 1;
       }
-      aTimestamp = TCollection_ExtendedString (argv[iarg], Standard_True);
+      aTimestamp = TCollection_ExtendedString(argv[iarg], Standard_True);
     }
   }
 
@@ -439,14 +441,12 @@ noteCreateBinData(Draw_Interpretor& di, Standard_Integer argc, const char** argv
 }
 
 //=======================================================================
-//function : noteDelete
-//purpose  : deletes a note by the entry
+// function : noteDelete
+// purpose  : deletes a note by the entry
 //=======================================================================
-static const cmd XNoteDelete = {
-  "XNoteDelete", 3, "XNoteDelete Doc note"
-};
-static Standard_Integer
-noteDelete(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static const cmd XNoteDelete = {"XNoteDelete", 3, "XNoteDelete Doc note"};
+
+static Standard_Integer noteDelete(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   static const cmd& myCommand = XNoteDelete;
 
@@ -484,14 +484,14 @@ noteDelete(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 }
 
 //=======================================================================
-//function : noteDeleteAll
-//purpose  : deletes all notes
+// function : noteDeleteAll
+// purpose  : deletes all notes
 //=======================================================================
-static const cmd XNoteDeleteAll = {
-  "XNoteDeleteAll", 2, "XNoteDeleteAll Doc"
-};
-static Standard_Integer
-noteDeleteAll(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static const cmd XNoteDeleteAll = {"XNoteDeleteAll", 2, "XNoteDeleteAll Doc"};
+
+static Standard_Integer noteDeleteAll(Draw_Interpretor& di,
+                                      Standard_Integer  argc,
+                                      const char**      argv)
 {
   static const cmd& myCommand = XNoteDeleteAll;
 
@@ -509,21 +509,21 @@ noteDeleteAll(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   }
 
   Handle(XCAFDoc_NotesTool) aNotesTool = XCAFDoc_DocumentTool::NotesTool(aDoc->Main());
-  Standard_Integer nbDeleted = aNotesTool->DeleteAllNotes();
+  Standard_Integer          nbDeleted  = aNotesTool->DeleteAllNotes();
 
   di << nbDeleted;
   return 0;
 }
 
 //=======================================================================
-//function : noteDeleteOrphan
-//purpose  : deletes all orphan notes
+// function : noteDeleteOrphan
+// purpose  : deletes all orphan notes
 //=======================================================================
-static const cmd XNoteDeleteOrphan = {
-  "XNoteDeleteOrphan", 2, "XNoteDeleteOrphan Doc"
-};
-static Standard_Integer
-noteDeleteOrphan(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static const cmd XNoteDeleteOrphan = {"XNoteDeleteOrphan", 2, "XNoteDeleteOrphan Doc"};
+
+static Standard_Integer noteDeleteOrphan(Draw_Interpretor& di,
+                                         Standard_Integer  argc,
+                                         const char**      argv)
 {
   static const cmd& myCommand = XNoteDeleteOrphan;
 
@@ -541,21 +541,21 @@ noteDeleteOrphan(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   }
 
   Handle(XCAFDoc_NotesTool) aNotesTool = XCAFDoc_DocumentTool::NotesTool(aDoc->Main());
-  Standard_Integer nbDeleted = aNotesTool->DeleteOrphanNotes();
+  Standard_Integer          nbDeleted  = aNotesTool->DeleteOrphanNotes();
 
   di << nbDeleted;
   return 0;
 }
 
 //=======================================================================
-//function : noteAdd
-//purpose  : adds a note to a labeled item
+// function : noteAdd
+// purpose  : adds a note to a labeled item
 //=======================================================================
-static const cmd XNoteAdd = {
-  "XNoteAdd", 4, "XNoteAdd Doc note item [--attr guid | --subshape num]"
-};
-static Standard_Integer
-noteAdd(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static const cmd XNoteAdd = {"XNoteAdd",
+                             4,
+                             "XNoteAdd Doc note item [--attr guid | --subshape num]"};
+
+static Standard_Integer noteAdd(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   static const cmd& myCommand = XNoteAdd;
 
@@ -574,7 +574,7 @@ noteAdd(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
     return 1;
   }
 
-  TCollection_AsciiString aNoteEntry = argv[++iarg];
+  TCollection_AsciiString aNoteEntry  = argv[++iarg];
   TCollection_AsciiString anItemEntry = argv[++iarg];
 
   TDF_Label aNoteLabel;
@@ -585,7 +585,7 @@ noteAdd(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
     return 1;
   }
   XCAFDoc_AssemblyItemId anItemId(anItemEntry);
-  TDF_Label anItemLabel;
+  TDF_Label              anItemLabel;
   TDF_Tool::Label(aDoc->GetData(), anItemId.GetPath().Last(), anItemLabel);
   if (anItemLabel.IsNull())
   {
@@ -593,9 +593,9 @@ noteAdd(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
     return 1;
   }
 
-  Standard_GUID aGUID;
-  Standard_Integer aSubshape = 0;
-  Standard_Boolean aHasGUID = Standard_False;
+  Standard_GUID    aGUID;
+  Standard_Integer aSubshape    = 0;
+  Standard_Boolean aHasGUID     = Standard_False;
   Standard_Boolean aHasSubshape = Standard_False;
   for (++iarg; iarg < argc; ++iarg)
   {
@@ -613,8 +613,8 @@ noteAdd(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
         return 1;
       }
       TCollection_AsciiString arg = argv[iarg];
-      aGUID = arg.ToCString();
-      aHasGUID = Standard_True;
+      aGUID                       = arg.ToCString();
+      aHasGUID                    = Standard_True;
     }
     else if (opt == "--subshape")
     {
@@ -629,7 +629,7 @@ noteAdd(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
         di << "Error: subshape index must be integer value.\n" << myCommand;
         return 1;
       }
-      aSubshape = arg.IntegerValue();
+      aSubshape    = arg.IntegerValue();
       aHasSubshape = Standard_True;
     }
   }
@@ -667,14 +667,15 @@ noteAdd(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 }
 
 //=======================================================================
-//function : noteRemove
-//purpose  : removes a note from a labeled item
+// function : noteRemove
+// purpose  : removes a note from a labeled item
 //=======================================================================
 static const cmd XNoteRemove = {
-  "XNoteRemove", 4, "XNoteRemove Doc item note [--attr guid | --subshape num] [--del-orphan]"
-};
-static Standard_Integer
-noteRemove(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+  "XNoteRemove",
+  4,
+  "XNoteRemove Doc item note [--attr guid | --subshape num] [--del-orphan]"};
+
+static Standard_Integer noteRemove(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   static const cmd& myCommand = XNoteRemove;
 
@@ -694,7 +695,7 @@ noteRemove(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   }
 
   TCollection_AsciiString anItemEntry = argv[++iarg];
-  TCollection_AsciiString aNoteEntry = argv[++iarg];
+  TCollection_AsciiString aNoteEntry  = argv[++iarg];
 
   TDF_Label aNoteLabel;
   TDF_Tool::Label(aDoc->GetData(), aNoteEntry, aNoteLabel);
@@ -704,7 +705,7 @@ noteRemove(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
     return 1;
   }
   XCAFDoc_AssemblyItemId anItemId(anItemEntry);
-  TDF_Label anItemLabel;
+  TDF_Label              anItemLabel;
   TDF_Tool::Label(aDoc->GetData(), anItemId.GetPath().Last(), anItemLabel);
   if (anItemLabel.IsNull())
   {
@@ -712,11 +713,11 @@ noteRemove(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
     return 1;
   }
 
-  Standard_GUID aGUID;
-  Standard_Integer aSubshape = 0;
-  Standard_Boolean aHasGUID = Standard_False;
+  Standard_GUID    aGUID;
+  Standard_Integer aSubshape    = 0;
+  Standard_Boolean aHasGUID     = Standard_False;
   Standard_Boolean aHasSubshape = Standard_False;
-  Standard_Boolean aDelOrphan = Standard_False;
+  Standard_Boolean aDelOrphan   = Standard_False;
   for (++iarg; iarg < argc; ++iarg)
   {
     TCollection_AsciiString opt = argv[iarg];
@@ -733,8 +734,8 @@ noteRemove(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
         return 1;
       }
       TCollection_AsciiString arg = argv[iarg];
-      aGUID = arg.ToCString();
-      aHasGUID = Standard_True;
+      aGUID                       = arg.ToCString();
+      aHasGUID                    = Standard_True;
     }
     else if (opt == "--subshape")
     {
@@ -754,7 +755,7 @@ noteRemove(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
         di << "Error: subshape index must be integer value.\n" << myCommand;
         return 1;
       }
-      aSubshape = arg.IntegerValue();
+      aSubshape    = arg.IntegerValue();
       aHasSubshape = Standard_True;
     }
     else if (opt == "--del-orphan")
@@ -782,14 +783,17 @@ noteRemove(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 }
 
 //=======================================================================
-//function : noteRemoveAll
-//purpose  : removes all notes from a labeled item
+// function : noteRemoveAll
+// purpose  : removes all notes from a labeled item
 //=======================================================================
 static const cmd XNoteRemoveAll = {
-  "XNoteRemoveAll", 3, "XNoteRemoveAll Doc item [--attr guid] [--subshape num] [--del-orphan]"
-};
-static Standard_Integer
-noteRemoveAll(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+  "XNoteRemoveAll",
+  3,
+  "XNoteRemoveAll Doc item [--attr guid] [--subshape num] [--del-orphan]"};
+
+static Standard_Integer noteRemoveAll(Draw_Interpretor& di,
+                                      Standard_Integer  argc,
+                                      const char**      argv)
 {
   static const cmd& myCommand = XNoteRemoveAll;
 
@@ -811,7 +815,7 @@ noteRemoveAll(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   TCollection_AsciiString anItemEntry = argv[++iarg];
 
   XCAFDoc_AssemblyItemId anItemId(anItemEntry);
-  TDF_Label anItemLabel;
+  TDF_Label              anItemLabel;
   TDF_Tool::Label(aDoc->GetData(), anItemId.GetPath().Last(), anItemLabel);
   if (anItemLabel.IsNull())
   {
@@ -819,11 +823,11 @@ noteRemoveAll(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
     return 1;
   }
 
-  Standard_GUID aGUID;
-  Standard_Integer aSubshape = 0;
-  Standard_Boolean aHasGUID = Standard_False;
+  Standard_GUID    aGUID;
+  Standard_Integer aSubshape    = 0;
+  Standard_Boolean aHasGUID     = Standard_False;
   Standard_Boolean aHasSubshape = Standard_False;
-  Standard_Boolean aDelOrphan = Standard_False;
+  Standard_Boolean aDelOrphan   = Standard_False;
   for (++iarg; iarg < argc; ++iarg)
   {
     TCollection_AsciiString opt = argv[iarg];
@@ -840,8 +844,8 @@ noteRemoveAll(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
         return 1;
       }
       TCollection_AsciiString arg = argv[iarg];
-      aGUID = arg.ToCString();
-      aHasGUID = Standard_True;
+      aGUID                       = arg.ToCString();
+      aHasGUID                    = Standard_True;
     }
     else if (opt == "--subshape")
     {
@@ -861,7 +865,7 @@ noteRemoveAll(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
         di << "Error: subshape index must be integer value.\n" << myCommand;
         return 1;
       }
-      aSubshape = arg.IntegerValue();
+      aSubshape    = arg.IntegerValue();
       aHasSubshape = Standard_True;
     }
     else if (opt == "--del-orphan")
@@ -889,14 +893,17 @@ noteRemoveAll(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 }
 
 //=======================================================================
-//function : noteFindAnnotated
-//purpose  : find a label of the annotated item
+// function : noteFindAnnotated
+// purpose  : find a label of the annotated item
 //=======================================================================
 static const cmd XNoteFindAnnotated = {
-  "XNoteFindAnnotated", 3, "XNoteFindAnnotated Doc item [--attr guid | --subshape num]"
-};
-static Standard_Integer
-noteFindAnnotated(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+  "XNoteFindAnnotated",
+  3,
+  "XNoteFindAnnotated Doc item [--attr guid | --subshape num]"};
+
+static Standard_Integer noteFindAnnotated(Draw_Interpretor& di,
+                                          Standard_Integer  argc,
+                                          const char**      argv)
 {
   static const cmd& myCommand = XNoteFindAnnotated;
 
@@ -918,7 +925,7 @@ noteFindAnnotated(Draw_Interpretor& di, Standard_Integer argc, const char** argv
   TCollection_AsciiString anItemEntry = argv[++iarg];
 
   XCAFDoc_AssemblyItemId anItemId(anItemEntry);
-  TDF_Label anItemLabel;
+  TDF_Label              anItemLabel;
   TDF_Tool::Label(aDoc->GetData(), anItemId.GetPath().Last(), anItemLabel);
   if (anItemLabel.IsNull())
   {
@@ -926,9 +933,9 @@ noteFindAnnotated(Draw_Interpretor& di, Standard_Integer argc, const char** argv
     return 1;
   }
 
-  Standard_GUID aGUID;
-  Standard_Integer aSubshape = 0;
-  Standard_Boolean aHasGUID = Standard_False;
+  Standard_GUID    aGUID;
+  Standard_Integer aSubshape    = 0;
+  Standard_Boolean aHasGUID     = Standard_False;
   Standard_Boolean aHasSubshape = Standard_False;
   for (++iarg; iarg < argc; ++iarg)
   {
@@ -946,8 +953,8 @@ noteFindAnnotated(Draw_Interpretor& di, Standard_Integer argc, const char** argv
         return 1;
       }
       TCollection_AsciiString arg = argv[iarg];
-      aGUID = arg.ToCString();
-      aHasGUID = Standard_True;
+      aGUID                       = arg.ToCString();
+      aHasGUID                    = Standard_True;
     }
     else if (opt == "--subshape")
     {
@@ -962,7 +969,7 @@ noteFindAnnotated(Draw_Interpretor& di, Standard_Integer argc, const char** argv
         di << "Error: subshape index must be integer value.\n" << myCommand;
         return 1;
       }
-      aSubshape = arg.IntegerValue();
+      aSubshape    = arg.IntegerValue();
       aHasSubshape = Standard_True;
     }
   }
@@ -986,14 +993,14 @@ noteFindAnnotated(Draw_Interpretor& di, Standard_Integer argc, const char** argv
 }
 
 //=======================================================================
-//function : noteGetNotes
-//purpose  : get notes of the labeled item
+// function : noteGetNotes
+// purpose  : get notes of the labeled item
 //=======================================================================
-static const cmd XNoteGetNotes = {
-  "XNoteGetNotes", 3, "XNoteGetNotes Doc item [--attr guid | --subshape num]"
-};
-static Standard_Integer
-noteGetNotes(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static const cmd XNoteGetNotes = {"XNoteGetNotes",
+                                  3,
+                                  "XNoteGetNotes Doc item [--attr guid | --subshape num]"};
+
+static Standard_Integer noteGetNotes(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   static const cmd& myCommand = XNoteGetNotes;
 
@@ -1015,7 +1022,7 @@ noteGetNotes(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   TCollection_AsciiString anItemEntry = argv[++iarg];
 
   XCAFDoc_AssemblyItemId anItemId(anItemEntry);
-  TDF_Label anItemLabel;
+  TDF_Label              anItemLabel;
   TDF_Tool::Label(aDoc->GetData(), anItemId.GetPath().Last(), anItemLabel);
   if (anItemLabel.IsNull())
   {
@@ -1023,9 +1030,9 @@ noteGetNotes(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
     return 1;
   }
 
-  Standard_GUID aGUID;
-  Standard_Integer aSubshape = 0;
-  Standard_Boolean aHasGUID = Standard_False;
+  Standard_GUID    aGUID;
+  Standard_Integer aSubshape    = 0;
+  Standard_Boolean aHasGUID     = Standard_False;
   Standard_Boolean aHasSubshape = Standard_False;
   for (++iarg; iarg < argc; ++iarg)
   {
@@ -1043,8 +1050,8 @@ noteGetNotes(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
         return 1;
       }
       TCollection_AsciiString arg = argv[iarg];
-      aGUID = arg.ToCString();
-      aHasGUID = Standard_True;
+      aGUID                       = arg.ToCString();
+      aHasGUID                    = Standard_True;
     }
     else if (opt == "--subshape")
     {
@@ -1059,7 +1066,7 @@ noteGetNotes(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
         di << "Error: subshape index must be integer value.\n" << myCommand;
         return 1;
       }
-      aSubshape = arg.IntegerValue();
+      aSubshape    = arg.IntegerValue();
       aHasSubshape = Standard_True;
     }
   }
@@ -1089,14 +1096,12 @@ noteGetNotes(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 }
 
 //=======================================================================
-//function : noteUsername
-//purpose  : gets a note username
+// function : noteUsername
+// purpose  : gets a note username
 //=======================================================================
-static const cmd XNoteUsername = {
-  "XNoteUsername", 3, "XNoteUsername Doc note"
-};
-static Standard_Integer
-noteUsername(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static const cmd XNoteUsername = {"XNoteUsername", 3, "XNoteUsername Doc note"};
+
+static Standard_Integer noteUsername(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   static const cmd& myCommand = XNoteUsername;
 
@@ -1138,14 +1143,14 @@ noteUsername(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 }
 
 //=======================================================================
-//function : noteTimestamp
-//purpose  : gets a note timestamp
+// function : noteTimestamp
+// purpose  : gets a note timestamp
 //=======================================================================
-static const cmd XNoteTimestamp = {
-  "XNoteTimestamp", 3, "XNoteTimestamp Doc note"
-};
-static Standard_Integer
-noteTimestamp(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static const cmd XNoteTimestamp = {"XNoteTimestamp", 3, "XNoteTimestamp Doc note"};
+
+static Standard_Integer noteTimestamp(Draw_Interpretor& di,
+                                      Standard_Integer  argc,
+                                      const char**      argv)
 {
   static const cmd& myCommand = XNoteTimestamp;
 
@@ -1187,14 +1192,12 @@ noteTimestamp(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 }
 
 //=======================================================================
-//function : noteDump
-//purpose  : dump a note contents
+// function : noteDump
+// purpose  : dump a note contents
 //=======================================================================
-static const cmd XNoteDump = {
-  "XNoteDump", 3, "XNoteDump Doc note"
-};
-static Standard_Integer
-noteDump(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static const cmd XNoteDump = {"XNoteDump", 3, "XNoteDump Doc note"};
+
+static Standard_Integer noteDump(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   static const cmd& myCommand = XNoteDump;
 
@@ -1246,15 +1249,16 @@ noteDump(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
     di << "Title     : " << aBinData->Title() << "\n";
     di << "MIME type : " << aBinData->MIMEtype() << "\n";
     di << "Size      : " << aBinData->Size() << "\n";
-    static Standard_Integer theMaxLen = 64;
-    const Handle(TColStd_HArray1OfByte)& aData = aBinData->Data();
+    static Standard_Integer              theMaxLen = 64;
+    const Handle(TColStd_HArray1OfByte)& aData     = aBinData->Data();
     if (!aData.IsNull())
     {
       di << "Data      : ";
       Standard_Integer aLen = Min(aData->Length(), theMaxLen);
       for (Standard_Integer i = 1; i <= aLen; ++i)
       {
-        Standard_SStream ss; ss << aData->Value(i);
+        Standard_SStream ss;
+        ss << aData->Value(i);
         di << ss.str().c_str();
       }
       if (aData->Length() > theMaxLen)
@@ -1278,7 +1282,7 @@ noteDump(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
     if (aNoteObj->HasPlane())
     {
       const gp_Ax2& anAx = aNoteObj->GetPlane();
-      const gp_Pnt& aP = anAx.Location();
+      const gp_Pnt& aP   = anAx.Location();
       di << "P : [ " << aP.X() << " " << aP.Y() << " " << aP.Z() << " ]";
       const gp_Dir& aN = anAx.Direction();
       di << "N : [ " << aN.X() << " " << aN.Y() << " " << aN.Z() << " ]";
@@ -1298,14 +1302,12 @@ noteDump(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 }
 
 //=======================================================================
-//function : noteIsRefOrphan
-//purpose  : checks if a ref is orphan
+// function : noteIsRefOrphan
+// purpose  : checks if a ref is orphan
 //=======================================================================
-static const cmd XNoteRefDump = {
-  "XNoteRefDump", 3, "XNoteRefDump Doc ref"
-};
-static Standard_Integer
-noteRefDump(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static const cmd XNoteRefDump = {"XNoteRefDump", 3, "XNoteRefDump Doc ref"};
+
+static Standard_Integer noteRefDump(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   static const cmd& myCommand = XNoteRefDump;
 
@@ -1346,7 +1348,7 @@ noteRefDump(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   {
     if (aRef->IsGUID())
     {
-      Standard_SStream ss; 
+      Standard_SStream ss;
       aRef->GetGUID().ShallowDump(ss);
       di << "Attribute : " << ss.str().c_str() << "\n";
     }
@@ -1359,14 +1361,14 @@ noteRefDump(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 }
 
 //=======================================================================
-//function : noteIsRefOrphan
-//purpose  : checks if a ref is orphan
+// function : noteIsRefOrphan
+// purpose  : checks if a ref is orphan
 //=======================================================================
-static const cmd XNoteIsRefOrphan = {
-  "XNoteIsRefOrphan", 3, "XNoteIsRefOrphan Doc ref"
-};
-static Standard_Integer
-noteIsRefOrphan(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static const cmd XNoteIsRefOrphan = {"XNoteIsRefOrphan", 3, "XNoteIsRefOrphan Doc ref"};
+
+static Standard_Integer noteIsRefOrphan(Draw_Interpretor& di,
+                                        Standard_Integer  argc,
+                                        const char**      argv)
 {
   static const cmd& myCommand = XNoteIsRefOrphan;
 
@@ -1407,11 +1409,9 @@ noteIsRefOrphan(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   return 0;
 }
 
-//=======================================================================
-//function : InitCommands
-//purpose  : 
-//=======================================================================
-void XDEDRAW_Notes::InitCommands(Draw_Interpretor& di) 
+//=================================================================================================
+
+void XDEDRAW_Notes::InitCommands(Draw_Interpretor& di)
 {
   static Standard_Boolean initialized = Standard_False;
   if (initialized)
@@ -1419,50 +1419,31 @@ void XDEDRAW_Notes::InitCommands(Draw_Interpretor& di)
     return;
   }
   initialized = Standard_True;
-  
+
   Standard_CString g = "XDE Notes commands";
 
-  di.Add(XNoteCount.name, XNoteCount.use,
-    __FILE__, noteCount, g);
-  di.Add(XNoteNotes.name, XNoteNotes.use,
-    __FILE__, noteNotes, g);
-  di.Add(XNoteAnnotations.name, XNoteAnnotations.use,
-    __FILE__, noteAnnotations, g);
+  di.Add(XNoteCount.name, XNoteCount.use, __FILE__, noteCount, g);
+  di.Add(XNoteNotes.name, XNoteNotes.use, __FILE__, noteNotes, g);
+  di.Add(XNoteAnnotations.name, XNoteAnnotations.use, __FILE__, noteAnnotations, g);
 
-  di.Add(XNoteCreateBalloon.name, XNoteCreateBalloon.use,
-    __FILE__, noteCreateBalloon, g);
-  di.Add(XNoteCreateComment.name, XNoteCreateComment.use,
-    __FILE__, noteCreateComment, g);
-  di.Add(XNoteCreateBinData.name, XNoteCreateBinData.use,
-    __FILE__, noteCreateBinData, g);
-  di.Add(XNoteDelete.name, XNoteDelete.use,
-    __FILE__, noteDelete, g);
-  di.Add(XNoteDeleteAll.name, XNoteDeleteAll.use,
-    __FILE__, noteDeleteAll, g);
-  di.Add(XNoteDeleteOrphan.name, XNoteDeleteOrphan.use,
-    __FILE__, noteDeleteOrphan, g);
+  di.Add(XNoteCreateBalloon.name, XNoteCreateBalloon.use, __FILE__, noteCreateBalloon, g);
+  di.Add(XNoteCreateComment.name, XNoteCreateComment.use, __FILE__, noteCreateComment, g);
+  di.Add(XNoteCreateBinData.name, XNoteCreateBinData.use, __FILE__, noteCreateBinData, g);
+  di.Add(XNoteDelete.name, XNoteDelete.use, __FILE__, noteDelete, g);
+  di.Add(XNoteDeleteAll.name, XNoteDeleteAll.use, __FILE__, noteDeleteAll, g);
+  di.Add(XNoteDeleteOrphan.name, XNoteDeleteOrphan.use, __FILE__, noteDeleteOrphan, g);
 
-  di.Add(XNoteAdd.name, XNoteAdd.use,
-    __FILE__, noteAdd, g);
-  di.Add(XNoteRemove.name, XNoteRemove.use,
-    __FILE__, noteRemove, g);
-  di.Add(XNoteRemoveAll.name, XNoteRemoveAll.use,
-    __FILE__, noteRemoveAll, g);
+  di.Add(XNoteAdd.name, XNoteAdd.use, __FILE__, noteAdd, g);
+  di.Add(XNoteRemove.name, XNoteRemove.use, __FILE__, noteRemove, g);
+  di.Add(XNoteRemoveAll.name, XNoteRemoveAll.use, __FILE__, noteRemoveAll, g);
 
-  di.Add(XNoteFindAnnotated.name, XNoteFindAnnotated.use,
-    __FILE__, noteFindAnnotated, g);
-  di.Add(XNoteGetNotes.name, XNoteGetNotes.use,
-    __FILE__, noteGetNotes, g);
+  di.Add(XNoteFindAnnotated.name, XNoteFindAnnotated.use, __FILE__, noteFindAnnotated, g);
+  di.Add(XNoteGetNotes.name, XNoteGetNotes.use, __FILE__, noteGetNotes, g);
 
-  di.Add(XNoteUsername.name, XNoteUsername.use,
-    __FILE__, noteUsername, g);
-  di.Add(XNoteTimestamp.name, XNoteTimestamp.use,
-    __FILE__, noteTimestamp, g);
-  di.Add(XNoteDump.name, XNoteDump.use,
-    __FILE__, noteDump, g);
+  di.Add(XNoteUsername.name, XNoteUsername.use, __FILE__, noteUsername, g);
+  di.Add(XNoteTimestamp.name, XNoteTimestamp.use, __FILE__, noteTimestamp, g);
+  di.Add(XNoteDump.name, XNoteDump.use, __FILE__, noteDump, g);
 
-  di.Add(XNoteRefDump.name, XNoteRefDump.use,
-    __FILE__, noteRefDump, g);
-  di.Add(XNoteIsRefOrphan.name, XNoteIsRefOrphan.use,
-    __FILE__, noteIsRefOrphan, g);
+  di.Add(XNoteRefDump.name, XNoteRefDump.use, __FILE__, noteRefDump, g);
+  di.Add(XNoteIsRefOrphan.name, XNoteIsRefOrphan.use, __FILE__, noteIsRefOrphan, g);
 }

@@ -37,9 +37,8 @@ class Graphic3d_Text : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(Graphic3d_Text, Standard_Transient)
 
 public:
-
   //! Creates default text parameters.
-  Standard_EXPORT Graphic3d_Text (const Standard_ShortReal theHeight);
+  Standard_EXPORT Graphic3d_Text(const Standard_ShortReal theHeight);
 
   //! Destructor.
   virtual ~Graphic3d_Text() {}
@@ -48,26 +47,29 @@ public:
   const NCollection_String& Text() const { return myText; }
 
   //! Sets text value.
-  void SetText (const NCollection_String& theText) { myText = theText; }
+  void SetText(const NCollection_String& theText) { myText = theText; }
 
   //! Sets text value.
-  void SetText (const TCollection_AsciiString& theText) { myText = theText.ToCString(); }
+  void SetText(const TCollection_AsciiString& theText) { myText = theText.ToCString(); }
 
   //! Sets text value.
-  void SetText (Standard_CString theText) { myText = theText; }
+  void SetText(Standard_CString theText) { myText = theText; }
 
   //! @return text formatter; NULL by default, which means standard text formatter will be used.
   const Handle(Font_TextFormatter)& TextFormatter() const { return myFormatter; }
 
   //! Setup text default formatter for text within this context.
-  void SetTextFormatter (const Handle(Font_TextFormatter)& theFormatter) { myFormatter = theFormatter; }
+  void SetTextFormatter(const Handle(Font_TextFormatter)& theFormatter)
+  {
+    myFormatter = theFormatter;
+  }
 
   //! The 3D point of attachment is projected.
   //! If the orientation is defined, the text is written in the plane of projection.
   const gp_Pnt& Position() const { return myOrientation.Location(); }
 
   //! Sets text point.
-  void SetPosition (const gp_Pnt& thePoint) { myOrientation.SetLocation (thePoint); }
+  void SetPosition(const gp_Pnt& thePoint) { myOrientation.SetLocation(thePoint); }
 
   //! Returns text orientation in 3D space.
   const gp_Ax2& Orientation() const { return myOrientation; }
@@ -76,7 +78,7 @@ public:
   Standard_Boolean HasPlane() const { return myHasPlane; }
 
   //! Sets text orientation in 3D space.
-  Standard_EXPORT void SetOrientation (const gp_Ax2& theOrientation);
+  Standard_EXPORT void SetOrientation(const gp_Ax2& theOrientation);
 
   //! Reset text orientation in 3D space.
   Standard_EXPORT void ResetOrientation();
@@ -85,37 +87,46 @@ public:
   Standard_Boolean HasOwnAnchorPoint() const { return myHasOwnAnchor; }
 
   //! Returns true if the text has an anchor point
-  void SetOwnAnchorPoint (const Standard_Boolean theHasOwnAnchor) { myHasOwnAnchor = theHasOwnAnchor; }
+  void SetOwnAnchorPoint(const Standard_Boolean theHasOwnAnchor)
+  {
+    myHasOwnAnchor = theHasOwnAnchor;
+  }
 
   //! Sets height of text. (Relative to the Normalized Projection Coordinates (NPC) Space).
   Standard_ShortReal Height() const { return myHeight; }
 
   //! Returns height of text
-  void SetHeight (const Standard_ShortReal theHeight) { myHeight = theHeight; }
+  void SetHeight(const Standard_ShortReal theHeight) { myHeight = theHeight; }
 
   //! Returns horizontal alignment of text.
   Graphic3d_HorizontalTextAlignment HorizontalAlignment() const { return myHAlign; }
 
   //! Sets horizontal alignment of text.
-  void SetHorizontalAlignment (const Graphic3d_HorizontalTextAlignment theJustification) { myHAlign = theJustification; }
+  void SetHorizontalAlignment(const Graphic3d_HorizontalTextAlignment theJustification)
+  {
+    myHAlign = theJustification;
+  }
 
   //! Returns vertical alignment of text.
   Graphic3d_VerticalTextAlignment VerticalAlignment() const { return myVAlign; }
 
   //! Sets vertical alignment of text.
-  void SetVerticalAlignment (const Graphic3d_VerticalTextAlignment theJustification) { myVAlign = theJustification; }
+  void SetVerticalAlignment(const Graphic3d_VerticalTextAlignment theJustification)
+  {
+    myVAlign = theJustification;
+  }
 
 protected:
   Handle(Font_TextFormatter) myFormatter; //!< text formatter
 
-  NCollection_String myText; //!< text value
-  gp_Ax2 myOrientation; //!< Text orientation in 3D space.
+  NCollection_String myText;        //!< text value
+  gp_Ax2             myOrientation; //!< Text orientation in 3D space.
 
-  Standard_ShortReal myHeight; //!< height of text
+  Standard_ShortReal                myHeight; //!< height of text
   Graphic3d_HorizontalTextAlignment myHAlign; //!< horizontal alignment
-  Graphic3d_VerticalTextAlignment myVAlign; //!< vertical alignment
+  Graphic3d_VerticalTextAlignment   myVAlign; //!< vertical alignment
 
-  Standard_Boolean myHasPlane; //!< Check if text have orientation in 3D space.
+  Standard_Boolean myHasPlane;     //!< Check if text have orientation in 3D space.
   Standard_Boolean myHasOwnAnchor; //!< flag if text uses position as point of attach
 };
 

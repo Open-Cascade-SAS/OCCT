@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -16,34 +16,32 @@
 
 #include <StepKinematics_RackAndPinionPairWithRange.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_RackAndPinionPairWithRange, StepKinematics_RackAndPinionPair)
+IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_RackAndPinionPairWithRange,
+                           StepKinematics_RackAndPinionPair)
 
-//=======================================================================
-//function : StepKinematics_RackAndPinionPairWithRange
-//purpose  :
-//=======================================================================
-StepKinematics_RackAndPinionPairWithRange::StepKinematics_RackAndPinionPairWithRange ()
+//=================================================================================================
+
+StepKinematics_RackAndPinionPairWithRange::StepKinematics_RackAndPinionPairWithRange()
 {
   defLowerLimitRackDisplacement = Standard_False;
   defUpperLimitRackDisplacement = Standard_False;
 }
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_RackAndPinionPairWithRange::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                                      const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Name,
-                                                      const Standard_Boolean hasItemDefinedTransformation_Description,
-                                                      const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Description,
-                                                      const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem1,
-                                                      const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem2,
-                                                      const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-                                                      const Standard_Real theRackAndPinionPair_PinionRadius,
-                                                      const Standard_Boolean hasLowerLimitRackDisplacement,
-                                                      const Standard_Real theLowerLimitRackDisplacement,
-                                                      const Standard_Boolean hasUpperLimitRackDisplacement,
-                                                      const Standard_Real theUpperLimitRackDisplacement)
+//=================================================================================================
+
+void StepKinematics_RackAndPinionPairWithRange::Init(
+  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
+  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
+  const Standard_Boolean                       hasItemDefinedTransformation_Description,
+  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
+  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
+  const Standard_Real                          theRackAndPinionPair_PinionRadius,
+  const Standard_Boolean                       hasLowerLimitRackDisplacement,
+  const Standard_Real                          theLowerLimitRackDisplacement,
+  const Standard_Boolean                       hasUpperLimitRackDisplacement,
+  const Standard_Real                          theUpperLimitRackDisplacement)
 {
   StepKinematics_RackAndPinionPair::Init(theRepresentationItem_Name,
                                          theItemDefinedTransformation_Name,
@@ -55,68 +53,62 @@ void StepKinematics_RackAndPinionPairWithRange::Init (const Handle(TCollection_H
                                          theRackAndPinionPair_PinionRadius);
 
   defLowerLimitRackDisplacement = hasLowerLimitRackDisplacement;
-  if (defLowerLimitRackDisplacement) {
+  if (defLowerLimitRackDisplacement)
+  {
     myLowerLimitRackDisplacement = theLowerLimitRackDisplacement;
   }
-  else myLowerLimitRackDisplacement = 0;
+  else
+    myLowerLimitRackDisplacement = 0;
 
   defUpperLimitRackDisplacement = hasUpperLimitRackDisplacement;
-  if (defUpperLimitRackDisplacement) {
+  if (defUpperLimitRackDisplacement)
+  {
     myUpperLimitRackDisplacement = theUpperLimitRackDisplacement;
   }
-  else myUpperLimitRackDisplacement = 0;
+  else
+    myUpperLimitRackDisplacement = 0;
 }
 
-//=======================================================================
-//function : LowerLimitRackDisplacement
-//purpose  :
-//=======================================================================
-Standard_Real StepKinematics_RackAndPinionPairWithRange::LowerLimitRackDisplacement () const
+//=================================================================================================
+
+Standard_Real StepKinematics_RackAndPinionPairWithRange::LowerLimitRackDisplacement() const
 {
   return myLowerLimitRackDisplacement;
 }
 
-//=======================================================================
-//function : SetLowerLimitRackDisplacement
-//purpose  :
-//=======================================================================
-void StepKinematics_RackAndPinionPairWithRange::SetLowerLimitRackDisplacement (const Standard_Real theLowerLimitRackDisplacement)
+//=================================================================================================
+
+void StepKinematics_RackAndPinionPairWithRange::SetLowerLimitRackDisplacement(
+  const Standard_Real theLowerLimitRackDisplacement)
 {
   myLowerLimitRackDisplacement = theLowerLimitRackDisplacement;
 }
 
-//=======================================================================
-//function : HasLowerLimitRackDisplacement
-//purpose  :
-//=======================================================================
-Standard_Boolean StepKinematics_RackAndPinionPairWithRange::HasLowerLimitRackDisplacement () const
+//=================================================================================================
+
+Standard_Boolean StepKinematics_RackAndPinionPairWithRange::HasLowerLimitRackDisplacement() const
 {
   return defLowerLimitRackDisplacement;
 }
 
-//=======================================================================
-//function : UpperLimitRackDisplacement
-//purpose  :
-//=======================================================================
-Standard_Real StepKinematics_RackAndPinionPairWithRange::UpperLimitRackDisplacement () const
+//=================================================================================================
+
+Standard_Real StepKinematics_RackAndPinionPairWithRange::UpperLimitRackDisplacement() const
 {
   return myUpperLimitRackDisplacement;
 }
 
-//=======================================================================
-//function : SetUpperLimitRackDisplacement
-//purpose  :
-//=======================================================================
-void StepKinematics_RackAndPinionPairWithRange::SetUpperLimitRackDisplacement (const Standard_Real theUpperLimitRackDisplacement)
+//=================================================================================================
+
+void StepKinematics_RackAndPinionPairWithRange::SetUpperLimitRackDisplacement(
+  const Standard_Real theUpperLimitRackDisplacement)
 {
   myUpperLimitRackDisplacement = theUpperLimitRackDisplacement;
 }
 
-//=======================================================================
-//function : HasUpperLimitRackDisplacement
-//purpose  :
-//=======================================================================
-Standard_Boolean StepKinematics_RackAndPinionPairWithRange::HasUpperLimitRackDisplacement () const
+//=================================================================================================
+
+Standard_Boolean StepKinematics_RackAndPinionPairWithRange::HasUpperLimitRackDisplacement() const
 {
   return defUpperLimitRackDisplacement;
 }

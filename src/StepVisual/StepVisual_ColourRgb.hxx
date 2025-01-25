@@ -24,58 +24,40 @@
 #include <StepVisual_ColourSpecification.hxx>
 class TCollection_HAsciiString;
 
-
 class StepVisual_ColourRgb;
 DEFINE_STANDARD_HANDLE(StepVisual_ColourRgb, StepVisual_ColourSpecification)
-
 
 class StepVisual_ColourRgb : public StepVisual_ColourSpecification
 {
 
 public:
-
-  
   //! Returns a ColourRgb
   Standard_EXPORT StepVisual_ColourRgb();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Real aRed, const Standard_Real aGreen, const Standard_Real aBlue);
-  
-  Standard_EXPORT void SetRed (const Standard_Real aRed);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Standard_Real                     aRed,
+                            const Standard_Real                     aGreen,
+                            const Standard_Real                     aBlue);
+
+  Standard_EXPORT void SetRed(const Standard_Real aRed);
+
   Standard_EXPORT Standard_Real Red() const;
-  
-  Standard_EXPORT void SetGreen (const Standard_Real aGreen);
-  
+
+  Standard_EXPORT void SetGreen(const Standard_Real aGreen);
+
   Standard_EXPORT Standard_Real Green() const;
-  
-  Standard_EXPORT void SetBlue (const Standard_Real aBlue);
-  
+
+  Standard_EXPORT void SetBlue(const Standard_Real aBlue);
+
   Standard_EXPORT Standard_Real Blue() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_ColourRgb,StepVisual_ColourSpecification)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_ColourRgb, StepVisual_ColourSpecification)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Real red;
   Standard_Real green;
   Standard_Real blue;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_ColourRgb_HeaderFile

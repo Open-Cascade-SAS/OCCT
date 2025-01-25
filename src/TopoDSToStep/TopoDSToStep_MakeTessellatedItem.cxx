@@ -31,16 +31,16 @@
 
 //=============================================================================
 // Method  : InitTriangulation
-// Purpose : Get parameters from a TriangulatedFace or TriangulatedSurfaceSet 
+// Purpose : Get parameters from a TriangulatedFace or TriangulatedSurfaceSet
 // Poly_Triangulation
 //=============================================================================
-static void InitTriangulation(const Handle(Poly_Triangulation)& theMesh,
+static void InitTriangulation(const Handle(Poly_Triangulation)&       theMesh,
                               const Handle(TCollection_HAsciiString)& theName,
-                              Handle(StepVisual_CoordinatesList)& theCoordinates,
-                              Handle(TColgp_HArray1OfXYZ)& thePoints,
-                              Handle(TColStd_HArray2OfReal)& theNormals,
-                              Handle(TColStd_HArray1OfInteger)& theIndices,
-                              Handle(TColStd_HArray2OfInteger)& theTrias)
+                              Handle(StepVisual_CoordinatesList)&     theCoordinates,
+                              Handle(TColgp_HArray1OfXYZ)&            thePoints,
+                              Handle(TColStd_HArray2OfReal)&          theNormals,
+                              Handle(TColStd_HArray1OfInteger)&       theIndices,
+                              Handle(TColStd_HArray2OfInteger)&       theTrias)
 {
   for (Standard_Integer aNodeIndex = 1; aNodeIndex <= theMesh->NbNodes(); ++aNodeIndex)
   {
@@ -62,7 +62,8 @@ static void InitTriangulation(const Handle(Poly_Triangulation)& theMesh,
   {
     theIndices->SetValue(aNodeIndex, aNodeIndex);
   }
-  for (Standard_Integer aTriangleIndex = 1; aTriangleIndex <= theMesh->NbTriangles(); ++aTriangleIndex)
+  for (Standard_Integer aTriangleIndex = 1; aTriangleIndex <= theMesh->NbTriangles();
+       ++aTriangleIndex)
   {
     const Poly_Triangle& aT = theMesh->Triangle(aTriangleIndex);
     theTrias->SetValue(aTriangleIndex, 1, aT.Value(1));
@@ -71,40 +72,34 @@ static void InitTriangulation(const Handle(Poly_Triangulation)& theMesh,
   }
 }
 
-//=============================================================================
-// function: TopoDSToStep_MakeTessellatedItem
-// purpose :
-//=============================================================================
+//=================================================================================================
+
 TopoDSToStep_MakeTessellatedItem::TopoDSToStep_MakeTessellatedItem()
-  : TopoDSToStep_Root()
+    : TopoDSToStep_Root()
 {
 }
 
-//=============================================================================
-// function: TopoDSToStep_MakeTessellatedItem
-// purpose :
-//=============================================================================
-TopoDSToStep_MakeTessellatedItem::
-TopoDSToStep_MakeTessellatedItem(const TopoDS_Face& theFace,
-                                 TopoDSToStep_Tool& theTool,
-                                 const Handle(Transfer_FinderProcess)& theFP,
-                                 const Standard_Boolean theToPreferSurfaceSet,
-                                 const Message_ProgressRange& theProgress)
-  : TopoDSToStep_Root()
+//=================================================================================================
+
+TopoDSToStep_MakeTessellatedItem::TopoDSToStep_MakeTessellatedItem(
+  const TopoDS_Face&                    theFace,
+  TopoDSToStep_Tool&                    theTool,
+  const Handle(Transfer_FinderProcess)& theFP,
+  const Standard_Boolean                theToPreferSurfaceSet,
+  const Message_ProgressRange&          theProgress)
+    : TopoDSToStep_Root()
 {
   Init(theFace, theTool, theFP, theToPreferSurfaceSet, theProgress);
 }
 
-//=============================================================================
-// function: TopoDSToStep_MakeTessellatedItem
-// purpose :
-//=============================================================================
-TopoDSToStep_MakeTessellatedItem::
-TopoDSToStep_MakeTessellatedItem(const TopoDS_Shell& theShell,
-                                 TopoDSToStep_Tool& theTool,
-                                 const Handle(Transfer_FinderProcess)& theFP,
-                                 const Message_ProgressRange& theProgress)
-  : TopoDSToStep_Root()
+//=================================================================================================
+
+TopoDSToStep_MakeTessellatedItem::TopoDSToStep_MakeTessellatedItem(
+  const TopoDS_Shell&                   theShell,
+  TopoDSToStep_Tool&                    theTool,
+  const Handle(Transfer_FinderProcess)& theFP,
+  const Message_ProgressRange&          theProgress)
+    : TopoDSToStep_Root()
 {
   Init(theShell, theTool, theFP, theProgress);
 }
@@ -114,52 +109,67 @@ TopoDSToStep_MakeTessellatedItem(const TopoDS_Shell& theShell,
 // Purpose : Create a TriangulatedFace or TriangulatedSurfaceSet of StepVisual
 // from a Face of TopoDS
 //=============================================================================
-void TopoDSToStep_MakeTessellatedItem::Init(const TopoDS_Face& theFace,
-                                            TopoDSToStep_Tool& theTool,
+void TopoDSToStep_MakeTessellatedItem::Init(const TopoDS_Face&                    theFace,
+                                            TopoDSToStep_Tool&                    theTool,
                                             const Handle(Transfer_FinderProcess)& theFP,
-                                            const Standard_Boolean theToPreferSurfaceSet,
+                                            const Standard_Boolean       theToPreferSurfaceSet,
                                             const Message_ProgressRange& theProgress)
 {
   done = Standard_False;
   if (theProgress.UserBreak())
     return;
-  TopLoc_Location aLoc;
+  TopLoc_Location                   aLoc;
   const Handle(Poly_Triangulation)& aMesh = BRep_Tool::Triangulation(theFace, aLoc);
   if (aMesh.IsNull())
   {
-    Handle(TransferBRep_ShapeMapper) anErrShape =
-      new TransferBRep_ShapeMapper(theFace);
+    Handle(TransferBRep_ShapeMapper) anErrShape = new TransferBRep_ShapeMapper(theFace);
     theFP->AddWarning(anErrShape, " Face not mapped to TessellatedItem");
     return;
   }
-  Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString("");
+  Handle(TCollection_HAsciiString)   aName        = new TCollection_HAsciiString("");
   Handle(StepVisual_CoordinatesList) aCoordinates = new StepVisual_CoordinatesList();
-  Handle(TColgp_HArray1OfXYZ) aPoints = new TColgp_HArray1OfXYZ(1, aMesh->NbNodes());
-  Handle(TColStd_HArray2OfReal) aNormals = new TColStd_HArray2OfReal(1, aMesh->NbNodes(), 1, 3);
+  Handle(TColgp_HArray1OfXYZ)        aPoints      = new TColgp_HArray1OfXYZ(1, aMesh->NbNodes());
+  Handle(TColStd_HArray2OfReal)    aNormals  = new TColStd_HArray2OfReal(1, aMesh->NbNodes(), 1, 3);
   Handle(TColStd_HArray1OfInteger) anIndices = new TColStd_HArray1OfInteger(1, aMesh->NbNodes());
-  Handle(TColStd_HArray2OfInteger) aTrias = new TColStd_HArray2OfInteger(1, aMesh->NbTriangles(), 1, 3);
+  Handle(TColStd_HArray2OfInteger) aTrias =
+    new TColStd_HArray2OfInteger(1, aMesh->NbTriangles(), 1, 3);
   InitTriangulation(aMesh, aName, aCoordinates, aPoints, aNormals, anIndices, aTrias);
 
-  const Standard_Boolean aHasGeomLink = theTool.IsBound(theFace);
+  const Standard_Boolean   aHasGeomLink = theTool.IsBound(theFace);
   StepVisual_FaceOrSurface aGeomLink;
   if (aHasGeomLink)
   {
     Handle(StepShape_TopologicalRepresentationItem) aTopoItem = theTool.Find(theFace);
     aGeomLink.SetValue(aTopoItem);
     Handle(StepVisual_TriangulatedFace) aTriaFace = new StepVisual_TriangulatedFace();
-    aTriaFace->Init(aName, aCoordinates, aMesh->NbNodes(), aNormals, aHasGeomLink, aGeomLink, anIndices, aTrias);
+    aTriaFace->Init(aName,
+                    aCoordinates,
+                    aMesh->NbNodes(),
+                    aNormals,
+                    aHasGeomLink,
+                    aGeomLink,
+                    anIndices,
+                    aTrias);
     theTessellatedItem = aTriaFace;
   }
   else if (theToPreferSurfaceSet)
   {
-    Handle(StepVisual_TriangulatedSurfaceSet) aTriaSurfaceSet = new StepVisual_TriangulatedSurfaceSet();
+    Handle(StepVisual_TriangulatedSurfaceSet) aTriaSurfaceSet =
+      new StepVisual_TriangulatedSurfaceSet();
     aTriaSurfaceSet->Init(aName, aCoordinates, aMesh->NbNodes(), aNormals, anIndices, aTrias);
     theTessellatedItem = aTriaSurfaceSet;
   }
   else
   {
     Handle(StepVisual_TriangulatedFace) aTriaFace = new StepVisual_TriangulatedFace();
-    aTriaFace->Init(aName, aCoordinates, aMesh->NbNodes(), aNormals, aHasGeomLink, aGeomLink, anIndices, aTrias);
+    aTriaFace->Init(aName,
+                    aCoordinates,
+                    aMesh->NbNodes(),
+                    aNormals,
+                    aHasGeomLink,
+                    aGeomLink,
+                    anIndices,
+                    aTrias);
     theTessellatedItem = aTriaFace;
   }
   done = Standard_True;
@@ -169,10 +179,10 @@ void TopoDSToStep_MakeTessellatedItem::Init(const TopoDS_Face& theFace,
 // Method  : Init
 // Purpose : Create a TesselatedShell of StepVisual from a Shell of TopoDS
 //=============================================================================
-void TopoDSToStep_MakeTessellatedItem::Init(const TopoDS_Shell& theShell,
-                                            TopoDSToStep_Tool& theTool,
+void TopoDSToStep_MakeTessellatedItem::Init(const TopoDS_Shell&                   theShell,
+                                            TopoDSToStep_Tool&                    theTool,
                                             const Handle(Transfer_FinderProcess)& theFP,
-                                            const Message_ProgressRange& theProgress)
+                                            const Message_ProgressRange&          theProgress)
 {
   done = Standard_False;
   theTessellatedItem.Nullify();
@@ -180,18 +190,20 @@ void TopoDSToStep_MakeTessellatedItem::Init(const TopoDS_Shell& theShell,
   if (theProgress.UserBreak())
     return;
 
-  TopExp_Explorer anExp;
+  TopExp_Explorer  anExp;
   Standard_Integer aNbFaces = 0;
-  for (anExp.Init(theShell, TopAbs_FACE); anExp.More(); anExp.Next(), ++aNbFaces) {}
+  for (anExp.Init(theShell, TopAbs_FACE); anExp.More(); anExp.Next(), ++aNbFaces)
+  {
+  }
 
   Message_ProgressScope aPS(theProgress, NULL, aNbFaces);
 
   NCollection_Sequence<Handle(StepVisual_TessellatedStructuredItem)> aTessFaces;
   for (anExp.Init(theShell, TopAbs_FACE); anExp.More() && aPS.More(); anExp.Next(), aPS.Next())
   {
-    const TopoDS_Face aFace = TopoDS::Face(anExp.Current());
+    const TopoDS_Face                aFace = TopoDS::Face(anExp.Current());
     TopoDSToStep_MakeTessellatedItem aMakeFace(aFace, theTool, theFP, Standard_False, aPS.Next());
-    if (aMakeFace.IsDone()) 
+    if (aMakeFace.IsDone())
     {
       aTessFaces.Append(Handle(StepVisual_TessellatedStructuredItem)::DownCast(aMakeFace.Value()));
     }
@@ -203,17 +215,17 @@ void TopoDSToStep_MakeTessellatedItem::Init(const TopoDS_Shell& theShell,
   }
 
   Handle(StepVisual_TessellatedShell) aTessShell = new StepVisual_TessellatedShell();
-  Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString("");
+  Handle(TCollection_HAsciiString)    aName      = new TCollection_HAsciiString("");
 
-  Handle(StepVisual_HArray1OfTessellatedStructuredItem) anItems
-    = new StepVisual_HArray1OfTessellatedStructuredItem(1, aTessFaces.Size());
+  Handle(StepVisual_HArray1OfTessellatedStructuredItem) anItems =
+    new StepVisual_HArray1OfTessellatedStructuredItem(1, aTessFaces.Size());
   for (Standard_Integer anIndx = aTessFaces.Lower(); anIndx <= aTessFaces.Upper(); ++anIndx)
   {
     anItems->SetValue(anIndx, aTessFaces.Value(anIndx));
   }
 
   Handle(StepShape_ConnectedFaceSet) aFaceSet;
-  if (theTool.IsBound(theShell)) 
+  if (theTool.IsBound(theShell))
   {
     aFaceSet = Handle(StepShape_ConnectedFaceSet)::DownCast(theTool.Find(theShell));
   }
@@ -223,7 +235,7 @@ void TopoDSToStep_MakeTessellatedItem::Init(const TopoDS_Shell& theShell,
 
   theTessellatedItem = aTessShell;
 
-  //TopoDSToStep::AddResult(theFP, theShell, theTessellatedItem);
+  // TopoDSToStep::AddResult(theFP, theShell, theTessellatedItem);
   done = Standard_True;
 }
 
@@ -231,9 +243,8 @@ void TopoDSToStep_MakeTessellatedItem::Init(const TopoDS_Shell& theShell,
 // Method  : Value
 // Purpose : Returns TessellatedItem as the result
 // ============================================================================
-const Handle(StepVisual_TessellatedItem) &
-TopoDSToStep_MakeTessellatedItem::Value() const
+const Handle(StepVisual_TessellatedItem)& TopoDSToStep_MakeTessellatedItem::Value() const
 {
-  StdFail_NotDone_Raise_if (!done, "TopoDSToStep_MakeTessellatedItem::Value() - no result");
+  StdFail_NotDone_Raise_if(!done, "TopoDSToStep_MakeTessellatedItem::Value() - no result");
   return theTessellatedItem;
 }

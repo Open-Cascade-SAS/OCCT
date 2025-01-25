@@ -17,7 +17,7 @@
 //! Standard_WarningsDisable.hxx disables all compiler warnings.
 //! Standard_WarningsRestore.hxx restore the previous state of warnings.
 //!
-//! Use these headers to wrap include directive containing external (non-OCCT) 
+//! Use these headers to wrap include directive containing external (non-OCCT)
 //! header files to avoid compiler warnings to be generated for these files.
 //! They should always be used in pair:
 //!
@@ -44,6 +44,6 @@
   #pragma GCC diagnostic ignored "-Wenum-compare"
   #pragma GCC diagnostic ignored "-Wreorder"
   #if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8))
-  #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+    #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
   #endif
 #endif

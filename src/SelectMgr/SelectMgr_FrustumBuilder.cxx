@@ -15,29 +15,26 @@
 
 #include <SelectMgr_FrustumBuilder.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_FrustumBuilder,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_FrustumBuilder, Standard_Transient)
 
 #define DOT(A, B) (A.x() * B.x() + A.y() * B.y() + A.z() * B.z())
-#define LENGTH(A) (std::sqrt (A.x() * A.x() + A.y() * A.y() + A.z() * A.z()))
-
+#define LENGTH(A) (std::sqrt(A.x() * A.x() + A.y() * A.y() + A.z() * A.z()))
 
 //=======================================================================
 // function : SelectMgr_FrustumBuilder
 // purpose  : Creates new frustum builder with empty matrices
 //=======================================================================
 SelectMgr_FrustumBuilder::SelectMgr_FrustumBuilder()
-: myWidth (INT_MAX),
-  myHeight (INT_MAX),
-  myIsViewportSet (Standard_False)
+    : myWidth(INT_MAX),
+      myHeight(INT_MAX),
+      myIsViewportSet(Standard_False)
 {
   //
 }
 
-//=======================================================================
-// function : SetCamera
-// purpose  :
-//=======================================================================
-void SelectMgr_FrustumBuilder::SetCamera (const Handle(Graphic3d_Camera)& theCamera)
+//=================================================================================================
+
+void SelectMgr_FrustumBuilder::SetCamera(const Handle(Graphic3d_Camera)& theCamera)
 {
   myCamera = theCamera;
 }
@@ -46,10 +43,10 @@ void SelectMgr_FrustumBuilder::SetCamera (const Handle(Graphic3d_Camera)& theCam
 // function : SetWindowSize
 // purpose  : Stores current window width and height
 //=======================================================================
-void SelectMgr_FrustumBuilder::SetWindowSize (const Standard_Integer theWidth,
-                                              const Standard_Integer theHeight)
+void SelectMgr_FrustumBuilder::SetWindowSize(const Standard_Integer theWidth,
+                                             const Standard_Integer theHeight)
 {
-  myWidth = theWidth;
+  myWidth  = theWidth;
   myHeight = theHeight;
 }
 
@@ -57,30 +54,26 @@ void SelectMgr_FrustumBuilder::SetWindowSize (const Standard_Integer theWidth,
 // function : SetViewport
 // purpose  : Stores current viewport coordinates
 //=======================================================================
-void SelectMgr_FrustumBuilder::SetViewport (const Standard_Real theX,
-                                            const Standard_Real theY,
-                                            const Standard_Real theWidth,
-                                            const Standard_Real theHeight)
+void SelectMgr_FrustumBuilder::SetViewport(const Standard_Real theX,
+                                           const Standard_Real theY,
+                                           const Standard_Real theWidth,
+                                           const Standard_Real theHeight)
 {
-  myViewport = NCollection_Vec4<Standard_Real> (theX, theY, theWidth, theHeight);
+  myViewport      = NCollection_Vec4<Standard_Real>(theX, theY, theWidth, theHeight);
   myIsViewportSet = Standard_True;
 }
 
-//=======================================================================
-// function : WindowSize
-// purpose  :
-//=======================================================================
-void SelectMgr_FrustumBuilder::WindowSize (Standard_Integer& theWidth,
-                                           Standard_Integer& theHeight) const
+//=================================================================================================
+
+void SelectMgr_FrustumBuilder::WindowSize(Standard_Integer& theWidth,
+                                          Standard_Integer& theHeight) const
 {
-  theWidth = myWidth;
+  theWidth  = myWidth;
   theHeight = myHeight;
 }
 
-//=======================================================================
-// function : InvalidateViewport
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 void SelectMgr_FrustumBuilder::InvalidateViewport()
 {
   myIsViewportSet = Standard_False;
@@ -91,11 +84,12 @@ void SelectMgr_FrustumBuilder::InvalidateViewport()
 // purpose  : Calculates signed distance between plane with equation
 //            theEq and point thePnt
 //=======================================================================
-Standard_Real SelectMgr_FrustumBuilder::SignedPlanePntDist (const SelectMgr_Vec3& theEq,
-                                                            const SelectMgr_Vec3& thePnt) const
+Standard_Real SelectMgr_FrustumBuilder::SignedPlanePntDist(const SelectMgr_Vec3& theEq,
+                                                           const SelectMgr_Vec3& thePnt) const
 {
-  const Standard_Real aNormLength = LENGTH (theEq);
-  const Standard_Real anInvNormLength = aNormLength < Precision::Confusion() ? 0.0 : 1.0 / aNormLength;
+  const Standard_Real aNormLength = LENGTH(theEq);
+  const Standard_Real anInvNormLength =
+    aNormLength < Precision::Confusion() ? 0.0 : 1.0 / aNormLength;
   const Standard_Real anA = theEq.x() * anInvNormLength;
   const Standard_Real aB  = theEq.y() * anInvNormLength;
   const Standard_Real aC  = theEq.z() * anInvNormLength;
@@ -108,9 +102,9 @@ Standard_Real SelectMgr_FrustumBuilder::SignedPlanePntDist (const SelectMgr_Vec3
 //            theZ = 0 - near plane,
 //            theZ = 1 - far plane
 // =======================================================================
-gp_Pnt SelectMgr_FrustumBuilder::ProjectPntOnViewPlane (const Standard_Real& theX,
-                                                        const Standard_Real& theY,
-                                                        const Standard_Real& theZ) const
+gp_Pnt SelectMgr_FrustumBuilder::ProjectPntOnViewPlane(const Standard_Real& theX,
+                                                       const Standard_Real& theY,
+                                                       const Standard_Real& theZ) const
 {
   if (myCamera.IsNull())
   {
@@ -120,15 +114,17 @@ gp_Pnt SelectMgr_FrustumBuilder::ProjectPntOnViewPlane (const Standard_Real& the
   gp_Pnt anXYZ;
   if (!myIsViewportSet)
   {
-    anXYZ.SetCoord (2.0 * theX / myWidth - 1.0,
-                    (myHeight - 1 - theY) / myHeight * 2.0 - 1.0,
-                    myCamera->IsZeroToOneDepth() ? theZ : (2.0 * theZ - 1.0));
+    anXYZ.SetCoord(2.0 * theX / myWidth - 1.0,
+                   (myHeight - 1 - theY) / myHeight * 2.0 - 1.0,
+                   myCamera->IsZeroToOneDepth() ? theZ : (2.0 * theZ - 1.0));
   }
   else
   {
-    anXYZ.SetCoord (2.0 * (theX - myWidth  * myViewport.x()) / (myWidth  * (myViewport.z() - myViewport.x())) - 1.0,
-                    2.0 * (theY - myHeight * myViewport.y()) / (myHeight * (myViewport.w() - myViewport.y())) - 1.0,
-                    theZ);
+    anXYZ.SetCoord(
+      2.0 * (theX - myWidth * myViewport.x()) / (myWidth * (myViewport.z() - myViewport.x())) - 1.0,
+      2.0 * (theY - myHeight * myViewport.y()) / (myHeight * (myViewport.w() - myViewport.y()))
+        - 1.0,
+      theZ);
   }
-  return myCamera->UnProject (anXYZ);
+  return myCamera->UnProject(anXYZ);
 }

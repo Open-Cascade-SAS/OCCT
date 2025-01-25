@@ -33,108 +33,106 @@
 #include <Message.hxx>
 
 #ifdef _MSC_VER
-#include <stdio.h>
+  #include <stdio.h>
 #endif
 
+//=================================================================================================
 
-//=======================================================================
-//function : extendcurve
-//purpose  : 
-//=======================================================================
-
-static Standard_Integer extendcurve (Draw_Interpretor& di, Standard_Integer n, const char** a)
+static Standard_Integer extendcurve(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n < 4) return 1;
+  if (n < 4)
+    return 1;
 
-  Handle(Geom_BoundedCurve) GB = 
-    Handle(Geom_BoundedCurve)::DownCast(DrawTrSurf::GetCurve(a[1]));
-  if (GB.IsNull())  {
+  Handle(Geom_BoundedCurve) GB = Handle(Geom_BoundedCurve)::DownCast(DrawTrSurf::GetCurve(a[1]));
+  if (GB.IsNull())
+  {
     di << "extendcurve needs a Bounded curve";
     return 1;
   }
 
-  gp_Pnt  P;
-  if ( !DrawTrSurf::GetPoint(a[2],P)) return 1;
+  gp_Pnt P;
+  if (!DrawTrSurf::GetPoint(a[2], P))
+    return 1;
   Standard_Boolean apres = Standard_True;
-  if (n == 5) {
-      if (strcmp(a[4], "B") == 0) {
-	apres = Standard_False ;
-      }
+  if (n == 5)
+  {
+    if (strcmp(a[4], "B") == 0)
+    {
+      apres = Standard_False;
+    }
   }
-  Standard_Integer cont=Draw::Atoi(a[3]);  
-  GeomLib::ExtendCurveToPoint(GB,P,cont,apres);
-  DrawTrSurf::Set(a[1],GB);
+  Standard_Integer cont = Draw::Atoi(a[3]);
+  GeomLib::ExtendCurveToPoint(GB, P, cont, apres);
+  DrawTrSurf::Set(a[1], GB);
   return 0;
 }
 
-//=======================================================================
-//function : extendsurf
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-static Standard_Integer extendsurf (Draw_Interpretor& di, Standard_Integer n, const char** a)
+static Standard_Integer extendsurf(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n < 4) return 1;
+  if (n < 4)
+    return 1;
 
-  Handle(Geom_BoundedSurface) GB = 
+  Handle(Geom_BoundedSurface) GB =
     Handle(Geom_BoundedSurface)::DownCast(DrawTrSurf::GetSurface(a[1]));
-  if (GB.IsNull())  {
+  if (GB.IsNull())
+  {
     di << "extendsurf needs a Bounded surface";
     return 1;
   }
-  Standard_Real chord=Draw::Atof(a[2]);
-  Standard_Integer cont=Draw::Atoi(a[3]);
+  Standard_Real    chord = Draw::Atof(a[2]);
+  Standard_Integer cont  = Draw::Atoi(a[3]);
   Standard_Boolean enU = Standard_True, apres = Standard_True;
-  if (n >= 5) {
-      if (strcmp(a[4], "V") == 0) {
-	enU = Standard_False ;
-      }
-      if (strcmp(a[4], "B") == 0) {
-	apres = Standard_False ;
-      }
+  if (n >= 5)
+  {
+    if (strcmp(a[4], "V") == 0)
+    {
+      enU = Standard_False;
+    }
+    if (strcmp(a[4], "B") == 0)
+    {
+      apres = Standard_False;
+    }
   }
-  if (n == 6) {
-      if (strcmp(a[5], "B") == 0) {
-	apres = Standard_False ;
-      }
+  if (n == 6)
+  {
+    if (strcmp(a[5], "B") == 0)
+    {
+      apres = Standard_False;
+    }
   }
 
-
-  GeomLib::ExtendSurfByLength(GB,chord,cont,enU,apres);
-  DrawTrSurf::Set(a[1],GB);
+  GeomLib::ExtendSurfByLength(GB, chord, cont, enU, apres);
+  DrawTrSurf::Set(a[1], GB);
 
   return 0;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function :  samerange
-//purpose  : 
-//=======================================================================
-
-static Standard_Integer samerange (Draw_Interpretor& /*di*/, Standard_Integer n, const char** a)
+static Standard_Integer samerange(Draw_Interpretor& /*di*/, Standard_Integer n, const char** a)
 {
-  if (n < 6) return 1;
+  if (n < 6)
+    return 1;
   Handle(Geom2d_Curve) C = DrawTrSurf::GetCurve2d(a[2]);
   Handle(Geom2d_Curve) Res;
-  Standard_Real f, l, rf, rl;
-  f = Draw::Atof(a[3]);
-  l = Draw::Atof(a[4]);
+  Standard_Real        f, l, rf, rl;
+  f  = Draw::Atof(a[3]);
+  l  = Draw::Atof(a[4]);
   rf = Draw::Atof(a[5]);
   rl = Draw::Atof(a[6]);
 
-  GeomLib::SameRange(Precision::PConfusion(), C, 
-		     f, l, rf, rl, Res);
+  GeomLib::SameRange(Precision::PConfusion(), C, f, l, rf, rl, Res);
 
-  DrawTrSurf::Set(a[1],Res);
+  DrawTrSurf::Set(a[1], Res);
 
   return 0;
-
 }
 
 //=======================================================================
-//function : setweight
-//purpose  : Changes a weight of a pole on B-spline curve/surface
+// function : setweight
+// purpose  : Changes a weight of a pole on B-spline curve/surface
 //=======================================================================
 
 static Standard_Integer setweight(Draw_Interpretor& /*di*/, Standard_Integer n, const char** a)
@@ -147,7 +145,7 @@ static Standard_Integer setweight(Draw_Interpretor& /*di*/, Standard_Integer n, 
 
   Standard_Integer anIndex1 = Draw::Atoi(a[2]);
   Standard_Integer anIndex2 = n == 5 ? Draw::Atoi(a[3]) : 0;
-  Standard_Real    aWeight  = Draw::Atof(a[n-1]);
+  Standard_Real    aWeight  = Draw::Atof(a[n - 1]);
 
   Handle(Geom_BSplineCurve) aBSplCurve = DrawTrSurf::GetBSplineCurve(a[1]);
   if (!aBSplCurve.IsNull())
@@ -178,7 +176,7 @@ static Standard_Integer setweight(Draw_Interpretor& /*di*/, Standard_Integer n, 
   }
 
   Handle(Geom_BSplineSurface) aBSplSurf = DrawTrSurf::GetBSplineSurface(a[1]);
-  Handle(Geom_BezierSurface) aBezSurf = DrawTrSurf::GetBezierSurface(a[1]);
+  Handle(Geom_BezierSurface)  aBezSurf  = DrawTrSurf::GetBezierSurface(a[1]);
   if (n != 5 && (!aBSplSurf.IsNull() || !aBezSurf.IsNull()))
   {
     Message::SendFail() << "Syntax error: Incorrect parameters";
@@ -201,16 +199,13 @@ static Standard_Integer setweight(Draw_Interpretor& /*di*/, Standard_Integer n, 
   return 1;
 }
 
-//=======================================================================
-//function : ModificationCommands
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-
-void  GeomliteTest::ModificationCommands(Draw_Interpretor& theCommands)
+void GeomliteTest::ModificationCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean loaded = Standard_False;
-  if (loaded) return;
+  if (loaded)
+    return;
   loaded = Standard_True;
 
   DrawTrSurf::BasicCommands(theCommands);
@@ -219,32 +214,29 @@ void  GeomliteTest::ModificationCommands(Draw_Interpretor& theCommands)
 
   g = "GEOMETRY Curves and Surfaces modification";
 
-
   theCommands.Add("extendcurve",
-		  "extendcurve name point cont [A(fter)/B(efore)]",
-		   __FILE__,
-		  extendcurve , g);
-
+                  "extendcurve name point cont [A(fter)/B(efore)]",
+                  __FILE__,
+                  extendcurve,
+                  g);
 
   theCommands.Add("extendsurf",
-		  "extendsurf name length cont [U/V] [A(fter)/B(efore)]",
-		  __FILE__,
-		   extendsurf, g);
+                  "extendsurf name length cont [U/V] [A(fter)/B(efore)]",
+                  __FILE__,
+                  extendsurf,
+                  g);
 
-  
   theCommands.Add("chgrange",
-		  "chgrange newname curve2d first last  RequestedFirst RequestedLast ]",
-		  __FILE__,
-		   samerange, g);
+                  "chgrange newname curve2d first last  RequestedFirst RequestedLast ]",
+                  __FILE__,
+                  samerange,
+                  g);
 
   theCommands.Add("setweight",
                   "setweight curve/surf index1 [index2] weight"
-                  "\n\t\tchanges a weight of a pole of B-spline curve/surface (index2 is useful for surfaces only)",
+                  "\n\t\tchanges a weight of a pole of B-spline curve/surface (index2 is useful "
+                  "for surfaces only)",
                   __FILE__,
-                  setweight,g);
-
+                  setweight,
+                  g);
 }
-
-
-
-

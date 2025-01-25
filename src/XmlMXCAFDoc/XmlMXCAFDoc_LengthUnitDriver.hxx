@@ -23,7 +23,6 @@ class Message_Messenger;
 class TDF_Attribute;
 class XmlObjMgt_Persistent;
 
-
 class XmlMXCAFDoc_LengthUnitDriver;
 DEFINE_STANDARD_HANDLE(XmlMXCAFDoc_LengthUnitDriver, XmlMDF_ADriver)
 
@@ -32,21 +31,21 @@ class XmlMXCAFDoc_LengthUnitDriver : public XmlMDF_ADriver
 {
 
 public:
-
   Standard_EXPORT XmlMXCAFDoc_LengthUnitDriver(const Handle(Message_Messenger)& theMessageDriver);
-  
+
   Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_Boolean Paste (const XmlObjMgt_Persistent& theSource,
-                                                  const Handle(TDF_Attribute)& theTarget,
-                                                  XmlObjMgt_RRelocationTable& theRelocTable) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Paste (const Handle(TDF_Attribute)& theSource,
-                                      XmlObjMgt_Persistent& theTarget,
-                                      XmlObjMgt_SRelocationTable& theRelocTable) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(XmlMXCAFDoc_LengthUnitDriver,XmlMDF_ADriver)
+  Standard_EXPORT virtual Standard_Boolean Paste(const XmlObjMgt_Persistent&  theSource,
+                                                 const Handle(TDF_Attribute)& theTarget,
+                                                 XmlObjMgt_RRelocationTable&  theRelocTable) const
+    Standard_OVERRIDE;
 
+  Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)& theSource,
+                                     XmlObjMgt_Persistent&        theTarget,
+                                     XmlObjMgt_SRelocationTable&  theRelocTable) const
+    Standard_OVERRIDE;
+
+  DEFINE_STANDARD_RTTIEXT(XmlMXCAFDoc_LengthUnitDriver, XmlMDF_ADriver)
 };
 
 #endif // _XmlMXCAFDoc_LengthUnitDriver_HeaderFile

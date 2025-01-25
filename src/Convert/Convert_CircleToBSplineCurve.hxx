@@ -25,8 +25,6 @@
 #include <Convert_ParameterisationType.hxx>
 class gp_Circ2d;
 
-
-
 //! This algorithm converts a circle into a rational B-spline curve.
 //! The circle is a Circ2d from package gp and its parametrization is :
 //! P (U) = Loc + R * (Cos(U) * Xdir + Sin(U) * YDir) where Loc is the
@@ -39,18 +37,16 @@ class gp_Circ2d;
 //!
 //! KeyWords :
 //! Convert, Circle, BSplineCurve, 2D .
-class Convert_CircleToBSplineCurve  : public Convert_ConicToBSplineCurve
+class Convert_CircleToBSplineCurve : public Convert_ConicToBSplineCurve
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! The equivalent B-spline curve has the same orientation
   //! as the circle C.
-  Standard_EXPORT Convert_CircleToBSplineCurve(const gp_Circ2d& C, const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
-  
+  Standard_EXPORT Convert_CircleToBSplineCurve(
+    const gp_Circ2d&                   C,
+    const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
 
   //! The circle C is limited between the parametric values U1, U2
   //! in radians. U1 and U2 [0.0, 2*Pi] .
@@ -58,29 +54,14 @@ public:
   //! the same orientation as the circle C.
   //!
   //! Raised if U1 = U2 or U1 = U2 + 2.0 * Pi
-  Standard_EXPORT Convert_CircleToBSplineCurve(const gp_Circ2d& C, const Standard_Real U1, const Standard_Real U2, const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
-
-
-
+  Standard_EXPORT Convert_CircleToBSplineCurve(
+    const gp_Circ2d&                   C,
+    const Standard_Real                U1,
+    const Standard_Real                U2,
+    const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Convert_CircleToBSplineCurve_HeaderFile

@@ -24,7 +24,6 @@
 #include <Standard_Real.hxx>
 class gp_Pnt2d;
 
-
 class Geom2d_Point;
 DEFINE_STANDARD_HANDLE(Geom2d_Point, Geom2d_Geometry)
 
@@ -36,50 +35,32 @@ class Geom2d_Point : public Geom2d_Geometry
 {
 
 public:
-
-  
   //! returns the Coordinates of <me>.
-  Standard_EXPORT virtual void Coord (Standard_Real& X, Standard_Real& Y) const = 0;
-  
+  Standard_EXPORT virtual void Coord(Standard_Real& X, Standard_Real& Y) const = 0;
+
   //! returns a non persistent copy of <me>
   Standard_EXPORT virtual gp_Pnt2d Pnt2d() const = 0;
-  
+
   //! returns the X coordinate of <me>.
   Standard_EXPORT virtual Standard_Real X() const = 0;
-  
+
   //! returns  the Y coordinate of <me>.
   Standard_EXPORT virtual Standard_Real Y() const = 0;
-  
+
   //! computes the distance between <me> and <Other>.
-  Standard_EXPORT Standard_Real Distance (const Handle(Geom2d_Point)& Other) const;
-  
+  Standard_EXPORT Standard_Real Distance(const Handle(Geom2d_Point)& Other) const;
+
   //! computes the square distance between <me> and <Other>.
-  Standard_EXPORT Standard_Real SquareDistance (const Handle(Geom2d_Point)& Other) const;
+  Standard_EXPORT Standard_Real SquareDistance(const Handle(Geom2d_Point)& Other) const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Geom2d_Point,Geom2d_Geometry)
+  DEFINE_STANDARD_RTTIEXT(Geom2d_Point, Geom2d_Geometry)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Geom2d_Point_HeaderFile

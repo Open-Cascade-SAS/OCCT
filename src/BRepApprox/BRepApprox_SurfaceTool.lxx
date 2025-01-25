@@ -28,50 +28,67 @@
 #include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_Curve.hxx>
 
-inline Standard_Real BRepApprox_SurfaceTool::FirstUParameter(const BRepAdaptor_Surface& Surf){  return Surf.FirstUParameter(); }
-inline Standard_Real BRepApprox_SurfaceTool::FirstVParameter(const BRepAdaptor_Surface& Surf){  return Surf.FirstVParameter();}
-inline Standard_Real BRepApprox_SurfaceTool::LastUParameter(const BRepAdaptor_Surface& Surf){  return Surf.LastUParameter();}
-inline Standard_Real BRepApprox_SurfaceTool::LastVParameter(const BRepAdaptor_Surface& Surf){  return Surf.LastVParameter();}
+inline Standard_Real BRepApprox_SurfaceTool::FirstUParameter(const BRepAdaptor_Surface& Surf)
+{
+  return Surf.FirstUParameter();
+}
+
+inline Standard_Real BRepApprox_SurfaceTool::FirstVParameter(const BRepAdaptor_Surface& Surf)
+{
+  return Surf.FirstVParameter();
+}
+
+inline Standard_Real BRepApprox_SurfaceTool::LastUParameter(const BRepAdaptor_Surface& Surf)
+{
+  return Surf.LastUParameter();
+}
+
+inline Standard_Real BRepApprox_SurfaceTool::LastVParameter(const BRepAdaptor_Surface& Surf)
+{
+  return Surf.LastVParameter();
+}
 
 inline Standard_Integer BRepApprox_SurfaceTool::NbUIntervals(const BRepAdaptor_Surface& Surf,
-							  const GeomAbs_Shape S){
+                                                             const GeomAbs_Shape        S)
+{
   return Surf.NbUIntervals(S);
 }
 
 inline Standard_Integer BRepApprox_SurfaceTool::NbVIntervals(const BRepAdaptor_Surface& Surf,
-							  const GeomAbs_Shape S){
+                                                             const GeomAbs_Shape        S)
+{
   return Surf.NbVIntervals(S);
 }
 
-inline void  BRepApprox_SurfaceTool::UIntervals(const BRepAdaptor_Surface& Surf,
-							TColStd_Array1OfReal& Tab,
-							const GeomAbs_Shape S){
-  Surf.UIntervals(Tab,S);
+inline void BRepApprox_SurfaceTool::UIntervals(const BRepAdaptor_Surface& Surf,
+                                               TColStd_Array1OfReal&      Tab,
+                                               const GeomAbs_Shape        S)
+{
+  Surf.UIntervals(Tab, S);
 }
 
-inline void  BRepApprox_SurfaceTool::VIntervals(const BRepAdaptor_Surface& Surf,
-							TColStd_Array1OfReal& Tab,
-							const GeomAbs_Shape S){
-  Surf.VIntervals(Tab,S);
+inline void BRepApprox_SurfaceTool::VIntervals(const BRepAdaptor_Surface& Surf,
+                                               TColStd_Array1OfReal&      Tab,
+                                               const GeomAbs_Shape        S)
+{
+  Surf.VIntervals(Tab, S);
 }
 
-
-inline Handle(Adaptor3d_Surface)  BRepApprox_SurfaceTool::UTrim(const BRepAdaptor_Surface& Surf,
-								   const Standard_Real F,
-								   const Standard_Real L,
-								   const Standard_Real Tol) { 
-  return Surf.UTrim(F,L,Tol);
+inline Handle(Adaptor3d_Surface) BRepApprox_SurfaceTool::UTrim(const BRepAdaptor_Surface& Surf,
+                                                               const Standard_Real        F,
+                                                               const Standard_Real        L,
+                                                               const Standard_Real        Tol)
+{
+  return Surf.UTrim(F, L, Tol);
 }
 
 inline Handle(Adaptor3d_Surface) BRepApprox_SurfaceTool::VTrim(const BRepAdaptor_Surface& Surf,
-								  const Standard_Real F,
-								  const Standard_Real L,
-								  const Standard_Real Tol) { 
-  return Surf.VTrim(F,L,Tol);
+                                                               const Standard_Real        F,
+                                                               const Standard_Real        L,
+                                                               const Standard_Real        Tol)
+{
+  return Surf.VTrim(F, L, Tol);
 }
-
-
-
 
 inline Standard_Boolean BRepApprox_SurfaceTool::IsUClosed(const BRepAdaptor_Surface& S)
 {
@@ -104,82 +121,82 @@ inline Standard_Real BRepApprox_SurfaceTool::VPeriod(const BRepAdaptor_Surface& 
 }
 
 inline gp_Pnt BRepApprox_SurfaceTool::Value(const BRepAdaptor_Surface& S,
-					 const Standard_Real U,
-					 const Standard_Real V )
+                                            const Standard_Real        U,
+                                            const Standard_Real        V)
 {
-  return S.Value(U,V);
+  return S.Value(U, V);
 }
 
 inline void BRepApprox_SurfaceTool::D0(const BRepAdaptor_Surface& S,
-				    const Standard_Real U,
-				    const Standard_Real V,
-				    gp_Pnt& P)
+                                       const Standard_Real        U,
+                                       const Standard_Real        V,
+                                       gp_Pnt&                    P)
 {
-  S.D0(U,V,P);
+  S.D0(U, V, P);
 }
 
 inline void BRepApprox_SurfaceTool::D1(const BRepAdaptor_Surface& S,
-				    const Standard_Real U,
-				    const Standard_Real V,
-				    gp_Pnt& P,
-				    gp_Vec& D1U,
-				    gp_Vec& D1V) 
+                                       const Standard_Real        U,
+                                       const Standard_Real        V,
+                                       gp_Pnt&                    P,
+                                       gp_Vec&                    D1U,
+                                       gp_Vec&                    D1V)
 {
-  S.D1(U,V,P,D1U,D1V);
+  S.D1(U, V, P, D1U, D1V);
 }
 
 inline void BRepApprox_SurfaceTool::D2(const BRepAdaptor_Surface& S,
-				    const Standard_Real U,
-				    const Standard_Real V,
-				    gp_Pnt& P,
-				    gp_Vec& D1U,
-				    gp_Vec& D1V,
-				    gp_Vec& D2U,
-				    gp_Vec& D2V,
-				    gp_Vec& D2UV)
+                                       const Standard_Real        U,
+                                       const Standard_Real        V,
+                                       gp_Pnt&                    P,
+                                       gp_Vec&                    D1U,
+                                       gp_Vec&                    D1V,
+                                       gp_Vec&                    D2U,
+                                       gp_Vec&                    D2V,
+                                       gp_Vec&                    D2UV)
 {
-  S.D2(U,V,P,D1U,D1V,D2U,D2V,D2UV);
+  S.D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
 }
 
 inline void BRepApprox_SurfaceTool::D3(const BRepAdaptor_Surface& S,
-				    const Standard_Real U,
-				    const Standard_Real V,
-				    gp_Pnt& P,
-				    gp_Vec& D1U,
-				    gp_Vec& D1V, 
-				    gp_Vec& D2U,
-				    gp_Vec& D2V,
-				    gp_Vec& D2UV,
-				    gp_Vec& D3U,
-				    gp_Vec& D3V,
-				    gp_Vec& D3UUV,
-				    gp_Vec& D3UVV)
+                                       const Standard_Real        U,
+                                       const Standard_Real        V,
+                                       gp_Pnt&                    P,
+                                       gp_Vec&                    D1U,
+                                       gp_Vec&                    D1V,
+                                       gp_Vec&                    D2U,
+                                       gp_Vec&                    D2V,
+                                       gp_Vec&                    D2UV,
+                                       gp_Vec&                    D3U,
+                                       gp_Vec&                    D3V,
+                                       gp_Vec&                    D3UUV,
+                                       gp_Vec&                    D3UVV)
 {
-  S.D3(U,V,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
+  S.D3(U, V, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
 }
 
 inline gp_Vec BRepApprox_SurfaceTool::DN(const BRepAdaptor_Surface& S,
-				      const Standard_Real U,
-				      const Standard_Real V,
-				      const Standard_Integer Nu,
-				      const Standard_Integer Nv)
+                                         const Standard_Real        U,
+                                         const Standard_Real        V,
+                                         const Standard_Integer     Nu,
+                                         const Standard_Integer     Nv)
 {
-  return S.DN(U,V,Nu,Nv);
+  return S.DN(U, V, Nu, Nv);
 }
 
 inline Standard_Real BRepApprox_SurfaceTool::UResolution(const BRepAdaptor_Surface& S,
-						      const Standard_Real R3d)
+                                                         const Standard_Real        R3d)
 {
   return S.UResolution(R3d);
 }
 
 inline Standard_Real BRepApprox_SurfaceTool::VResolution(const BRepAdaptor_Surface& S,
-						      const Standard_Real R3d)
+                                                         const Standard_Real        R3d)
 {
   return S.VResolution(R3d);
 }
 
-inline GeomAbs_SurfaceType BRepApprox_SurfaceTool::GetType(const BRepAdaptor_Surface& S )
+inline GeomAbs_SurfaceType BRepApprox_SurfaceTool::GetType(const BRepAdaptor_Surface& S)
 {
   return S.GetType();
 }
@@ -189,44 +206,47 @@ inline gp_Pln BRepApprox_SurfaceTool::Plane(const BRepAdaptor_Surface& S)
   return S.Plane();
 }
 
-inline gp_Cylinder BRepApprox_SurfaceTool::Cylinder(const BRepAdaptor_Surface& S) 
+inline gp_Cylinder BRepApprox_SurfaceTool::Cylinder(const BRepAdaptor_Surface& S)
 {
   return S.Cylinder();
 }
 
-inline gp_Cone BRepApprox_SurfaceTool::Cone(const BRepAdaptor_Surface& S) 
+inline gp_Cone BRepApprox_SurfaceTool::Cone(const BRepAdaptor_Surface& S)
 {
   return S.Cone();
 }
 
-inline gp_Sphere BRepApprox_SurfaceTool::Sphere(const BRepAdaptor_Surface& S) 
+inline gp_Sphere BRepApprox_SurfaceTool::Sphere(const BRepAdaptor_Surface& S)
 {
   return S.Sphere();
 }
 
-inline gp_Torus BRepApprox_SurfaceTool::Torus(const BRepAdaptor_Surface& S) 
+inline gp_Torus BRepApprox_SurfaceTool::Torus(const BRepAdaptor_Surface& S)
 {
   return S.Torus();
 }
 
-
-inline Handle(Geom_BezierSurface) BRepApprox_SurfaceTool::Bezier(const BRepAdaptor_Surface& S) { 
-  return(S.Bezier());
+inline Handle(Geom_BezierSurface) BRepApprox_SurfaceTool::Bezier(const BRepAdaptor_Surface& S)
+{
+  return (S.Bezier());
 }
 
-inline Handle(Geom_BSplineSurface) BRepApprox_SurfaceTool::BSpline(const BRepAdaptor_Surface& S) { 
-  return(S.BSpline());
+inline Handle(Geom_BSplineSurface) BRepApprox_SurfaceTool::BSpline(const BRepAdaptor_Surface& S)
+{
+  return (S.BSpline());
 }
 
-
-inline gp_Ax1  BRepApprox_SurfaceTool::AxeOfRevolution(const BRepAdaptor_Surface& S) { 
-  return(S.AxeOfRevolution());
+inline gp_Ax1 BRepApprox_SurfaceTool::AxeOfRevolution(const BRepAdaptor_Surface& S)
+{
+  return (S.AxeOfRevolution());
 }
 
-inline gp_Dir  BRepApprox_SurfaceTool::Direction(const BRepAdaptor_Surface& S) { 
-  return(S.Direction());
+inline gp_Dir BRepApprox_SurfaceTool::Direction(const BRepAdaptor_Surface& S)
+{
+  return (S.Direction());
 }
 
-inline Handle(Adaptor3d_Curve)  BRepApprox_SurfaceTool::BasisCurve(const BRepAdaptor_Surface& S) { 
-  return(S.BasisCurve());
+inline Handle(Adaptor3d_Curve) BRepApprox_SurfaceTool::BasisCurve(const BRepAdaptor_Surface& S)
+{
+  return (S.BasisCurve());
 }

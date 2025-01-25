@@ -26,7 +26,6 @@ class IGESData_IGESModel;
 class Interface_CopyTool;
 class TCollection_AsciiString;
 
-
 class IGESSelect_UpdateLastChange;
 DEFINE_STANDARD_HANDLE(IGESSelect_UpdateLastChange, IGESSelect_ModelModifier)
 
@@ -41,41 +40,24 @@ class IGESSelect_UpdateLastChange : public IGESSelect_ModelModifier
 {
 
 public:
-
-  
   //! Creates an UpdateLastChange, which uses the system Date
   Standard_EXPORT IGESSelect_UpdateLastChange();
-  
+
   //! Specific action : only <target> is used : the system Date
   //! is set to Global Section Item n0 25. Also sets IGES Version
   //! (Item n0 23) to IGES5 if it was older.
-  Standard_EXPORT void Performing (IFSelect_ContextModif& ctx, const Handle(IGESData_IGESModel)& target, Interface_CopyTool& TC) const Standard_OVERRIDE;
-  
+  Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
+                                  const Handle(IGESData_IGESModel)& target,
+                                  Interface_CopyTool&               TC) const Standard_OVERRIDE;
+
   //! Returns a text which is
   //! "Update IGES Header Last Change Date"
   Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSelect_UpdateLastChange,IGESSelect_ModelModifier)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_UpdateLastChange, IGESSelect_ModelModifier)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESSelect_UpdateLastChange_HeaderFile

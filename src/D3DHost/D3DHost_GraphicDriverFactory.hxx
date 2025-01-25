@@ -21,13 +21,12 @@ class D3DHost_GraphicDriverFactory : public OpenGl_GraphicDriverFactory
 {
   DEFINE_STANDARD_RTTIEXT(D3DHost_GraphicDriverFactory, OpenGl_GraphicDriverFactory)
 public:
-
   //! Empty constructor.
   Standard_EXPORT D3DHost_GraphicDriverFactory();
 
   //! Creates new empty graphic driver.
-  Standard_EXPORT virtual Handle(Graphic3d_GraphicDriver) CreateDriver (const Handle(Aspect_DisplayConnection)& theDisp) Standard_OVERRIDE;
-
+  Standard_EXPORT virtual Handle(Graphic3d_GraphicDriver) CreateDriver(
+    const Handle(Aspect_DisplayConnection)& theDisp) Standard_OVERRIDE;
 };
 
 #endif //_D3DHost_GraphicDriverFactory_Header

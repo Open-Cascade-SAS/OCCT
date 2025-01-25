@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMDataStd.hxx>
 #include <BinMDataStd_ByteArrayDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
@@ -23,93 +22,93 @@
 #include <TDF_Attribute.hxx>
 #include <TDocStd_FormatVersion.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_ByteArrayDriver,BinMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_ByteArrayDriver, BinMDF_ADriver)
 
-//=======================================================================
-//function : BinMDataStd_ByteArrayDriver
-//purpose  : Constructor
-//=======================================================================
-BinMDataStd_ByteArrayDriver::BinMDataStd_ByteArrayDriver(const Handle(Message_Messenger)& theMsgDriver)
-     : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataStd_ByteArray)->Name())
+//=================================================================================================
+
+BinMDataStd_ByteArrayDriver::BinMDataStd_ByteArrayDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDataStd_ByteArray)->Name())
 {
-
 }
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Handle(TDF_Attribute) BinMDataStd_ByteArrayDriver::NewEmpty() const
 {
   return new TDataStd_ByteArray();
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
 Standard_Boolean BinMDataStd_ByteArrayDriver::Paste(const BinObjMgt_Persistent&  theSource,
                                                     const Handle(TDF_Attribute)& theTarget,
-                                                    BinObjMgt_RRelocationTable&  theRelocTable) const
+                                                    BinObjMgt_RRelocationTable& theRelocTable) const
 {
   Standard_Integer aFirstInd, aLastInd;
-  if (! (theSource >> aFirstInd >> aLastInd))
+  if (!(theSource >> aFirstInd >> aLastInd))
     return Standard_False;
   if (aLastInd < aFirstInd)
     return Standard_False;
 
   TColStd_Array1OfByte aTargetArray(aFirstInd, aLastInd);
-  theSource.GetByteArray (&aTargetArray(aFirstInd), aTargetArray.Length());
+  theSource.GetByteArray(&aTargetArray(aFirstInd), aTargetArray.Length());
 
   const Handle(TDataStd_ByteArray) anAtt = Handle(TDataStd_ByteArray)::DownCast(theTarget);
-  Handle(TColStd_HArray1OfByte) bytes = new TColStd_HArray1OfByte(aFirstInd, aLastInd);
+  Handle(TColStd_HArray1OfByte)    bytes = new TColStd_HArray1OfByte(aFirstInd, aLastInd);
   for (Standard_Integer i = aFirstInd; i <= aLastInd; i++)
   {
     bytes->SetValue(i, aTargetArray.Value(i));
   }
   anAtt->ChangeArray(bytes);
 
-  Standard_Boolean aDelta(Standard_False); 
-  if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_3) {
+  Standard_Boolean aDelta(Standard_False);
+  if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue()
+      >= TDocStd_FormatVersion_VERSION_3)
+  {
     Standard_Byte aDeltaValue;
-    if (! (theSource >> aDeltaValue))
+    if (!(theSource >> aDeltaValue))
       return Standard_False;
     else
       aDelta = (aDeltaValue != 0);
   }
   anAtt->SetDelta(aDelta);
 
-  BinMDataStd::SetAttributeID(theSource, anAtt, theRelocTable.GetHeaderData()->StorageVersion().IntegerValue());
+  BinMDataStd::SetAttributeID(theSource,
+                              anAtt,
+                              theRelocTable.GetHeaderData()->StorageVersion().IntegerValue());
   return Standard_True;
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //=======================================================================
 void BinMDataStd_ByteArrayDriver::Paste(const Handle(TDF_Attribute)& theSource,
                                         BinObjMgt_Persistent&        theTarget,
-                                        BinObjMgt_SRelocationTable&  ) const
+                                        BinObjMgt_SRelocationTable&) const
 {
-  Handle(TDataStd_ByteArray) anAtt = Handle(TDataStd_ByteArray)::DownCast(theSource);
-  const Standard_Integer aFirstInd = anAtt->Lower();
-  const Standard_Integer aLastInd  = anAtt->Upper();
+  Handle(TDataStd_ByteArray) anAtt     = Handle(TDataStd_ByteArray)::DownCast(theSource);
+  const Standard_Integer     aFirstInd = anAtt->Lower();
+  const Standard_Integer     aLastInd  = anAtt->Upper();
   if (aLastInd < aFirstInd)
     return;
   theTarget << aFirstInd << aLastInd;
 
   const Handle(TColStd_HArray1OfByte)& bytes = anAtt->InternalArray();
-  Standard_Integer lower = bytes->Lower(), i = lower, upper = bytes->Upper();
-  TColStd_Array1OfByte aSourceArray(lower, upper);
+  Standard_Integer                     lower = bytes->Lower(), i = lower, upper = bytes->Upper();
+  TColStd_Array1OfByte                 aSourceArray(lower, upper);
   for (; i <= upper; i++)
   {
     aSourceArray.SetValue(i, bytes->Value(i));
   }
-  Standard_Byte *aPtr = (Standard_Byte *) &aSourceArray(lower);
+  Standard_Byte* aPtr = (Standard_Byte*)&aSourceArray(lower);
   theTarget.PutByteArray(aPtr, bytes->Length());
   theTarget << (Standard_Byte)(anAtt->GetDelta() ? 1 : 0);
-  
+
   // process user defined guid
-  if(anAtt->ID() != TDataStd_ByteArray::GetID()) 
+  if (anAtt->ID() != TDataStd_ByteArray::GetID())
     theTarget << anAtt->ID();
 }

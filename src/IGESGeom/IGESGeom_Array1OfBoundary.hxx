@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(IGESGeom_Boundary)> IGESGeom_Array1OfBoundary;
 
-
 #endif

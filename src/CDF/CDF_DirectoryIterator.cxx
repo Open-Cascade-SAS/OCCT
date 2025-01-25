@@ -14,26 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <CDF_Directory.hxx>
 #include <CDF_DirectoryIterator.hxx>
 #include <CDM_Document.hxx>
 
-
-CDF_DirectoryIterator::CDF_DirectoryIterator(const Handle(CDF_Directory)& aDirectory):myIterator(aDirectory->List()) {}
-
-
-
-
-Standard_Boolean CDF_DirectoryIterator::MoreDocument() {
-  return myIterator.More() ;
+CDF_DirectoryIterator::CDF_DirectoryIterator(const Handle(CDF_Directory)& aDirectory)
+    : myIterator(aDirectory->List())
+{
 }
-void CDF_DirectoryIterator::NextDocument() {
+
+Standard_Boolean CDF_DirectoryIterator::MoreDocument()
+{
+  return myIterator.More();
+}
+
+void CDF_DirectoryIterator::NextDocument()
+{
   myIterator.Next();
 }
 
-Handle(CDM_Document) CDF_DirectoryIterator::Document() {
+Handle(CDM_Document) CDF_DirectoryIterator::Document()
+{
 
   return myIterator.Value();
 }
-

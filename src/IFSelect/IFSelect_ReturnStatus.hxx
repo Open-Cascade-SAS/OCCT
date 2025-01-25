@@ -26,11 +26,11 @@
 //! RetStop  : indicates end or stop (such as Raise)
 enum IFSelect_ReturnStatus
 {
-IFSelect_RetVoid,
-IFSelect_RetDone,
-IFSelect_RetError,
-IFSelect_RetFail,
-IFSelect_RetStop
+  IFSelect_RetVoid,
+  IFSelect_RetDone,
+  IFSelect_RetError,
+  IFSelect_RetFail,
+  IFSelect_RetStop
 };
 
 #endif // _IFSelect_ReturnStatus_HeaderFile

@@ -24,7 +24,6 @@
 class StepVisual_PresentationLayerAssignment;
 class StepVisual_PresentationRepresentation;
 
-
 class StepVisual_PresentationLayerUsage;
 DEFINE_STANDARD_HANDLE(StepVisual_PresentationLayerUsage, Standard_Transient)
 
@@ -33,43 +32,27 @@ class StepVisual_PresentationLayerUsage : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT StepVisual_PresentationLayerUsage();
-  
-  Standard_EXPORT void Init (const Handle(StepVisual_PresentationLayerAssignment)& aAssignment, const Handle(StepVisual_PresentationRepresentation)& aPresentation);
-  
-  Standard_EXPORT void SetAssignment (const Handle(StepVisual_PresentationLayerAssignment)& aAssignment);
-  
+
+  Standard_EXPORT void Init(const Handle(StepVisual_PresentationLayerAssignment)& aAssignment,
+                            const Handle(StepVisual_PresentationRepresentation)&  aPresentation);
+
+  Standard_EXPORT void SetAssignment(
+    const Handle(StepVisual_PresentationLayerAssignment)& aAssignment);
+
   Standard_EXPORT Handle(StepVisual_PresentationLayerAssignment) Assignment() const;
-  
-  Standard_EXPORT void SetPresentation (const Handle(StepVisual_PresentationRepresentation)& aPresentation);
-  
+
+  Standard_EXPORT void SetPresentation(
+    const Handle(StepVisual_PresentationRepresentation)& aPresentation);
+
   Standard_EXPORT Handle(StepVisual_PresentationRepresentation) Presentation() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationLayerUsage,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationLayerUsage, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepVisual_PresentationLayerAssignment) theAssignment;
-  Handle(StepVisual_PresentationRepresentation) thePresentation;
-
-
+  Handle(StepVisual_PresentationRepresentation)  thePresentation;
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_PresentationLayerUsage_HeaderFile

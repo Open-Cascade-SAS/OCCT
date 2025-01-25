@@ -36,13 +36,11 @@ class StepData_Protocol;
 //! - possibility to look for an entity itself (only its Type or
 //! with its content), an entity and it shared items (one level)
 //! or all the entities its refers to, directly or recursively.
-class StepData_StepDumper 
+class StepData_StepDumper
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates a StepDumper, able to work on a given StepModel
   //! (which defines the total scope for dumping entities) and
   //! a given Protocol from Step (which defines the authorized
@@ -51,12 +49,14 @@ public:
   //! 0 for number (and corresponding labels  are displayed apart)
   //! 1 for label  (and corresponding numbers are displayed apart)
   //! 2 for label without anymore
-  Standard_EXPORT StepData_StepDumper(const Handle(StepData_StepModel)& amodel, const Handle(StepData_Protocol)& protocol, const Standard_Integer mode = 0);
-  
+  Standard_EXPORT StepData_StepDumper(const Handle(StepData_StepModel)& amodel,
+                                      const Handle(StepData_Protocol)&  protocol,
+                                      const Standard_Integer            mode = 0);
+
   //! Gives an access to the tool which is used to work : this allow
   //! to acts on some parameters : Floating Format, Scopes ...
   Standard_EXPORT StepData_StepWriter& StepWriter();
-  
+
   //! Dumps a Entity on an Messenger. Returns True if
   //! success, False, if the entity to dump has not been recognized
   //! by the Protocol. <level> can have one of these values :
@@ -73,38 +73,23 @@ public:
   //!
   //! For levels 1,2,3, the numbers displayed (form #nnn) are the
   //! numbers of the corresponding entities in the Model
-  Standard_EXPORT Standard_Boolean Dump (Standard_OStream& S, const Handle(Standard_Transient)& ent, const Standard_Integer level);
-  
+  Standard_EXPORT Standard_Boolean Dump(Standard_OStream&                 S,
+                                        const Handle(Standard_Transient)& ent,
+                                        const Standard_Integer            level);
+
   //! Works as Dump with a Transient, but directly takes the
   //! entity designated by its number in the Model
   //! Returns False, also if <num> is out of range
-  Standard_EXPORT Standard_Boolean Dump (Standard_OStream& S, const Standard_Integer num, const Standard_Integer level);
-
-
-
+  Standard_EXPORT Standard_Boolean Dump(Standard_OStream&      S,
+                                        const Standard_Integer num,
+                                        const Standard_Integer level);
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(StepData_StepModel) themodel;
-  Interface_GeneralLib theslib;
-  StepData_WriterLib thewlib;
-  StepData_StepWriter thewriter;
-
-
+  Interface_GeneralLib       theslib;
+  StepData_WriterLib         thewlib;
+  StepData_StepWriter        thewriter;
 };
-
-
-
-
-
-
 
 #endif // _StepData_StepDumper_HeaderFile

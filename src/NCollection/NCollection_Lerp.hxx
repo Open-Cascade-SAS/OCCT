@@ -17,7 +17,7 @@
 
 //! Simple linear interpolation tool (also known as mix() in GLSL).
 //! The main purpose of this template class is making interpolation routines more readable.
-template<class T>
+template <class T>
 class NCollection_Lerp
 {
 public:
@@ -26,29 +26,27 @@ public:
   //! @param theEnd   second value
   //! @param theT normalized interpolation coefficient within [0, 1] range,
   //!             with 0 pointing to theStart and 1 to theEnd.
-  static T Interpolate (const T& theStart,
-                        const T& theEnd,
-                        double theT)
+  static T Interpolate(const T& theStart, const T& theEnd, double theT)
   {
-    T aResult;
-    NCollection_Lerp aLerp (theStart, theEnd);
-    aLerp.Interpolate (theT, aResult);
+    T                aResult;
+    NCollection_Lerp aLerp(theStart, theEnd);
+    aLerp.Interpolate(theT, aResult);
     return aResult;
   }
 
 public:
-
   //! Empty constructor
-  NCollection_Lerp() : myStart(), myEnd() {}
-
-  //! Main constructor.
-  NCollection_Lerp (const T& theStart, const T& theEnd)
+  NCollection_Lerp()
+      : myStart(),
+        myEnd()
   {
-    Init (theStart, theEnd);
   }
 
+  //! Main constructor.
+  NCollection_Lerp(const T& theStart, const T& theEnd) { Init(theStart, theEnd); }
+
   //! Initialize values.
-  void Init (const T& theStart, const T& theEnd)
+  void Init(const T& theStart, const T& theEnd)
   {
     myStart = theStart;
     myEnd   = theEnd;
@@ -58,7 +56,7 @@ public:
   //! @param theT normalized interpolation coefficient within [0, 1] range,
   //!             with 0 pointing to first value and 1 to the second value.
   //! @param[out] theResult  interpolated value
-  void Interpolate (double theT, T& theResult) const
+  void Interpolate(double theT, T& theResult) const
   {
     theResult = (1.0 - theT) * myStart + theT * myEnd;
   }

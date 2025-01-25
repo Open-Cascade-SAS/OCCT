@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Variable.hxx>
@@ -21,59 +20,50 @@
 #include <XmlMDataStd_VariableDriver.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_VariableDriver,XmlMDF_ADriver)
-IMPLEMENT_DOMSTRING (IsConstString, "isconst")
-IMPLEMENT_DOMSTRING (UnitString,    "unit")
-IMPLEMENT_DOMSTRING (ConstString,   "true")
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_VariableDriver, XmlMDF_ADriver)
+IMPLEMENT_DOMSTRING(IsConstString, "isconst")
+IMPLEMENT_DOMSTRING(UnitString, "unit")
+IMPLEMENT_DOMSTRING(ConstString, "true")
 
-//=======================================================================
-//function : XmlMDataStd_VariableDriver
-//purpose  : Constructor
-//=======================================================================
-XmlMDataStd_VariableDriver::XmlMDataStd_VariableDriver
-                        (const Handle(Message_Messenger)& theMsgDriver)
-      : XmlMDF_ADriver (theMsgDriver, NULL)
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+XmlMDataStd_VariableDriver::XmlMDataStd_VariableDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : XmlMDF_ADriver(theMsgDriver, NULL)
+{
+}
+
+//=================================================================================================
+
 Handle(TDF_Attribute) XmlMDataStd_VariableDriver::NewEmpty() const
 {
   return (new TDataStd_Variable());
 }
 
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-Standard_Boolean XmlMDataStd_VariableDriver::Paste
-                                (const XmlObjMgt_Persistent&  theSource,
-                                 const Handle(TDF_Attribute)& theTarget,
-                                 XmlObjMgt_RRelocationTable&  ) const
+//=================================================================================================
+
+Standard_Boolean XmlMDataStd_VariableDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                   const Handle(TDF_Attribute)& theTarget,
+                                                   XmlObjMgt_RRelocationTable&) const
 {
   Handle(TDataStd_Variable) aV = Handle(TDataStd_Variable)::DownCast(theTarget);
-  
-  XmlObjMgt_DOMString aStr =
-    theSource.Element().getAttribute(::IsConstString());
-  aV->Constant (aStr != NULL);
+
+  XmlObjMgt_DOMString aStr = theSource.Element().getAttribute(::IsConstString());
+  aV->Constant(aStr != NULL);
 
   aStr = theSource.Element().getAttribute(::UnitString());
   aV->Unit(aStr);
   return Standard_True;
 }
 
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-void XmlMDataStd_VariableDriver::Paste (const Handle(TDF_Attribute)& theSource,
-                                        XmlObjMgt_Persistent&        theTarget,
-                                        XmlObjMgt_SRelocationTable&  ) const
+//=================================================================================================
+
+void XmlMDataStd_VariableDriver::Paste(const Handle(TDF_Attribute)& theSource,
+                                       XmlObjMgt_Persistent&        theTarget,
+                                       XmlObjMgt_SRelocationTable&) const
 {
   Handle(TDataStd_Variable) aV = Handle(TDataStd_Variable)::DownCast(theSource);
   if (aV->IsConstant())
-    theTarget.Element().setAttribute (::IsConstString(), ::ConstString());
+    theTarget.Element().setAttribute(::IsConstString(), ::ConstString());
   theTarget.Element().setAttribute(::UnitString(), aV->Unit().ToCString());
 }

@@ -22,5 +22,4 @@
 
 DEFINE_HSEQUENCE(TColGeom_HSequenceOfCurve, TColGeom_SequenceOfCurve)
 
-
 #endif

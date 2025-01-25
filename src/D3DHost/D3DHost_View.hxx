@@ -30,23 +30,24 @@ class D3DHost_View : public OpenGl_View
 {
 
 public:
-
   //! Constructor.
-  Standard_EXPORT D3DHost_View (const Handle(Graphic3d_StructureManager)& theMgr,
-                                const Handle(D3DHost_GraphicDriver)& theDriver,
-                                const Handle(OpenGl_Caps)& theCaps,
-                                OpenGl_StateCounter* theCounter);
+  Standard_EXPORT D3DHost_View(const Handle(Graphic3d_StructureManager)& theMgr,
+                               const Handle(D3DHost_GraphicDriver)&      theDriver,
+                               const Handle(OpenGl_Caps)&                theCaps,
+                               OpenGl_StateCounter*                      theCounter);
 
   //! Default destructor.
   Standard_EXPORT virtual ~D3DHost_View();
 
   //! Release OpenGL resources.
-  Standard_EXPORT virtual void ReleaseGlResources (const Handle(OpenGl_Context)& theCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ReleaseGlResources(const Handle(OpenGl_Context)& theCtx)
+    Standard_OVERRIDE;
 
   //! Creates and maps rendering window to the view.
-  Standard_EXPORT virtual void SetWindow (const Handle(Graphic3d_CView)& theParentVIew,
-                                          const Handle(Aspect_Window)& theWindow,
-                                          const Aspect_RenderingContext theContext) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetWindow(const Handle(Graphic3d_CView)& theParentVIew,
+                                         const Handle(Aspect_Window)&   theWindow,
+                                         const Aspect_RenderingContext  theContext)
+    Standard_OVERRIDE;
 
   //! Resizes the window.
   Standard_EXPORT virtual void Resized() Standard_OVERRIDE;
@@ -59,11 +60,11 @@ public:
 
   //! Fill in the dictionary with diagnostic info.
   //! Should be called within rendering thread.
-  Standard_EXPORT virtual void DiagnosticInformation (TColStd_IndexedDataMapOfStringString& theDict,
-                                                      Graphic3d_DiagnosticInfo theFlags) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DiagnosticInformation(TColStd_IndexedDataMapOfStringString& theDict,
+                                                     Graphic3d_DiagnosticInfo theFlags) const
+    Standard_OVERRIDE;
 
 public:
-
   //! @return true if IDirect3DDevice9Ex device has been created
   bool isD3dEx() const { return myIsD3dEx; }
 
@@ -77,9 +78,8 @@ public:
   Standard_EXPORT IDirect3DSurface9* D3dColorSurface() const;
 
 protected:
-
   //! Auxiliary method.
-  Standard_EXPORT static TCollection_AsciiString d3dFormatError (const long theErrCode);
+  Standard_EXPORT static TCollection_AsciiString d3dFormatError(const long theErrCode);
 
   //! Initialize the D3D library.
   Standard_EXPORT bool d3dInitLib();
@@ -105,19 +105,15 @@ protected:
   Standard_EXPORT bool d3dSwap();
 
 protected:
-
-  IDirect3D9*                 myD3dLib;      //!< Direct3D library instance
-  IDirect3DDevice9*           myD3dDevice;   //!< Direct3D device object
-  NCollection_Handle<D3DPRESENT_PARAMETERS>
-                              myD3dParams;   //!< parameters for created Direct3D device
-  unsigned int                myRefreshRate; //!< refresh rate in fullscreen mode
-  bool                        myIsD3dEx;     //!< D3dEx flag for WDDM
-  Handle(D3DHost_FrameBuffer) myD3dWglFbo;   //!< D3D/WGL interop FBO
+  IDirect3D9*                               myD3dLib;    //!< Direct3D library instance
+  IDirect3DDevice9*                         myD3dDevice; //!< Direct3D device object
+  NCollection_Handle<D3DPRESENT_PARAMETERS> myD3dParams; //!< parameters for created Direct3D device
+  unsigned int                              myRefreshRate; //!< refresh rate in fullscreen mode
+  bool                                      myIsD3dEx;     //!< D3dEx flag for WDDM
+  Handle(D3DHost_FrameBuffer)               myD3dWglFbo;   //!< D3D/WGL interop FBO
 
 public:
-
-  DEFINE_STANDARD_RTTIEXT(D3DHost_View,OpenGl_View)
-
+  DEFINE_STANDARD_RTTIEXT(D3DHost_View, OpenGl_View)
 };
 
 DEFINE_STANDARD_HANDLE(D3DHost_View, OpenGl_View)

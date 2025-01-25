@@ -20,43 +20,40 @@
 #include <IGESGraph_LineFontDefTemplate.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_LineFontDefTemplate,IGESData_LineFontEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_LineFontDefTemplate, IGESData_LineFontEntity)
 
-IGESGraph_LineFontDefTemplate::IGESGraph_LineFontDefTemplate ()    {  }
-
+IGESGraph_LineFontDefTemplate::IGESGraph_LineFontDefTemplate() {}
 
 // This class inherits from IGESData_LineFontEntity
 
-    void IGESGraph_LineFontDefTemplate::Init
-  (const Standard_Integer                anOrientation,
-   const Handle(IGESBasic_SubfigureDef)& aTemplate,
-   const Standard_Real                   aDistance,
-   const Standard_Real                   aScale)
+void IGESGraph_LineFontDefTemplate::Init(const Standard_Integer                anOrientation,
+                                         const Handle(IGESBasic_SubfigureDef)& aTemplate,
+                                         const Standard_Real                   aDistance,
+                                         const Standard_Real                   aScale)
 {
   theOrientation    = anOrientation;
   theTemplateEntity = aTemplate;
   theDistance       = aDistance;
   theScale          = aScale;
-  InitTypeAndForm(304,1);
+  InitTypeAndForm(304, 1);
 }
 
-    Standard_Integer IGESGraph_LineFontDefTemplate::Orientation () const
+Standard_Integer IGESGraph_LineFontDefTemplate::Orientation() const
 {
   return theOrientation;
 }
 
-    Handle(IGESBasic_SubfigureDef) IGESGraph_LineFontDefTemplate::TemplateEntity
-  () const
+Handle(IGESBasic_SubfigureDef) IGESGraph_LineFontDefTemplate::TemplateEntity() const
 {
   return theTemplateEntity;
 }
 
-    Standard_Real IGESGraph_LineFontDefTemplate::Distance () const
+Standard_Real IGESGraph_LineFontDefTemplate::Distance() const
 {
   return theDistance;
 }
 
-    Standard_Real IGESGraph_LineFontDefTemplate::Scale () const
+Standard_Real IGESGraph_LineFontDefTemplate::Scale() const
 {
   return theScale;
 }

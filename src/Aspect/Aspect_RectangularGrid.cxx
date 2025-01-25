@@ -17,163 +17,178 @@
 #include <Standard_NullValue.hxx>
 #include <Standard_NumericError.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Aspect_RectangularGrid,Aspect_Grid)
+IMPLEMENT_STANDARD_RTTIEXT(Aspect_RectangularGrid, Aspect_Grid)
 
-Aspect_RectangularGrid::Aspect_RectangularGrid(
-                               const Standard_Real aXStep,
-                               const Standard_Real aYStep,
-                               const Standard_Real anXOrigin,
-                               const Standard_Real anYOrigin,
-                               const Standard_Real aFirstAngle,
-                               const Standard_Real aSecondAngle,
-                               const Standard_Real aRotationAngle)
-:Aspect_Grid(anXOrigin,anYOrigin,aRotationAngle),myXStep(aXStep),myYStep(aYStep),myFirstAngle(aFirstAngle),mySecondAngle(aSecondAngle)
+Aspect_RectangularGrid::Aspect_RectangularGrid(const Standard_Real aXStep,
+                                               const Standard_Real aYStep,
+                                               const Standard_Real anXOrigin,
+                                               const Standard_Real anYOrigin,
+                                               const Standard_Real aFirstAngle,
+                                               const Standard_Real aSecondAngle,
+                                               const Standard_Real aRotationAngle)
+    : Aspect_Grid(anXOrigin, anYOrigin, aRotationAngle),
+      myXStep(aXStep),
+      myYStep(aYStep),
+      myFirstAngle(aFirstAngle),
+      mySecondAngle(aSecondAngle)
 
 {
-  Standard_NumericError_Raise_if(!CheckAngle (aFirstAngle,mySecondAngle),
-                                 "networks are parallel");
+  Standard_NumericError_Raise_if(!CheckAngle(aFirstAngle, mySecondAngle), "networks are parallel");
 
-  Standard_NegativeValue_Raise_if(aXStep < 0. , "invalid x step");
-  Standard_NegativeValue_Raise_if(aYStep < 0. , "invalid y step");
-  Standard_NullValue_Raise_if(aXStep == 0. , "invalid x step");
-  Standard_NullValue_Raise_if(aYStep == 0. , "invalid y step");
+  Standard_NegativeValue_Raise_if(aXStep < 0., "invalid x step");
+  Standard_NegativeValue_Raise_if(aYStep < 0., "invalid y step");
+  Standard_NullValue_Raise_if(aXStep == 0., "invalid x step");
+  Standard_NullValue_Raise_if(aYStep == 0., "invalid y step");
 }
 
-
-
-void Aspect_RectangularGrid::SetXStep(const Standard_Real aStep) {
-  Standard_NegativeValue_Raise_if(aStep < 0. , "invalid x step");
-  Standard_NullValue_Raise_if(aStep == 0. , "invalid y step");
+void Aspect_RectangularGrid::SetXStep(const Standard_Real aStep)
+{
+  Standard_NegativeValue_Raise_if(aStep < 0., "invalid x step");
+  Standard_NullValue_Raise_if(aStep == 0., "invalid y step");
   myXStep = aStep;
   Init();
   UpdateDisplay();
 }
 
-void Aspect_RectangularGrid::SetYStep(const Standard_Real aStep) {
-  Standard_NegativeValue_Raise_if(aStep < 0. , "invalid x step");
-  Standard_NullValue_Raise_if(aStep == 0. , "invalid y step");
+void Aspect_RectangularGrid::SetYStep(const Standard_Real aStep)
+{
+  Standard_NegativeValue_Raise_if(aStep < 0., "invalid x step");
+  Standard_NullValue_Raise_if(aStep == 0., "invalid y step");
   myYStep = aStep;
   Init();
   UpdateDisplay();
 }
 
-void Aspect_RectangularGrid::SetAngle (const Standard_Real anAngle1,
-                                       const Standard_Real anAngle2)
+void Aspect_RectangularGrid::SetAngle(const Standard_Real anAngle1, const Standard_Real anAngle2)
 {
-  Standard_NumericError_Raise_if(!CheckAngle (anAngle1,anAngle2 ),
-                                 "axis are parallel");
-  myFirstAngle = anAngle1;
+  Standard_NumericError_Raise_if(!CheckAngle(anAngle1, anAngle2), "axis are parallel");
+  myFirstAngle  = anAngle1;
   mySecondAngle = anAngle2;
   Init();
   UpdateDisplay();
 }
 
-void Aspect_RectangularGrid::SetGridValues(
-	const Standard_Real theXOrigin,
-	const Standard_Real theYOrigin,
-	const Standard_Real theXStep,
-	const Standard_Real theYStep,
-	const Standard_Real theRotationAngle) {
+void Aspect_RectangularGrid::SetGridValues(const Standard_Real theXOrigin,
+                                           const Standard_Real theYOrigin,
+                                           const Standard_Real theXStep,
+                                           const Standard_Real theYStep,
+                                           const Standard_Real theRotationAngle)
+{
 
   myXOrigin = theXOrigin;
   myYOrigin = theYOrigin;
-  Standard_NegativeValue_Raise_if(theXStep < 0. , "invalid x step");
-  Standard_NullValue_Raise_if(theXStep == 0. , "invalid x step");
+  Standard_NegativeValue_Raise_if(theXStep < 0., "invalid x step");
+  Standard_NullValue_Raise_if(theXStep == 0., "invalid x step");
   myXStep = theXStep;
-  Standard_NegativeValue_Raise_if(theYStep < 0. , "invalid y step");
-  Standard_NullValue_Raise_if(theYStep == 0. , "invalid y step");
-  myYStep = theYStep;
+  Standard_NegativeValue_Raise_if(theYStep < 0., "invalid y step");
+  Standard_NullValue_Raise_if(theYStep == 0., "invalid y step");
+  myYStep         = theYStep;
   myRotationAngle = theRotationAngle;
   Init();
   UpdateDisplay();
 }
 
 void Aspect_RectangularGrid::Compute(const Standard_Real X,
-                         const Standard_Real Y,
-                         Standard_Real& gridX,
-                         Standard_Real& gridY) const {
-    Standard_Real D1 = b1 * X - a1 * Y - c1;
-    Standard_Real D2 = b2 * X - a2 * Y - c2;
-    Standard_Integer n1 = Standard_Integer ( Abs(D1)/myXStep + 0.5);
-    Standard_Integer n2 = Standard_Integer ( Abs(D2)/myYStep + 0.5);
-    Standard_Real offset1 = c1 + Standard_Real(n1) * Sign (myXStep , D1);
-    Standard_Real offset2 = c2 + Standard_Real(n2) * Sign (myYStep , D2);
-    Standard_Real Delta = a1*b2 - b1*a2;
-    gridX = ( offset2*a1 - offset1*a2) /Delta;
-    gridY = ( offset2*b1 - offset1*b2) /Delta;
+                                     const Standard_Real Y,
+                                     Standard_Real&      gridX,
+                                     Standard_Real&      gridY) const
+{
+  Standard_Real    D1      = b1 * X - a1 * Y - c1;
+  Standard_Real    D2      = b2 * X - a2 * Y - c2;
+  Standard_Integer n1      = Standard_Integer(Abs(D1) / myXStep + 0.5);
+  Standard_Integer n2      = Standard_Integer(Abs(D2) / myYStep + 0.5);
+  Standard_Real    offset1 = c1 + Standard_Real(n1) * Sign(myXStep, D1);
+  Standard_Real    offset2 = c2 + Standard_Real(n2) * Sign(myYStep, D2);
+  Standard_Real    Delta   = a1 * b2 - b1 * a2;
+  gridX                    = (offset2 * a1 - offset1 * a2) / Delta;
+  gridY                    = (offset2 * b1 - offset1 * b2) / Delta;
 }
 
-Standard_Real Aspect_RectangularGrid::XStep() const {
+Standard_Real Aspect_RectangularGrid::XStep() const
+{
   return myXStep;
 }
 
-Standard_Real Aspect_RectangularGrid::YStep() const {
+Standard_Real Aspect_RectangularGrid::YStep() const
+{
   return myYStep;
 }
 
-Standard_Real Aspect_RectangularGrid::FirstAngle() const {
+Standard_Real Aspect_RectangularGrid::FirstAngle() const
+{
   return myFirstAngle;
 }
 
-Standard_Real Aspect_RectangularGrid::SecondAngle() const {
+Standard_Real Aspect_RectangularGrid::SecondAngle() const
+{
   return mySecondAngle;
 }
 
-void Aspect_RectangularGrid::Init () {
+void Aspect_RectangularGrid::Init()
+{
 
-//+zov Fixing CTS17856
-//  a1 = Cos (myFirstAngle + RotationAngle() ); 
-//  b1 = Sin (myFirstAngle + RotationAngle() );
-//  c1 = XOrigin() * b1 - YOrigin() * a1;
-//
-//  a2 = Cos (mySecondAngle + RotationAngle() + M_PI / 2.); 
-//  b2 = Sin (mySecondAngle + RotationAngle() + M_PI / 2.);
-//  c2 = XOrigin() * b2 - YOrigin() * a2;
+  //+zov Fixing CTS17856
+  //  a1 = Cos (myFirstAngle + RotationAngle() );
+  //  b1 = Sin (myFirstAngle + RotationAngle() );
+  //  c1 = XOrigin() * b1 - YOrigin() * a1;
+  //
+  //  a2 = Cos (mySecondAngle + RotationAngle() + M_PI / 2.);
+  //  b2 = Sin (mySecondAngle + RotationAngle() + M_PI / 2.);
+  //  c2 = XOrigin() * b2 - YOrigin() * a2;
 
   Standard_Real angle1 = myFirstAngle + RotationAngle();
   Standard_Real angle2 = mySecondAngle + RotationAngle();
-  if ( angle1 != 0. ) {
-    a1 = -Sin (angle1); 
-    b1 = Cos (angle1);
+  if (angle1 != 0.)
+  {
+    a1 = -Sin(angle1);
+    b1 = Cos(angle1);
     c1 = XOrigin() * b1 - YOrigin() * a1;
-  } else {
-    a1 = 0.; b1 = 1.; c1 = XOrigin();
+  }
+  else
+  {
+    a1 = 0.;
+    b1 = 1.;
+    c1 = XOrigin();
   }
 
-  if ( angle2 != 0. ) {
+  if (angle2 != 0.)
+  {
     angle2 += M_PI / 2.;
-    a2 = -Sin (angle2); 
-    b2 = Cos (angle2);
+    a2 = -Sin(angle2);
+    b2 = Cos(angle2);
     c2 = XOrigin() * b2 - YOrigin() * a2;
-  } else {
-    a2 = -1.; b2 = 0.; c2 = YOrigin();
   }
-//-zov
+  else
+  {
+    a2 = -1.;
+    b2 = 0.;
+    c2 = YOrigin();
+  }
+  //-zov
 }
 
 Standard_Boolean Aspect_RectangularGrid::CheckAngle(const Standard_Real alpha,
-                                            const Standard_Real beta) const {
-  return (Abs( Sin(alpha) * Cos(beta + M_PI / 2.) - Cos(alpha) * Sin(beta + M_PI / 2.)) != 0) ;
+                                                    const Standard_Real beta) const
+{
+  return (Abs(Sin(alpha) * Cos(beta + M_PI / 2.) - Cos(alpha) * Sin(beta + M_PI / 2.)) != 0);
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void Aspect_RectangularGrid::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+//=================================================================================================
+
+void Aspect_RectangularGrid::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Aspect_Grid)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myXStep)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myYStep)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFirstAngle)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mySecondAngle)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, a1)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, b1)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, c1)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, a2)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, b2)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, c2)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myXStep)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myYStep)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myFirstAngle)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, mySecondAngle)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, a1)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, b1)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, c1)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, a2)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, b2)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, c2)
 }

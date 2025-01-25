@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef TPrsStd_DataMapIteratorOfDataMapOfGUIDDriver_HeaderFile
 #define TPrsStd_DataMapIteratorOfDataMapOfGUIDDriver_HeaderFile
 

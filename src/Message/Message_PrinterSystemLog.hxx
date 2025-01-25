@@ -28,27 +28,23 @@ class Message_PrinterSystemLog : public Message_Printer
 {
   DEFINE_STANDARD_RTTIEXT(Message_PrinterSystemLog, Message_Printer)
 public:
-  
   //! Main constructor.
-  Standard_EXPORT Message_PrinterSystemLog (const TCollection_AsciiString& theEventSourceName,
-                                            const Message_Gravity theTraceLevel = Message_Info);
+  Standard_EXPORT Message_PrinterSystemLog(const TCollection_AsciiString& theEventSourceName,
+                                           const Message_Gravity theTraceLevel = Message_Info);
 
   //! Destructor.
   Standard_EXPORT virtual ~Message_PrinterSystemLog();
 
 protected:
-
   //! Puts a message to the system log.
-  Standard_EXPORT virtual void send (const TCollection_AsciiString& theString,
-                                     const Message_Gravity theGravity) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void send(const TCollection_AsciiString& theString,
+                                    const Message_Gravity theGravity) const Standard_OVERRIDE;
 
 private:
-
   TCollection_AsciiString myEventSourceName;
 #ifdef _WIN32
   Standard_Address myEventSource;
 #endif
-
 };
 
 #endif // _Message_PrinterSystemLog_HeaderFile

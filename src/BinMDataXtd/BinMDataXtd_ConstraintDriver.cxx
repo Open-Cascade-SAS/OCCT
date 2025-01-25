@@ -24,43 +24,39 @@
 #include <TDF_Attribute.hxx>
 #include <TNaming_NamedShape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMDataXtd_ConstraintDriver,BinMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataXtd_ConstraintDriver, BinMDF_ADriver)
 
-//=======================================================================
-//function : BinMDataXtd_ConstraintDriver
-//purpose  : Constructor
-//=======================================================================
-BinMDataXtd_ConstraintDriver::BinMDataXtd_ConstraintDriver
-                        (const Handle(Message_Messenger)& theMsgDriver)
-      : BinMDF_ADriver (theMsgDriver, NULL)
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+BinMDataXtd_ConstraintDriver::BinMDataXtd_ConstraintDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : BinMDF_ADriver(theMsgDriver, NULL)
+{
+}
+
+//=================================================================================================
+
 Handle(TDF_Attribute) BinMDataXtd_ConstraintDriver::NewEmpty() const
 {
   return (new TDataXtd_Constraint());
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMDataXtd_ConstraintDriver::Paste
-                        (const BinObjMgt_Persistent&  theSource,
-                         const Handle(TDF_Attribute)& theTarget,
-                         BinObjMgt_RRelocationTable&  theRelocTable) const
+Standard_Boolean BinMDataXtd_ConstraintDriver::Paste(
+  const BinObjMgt_Persistent&  theSource,
+  const Handle(TDF_Attribute)& theTarget,
+  BinObjMgt_RRelocationTable&  theRelocTable) const
 {
-  Handle(TDataXtd_Constraint) aC = 
-    Handle(TDataXtd_Constraint)::DownCast(theTarget);
+  Handle(TDataXtd_Constraint) aC = Handle(TDataXtd_Constraint)::DownCast(theTarget);
 
   Standard_Integer aNb;
 
   // value
-  if (! (theSource >> aNb))
+  if (!(theSource >> aNb))
     return Standard_False;
   if (aNb > 0)
   {
@@ -77,12 +73,12 @@ Standard_Boolean BinMDataXtd_ConstraintDriver::Paste
 
   // geometries
   Standard_Integer NbGeom;
-  if (! (theSource >> NbGeom))
+  if (!(theSource >> NbGeom))
     return Standard_False;
   Standard_Integer iG = 1;
   while (iG <= NbGeom)
   {
-    if (! (theSource >> aNb))
+    if (!(theSource >> aNb))
       return Standard_False;
     if (aNb > 0)
     {
@@ -94,12 +90,12 @@ Standard_Boolean BinMDataXtd_ConstraintDriver::Paste
         aG = new TNaming_NamedShape;
         theRelocTable.Bind(aNb, aG);
       }
-      aC->SetGeometry (iG++, aG);
+      aC->SetGeometry(iG++, aG);
     }
   }
 
   // plane
-  if (! (theSource >> aNb))
+  if (!(theSource >> aNb))
     return Standard_False;
   if (aNb > 0)
   {
@@ -116,39 +112,37 @@ Standard_Boolean BinMDataXtd_ConstraintDriver::Paste
 
   // constraint type
   Standard_Integer aType;
-  if (! (theSource >> aType))
+  if (!(theSource >> aType))
     return Standard_False;
-  aC->SetType( (TDataXtd_ConstraintEnum) aType );
+  aC->SetType((TDataXtd_ConstraintEnum)aType);
 
   // flags
   Standard_Integer flags;
-  if (! (theSource >> flags))
+  if (!(theSource >> flags))
     return Standard_False;
-  aC->Verified ((flags & 1) != 0);
-  aC->Inverted ((flags & 2) != 0);
-  aC->Reversed ((flags & 4) != 0);
+  aC->Verified((flags & 1) != 0);
+  aC->Inverted((flags & 2) != 0);
+  aC->Reversed((flags & 4) != 0);
 
   return Standard_True;
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataXtd_ConstraintDriver::Paste
-                        (const Handle(TDF_Attribute)& theSource,
-                         BinObjMgt_Persistent&        theTarget,
-                         BinObjMgt_SRelocationTable&  theRelocTable) const
+void BinMDataXtd_ConstraintDriver::Paste(const Handle(TDF_Attribute)& theSource,
+                                         BinObjMgt_Persistent&        theTarget,
+                                         BinObjMgt_SRelocationTable&  theRelocTable) const
 {
-  Handle(TDataXtd_Constraint) aC =
-    Handle(TDataXtd_Constraint)::DownCast(theSource);
+  Handle(TDataXtd_Constraint) aC = Handle(TDataXtd_Constraint)::DownCast(theSource);
 
   Standard_Integer aNb;
 
   // value
   Handle(TDataStd_Real) aValue = aC->GetValue();
   if (!aValue.IsNull())
-    aNb = theRelocTable.Add(aValue);    // create and/or get index
+    aNb = theRelocTable.Add(aValue); // create and/or get index
   else
     aNb = -1;
   theTarget << aNb;
@@ -176,12 +170,15 @@ void BinMDataXtd_ConstraintDriver::Paste
   theTarget << aNb;
 
   // constraint type
-  theTarget << (Standard_Integer) aC->GetType();
+  theTarget << (Standard_Integer)aC->GetType();
 
   // flags
   Standard_Integer flags = 0;
-  if (aC->Verified()) flags |= 1;
-  if (aC->Inverted()) flags |= 2;
-  if (aC->Reversed()) flags |= 4;
+  if (aC->Verified())
+    flags |= 1;
+  if (aC->Inverted())
+    flags |= 2;
+  if (aC->Reversed())
+    flags |= 4;
   theTarget << flags;
 }

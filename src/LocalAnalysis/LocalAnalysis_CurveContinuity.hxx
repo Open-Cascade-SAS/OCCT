@@ -26,17 +26,12 @@
 class Geom_Curve;
 class GeomLProp_CLProps;
 
-
-
 //! This class gives tools to check local continuity C0
 //! C1 C2 G1 G2 between  two points situated on two curves
-class LocalAnalysis_CurveContinuity 
+class LocalAnalysis_CurveContinuity
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! -u1 is the parameter of the point on Curv1
   //! -u2 is the  parameter of the point on  Curv2
@@ -127,92 +122,85 @@ public:
   //!
   //! where curvat1 is the curvature at the first point
   //! and curvat2 the curvature at the second point
-  Standard_EXPORT LocalAnalysis_CurveContinuity(const Handle(Geom_Curve)& Curv1, const Standard_Real u1, const Handle(Geom_Curve)& Curv2, const Standard_Real u2, const GeomAbs_Shape Order, const Standard_Real EpsNul = 0.001, const Standard_Real EpsC0 = 0.001, const Standard_Real EpsC1 = 0.001, const Standard_Real EpsC2 = 0.001, const Standard_Real EpsG1 = 0.001, const Standard_Real EpsG2 = 0.001, const Standard_Real Percent = 0.01, const Standard_Real Maxlen = 10000);
-  
+  Standard_EXPORT LocalAnalysis_CurveContinuity(const Handle(Geom_Curve)& Curv1,
+                                                const Standard_Real       u1,
+                                                const Handle(Geom_Curve)& Curv2,
+                                                const Standard_Real       u2,
+                                                const GeomAbs_Shape       Order,
+                                                const Standard_Real       EpsNul  = 0.001,
+                                                const Standard_Real       EpsC0   = 0.001,
+                                                const Standard_Real       EpsC1   = 0.001,
+                                                const Standard_Real       EpsC2   = 0.001,
+                                                const Standard_Real       EpsG1   = 0.001,
+                                                const Standard_Real       EpsG2   = 0.001,
+                                                const Standard_Real       Percent = 0.01,
+                                                const Standard_Real       Maxlen  = 10000);
+
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
+
   Standard_EXPORT LocalAnalysis_StatusErrorType StatusError() const;
-  
+
   Standard_EXPORT GeomAbs_Shape ContinuityStatus() const;
-  
+
   Standard_EXPORT Standard_Real C0Value() const;
-  
+
   Standard_EXPORT Standard_Real C1Angle() const;
-  
+
   Standard_EXPORT Standard_Real C1Ratio() const;
-  
+
   Standard_EXPORT Standard_Real C2Angle() const;
-  
+
   Standard_EXPORT Standard_Real C2Ratio() const;
-  
+
   Standard_EXPORT Standard_Real G1Angle() const;
-  
+
   Standard_EXPORT Standard_Real G2Angle() const;
-  
+
   Standard_EXPORT Standard_Real G2CurvatureVariation() const;
-  
+
   Standard_EXPORT Standard_Boolean IsC0() const;
-  
+
   Standard_EXPORT Standard_Boolean IsC1() const;
-  
+
   Standard_EXPORT Standard_Boolean IsC2() const;
-  
+
   Standard_EXPORT Standard_Boolean IsG1() const;
-  
+
   Standard_EXPORT Standard_Boolean IsG2() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
+  Standard_EXPORT void CurvC0(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
 
-  
-  Standard_EXPORT void CurvC0 (GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
-  
-  Standard_EXPORT void CurvC1 (GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
-  
-  Standard_EXPORT void CurvC2 (GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
-  
-  Standard_EXPORT void CurvG1 (GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
-  
-  Standard_EXPORT void CurvG2 (GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
+  Standard_EXPORT void CurvC1(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
 
+  Standard_EXPORT void CurvC2(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
 
-  Standard_Real myContC0;
-  Standard_Real myContC1;
-  Standard_Real myContC2;
-  Standard_Real myContG1;
-  Standard_Real myContG2;
-  Standard_Real myCourbC1;
-  Standard_Real myCourbC2;
-  Standard_Real myG2Variation;
-  Standard_Real myLambda1;
-  Standard_Real myLambda2;
-  GeomAbs_Shape myTypeCont;
-  Standard_Real myepsnul;
-  Standard_Real myepsC0;
-  Standard_Real myepsC1;
-  Standard_Real myepsC2;
-  Standard_Real myepsG1;
-  Standard_Real myepsG2;
-  Standard_Real myMaxLon;
-  Standard_Real myperce;
-  Standard_Boolean myIsDone;
+  Standard_EXPORT void CurvG1(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
+
+  Standard_EXPORT void CurvG2(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
+
+  Standard_Real                 myContC0;
+  Standard_Real                 myContC1;
+  Standard_Real                 myContC2;
+  Standard_Real                 myContG1;
+  Standard_Real                 myContG2;
+  Standard_Real                 myCourbC1;
+  Standard_Real                 myCourbC2;
+  Standard_Real                 myG2Variation;
+  Standard_Real                 myLambda1;
+  Standard_Real                 myLambda2;
+  GeomAbs_Shape                 myTypeCont;
+  Standard_Real                 myepsnul;
+  Standard_Real                 myepsC0;
+  Standard_Real                 myepsC1;
+  Standard_Real                 myepsC2;
+  Standard_Real                 myepsG1;
+  Standard_Real                 myepsG2;
+  Standard_Real                 myMaxLon;
+  Standard_Real                 myperce;
+  Standard_Boolean              myIsDone;
   LocalAnalysis_StatusErrorType myErrorStatus;
-
-
 };
-
-
-
-
-
-
 
 #endif // _LocalAnalysis_CurveContinuity_HeaderFile

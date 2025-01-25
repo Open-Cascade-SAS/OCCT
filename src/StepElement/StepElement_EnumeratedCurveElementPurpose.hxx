@@ -14,16 +14,15 @@
 #ifndef _StepElement_EnumeratedCurveElementPurpose_HeaderFile
 #define _StepElement_EnumeratedCurveElementPurpose_HeaderFile
 
-
 enum StepElement_EnumeratedCurveElementPurpose
 {
-StepElement_Axial,
-StepElement_YYBending,
-StepElement_ZZBending,
-StepElement_Torsion,
-StepElement_XYShear,
-StepElement_XZShear,
-StepElement_Warping
+  StepElement_Axial,
+  StepElement_YYBending,
+  StepElement_ZZBending,
+  StepElement_Torsion,
+  StepElement_XYShear,
+  StepElement_XZShear,
+  StepElement_Warping
 };
 
 #endif // _StepElement_EnumeratedCurveElementPurpose_HeaderFile

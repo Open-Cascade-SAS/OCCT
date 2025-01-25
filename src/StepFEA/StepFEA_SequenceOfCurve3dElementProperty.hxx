@@ -17,7 +17,7 @@
 #include <StepFEA_Curve3dElementProperty.hxx>
 #include <NCollection_Sequence.hxx>
 
-typedef NCollection_Sequence<Handle(StepFEA_Curve3dElementProperty)> StepFEA_SequenceOfCurve3dElementProperty;
-
+typedef NCollection_Sequence<Handle(StepFEA_Curve3dElementProperty)>
+  StepFEA_SequenceOfCurve3dElementProperty;
 
 #endif

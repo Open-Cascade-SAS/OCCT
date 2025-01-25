@@ -14,7 +14,7 @@
 
 #include <Standard_DomainError.hxx>
 
-inline const gp_Pnt& BRepBlend_Extremity::Value () const
+inline const gp_Pnt& BRepBlend_Extremity::Value() const
 {
   return pt;
 }
@@ -22,22 +22,24 @@ inline const gp_Pnt& BRepBlend_Extremity::Value () const
 inline void BRepBlend_Extremity::SetTangent(const gp_Vec& Tangent)
 {
   hastang = Standard_True;
-  tang = Tangent;
+  tang    = Tangent;
 }
 
-inline Standard_Boolean BRepBlend_Extremity::HasTangent () const
+inline Standard_Boolean BRepBlend_Extremity::HasTangent() const
 {
   return hastang;
 }
 
-inline const gp_Vec& BRepBlend_Extremity::Tangent () const
+inline const gp_Vec& BRepBlend_Extremity::Tangent() const
 {
-  if (!hastang) {throw Standard_DomainError();}
+  if (!hastang)
+  {
+    throw Standard_DomainError();
+  }
   return tang;
 }
 
-inline void BRepBlend_Extremity::Parameters(Standard_Real& U,
-					Standard_Real& V) const
+inline void BRepBlend_Extremity::Parameters(Standard_Real& U, Standard_Real& V) const
 {
   U = u;
   V = v;
@@ -48,26 +50,27 @@ inline Standard_Real BRepBlend_Extremity::Tolerance() const
   return tol;
 }
 
-
 inline Standard_Boolean BRepBlend_Extremity::IsVertex() const
 {
   return isvtx;
 }
 
-
-inline const Handle(Adaptor3d_HVertex)& BRepBlend_Extremity::Vertex () const
+inline const Handle(Adaptor3d_HVertex)& BRepBlend_Extremity::Vertex() const
 {
-  if (!isvtx) {throw Standard_DomainError();}
+  if (!isvtx)
+  {
+    throw Standard_DomainError();
+  }
   return vtx;
 }
 
-inline Standard_Integer BRepBlend_Extremity::NbPointOnRst () const
+inline Standard_Integer BRepBlend_Extremity::NbPointOnRst() const
 {
   return seqpt.Length();
 }
 
-inline const BRepBlend_PointOnRst& BRepBlend_Extremity::PointOnRst
-  (const Standard_Integer Index) const
+inline const BRepBlend_PointOnRst& BRepBlend_Extremity::PointOnRst(
+  const Standard_Integer Index) const
 {
   return seqpt(Index);
 }
@@ -83,4 +86,3 @@ inline Standard_Real BRepBlend_Extremity::ParameterOnGuide() const
 {
   return param;
 }
-

@@ -11,42 +11,40 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepShape_PolyLoop.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_PolyLoop,StepShape_Loop)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_PolyLoop, StepShape_Loop)
 
-StepShape_PolyLoop::StepShape_PolyLoop ()  {}
+StepShape_PolyLoop::StepShape_PolyLoop() {}
 
-void StepShape_PolyLoop::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_HArray1OfCartesianPoint)& aPolygon)
+void StepShape_PolyLoop::Init(const Handle(TCollection_HAsciiString)&         aName,
+                              const Handle(StepGeom_HArray1OfCartesianPoint)& aPolygon)
 {
-	// --- classe own fields ---
-	polygon = aPolygon;
-	// --- classe inherited fields ---
-	StepRepr_RepresentationItem::Init(aName);
+  // --- classe own fields ---
+  polygon = aPolygon;
+  // --- classe inherited fields ---
+  StepRepr_RepresentationItem::Init(aName);
 }
-
 
 void StepShape_PolyLoop::SetPolygon(const Handle(StepGeom_HArray1OfCartesianPoint)& aPolygon)
 {
-	polygon = aPolygon;
+  polygon = aPolygon;
 }
 
 Handle(StepGeom_HArray1OfCartesianPoint) StepShape_PolyLoop::Polygon() const
 {
-	return polygon;
+  return polygon;
 }
 
 Handle(StepGeom_CartesianPoint) StepShape_PolyLoop::PolygonValue(const Standard_Integer num) const
 {
-	return polygon->Value(num);
+  return polygon->Value(num);
 }
 
-Standard_Integer StepShape_PolyLoop::NbPolygon () const
+Standard_Integer StepShape_PolyLoop::NbPolygon() const
 {
-	if (polygon.IsNull()) return 0;
-	return polygon->Length();
+  if (polygon.IsNull())
+    return 0;
+  return polygon->Length();
 }

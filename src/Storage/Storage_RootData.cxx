@@ -12,7 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Persistent.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Storage_RootData.hxx>
@@ -22,19 +21,19 @@
 #include <Storage_DataMapIteratorOfMapOfPers.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Storage_RootData,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Storage_RootData, Standard_Transient)
 
-Storage_RootData::Storage_RootData() : myErrorStatus(Storage_VSOk)
+Storage_RootData::Storage_RootData()
+    : myErrorStatus(Storage_VSOk)
 {
 }
 
-Standard_Boolean Storage_RootData::Read (const Handle(Storage_BaseDriver)& theDriver)
+Standard_Boolean Storage_RootData::Read(const Handle(Storage_BaseDriver)& theDriver)
 {
   // Check driver open mode
-  if (theDriver->OpenMode() != Storage_VSRead
-   && theDriver->OpenMode() != Storage_VSReadWrite)
+  if (theDriver->OpenMode() != Storage_VSRead && theDriver->OpenMode() != Storage_VSReadWrite)
   {
-    myErrorStatus = Storage_VSModeError;
+    myErrorStatus    = Storage_VSModeError;
     myErrorStatusExt = "OpenMode";
     return Standard_False;
   }
@@ -48,7 +47,7 @@ Standard_Boolean Storage_RootData::Read (const Handle(Storage_BaseDriver)& theDr
   }
 
   TCollection_AsciiString aRootName, aTypeName;
-  Standard_Integer aRef;
+  Standard_Integer        aRef;
 
   Standard_Integer len = theDriver->RootSectionSize();
   for (Standard_Integer i = 1; i <= len; i++)
@@ -56,17 +55,17 @@ Standard_Boolean Storage_RootData::Read (const Handle(Storage_BaseDriver)& theDr
     try
     {
       OCC_CATCH_SIGNALS
-      theDriver->ReadRoot (aRootName, aRef, aTypeName);
+      theDriver->ReadRoot(aRootName, aRef, aTypeName);
     }
     catch (Storage_StreamTypeMismatchError const&)
     {
-      myErrorStatus = Storage_VSTypeMismatch;
+      myErrorStatus    = Storage_VSTypeMismatch;
       myErrorStatusExt = "ReadRoot";
       return Standard_False;
     }
 
-    Handle(Storage_Root) aRoot = new Storage_Root (aRootName, aRef, aTypeName);
-    myObjects.Bind (aRootName, aRoot);
+    Handle(Storage_Root) aRoot = new Storage_Root(aRootName, aRef, aTypeName);
+    myObjects.Bind(aRootName, aRoot);
   }
 
   myErrorStatus = theDriver->EndReadRootSection();
@@ -84,17 +83,18 @@ Standard_Integer Storage_RootData::NumberOfRoots() const
   return myObjects.Extent();
 }
 
-void Storage_RootData::AddRoot(const Handle(Storage_Root)& aRoot) 
+void Storage_RootData::AddRoot(const Handle(Storage_Root)& aRoot)
 {
-  myObjects.Bind(aRoot->Name(),aRoot);
+  myObjects.Bind(aRoot->Name(), aRoot);
 }
 
 Handle(Storage_HSeqOfRoot) Storage_RootData::Roots() const
 {
-  Handle(Storage_HSeqOfRoot)   anObjectsSeq = new Storage_HSeqOfRoot;
+  Handle(Storage_HSeqOfRoot)         anObjectsSeq = new Storage_HSeqOfRoot;
   Storage_DataMapIteratorOfMapOfPers it(myObjects);
-  
-  for(;it.More(); it.Next()) {
+
+  for (; it.More(); it.Next())
+  {
     anObjectsSeq->Append(it.Value());
   }
 
@@ -105,7 +105,8 @@ Handle(Storage_Root) Storage_RootData::Find(const TCollection_AsciiString& aName
 {
   Handle(Storage_Root) p;
 
-  if (myObjects.IsBound(aName)) {
+  if (myObjects.IsBound(aName))
+  {
     p = myObjects.Find(aName);
   }
 
@@ -117,24 +118,28 @@ Standard_Boolean Storage_RootData::IsRoot(const TCollection_AsciiString& aName) 
   return myObjects.IsBound(aName);
 }
 
-void Storage_RootData::RemoveRoot(const TCollection_AsciiString& aName) 
+void Storage_RootData::RemoveRoot(const TCollection_AsciiString& aName)
 {
-  if (myObjects.IsBound(aName)) {
-    myObjects.UnBind(aName);    
+  if (myObjects.IsBound(aName))
+  {
+    myObjects.UnBind(aName);
   }
 }
 
-void Storage_RootData::UpdateRoot(const TCollection_AsciiString& aName,const Handle(Standard_Persistent)& aPers) 
+void Storage_RootData::UpdateRoot(const TCollection_AsciiString&     aName,
+                                  const Handle(Standard_Persistent)& aPers)
 {
-  if (myObjects.IsBound(aName)) {
+  if (myObjects.IsBound(aName))
+  {
     myObjects.ChangeFind(aName)->SetObject(aPers);
   }
-  else {
+  else
+  {
     throw Standard_NoSuchObject();
   }
 }
 
-Storage_Error  Storage_RootData::ErrorStatus() const
+Storage_Error Storage_RootData::ErrorStatus() const
 {
   return myErrorStatus;
 }

@@ -20,52 +20,37 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Express_Alias, Express_Item)
 
-//=======================================================================
-// function : Express_Alias
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
-Express_Alias::Express_Alias (const Standard_CString theName, const Handle(Express_Type)& theType)
-: Express_Item (theName), myType (theType)
+Express_Alias::Express_Alias(const Standard_CString theName, const Handle(Express_Type)& theType)
+    : Express_Item(theName),
+      myType(theType)
 {
 }
 
-//=======================================================================
-// function : Type
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 const Handle(Express_Type)& Express_Alias::Type() const
 {
   return myType;
 }
 
-//=======================================================================
-// function : CPPName
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 const TCollection_AsciiString Express_Alias::CPPName() const
 {
   return myType->CPPName();
 }
 
-//=======================================================================
-// function : GenerateClass
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean Express_Alias::GenerateClass() const
 {
-  Message::SendInfo() << "ALIAS " << Name() << " = " << Type()->CPPName() << " used; no generation is needed";
+  Message::SendInfo() << "ALIAS " << Name() << " = " << Type()->CPPName()
+                      << " used; no generation is needed";
   return Standard_False;
 }
 
-//=======================================================================
-// function : PropagateUse
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
-void Express_Alias::PropagateUse() const
-{
-}
+void Express_Alias::PropagateUse() const {}

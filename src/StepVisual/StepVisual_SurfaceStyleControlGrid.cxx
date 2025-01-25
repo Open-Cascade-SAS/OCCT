@@ -11,28 +11,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepVisual_CurveStyle.hxx>
 #include <StepVisual_SurfaceStyleControlGrid.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleControlGrid,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleControlGrid, Standard_Transient)
 
-StepVisual_SurfaceStyleControlGrid::StepVisual_SurfaceStyleControlGrid ()  {}
+StepVisual_SurfaceStyleControlGrid::StepVisual_SurfaceStyleControlGrid() {}
 
 void StepVisual_SurfaceStyleControlGrid::Init(
-	const Handle(StepVisual_CurveStyle)& aStyleOfControlGrid)
+  const Handle(StepVisual_CurveStyle)& aStyleOfControlGrid)
 {
-	// --- classe own fields ---
-	styleOfControlGrid = aStyleOfControlGrid;
+  // --- classe own fields ---
+  styleOfControlGrid = aStyleOfControlGrid;
 }
 
-
-void StepVisual_SurfaceStyleControlGrid::SetStyleOfControlGrid(const Handle(StepVisual_CurveStyle)& aStyleOfControlGrid)
+void StepVisual_SurfaceStyleControlGrid::SetStyleOfControlGrid(
+  const Handle(StepVisual_CurveStyle)& aStyleOfControlGrid)
 {
-	styleOfControlGrid = aStyleOfControlGrid;
+  styleOfControlGrid = aStyleOfControlGrid;
 }
 
 Handle(StepVisual_CurveStyle) StepVisual_SurfaceStyleControlGrid::StyleOfControlGrid() const
 {
-	return styleOfControlGrid;
+  return styleOfControlGrid;
 }

@@ -24,19 +24,21 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 
-
 //! Provides intersections on between two surfaces of Geom.
 //! The result are curves from Geom.
-class GeomInt 
+class GeomInt
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Adjusts the parameter <thePar> to the range [theParMin,  theParMax]
-  Standard_EXPORT static Standard_Boolean AdjustPeriodic (const Standard_Real thePar, const Standard_Real theParMin, const Standard_Real theParMax, const Standard_Real thePeriod, Standard_Real& theNewPar, Standard_Real& theOffset, const Standard_Real theEps = 0.0);
-
+  Standard_EXPORT static Standard_Boolean AdjustPeriodic(const Standard_Real thePar,
+                                                         const Standard_Real theParMin,
+                                                         const Standard_Real theParMax,
+                                                         const Standard_Real thePeriod,
+                                                         Standard_Real&      theNewPar,
+                                                         Standard_Real&      theOffset,
+                                                         const Standard_Real theEps = 0.0);
 };
 
 #endif // _GeomInt_HeaderFile

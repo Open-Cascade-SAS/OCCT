@@ -25,49 +25,44 @@
 
 class StepDimTol_ProjectedZoneDefinition;
 DEFINE_STANDARD_HANDLE(StepDimTol_ProjectedZoneDefinition, StepDimTol_ToleranceZoneDefinition)
+
 //! Representation of STEP entity ProjectedZoneDefinition
 class StepDimTol_ProjectedZoneDefinition : public StepDimTol_ToleranceZoneDefinition
 {
 
 public:
-  
   //! Empty constructor
   Standard_EXPORT StepDimTol_ProjectedZoneDefinition();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT   void Init (const Handle(StepDimTol_ToleranceZone)& theZone,
-                               const Handle(StepRepr_HArray1OfShapeAspect)& theBoundaries,
-                               const Handle(StepRepr_ShapeAspect)& theProjectionEnd,
-                               const Handle(StepBasic_LengthMeasureWithUnit)& theProjectionLength);
-  
+  Standard_EXPORT void Init(const Handle(StepDimTol_ToleranceZone)&        theZone,
+                            const Handle(StepRepr_HArray1OfShapeAspect)&   theBoundaries,
+                            const Handle(StepRepr_ShapeAspect)&            theProjectionEnd,
+                            const Handle(StepBasic_LengthMeasureWithUnit)& theProjectionLength);
+
   //! Returns field ProjectionEnd
-  inline Handle(StepRepr_ShapeAspect) ProjectionEnd () const
-  {
-    return myProjectionEnd;
-  }
-  
+  inline Handle(StepRepr_ShapeAspect) ProjectionEnd() const { return myProjectionEnd; }
+
   //! Set field ProjectionEnd
-  inline void SetProjectionEnd (const Handle(StepRepr_ShapeAspect) &theProjectionEnd)
+  inline void SetProjectionEnd(const Handle(StepRepr_ShapeAspect)& theProjectionEnd)
   {
     myProjectionEnd = theProjectionEnd;
   }
-  
+
   //! Returns field ProjectionLength
-  inline Handle(StepBasic_LengthMeasureWithUnit) ProjectionLength()
-  {
-    return myProjectionLength;
-  }
-  
+  inline Handle(StepBasic_LengthMeasureWithUnit) ProjectionLength() { return myProjectionLength; }
+
   //! Set field ProjectionLength
-  inline void SetProjectionLength(const Handle(StepBasic_LengthMeasureWithUnit)& theProjectionLength)
+  inline void SetProjectionLength(
+    const Handle(StepBasic_LengthMeasureWithUnit)& theProjectionLength)
   {
     myProjectionLength = theProjectionLength;
   }
-  
-  DEFINE_STANDARD_RTTIEXT(StepDimTol_ProjectedZoneDefinition,StepDimTol_ToleranceZoneDefinition)
 
-private: 
-  Handle(StepRepr_ShapeAspect) myProjectionEnd;
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_ProjectedZoneDefinition, StepDimTol_ToleranceZoneDefinition)
+
+private:
+  Handle(StepRepr_ShapeAspect)            myProjectionEnd;
   Handle(StepBasic_LengthMeasureWithUnit) myProjectionLength;
 };
 #endif // _StepDimTol_ProjectionZoneDefinition_HeaderFile

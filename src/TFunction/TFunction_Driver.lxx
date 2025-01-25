@@ -15,12 +15,11 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Label
-//purpose  : Returns the initialized label
+// function : Label
+// purpose  : Returns the initialized label
 //=======================================================================
 
 inline TDF_Label TFunction_Driver::Label() const
 {
   return myLabel;
 }
-

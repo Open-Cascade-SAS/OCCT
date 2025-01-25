@@ -25,7 +25,6 @@
 class gp_Pnt;
 class gp_Dir;
 
-
 class IGESSolid_Cylinder;
 DEFINE_STANDARD_HANDLE(IGESSolid_Cylinder, IGESData_IGESEntity)
 
@@ -36,62 +35,46 @@ class IGESSolid_Cylinder : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESSolid_Cylinder();
-  
+
   //! This method is used to set the fields of the class
   //! Cylinder
   //! - aHeight : Cylinder height
   //! - aRadius : Cylinder radius
   //! - aCenter : First face center coordinates (default (0,0,0))
   //! - anAxis  : Unit vector in axis direction (default (0,0,1))
-  Standard_EXPORT void Init (const Standard_Real aHeight, const Standard_Real aRadius, const gp_XYZ& aCenter, const gp_XYZ& anAxis);
-  
+  Standard_EXPORT void Init(const Standard_Real aHeight,
+                            const Standard_Real aRadius,
+                            const gp_XYZ&       aCenter,
+                            const gp_XYZ&       anAxis);
+
   //! returns the cylinder height
   Standard_EXPORT Standard_Real Height() const;
-  
+
   //! returns the cylinder radius
   Standard_EXPORT Standard_Real Radius() const;
-  
+
   //! returns the first face center coordinates.
   Standard_EXPORT gp_Pnt FaceCenter() const;
-  
+
   //! returns the first face center after applying TransformationMatrix
   Standard_EXPORT gp_Pnt TransformedFaceCenter() const;
-  
+
   //! returns the vector in axis direction
   Standard_EXPORT gp_Dir Axis() const;
-  
+
   //! returns the vector in axis direction after applying
   //! TransformationMatrix
   Standard_EXPORT gp_Dir TransformedAxis() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSolid_Cylinder,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_Cylinder, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Real theHeight;
   Standard_Real theRadius;
-  gp_XYZ theFaceCenter;
-  gp_XYZ theAxis;
-
-
+  gp_XYZ        theFaceCenter;
+  gp_XYZ        theAxis;
 };
-
-
-
-
-
-
 
 #endif // _IGESSolid_Cylinder_HeaderFile

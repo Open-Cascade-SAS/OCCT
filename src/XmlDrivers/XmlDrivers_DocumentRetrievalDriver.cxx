@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TNaming_NamedShape.hxx>
@@ -23,57 +22,49 @@
 #include <XmlMNaming_NamedShapeDriver.hxx>
 #include <XmlObjMgt_Element.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XmlDrivers_DocumentRetrievalDriver,XmlLDrivers_DocumentRetrievalDriver)
+IMPLEMENT_STANDARD_RTTIEXT(XmlDrivers_DocumentRetrievalDriver, XmlLDrivers_DocumentRetrievalDriver)
 
-//=======================================================================
-//function : XmlDrivers_DocumentRetrievalDriver
-//purpose  : Constructor
-//=======================================================================
-XmlDrivers_DocumentRetrievalDriver::XmlDrivers_DocumentRetrievalDriver()
+//=================================================================================================
+
+XmlDrivers_DocumentRetrievalDriver::XmlDrivers_DocumentRetrievalDriver() {}
+
+//=================================================================================================
+
+Handle(XmlMDF_ADriverTable) XmlDrivers_DocumentRetrievalDriver::AttributeDrivers(
+  const Handle(Message_Messenger)& theMessageDriver)
 {
+  return XmlDrivers::AttributeDrivers(theMessageDriver);
 }
 
 //=======================================================================
-//function : AttributeDrivers
-//purpose  : 
-//=======================================================================
-Handle(XmlMDF_ADriverTable) XmlDrivers_DocumentRetrievalDriver::AttributeDrivers
-       (const Handle(Message_Messenger)& theMessageDriver) 
-{
-  return XmlDrivers::AttributeDrivers (theMessageDriver);
-}
-
-//=======================================================================
-//function : ReadShapeSection
-//purpose  : Implementation of ReadShapeSection
+// function : ReadShapeSection
+// purpose  : Implementation of ReadShapeSection
 //=======================================================================
 Handle(XmlMDF_ADriver) XmlDrivers_DocumentRetrievalDriver::ReadShapeSection(
-                               const XmlObjMgt_Element&         theElement,
-                               const Handle(Message_Messenger)& theMsgDriver,
-                               const Message_ProgressRange&     theRange)
+  const XmlObjMgt_Element&         theElement,
+  const Handle(Message_Messenger)& theMsgDriver,
+  const Message_ProgressRange&     theRange)
 {
-  if (myDrivers.IsNull()) myDrivers = AttributeDrivers (theMsgDriver);
+  if (myDrivers.IsNull())
+    myDrivers = AttributeDrivers(theMsgDriver);
   Handle(XmlMDF_ADriver) aDriver;
-  if (myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver))
+  if (myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver))
   {
-    Handle(XmlMNaming_NamedShapeDriver) aNamedShapeDriver = 
-      Handle(XmlMNaming_NamedShapeDriver)::DownCast (aDriver);
-    aNamedShapeDriver->ReadShapeSection (theElement, theRange);
+    Handle(XmlMNaming_NamedShapeDriver) aNamedShapeDriver =
+      Handle(XmlMNaming_NamedShapeDriver)::DownCast(aDriver);
+    aNamedShapeDriver->ReadShapeSection(theElement, theRange);
   }
   return aDriver;
 }
 
 //=======================================================================
-//function : ShapeSetCleaning
-//purpose  : definition of ShapeSetCleaning
+// function : ShapeSetCleaning
+// purpose  : definition of ShapeSetCleaning
 //=======================================================================
-void XmlDrivers_DocumentRetrievalDriver::ShapeSetCleaning(
-			      const Handle(XmlMDF_ADriver)& theDriver) 
+void XmlDrivers_DocumentRetrievalDriver::ShapeSetCleaning(const Handle(XmlMDF_ADriver)& theDriver)
 {
-  Handle(XmlMNaming_NamedShapeDriver) aNamedShapeDriver = 
+  Handle(XmlMNaming_NamedShapeDriver) aNamedShapeDriver =
     Handle(XmlMNaming_NamedShapeDriver)::DownCast(theDriver);
   if (aNamedShapeDriver.IsNull() == Standard_False)
-    aNamedShapeDriver -> Clear();
+    aNamedShapeDriver->Clear();
 }
-
-

@@ -19,30 +19,31 @@
 
 #ifdef OCCT_DEBUG
 
-#include <Standard_Type.hxx>
-#include <TopAbs_State.hxx>
+  #include <Standard_Type.hxx>
+  #include <TopAbs_State.hxx>
 
 // -----------------------------------------------------------------------
 // TopOpeBRepTool_STATE : class of 4 booleans matching TopAbs_State values
 // -----------------------------------------------------------------------
 
-class TopOpeBRepTool_STATE {
+class TopOpeBRepTool_STATE
+{
 
- public:
-  TopOpeBRepTool_STATE(const char* name, 
-		       const Standard_Boolean b = Standard_False);
-  void Set(const Standard_Boolean b);
-  void Set(const TopAbs_State S, const Standard_Boolean b);
-  void Set(const Standard_Boolean b, Standard_Integer n, char** a);
+public:
+  TopOpeBRepTool_STATE(const char* name, const Standard_Boolean b = Standard_False);
+  void             Set(const Standard_Boolean b);
+  void             Set(const TopAbs_State S, const Standard_Boolean b);
+  void             Set(const Standard_Boolean b, Standard_Integer n, char** a);
   Standard_Boolean Get(const TopAbs_State S);
+
   Standard_Boolean Get() { return myonetrue; }
+
   void Print();
 
- private:
-  Standard_Boolean myin,myout,myon,myunknown;
+private:
+  Standard_Boolean myin, myout, myon, myunknown;
   Standard_Boolean myonetrue;
-  char myname[100];
-
+  char             myname[100];
 };
 
 #endif /* OCCT_DEBUG */

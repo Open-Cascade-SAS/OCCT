@@ -25,7 +25,6 @@
 class IGESData_IGESEntity;
 class IGESData_IGESDumper;
 
-
 class IGESData_SpecificModule;
 DEFINE_STANDARD_HANDLE(IGESData_SpecificModule, Standard_Transient)
 
@@ -35,15 +34,17 @@ class IGESData_SpecificModule : public Standard_Transient
 {
 
 public:
-
-  
   //! Specific Dump for each type of IGES Entity : it concerns only
   //! own parameters, the general data (Directory Part, Lists) are
   //! taken into account by the IGESDumper
   //! See class IGESDumper for the rules to follow for <own> and
   //! <attached> level
-  Standard_EXPORT virtual void OwnDump (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent, const IGESData_IGESDumper& dumper, Standard_OStream& S, const Standard_Integer own) const = 0;
-  
+  Standard_EXPORT virtual void OwnDump(const Standard_Integer             CN,
+                                       const Handle(IGESData_IGESEntity)& ent,
+                                       const IGESData_IGESDumper&         dumper,
+                                       Standard_OStream&                  S,
+                                       const Standard_Integer             own) const = 0;
+
   //! Specific Automatic Correction on own Parameters of an Entity.
   //! It works by setting in accordance redundant data, if there are
   //! when there is no ambiguity (else, it does nothing).
@@ -61,29 +62,13 @@ public:
   //! By default, does nothing. If at least one of the Types
   //! processed by a sub-class of SpecificModule has a Correct
   //! procedure attached, this method can be redefined
-  Standard_EXPORT virtual Standard_Boolean OwnCorrect (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent) const;
+  Standard_EXPORT virtual Standard_Boolean OwnCorrect(const Standard_Integer             CN,
+                                                      const Handle(IGESData_IGESEntity)& ent) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESData_SpecificModule,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(IGESData_SpecificModule, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESData_SpecificModule_HeaderFile

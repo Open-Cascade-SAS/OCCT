@@ -22,36 +22,27 @@
 class BRepMesh_OrientedEdge
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Default constructor.
   BRepMesh_OrientedEdge()
-    : myFirstNode(-1),
-      myLastNode(-1)
+      : myFirstNode(-1),
+        myLastNode(-1)
   {
   }
 
   //! Constructs a link between two vertices.
-  BRepMesh_OrientedEdge(
-    const Standard_Integer theFirstNode,
-    const Standard_Integer theLastNode)
-    : myFirstNode(theFirstNode),
-      myLastNode(theLastNode)
+  BRepMesh_OrientedEdge(const Standard_Integer theFirstNode, const Standard_Integer theLastNode)
+      : myFirstNode(theFirstNode),
+        myLastNode(theLastNode)
   {
   }
 
   //! Returns index of first node of the Link.
-  Standard_Integer FirstNode() const
-  {
-    return myFirstNode;
-  }
+  Standard_Integer FirstNode() const { return myFirstNode; }
 
   //! Returns index of last node of the Link.
-  Standard_Integer LastNode() const
-  {
-    return myLastNode;
-  }
+  Standard_Integer LastNode() const { return myLastNode; }
 
   //! Checks this and other edge for equality.
   //! @param theOther edge to be checked against this one.
@@ -62,35 +53,31 @@ public:
   }
 
   //! Alias for IsEqual.
-  Standard_Boolean operator ==(const BRepMesh_OrientedEdge& Other) const
-  {
-    return IsEqual(Other);
-  }
+  Standard_Boolean operator==(const BRepMesh_OrientedEdge& Other) const { return IsEqual(Other); }
 
 private:
-
   Standard_Integer myFirstNode;
   Standard_Integer myLastNode;
 };
 
 namespace std
 {
-  template <>
-  struct hash<BRepMesh_OrientedEdge>
+template <>
+struct hash<BRepMesh_OrientedEdge>
+{
+  size_t operator()(const BRepMesh_OrientedEdge& theOrientedEdge) const noexcept
   {
-    size_t operator()(const BRepMesh_OrientedEdge& theOrientedEdge) const noexcept
-    {
-      union Combination
-      {
-        unsigned short Arr[2]; // Node can be represented as a short
-        uint32_t Hash;
+    union Combination {
+      unsigned short Arr[2]; // Node can be represented as a short
+      uint32_t       Hash;
 
-      } aCombination;
-      aCombination.Arr[0] = static_cast<unsigned short>(theOrientedEdge.FirstNode());
-      aCombination.Arr[1] = static_cast<unsigned short>(theOrientedEdge.LastNode());
-      return static_cast<size_t>(aCombination.Hash);
-    }
-  };
-}
+    } aCombination;
+
+    aCombination.Arr[0] = static_cast<unsigned short>(theOrientedEdge.FirstNode());
+    aCombination.Arr[1] = static_cast<unsigned short>(theOrientedEdge.LastNode());
+    return static_cast<size_t>(aCombination.Hash);
+  }
+};
+} // namespace std
 
 #endif

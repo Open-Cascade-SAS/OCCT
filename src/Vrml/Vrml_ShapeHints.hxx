@@ -27,7 +27,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
 
-
 //! defines a ShapeHints node of VRML specifying properties of geometry and its appearance.
 //! The ShapeHints node indicates that IndexedFaceSets are solid, contain ordered vertices, or
 //! contain convex faces.
@@ -48,58 +47,40 @@
 //! crease angle of .5 radians (the default value) means that an edge between two adjacent
 //! polygonal faces will be smooth shaded if the normals to the two faces form an angle that is
 //! less than .5 radians (about 30 degrees). Otherwise, it will be faceted.
-class Vrml_ShapeHints 
+class Vrml_ShapeHints
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT Vrml_ShapeHints(const Vrml_VertexOrdering aVertexOrdering = Vrml_UNKNOWN_ORDERING, const Vrml_ShapeType aShapeType = Vrml_UNKNOWN_SHAPE_TYPE, const Vrml_FaceType aFaceType = Vrml_CONVEX, const Standard_Real aAngle = 0.5);
-  
-  Standard_EXPORT void SetVertexOrdering (const Vrml_VertexOrdering aVertexOrdering);
-  
+  Standard_EXPORT Vrml_ShapeHints(const Vrml_VertexOrdering aVertexOrdering = Vrml_UNKNOWN_ORDERING,
+                                  const Vrml_ShapeType      aShapeType = Vrml_UNKNOWN_SHAPE_TYPE,
+                                  const Vrml_FaceType       aFaceType  = Vrml_CONVEX,
+                                  const Standard_Real       aAngle     = 0.5);
+
+  Standard_EXPORT void SetVertexOrdering(const Vrml_VertexOrdering aVertexOrdering);
+
   Standard_EXPORT Vrml_VertexOrdering VertexOrdering() const;
-  
-  Standard_EXPORT void SetShapeType (const Vrml_ShapeType aShapeType);
-  
+
+  Standard_EXPORT void SetShapeType(const Vrml_ShapeType aShapeType);
+
   Standard_EXPORT Vrml_ShapeType ShapeType() const;
-  
-  Standard_EXPORT void SetFaceType (const Vrml_FaceType aFaceType);
-  
+
+  Standard_EXPORT void SetFaceType(const Vrml_FaceType aFaceType);
+
   Standard_EXPORT Vrml_FaceType FaceType() const;
-  
-  Standard_EXPORT void SetAngle (const Standard_Real aAngle);
-  
+
+  Standard_EXPORT void SetAngle(const Standard_Real aAngle);
+
   Standard_EXPORT Standard_Real Angle() const;
-  
-  Standard_EXPORT Standard_OStream& Print (Standard_OStream& anOStream) const;
 
-
-
+  Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Vrml_VertexOrdering myVertexOrdering;
-  Vrml_ShapeType myShapeType;
-  Vrml_FaceType myFaceType;
-  Standard_Real myAngle;
-
-
+  Vrml_ShapeType      myShapeType;
+  Vrml_FaceType       myFaceType;
+  Standard_Real       myAngle;
 };
-
-
-
-
-
-
 
 #endif // _Vrml_ShapeHints_HeaderFile

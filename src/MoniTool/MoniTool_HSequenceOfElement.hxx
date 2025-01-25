@@ -23,5 +23,4 @@
 
 DEFINE_HSEQUENCE(MoniTool_HSequenceOfElement, MoniTool_SequenceOfElement)
 
-
 #endif

@@ -16,42 +16,42 @@
 #include <BRep_Tool.hxx>
 
 //=======================================================================
-//function : BRepGProp_Face
-//purpose  : Constructor. Initializes the object with IsUseSpan.
+// function : BRepGProp_Face
+// purpose  : Constructor. Initializes the object with IsUseSpan.
 //=======================================================================
 
 inline BRepGProp_Face::BRepGProp_Face(const Standard_Boolean IsUseSpan)
-     : mySReverse (Standard_False),
-       myIsUseSpan(IsUseSpan)
+    : mySReverse(Standard_False),
+      myIsUseSpan(IsUseSpan)
 {
 }
 
 //=======================================================================
-//function : BRepGProp_Face
-//purpose  : Constructor.Initializes the object with the face and
+// function : BRepGProp_Face
+// purpose  : Constructor.Initializes the object with the face and
 //           IsUseSpan flan.
 //=======================================================================
 
-inline BRepGProp_Face::BRepGProp_Face(const TopoDS_Face      &F,
-				      const Standard_Boolean  IsUseSpan)
-     : myIsUseSpan(IsUseSpan)
+inline BRepGProp_Face::BRepGProp_Face(const TopoDS_Face& F, const Standard_Boolean IsUseSpan)
+    : myIsUseSpan(IsUseSpan)
 {
   Load(F);
 }
 
 //=======================================================================
-//function : NaturalRestriction
-//purpose  : Returns Standard_True if the face is not trimmed.
+// function : NaturalRestriction
+// purpose  : Returns Standard_True if the face is not trimmed.
 //=======================================================================
 
 inline Standard_Boolean BRepGProp_Face::NaturalRestriction() const
 {
   return BRep_Tool::NaturalRestriction(mySurface.Face());
 }
+
 //
 //=======================================================================
-//function : GetFace
-//purpose  : Returns TopoDS Face.
+// function : GetFace
+// purpose  : Returns TopoDS Face.
 //=======================================================================
 
 inline const TopoDS_Face& BRepGProp_Face::GetFace() const
@@ -60,8 +60,8 @@ inline const TopoDS_Face& BRepGProp_Face::GetFace() const
 }
 
 //=======================================================================
-//function : Value2d
-//purpose  : Returns the value of the boundary curve of the face.
+// function : Value2d
+// purpose  : Returns the value of the boundary curve of the face.
 //=======================================================================
 
 inline gp_Pnt2d BRepGProp_Face::Value2d(const Standard_Real U) const
@@ -70,21 +70,19 @@ inline gp_Pnt2d BRepGProp_Face::Value2d(const Standard_Real U) const
 }
 
 //=======================================================================
-//function : D12d
-//purpose  : Returns the point of parameter U and the first derivative
+// function : D12d
+// purpose  : Returns the point of parameter U and the first derivative
 //           at this point of a boundary curve.
 //=======================================================================
 
-inline void BRepGProp_Face::D12d(const Standard_Real  U,
-				       gp_Pnt2d      &P,
-				       gp_Vec2d      &V1) const
+inline void BRepGProp_Face::D12d(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const
 {
-  myCurve.D1(U,P,V1);
+  myCurve.D1(U, P, V1);
 }
 
 //=======================================================================
-//function : FirstParameter
-//purpose  : Returns the parametric value of the start point of
+// function : FirstParameter
+// purpose  : Returns the parametric value of the start point of
 //           the current arc of curve.
 //=======================================================================
 
@@ -94,8 +92,8 @@ inline Standard_Real BRepGProp_Face::FirstParameter() const
 }
 
 //=======================================================================
-//function : LastParameter
-//purpose  : Returns the parametric value of the end point of
+// function : LastParameter
+// purpose  : Returns the parametric value of the end point of
 //           the current arc of curve.
 //=======================================================================
 

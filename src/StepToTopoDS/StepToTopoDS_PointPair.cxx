@@ -14,18 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepToTopoDS_PointPair.hxx>
 
-//=======================================================================
-//function : StepToTopoDS_PointPair
-//purpose  : 
-//=======================================================================
-StepToTopoDS_PointPair::StepToTopoDS_PointPair
-  (const Handle(StepGeom_CartesianPoint)& P1,
-   const Handle(StepGeom_CartesianPoint)& P2) :
-  myP1(P1),
-  myP2(P2)
+//=================================================================================================
+
+StepToTopoDS_PointPair::StepToTopoDS_PointPair(const Handle(StepGeom_CartesianPoint)& P1,
+                                               const Handle(StepGeom_CartesianPoint)& P2)
+    : myP1(P1),
+      myP2(P2)
 {
 }

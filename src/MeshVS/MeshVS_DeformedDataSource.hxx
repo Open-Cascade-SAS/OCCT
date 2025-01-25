@@ -28,7 +28,6 @@
 #include <TColStd_Array1OfInteger.hxx>
 class gp_Vec;
 
-
 class MeshVS_DeformedDataSource;
 DEFINE_STANDARD_HANDLE(MeshVS_DeformedDataSource, MeshVS_DataSource)
 
@@ -40,75 +39,73 @@ class MeshVS_DeformedDataSource : public MeshVS_DataSource
 {
 
 public:
-
-  
   //! Constructor
   //! theNonDeformDS is canonical non-deformed data source, by which we are able to calculate
   //! deformed mesh geometry
   //! theMagnify is coefficient of displacement magnify
-  Standard_EXPORT MeshVS_DeformedDataSource(const Handle(MeshVS_DataSource)& theNonDeformDS, const Standard_Real theMagnify);
-  
-  Standard_EXPORT virtual Standard_Boolean GetGeom (const Standard_Integer ID, const Standard_Boolean IsElement, TColStd_Array1OfReal& Coords, Standard_Integer& NbNodes, MeshVS_EntityType& Type) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_Boolean GetGeomType (const Standard_Integer ID, const Standard_Boolean IsElement, MeshVS_EntityType& Type) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_Boolean Get3DGeom (const Standard_Integer ID, Standard_Integer& NbNodes, Handle(MeshVS_HArray1OfSequenceOfInteger)& Data) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_Address GetAddr (const Standard_Integer ID, const Standard_Boolean IsElement) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_Boolean GetNodesByElement (const Standard_Integer ID, TColStd_Array1OfInteger& NodeIDs, Standard_Integer& NbNodes) const Standard_OVERRIDE;
-  
+  Standard_EXPORT MeshVS_DeformedDataSource(const Handle(MeshVS_DataSource)& theNonDeformDS,
+                                            const Standard_Real              theMagnify);
+
+  Standard_EXPORT virtual Standard_Boolean GetGeom(const Standard_Integer ID,
+                                                   const Standard_Boolean IsElement,
+                                                   TColStd_Array1OfReal&  Coords,
+                                                   Standard_Integer&      NbNodes,
+                                                   MeshVS_EntityType& Type) const Standard_OVERRIDE;
+
+  Standard_EXPORT virtual Standard_Boolean GetGeomType(const Standard_Integer ID,
+                                                       const Standard_Boolean IsElement,
+                                                       MeshVS_EntityType&     Type) const
+    Standard_OVERRIDE;
+
+  Standard_EXPORT virtual Standard_Boolean Get3DGeom(
+    const Standard_Integer                     ID,
+    Standard_Integer&                          NbNodes,
+    Handle(MeshVS_HArray1OfSequenceOfInteger)& Data) const Standard_OVERRIDE;
+
+  Standard_EXPORT virtual Standard_Address GetAddr(const Standard_Integer ID,
+                                                   const Standard_Boolean IsElement) const
+    Standard_OVERRIDE;
+
+  Standard_EXPORT virtual Standard_Boolean GetNodesByElement(const Standard_Integer   ID,
+                                                             TColStd_Array1OfInteger& NodeIDs,
+                                                             Standard_Integer&        NbNodes) const
+    Standard_OVERRIDE;
+
   Standard_EXPORT virtual const TColStd_PackedMapOfInteger& GetAllNodes() const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual const TColStd_PackedMapOfInteger& GetAllElements() const Standard_OVERRIDE;
-  
+
+  Standard_EXPORT virtual const TColStd_PackedMapOfInteger& GetAllElements() const
+    Standard_OVERRIDE;
+
   //! This method returns map of nodal displacement vectors
   Standard_EXPORT const MeshVS_DataMapOfIntegerVector& GetVectors() const;
-  
+
   //! This method sets map of nodal displacement vectors (Map).
-  Standard_EXPORT void SetVectors (const MeshVS_DataMapOfIntegerVector& Map);
-  
+  Standard_EXPORT void SetVectors(const MeshVS_DataMapOfIntegerVector& Map);
+
   //! This method returns vector ( Vect ) assigned to node number ID.
-  Standard_EXPORT Standard_Boolean GetVector (const Standard_Integer ID, gp_Vec& Vect) const;
-  
+  Standard_EXPORT Standard_Boolean GetVector(const Standard_Integer ID, gp_Vec& Vect) const;
+
   //! This method sets vector ( Vect ) assigned to node number ID.
-  Standard_EXPORT void SetVector (const Standard_Integer ID, const gp_Vec& Vect);
-  
-  Standard_EXPORT void SetNonDeformedDataSource (const Handle(MeshVS_DataSource)& theDS);
-  
+  Standard_EXPORT void SetVector(const Standard_Integer ID, const gp_Vec& Vect);
+
+  Standard_EXPORT void SetNonDeformedDataSource(const Handle(MeshVS_DataSource)& theDS);
+
   //! With this methods you can read and change internal canonical data source
   Standard_EXPORT Handle(MeshVS_DataSource) GetNonDeformedDataSource() const;
-  
-  Standard_EXPORT void SetMagnify (const Standard_Real theMagnify);
-  
+
+  Standard_EXPORT void SetMagnify(const Standard_Real theMagnify);
+
   //! With this methods you can read and change magnify coefficient of nodal displacements
   Standard_EXPORT Standard_Real GetMagnify() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(MeshVS_DeformedDataSource,MeshVS_DataSource)
+  DEFINE_STANDARD_RTTIEXT(MeshVS_DeformedDataSource, MeshVS_DataSource)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(MeshVS_DataSource) myNonDeformedDataSource;
-  TColStd_PackedMapOfInteger myEmptyMap;
+  Handle(MeshVS_DataSource)     myNonDeformedDataSource;
+  TColStd_PackedMapOfInteger    myEmptyMap;
   MeshVS_DataMapOfIntegerVector myVectors;
-  Standard_Real myMagnify;
-
-
+  Standard_Real                 myMagnify;
 };
-
-
-
-
-
-
 
 #endif // _MeshVS_DeformedDataSource_HeaderFile

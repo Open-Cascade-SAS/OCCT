@@ -19,26 +19,16 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_DelaunayBaseMeshAlgo, BRepMesh_ConstrainedBaseMeshAlgo)
 
-//=======================================================================
-// Function: Constructor
-// Purpose : 
-//=======================================================================
-BRepMesh_DelaunayBaseMeshAlgo::BRepMesh_DelaunayBaseMeshAlgo()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-// Function: Destructor
-// Purpose : 
-//=======================================================================
-BRepMesh_DelaunayBaseMeshAlgo::~BRepMesh_DelaunayBaseMeshAlgo()
-{
-}
+BRepMesh_DelaunayBaseMeshAlgo::BRepMesh_DelaunayBaseMeshAlgo() {}
 
-//=======================================================================
-//function : generateMesh
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
+BRepMesh_DelaunayBaseMeshAlgo::~BRepMesh_DelaunayBaseMeshAlgo() {}
+
+//=================================================================================================
+
 void BRepMesh_DelaunayBaseMeshAlgo::generateMesh(const Message_ProgressRange& theRange)
 {
   const Handle(BRepMesh_DataStructureOfDelaun)& aStructure = getStructure();
@@ -50,8 +40,8 @@ void BRepMesh_DelaunayBaseMeshAlgo::generateMesh(const Message_ProgressRange& th
     aVerticesOrder.Append(i);
   }
 
-  std::pair<Standard_Integer, Standard_Integer> aCellsCount = getCellsCount (aVerticesOrder.Size ());
-  BRepMesh_Delaun aMesher(aStructure, aVerticesOrder, aCellsCount.first, aCellsCount.second);
+  std::pair<Standard_Integer, Standard_Integer> aCellsCount = getCellsCount(aVerticesOrder.Size());
+  BRepMesh_Delaun   aMesher(aStructure, aVerticesOrder, aCellsCount.first, aCellsCount.second);
   BRepMesh_MeshTool aCleaner(aStructure);
   aCleaner.EraseFreeLinks();
 

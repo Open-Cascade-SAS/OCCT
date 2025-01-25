@@ -21,7 +21,6 @@
 
 #include <Standard_Transient.hxx>
 
-
 class StepElement_SurfaceSectionField;
 DEFINE_STANDARD_HANDLE(StepElement_SurfaceSectionField, Standard_Transient)
 
@@ -30,32 +29,13 @@ class StepElement_SurfaceSectionField : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepElement_SurfaceSectionField();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepElement_SurfaceSectionField,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepElement_SurfaceSectionField, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepElement_SurfaceSectionField_HeaderFile

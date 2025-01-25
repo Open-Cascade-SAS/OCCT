@@ -25,48 +25,29 @@ class StepGeom_Vector;
 class TCollection_HAsciiString;
 class StepGeom_Curve;
 
-
 class StepGeom_SurfaceOfLinearExtrusion;
 DEFINE_STANDARD_HANDLE(StepGeom_SurfaceOfLinearExtrusion, StepGeom_SweptSurface)
-
 
 class StepGeom_SurfaceOfLinearExtrusion : public StepGeom_SweptSurface
 {
 
 public:
-
-  
   //! Returns a SurfaceOfLinearExtrusion
   Standard_EXPORT StepGeom_SurfaceOfLinearExtrusion();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Curve)& aSweptCurve, const Handle(StepGeom_Vector)& aExtrusionAxis);
-  
-  Standard_EXPORT void SetExtrusionAxis (const Handle(StepGeom_Vector)& aExtrusionAxis);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Handle(StepGeom_Curve)&           aSweptCurve,
+                            const Handle(StepGeom_Vector)&          aExtrusionAxis);
+
+  Standard_EXPORT void SetExtrusionAxis(const Handle(StepGeom_Vector)& aExtrusionAxis);
+
   Standard_EXPORT Handle(StepGeom_Vector) ExtrusionAxis() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_SurfaceOfLinearExtrusion,StepGeom_SweptSurface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_SurfaceOfLinearExtrusion, StepGeom_SweptSurface)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepGeom_Vector) extrusionAxis;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_SurfaceOfLinearExtrusion_HeaderFile

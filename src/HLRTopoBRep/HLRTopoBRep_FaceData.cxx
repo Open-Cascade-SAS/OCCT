@@ -14,13 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <HLRTopoBRep_FaceData.hxx>
 
-//=======================================================================
-//function : FaceData
-//purpose  : 
-//=======================================================================
-HLRTopoBRep_FaceData::HLRTopoBRep_FaceData ()
-{}
+//=================================================================================================
 
+HLRTopoBRep_FaceData::HLRTopoBRep_FaceData() {}

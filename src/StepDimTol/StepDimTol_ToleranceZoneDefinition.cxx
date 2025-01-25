@@ -17,25 +17,18 @@
 
 #include <StepRepr_HArray1OfShapeAspect.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ToleranceZoneDefinition,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ToleranceZoneDefinition, Standard_Transient)
 
-//=======================================================================
-//function : StepDimTol_ToleranceZoneDefinition
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepDimTol_ToleranceZoneDefinition::StepDimTol_ToleranceZoneDefinition ()
-{
-}
+StepDimTol_ToleranceZoneDefinition::StepDimTol_ToleranceZoneDefinition() {}
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepDimTol_ToleranceZoneDefinition::Init (const Handle(StepDimTol_ToleranceZone)& theZone,
-                                               const Handle(StepRepr_HArray1OfShapeAspect)& theBoundaries)
+void StepDimTol_ToleranceZoneDefinition::Init(
+  const Handle(StepDimTol_ToleranceZone)&      theZone,
+  const Handle(StepRepr_HArray1OfShapeAspect)& theBoundaries)
 {
   myBoundaries = theBoundaries;
-  myZone = theZone;
+  myZone       = theZone;
 }

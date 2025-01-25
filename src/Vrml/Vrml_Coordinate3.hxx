@@ -24,7 +24,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 
-
 class Vrml_Coordinate3;
 DEFINE_STANDARD_HANDLE(Vrml_Coordinate3, Standard_Transient)
 
@@ -38,40 +37,21 @@ class Vrml_Coordinate3 : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT Vrml_Coordinate3(const Handle(TColgp_HArray1OfVec)& aPoint);
-  
+
   Standard_EXPORT Vrml_Coordinate3();
-  
-  Standard_EXPORT void SetPoint (const Handle(TColgp_HArray1OfVec)& aPoint);
-  
+
+  Standard_EXPORT void SetPoint(const Handle(TColgp_HArray1OfVec)& aPoint);
+
   Standard_EXPORT Handle(TColgp_HArray1OfVec) Point() const;
-  
-  Standard_EXPORT Standard_OStream& Print (Standard_OStream& anOStream) const;
 
+  Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
-
-
-  DEFINE_STANDARD_RTTIEXT(Vrml_Coordinate3,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Vrml_Coordinate3, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TColgp_HArray1OfVec) myPoint;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Vrml_Coordinate3_HeaderFile

@@ -15,7 +15,7 @@
 
 //      	-------------------
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Oct  1 1997	Creation
 
 #include <Standard_DomainError.hxx>
@@ -28,61 +28,48 @@
 
 #undef DEB_TRANSACTION
 #ifdef OCCT_DEBUG
-#define DEB_TRANSACTION
+  #define DEB_TRANSACTION
 #endif
 #undef DEB_TRANSACTION_DUMP
 
 #include <TDF_Tool.hxx>
 
-//=======================================================================
-//function : TDF_Transaction
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TDF_Transaction::TDF_Transaction
-(const TCollection_AsciiString& aName)
-: myName(aName),
-  myUntilTransaction(0)
-{}
+TDF_Transaction::TDF_Transaction(const TCollection_AsciiString& aName)
+    : myName(aName),
+      myUntilTransaction(0)
+{
+}
 
-//=======================================================================
-//function : TDF_Transaction
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TDF_Transaction::TDF_Transaction
-(const Handle(TDF_Data)& aDF,
- const TCollection_AsciiString& aName)
-: myDF(aDF),
-  myName(aName),
-  myUntilTransaction(0)
-{}
-
-
-
+TDF_Transaction::TDF_Transaction(const Handle(TDF_Data)& aDF, const TCollection_AsciiString& aName)
+    : myDF(aDF),
+      myName(aName),
+      myUntilTransaction(0)
+{
+}
 
 //=======================================================================
-//function : Initialize
-//purpose  : Initializes a transaction ready to be opened.
+// function : Initialize
+// purpose  : Initializes a transaction ready to be opened.
 //=======================================================================
 
 void TDF_Transaction::Initialize(const Handle(TDF_Data)& aDF)
 {
-  if (IsOpen()) myDF->AbortUntilTransaction(myUntilTransaction);
-  myDF = aDF;
+  if (IsOpen())
+    myDF->AbortUntilTransaction(myUntilTransaction);
+  myDF               = aDF;
   myUntilTransaction = 0;
 }
 
-
-//=======================================================================
-//function : Open
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer TDF_Transaction::Open()
 {
 #ifdef OCCT_DEBUG_TRANSACTION
-  std::cout<<"Transaction "<<myName<<" opens #"<<myDF->Transaction()+1<<std::endl;
+  std::cout << "Transaction " << myName << " opens #" << myDF->Transaction() + 1 << std::endl;
 #endif
   if (IsOpen())
     throw Standard_DomainError("This transaction is already open.");
@@ -91,74 +78,69 @@ Standard_Integer TDF_Transaction::Open()
   return myUntilTransaction = myDF->OpenTransaction();
 }
 
-
-//=======================================================================
-//function : Commit
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(TDF_Delta) TDF_Transaction::Commit(const Standard_Boolean withDelta)
 {
 #ifdef OCCT_DEBUG_TRANSACTION
-  std::cout<<"Transaction "<<myName<<" commits ";
+  std::cout << "Transaction " << myName << " commits ";
 #endif
   Handle(TDF_Delta) delta;
-  if (IsOpen()) {
+  if (IsOpen())
+  {
 #ifdef OCCT_DEBUG_TRANSACTION
-    std::cout<<"from #"<<myDF->Transaction()<<" until #"<<myUntilTransaction<<" while current is #"<<myDF->Transaction()<<std::endl;
+    std::cout << "from #" << myDF->Transaction() << " until #" << myUntilTransaction
+              << " while current is #" << myDF->Transaction() << std::endl;
 #endif
 #ifdef OCCT_DEBUG_TRANSACTION_DUMP
-    std::cout<<"DF before commit"<<std::endl;
-    TDF_Tool::DeepDump(std::cout,myDF);
+    std::cout << "DF before commit" << std::endl;
+    TDF_Tool::DeepDump(std::cout, myDF);
 #endif
     Standard_Integer until = myUntilTransaction;
-    myUntilTransaction = 0;
-    delta = myDF->CommitUntilTransaction(until, withDelta);
+    myUntilTransaction     = 0;
+    delta                  = myDF->CommitUntilTransaction(until, withDelta);
 #ifdef OCCT_DEBUG_TRANSACTION_DUMP
-    std::cout<<"DF after commit"<<std::endl;
-    TDF_Tool::DeepDump(std::cout,myDF);
+    std::cout << "DF after commit" << std::endl;
+    TDF_Tool::DeepDump(std::cout, myDF);
 #endif
   }
 #ifdef OCCT_DEBUG_TRANSACTION
-  else std::cout<<"but this transaction is not open!"<<std::endl;
+  else
+    std::cout << "but this transaction is not open!" << std::endl;
 #endif
   return delta;
 }
 
-
-//=======================================================================
-//function : Abort
-//purpose  : alias ~
-//=======================================================================
+//=================================================================================================
 
 void TDF_Transaction::Abort()
 {
-  if (IsOpen()) {
+  if (IsOpen())
+  {
 #ifdef OCCT_DEBUG_TRANSACTION
-    std::cout<<"Transaction "<<myName<<" aborts from #"<<myDF->Transaction()<<" until #"<<myUntilTransaction<<" while current is #"<<myDF->Transaction()<<std::endl;
+    std::cout << "Transaction " << myName << " aborts from #" << myDF->Transaction() << " until #"
+              << myUntilTransaction << " while current is #" << myDF->Transaction() << std::endl;
 #endif
 #ifdef OCCT_DEBUG_TRANSACTION_DUMP
-    std::cout<<"DF before abort"<<std::endl;
-    TDF_Tool::DeepDump(std::cout,myDF);
+    std::cout << "DF before abort" << std::endl;
+    TDF_Tool::DeepDump(std::cout, myDF);
 #endif
     myDF->AbortUntilTransaction(myUntilTransaction);
     myUntilTransaction = 0;
 #ifdef OCCT_DEBUG_TRANSACTION_DUMP
-    std::cout<<"DF after abort"<<std::endl;
-    TDF_Tool::DeepDump(std::cout,myDF);
+    std::cout << "DF after abort" << std::endl;
+    TDF_Tool::DeepDump(std::cout, myDF);
 #endif
   }
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void TDF_Transaction::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_CLASS_BEGIN (theOStream, TDF_Transaction)
+//=================================================================================================
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myDF.get())
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myUntilTransaction)
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myName)
+void TDF_Transaction::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN(theOStream, TDF_Transaction)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myDF.get())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myUntilTransaction)
+  OCCT_DUMP_FIELD_VALUE_STRING(theOStream, myName)
 }

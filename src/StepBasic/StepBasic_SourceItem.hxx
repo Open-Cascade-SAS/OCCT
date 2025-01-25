@@ -26,49 +26,28 @@ class Standard_Transient;
 class StepData_SelectMember;
 class TCollection_HAsciiString;
 
-
 //! Representation of STEP SELECT type SourceItem
-class StepBasic_SourceItem  : public StepData_SelectType
+class StepBasic_SourceItem : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_EXPORT StepBasic_SourceItem();
-  
+
   //! Recognizes a kind of SourceItem select type
   //! 1 -> HAsciiString from TCollection
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Integer
+    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+
   Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
-  
+
   //! Returns Value as Identifier (or Null if another type)
   Standard_EXPORT Handle(TCollection_HAsciiString) Identifier() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_SourceItem_HeaderFile

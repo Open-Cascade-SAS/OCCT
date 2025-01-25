@@ -21,12 +21,12 @@
 class Media_IFrameQueue
 {
 public:
-
-  //! Lock the frame, e.g. take ownership on a single (not currently displayed) frame from the queue to perform decoding into.
+  //! Lock the frame, e.g. take ownership on a single (not currently displayed) frame from the queue
+  //! to perform decoding into.
   virtual Handle(Media_Frame) LockFrame() = 0;
 
   //! Release previously locked frame, e.g. it can be displayed on the screen.
-  virtual void ReleaseFrame (const Handle(Media_Frame)& theFrame) = 0;
+  virtual void ReleaseFrame(const Handle(Media_Frame)& theFrame) = 0;
 };
 
 #endif // _Media_IFrameQueue_HeaderFile

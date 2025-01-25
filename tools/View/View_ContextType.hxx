@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef View_ConextType_H
 #define View_ConextType_H
@@ -19,8 +19,9 @@
 //! Type of context used in a tool library
 enum View_ContextType
 {
-  View_ContextType_Own, //!< View widget context is used
-  View_ContextType_None, //!< no context (is useful if visualization is not needed, for better performance)
+  View_ContextType_Own,     //!< View widget context is used
+  View_ContextType_None,    //!< no context (is useful if visualization is not needed, for better
+                            //!< performance)
   View_ContextType_External //!< context is set from outside
 };
 

@@ -18,77 +18,63 @@
 
 #include <Draw_Display.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Draw_Number,Draw_Drawable3D)
+IMPLEMENT_STANDARD_RTTIEXT(Draw_Number, Draw_Drawable3D)
 
-//=======================================================================
-//function : Draw_Number
-//purpose  :
-//=======================================================================
-Draw_Number::Draw_Number (const Standard_Real theV)
-: myValue (theV)
+//=================================================================================================
+
+Draw_Number::Draw_Number(const Standard_Real theV)
+    : myValue(theV)
 {
   //
 }
 
-//=======================================================================
-//function : DrawOn
-//purpose  :
-//=======================================================================
-void Draw_Number::DrawOn (Draw_Display& ) const
+//=================================================================================================
+
+void Draw_Number::DrawOn(Draw_Display&) const
 {
   //
 }
 
-//=======================================================================
-//function : Copy
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Handle(Draw_Drawable3D) Draw_Number::Copy() const
 {
-  Handle(Draw_Number) D = new Draw_Number (myValue);
+  Handle(Draw_Number) D = new Draw_Number(myValue);
   return D;
 }
 
-//=======================================================================
-//function : Dump
-//purpose  :
-//=======================================================================
-void Draw_Number::Dump (Standard_OStream& S) const
+//=================================================================================================
+
+void Draw_Number::Dump(Standard_OStream& S) const
 {
   S << myValue;
 }
 
-//=======================================================================
-//function : Save
-//purpose  :
-//=======================================================================
-void Draw_Number::Save (Standard_OStream& theStream) const
+//=================================================================================================
+
+void Draw_Number::Save(Standard_OStream& theStream) const
 {
   std::ios::fmtflags aFlags = theStream.flags();
-  theStream.setf (std::ios::scientific);
-  theStream.precision (15);
-  theStream.width (30);
+  theStream.setf(std::ios::scientific);
+  theStream.precision(15);
+  theStream.width(30);
   theStream << myValue << "\n";
-  theStream.setf (aFlags);
+  theStream.setf(aFlags);
 }
 
-//=======================================================================
-//function : Restore
-//purpose  :
-//=======================================================================
-Handle(Draw_Drawable3D) Draw_Number::Restore (Standard_IStream& theStream)
+//=================================================================================================
+
+Handle(Draw_Drawable3D) Draw_Number::Restore(Standard_IStream& theStream)
 {
   Standard_Real aVal = RealLast();
   theStream >> aVal;
-  Handle(Draw_Number) aNumb = new Draw_Number (aVal);
+  Handle(Draw_Number) aNumb = new Draw_Number(aVal);
   return aNumb;
 }
 
-//=======================================================================
-//function : Whatis
-//purpose  :
-//=======================================================================
-void Draw_Number::Whatis (Draw_Interpretor& S) const
+//=================================================================================================
+
+void Draw_Number::Whatis(Draw_Interpretor& S) const
 {
   S << "numeric";
 }

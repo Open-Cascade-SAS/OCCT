@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -18,25 +18,20 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedShell, StepVisual_TessellatedItem)
 
-//=======================================================================
-//function : StepVisual_TessellatedShell
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepVisual_TessellatedShell::StepVisual_TessellatedShell ()
+StepVisual_TessellatedShell::StepVisual_TessellatedShell()
 {
   myHasTopologicalLink = Standard_False;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedShell::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                        const Handle(StepVisual_HArray1OfTessellatedStructuredItem)& theItems,
-                                        const Standard_Boolean theHasTopologicalLink,
-                                        const Handle(StepShape_ConnectedFaceSet)& theTopologicalLink)
+void StepVisual_TessellatedShell::Init(
+  const Handle(TCollection_HAsciiString)&                      theRepresentationItem_Name,
+  const Handle(StepVisual_HArray1OfTessellatedStructuredItem)& theItems,
+  const Standard_Boolean                                       theHasTopologicalLink,
+  const Handle(StepShape_ConnectedFaceSet)&                    theTopologicalLink)
 {
   StepVisual_TessellatedItem::Init(theRepresentationItem_Name);
 
@@ -53,31 +48,22 @@ void StepVisual_TessellatedShell::Init (const Handle(TCollection_HAsciiString)& 
   }
 }
 
-//=======================================================================
-//function : Items
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepVisual_HArray1OfTessellatedStructuredItem) StepVisual_TessellatedShell::Items () const
+Handle(StepVisual_HArray1OfTessellatedStructuredItem) StepVisual_TessellatedShell::Items() const
 {
   return myItems;
 }
 
-//=======================================================================
-//function : SetItems
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedShell::SetItems(const Handle(StepVisual_HArray1OfTessellatedStructuredItem)& theItems)
+void StepVisual_TessellatedShell::SetItems(
+  const Handle(StepVisual_HArray1OfTessellatedStructuredItem)& theItems)
 {
   myItems = theItems;
 }
 
-
-//=======================================================================
-//function : NbItems
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer StepVisual_TessellatedShell::NbItems() const
 {
@@ -88,43 +74,32 @@ Standard_Integer StepVisual_TessellatedShell::NbItems() const
   return myItems->Length();
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : ItemsValue
-//purpose  : 
-//=======================================================================
-
-Handle(StepVisual_TessellatedStructuredItem) StepVisual_TessellatedShell::ItemsValue(const Standard_Integer theNum) const
+Handle(StepVisual_TessellatedStructuredItem) StepVisual_TessellatedShell::ItemsValue(
+  const Standard_Integer theNum) const
 {
   return myItems->Value(theNum);
 }
 
-//=======================================================================
-//function : TopologicalLink
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepShape_ConnectedFaceSet) StepVisual_TessellatedShell::TopologicalLink () const
+Handle(StepShape_ConnectedFaceSet) StepVisual_TessellatedShell::TopologicalLink() const
 {
   return myTopologicalLink;
 }
 
-//=======================================================================
-//function : SetTopologicalLink
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedShell::SetTopologicalLink(const Handle(StepShape_ConnectedFaceSet)& theTopologicalLink)
+void StepVisual_TessellatedShell::SetTopologicalLink(
+  const Handle(StepShape_ConnectedFaceSet)& theTopologicalLink)
 {
   myTopologicalLink = theTopologicalLink;
 }
 
-//=======================================================================
-//function : HasTopologicalLink
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean StepVisual_TessellatedShell::HasTopologicalLink () const
+Standard_Boolean StepVisual_TessellatedShell::HasTopologicalLink() const
 {
   return myHasTopologicalLink;
 }

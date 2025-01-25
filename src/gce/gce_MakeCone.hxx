@@ -28,7 +28,6 @@ class gp_Pnt;
 class gp_Ax1;
 class gp_Lin;
 
-
 //! This class implements the following algorithms used
 //! to create a Cone from gp.
 //! * Create a Cone coaxial to another and passing
@@ -40,13 +39,10 @@ class gp_Lin;
 //! * Create a Cone by 2 points and 2 radius.
 //! * Create a Cone by an Ax2 an angle and the radius of
 //! its reference section.
-class gce_MakeCone  : public gce_Root
+class gce_MakeCone : public gce_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! Creates an infinite conical surface. A2 locates the cone
   //! in the space and defines the reference plane of the surface.
@@ -55,17 +51,19 @@ public:
   //! the cone.
   //! If Radius is lower than 0.0 the status is "
   //! If Ang < Resolution from gp  or Ang >= (PI/2) - Resolution.
-  Standard_EXPORT gce_MakeCone(const gp_Ax2& A2, const Standard_Real Ang, const Standard_Real Radius);
-  
+  Standard_EXPORT gce_MakeCone(const gp_Ax2&       A2,
+                               const Standard_Real Ang,
+                               const Standard_Real Radius);
+
   //! Makes a Cone from gp <TheCone> coaxial to another
   //! Cone <Cone> and passing through a Pnt <Point>.
   Standard_EXPORT gce_MakeCone(const gp_Cone& Cone, const gp_Pnt& Point);
-  
+
   //! Makes a Cone from gp <TheCone> coaxial to another
   //! Cone <Cone> at the distance <Dist> which can
   //! be greater or lower than zero.
   Standard_EXPORT gce_MakeCone(const gp_Cone& Cone, const Standard_Real Dist);
-  
+
   //! Makes a Cone from gp <TheCone> by four points <P1>,
   //! <P2>,<P3> and <P4>.
   //! Its axis is <P1P2> and the radius of its base is
@@ -80,8 +78,11 @@ public:
   //! status "NullAngle".
   //! <P3P4> is colinear to <P1P2> we have the status
   //! "NullAngle".
-  Standard_EXPORT gce_MakeCone(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3, const gp_Pnt& P4);
-  
+  Standard_EXPORT gce_MakeCone(const gp_Pnt& P1,
+                               const gp_Pnt& P2,
+                               const gp_Pnt& P3,
+                               const gp_Pnt& P4);
+
   //! Makes a Cone by its axis <Axis> and two points.
   //! The distance between <P1> and the axis is the radius
   //! of the section passing through <P1>.
@@ -94,7 +95,7 @@ public:
   //! If <P1> and <P2> are confused we have the status
   //! "ConfusedPoints"
   Standard_EXPORT gce_MakeCone(const gp_Ax1& Axis, const gp_Pnt& P1, const gp_Pnt& P2);
-  
+
   //! Makes a Cone by its axis <Axis> and two points.
   //! The distance between <P1> and the axis is the radius
   //! of the section passing through <P1>
@@ -107,7 +108,7 @@ public:
   //! If <P1> and <P2> are confused we have the status
   //! "ConfusedPoints"
   Standard_EXPORT gce_MakeCone(const gp_Lin& Axis, const gp_Pnt& P1, const gp_Pnt& P2);
-  
+
   //! Makes a Cone with two points and two radius.
   //! The axis of the solution is the line passing through
   //! <P1> and <P2>.
@@ -131,37 +132,21 @@ public:
   //! -   the vector joining P1 to P2 is perpendicular to the line joining P3 to P4,
   //! -   the vector joining P1 to P2 is perpendicular to Axis, or
   //! -   P1, P2, P3, and P4 are collinear.
-  Standard_EXPORT gce_MakeCone(const gp_Pnt& P1, const gp_Pnt& P2, const Standard_Real R1, const Standard_Real R2);
-  
+  Standard_EXPORT gce_MakeCone(const gp_Pnt&       P1,
+                               const gp_Pnt&       P2,
+                               const Standard_Real R1,
+                               const Standard_Real R2);
+
   //! Returns the constructed cone.
   //! Exceptions StdFail_NotDone if no cone is constructed.
   Standard_EXPORT const gp_Cone& Value() const;
-  
+
   Standard_EXPORT const gp_Cone& Operator() const;
-Standard_EXPORT operator gp_Cone() const;
-
-
-
+  Standard_EXPORT                operator gp_Cone() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   gp_Cone TheCone;
-
-
 };
-
-
-
-
-
-
 
 #endif // _gce_MakeCone_HeaderFile

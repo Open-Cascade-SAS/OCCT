@@ -27,7 +27,11 @@ public:
   DEFINE_STANDARD_ALLOC
 public:
   //! Empty constructor.
-  OpenGl_AspectsSprite() : myMarkerSize (1.0f), myIsSpriteReady  (Standard_False) {}
+  OpenGl_AspectsSprite()
+      : myMarkerSize(1.0f),
+        myIsSpriteReady(Standard_False)
+  {
+  }
 
   Standard_ShortReal MarkerSize() const { return myMarkerSize; }
 
@@ -38,49 +42,47 @@ public:
   void Invalidate() { myIsSpriteReady = false; }
 
   //! Return TRUE if OpenGl point sprite resource defines texture.
-  Standard_EXPORT bool HasPointSprite (const Handle(OpenGl_Context)& theCtx,
-                                       const Handle(Graphic3d_Aspects)& theAspects);
+  Standard_EXPORT bool HasPointSprite(const Handle(OpenGl_Context)&    theCtx,
+                                      const Handle(Graphic3d_Aspects)& theAspects);
 
   //! Return TRUE if OpenGl point sprite resource defined by obsolete Display List (bitmap).
-  Standard_EXPORT bool IsDisplayListSprite (const Handle(OpenGl_Context)& theCtx,
-                                            const Handle(Graphic3d_Aspects)& theAspects);
+  Standard_EXPORT bool IsDisplayListSprite(const Handle(OpenGl_Context)&    theCtx,
+                                           const Handle(Graphic3d_Aspects)& theAspects);
 
   //! Return sprite.
-  Standard_EXPORT const Handle(OpenGl_PointSprite)& Sprite (const Handle(OpenGl_Context)& theCtx,
-                                                            const Handle(Graphic3d_Aspects)& theAspects,
-                                                            bool theIsAlphaSprite);
+  Standard_EXPORT const Handle(OpenGl_PointSprite)& Sprite(
+    const Handle(OpenGl_Context)&    theCtx,
+    const Handle(Graphic3d_Aspects)& theAspects,
+    bool                             theIsAlphaSprite);
 
   //! Update texture resource up-to-date state.
-  Standard_EXPORT void UpdateRediness (const Handle(Graphic3d_Aspects)& theAspect);
+  Standard_EXPORT void UpdateRediness(const Handle(Graphic3d_Aspects)& theAspect);
 
   //! Release texture resource.
-  Standard_EXPORT void Release (OpenGl_Context* theCtx);
+  Standard_EXPORT void Release(OpenGl_Context* theCtx);
 
 private:
-
   //! Build texture resources.
-  Standard_EXPORT void build (const Handle(OpenGl_Context)& theCtx,
-                              const Handle(Graphic3d_MarkerImage)& theMarkerImage,
-                              Aspect_TypeOfMarker theType,
-                              Standard_ShortReal theScale,
-                              const Graphic3d_Vec4& theColor,
-                              Standard_ShortReal& theMarkerSize);
+  Standard_EXPORT void build(const Handle(OpenGl_Context)&        theCtx,
+                             const Handle(Graphic3d_MarkerImage)& theMarkerImage,
+                             Aspect_TypeOfMarker                  theType,
+                             Standard_ShortReal                   theScale,
+                             const Graphic3d_Vec4&                theColor,
+                             Standard_ShortReal&                  theMarkerSize);
 
   //! Generate resource keys for a sprite.
-  static void spriteKeys (const Handle(Graphic3d_MarkerImage)& theMarkerImage,
-                          Aspect_TypeOfMarker theType,
-                          Standard_ShortReal theScale,
-                          const Graphic3d_Vec4& theColor,
-                          TCollection_AsciiString& theKey,
-                          TCollection_AsciiString& theKeyA);
+  static void spriteKeys(const Handle(Graphic3d_MarkerImage)& theMarkerImage,
+                         Aspect_TypeOfMarker                  theType,
+                         Standard_ShortReal                   theScale,
+                         const Graphic3d_Vec4&                theColor,
+                         TCollection_AsciiString&             theKey,
+                         TCollection_AsciiString&             theKeyA);
 
 private:
-
   Handle(OpenGl_PointSprite) mySprite;
   Handle(OpenGl_PointSprite) mySpriteA;
-  Standard_ShortReal myMarkerSize;
-  Standard_Boolean myIsSpriteReady;
-
+  Standard_ShortReal         myMarkerSize;
+  Standard_Boolean           myIsSpriteReady;
 };
 
 #endif // _OpenGl_Aspects_Header

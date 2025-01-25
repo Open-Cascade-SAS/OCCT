@@ -16,17 +16,17 @@
 
 #define MARCHEPASSIUNESEULEFACE 0
 
-
 #ifdef OCCT_DEBUG
-#define LBRCOMPT 0
-#else 
-#define LBRCOMPT 0
+  #define LBRCOMPT 0
+#else
+  #define LBRCOMPT 0
 #endif
 
 #if LBRCOMPT
-#include <stdio.h>
+  #include <stdio.h>
 
-class StatistiquesBRepClass3d { 
+class StatistiquesBRepClass3d
+{
 public:
   long unsigned NbConstrVide;
   long unsigned NbLoad;
@@ -36,26 +36,30 @@ public:
   long unsigned NbPerformRejection;
   long unsigned NbPerformInfinitePoint;
   long unsigned NbDestroy;
+
 public:
-  StatistiquesBRepClass3d() { 
-    NbConstrVide=NbLoad=NbConstrShape=NbConstrShapePnt=NbPerform=NbPerformInfinitePoint=NbDestroy=0;
+  StatistiquesBRepClass3d()
+  {
+    NbConstrVide = NbLoad = NbConstrShape = NbConstrShapePnt = NbPerform = NbPerformInfinitePoint =
+      NbDestroy                                                          = 0;
   }
-  ~StatistiquesBRepClass3d() { 
+
+  ~StatistiquesBRepClass3d()
+  {
     printf("\n--- Statistiques BRepClass3d:\n");
 
-    printf("\nConstructeurVide    : %10lu",NbConstrVide);
-    printf("\nConstructeur(Shape) : %10lu",NbConstrShape);
-    printf("\nLoad(Shape)         : %10lu",NbLoad);
-    printf("\nPerform(pnt3d)      : %10lu",NbPerform);
-    printf("\nPerform(pnt3d) REJ  : %10lu",NbPerformRejection);
-    printf("\nPerformInfinitePoint: %10lu",NbPerformInfinitePoint);
-    printf("\nDestroy             : %10lu",NbDestroy             );
+    printf("\nConstructeurVide    : %10lu", NbConstrVide);
+    printf("\nConstructeur(Shape) : %10lu", NbConstrShape);
+    printf("\nLoad(Shape)         : %10lu", NbLoad);
+    printf("\nPerform(pnt3d)      : %10lu", NbPerform);
+    printf("\nPerform(pnt3d) REJ  : %10lu", NbPerformRejection);
+    printf("\nPerformInfinitePoint: %10lu", NbPerformInfinitePoint);
+    printf("\nDestroy             : %10lu", NbDestroy);
   }
 };
 
 static StatistiquesBRepClass3d STAT;
 #endif
-
 
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <gp_Pnt.hxx>
@@ -63,157 +67,174 @@ static StatistiquesBRepClass3d STAT;
 
 BRepClass3d_SolidClassifier::BRepClass3d_SolidClassifier()
 {
-  aSolidLoaded=isaholeinspace=Standard_False;
+  aSolidLoaded = isaholeinspace = Standard_False;
 #if LBRCOMPT
   STAT.NbConstrVide++;
 #endif
 }
 
-
-void BRepClass3d_SolidClassifier::Load(const TopoDS_Shape& S) {
+void BRepClass3d_SolidClassifier::Load(const TopoDS_Shape& S)
+{
 
 #if LBRCOMPT
   STAT.NbLoad++;
 #endif
 
-  if(aSolidLoaded) { 
+  if (aSolidLoaded)
+  {
     explorer.Destroy();
   }
   explorer.InitShape(S);
   aSolidLoaded = Standard_True;
 
-
 #if MARCHEPASSIUNESEULEFACE
   PerformInfinitePoint(1e-7);
-  if(State()==TopAbs_OUT) { 
-    isaholeinspace=Standard_False;
+  if (State() == TopAbs_OUT)
+  {
+    isaholeinspace = Standard_False;
   }
-  else { 
-    isaholeinspace=Standard_True;
+  else
+  {
+    isaholeinspace = Standard_True;
   }
-#endif  
+#endif
 }
 
 BRepClass3d_SolidClassifier::BRepClass3d_SolidClassifier(const TopoDS_Shape& S)
-: aSolidLoaded(Standard_True),
-  explorer(S),
-  isaholeinspace(Standard_False)
-{ 
+    : aSolidLoaded(Standard_True),
+      explorer(S),
+      isaholeinspace(Standard_False)
+{
 #if LBRCOMPT
   STAT.NbConstrShape++;
 #endif
 #if MARCHEPASSIUNESEULEFACE
   PerformInfinitePoint(1e-7);
-  if(State()==TopAbs_OUT) { 
-    isaholeinspace=Standard_False;
+  if (State() == TopAbs_OUT)
+  {
+    isaholeinspace = Standard_False;
   }
-  else { 
-    isaholeinspace=Standard_True;
+  else
+  {
+    isaholeinspace = Standard_True;
   }
-#endif  
+#endif
 }
 
 BRepClass3d_SolidClassifier::BRepClass3d_SolidClassifier(const TopoDS_Shape& S,
-							 const gp_Pnt&       P,
-							 const Standard_Real Tol) 
-: explorer(S) { 
+                                                         const gp_Pnt&       P,
+                                                         const Standard_Real Tol)
+    : explorer(S)
+{
 #if LBRCOMPT
   STAT.NbConstrShapePnt++;
 #endif
   aSolidLoaded = Standard_True;
-#if MARCHEPASSIUNESEULEFACE  
+#if MARCHEPASSIUNESEULEFACE
   PerformInfinitePoint(1e-7);
-  if(State()==TopAbs_OUT) { 
-    isaholeinspace=Standard_False;
+  if (State() == TopAbs_OUT)
+  {
+    isaholeinspace = Standard_False;
   }
-  else { 
-    isaholeinspace=Standard_True;
+  else
+  {
+    isaholeinspace = Standard_True;
   }
-  
-  if(isaholeinspace==Standard_False) { 
-    if(explorer.Box().IsOut(P)) { 
-      ForceOut(); 
+
+  if (isaholeinspace == Standard_False)
+  {
+    if (explorer.Box().IsOut(P))
+    {
+      ForceOut();
     }
-    else {
-      Perform(P,Tol); 
-    }
-  }
-  else { 
-    if(explorer.Box().IsOut(P)) { 
-      ForceIn(); 
-    }
-    else {
-      Perform(P,Tol); 
+    else
+    {
+      Perform(P, Tol);
     }
   }
-#else 
-  Perform(P,Tol); 
+  else
+  {
+    if (explorer.Box().IsOut(P))
+    {
+      ForceIn();
+    }
+    else
+    {
+      Perform(P, Tol);
+    }
+  }
+#else
+  Perform(P, Tol);
 #endif
 }
 
-
-void BRepClass3d_SolidClassifier::Perform(const gp_Pnt& P,const Standard_Real Tol) { 
+void BRepClass3d_SolidClassifier::Perform(const gp_Pnt& P, const Standard_Real Tol)
+{
 #if LBRCOMPT
   STAT.NbPerform++;
 #endif
-#if MARCHEPASSIUNESEULEFACE 
-  if(aSolidLoaded) { 
-    if(isaholeinspace==Standard_False) { 
-      if(explorer.Box().IsOut(P)) { 
-	ForceOut(); 
-#if LBRCOMPT
-	STAT.NbPerformRejection++;
-#endif
-	
+#if MARCHEPASSIUNESEULEFACE
+  if (aSolidLoaded)
+  {
+    if (isaholeinspace == Standard_False)
+    {
+      if (explorer.Box().IsOut(P))
+      {
+        ForceOut();
+  #if LBRCOMPT
+        STAT.NbPerformRejection++;
+  #endif
       }
-      else {
-	BRepClass3d_SClassifier::Perform(explorer,P,Tol);
+      else
+      {
+        BRepClass3d_SClassifier::Perform(explorer, P, Tol);
       }
     }
-    else { 
-      if(explorer.Box().IsOut(P)) { 
-	ForceIn(); 
-#if LBRCOMPT
-	STAT.NbPerformRejection++;
-#endif
-	
+    else
+    {
+      if (explorer.Box().IsOut(P))
+      {
+        ForceIn();
+  #if LBRCOMPT
+        STAT.NbPerformRejection++;
+  #endif
       }
-      else {
-	BRepClass3d_SClassifier::Perform(explorer,P,Tol);
+      else
+      {
+        BRepClass3d_SClassifier::Perform(explorer, P, Tol);
       }
     }
   }
-#else 
-  BRepClass3d_SClassifier::Perform(explorer,P,Tol);
+#else
+  BRepClass3d_SClassifier::Perform(explorer, P, Tol);
 #endif
 }
 
-void BRepClass3d_SolidClassifier::PerformInfinitePoint(const Standard_Real Tol) { 
+void BRepClass3d_SolidClassifier::PerformInfinitePoint(const Standard_Real Tol)
+{
 #if LBRCOMPT
   STAT.NbPerformInfinitePoint++;
 #endif
 
-  if(aSolidLoaded) { 
-    BRepClass3d_SClassifier::PerformInfinitePoint(explorer,Tol);
-    if(State()==TopAbs_OUT) 
-      isaholeinspace=Standard_False;
-    else 
-      isaholeinspace=Standard_True;
+  if (aSolidLoaded)
+  {
+    BRepClass3d_SClassifier::PerformInfinitePoint(explorer, Tol);
+    if (State() == TopAbs_OUT)
+      isaholeinspace = Standard_False;
+    else
+      isaholeinspace = Standard_True;
   }
 }
 
-
-
-void BRepClass3d_SolidClassifier::Destroy() { 
+void BRepClass3d_SolidClassifier::Destroy()
+{
 #if LBRCOMPT
   STAT.NbDestroy++;
 #endif
 
-  if(aSolidLoaded) { 
+  if (aSolidLoaded)
+  {
     explorer.Destroy();
     aSolidLoaded = Standard_False;
   }
 }
-
-
-

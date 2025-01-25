@@ -11,32 +11,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Vrml_Material.hxx>
 #include <VrmlConverter_IsoAspect.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_IsoAspect,VrmlConverter_LineAspect)
+IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_IsoAspect, VrmlConverter_LineAspect)
 
-VrmlConverter_IsoAspect::VrmlConverter_IsoAspect():VrmlConverter_LineAspect ()
+VrmlConverter_IsoAspect::VrmlConverter_IsoAspect()
+    : VrmlConverter_LineAspect()
 {
- myNumber = 10; 
+  myNumber = 10;
 }
 
-VrmlConverter_IsoAspect::VrmlConverter_IsoAspect (const Handle(Vrml_Material)& aMaterial,
-                                                    const Standard_Boolean OnOff,
-						    const Standard_Integer aNumber) 
- :VrmlConverter_LineAspect (aMaterial, OnOff)
-{
-   myNumber = aNumber;
-}
-
-void VrmlConverter_IsoAspect::SetNumber (const Standard_Integer aNumber) 
+VrmlConverter_IsoAspect::VrmlConverter_IsoAspect(const Handle(Vrml_Material)& aMaterial,
+                                                 const Standard_Boolean       OnOff,
+                                                 const Standard_Integer       aNumber)
+    : VrmlConverter_LineAspect(aMaterial, OnOff)
 {
   myNumber = aNumber;
 }
 
+void VrmlConverter_IsoAspect::SetNumber(const Standard_Integer aNumber)
+{
+  myNumber = aNumber;
+}
 
-Standard_Integer VrmlConverter_IsoAspect::Number () const 
+Standard_Integer VrmlConverter_IsoAspect::Number() const
 {
   return myNumber;
 }

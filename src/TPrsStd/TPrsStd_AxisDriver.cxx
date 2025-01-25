@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <AIS_Axis.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
@@ -25,51 +24,50 @@
 #include <TopoDS_Shape.hxx>
 #include <TPrsStd_AxisDriver.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_AxisDriver,TPrsStd_Driver)
+IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_AxisDriver, TPrsStd_Driver)
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-TPrsStd_AxisDriver::TPrsStd_AxisDriver()
-{
-}
+//=================================================================================================
 
+TPrsStd_AxisDriver::TPrsStd_AxisDriver() {}
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-Standard_Boolean TPrsStd_AxisDriver::Update (const TDF_Label& aLabel,
-					    Handle(AIS_InteractiveObject)& anAISObject) 
+//=================================================================================================
+
+Standard_Boolean TPrsStd_AxisDriver::Update(const TDF_Label&               aLabel,
+                                            Handle(AIS_InteractiveObject)& anAISObject)
 {
 
   Handle(TDataXtd_Axis) apAxis;
-  if ( !aLabel.FindAttribute(TDataXtd_Axis::GetID(), apAxis) ) {
+  if (!aLabel.FindAttribute(TDataXtd_Axis::GetID(), apAxis))
+  {
     return Standard_False;
   }
 
-  gp_Lin lin;  
+  gp_Lin                     lin;
   Handle(TNaming_NamedShape) NS;
-  if(aLabel.FindAttribute(TNaming_NamedShape::GetID(),NS)){
-    if(TNaming_Tool::GetShape(NS).IsNull()){
+  if (aLabel.FindAttribute(TNaming_NamedShape::GetID(), NS))
+  {
+    if (TNaming_Tool::GetShape(NS).IsNull())
+    {
       return Standard_False;
     }
   }
-  
+
   Handle(AIS_Axis) aistrihed;
-  if (TDataXtd_Geometry::Line(aLabel,lin)) {
-    Handle(Geom_Line) apt = new Geom_Line (lin);
-    
+  if (TDataXtd_Geometry::Line(aLabel, lin))
+  {
+    Handle(Geom_Line) apt = new Geom_Line(lin);
+
     //  Update de l'AIS
     if (anAISObject.IsNull())
       aistrihed = new AIS_Axis(apt);
-    else {
+    else
+    {
       aistrihed = Handle(AIS_Axis)::DownCast(anAISObject);
-      if (aistrihed.IsNull()) 
-	aistrihed = new AIS_Axis(apt);
-      else {
-	aistrihed->SetComponent(apt);
+      if (aistrihed.IsNull())
+        aistrihed = new AIS_Axis(apt);
+      else
+      {
+        aistrihed->SetComponent(apt);
         aistrihed->ResetTransformation();
         aistrihed->SetToUpdate();
         aistrihed->UpdateSelection();
@@ -80,4 +78,3 @@ Standard_Boolean TPrsStd_AxisDriver::Update (const TDF_Label& aLabel,
   }
   return Standard_False;
 }
-

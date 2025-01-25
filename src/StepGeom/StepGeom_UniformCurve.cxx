@@ -11,11 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepGeom_UniformCurve.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_UniformCurve,StepGeom_BSplineCurve)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_UniformCurve, StepGeom_BSplineCurve)
 
-StepGeom_UniformCurve::StepGeom_UniformCurve ()  {}
-
+StepGeom_UniformCurve::StepGeom_UniformCurve() {}

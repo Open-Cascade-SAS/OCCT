@@ -25,7 +25,6 @@ class Media_Packet : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Media_Packet, Standard_Transient)
 public:
-
   //! Empty constructor
   Standard_EXPORT Media_Packet();
 
@@ -63,7 +62,7 @@ public:
   double DurationSeconds() const { return myDurationSec; }
 
   //! Set Duration in seconds.
-  void SetDurationSeconds (double theDurationSec) { myDurationSec = theDurationSec; }
+  void SetDurationSeconds(double theDurationSec) { myDurationSec = theDurationSec; }
 
   //! Return stream index.
   Standard_EXPORT int StreamIndex() const;
@@ -75,10 +74,8 @@ public:
   Standard_EXPORT void SetKeyFrame();
 
 protected:
-
   AVPacket* myPacket;      //!< packet
   double    myDurationSec; //!< packet duration in seconds
-
 };
 
 #endif // _Media_Packet_HeaderFile

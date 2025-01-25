@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESType.hxx>
 #include <IGESData_IGESWriter.hxx>
@@ -22,24 +21,24 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESData_ReadWriteModule,Interface_ReaderModule)
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_ReadWriteModule, Interface_ReaderModule)
 
-Standard_Integer  IGESData_ReadWriteModule::CaseNum
-  (const Handle(Interface_FileReaderData)& data,
-   const Standard_Integer num) const 
+Standard_Integer IGESData_ReadWriteModule::CaseNum(const Handle(Interface_FileReaderData)& data,
+                                                   const Standard_Integer num) const
 {
-  IGESData_IGESType DT = GetCasted(IGESData_IGESReaderData,data)->DirType(num);
-  return CaseIGES (DT.Type() , DT.Form());
+  IGESData_IGESType DT = GetCasted(IGESData_IGESReaderData, data)->DirType(num);
+  return CaseIGES(DT.Type(), DT.Form());
 }
 
-
-void  IGESData_ReadWriteModule::Read
-  (const Standard_Integer ,
-   const Handle(Interface_FileReaderData)& , const Standard_Integer ,
-   Handle(Interface_Check)& , const Handle(Standard_Transient)& ) const 
+void IGESData_ReadWriteModule::Read(const Standard_Integer,
+                                    const Handle(Interface_FileReaderData)&,
+                                    const Standard_Integer,
+                                    Handle(Interface_Check)&,
+                                    const Handle(Standard_Transient)&) const
 {
 #ifdef OCCT_DEBUG
-  std::cout<<"IGESData_ReadWriteModule, Read called"<<std::endl;
+  std::cout << "IGESData_ReadWriteModule, Read called" << std::endl;
 #endif
 }
-  // IGESReaderTool fait tout
+
+// IGESReaderTool fait tout

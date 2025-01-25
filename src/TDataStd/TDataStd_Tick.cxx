@@ -18,26 +18,22 @@
 #include <TDF_Label.hxx>
 #include <Standard_GUID.hxx>
 
-IMPLEMENT_DERIVED_ATTRIBUTE(TDataStd_Tick,TDataStd_GenericEmpty)
+IMPLEMENT_DERIVED_ATTRIBUTE(TDataStd_Tick, TDataStd_GenericEmpty)
 
-//=======================================================================
-//function : GetID
-//purpose  : 
-//=======================================================================
-const Standard_GUID& TDataStd_Tick::GetID () 
+//=================================================================================================
+
+const Standard_GUID& TDataStd_Tick::GetID()
 {
   static Standard_GUID TDataStd_TickID("40DC60CD-30B9-41be-B002-4169EFB34EA5");
-  return TDataStd_TickID; 
+  return TDataStd_TickID;
 }
 
-//=======================================================================
-//function : Set
-//purpose  : 
-//=======================================================================
-Handle(TDataStd_Tick) TDataStd_Tick::Set (const TDF_Label& L)
+//=================================================================================================
+
+Handle(TDataStd_Tick) TDataStd_Tick::Set(const TDF_Label& L)
 {
   Handle(TDataStd_Tick) A;
-  if (!L.FindAttribute(TDataStd_Tick::GetID (), A)) 
+  if (!L.FindAttribute(TDataStd_Tick::GetID(), A))
   {
     A = new TDataStd_Tick();
     L.AddAttribute(A);
@@ -45,29 +41,21 @@ Handle(TDataStd_Tick) TDataStd_Tick::Set (const TDF_Label& L)
   return A;
 }
 
-//=======================================================================
-//function : TDataStd_Tick
-//purpose  : 
-//=======================================================================
-TDataStd_Tick::TDataStd_Tick () 
+//=================================================================================================
+
+TDataStd_Tick::TDataStd_Tick() {}
+
+//=================================================================================================
+
+const Standard_GUID& TDataStd_Tick::ID() const
 {
+  return GetID();
 }
 
-//=======================================================================
-//function : ID
-//purpose  : 
-//=======================================================================
-const Standard_GUID& TDataStd_Tick::ID () const 
-{ 
-  return GetID(); 
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-Standard_OStream& TDataStd_Tick::Dump (Standard_OStream& anOS) const
-{ 
+Standard_OStream& TDataStd_Tick::Dump(Standard_OStream& anOS) const
+{
   anOS << "Tick";
   return anOS;
 }

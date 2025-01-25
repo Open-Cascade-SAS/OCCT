@@ -21,8 +21,8 @@
 //! of the object.
 enum Aspect_TypeOfDeflection
 {
-Aspect_TOD_RELATIVE,
-Aspect_TOD_ABSOLUTE
+  Aspect_TOD_RELATIVE,
+  Aspect_TOD_ABSOLUTE
 };
 
 #endif // _Aspect_TypeOfDeflection_HeaderFile

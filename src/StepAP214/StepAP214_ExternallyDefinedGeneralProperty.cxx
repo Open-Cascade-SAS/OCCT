@@ -21,52 +21,41 @@
 #include <StepBasic_SourceItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepAP214_ExternallyDefinedGeneralProperty,StepBasic_GeneralProperty)
+IMPLEMENT_STANDARD_RTTIEXT(StepAP214_ExternallyDefinedGeneralProperty, StepBasic_GeneralProperty)
 
-//=======================================================================
-//function : StepAP214_ExternallyDefinedGeneralProperty
-//purpose  : 
-//=======================================================================
-StepAP214_ExternallyDefinedGeneralProperty::StepAP214_ExternallyDefinedGeneralProperty ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepAP214_ExternallyDefinedGeneralProperty::StepAP214_ExternallyDefinedGeneralProperty() {}
 
-void StepAP214_ExternallyDefinedGeneralProperty::Init (const Handle(TCollection_HAsciiString) &aGeneralProperty_Id,
-                                                       const Handle(TCollection_HAsciiString) &aGeneralProperty_Name,
-                                                       const Standard_Boolean hasGeneralProperty_Description,
-                                                       const Handle(TCollection_HAsciiString) &aGeneralProperty_Description,
-                                                       const StepBasic_SourceItem &aExternallyDefinedItem_ItemId,
-                                                       const Handle(StepBasic_ExternalSource) &aExternallyDefinedItem_Source)
+//=================================================================================================
+
+void StepAP214_ExternallyDefinedGeneralProperty::Init(
+  const Handle(TCollection_HAsciiString)& aGeneralProperty_Id,
+  const Handle(TCollection_HAsciiString)& aGeneralProperty_Name,
+  const Standard_Boolean                  hasGeneralProperty_Description,
+  const Handle(TCollection_HAsciiString)& aGeneralProperty_Description,
+  const StepBasic_SourceItem&             aExternallyDefinedItem_ItemId,
+  const Handle(StepBasic_ExternalSource)& aExternallyDefinedItem_Source)
 {
   StepBasic_GeneralProperty::Init(aGeneralProperty_Id,
                                   aGeneralProperty_Name,
                                   hasGeneralProperty_Description,
                                   aGeneralProperty_Description);
-  theExternallyDefinedItem->Init(aExternallyDefinedItem_ItemId,
-                                 aExternallyDefinedItem_Source);
+  theExternallyDefinedItem->Init(aExternallyDefinedItem_ItemId, aExternallyDefinedItem_Source);
 }
 
-//=======================================================================
-//function : ExternallyDefinedItem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_ExternallyDefinedItem) StepAP214_ExternallyDefinedGeneralProperty::ExternallyDefinedItem () const
+Handle(StepBasic_ExternallyDefinedItem) StepAP214_ExternallyDefinedGeneralProperty::
+  ExternallyDefinedItem() const
 {
   return theExternallyDefinedItem;
 }
 
-//=======================================================================
-//function : SetExternallyDefinedItem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepAP214_ExternallyDefinedGeneralProperty::SetExternallyDefinedItem (const Handle(StepBasic_ExternallyDefinedItem) &aExternallyDefinedItem)
+void StepAP214_ExternallyDefinedGeneralProperty::SetExternallyDefinedItem(
+  const Handle(StepBasic_ExternallyDefinedItem)& aExternallyDefinedItem)
 {
   theExternallyDefinedItem = aExternallyDefinedItem;
 }

@@ -22,5 +22,4 @@
 
 typedef NCollection_Array2<Handle(TColStd_HArray1OfReal)> IGESBasic_Array2OfHArray1OfReal;
 
-
 #endif

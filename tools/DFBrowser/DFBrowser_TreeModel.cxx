@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowser_TreeModel.hxx>
 
@@ -36,8 +36,8 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-DFBrowser_TreeModel::DFBrowser_TreeModel (QObject* theParent)
-: TreeModel_ModelBase (theParent)
+DFBrowser_TreeModel::DFBrowser_TreeModel(QObject* theParent)
+    : TreeModel_ModelBase(theParent)
 {
 }
 
@@ -47,37 +47,37 @@ DFBrowser_TreeModel::DFBrowser_TreeModel (QObject* theParent)
 // =======================================================================
 void DFBrowser_TreeModel::InitColumns()
 {
-  setHeaderItem (0, TreeModel_HeaderSection ("Name"));
+  setHeaderItem(0, TreeModel_HeaderSection("Name"));
 }
 
 // =======================================================================
 // function : SetModule
 // purpose :
 // =======================================================================
-void DFBrowser_TreeModel::SetModule (DFBrowser_Module* theModule)
+void DFBrowser_TreeModel::SetModule(DFBrowser_Module* theModule)
 {
-  DFBrowser_ItemApplicationPtr aRootItem = itemDynamicCast<DFBrowser_ItemApplication> (RootItem (0));
-  aRootItem->SetModule (theModule);
+  DFBrowser_ItemApplicationPtr aRootItem = itemDynamicCast<DFBrowser_ItemApplication>(RootItem(0));
+  aRootItem->SetModule(theModule);
 }
 
 // =======================================================================
 // function : createRootItem
 // purpose :
 // =======================================================================
-TreeModel_ItemBasePtr DFBrowser_TreeModel::createRootItem (const int)
+TreeModel_ItemBasePtr DFBrowser_TreeModel::createRootItem(const int)
 {
-  return DFBrowser_ItemApplication::CreateItem (TreeModel_ItemBasePtr());
+  return DFBrowser_ItemApplication::CreateItem(TreeModel_ItemBasePtr());
 }
 
 // =======================================================================
 // function : Init
 // purpose :
 // =======================================================================
-void DFBrowser_TreeModel::Init (const Handle(TDocStd_Application)& theApplication)
+void DFBrowser_TreeModel::Init(const Handle(TDocStd_Application)& theApplication)
 {
-  DFBrowser_ItemApplicationPtr aRootItem = itemDynamicCast<DFBrowser_ItemApplication> (RootItem (0));
+  DFBrowser_ItemApplicationPtr aRootItem = itemDynamicCast<DFBrowser_ItemApplication>(RootItem(0));
   Reset();
-  aRootItem->SetApplication (theApplication);
+  aRootItem->SetApplication(theApplication);
   EmitLayoutChanged();
 }
 
@@ -87,7 +87,7 @@ void DFBrowser_TreeModel::Init (const Handle(TDocStd_Application)& theApplicatio
 // =======================================================================
 Handle(TDocStd_Application) DFBrowser_TreeModel::GetTDocStdApplication() const
 {
-  DFBrowser_ItemApplicationPtr aRootItem = itemDynamicCast<DFBrowser_ItemApplication> (RootItem (0));
+  DFBrowser_ItemApplicationPtr aRootItem = itemDynamicCast<DFBrowser_ItemApplication>(RootItem(0));
   return aRootItem->GetApplication();
 }
 
@@ -95,34 +95,35 @@ Handle(TDocStd_Application) DFBrowser_TreeModel::GetTDocStdApplication() const
 // function : FindIndex
 // purpose :
 // =======================================================================
-QModelIndex DFBrowser_TreeModel::FindIndex (const TDF_Label& theLabel) const
+QModelIndex DFBrowser_TreeModel::FindIndex(const TDF_Label& theLabel) const
 {
   TDF_Label aRoot = theLabel.Root();
 
   NCollection_List<TDF_Label> aLabels;
-  aLabels.Prepend (theLabel);
+  aLabels.Prepend(theLabel);
   TDF_Label aFather = theLabel.Father();
   if (!aFather.IsNull())
   {
     while (aFather != aRoot)
     {
-      aLabels.Prepend (aFather);
+      aLabels.Prepend(aFather);
       aFather = aFather.Father();
     }
   }
-  bool aDocumentItemFound = false;
-  QModelIndex aParentIndex = index (0, 0);
-  TreeModel_ItemBasePtr aParentItem = TreeModel_ModelBase::GetItemByIndex (aParentIndex); // application item
+  bool                  aDocumentItemFound = false;
+  QModelIndex           aParentIndex       = index(0, 0);
+  TreeModel_ItemBasePtr aParentItem =
+    TreeModel_ModelBase::GetItemByIndex(aParentIndex); // application item
   // find document, where label of document item is equal to Root label
   for (int aChildId = 0, aCount = aParentItem->rowCount(); aChildId < aCount; aChildId++)
   {
-    QModelIndex anIndex = index (aChildId, 0, aParentIndex);
-    TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (anIndex);
-    DFBrowser_ItemDocumentPtr anItem = itemDynamicCast<DFBrowser_ItemDocument> (anItemBase);
+    QModelIndex               anIndex    = index(aChildId, 0, aParentIndex);
+    TreeModel_ItemBasePtr     anItemBase = TreeModel_ModelBase::GetItemByIndex(anIndex);
+    DFBrowser_ItemDocumentPtr anItem     = itemDynamicCast<DFBrowser_ItemDocument>(anItemBase);
     if (anItem->GetLabel() == aRoot)
     {
-      aParentItem = anItem;
-      aParentIndex = anIndex;
+      aParentItem        = anItem;
+      aParentIndex       = anIndex;
       aDocumentItemFound = true;
       break;
     }
@@ -130,20 +131,23 @@ QModelIndex DFBrowser_TreeModel::FindIndex (const TDF_Label& theLabel) const
   if (!aDocumentItemFound) // document is not found
     return QModelIndex();
 
-  for (NCollection_List<TDF_Label>::const_iterator aLabelIt = aLabels.begin(); aLabelIt != aLabels.end()
-       && aParentIndex.isValid(); aLabelIt++)
+  for (NCollection_List<TDF_Label>::const_iterator aLabelIt = aLabels.begin();
+       aLabelIt != aLabels.end() && aParentIndex.isValid();
+       aLabelIt++)
   {
     const TDF_Label aLabel = *aLabelIt;
-    for (int aParentChildId = 0, aCount = aParentItem->rowCount(); aParentChildId < aCount; aParentChildId++)
+    for (int aParentChildId = 0, aCount = aParentItem->rowCount(); aParentChildId < aCount;
+         aParentChildId++)
     {
-      QModelIndex anIndex = index (aParentChildId, 0, aParentIndex);
-      DFBrowser_ItemPtr anItem = itemDynamicCast<DFBrowser_Item> (TreeModel_ModelBase::GetItemByIndex (anIndex));
+      QModelIndex       anIndex = index(aParentChildId, 0, aParentIndex);
+      DFBrowser_ItemPtr anItem =
+        itemDynamicCast<DFBrowser_Item>(TreeModel_ModelBase::GetItemByIndex(anIndex));
       if (anItem->HasAttribute())
         continue;
 
-      if (anItem->HasLabel() && anItem->GetLabel().IsEqual (aLabel))
+      if (anItem->HasLabel() && anItem->GetLabel().IsEqual(aLabel))
       {
-        aParentItem = anItem;
+        aParentItem  = anItem;
         aParentIndex = anIndex;
         break;
       }
@@ -156,16 +160,20 @@ QModelIndex DFBrowser_TreeModel::FindIndex (const TDF_Label& theLabel) const
 // function : FindIndexByPath
 // purpose :
 // =======================================================================
-QModelIndex DFBrowser_TreeModel::FindIndexByPath (const QStringList& theLabelEntries, const QString& theValue) const
+QModelIndex DFBrowser_TreeModel::FindIndexByPath(const QStringList& theLabelEntries,
+                                                 const QString&     theValue) const
 {
   QModelIndex aFoundIndex;
 
-  QModelIndex aRootIndex = index (0, 0);
-  TreeModel_ItemBasePtr aRootItem = TreeModel_ModelBase::GetItemByIndex (aRootIndex); // application item
+  QModelIndex           aRootIndex = index(0, 0);
+  TreeModel_ItemBasePtr aRootItem =
+    TreeModel_ModelBase::GetItemByIndex(aRootIndex); // application item
   // find document, where label of document item is equal to Root label
-  for (int aDocItemId = 0, aNbDocItems = aRootItem->rowCount(); aDocItemId < aNbDocItems && !aFoundIndex.isValid(); aDocItemId++)
+  for (int aDocItemId = 0, aNbDocItems = aRootItem->rowCount();
+       aDocItemId < aNbDocItems && !aFoundIndex.isValid();
+       aDocItemId++)
   {
-    QModelIndex aParentIndex = index (aDocItemId, 0, aRootIndex);
+    QModelIndex aParentIndex = index(aDocItemId, 0, aRootIndex);
     if (!aParentIndex.isValid()) // OCAF document for this document item is not found
       continue;
     if (theLabelEntries.size() == 0)
@@ -173,7 +181,7 @@ QModelIndex DFBrowser_TreeModel::FindIndexByPath (const QStringList& theLabelEnt
       aFoundIndex = aParentIndex;
       break;
     }
-    TreeModel_ItemBasePtr aParentItem = TreeModel_ModelBase::GetItemByIndex (aParentIndex);
+    TreeModel_ItemBasePtr aParentItem = TreeModel_ModelBase::GetItemByIndex(aParentIndex);
     for (int aPathId = 1, aPathCount = theLabelEntries.size(); aPathId < aPathCount + 1; aPathId++)
     {
       QString anEntry;
@@ -183,35 +191,40 @@ QModelIndex DFBrowser_TreeModel::FindIndexByPath (const QStringList& theLabelEnt
         anEntry = theValue;
 
       bool aFoundEntry = false;
-      for (int aChildId = 0, aNbChildren = aParentItem->rowCount(); aChildId < aNbChildren; aChildId++)
+      for (int aChildId = 0, aNbChildren = aParentItem->rowCount(); aChildId < aNbChildren;
+           aChildId++)
       {
-        QModelIndex anIndex = index (aChildId, 0, aParentIndex);
-        TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (anIndex);
-        DFBrowser_ItemPtr anItem = itemDynamicCast<DFBrowser_Item> (anItemBase);
+        QModelIndex           anIndex    = index(aChildId, 0, aParentIndex);
+        TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex(anIndex);
+        DFBrowser_ItemPtr     anItem     = itemDynamicCast<DFBrowser_Item>(anItemBase);
 
         if (aPathId == aPathCount && anItem->HasAttribute())
         {
           // processing attribute in theValue
-          DFBrowser_ItemApplicationPtr aRootAppItem = itemDynamicCast<DFBrowser_ItemApplication>(RootItem (0));
-          QString anAttributeInfo = DFBrowser_Module::GetAttributeInfo (anItem->GetAttribute(), aRootAppItem->GetModule(),
-                                                                        Qt::DisplayRole, 0).toString();
+          DFBrowser_ItemApplicationPtr aRootAppItem =
+            itemDynamicCast<DFBrowser_ItemApplication>(RootItem(0));
+          QString anAttributeInfo = DFBrowser_Module::GetAttributeInfo(anItem->GetAttribute(),
+                                                                       aRootAppItem->GetModule(),
+                                                                       Qt::DisplayRole,
+                                                                       0)
+                                      .toString();
           if (anAttributeInfo == anEntry)
           {
-            aParentItem = anItem;
+            aParentItem  = anItem;
             aParentIndex = anIndex;
-            aFoundEntry = true;
+            aFoundEntry  = true;
             break;
           }
         }
-        else if (anItem->HasLabel() &&
-                 anEntry == QString (DFBrowserPane_Tools::GetEntry (anItem->GetLabel()).ToCString()))
+        else if (anItem->HasLabel()
+                 && anEntry
+                      == QString(DFBrowserPane_Tools::GetEntry(anItem->GetLabel()).ToCString()))
         {
-          aParentItem = anItem;
+          aParentItem  = anItem;
           aParentIndex = anIndex;
-          aFoundEntry = true;
+          aFoundEntry  = true;
           break;
         }
-
       }
       if (!aFoundEntry) // an entry is not found on some level tree, find it in other documents
         break;
@@ -226,21 +239,21 @@ QModelIndex DFBrowser_TreeModel::FindIndexByPath (const QStringList& theLabelEnt
 // function : FindIndexByAttribute
 // purpose :
 // =======================================================================
-QModelIndex DFBrowser_TreeModel::FindIndexByAttribute (Handle(TDF_Attribute) theAttribute) const
+QModelIndex DFBrowser_TreeModel::FindIndexByAttribute(Handle(TDF_Attribute) theAttribute) const
 {
-  QModelIndex aFoundIndex;
+  QModelIndex     aFoundIndex;
   const TDF_Label aLabel = theAttribute->Label();
 
-  QModelIndex aParentIndex = FindIndex (aLabel);
+  QModelIndex aParentIndex = FindIndex(aLabel);
   if (!aParentIndex.isValid())
     return aFoundIndex;
 
-  TreeModel_ItemBasePtr aParentItem = TreeModel_ModelBase::GetItemByIndex (aParentIndex);
+  TreeModel_ItemBasePtr aParentItem = TreeModel_ModelBase::GetItemByIndex(aParentIndex);
   for (int aChildId = 0, aCount = aParentItem->rowCount(); aChildId < aCount; aChildId++)
   {
-    QModelIndex anIndex = index (aChildId, 0, aParentIndex);
-    TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (anIndex);
-    DFBrowser_ItemPtr anItem = itemDynamicCast<DFBrowser_Item> (anItemBase);
+    QModelIndex           anIndex    = index(aChildId, 0, aParentIndex);
+    TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex(anIndex);
+    DFBrowser_ItemPtr     anItem     = itemDynamicCast<DFBrowser_Item>(anItemBase);
     if (anItem->GetAttribute() == theAttribute)
     {
       aFoundIndex = anIndex;
@@ -254,31 +267,34 @@ QModelIndex DFBrowser_TreeModel::FindIndexByAttribute (Handle(TDF_Attribute) the
 // function : ConvertToIndices
 // purpose :
 // =======================================================================
-void DFBrowser_TreeModel::ConvertToIndices (const NCollection_List<TDF_Label>& theReferences,
-                                            QModelIndexList& theIndices)
+void DFBrowser_TreeModel::ConvertToIndices(const NCollection_List<TDF_Label>& theReferences,
+                                           QModelIndexList&                   theIndices)
 {
-  for (NCollection_List<TDF_Label>::Iterator aLabelItr (theReferences); aLabelItr.More(); aLabelItr.Next())
-    theIndices.append (FindIndex (aLabelItr.Value()));
+  for (NCollection_List<TDF_Label>::Iterator aLabelItr(theReferences); aLabelItr.More();
+       aLabelItr.Next())
+    theIndices.append(FindIndex(aLabelItr.Value()));
 }
 
 // =======================================================================
 // function : ConvertToIndices
 // purpose :
 // =======================================================================
-void DFBrowser_TreeModel::ConvertToIndices (const NCollection_List<Handle(TDF_Attribute)>& theReferences,
-                                            QModelIndexList& theIndices)
+void DFBrowser_TreeModel::ConvertToIndices(
+  const NCollection_List<Handle(TDF_Attribute)>& theReferences,
+  QModelIndexList&                               theIndices)
 {
-  for (NCollection_List<Handle(TDF_Attribute)>::Iterator anAttrItr (theReferences); anAttrItr.More(); anAttrItr.Next())
-    theIndices.append(FindIndexByAttribute (anAttrItr.Value()));
+  for (NCollection_List<Handle(TDF_Attribute)>::Iterator anAttrItr(theReferences); anAttrItr.More();
+       anAttrItr.Next())
+    theIndices.append(FindIndexByAttribute(anAttrItr.Value()));
 }
 
 // =======================================================================
 // function : data
 // purpose :
 // =======================================================================
-QVariant DFBrowser_TreeModel::data (const QModelIndex& theIndex, int theRole) const
+QVariant DFBrowser_TreeModel::data(const QModelIndex& theIndex, int theRole) const
 {
-  if (theRole == Qt::BackgroundRole && myHighlightedIndices.contains (theIndex))
+  if (theRole == Qt::BackgroundRole && myHighlightedIndices.contains(theIndex))
     return DFBrowserPane_Tools::LightHighlightColor();
-  return TreeModel_ModelBase::data (theIndex, theRole);
+  return TreeModel_ModelBase::data(theIndex, theRole);
 }

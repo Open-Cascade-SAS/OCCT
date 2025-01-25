@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<StepAP203_ClassifiedItem> StepAP203_Array1OfClassifiedItem;
 
-
 #endif

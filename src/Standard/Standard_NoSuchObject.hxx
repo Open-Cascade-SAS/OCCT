@@ -26,8 +26,9 @@ class Standard_NoSuchObject;
 DEFINE_STANDARD_HANDLE(Standard_NoSuchObject, Standard_DomainError)
 
 #if !defined No_Exception && !defined No_Standard_NoSuchObject
-  #define Standard_NoSuchObject_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Standard_NoSuchObject(MESSAGE);
+  #define Standard_NoSuchObject_Raise_if(CONDITION, MESSAGE)                                       \
+    if (CONDITION)                                                                                 \
+      throw Standard_NoSuchObject(MESSAGE);
 #else
   #define Standard_NoSuchObject_Raise_if(CONDITION, MESSAGE)
 #endif

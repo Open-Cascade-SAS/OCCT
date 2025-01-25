@@ -27,73 +27,51 @@
 #include <TopAbs_Orientation.hxx>
 class HLRAlgo_Intersection;
 
-
-
-class HLRBRep_VertexList 
+class HLRBRep_VertexList
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT HLRBRep_VertexList(const HLRBRep_EdgeInterferenceTool& T, const HLRAlgo_ListIteratorOfInterferenceList& I);
-  
+  Standard_EXPORT HLRBRep_VertexList(const HLRBRep_EdgeInterferenceTool&           T,
+                                     const HLRAlgo_ListIteratorOfInterferenceList& I);
+
   //! Returns True when the curve is periodic.
   Standard_EXPORT Standard_Boolean IsPeriodic() const;
-  
+
   //! Returns True when there are more vertices.
   Standard_EXPORT Standard_Boolean More() const;
-  
+
   //! Proceeds to the next vertex.
   Standard_EXPORT void Next();
-  
+
   //! Returns the current vertex
   Standard_EXPORT const HLRAlgo_Intersection& Current() const;
-  
+
   //! Returns True if the current vertex is on the boundary of the edge.
   Standard_EXPORT Standard_Boolean IsBoundary() const;
-  
+
   //! Returns  True   if   the current    vertex  is  an
   //! interference.
   Standard_EXPORT Standard_Boolean IsInterference() const;
-  
+
   //! Returns the  orientation of the  current vertex if
   //! it is on the boundary of the edge.
   Standard_EXPORT TopAbs_Orientation Orientation() const;
-  
+
   //! Returns  the transition  of the  current vertex if
   //! it is an interference.
   Standard_EXPORT TopAbs_Orientation Transition() const;
-  
+
   //! Returns  the  transition  of  the  current  vertex
   //! relative to the boundary if it is an interference.
   Standard_EXPORT TopAbs_Orientation BoundaryTransition() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   HLRAlgo_ListIteratorOfInterferenceList myIterator;
-  HLRBRep_EdgeInterferenceTool myTool;
-  Standard_Boolean fromEdge;
-  Standard_Boolean fromInterf;
-
-
+  HLRBRep_EdgeInterferenceTool           myTool;
+  Standard_Boolean                       fromEdge;
+  Standard_Boolean                       fromInterf;
 };
-
-
-
-
-
-
 
 #endif // _HLRBRep_VertexList_HeaderFile

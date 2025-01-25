@@ -23,7 +23,6 @@
 #include <AppDef_ResConstraintOfMyGradientOfCompute.hxx>
 #include <AppDef_ParFunctionOfMyGradientOfCompute.hxx>
 #include <math_MultipleVarFunctionWithGradient.hxx>
- 
 
 #define MultiLine AppDef_MultiLine
 #define MultiLine_hxx <AppDef_MultiLine.hxx>
@@ -40,4 +39,3 @@
 #define AppParCurves_Gradient AppDef_MyGradientOfCompute
 #define AppParCurves_Gradient_hxx <AppDef_MyGradientOfCompute.hxx>
 #include "../AppParCurves/AppParCurves_Gradient_BFGS.gxx"
-

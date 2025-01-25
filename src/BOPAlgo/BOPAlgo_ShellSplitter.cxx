@@ -34,42 +34,40 @@
 #include <TopTools_MapOfShape.hxx>
 
 //
-static
-  void MakeShell(const TopTools_ListOfShape& , 
-                 TopoDS_Shell& );
+static void MakeShell(const TopTools_ListOfShape&, TopoDS_Shell&);
 //
-static
-  void RefineShell(TopoDS_Shell& theShell,
-                   const TopTools_IndexedDataMapOfShapeListOfShape& theMEF,
-                   TopTools_ListOfShape& aLShX);
+static void RefineShell(TopoDS_Shell&                                    theShell,
+                        const TopTools_IndexedDataMapOfShapeListOfShape& theMEF,
+                        TopTools_ListOfShape&                            aLShX);
 
-//=======================================================================
-//class    : BOPAlgo_CBK
-//purpose  : 
-//=======================================================================
-class BOPAlgo_CBK {
- public:
-  BOPAlgo_CBK() : 
-    myPCB (NULL) {
-  }
-  //
-  ~BOPAlgo_CBK() {
-  }
-  //
-  void SetConnexityBlock (const BOPTools_ConnexityBlock& aCB) {
-    myPCB=(BOPTools_ConnexityBlock*)&aCB;
-  }
-  //
-  BOPTools_ConnexityBlock& ConnexityBlock () {
-    return *myPCB;
-  }
-  //
-  void SetProgressRange(const Message_ProgressRange& theRange)
+//=================================================================================================
+
+class BOPAlgo_CBK
+{
+public:
+  BOPAlgo_CBK()
+      : myPCB(NULL)
   {
-    myProgressRange = theRange;
   }
+
   //
-  void Perform() {
+  ~BOPAlgo_CBK() {}
+
+  //
+  void SetConnexityBlock(const BOPTools_ConnexityBlock& aCB)
+  {
+    myPCB = (BOPTools_ConnexityBlock*)&aCB;
+  }
+
+  //
+  BOPTools_ConnexityBlock& ConnexityBlock() { return *myPCB; }
+
+  //
+  void SetProgressRange(const Message_ProgressRange& theRange) { myProgressRange = theRange; }
+
+  //
+  void Perform()
+  {
     Message_ProgressScope aPS(myProgressRange, NULL, 1);
     if (!aPS.More())
     {
@@ -77,81 +75,69 @@ class BOPAlgo_CBK {
     }
     BOPAlgo_ShellSplitter::SplitBlock(*myPCB);
   }
- protected:
-  BOPTools_ConnexityBlock *myPCB;
-  Message_ProgressRange myProgressRange;
+
+protected:
+  BOPTools_ConnexityBlock* myPCB;
+  Message_ProgressRange    myProgressRange;
 };
+
 //=======================================================================
 typedef NCollection_Vector<BOPAlgo_CBK> BOPAlgo_VectorOfCBK;
 
-//=======================================================================
-//function : 
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 BOPAlgo_ShellSplitter::BOPAlgo_ShellSplitter()
-:
-  BOPAlgo_Algo(),
-  myStartShapes(myAllocator),
-  myShells(myAllocator),
-  myLCB(myAllocator)
+    : BOPAlgo_Algo(),
+      myStartShapes(myAllocator),
+      myShells(myAllocator),
+      myLCB(myAllocator)
 {
 }
-//=======================================================================
-//function : 
-//purpose  : 
-//=======================================================================
-BOPAlgo_ShellSplitter::BOPAlgo_ShellSplitter
-  (const Handle(NCollection_BaseAllocator)& theAllocator)
-:
-  BOPAlgo_Algo(theAllocator),
-  myStartShapes(theAllocator),
-  myShells(theAllocator),
-  myLCB(myAllocator)
+
+//=================================================================================================
+
+BOPAlgo_ShellSplitter::BOPAlgo_ShellSplitter(const Handle(NCollection_BaseAllocator)& theAllocator)
+    : BOPAlgo_Algo(theAllocator),
+      myStartShapes(theAllocator),
+      myShells(theAllocator),
+      myLCB(myAllocator)
 {
 }
-//=======================================================================
-//function : ~
-//purpose  : 
-//=======================================================================
-BOPAlgo_ShellSplitter::~BOPAlgo_ShellSplitter()
-{
-}
-//=======================================================================
-//function : AddStartElement
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
+BOPAlgo_ShellSplitter::~BOPAlgo_ShellSplitter() {}
+
+//=================================================================================================
+
 void BOPAlgo_ShellSplitter::AddStartElement(const TopoDS_Shape& aE)
 {
   myStartShapes.Append(aE);
 }
-//=======================================================================
-//function : StartElements
-//purpose  : 
-//=======================================================================
-const TopTools_ListOfShape& BOPAlgo_ShellSplitter::StartElements()const
+
+//=================================================================================================
+
+const TopTools_ListOfShape& BOPAlgo_ShellSplitter::StartElements() const
 {
   return myStartShapes;
 }
-//=======================================================================
-//function : Loops
-//purpose  : 
-//=======================================================================
-const TopTools_ListOfShape& BOPAlgo_ShellSplitter::Shells()const
+
+//=================================================================================================
+
+const TopTools_ListOfShape& BOPAlgo_ShellSplitter::Shells() const
 {
   return myShells;
 }
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
 void BOPAlgo_ShellSplitter::Perform(const Message_ProgressRange& theRange)
 {
   GetReport()->Clear();
   Message_ProgressScope aPS(theRange, "Building shells", 1);
   //
-  BOPTools_AlgoTools::MakeConnexityBlocks
-    (myStartShapes, TopAbs_EDGE, TopAbs_FACE, myLCB);
-  if (UserBreak (aPS))
+  BOPTools_AlgoTools::MakeConnexityBlocks(myStartShapes, TopAbs_EDGE, TopAbs_FACE, myLCB);
+  if (UserBreak(aPS))
   {
     return;
   }
@@ -159,59 +145,64 @@ void BOPAlgo_ShellSplitter::Perform(const Message_ProgressRange& theRange)
   MakeShells(aPS.Next());
 }
 
-//=======================================================================
-//function : SplitBlock
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
 {
-  Standard_Integer aNbLF, aNbOff, aNbFP;
-  Standard_Integer i;
-  TopAbs_Orientation anOr;
-  TopoDS_Edge aEL;
-  BRep_Builder aBB;
-  TopoDS_Iterator aItS;
-  TopExp_Explorer aExp;
-  TopTools_ListIteratorOfListOfShape aItF;
-  BOPTools_CoupleOfShape aCSOff;
-  TopTools_MapOfOrientedShape AddedFacesMap;
+  Standard_Integer                          aNbLF, aNbOff, aNbFP;
+  Standard_Integer                          i;
+  TopAbs_Orientation                        anOr;
+  TopoDS_Edge                               aEL;
+  BRep_Builder                              aBB;
+  TopoDS_Iterator                           aItS;
+  TopExp_Explorer                           aExp;
+  TopTools_ListIteratorOfListOfShape        aItF;
+  BOPTools_CoupleOfShape                    aCSOff;
+  TopTools_MapOfOrientedShape               AddedFacesMap;
   TopTools_IndexedDataMapOfShapeListOfShape aEFMap, aMEFP;
-  Handle (IntTools_Context) aContext;
-  // 
-  aContext=new IntTools_Context;
+  Handle(IntTools_Context)                  aContext;
   //
-  const TopTools_ListOfShape& myShapes=aCB.Shapes();
+  aContext = new IntTools_Context;
   //
-  TopTools_ListOfShape& myLoops=aCB.ChangeLoops();
+  const TopTools_ListOfShape& myShapes = aCB.Shapes();
+  //
+  TopTools_ListOfShape& myLoops = aCB.ChangeLoops();
   myLoops.Clear();
   //
   // Copy faces into the map, for recursive search of free bounds
   TopTools_MapOfOrientedShape aMFaces;
-  aItF.Initialize (myShapes);
-  for (; aItF.More(); aItF.Next()) {
+  aItF.Initialize(myShapes);
+  for (; aItF.More(); aItF.Next())
+  {
     aMFaces.Add(aItF.Value());
   }
   //
   // remove the faces with free edges from processing
-  for (;;) {
+  for (;;)
+  {
     // map the shapes
     aEFMap.Clear();
     aItF.Initialize(myShapes);
-    for (; aItF.More(); aItF.Next()) {
+    for (; aItF.More(); aItF.Next())
+    {
       const TopoDS_Shape& aF = aItF.Value();
-      if (aMFaces.Contains(aF)) {
-        TopExp::MapShapesAndAncestors (aF, TopAbs_EDGE, TopAbs_FACE, aEFMap);
+      if (aMFaces.Contains(aF))
+      {
+        TopExp::MapShapesAndAncestors(aF, TopAbs_EDGE, TopAbs_FACE, aEFMap);
       }
     }
     //
     Standard_Integer aNbBegin = aMFaces.Extent();
     // check the free edges
     Standard_Integer aNbE = aEFMap.Extent();
-    for (i = 1; i <= aNbE; ++i) {
+    for (i = 1; i <= aNbE; ++i)
+    {
       const TopoDS_Edge& aE = TopoDS::Edge(aEFMap.FindKey(i));
-      if (!(BRep_Tool::Degenerated(aE) || aE.Orientation() == TopAbs_INTERNAL)) {
+      if (!(BRep_Tool::Degenerated(aE) || aE.Orientation() == TopAbs_INTERNAL))
+      {
         const TopTools_ListOfShape& aLF = aEFMap(i);
-        if (aLF.Extent() == 1) {
+        if (aLF.Extent() == 1)
+        {
           // remove the face
           aMFaces.Remove(aLF.First());
         }
@@ -220,12 +211,14 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
     //
     // check if any faces have been removed
     Standard_Integer aNbEnd = aMFaces.Extent();
-    if ((aNbEnd == aNbBegin) || (aNbEnd == 0)) {
+    if ((aNbEnd == aNbBegin) || (aNbEnd == 0))
+    {
       break;
     }
   }
   //
-  if (aMFaces.IsEmpty()) {
+  if (aMFaces.IsEmpty())
+  {
     return;
   }
   //
@@ -233,25 +226,28 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
   TopTools_ListOfShape aLFConnected;
   // Boundary faces
   TopTools_MapOfShape aBoundaryFaces;
-  aItF.Initialize (myShapes);
-  for (; aItF.More(); aItF.Next()) {
+  aItF.Initialize(myShapes);
+  for (; aItF.More(); aItF.Next())
+  {
     const TopoDS_Shape& aF = aItF.Value();
-    if (aMFaces.Contains(aF)) {
+    if (aMFaces.Contains(aF))
+    {
       aLFConnected.Append(aF);
-      if (!aBoundaryFaces.Add (aF))
-        aBoundaryFaces.Remove (aF);
+      if (!aBoundaryFaces.Add(aF))
+        aBoundaryFaces.Remove(aF);
     }
   }
   //
-  const Standard_Integer aNbShapes = aLFConnected.Extent();
-  Standard_Boolean bAllFacesTaken = Standard_False;
+  const Standard_Integer aNbShapes      = aLFConnected.Extent();
+  Standard_Boolean       bAllFacesTaken = Standard_False;
   //
   // Build the shells
-  aItF.Initialize (aLFConnected);
+  aItF.Initialize(aLFConnected);
   for (i = 1; aItF.More() && !bAllFacesTaken; aItF.Next(), ++i)
   {
     const TopoDS_Shape& aFF = aItF.Value();
-    if (!AddedFacesMap.Add(aFF)) {
+    if (!AddedFacesMap.Add(aFF))
+    {
       continue;
     }
     //
@@ -263,40 +259,47 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
     aMEFP.Clear();
     TopExp::MapShapesAndAncestors(aShell, TopAbs_EDGE, TopAbs_FACE, aMEFP);
     //
-    // loop on faces added to Shell; 
+    // loop on faces added to Shell;
     // add their neighbor faces to Shell and so on
     aItS.Initialize(aShell);
-    for (; aItS.More(); aItS.Next()) {
-      const TopoDS_Face& aF = (*(TopoDS_Face*)(&aItS.Value()));
-      Standard_Boolean isBoundary = aBoundaryFaces.Contains (aF);
+    for (; aItS.More(); aItS.Next())
+    {
+      const TopoDS_Face& aF         = (*(TopoDS_Face*)(&aItS.Value()));
+      Standard_Boolean   isBoundary = aBoundaryFaces.Contains(aF);
       //
       // loop on edges of aF; find a good neighbor face of aF by aE
       aExp.Init(aF, TopAbs_EDGE);
-      for (; aExp.More(); aExp.Next()) {
+      for (; aExp.More(); aExp.Next())
+      {
         const TopoDS_Edge& aE = (*(TopoDS_Edge*)(&aExp.Current()));
         //
         // proceed only free edges in this shell
-        if (aMEFP.Contains(aE)) {
+        if (aMEFP.Contains(aE))
+        {
           const TopTools_ListOfShape& aLFP = aMEFP.FindFromKey(aE);
-          aNbFP = aLFP.Extent();
-          if (aNbFP > 1) {
+          aNbFP                            = aLFP.Extent();
+          if (aNbFP > 1)
+          {
             continue;
           }
         }
         // avoid processing of internal edges
         anOr = aE.Orientation();
-        if (anOr == TopAbs_INTERNAL) {
+        if (anOr == TopAbs_INTERNAL)
+        {
           continue;
         }
         // avoid processing of degenerated edges
-        if (BRep_Tool::Degenerated(aE)) {
+        if (BRep_Tool::Degenerated(aE))
+        {
           continue;
         }
         //
         // candidate faces list
         const TopTools_ListOfShape& aLF = aEFMap.FindFromKey(aE);
-        aNbLF = aLF.Extent();
-        if (!aNbLF) {
+        aNbLF                           = aLF.Extent();
+        if (!aNbLF)
+        {
           continue;
         }
         //
@@ -304,21 +307,24 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
         // take only not-processed faces as a candidates
         BOPTools_ListOfCoupleOfShape aLCSOff;
         //
-        Standard_Integer aNbWaysInside = 0;
-        TopoDS_Face aSelF;
+        Standard_Integer                   aNbWaysInside = 0;
+        TopoDS_Face                        aSelF;
         TopTools_ListIteratorOfListOfShape aItLF(aLF);
-        for (; aItLF.More(); aItLF.Next()) {
+        for (; aItLF.More(); aItLF.Next())
+        {
           const TopoDS_Face& aFL = (*(TopoDS_Face*)(&aItLF.Value()));
-          if (aF.IsSame(aFL) || AddedFacesMap.Contains(aFL)) {
+          if (aF.IsSame(aFL) || AddedFacesMap.Contains(aFL))
+          {
             continue;
           }
           //
           // find current edge in the face
-          if (!BOPTools_AlgoTools::GetEdgeOff(aE, aFL, aEL)) {
+          if (!BOPTools_AlgoTools::GetEdgeOff(aE, aFL, aEL))
+          {
             continue;
           }
           //
-          if (isBoundary && !aBoundaryFaces.Contains (aFL))
+          if (isBoundary && !aBoundaryFaces.Contains(aFL))
           {
             ++aNbWaysInside;
             aSelF = aFL;
@@ -326,10 +332,11 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
           aCSOff.SetShape1(aEL);
           aCSOff.SetShape2(aFL);
           aLCSOff.Append(aCSOff);
-        }//for (; aItLF.More(); aItLF.Next()) { 
+        } // for (; aItLF.More(); aItLF.Next()) {
         //
         aNbOff = aLCSOff.Extent();
-        if (!aNbOff){
+        if (!aNbOff)
+        {
           continue;
         }
         //
@@ -337,15 +344,18 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
         // angle to the current one
         if (!isBoundary || aNbWaysInside != 1)
         {
-          if (aNbOff == 1) {
+          if (aNbOff == 1)
+          {
             aSelF = (*(TopoDS_Face*)(&aLCSOff.First().Shape2()));
           }
-          else if (aNbOff > 1) {
+          else if (aNbOff > 1)
+          {
             BOPTools_AlgoTools::GetFaceOff(aE, aF, aLCSOff, aSelF, aContext);
           }
         }
         //
-        if (!aSelF.IsNull() && AddedFacesMap.Add(aSelF)) {
+        if (!aSelF.IsNull() && AddedFacesMap.Add(aSelF))
+        {
           aBB.Add(aShell, aSelF);
           TopExp::MapShapesAndAncestors(aSelF, TopAbs_EDGE, TopAbs_FACE, aMEFP);
         }
@@ -360,38 +370,43 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
     TopTools_ListOfShape aLShNC;
     //
     TopTools_ListIteratorOfListOfShape aItLShSp(aLShSp);
-    for (; aItLShSp.More(); aItLShSp.Next()) {
+    for (; aItLShSp.More(); aItLShSp.Next())
+    {
       TopoDS_Shell& aShSp = *((TopoDS_Shell*)&aItLShSp.Value());
       //
-      if (BRep_Tool::IsClosed(aShSp)) {
+      if (BRep_Tool::IsClosed(aShSp))
+      {
         aShSp.Closed(Standard_True);
         myLoops.Append(aShSp);
       }
-      else {
+      else
+      {
         aLShNC.Append(aShSp);
       }
     }
     //
     bAllFacesTaken = (AddedFacesMap.Extent() == aNbShapes);
-    if (bAllFacesTaken) {
+    if (bAllFacesTaken)
+    {
       break;
     }
     //
-    if (aLShSp.Extent() == 1) {
+    if (aLShSp.Extent() == 1)
+    {
       // not further processing of not closed shells is needed,
       // as it will not bring any new results
       continue;
     }
     //
-    
+
     // remove th faces of not closed shells from the map of processed faces
     // and try to rebuild the shells using all not processed faces,
     // because faces of one shell might be needed for building the other
     TopTools_ListIteratorOfListOfShape aItLShNC(aLShNC);
-    for (; aItLShNC.More(); aItLShNC.Next()) 
+    for (; aItLShNC.More(); aItLShNC.Next())
     {
       TopoDS_Iterator aItNC(aItLShNC.Value());
-      for (; aItNC.More(); aItNC.Next()) 
+      for (; aItNC.More(); aItNC.Next())
       {
         AddedFacesMap.Remove(aItNC.Value());
       }
@@ -399,14 +414,11 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
   } // for (; aItF.More(); aItF.Next()) {
 }
 
-//=======================================================================
-//function : FindShape
-//purpose  : 
-//=======================================================================
-TopoDS_Shape FindShape (const TopoDS_Shape& theShapeToFind,
-                        const TopoDS_Shape& theShape)
+//=================================================================================================
+
+TopoDS_Shape FindShape(const TopoDS_Shape& theShapeToFind, const TopoDS_Shape& theShape)
 {
-  TopoDS_Shape aRes;
+  TopoDS_Shape    aRes;
   TopExp_Explorer anExp(theShape, theShapeToFind.ShapeType());
   for (; anExp.More(); anExp.Next())
   {
@@ -420,16 +432,15 @@ TopoDS_Shape FindShape (const TopoDS_Shape& theShapeToFind,
   return aRes;
 }
 
-//=======================================================================
-//function : RefineShell
-//purpose  : 
-//=======================================================================
-void RefineShell(TopoDS_Shell& theShell,
+//=================================================================================================
+
+void RefineShell(TopoDS_Shell&                                    theShell,
                  const TopTools_IndexedDataMapOfShapeListOfShape& theMEF,
-                 TopTools_ListOfShape& theLShSp)
+                 TopTools_ListOfShape&                            theLShSp)
 {
   TopoDS_Iterator aIt(theShell);
-  if(!aIt.More()) {
+  if (!aIt.More())
+  {
     return;
   }
   //
@@ -438,10 +449,12 @@ void RefineShell(TopoDS_Shell& theShell,
   TopTools_MapOfShape aMEStop;
   //
   Standard_Integer i, aNbMEF = theMEF.Extent();
-  for (i = 1; i <= aNbMEF; ++i) {
-    const TopoDS_Edge& aE = TopoDS::Edge(theMEF.FindKey(i));
+  for (i = 1; i <= aNbMEF; ++i)
+  {
+    const TopoDS_Edge&          aE  = TopoDS::Edge(theMEF.FindKey(i));
     const TopTools_ListOfShape& aLF = theMEF(i);
-    if (aLF.Extent() > 2) {
+    if (aLF.Extent() > 2)
+    {
       aMEStop.Add(aE);
       continue;
     }
@@ -463,16 +476,20 @@ void RefineShell(TopoDS_Shell& theShell,
     //
     // check for internal edges - count faces, in which the edge
     // is internal, twice
-    Standard_Integer aNbF = 0;
+    Standard_Integer                   aNbF = 0;
     TopTools_ListIteratorOfListOfShape aItLF(aLF);
-    for (; aItLF.More() && aNbF <= 2; aItLF.Next()) {
+    for (; aItLF.More() && aNbF <= 2; aItLF.Next())
+    {
       const TopoDS_Face& aF = TopoDS::Face(aItLF.Value());
       ++aNbF;
       TopExp_Explorer aExp(aF, TopAbs_EDGE);
-      for (; aExp.More(); aExp.Next()) {
+      for (; aExp.More(); aExp.Next())
+      {
         const TopoDS_Shape& aEF = aExp.Current();
-        if (aEF.IsSame(aE)) {
-          if (aEF.Orientation() == TopAbs_INTERNAL) {
+        if (aEF.IsSame(aE))
+        {
+          if (aEF.Orientation() == TopAbs_INTERNAL)
+          {
             ++aNbF;
           }
           break;
@@ -480,27 +497,31 @@ void RefineShell(TopoDS_Shell& theShell,
       }
     }
     //
-    if (aNbF > 2) {
+    if (aNbF > 2)
+    {
       aMEStop.Add(aE);
     }
   }
   //
-  if (aMEStop.IsEmpty()) {
+  if (aMEStop.IsEmpty())
+  {
     theLShSp.Append(theShell);
     return;
   }
   //
-  TopoDS_Builder aBB;
-  TopExp_Explorer aExp;
-  TopTools_IndexedMapOfShape aMFB;
-  TopTools_MapOfOrientedShape aMFProcessed;
-  TopTools_ListOfShape aLFP, aLFP1;
+  TopoDS_Builder                     aBB;
+  TopExp_Explorer                    aExp;
+  TopTools_IndexedMapOfShape         aMFB;
+  TopTools_MapOfOrientedShape        aMFProcessed;
+  TopTools_ListOfShape               aLFP, aLFP1;
   TopTools_ListIteratorOfListOfShape aItLF, aItLFP;
   //
   // The first Face
-  for (; aIt.More(); aIt.Next()) {
+  for (; aIt.More(); aIt.Next())
+  {
     const TopoDS_Shape& aF1 = aIt.Value();
-    if (!aMFProcessed.Add(aF1)) {
+    if (!aMFProcessed.Add(aF1))
+    {
       continue;
     }
     //
@@ -511,141 +532,157 @@ void RefineShell(TopoDS_Shell& theShell,
     aLFP.Append(aF1);
     //
     // Trying to reach the branch point
-    for (;;) {
+    for (;;)
+    {
       aItLFP.Initialize(aLFP);
-      for (; aItLFP.More(); aItLFP.Next()) {
+      for (; aItLFP.More(); aItLFP.Next())
+      {
         const TopoDS_Shape& aFP = aItLFP.Value();
         //
         aExp.Init(aFP, TopAbs_EDGE);
-        for (; aExp.More(); aExp.Next()) {
+        for (; aExp.More(); aExp.Next())
+        {
           const TopoDS_Edge& aE = (*(TopoDS_Edge*)(&aExp.Current()));
-          if (aMEStop.Contains(aE)) {
+          if (aMEStop.Contains(aE))
+          {
             continue;
           }
           //
-          if (aE.Orientation() == TopAbs_INTERNAL) {
+          if (aE.Orientation() == TopAbs_INTERNAL)
+          {
             continue;
           }
           //
-          if (BRep_Tool::Degenerated(aE)) {
+          if (BRep_Tool::Degenerated(aE))
+          {
             continue;
           }
           //
           const TopTools_ListOfShape& aLF = theMEF.FindFromKey(aE);
           //
           aItLF.Initialize(aLF);
-          for (; aItLF.More(); aItLF.Next()) {
+          for (; aItLF.More(); aItLF.Next())
+          {
             const TopoDS_Shape& aFP1 = aItLF.Value();
-            if (aFP1.IsSame(aFP)) {
+            if (aFP1.IsSame(aFP))
+            {
               continue;
             }
-            if (aMFB.Contains(aFP1)) {
+            if (aMFB.Contains(aFP1))
+            {
               continue;
             }
             //
-            if (aMFProcessed.Add(aFP1)) {
+            if (aMFProcessed.Add(aFP1))
+            {
               aMFB.Add(aFP1);
               aLFP1.Append(aFP1);
             }
-          }// for (; aItLF.More(); aItLF.Next()) { 
-        }// for (; aExp.More(); aExp.Next()) {
-      } // for (; aItLFP.More(); aItLFP.Next()) { 
+          } // for (; aItLF.More(); aItLF.Next()) {
+        } // for (; aExp.More(); aExp.Next()) {
+      } // for (; aItLFP.More(); aItLFP.Next()) {
       //
       //
-      if (aLFP1.IsEmpty()) {
+      if (aLFP1.IsEmpty())
+      {
         break;
       }
       //
       aLFP.Clear();
       aLFP.Append(aLFP1);
-    }// for (;;) {
+    } // for (;;) {
     //
     Standard_Integer aNbMFB = aMFB.Extent();
-    if (aNbMFB) {
+    if (aNbMFB)
+    {
       TopoDS_Shell aShSp;
       aBB.MakeShell(aShSp);
       //
-      for (i = 1; i <= aNbMFB; ++i) {
+      for (i = 1; i <= aNbMFB; ++i)
+      {
         const TopoDS_Shape& aFB = aMFB(i);
         aBB.Add(aShSp, aFB);
       }
       theLShSp.Append(aShSp);
     }
-  }//for (; aIt.More(); aIt.Next()) {
+  } // for (; aIt.More(); aIt.Next()) {
 }
-//=======================================================================
-//function : MakeShells
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
 void BOPAlgo_ShellSplitter::MakeShells(const Message_ProgressRange& theRange)
 {
-  Standard_Boolean bIsRegular;
-  Standard_Integer aNbVCBK, k;
+  Standard_Boolean                            bIsRegular;
+  Standard_Integer                            aNbVCBK, k;
   BOPTools_ListIteratorOfListOfConnexityBlock aItCB;
-  TopTools_ListIteratorOfListOfShape aIt;
-  BOPAlgo_VectorOfCBK aVCBK;
+  TopTools_ListIteratorOfListOfShape          aIt;
+  BOPAlgo_VectorOfCBK                         aVCBK;
   //
   Message_ProgressScope aPSOuter(theRange, NULL, 1);
   myShells.Clear();
   //
   aItCB.Initialize(myLCB);
-  for (; aItCB.More(); aItCB.Next()) {
-    if (UserBreak (aPSOuter))
+  for (; aItCB.More(); aItCB.Next())
+  {
+    if (UserBreak(aPSOuter))
     {
       return;
     }
-    BOPTools_ConnexityBlock& aCB=aItCB.ChangeValue();
-    bIsRegular=aCB.IsRegular();
-    if (bIsRegular) {
+    BOPTools_ConnexityBlock& aCB = aItCB.ChangeValue();
+    bIsRegular                   = aCB.IsRegular();
+    if (bIsRegular)
+    {
       TopoDS_Shell aShell;
       //
-      const TopTools_ListOfShape& aLF=aCB.Shapes();
+      const TopTools_ListOfShape& aLF = aCB.Shapes();
       MakeShell(aLF, aShell);
       aShell.Closed(Standard_True);
       myShells.Append(aShell);
     }
-    else {
-      BOPAlgo_CBK& aCBK=aVCBK.Appended();
+    else
+    {
+      BOPAlgo_CBK& aCBK = aVCBK.Appended();
       aCBK.SetConnexityBlock(aCB);
     }
   }
   //
-  aNbVCBK=aVCBK.Length();
+  aNbVCBK = aVCBK.Length();
   Message_ProgressScope aPSParallel(aPSOuter.Next(), NULL, aNbVCBK);
   for (Standard_Integer iS = 0; iS < aNbVCBK; ++iS)
   {
     aVCBK.ChangeValue(iS).SetProgressRange(aPSParallel.Next());
   }
   //===================================================
-  BOPTools_Parallel::Perform (myRunParallel, aVCBK);
+  BOPTools_Parallel::Perform(myRunParallel, aVCBK);
   //===================================================
-  for (k=0; k<aNbVCBK; ++k) {
-    BOPAlgo_CBK& aCBK=aVCBK(k);
-    const BOPTools_ConnexityBlock& aCB=aCBK.ConnexityBlock();
-    const TopTools_ListOfShape& aLS=aCB.Loops();
+  for (k = 0; k < aNbVCBK; ++k)
+  {
+    BOPAlgo_CBK&                   aCBK = aVCBK(k);
+    const BOPTools_ConnexityBlock& aCB  = aCBK.ConnexityBlock();
+    const TopTools_ListOfShape&    aLS  = aCB.Loops();
     aIt.Initialize(aLS);
-    for (; aIt.More(); aIt.Next()) {
-      TopoDS_Shape& aShell=aIt.ChangeValue();
+    for (; aIt.More(); aIt.Next())
+    {
+      TopoDS_Shape& aShell = aIt.ChangeValue();
       aShell.Closed(Standard_True);
       myShells.Append(aShell);
     }
   }
 }
-//=======================================================================
-//function : MakeShell
-//purpose  : 
-//=======================================================================
-void MakeShell(const TopTools_ListOfShape& aLS, 
-               TopoDS_Shell& aShell)
+
+//=================================================================================================
+
+void MakeShell(const TopTools_ListOfShape& aLS, TopoDS_Shell& aShell)
 {
-  BRep_Builder aBB;
+  BRep_Builder                       aBB;
   TopTools_ListIteratorOfListOfShape aIt;
   //
   aBB.MakeShell(aShell);
   //
   aIt.Initialize(aLS);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aF=aIt.Value();
+  for (; aIt.More(); aIt.Next())
+  {
+    const TopoDS_Shape& aF = aIt.Value();
     aBB.Add(aShell, aF);
   }
   //

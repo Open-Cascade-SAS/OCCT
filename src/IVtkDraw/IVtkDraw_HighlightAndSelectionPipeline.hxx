@@ -1,6 +1,6 @@
-// Created on: 2012-04-02 
+// Created on: 2012-04-02
 
-// Copyright (c) 2012-2014 OPEN CASCADE SAS 
+// Copyright (c) 2012-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -21,7 +21,7 @@
 #include <Standard_Transient.hxx>
 #include <TopoDS_Shape.hxx>
 
-// prevent disabling some MSVC warning messages by VTK headers 
+// prevent disabling some MSVC warning messages by VTK headers
 #include <Standard_WarningsDisable.hxx>
 #include <vtkActor.h>
 #include <vtkPolyData.h>
@@ -34,8 +34,10 @@
 #include <IVtkTools_DisplayModeFilter.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
 
-typedef NCollection_DataMap <IVtk_IdType, vtkSmartPointer<IVtkTools_DisplayModeFilter> > DisplayModeFiltersMap;
-typedef NCollection_DataMap <IVtk_IdType, vtkSmartPointer<IVtkTools_SubPolyDataFilter> > SubShapesFiltersMap;
+typedef NCollection_DataMap<IVtk_IdType, vtkSmartPointer<IVtkTools_DisplayModeFilter>>
+  DisplayModeFiltersMap;
+typedef NCollection_DataMap<IVtk_IdType, vtkSmartPointer<IVtkTools_SubPolyDataFilter>>
+  SubShapesFiltersMap;
 
 class Prs3d_Drawer;
 
@@ -45,11 +47,9 @@ DEFINE_STANDARD_HANDLE(IVtkDraw_HighlightAndSelectionPipeline, Standard_Transien
 class IVtkDraw_HighlightAndSelectionPipeline : public Standard_Transient
 {
 public:
-
-  DEFINE_STANDARD_RTTIEXT(IVtkDraw_HighlightAndSelectionPipeline,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(IVtkDraw_HighlightAndSelectionPipeline, Standard_Transient)
 
 public:
-
   //! Filters comprising the pipeline.
   enum FilterId
   {
@@ -61,18 +61,18 @@ public:
   };
 
 public:
+  IVtkDraw_HighlightAndSelectionPipeline(const TopoDS_Shape&         theShape,
+                                         const Standard_Integer      theShapeID,
+                                         const Handle(Prs3d_Drawer)& theDrawerLink);
 
-  IVtkDraw_HighlightAndSelectionPipeline (const TopoDS_Shape& theShape,
-                                          const Standard_Integer theShapeID,
-                                          const Handle(Prs3d_Drawer)& theDrawerLink);
   ~IVtkDraw_HighlightAndSelectionPipeline() {}
 
 public:
-
-  void AddToRenderer (vtkRenderer* theRenderer);
-  void RemoveFromRenderer (vtkRenderer* theRenderer);
+  void AddToRenderer(vtkRenderer* theRenderer);
+  void RemoveFromRenderer(vtkRenderer* theRenderer);
 
   inline vtkActor* Actor() { return myActor; }
+
   inline vtkMapper* Mapper() { return myMapper; }
 
   void ClearHighlightFilters();
@@ -88,12 +88,10 @@ public:
   void SharedVerticesSelectionOff();
 
 private:
-
   //! Auxiliary map of internal filters by their correspondent IDs.
-  typedef NCollection_DataMap <FilterId, vtkSmartPointer<vtkAlgorithm> > FilterMap;
+  typedef NCollection_DataMap<FilterId, vtkSmartPointer<vtkAlgorithm>> FilterMap;
 
 private:
-
   //! Actor.
   vtkSmartPointer<vtkActor> myActor;
 
@@ -114,11 +112,12 @@ private:
 
   //! Map of involved VTK filters.
   FilterMap myFilterMap;
-
 };
 
 //! Mapping between OCCT topological shape IDs and their correspondent
 //! visualization pipelines.
-typedef NCollection_Shared< NCollection_DataMap<IVtk_IdType, Handle(IVtkDraw_HighlightAndSelectionPipeline)> > ShapePipelineMap;
+typedef NCollection_Shared<
+  NCollection_DataMap<IVtk_IdType, Handle(IVtkDraw_HighlightAndSelectionPipeline)>>
+  ShapePipelineMap;
 
 #endif

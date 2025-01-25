@@ -19,7 +19,6 @@
 #include <IntCurve_IConicTool.hxx>
 #include <IntCurve_PConic.hxx>
 #include <IntCurve_PConicTool.hxx>
- 
 
 #define ImpTool IntCurve_IConicTool
 #define ImpTool_hxx <IntCurve_IConicTool.hxx>
@@ -30,4 +29,3 @@
 #define IntImpParGen_ImpParTool IntCurve_MyImpParToolOfIntImpConicParConic
 #define IntImpParGen_ImpParTool_hxx <IntCurve_MyImpParToolOfIntImpConicParConic.hxx>
 #include "../IntImpParGen/IntImpParGen_ImpParTool.gxx"
-

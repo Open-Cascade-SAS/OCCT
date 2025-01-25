@@ -26,8 +26,9 @@ class LProp_BadContinuity;
 DEFINE_STANDARD_HANDLE(LProp_BadContinuity, Standard_Failure)
 
 #if !defined No_Exception && !defined No_LProp_BadContinuity
-  #define LProp_BadContinuity_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw LProp_BadContinuity(MESSAGE);
+  #define LProp_BadContinuity_Raise_if(CONDITION, MESSAGE)                                         \
+    if (CONDITION)                                                                                 \
+      throw LProp_BadContinuity(MESSAGE);
 #else
   #define LProp_BadContinuity_Raise_if(CONDITION, MESSAGE)
 #endif

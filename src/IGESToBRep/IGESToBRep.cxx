@@ -60,259 +60,313 @@
 #include <TopoDS_Shape.hxx>
 #include <XSAlgo.hxx>
 
-static Handle(IGESToBRep_AlgoContainer) theContainer; 
- 
-//=======================================================================                                                
-//function : Init                                                                                                        
-//purpose  :                                                                                                             
-//=======================================================================                                                
-                                                                                                                         
- void IGESToBRep::Init()                                                                                                   
-{                                                                                                                        
-  static Standard_Boolean init = Standard_False;                                                                         
-  if (init) return;                                                                                                      
-  init = Standard_True;                                                                                                  
-  XSAlgo::Init();                                                                                                        
-  theContainer = new IGESToBRep_AlgoContainer;                                                                             
-}     
-   
-//=======================================================================                                                
-//function : SetAlgoContainer                                                                                            
-//purpose  :                                                                                                             
-//=======================================================================                                                
-                                                                                                                         
- void IGESToBRep::SetAlgoContainer(const Handle(IGESToBRep_AlgoContainer)& aContainer)                                       
+static Handle(IGESToBRep_AlgoContainer) theContainer;
+
+//=================================================================================================
+
+void IGESToBRep::Init()
 {
-  theContainer = aContainer;                                                                                             
-}                                                                                                                        
-                                                                                                                         
-//=======================================================================                                                
-//function : AlgoContainer                                                                                               
-//purpose  :                                                                                                             
-//=======================================================================                                                
-                                                                                                                         
- Handle(IGESToBRep_AlgoContainer) IGESToBRep::AlgoContainer()                                                                
-{                                                                                                                        
-  return theContainer;                                                                                                   
-}    
+  static Standard_Boolean init = Standard_False;
+  if (init)
+    return;
+  init = Standard_True;
+  XSAlgo::Init();
+  theContainer = new IGESToBRep_AlgoContainer;
+}
+
+//=================================================================================================
+
+void IGESToBRep::SetAlgoContainer(const Handle(IGESToBRep_AlgoContainer)& aContainer)
+{
+  theContainer = aContainer;
+}
+
+//=================================================================================================
+
+Handle(IGESToBRep_AlgoContainer) IGESToBRep::AlgoContainer()
+{
+  return theContainer;
+}
 
 //=======================================================================
-//function : IsCurveAndSurface
-//purpose  : Return True if the IgesEntity can be transferred
+// function : IsCurveAndSurface
+// purpose  : Return True if the IgesEntity can be transferred
 //           by TransferCurveAndSurface
 //=======================================================================
 Standard_Boolean IGESToBRep::IsCurveAndSurface(const Handle(IGESData_IGESEntity)& start)
 {
-  //S4054
-  if (start.IsNull())              return Standard_False;
-  if (IsTopoCurve(start))          return Standard_True;
-  if (IsTopoSurface(start))        return Standard_True;
-  if (IsBRepEntity(start))         return Standard_True;
+  // S4054
+  if (start.IsNull())
+    return Standard_False;
+  if (IsTopoCurve(start))
+    return Standard_True;
+  if (IsTopoSurface(start))
+    return Standard_True;
+  if (IsBRepEntity(start))
+    return Standard_True;
   return Standard_False;
 }
 
-
 //=======================================================================
-//function : IsBasicCurve
-//purpose  : Return True if the IgesEntity can be transferred
+// function : IsBasicCurve
+// purpose  : Return True if the IgesEntity can be transferred
 //           by TransferBasicCurve
 //=======================================================================
 Standard_Boolean IGESToBRep::IsBasicCurve(const Handle(IGESData_IGESEntity)& start)
 {
-  //S4054
-  if (start.IsNull())                                      return Standard_False;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_BSplineCurve))) return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_Line)))         return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_CircularArc)))  return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_ConicArc)))     return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_CopiousData)))  return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_SplineCurve)))  return Standard_True;
+  // S4054
+  if (start.IsNull())
+    return Standard_False;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_BSplineCurve)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_Line)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_CircularArc)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_ConicArc)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_CopiousData)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_SplineCurve)))
+    return Standard_True;
   return Standard_False;
 }
 
-
 //=======================================================================
-//function : IsBasicSurface
-//purpose  : Return True if the IgesEntity can be transferred
+// function : IsBasicSurface
+// purpose  : Return True if the IgesEntity can be transferred
 //           by TransferBasicSurface
 //=======================================================================
 Standard_Boolean IGESToBRep::IsBasicSurface(const Handle(IGESData_IGESEntity)& start)
 {
-  //S4054
-  if (start.IsNull())                                        return Standard_False;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_BSplineSurface))) return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_SplineSurface)))  return Standard_True;
-  //S4181 pdn 15.04.99 added to basic surfaces
-  if (start->IsKind(STANDARD_TYPE(IGESSolid_PlaneSurface)))       return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESSolid_CylindricalSurface))) return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESSolid_ConicalSurface)))     return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESSolid_SphericalSurface)))   return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESSolid_ToroidalSurface)))   return Standard_True;
-  
+  // S4054
+  if (start.IsNull())
+    return Standard_False;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_BSplineSurface)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_SplineSurface)))
+    return Standard_True;
+  // S4181 pdn 15.04.99 added to basic surfaces
+  if (start->IsKind(STANDARD_TYPE(IGESSolid_PlaneSurface)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESSolid_CylindricalSurface)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESSolid_ConicalSurface)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESSolid_SphericalSurface)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESSolid_ToroidalSurface)))
+    return Standard_True;
+
   return Standard_False;
 }
 
-
 //=======================================================================
-//function : IsTopoCurve
-//purpose  : Return True if the IgesEntity can be transferred
+// function : IsTopoCurve
+// purpose  : Return True if the IgesEntity can be transferred
 //           by TransferTopoCurve
 //=======================================================================
 Standard_Boolean IGESToBRep::IsTopoCurve(const Handle(IGESData_IGESEntity)& start)
 {
-  //S4054
-  if (start.IsNull())                                        return Standard_False;
-  if (IsBasicCurve(start))                                   return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_CompositeCurve))) return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_CurveOnSurface))) return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_Boundary)))       return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_Point)))          return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_OffsetCurve)))    return Standard_True;
+  // S4054
+  if (start.IsNull())
+    return Standard_False;
+  if (IsBasicCurve(start))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_CompositeCurve)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_CurveOnSurface)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_Boundary)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_Point)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_OffsetCurve)))
+    return Standard_True;
   return Standard_False;
 }
 
-
 //=======================================================================
-//function : IsTopoSurface
-//purpose  : Return True if the IgesEntity can be transferred
+// function : IsTopoSurface
+// purpose  : Return True if the IgesEntity can be transferred
 //           by TransferTopoSurface
 //=======================================================================
 Standard_Boolean IGESToBRep::IsTopoSurface(const Handle(IGESData_IGESEntity)& start)
 {
-  //S4054
-  if (start.IsNull())                                             return Standard_False;
-  if (IsBasicSurface(start))                                      return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_TrimmedSurface)))      return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_SurfaceOfRevolution))) return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_TabulatedCylinder)))   return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_RuledSurface)))        return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_Plane)))               return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_BoundedSurface)))      return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESGeom_OffsetSurface)))       return Standard_True;
-  //S4181 pdn 15.04.99 removing to basic surface
-  //if (start->IsKind(STANDARD_TYPE(IGESSolid_PlaneSurface)))       return Standard_True;
-//  SingleParent, cas particulier (Face Trouee : ne contient que des PLANE)
-  if (start->IsKind(STANDARD_TYPE(IGESBasic_SingleParent))) {
-    DeclareAndCast(IGESBasic_SingleParent,sp,start);
-    if (!sp->SingleParent()->IsKind(STANDARD_TYPE(IGESGeom_Plane))) return Standard_False;
+  // S4054
+  if (start.IsNull())
+    return Standard_False;
+  if (IsBasicSurface(start))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_TrimmedSurface)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_SurfaceOfRevolution)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_TabulatedCylinder)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_RuledSurface)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_Plane)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_BoundedSurface)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESGeom_OffsetSurface)))
+    return Standard_True;
+  // S4181 pdn 15.04.99 removing to basic surface
+  // if (start->IsKind(STANDARD_TYPE(IGESSolid_PlaneSurface)))       return Standard_True;
+  //  SingleParent, cas particulier (Face Trouee : ne contient que des PLANE)
+  if (start->IsKind(STANDARD_TYPE(IGESBasic_SingleParent)))
+  {
+    DeclareAndCast(IGESBasic_SingleParent, sp, start);
+    if (!sp->SingleParent()->IsKind(STANDARD_TYPE(IGESGeom_Plane)))
+      return Standard_False;
     Standard_Integer nb = sp->NbChildren();
-    for (Standard_Integer i = 1; i <= nb; i ++) {
-      if (!sp->Child(i)->IsKind(STANDARD_TYPE(IGESGeom_Plane))) return Standard_False;
+    for (Standard_Integer i = 1; i <= nb; i++)
+    {
+      if (!sp->Child(i)->IsKind(STANDARD_TYPE(IGESGeom_Plane)))
+        return Standard_False;
     }
     return Standard_True;
   }
   return Standard_False;
 }
 
-
 //=======================================================================
-//function : IsBRepEntity
-//purpose  : Return True if the IgesEntity can be transferred
+// function : IsBRepEntity
+// purpose  : Return True if the IgesEntity can be transferred
 //           by TransferBRepEntity
 //=======================================================================
 Standard_Boolean IGESToBRep::IsBRepEntity(const Handle(IGESData_IGESEntity)& start)
 {
-  //S4054
-  if (start.IsNull())                                         return Standard_False;
-  if (start->IsKind(STANDARD_TYPE(IGESSolid_Face)))           return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESSolid_Shell)))          return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESSolid_ManifoldSolid)))  return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESSolid_VertexList)))     return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESSolid_EdgeList)))       return Standard_True;
-  if (start->IsKind(STANDARD_TYPE(IGESSolid_Loop)))           return Standard_True;
+  // S4054
+  if (start.IsNull())
+    return Standard_False;
+  if (start->IsKind(STANDARD_TYPE(IGESSolid_Face)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESSolid_Shell)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESSolid_ManifoldSolid)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESSolid_VertexList)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESSolid_EdgeList)))
+    return Standard_True;
+  if (start->IsKind(STANDARD_TYPE(IGESSolid_Loop)))
+    return Standard_True;
   return Standard_False;
 }
 
 //=======================================================================
-//function : IGESCurveToSequenceOfIGESCurve
-//purpose  : Creates a sequence of IGES curves from IGES curve:
+// function : IGESCurveToSequenceOfIGESCurve
+// purpose  : Creates a sequence of IGES curves from IGES curve:
 //           - if curve is CompositeCurve its components are recursively added,
 //           - if curve is ordinary IGES curve it is simply added
 //           - otherwise (Null or not curve) it is ignored
-//remark   : if sequence is Null it is created, otherwise it is appended
-//returns  : number of curves in sequence
-//example  : (A B (C (D ( E F) G) H)) -> (A B C D E F G H)
+// remark   : if sequence is Null it is created, otherwise it is appended
+// returns  : number of curves in sequence
+// example  : (A B (C (D ( E F) G) H)) -> (A B C D E F G H)
 //=======================================================================
 
- Standard_Integer IGESToBRep::IGESCurveToSequenceOfIGESCurve(const Handle(IGESData_IGESEntity)& curve,
-							     Handle(TColStd_HSequenceOfTransient)& sequence) 
+Standard_Integer IGESToBRep::IGESCurveToSequenceOfIGESCurve(
+  const Handle(IGESData_IGESEntity)&    curve,
+  Handle(TColStd_HSequenceOfTransient)& sequence)
 {
-  if (sequence.IsNull()) sequence = new TColStd_HSequenceOfTransient;
-  if (!curve.IsNull()) {
-    if (curve->IsKind (STANDARD_TYPE (IGESGeom_CompositeCurve))) {
-      Handle(IGESGeom_CompositeCurve) comp = Handle(IGESGeom_CompositeCurve)::DownCast (curve);
-      for (Standard_Integer i = 1; i <= comp->NbCurves(); i++) {
-	Handle(TColStd_HSequenceOfTransient) tmpsequence;
-	IGESCurveToSequenceOfIGESCurve (comp->Curve (i), tmpsequence);
-	sequence->Append (tmpsequence);
+  if (sequence.IsNull())
+    sequence = new TColStd_HSequenceOfTransient;
+  if (!curve.IsNull())
+  {
+    if (curve->IsKind(STANDARD_TYPE(IGESGeom_CompositeCurve)))
+    {
+      Handle(IGESGeom_CompositeCurve) comp = Handle(IGESGeom_CompositeCurve)::DownCast(curve);
+      for (Standard_Integer i = 1; i <= comp->NbCurves(); i++)
+      {
+        Handle(TColStd_HSequenceOfTransient) tmpsequence;
+        IGESCurveToSequenceOfIGESCurve(comp->Curve(i), tmpsequence);
+        sequence->Append(tmpsequence);
       }
     }
-    else if (IGESToBRep::IsTopoCurve (curve) &&
-	     ! curve->IsKind (STANDARD_TYPE (IGESGeom_Point)))
-      sequence->Append (curve);
+    else if (IGESToBRep::IsTopoCurve(curve) && !curve->IsKind(STANDARD_TYPE(IGESGeom_Point)))
+      sequence->Append(curve);
   }
   return sequence->Length();
 }
 
 //=======================================================================
-//function : TransferPCurve
-//purpose  : Copies pcurve on face <face> from <fromedge> to <toedge>
+// function : TransferPCurve
+// purpose  : Copies pcurve on face <face> from <fromedge> to <toedge>
 //           If <toedge> already has pcurve on that <face>, <toedge> becomes
 //           a seam-edge; if both pcurves are not SameRange, the SameRange is
 //           called. Returns False if pcurves are not made SameRange
 //           Making <toedge> SameParameter should be done outside the method (???)
 //=======================================================================
 
- Standard_Boolean IGESToBRep::TransferPCurve (const TopoDS_Edge& fromedge, const TopoDS_Edge& toedge, const TopoDS_Face& face)
+Standard_Boolean IGESToBRep::TransferPCurve(const TopoDS_Edge& fromedge,
+                                            const TopoDS_Edge& toedge,
+                                            const TopoDS_Face& face)
 {
-  Standard_Boolean result = Standard_True;
-  Standard_Real olda, oldb, a, b;
-  Handle(Geom2d_Curve) oldpcurve = BRep_Tool::CurveOnSurface (toedge,   face, olda, oldb),
-                          pcurve = BRep_Tool::CurveOnSurface (fromedge, face, a,    b   );
+  Standard_Boolean     result = Standard_True;
+  Standard_Real        olda, oldb, a, b;
+  Handle(Geom2d_Curve) oldpcurve = BRep_Tool::CurveOnSurface(toedge, face, olda, oldb),
+                       pcurve    = BRep_Tool::CurveOnSurface(fromedge, face, a, b);
   BRep_Builder B;
-  if (!oldpcurve.IsNull()) {
-    if (olda != a || oldb != b) {
-      try {
+  if (!oldpcurve.IsNull())
+  {
+    if (olda != a || oldb != b)
+    {
+      try
+      {
         OCC_CATCH_SIGNALS
-	Handle(Geom2d_Curve) newpcurve;
-	GeomLib::SameRange (Precision::PConfusion(), oldpcurve, olda, oldb, a, b, newpcurve);
-	if (!newpcurve.IsNull()) {
-	  olda = a; oldb = b; oldpcurve = newpcurve;
-	}
-	else {
+        Handle(Geom2d_Curve) newpcurve;
+        GeomLib::SameRange(Precision::PConfusion(), oldpcurve, olda, oldb, a, b, newpcurve);
+        if (!newpcurve.IsNull())
+        {
+          olda      = a;
+          oldb      = b;
+          oldpcurve = newpcurve;
+        }
+        else
+        {
 #ifdef OCCT_DEBUG
-	  std::cout << "Warning: IGESToBRep::TransferPCurve: pcurves are not SameRange" << std::endl;
+          std::cout << "Warning: IGESToBRep::TransferPCurve: pcurves are not SameRange"
+                    << std::endl;
 #endif
-	  result = Standard_False;
-	}
+          result = Standard_False;
+        }
       }
-      catch(Standard_Failure const& anException) {
+      catch (Standard_Failure const& anException)
+      {
 #ifdef OCCT_DEBUG
-	std::cout << "\n**IGESToBRep::TransferPCurve: Exception in SameRange : "; 
-	anException.Print(std::cout);
+        std::cout << "\n**IGESToBRep::TransferPCurve: Exception in SameRange : ";
+        anException.Print(std::cout);
 #endif
-	(void)anException;
-	result = Standard_False;
+        (void)anException;
+        result = Standard_False;
       }
     }
     if (toedge.Orientation() == TopAbs_FORWARD)
-      B.UpdateEdge (toedge,
-		    Handle(Geom2d_Curve)::DownCast (pcurve->Copy()), 
-		    Handle(Geom2d_Curve)::DownCast (oldpcurve->Copy()), face, 0);
+      B.UpdateEdge(toedge,
+                   Handle(Geom2d_Curve)::DownCast(pcurve->Copy()),
+                   Handle(Geom2d_Curve)::DownCast(oldpcurve->Copy()),
+                   face,
+                   0);
     else
-      B.UpdateEdge (toedge,
-		    Handle(Geom2d_Curve)::DownCast (oldpcurve->Copy()), 
-		    Handle(Geom2d_Curve)::DownCast (pcurve->Copy()), face, 0);
+      B.UpdateEdge(toedge,
+                   Handle(Geom2d_Curve)::DownCast(oldpcurve->Copy()),
+                   Handle(Geom2d_Curve)::DownCast(pcurve->Copy()),
+                   face,
+                   0);
   }
-  else {
-    olda = a; oldb = b;
-    B.UpdateEdge (toedge, Handle(Geom2d_Curve)::DownCast (pcurve->Copy()), face, 0);
-  }
-  B.Range (toedge, face, a, b);
-  Standard_Real first, last;
-  if (!BRep_Tool::Curve (toedge, first, last).IsNull() && (first != a || last != b))
-    B.SameRange (toedge, Standard_False);
   else
-    B.SameRange (toedge, Standard_True);
+  {
+    olda = a;
+    oldb = b;
+    B.UpdateEdge(toedge, Handle(Geom2d_Curve)::DownCast(pcurve->Copy()), face, 0);
+  }
+  B.Range(toedge, face, a, b);
+  Standard_Real first, last;
+  if (!BRep_Tool::Curve(toedge, first, last).IsNull() && (first != a || last != b))
+    B.SameRange(toedge, Standard_False);
+  else
+    B.SameRange(toedge, Standard_True);
   return result;
 }

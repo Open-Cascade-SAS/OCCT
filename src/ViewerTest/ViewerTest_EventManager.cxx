@@ -28,7 +28,7 @@
 #include <ViewerTest.hxx>
 
 #if defined(_WIN32)
-  //
+//
 #elif defined(HAVE_XLIB)
   #include <Xw_Window.hxx>
   #include <X11/Xlib.h>
@@ -38,19 +38,17 @@
   #include <emscripten.h>
   #include <emscripten/html5.h>
 
-//=======================================================================
-//function : onWasmRedrawView
-//purpose  :
-//=======================================================================
-void ViewerTest_EventManager::onWasmRedrawView (void* )
+//=================================================================================================
+
+void ViewerTest_EventManager::onWasmRedrawView(void*)
 {
   Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
   if (!aViewCtrl.IsNull())
   {
     aViewCtrl->myNbUpdateRequests = 0;
 
-    const Handle(V3d_View)& aView = ViewerTest::CurrentView();
-    const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+    const Handle(V3d_View)&               aView = ViewerTest::CurrentView();
+    const Handle(AIS_InteractiveContext)& aCtx  = ViewerTest::GetAISContext();
     if (!aView.IsNull() && !aCtx.IsNull())
     {
       aViewCtrl->ProcessExpose();
@@ -59,82 +57,91 @@ void ViewerTest_EventManager::onWasmRedrawView (void* )
 }
 #endif
 
-Standard_IMPORT Standard_Boolean Draw_Interprete (const char* theCommand);
+Standard_IMPORT Standard_Boolean Draw_Interprete(const char* theCommand);
 
-IMPLEMENT_STANDARD_RTTIEXT(ViewerTest_EventManager,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(ViewerTest_EventManager, Standard_Transient)
 
-//=======================================================================
-//function : GlobalViewAnimation
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 const Handle(AIS_AnimationCamera)& ViewerTest_EventManager::GlobalViewAnimation()
 {
-  static Handle(AIS_AnimationCamera) THE_CAMERA_ANIM = new AIS_AnimationCamera ("ViewerTest_EventManager_ViewAnimation", Handle(V3d_View)());
-  THE_CAMERA_ANIM->SetOwnDuration (0.5);
+  static Handle(AIS_AnimationCamera) THE_CAMERA_ANIM =
+    new AIS_AnimationCamera("ViewerTest_EventManager_ViewAnimation", Handle(V3d_View)());
+  THE_CAMERA_ANIM->SetOwnDuration(0.5);
   return THE_CAMERA_ANIM;
 }
 
-//=======================================================================
-//function : ViewerTest_EventManager
-//purpose  :
-//=======================================================================
-ViewerTest_EventManager::ViewerTest_EventManager (const Handle(V3d_View)&               theView,
-                                                  const Handle(AIS_InteractiveContext)& theCtx)
-: myCtx  (theCtx),
-  myView (theView),
-  myToPickPnt (Standard_False),
-  myIsTmpContRedraw (Standard_False),
-  myNbUpdateRequests (0)
+//=================================================================================================
+
+ViewerTest_EventManager::ViewerTest_EventManager(const Handle(V3d_View)&               theView,
+                                                 const Handle(AIS_InteractiveContext)& theCtx)
+    : myCtx(theCtx),
+      myView(theView),
+      myToPickPnt(Standard_False),
+      myIsTmpContRedraw(Standard_False),
+      myNbUpdateRequests(0)
 {
   myViewAnimation = GlobalViewAnimation();
 
-  addActionHotKeys (Aspect_VKey_NavForward,        (Standard_UInteger )Aspect_VKey_W,
-                                                   (Standard_UInteger )Aspect_VKey_W | (Standard_UInteger )Aspect_VKeyFlags_SHIFT);
-  addActionHotKeys (Aspect_VKey_NavBackward ,      (Standard_UInteger )Aspect_VKey_S,
-                                                   (Standard_UInteger )Aspect_VKey_S | (Standard_UInteger )Aspect_VKeyFlags_SHIFT);
-  addActionHotKeys (Aspect_VKey_NavSlideLeft,      (Standard_UInteger )Aspect_VKey_A,
-                                                   (Standard_UInteger )Aspect_VKey_A | (Standard_UInteger )Aspect_VKeyFlags_SHIFT);
-  addActionHotKeys (Aspect_VKey_NavSlideRight,     (Standard_UInteger )Aspect_VKey_D,
-                                                   (Standard_UInteger )Aspect_VKey_D | (Standard_UInteger )Aspect_VKeyFlags_SHIFT);
-  addActionHotKeys (Aspect_VKey_NavRollCCW,        (Standard_UInteger )Aspect_VKey_Q,
-                                                   (Standard_UInteger )Aspect_VKey_Q | (Standard_UInteger )Aspect_VKeyFlags_SHIFT);
-  addActionHotKeys (Aspect_VKey_NavRollCW,         (Standard_UInteger )Aspect_VKey_E,
-                                                   (Standard_UInteger )Aspect_VKey_E | (Standard_UInteger )Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys(Aspect_VKey_NavForward,
+                   (Standard_UInteger)Aspect_VKey_W,
+                   (Standard_UInteger)Aspect_VKey_W | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys(Aspect_VKey_NavBackward,
+                   (Standard_UInteger)Aspect_VKey_S,
+                   (Standard_UInteger)Aspect_VKey_S | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys(Aspect_VKey_NavSlideLeft,
+                   (Standard_UInteger)Aspect_VKey_A,
+                   (Standard_UInteger)Aspect_VKey_A | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys(Aspect_VKey_NavSlideRight,
+                   (Standard_UInteger)Aspect_VKey_D,
+                   (Standard_UInteger)Aspect_VKey_D | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys(Aspect_VKey_NavRollCCW,
+                   (Standard_UInteger)Aspect_VKey_Q,
+                   (Standard_UInteger)Aspect_VKey_Q | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys(Aspect_VKey_NavRollCW,
+                   (Standard_UInteger)Aspect_VKey_E,
+                   (Standard_UInteger)Aspect_VKey_E | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
 
-  addActionHotKeys (Aspect_VKey_NavSpeedIncrease,  (Standard_UInteger )Aspect_VKey_Plus,
-                                                   (Standard_UInteger )Aspect_VKey_Plus | (Standard_UInteger )Aspect_VKeyFlags_SHIFT,
-                                                   (Standard_UInteger )Aspect_VKey_Equal,
-                                                   (Standard_UInteger )Aspect_VKey_NumpadAdd,
-                                                   (Standard_UInteger )Aspect_VKey_NumpadAdd | (Standard_UInteger )Aspect_VKeyFlags_SHIFT);
-  addActionHotKeys (Aspect_VKey_NavSpeedDecrease,  (Standard_UInteger )Aspect_VKey_Minus,
-                                                   (Standard_UInteger )Aspect_VKey_Minus | (Standard_UInteger )Aspect_VKeyFlags_SHIFT,
-                                                   (Standard_UInteger )Aspect_VKey_NumpadSubtract,
-                                                   (Standard_UInteger )Aspect_VKey_NumpadSubtract | (Standard_UInteger )Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys(Aspect_VKey_NavSpeedIncrease,
+                   (Standard_UInteger)Aspect_VKey_Plus,
+                   (Standard_UInteger)Aspect_VKey_Plus | (Standard_UInteger)Aspect_VKeyFlags_SHIFT,
+                   (Standard_UInteger)Aspect_VKey_Equal,
+                   (Standard_UInteger)Aspect_VKey_NumpadAdd,
+                   (Standard_UInteger)Aspect_VKey_NumpadAdd
+                     | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys(Aspect_VKey_NavSpeedDecrease,
+                   (Standard_UInteger)Aspect_VKey_Minus,
+                   (Standard_UInteger)Aspect_VKey_Minus | (Standard_UInteger)Aspect_VKeyFlags_SHIFT,
+                   (Standard_UInteger)Aspect_VKey_NumpadSubtract,
+                   (Standard_UInteger)Aspect_VKey_NumpadSubtract
+                     | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
 
-  addActionHotKeys (Aspect_VKey_NavLookUp,         (Standard_UInteger )Aspect_VKey_Up);
-  addActionHotKeys (Aspect_VKey_NavLookDown,       (Standard_UInteger )Aspect_VKey_Down);
-  addActionHotKeys (Aspect_VKey_NavLookLeft,       (Standard_UInteger )Aspect_VKey_Left);
-  addActionHotKeys (Aspect_VKey_NavLookRight,      (Standard_UInteger )Aspect_VKey_Right);
-  addActionHotKeys (Aspect_VKey_NavSlideLeft,      (Standard_UInteger )Aspect_VKey_Left  | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
-  addActionHotKeys (Aspect_VKey_NavSlideRight,     (Standard_UInteger )Aspect_VKey_Right | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
-  addActionHotKeys (Aspect_VKey_NavSlideUp,        (Standard_UInteger )Aspect_VKey_Up    | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
-  addActionHotKeys (Aspect_VKey_NavSlideDown,      (Standard_UInteger )Aspect_VKey_Down  | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys(Aspect_VKey_NavLookUp, (Standard_UInteger)Aspect_VKey_Up);
+  addActionHotKeys(Aspect_VKey_NavLookDown, (Standard_UInteger)Aspect_VKey_Down);
+  addActionHotKeys(Aspect_VKey_NavLookLeft, (Standard_UInteger)Aspect_VKey_Left);
+  addActionHotKeys(Aspect_VKey_NavLookRight, (Standard_UInteger)Aspect_VKey_Right);
+  addActionHotKeys(Aspect_VKey_NavSlideLeft,
+                   (Standard_UInteger)Aspect_VKey_Left | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys(Aspect_VKey_NavSlideRight,
+                   (Standard_UInteger)Aspect_VKey_Right
+                     | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys(Aspect_VKey_NavSlideUp,
+                   (Standard_UInteger)Aspect_VKey_Up | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys(Aspect_VKey_NavSlideDown,
+                   (Standard_UInteger)Aspect_VKey_Down | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
 
   // window could be actually not yet set to the View
-  //SetupWindowCallbacks (theView->Window());
+  // SetupWindowCallbacks (theView->Window());
 }
 
-//=======================================================================
-//function : ~ViewerTest_EventManager
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 ViewerTest_EventManager::~ViewerTest_EventManager()
 {
-  if (!myViewAnimation.IsNull()
-    && myViewAnimation->View() == myView)
+  if (!myViewAnimation.IsNull() && myViewAnimation->View() == myView)
   {
     myViewAnimation->Stop();
-    myViewAnimation->SetView (Handle(V3d_View)());
+    myViewAnimation->SetView(Handle(V3d_View)());
   }
 }
 
@@ -142,145 +149,128 @@ ViewerTest_EventManager::~ViewerTest_EventManager()
 // function : UpdateMouseClick
 // purpose  :
 // =======================================================================
-bool ViewerTest_EventManager::UpdateMouseClick (const Graphic3d_Vec2i& thePoint,
-                                                Aspect_VKeyMouse theButton,
-                                                Aspect_VKeyFlags theModifiers,
-                                                bool theIsDoubleClick)
+bool ViewerTest_EventManager::UpdateMouseClick(const Graphic3d_Vec2i& thePoint,
+                                               Aspect_VKeyMouse       theButton,
+                                               Aspect_VKeyFlags       theModifiers,
+                                               bool                   theIsDoubleClick)
 {
   if (theIsDoubleClick && !myView.IsNull() && !myCtx.IsNull())
   {
-    FitAllAuto (myCtx, myView);
+    FitAllAuto(myCtx, myView);
     return true;
   }
-  return AIS_ViewController::UpdateMouseClick (thePoint, theButton, theModifiers, theIsDoubleClick);
+  return AIS_ViewController::UpdateMouseClick(thePoint, theButton, theModifiers, theIsDoubleClick);
 }
 
-//=======================================================================
-//function : UpdateMouseButtons
-//purpose  :
-//=======================================================================
-bool ViewerTest_EventManager::UpdateMouseScroll (const Aspect_ScrollDelta& theDelta)
+//=================================================================================================
+
+bool ViewerTest_EventManager::UpdateMouseScroll(const Aspect_ScrollDelta& theDelta)
 {
-  if (!myView.IsNull()
-    && (myView->IsSubview()
-    || !myView->Subviews().IsEmpty()))
+  if (!myView.IsNull() && (myView->IsSubview() || !myView->Subviews().IsEmpty()))
   {
-    Handle(V3d_View) aParent = !myView->IsSubview() ? myView : myView->ParentView();
-    Handle(V3d_View) aPickedView = aParent->PickSubview (theDelta.Point);
-    if (!aPickedView.IsNull()
-      && aPickedView != myView)
+    Handle(V3d_View) aParent     = !myView->IsSubview() ? myView : myView->ParentView();
+    Handle(V3d_View) aPickedView = aParent->PickSubview(theDelta.Point);
+    if (!aPickedView.IsNull() && aPickedView != myView)
     {
       // switch input focus to another subview
-      OnSubviewChanged (myCtx, myView, aPickedView);
+      OnSubviewChanged(myCtx, myView, aPickedView);
       return true;
     }
   }
 
-  return AIS_ViewController::UpdateMouseScroll (theDelta);
+  return AIS_ViewController::UpdateMouseScroll(theDelta);
 }
 
-//=======================================================================
-//function : UpdateMouseButtons
-//purpose  :
-//=======================================================================
-bool ViewerTest_EventManager::UpdateMouseButtons (const Graphic3d_Vec2i& thePoint,
-                                                  Aspect_VKeyMouse theButtons,
-                                                  Aspect_VKeyFlags theModifiers,
-                                                  bool theIsEmulated)
+//=================================================================================================
+
+bool ViewerTest_EventManager::UpdateMouseButtons(const Graphic3d_Vec2i& thePoint,
+                                                 Aspect_VKeyMouse       theButtons,
+                                                 Aspect_VKeyFlags       theModifiers,
+                                                 bool                   theIsEmulated)
 {
-  if (!myView.IsNull()
-    && myMousePressed == Aspect_VKeyMouse_NONE
-    && theButtons != Aspect_VKeyMouse_NONE
-    && (myView->IsSubview()
-    || !myView->Subviews().IsEmpty()))
+  if (!myView.IsNull() && myMousePressed == Aspect_VKeyMouse_NONE
+      && theButtons != Aspect_VKeyMouse_NONE
+      && (myView->IsSubview() || !myView->Subviews().IsEmpty()))
   {
-    Handle(V3d_View) aParent = !myView->IsSubview() ? myView : myView->ParentView();
-    Handle(V3d_View) aPickedView = aParent->PickSubview (thePoint);
-    if (!aPickedView.IsNull()
-      && aPickedView != myView)
+    Handle(V3d_View) aParent     = !myView->IsSubview() ? myView : myView->ParentView();
+    Handle(V3d_View) aPickedView = aParent->PickSubview(thePoint);
+    if (!aPickedView.IsNull() && aPickedView != myView)
     {
       // switch input focus to another subview
-      OnSubviewChanged (myCtx, myView, aPickedView);
+      OnSubviewChanged(myCtx, myView, aPickedView);
     }
   }
 
-  SetAllowRotation (!ViewerTest_V3dView::IsCurrentViewIn2DMode());
+  SetAllowRotation(!ViewerTest_V3dView::IsCurrentViewIn2DMode());
 
   if (theButtons == Aspect_VKeyMouse_LeftButton)
   {
     if (myToPickPnt && (theModifiers & Aspect_VKeyFlags_CTRL) != 0)
     {
       Graphic3d_Vec3d anXYZ;
-      myView->Convert (thePoint.x(), thePoint.y(), anXYZ.x(), anXYZ.y(), anXYZ.z());
-      Draw::Set (myPickPntArgVec[0].ToCString(), anXYZ.x());
-      Draw::Set (myPickPntArgVec[1].ToCString(), anXYZ.y());
-      Draw::Set (myPickPntArgVec[2].ToCString(), anXYZ.z());
+      myView->Convert(thePoint.x(), thePoint.y(), anXYZ.x(), anXYZ.y(), anXYZ.z());
+      Draw::Set(myPickPntArgVec[0].ToCString(), anXYZ.x());
+      Draw::Set(myPickPntArgVec[1].ToCString(), anXYZ.y());
+      Draw::Set(myPickPntArgVec[2].ToCString(), anXYZ.z());
       myToPickPnt = false;
     }
   }
 
-  return AIS_ViewController::UpdateMouseButtons (thePoint, theButtons, theModifiers, theIsEmulated);
+  return AIS_ViewController::UpdateMouseButtons(thePoint, theButtons, theModifiers, theIsEmulated);
 }
 
-//==============================================================================
-//function : ProcessExpose
-//purpose  :
-//==============================================================================
+//=================================================================================================
+
 void ViewerTest_EventManager::ProcessExpose()
 {
   if (!myView.IsNull())
   {
-    FlushViewEvents (myCtx, myView, true);
+    FlushViewEvents(myCtx, myView, true);
   }
 }
 
-//==============================================================================
-//function : handleViewRedraw
-//purpose  :
-//==============================================================================
-void ViewerTest_EventManager::handleViewRedraw (const Handle(AIS_InteractiveContext)& theCtx,
-                                                const Handle(V3d_View)& theView)
-{
-  AIS_ViewController::handleViewRedraw (theCtx, theView);
+//=================================================================================================
 
-  // On non-Windows platforms Aspect_Window::InvalidateContent() from rendering thread does not work as expected
-  // as in Tcl event loop the new message might go to sleep with new event remaining in queue.
-  // As a workaround - use dedicated background thread to ping Tcl event loop.
+void ViewerTest_EventManager::handleViewRedraw(const Handle(AIS_InteractiveContext)& theCtx,
+                                               const Handle(V3d_View)&               theView)
+{
+  AIS_ViewController::handleViewRedraw(theCtx, theView);
+
+  // On non-Windows platforms Aspect_Window::InvalidateContent() from rendering thread does not work
+  // as expected as in Tcl event loop the new message might go to sleep with new event remaining in
+  // queue. As a workaround - use dedicated background thread to ping Tcl event loop.
   if (myToAskNextFrame)
   {
     ViewerTest_ContinuousRedrawer& aRedrawer = ViewerTest_ContinuousRedrawer::Instance();
-    if (!myIsTmpContRedraw
-     && (!aRedrawer.IsStarted() || aRedrawer.IsPaused()))
+    if (!myIsTmpContRedraw && (!aRedrawer.IsStarted() || aRedrawer.IsPaused()))
     {
       myIsTmpContRedraw = true;
-    #if !defined(_WIN32) && !defined(__EMSCRIPTEN__) && !defined(__APPLE__)
-      aRedrawer.Start (theView, 60.0);
-    #endif
+#if !defined(_WIN32) && !defined(__EMSCRIPTEN__) && !defined(__APPLE__)
+      aRedrawer.Start(theView, 60.0);
+#endif
     }
 
     // ask more frames
     if (++myNbUpdateRequests == 1)
     {
-    #if defined(__EMSCRIPTEN__)
-      emscripten_async_call (onWasmRedrawView, this, -1);
-    #endif
+#if defined(__EMSCRIPTEN__)
+      emscripten_async_call(onWasmRedrawView, this, -1);
+#endif
     }
   }
   else if (myIsTmpContRedraw)
   {
     myIsTmpContRedraw = false;
-  #if !defined(_WIN32) && !defined(__APPLE__)
+#if !defined(_WIN32) && !defined(__APPLE__)
     ViewerTest_ContinuousRedrawer& aRedrawer = ViewerTest_ContinuousRedrawer::Instance();
     aRedrawer.Pause();
-  #endif
+#endif
   }
 }
 
-//==============================================================================
-//function : ProcessConfigure
-//purpose  :
-//==============================================================================
-void ViewerTest_EventManager::ProcessConfigure (bool theIsResized)
+//=================================================================================================
+
+void ViewerTest_EventManager::ProcessConfigure(bool theIsResized)
 {
   if (myView.IsNull())
   {
@@ -288,17 +278,15 @@ void ViewerTest_EventManager::ProcessConfigure (bool theIsResized)
   }
 
   if (!theIsResized
-    // track window moves to reverse stereo pair
-    && myView->RenderingParams().StereoMode != Graphic3d_StereoMode_RowInterlaced
-    && myView->RenderingParams().StereoMode != Graphic3d_StereoMode_ColumnInterlaced
-    && myView->RenderingParams().StereoMode != Graphic3d_StereoMode_ChessBoard)
+      // track window moves to reverse stereo pair
+      && myView->RenderingParams().StereoMode != Graphic3d_StereoMode_RowInterlaced
+      && myView->RenderingParams().StereoMode != Graphic3d_StereoMode_ColumnInterlaced
+      && myView->RenderingParams().StereoMode != Graphic3d_StereoMode_ChessBoard)
   {
     return;
   }
 
-  Handle(V3d_View) aParent = !myView->IsSubview()
-                            ? myView
-                            : myView->ParentView();
+  Handle(V3d_View) aParent = !myView->IsSubview() ? myView : myView->ParentView();
   aParent->Window()->DoResize();
   aParent->MustBeResized();
   aParent->Invalidate();
@@ -309,24 +297,20 @@ void ViewerTest_EventManager::ProcessConfigure (bool theIsResized)
     aChildIter->Invalidate();
   }
 
-  FlushViewEvents (myCtx, myView, true);
+  FlushViewEvents(myCtx, myView, true);
 }
 
-//==============================================================================
-//function : OnSubviewChanged
-//purpose  :
-//==============================================================================
-void ViewerTest_EventManager::OnSubviewChanged (const Handle(AIS_InteractiveContext)& ,
-                                                const Handle(V3d_View)& ,
-                                                const Handle(V3d_View)& theNewView)
+//=================================================================================================
+
+void ViewerTest_EventManager::OnSubviewChanged(const Handle(AIS_InteractiveContext)&,
+                                               const Handle(V3d_View)&,
+                                               const Handle(V3d_View)& theNewView)
 {
-  ViewerTest::ActivateView (theNewView, false);
+  ViewerTest::ActivateView(theNewView, false);
 }
 
-//==============================================================================
-//function : ProcessInput
-//purpose  :
-//==============================================================================
+//=================================================================================================
+
 void ViewerTest_EventManager::ProcessInput()
 {
   if (myView.IsNull())
@@ -342,7 +326,7 @@ void ViewerTest_EventManager::ProcessInput()
   // requestPostAnimationFrame() is a better under development alternative.
   if (++myNbUpdateRequests == 1)
   {
-    emscripten_async_call (onWasmRedrawView, this, -1);
+    emscripten_async_call(onWasmRedrawView, this, -1);
   }
 #else
   // handle synchronously
@@ -354,21 +338,21 @@ void ViewerTest_EventManager::ProcessInput()
 // function : navigationKeyModifierSwitch
 // purpose  :
 // =======================================================================
-bool ViewerTest_EventManager::navigationKeyModifierSwitch (unsigned int theModifOld,
-                                                           unsigned int theModifNew,
-                                                           double       theTimeStamp)
+bool ViewerTest_EventManager::navigationKeyModifierSwitch(unsigned int theModifOld,
+                                                          unsigned int theModifNew,
+                                                          double       theTimeStamp)
 {
   bool hasActions = false;
   for (unsigned int aKeyIter = 0; aKeyIter < Aspect_VKey_ModifiersLower; ++aKeyIter)
   {
-    if (!myKeys.IsKeyDown (aKeyIter))
+    if (!myKeys.IsKeyDown(aKeyIter))
     {
       continue;
     }
 
     Aspect_VKey anActionOld = Aspect_VKey_UNKNOWN, anActionNew = Aspect_VKey_UNKNOWN;
-    myNavKeyMap.Find (aKeyIter | theModifOld, anActionOld);
-    myNavKeyMap.Find (aKeyIter | theModifNew, anActionNew);
+    myNavKeyMap.Find(aKeyIter | theModifOld, anActionOld);
+    myNavKeyMap.Find(aKeyIter | theModifNew, anActionNew);
     if (anActionOld == anActionNew)
     {
       continue;
@@ -376,79 +360,65 @@ bool ViewerTest_EventManager::navigationKeyModifierSwitch (unsigned int theModif
 
     if (anActionOld != Aspect_VKey_UNKNOWN)
     {
-      myKeys.KeyUp (anActionOld, theTimeStamp);
+      myKeys.KeyUp(anActionOld, theTimeStamp);
     }
     if (anActionNew != Aspect_VKey_UNKNOWN)
     {
       hasActions = true;
-      myKeys.KeyDown (anActionNew, theTimeStamp);
+      myKeys.KeyDown(anActionNew, theTimeStamp);
     }
   }
   return hasActions;
 }
 
-//=======================================================================
-//function : KeyDown
-//purpose  :
-//=======================================================================
-void ViewerTest_EventManager::KeyDown (Aspect_VKey theKey,
-                                       double theTime,
-                                       double thePressure)
+//=================================================================================================
+
+void ViewerTest_EventManager::KeyDown(Aspect_VKey theKey, double theTime, double thePressure)
 {
   const unsigned int aModifOld = myKeys.Modifiers();
-  AIS_ViewController::KeyDown (theKey, theTime, thePressure);
+  AIS_ViewController::KeyDown(theKey, theTime, thePressure);
 
   const unsigned int aModifNew = myKeys.Modifiers();
-  if (aModifNew != aModifOld
-   && navigationKeyModifierSwitch (aModifOld, aModifNew, theTime))
+  if (aModifNew != aModifOld && navigationKeyModifierSwitch(aModifOld, aModifNew, theTime))
   {
     // modifier key just pressed
   }
 
   Aspect_VKey anAction = Aspect_VKey_UNKNOWN;
-  if (myNavKeyMap.Find (theKey | myKeys.Modifiers(), anAction)
-  &&  anAction != Aspect_VKey_UNKNOWN)
+  if (myNavKeyMap.Find(theKey | myKeys.Modifiers(), anAction) && anAction != Aspect_VKey_UNKNOWN)
   {
-    AIS_ViewController::KeyDown (anAction, theTime, thePressure);
+    AIS_ViewController::KeyDown(anAction, theTime, thePressure);
   }
 }
 
-//=======================================================================
-//function : KeyUp
-//purpose  :
-//=======================================================================
-void ViewerTest_EventManager::KeyUp (Aspect_VKey theKey,
-                                     double theTime)
+//=================================================================================================
+
+void ViewerTest_EventManager::KeyUp(Aspect_VKey theKey, double theTime)
 {
   const unsigned int aModifOld = myKeys.Modifiers();
-  AIS_ViewController::KeyUp (theKey, theTime);
+  AIS_ViewController::KeyUp(theKey, theTime);
 
   Aspect_VKey anAction = Aspect_VKey_UNKNOWN;
-  if (myNavKeyMap.Find (theKey | myKeys.Modifiers(), anAction)
-  &&  anAction != Aspect_VKey_UNKNOWN)
+  if (myNavKeyMap.Find(theKey | myKeys.Modifiers(), anAction) && anAction != Aspect_VKey_UNKNOWN)
   {
-    AIS_ViewController::KeyUp (anAction, theTime);
-    ProcessKeyPress (anAction);
+    AIS_ViewController::KeyUp(anAction, theTime);
+    ProcessKeyPress(anAction);
   }
 
   const unsigned int aModifNew = myKeys.Modifiers();
-  if (aModifNew != aModifOld
-   && navigationKeyModifierSwitch (aModifOld, aModifNew, theTime))
+  if (aModifNew != aModifOld && navigationKeyModifierSwitch(aModifOld, aModifNew, theTime))
   {
     // modifier key released
   }
 
-  ProcessKeyPress (theKey | aModifNew);
+  ProcessKeyPress(theKey | aModifNew);
 }
 
-//==============================================================================
-//function : ProcessKeyPress
-//purpose  :
-//==============================================================================
-void ViewerTest_EventManager::ProcessKeyPress (Aspect_VKey theKey)
+//=================================================================================================
+
+void ViewerTest_EventManager::ProcessKeyPress(Aspect_VKey theKey)
 {
-  if (myCtx.IsNull()
-   || myView.IsNull())
+  if (myCtx.IsNull() || myView.IsNull())
   {
     return;
   }
@@ -463,11 +433,10 @@ void ViewerTest_EventManager::ProcessKeyPress (Aspect_VKey theKey)
       }
       break;
     }
-    case Aspect_VKey_F:
-    {
+    case Aspect_VKey_F: {
       if (myCtx->NbSelected() > 0)
       {
-        myCtx->FitSelected (myView);
+        myCtx->FitSelected(myView);
       }
       else
       {
@@ -478,27 +447,27 @@ void ViewerTest_EventManager::ProcessKeyPress (Aspect_VKey theKey)
     case Aspect_VKey_H: // HLR
     {
       std::cout << "HLR\n";
-      myView->SetComputedMode (!myView->ComputedMode());
+      myView->SetComputedMode(!myView->ComputedMode());
       myView->Redraw();
       break;
     }
     case Aspect_VKey_P: // Type of HLR
     {
-      myCtx->DefaultDrawer()->SetTypeOfHLR (myCtx->DefaultDrawer()->TypeOfHLR() == Prs3d_TOH_Algo
-                                          ? Prs3d_TOH_PolyAlgo
-                                          : Prs3d_TOH_Algo);
+      myCtx->DefaultDrawer()->SetTypeOfHLR(myCtx->DefaultDrawer()->TypeOfHLR() == Prs3d_TOH_Algo
+                                             ? Prs3d_TOH_PolyAlgo
+                                             : Prs3d_TOH_Algo);
       if (myCtx->NbSelected() == 0)
       {
         AIS_ListOfInteractive aListOfShapes;
-        myCtx->DisplayedObjects (aListOfShapes);
-        for (AIS_ListIteratorOfListOfInteractive anIter (aListOfShapes); anIter.More(); anIter.Next())
+        myCtx->DisplayedObjects(aListOfShapes);
+        for (AIS_ListIteratorOfListOfInteractive anIter(aListOfShapes); anIter.More();
+             anIter.Next())
         {
-          if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (anIter.Value()))
+          if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(anIter.Value()))
           {
-            aShape->SetTypeOfHLR (aShape->TypeOfHLR() == Prs3d_TOH_PolyAlgo
-                                ? Prs3d_TOH_Algo
-                                : Prs3d_TOH_PolyAlgo);
-            myCtx->Redisplay (aShape, Standard_False);
+            aShape->SetTypeOfHLR(aShape->TypeOfHLR() == Prs3d_TOH_PolyAlgo ? Prs3d_TOH_Algo
+                                                                           : Prs3d_TOH_PolyAlgo);
+            myCtx->Redisplay(aShape, Standard_False);
           }
         }
       }
@@ -506,12 +475,11 @@ void ViewerTest_EventManager::ProcessKeyPress (Aspect_VKey theKey)
       {
         for (myCtx->InitSelected(); myCtx->MoreSelected(); myCtx->NextSelected())
         {
-          if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (myCtx->SelectedInteractive()))
+          if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(myCtx->SelectedInteractive()))
           {
-            aShape->SetTypeOfHLR (aShape->TypeOfHLR() == Prs3d_TOH_PolyAlgo
-                                ? Prs3d_TOH_Algo
-                                : Prs3d_TOH_PolyAlgo);
-            myCtx->Redisplay (aShape, Standard_False);
+            aShape->SetTypeOfHLR(aShape->TypeOfHLR() == Prs3d_TOH_PolyAlgo ? Prs3d_TOH_Algo
+                                                                           : Prs3d_TOH_PolyAlgo);
+            myCtx->Redisplay(aShape, Standard_False);
           }
         }
       }
@@ -519,8 +487,7 @@ void ViewerTest_EventManager::ProcessKeyPress (Aspect_VKey theKey)
       break;
     }
     case (Standard_UInteger)Aspect_VKey_S | (Standard_UInteger)Aspect_VKeyFlags_CTRL:
-    case (Standard_UInteger)Aspect_VKey_W | (Standard_UInteger)Aspect_VKeyFlags_CTRL:
-    {
+    case (Standard_UInteger)Aspect_VKey_W | (Standard_UInteger)Aspect_VKeyFlags_CTRL: {
       Standard_Integer aDispMode = AIS_Shaded;
       if (theKey == ((Standard_UInteger)Aspect_VKey_S | (Standard_UInteger)Aspect_VKeyFlags_CTRL))
       {
@@ -535,13 +502,13 @@ void ViewerTest_EventManager::ProcessKeyPress (Aspect_VKey theKey)
 
       if (myCtx->NbSelected() == 0)
       {
-        myCtx->SetDisplayMode (aDispMode, true);
+        myCtx->SetDisplayMode(aDispMode, true);
       }
       else
       {
         for (myCtx->InitSelected(); myCtx->MoreSelected(); myCtx->NextSelected())
         {
-          myCtx->SetDisplayMode (myCtx->SelectedInteractive(), aDispMode, false);
+          myCtx->SetDisplayMode(myCtx->SelectedInteractive(), aDispMode, false);
         }
         myCtx->UpdateCurrentViewer();
       }
@@ -552,110 +519,95 @@ void ViewerTest_EventManager::ProcessKeyPress (Aspect_VKey theKey)
       std::cout << "reset display mode to defaults\n";
       if (myCtx->NbSelected() == 0)
       {
-        myCtx->SetDisplayMode (AIS_WireFrame, true);
+        myCtx->SetDisplayMode(AIS_WireFrame, true);
       }
       else
       {
         for (myCtx->InitSelected(); myCtx->MoreSelected(); myCtx->NextSelected())
         {
-          myCtx->UnsetDisplayMode (myCtx->SelectedInteractive(), false);
+          myCtx->UnsetDisplayMode(myCtx->SelectedInteractive(), false);
         }
         myCtx->UpdateCurrentViewer();
       }
       break;
     }
-    case Aspect_VKey_T:
-    {
+    case Aspect_VKey_T: {
       if (!ViewerTest_V3dView::IsCurrentViewIn2DMode())
       {
-        myView->SetProj (V3d_TypeOfOrientation_Zup_Top);
+        myView->SetProj(V3d_TypeOfOrientation_Zup_Top);
       }
       break;
     }
-    case Aspect_VKey_B:
-    {
+    case Aspect_VKey_B: {
       if (!ViewerTest_V3dView::IsCurrentViewIn2DMode())
       {
-        myView->SetProj (V3d_TypeOfOrientation_Zup_Bottom);
+        myView->SetProj(V3d_TypeOfOrientation_Zup_Bottom);
       }
       break;
     }
-    case Aspect_VKey_L:
-    {
+    case Aspect_VKey_L: {
       if (!ViewerTest_V3dView::IsCurrentViewIn2DMode())
       {
-        myView->SetProj (V3d_TypeOfOrientation_Zup_Left);
+        myView->SetProj(V3d_TypeOfOrientation_Zup_Left);
       }
       break;
     }
-    case Aspect_VKey_R:
-    {
+    case Aspect_VKey_R: {
       if (!ViewerTest_V3dView::IsCurrentViewIn2DMode())
       {
-        myView->SetProj (V3d_TypeOfOrientation_Zup_Right);
+        myView->SetProj(V3d_TypeOfOrientation_Zup_Right);
       }
       break;
     }
-    case Aspect_VKey_Comma:
-    {
-      myCtx->HilightNextDetected (myView);
+    case Aspect_VKey_Comma: {
+      myCtx->HilightNextDetected(myView);
       break;
     }
-    case Aspect_VKey_Period:
-    {
-      myCtx->HilightPreviousDetected (myView);
+    case Aspect_VKey_Period: {
+      myCtx->HilightPreviousDetected(myView);
       break;
     }
     case Aspect_VKey_Slash:
-    case Aspect_VKey_NumpadDivide:
-    {
+    case Aspect_VKey_NumpadDivide: {
       Handle(Graphic3d_Camera) aCamera = myView->Camera();
       if (aCamera->IsStereo())
       {
-        aCamera->SetIOD (aCamera->GetIODType(), aCamera->IOD() - 0.01);
+        aCamera->SetIOD(aCamera->GetIODType(), aCamera->IOD() - 0.01);
         myView->Redraw();
       }
       break;
     }
-    case Aspect_VKey_NumpadMultiply:
-    {
+    case Aspect_VKey_NumpadMultiply: {
       Handle(Graphic3d_Camera) aCamera = myView->Camera();
       if (aCamera->IsStereo())
       {
-        aCamera->SetIOD (aCamera->GetIODType(), aCamera->IOD() + 0.01);
+        aCamera->SetIOD(aCamera->GetIODType(), aCamera->IOD() + 0.01);
         myView->Redraw();
       }
       break;
     }
-    case Aspect_VKey_Delete:
-    {
-      if (!myCtx.IsNull()
-        && myCtx->NbSelected() > 0)
+    case Aspect_VKey_Delete: {
+      if (!myCtx.IsNull() && myCtx->NbSelected() > 0)
       {
-        Draw_Interprete ("verase");
+        Draw_Interprete("verase");
       }
       break;
     }
-    case Aspect_VKey_Escape:
-    {
-      if (!myCtx.IsNull()
-        && ViewerTest_EventManager::ToCloseViewOnEscape())
+    case Aspect_VKey_Escape: {
+      if (!myCtx.IsNull() && ViewerTest_EventManager::ToCloseViewOnEscape())
       {
-        Draw_Interprete (ViewerTest_EventManager::ToExitOnCloseView() ? "exit" : "vclose");
+        Draw_Interprete(ViewerTest_EventManager::ToExitOnCloseView() ? "exit" : "vclose");
       }
       break;
     }
     case Aspect_VKey_NavSpeedDecrease:
-    case Aspect_VKey_NavSpeedIncrease:
-    {
+    case Aspect_VKey_NavSpeedIncrease: {
       // handle slide speed
-      float aNewSpeed = theKey == Aspect_VKey_NavSpeedDecrease
-                      ? myWalkSpeedRelative * 0.5f
-                      : myWalkSpeedRelative * 2.0f;
-      if (aNewSpeed >= 0.00001f
-       && aNewSpeed <= 10.0f)
+      float aNewSpeed = theKey == Aspect_VKey_NavSpeedDecrease ? myWalkSpeedRelative * 0.5f
+                                                               : myWalkSpeedRelative * 2.0f;
+      if (aNewSpeed >= 0.00001f && aNewSpeed <= 10.0f)
       {
-        if (Abs (aNewSpeed - 0.1f) < 0.001f)
+        if (Abs(aNewSpeed - 0.1f) < 0.001f)
         {
           aNewSpeed = 0.1f;
         }
@@ -665,20 +617,21 @@ void ViewerTest_EventManager::ProcessKeyPress (Aspect_VKey theKey)
     }
   }
 
-  if (theKey >= Aspect_VKey_0
-   && theKey <= Aspect_VKey_7)
+  if (theKey >= Aspect_VKey_0 && theKey <= Aspect_VKey_7)
   {
     const Standard_Integer aSelMode = theKey - Aspect_VKey_0;
-    bool toEnable = true;
+    bool                   toEnable = true;
     if (!myCtx.IsNull())
     {
       AIS_ListOfInteractive aPrsList;
-      myCtx->DisplayedObjects (aPrsList);
-      for (AIS_ListOfInteractive::Iterator aPrsIter (aPrsList); aPrsIter.More() && toEnable; aPrsIter.Next())
+      myCtx->DisplayedObjects(aPrsList);
+      for (AIS_ListOfInteractive::Iterator aPrsIter(aPrsList); aPrsIter.More() && toEnable;
+           aPrsIter.Next())
       {
         TColStd_ListOfInteger aModes;
-        myCtx->ActivatedModes (aPrsIter.Value(), aModes);
-        for (TColStd_ListOfInteger::Iterator aModeIter (aModes); aModeIter.More() && toEnable; aModeIter.Next())
+        myCtx->ActivatedModes(aPrsIter.Value(), aModes);
+        for (TColStd_ListOfInteger::Iterator aModeIter(aModes); aModeIter.More() && toEnable;
+             aModeIter.Next())
         {
           if (aModeIter.Value() == aSelMode)
           {
@@ -687,21 +640,22 @@ void ViewerTest_EventManager::ProcessKeyPress (Aspect_VKey theKey)
         }
       }
     }
-    TCollection_AsciiString aCmd = TCollection_AsciiString ("vselmode ") + aSelMode + (toEnable ? " 1" : " 0");
-    Draw_Interprete (aCmd.ToCString());
+    TCollection_AsciiString aCmd =
+      TCollection_AsciiString("vselmode ") + aSelMode + (toEnable ? " 1" : " 0");
+    Draw_Interprete(aCmd.ToCString());
   }
 }
 
 #if defined(__EMSCRIPTEN__)
 //! Handle browser window resize event.
-static EM_BOOL onResizeCallback (int theEventType, const EmscriptenUiEvent* theEvent, void* )
+static EM_BOOL onResizeCallback(int theEventType, const EmscriptenUiEvent* theEvent, void*)
 {
   Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
-  if (!aViewCtrl.IsNull()
-   && !ViewerTest::CurrentView().IsNull())
+  if (!aViewCtrl.IsNull() && !ViewerTest::CurrentView().IsNull())
   {
-    Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (ViewerTest::CurrentView()->Window());
-    return aWindow->ProcessUiEvent (*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
+    Handle(Wasm_Window) aWindow =
+      Handle(Wasm_Window)::DownCast(ViewerTest::CurrentView()->Window());
+    return aWindow->ProcessUiEvent(*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
   }
   return EM_FALSE;
 }
@@ -712,89 +666,85 @@ EM_JS(void, occJSUpdateBoundingClientRect, (), {
 });
 
 //! Get canvas bounding top.
-EM_JS(int, occJSGetBoundingClientTop, (), {
-  return Math.round(Module._myCanvasRect.top);
-});
+EM_JS(int, occJSGetBoundingClientTop, (), { return Math.round(Module._myCanvasRect.top); });
 
 //! Get canvas bounding left.
-EM_JS(int, occJSGetBoundingClientLeft, (), {
-  return Math.round(Module._myCanvasRect.left);
-});
+EM_JS(int, occJSGetBoundingClientLeft, (), { return Math.round(Module._myCanvasRect.left); });
 
 //! Handle mouse input event.
-static EM_BOOL onWasmMouseCallback (int theEventType, const EmscriptenMouseEvent* theEvent, void* )
+static EM_BOOL onWasmMouseCallback(int theEventType, const EmscriptenMouseEvent* theEvent, void*)
 {
   Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
-  if (!aViewCtrl.IsNull()
-   && !ViewerTest::CurrentView().IsNull())
+  if (!aViewCtrl.IsNull() && !ViewerTest::CurrentView().IsNull())
   {
-    Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (ViewerTest::CurrentView()->Window());
-    if (theEventType == EMSCRIPTEN_EVENT_MOUSEMOVE
-     || theEventType == EMSCRIPTEN_EVENT_MOUSEUP)
+    Handle(Wasm_Window) aWindow =
+      Handle(Wasm_Window)::DownCast(ViewerTest::CurrentView()->Window());
+    if (theEventType == EMSCRIPTEN_EVENT_MOUSEMOVE || theEventType == EMSCRIPTEN_EVENT_MOUSEUP)
     {
-      // these events are bound to EMSCRIPTEN_EVENT_TARGET_WINDOW, and coordinates should be converted
+      // these events are bound to EMSCRIPTEN_EVENT_TARGET_WINDOW, and coordinates should be
+      // converted
       occJSUpdateBoundingClientRect();
       EmscriptenMouseEvent anEvent = *theEvent;
       anEvent.targetX -= occJSGetBoundingClientLeft();
       anEvent.targetY -= occJSGetBoundingClientTop();
-      aWindow->ProcessMouseEvent (*aViewCtrl, theEventType, &anEvent);
+      aWindow->ProcessMouseEvent(*aViewCtrl, theEventType, &anEvent);
       return EM_FALSE;
     }
 
-    return aWindow->ProcessMouseEvent (*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
+    return aWindow->ProcessMouseEvent(*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
   }
   return EM_FALSE;
 }
 
 //! Handle mouse wheel event.
-static EM_BOOL onWasmWheelCallback (int theEventType, const EmscriptenWheelEvent* theEvent, void* )
+static EM_BOOL onWasmWheelCallback(int theEventType, const EmscriptenWheelEvent* theEvent, void*)
 {
   Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
-  if (!aViewCtrl.IsNull()
-   && !ViewerTest::CurrentView().IsNull())
+  if (!aViewCtrl.IsNull() && !ViewerTest::CurrentView().IsNull())
   {
-    Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (ViewerTest::CurrentView()->Window());
-    return aWindow->ProcessWheelEvent (*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
+    Handle(Wasm_Window) aWindow =
+      Handle(Wasm_Window)::DownCast(ViewerTest::CurrentView()->Window());
+    return aWindow->ProcessWheelEvent(*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
   }
   return EM_FALSE;
 }
 
 //! Handle touch input event.
-static EM_BOOL onWasmTouchCallback (int theEventType, const EmscriptenTouchEvent* theEvent, void* )
+static EM_BOOL onWasmTouchCallback(int theEventType, const EmscriptenTouchEvent* theEvent, void*)
 {
   Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
-  if (!aViewCtrl.IsNull()
-   && !ViewerTest::CurrentView().IsNull())
+  if (!aViewCtrl.IsNull() && !ViewerTest::CurrentView().IsNull())
   {
-    Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (ViewerTest::CurrentView()->Window());
-    return aWindow->ProcessTouchEvent (*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
+    Handle(Wasm_Window) aWindow =
+      Handle(Wasm_Window)::DownCast(ViewerTest::CurrentView()->Window());
+    return aWindow->ProcessTouchEvent(*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
   }
   return EM_FALSE;
 }
 
 //! Handle keyboard input event.
-static EM_BOOL onWasmKeyCallback (int theEventType, const EmscriptenKeyboardEvent* theEvent, void* )
+static EM_BOOL onWasmKeyCallback(int theEventType, const EmscriptenKeyboardEvent* theEvent, void*)
 {
   Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
-  if (!aViewCtrl.IsNull()
-   && !ViewerTest::CurrentView().IsNull())
+  if (!aViewCtrl.IsNull() && !ViewerTest::CurrentView().IsNull())
   {
-    Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (ViewerTest::CurrentView()->Window());
-    aWindow->ProcessKeyEvent (*aViewCtrl, theEventType, theEvent);
+    Handle(Wasm_Window) aWindow =
+      Handle(Wasm_Window)::DownCast(ViewerTest::CurrentView()->Window());
+    aWindow->ProcessKeyEvent(*aViewCtrl, theEventType, theEvent);
     return EM_TRUE;
   }
   return EM_FALSE;
 }
 
 //! Handle focus change event.
-static EM_BOOL onWasmFocusCallback (int theEventType, const EmscriptenFocusEvent* theEvent, void*)
+static EM_BOOL onWasmFocusCallback(int theEventType, const EmscriptenFocusEvent* theEvent, void*)
 {
   Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
-  if (!aViewCtrl.IsNull()
-   && !ViewerTest::CurrentView().IsNull())
+  if (!aViewCtrl.IsNull() && !ViewerTest::CurrentView().IsNull())
   {
-    Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (ViewerTest::CurrentView()->Window());
-    return aWindow->ProcessFocusEvent (*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
+    Handle(Wasm_Window) aWindow =
+      Handle(Wasm_Window)::DownCast(ViewerTest::CurrentView()->Window());
+    return aWindow->ProcessFocusEvent(*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
   }
   return EM_FALSE;
 }
@@ -804,79 +754,87 @@ static EM_BOOL onWasmFocusCallback (int theEventType, const EmscriptenFocusEvent
 // function : SetupWindowCallbacks
 // purpose  :
 // ==============================================================================
-void ViewerTest_EventManager::SetupWindowCallbacks (const Handle(Aspect_Window)& theWin)
+void ViewerTest_EventManager::SetupWindowCallbacks(const Handle(Aspect_Window)& theWin)
 {
 #ifdef _WIN32
-  (void )theWin;
+  (void)theWin;
 #elif defined(HAVE_XLIB)
   // X11
-  Window anXWin = (Window )theWin->NativeHandle();
-  Display* anXDisplay = (Display* )theWin->DisplayConnection()->GetDisplayAspect();
-  XSynchronize (anXDisplay, 1);
+  Window   anXWin     = (Window)theWin->NativeHandle();
+  Display* anXDisplay = (Display*)theWin->DisplayConnection()->GetDisplayAspect();
+  XSynchronize(anXDisplay, 1);
 
   // X11 : For keyboard on SUN
   XWMHints aWmHints;
-  memset (&aWmHints, 0, sizeof(aWmHints));
+  memset(&aWmHints, 0, sizeof(aWmHints));
   aWmHints.flags = InputHint;
   aWmHints.input = 1;
-  XSetWMHints (anXDisplay, anXWin, &aWmHints);
+  XSetWMHints(anXDisplay, anXWin, &aWmHints);
 
-  XSelectInput (anXDisplay, anXWin,
-                ExposureMask | KeyPressMask | KeyReleaseMask
-              | ButtonPressMask | ButtonReleaseMask
-              | StructureNotifyMask
-              | PointerMotionMask
-              | Button1MotionMask | Button2MotionMask
-              | Button3MotionMask | FocusChangeMask);
-  Atom aDeleteWindowAtom = theWin->DisplayConnection()->GetAtom (Aspect_XA_DELETE_WINDOW);
-  XSetWMProtocols (anXDisplay, anXWin, &aDeleteWindowAtom, 1);
+  XSelectInput(anXDisplay,
+               anXWin,
+               ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask
+                 | StructureNotifyMask | PointerMotionMask | Button1MotionMask | Button2MotionMask
+                 | Button3MotionMask | FocusChangeMask);
+  Atom aDeleteWindowAtom = theWin->DisplayConnection()->GetAtom(Aspect_XA_DELETE_WINDOW);
+  XSetWMProtocols(anXDisplay, anXWin, &aDeleteWindowAtom, 1);
 
-  XSynchronize (anXDisplay, 0);
+  XSynchronize(anXDisplay, 0);
 #elif defined(__EMSCRIPTEN__)
-  Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (theWin);
-  if (aWindow->CanvasId().IsEmpty()
-   || aWindow->CanvasId() == "#")
+  Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast(theWin);
+  if (aWindow->CanvasId().IsEmpty() || aWindow->CanvasId() == "#")
   {
-    Message::SendFail ("Error: unable registering callbacks to Module.canvas");
+    Message::SendFail("Error: unable registering callbacks to Module.canvas");
     return;
   }
 
-  const char* aTargetId = aWindow->CanvasId().ToCString();
+  const char*   aTargetId    = aWindow->CanvasId().ToCString();
   const EM_BOOL toUseCapture = EM_TRUE;
-  void* anOpaque = NULL; //this; // unused
+  void*         anOpaque     = NULL; // this; // unused
 
-  // make sure to clear previously set listeners (e.g. created by another ViewerTest_EventManager instance)
+  // make sure to clear previously set listeners (e.g. created by another ViewerTest_EventManager
+  // instance)
   emscripten_html5_remove_all_event_listeners();
 
   // resize event implemented only for a window by browsers,
-  // so that if web application changes canvas size by other means it should use another way to tell OCCT about resize
-  emscripten_set_resize_callback     (EMSCRIPTEN_EVENT_TARGET_WINDOW, anOpaque, toUseCapture, onResizeCallback);
+  // so that if web application changes canvas size by other means it should use another way to tell
+  // OCCT about resize
+  emscripten_set_resize_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW,
+                                 anOpaque,
+                                 toUseCapture,
+                                 onResizeCallback);
 
   // bind these events to window to track mouse movements outside of canvas
-  //emscripten_set_mouseup_callback    (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
-  //emscripten_set_mousemove_callback  (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
-  //emscripten_set_mouseleave_callback (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
-  emscripten_set_mouseup_callback    (EMSCRIPTEN_EVENT_TARGET_WINDOW, anOpaque, toUseCapture, onWasmMouseCallback);
-  emscripten_set_mousemove_callback  (EMSCRIPTEN_EVENT_TARGET_WINDOW, anOpaque, toUseCapture, onWasmMouseCallback);
+  // emscripten_set_mouseup_callback    (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
+  // emscripten_set_mousemove_callback  (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
+  // emscripten_set_mouseleave_callback (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
+  emscripten_set_mouseup_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW,
+                                  anOpaque,
+                                  toUseCapture,
+                                  onWasmMouseCallback);
+  emscripten_set_mousemove_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW,
+                                    anOpaque,
+                                    toUseCapture,
+                                    onWasmMouseCallback);
 
-  emscripten_set_mousedown_callback  (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
-  emscripten_set_dblclick_callback   (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
-  emscripten_set_click_callback      (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
-  emscripten_set_mouseenter_callback (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
-  emscripten_set_wheel_callback      (aTargetId, anOpaque, toUseCapture, onWasmWheelCallback);
+  emscripten_set_mousedown_callback(aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
+  emscripten_set_dblclick_callback(aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
+  emscripten_set_click_callback(aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
+  emscripten_set_mouseenter_callback(aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
+  emscripten_set_wheel_callback(aTargetId, anOpaque, toUseCapture, onWasmWheelCallback);
 
-  emscripten_set_touchstart_callback (aTargetId, anOpaque, toUseCapture, onWasmTouchCallback);
-  emscripten_set_touchend_callback   (aTargetId, anOpaque, toUseCapture, onWasmTouchCallback);
-  emscripten_set_touchmove_callback  (aTargetId, anOpaque, toUseCapture, onWasmTouchCallback);
+  emscripten_set_touchstart_callback(aTargetId, anOpaque, toUseCapture, onWasmTouchCallback);
+  emscripten_set_touchend_callback(aTargetId, anOpaque, toUseCapture, onWasmTouchCallback);
+  emscripten_set_touchmove_callback(aTargetId, anOpaque, toUseCapture, onWasmTouchCallback);
   emscripten_set_touchcancel_callback(aTargetId, anOpaque, toUseCapture, onWasmTouchCallback);
 
   // keyboard input requires a focusable element or EMSCRIPTEN_EVENT_TARGET_WINDOW
-  emscripten_set_keydown_callback    (aTargetId, anOpaque, toUseCapture, onWasmKeyCallback);
-  emscripten_set_keyup_callback      (aTargetId, anOpaque, toUseCapture, onWasmKeyCallback);
-  //emscripten_set_focus_callback    (aTargetId, anOpaque, toUseCapture, onWasmFocusCallback);
-  //emscripten_set_focusin_callback  (aTargetId, anOpaque, toUseCapture, onWasmFocusCallback);
-  emscripten_set_focusout_callback   (aTargetId, anOpaque, toUseCapture, onWasmFocusCallback);
+  emscripten_set_keydown_callback(aTargetId, anOpaque, toUseCapture, onWasmKeyCallback);
+  emscripten_set_keyup_callback(aTargetId, anOpaque, toUseCapture, onWasmKeyCallback);
+  // emscripten_set_focus_callback    (aTargetId, anOpaque, toUseCapture, onWasmFocusCallback);
+  // emscripten_set_focusin_callback  (aTargetId, anOpaque, toUseCapture, onWasmFocusCallback);
+  emscripten_set_focusout_callback(aTargetId, anOpaque, toUseCapture, onWasmFocusCallback);
 #else
-  (void )theWin;
+  (void)theWin;
 #endif
 }

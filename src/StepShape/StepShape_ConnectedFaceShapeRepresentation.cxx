@@ -18,12 +18,8 @@
 #include <Standard_Type.hxx>
 #include <StepShape_ConnectedFaceShapeRepresentation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_ConnectedFaceShapeRepresentation,StepRepr_Representation)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_ConnectedFaceShapeRepresentation, StepRepr_Representation)
 
-//=======================================================================
-//function : StepShape_ConnectedFaceShapeRepresentation
-//purpose  : 
-//=======================================================================
-StepShape_ConnectedFaceShapeRepresentation::StepShape_ConnectedFaceShapeRepresentation ()
-{
-}
+//=================================================================================================
+
+StepShape_ConnectedFaceShapeRepresentation::StepShape_ConnectedFaceShapeRepresentation() {}

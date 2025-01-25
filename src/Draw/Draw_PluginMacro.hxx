@@ -17,12 +17,13 @@
 #define _Draw_PluginMacro_HeaderFile
 
 #ifdef OCCT_NO_PLUGINS
-#define DPLUGIN(name)
+  #define DPLUGIN(name)
 #else
-#define DPLUGIN(name) \
-extern "C" Standard_EXPORT void PLUGINFACTORY(Draw_Interpretor& theDI) { \
-  name::Factory(theDI); \
-}
+  #define DPLUGIN(name)                                                                            \
+    extern "C" Standard_EXPORT void PLUGINFACTORY(Draw_Interpretor& theDI)                         \
+    {                                                                                              \
+      name::Factory(theDI);                                                                        \
+    }
 #endif
 
 #endif

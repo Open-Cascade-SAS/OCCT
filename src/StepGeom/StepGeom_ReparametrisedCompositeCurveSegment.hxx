@@ -24,48 +24,31 @@
 #include <StepGeom_TransitionCode.hxx>
 class StepGeom_Curve;
 
-
 class StepGeom_ReparametrisedCompositeCurveSegment;
 DEFINE_STANDARD_HANDLE(StepGeom_ReparametrisedCompositeCurveSegment, StepGeom_CompositeCurveSegment)
-
 
 class StepGeom_ReparametrisedCompositeCurveSegment : public StepGeom_CompositeCurveSegment
 {
 
 public:
-
-  
   //! Returns a ReparametrisedCompositeCurveSegment
   Standard_EXPORT StepGeom_ReparametrisedCompositeCurveSegment();
-  
-  Standard_EXPORT void Init (const StepGeom_TransitionCode aTransition, const Standard_Boolean aSameSense, const Handle(StepGeom_Curve)& aParentCurve, const Standard_Real aParamLength);
-  
-  Standard_EXPORT void SetParamLength (const Standard_Real aParamLength);
-  
+
+  Standard_EXPORT void Init(const StepGeom_TransitionCode aTransition,
+                            const Standard_Boolean        aSameSense,
+                            const Handle(StepGeom_Curve)& aParentCurve,
+                            const Standard_Real           aParamLength);
+
+  Standard_EXPORT void SetParamLength(const Standard_Real aParamLength);
+
   Standard_EXPORT Standard_Real ParamLength() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_ReparametrisedCompositeCurveSegment,StepGeom_CompositeCurveSegment)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_ReparametrisedCompositeCurveSegment,
+                          StepGeom_CompositeCurveSegment)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Real paramLength;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_ReparametrisedCompositeCurveSegment_HeaderFile

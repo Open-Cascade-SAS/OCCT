@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Adaptor3d_Surface.hxx>
 #include <ChFiDS_Spine.hxx>
 #include <ChFiDS_SurfData.hxx>
@@ -32,11 +31,11 @@
 #include <TopOpeBRepDS_DataStructure.hxx>
 
 //=======================================================================
-//function : MakeChamfer
-//purpose  : Compute the chamfer in the particular case Plane/Cone or 
+// function : MakeChamfer
+// purpose  : Compute the chamfer in the particular case Plane/Cone or
 //           Cylinder/Plane
 //           Compute the SurfData <Data> of the chamfer build on the <Spine>
-//           between the plane <Pln> and the cone <Con>, with the 
+//           between the plane <Pln> and the cone <Con>, with the
 //           distances <Dis1> on <Pln> and <Dis2> on <Con>.
 //           <Or1> and <Or2> are the orientations of <Pln> and <Con>
 //           and <Ofpl> this of the face carried by <Pln>.
@@ -44,102 +43,120 @@
 //           <Plandab> is equal to True if the plane is the surface S1
 //           <fu> and <lu> are the first and last u parameters of the
 //           cone
-//out      : True if the chanfer has been computed
+// out      : True if the chanfer has been computed
 //           False else
 //=======================================================================
-Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
-				       const Handle(ChFiDS_SurfData)& Data, 
-                                       const ChFiDS_ChamfMode theMode,
-				       const gp_Pln& Pln, 
-				       const gp_Cone& Con, 
-				       const Standard_Real fu,
-				       const Standard_Real lu,
-				       const TopAbs_Orientation Or1,
-				       const TopAbs_Orientation Or2,
-				       const Standard_Real theDis1, 
-				       const Standard_Real theDis2,
-				       const gp_Circ& Spine, 
-				       const Standard_Real First, 
-				       const TopAbs_Orientation Ofpl,
-				       const Standard_Boolean plandab)
+Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
+                                       const Handle(ChFiDS_SurfData)& Data,
+                                       const ChFiDS_ChamfMode         theMode,
+                                       const gp_Pln&                  Pln,
+                                       const gp_Cone&                 Con,
+                                       const Standard_Real            fu,
+                                       const Standard_Real            lu,
+                                       const TopAbs_Orientation       Or1,
+                                       const TopAbs_Orientation       Or2,
+                                       const Standard_Real            theDis1,
+                                       const Standard_Real            theDis2,
+                                       const gp_Circ&                 Spine,
+                                       const Standard_Real            First,
+                                       const TopAbs_Orientation       Ofpl,
+                                       const Standard_Boolean         plandab)
 {
 
   Standard_Real angcon = Con.SemiAngle();
 
   Standard_Real Dis1 = theDis1, Dis2 = theDis2;
-  Standard_Real Alpha = M_PI/2 - angcon;
-  Standard_Real CosHalfAlpha = Cos(Alpha/2);
+  Standard_Real Alpha        = M_PI / 2 - angcon;
+  Standard_Real CosHalfAlpha = Cos(Alpha / 2);
   if (theMode == ChFiDS_ConstThroatChamfer)
     Dis1 = Dis2 = theDis1 / CosHalfAlpha;
   else if (theMode == ChFiDS_ConstThroatWithPenetrationChamfer)
   {
-    Standard_Real aDis1 = Min(theDis1, theDis2);
-    Standard_Real aDis2 = Max(theDis1, theDis2);
-    Standard_Real dis1dis1 = aDis1*aDis1, dis2dis2 = aDis2*aDis2;
-    Standard_Real SinAlpha = Sin(Alpha);
-    Standard_Real CosAlpha = Cos(Alpha);
-    Standard_Real CotanAlpha = CosAlpha/SinAlpha;
-    Dis1 = sqrt(dis2dis2 - dis1dis1) - aDis1*CotanAlpha;
-    Standard_Real CosBeta = sqrt(1-dis1dis1/dis2dis2)*CosAlpha + aDis1/aDis2*SinAlpha;
-    Standard_Real FullDist1 = aDis2/CosBeta;
-    Dis2 = FullDist1 - aDis1/SinAlpha;
+    Standard_Real aDis1    = Min(theDis1, theDis2);
+    Standard_Real aDis2    = Max(theDis1, theDis2);
+    Standard_Real dis1dis1 = aDis1 * aDis1, dis2dis2 = aDis2 * aDis2;
+    Standard_Real SinAlpha   = Sin(Alpha);
+    Standard_Real CosAlpha   = Cos(Alpha);
+    Standard_Real CotanAlpha = CosAlpha / SinAlpha;
+    Dis1                     = sqrt(dis2dis2 - dis1dis1) - aDis1 * CotanAlpha;
+    Standard_Real CosBeta    = sqrt(1 - dis1dis1 / dis2dis2) * CosAlpha + aDis1 / aDis2 * SinAlpha;
+    Standard_Real FullDist1  = aDis2 / CosBeta;
+    Dis2                     = FullDist1 - aDis1 / SinAlpha;
   }
-  
-  Standard_Real sincon =Abs(Sin(angcon));
-  Standard_Real angle;
+
+  Standard_Real    sincon = Abs(Sin(angcon));
+  Standard_Real    angle;
   Standard_Boolean IsResol;
 
   gp_Ax3 PosPl = Pln.Position();
-  gp_Dir Dpl = PosPl.XDirection().Crossed(PosPl.YDirection());
-  if ( Or1 == TopAbs_REVERSED ) Dpl.Reverse();
+  gp_Dir Dpl   = PosPl.XDirection().Crossed(PosPl.YDirection());
+  if (Or1 == TopAbs_REVERSED)
+    Dpl.Reverse();
 
   // compute the origin of the conical chamfer PtPl
-  gp_Pnt Or = Con.Location();
-  Standard_Real u,v;
-  ElSLib::PlaneParameters(PosPl,Or,u,v);
+  gp_Pnt        Or = Con.Location();
+  Standard_Real u, v;
+  ElSLib::PlaneParameters(PosPl, Or, u, v);
 #ifdef OCCT_DEBUG
-  gp_Pnt2d pt2dPln(u,v);
+  gp_Pnt2d pt2dPln(u, v);
 #endif
-  ElSLib::PlaneD0(u,v,PosPl,Or);
+  ElSLib::PlaneD0(u, v, PosPl, Or);
 
   gp_Pnt PtSp;
   gp_Vec DSp;
-  ElCLib::D1(First,Spine,PtSp,DSp);
+  ElCLib::D1(First, Spine, PtSp, DSp);
 #ifdef OCCT_DEBUG
-  gp_Dir Dx(gp_Vec(Or,PtSp));
+  gp_Dir Dx(gp_Vec(Or, PtSp));
 #endif
-  //compute the normal to the cone in PtSp
-  gp_Vec deru,derv;
+  // compute the normal to the cone in PtSp
+  gp_Vec deru, derv;
   gp_Pnt PtCon;
-  ElSLib::Parameters(Con,PtSp,u,v);
-  ElSLib::D1(u,v,Con,PtCon ,deru,derv);
-  gp_Dir Dcon( deru.Crossed(derv) );
-  if ( Or2 == TopAbs_REVERSED ) Dcon.Reverse();
-  
-  Standard_Boolean ouvert = ( Dpl.Dot(Dcon) >= 0.);
+  ElSLib::Parameters(Con, PtSp, u, v);
+  ElSLib::D1(u, v, Con, PtCon, deru, derv);
+  gp_Dir Dcon(deru.Crossed(derv));
+  if (Or2 == TopAbs_REVERSED)
+    Dcon.Reverse();
 
-  if (!ouvert) {
-    if (Abs(Dis1 - Dis2 * sincon) > Precision::Confusion()) {
+  Standard_Boolean ouvert = (Dpl.Dot(Dcon) >= 0.);
+
+  if (!ouvert)
+  {
+    if (Abs(Dis1 - Dis2 * sincon) > Precision::Confusion())
+    {
       Standard_Real abscos = Abs(Dis2 - Dis1 * sincon);
-      angle = ATan((Dis1 * Cos(angcon)) / abscos);
+      angle                = ATan((Dis1 * Cos(angcon)) / abscos);
     }
-    else {
+    else
+    {
       angle = angcon;
     }
   }
-  else {
+  else
+  {
     angle = ATan((Dis1 * Cos(angcon)) / (Dis2 + Dis1 * sincon));
   }
 
   Standard_Boolean DisOnP = Standard_False;
 
-  IsResol = ChFiKPart_MakeChAsym(DStr,  Data, Pln, Con, fu, lu, Or1, Or2,
-				 Dis2, angle, Spine,  First,  Ofpl, plandab, DisOnP);
+  IsResol = ChFiKPart_MakeChAsym(DStr,
+                                 Data,
+                                 Pln,
+                                 Con,
+                                 fu,
+                                 lu,
+                                 Or1,
+                                 Or2,
+                                 Dis2,
+                                 angle,
+                                 Spine,
+                                 First,
+                                 Ofpl,
+                                 plandab,
+                                 DisOnP);
 
   return IsResol;
-
 }
- 
+
 /*
  // Compute the chamfer surface(cone)
   gp_Ax3 PosPl = Pln.Position();
@@ -168,7 +185,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
   ElSLib::D1(u,v,Con,PtCon ,deru,derv);
   gp_Dir Dcon( deru.Crossed(derv) );
   if ( Or2 == TopAbs_REVERSED ) Dcon.Reverse();
-  
+
   Standard_Boolean dedans = ( Dx.Dot(Dcon) <= 0.);
   Standard_Boolean ouvert = ( Dpl.Dot(Dcon) >= 0.);
 
@@ -176,8 +193,8 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
   Standard_Real angle = Con.SemiAngle();
   Standard_Real move = Dis2 * Cos(angle);
   Or.SetCoord( Or.X()+ move*Dpl.X(),
-	       Or.Y()+ move*Dpl.Y(),
-	       Or.Z()+ move*Dpl.Z());
+           Or.Y()+ move*Dpl.Y(),
+           Or.Z()+ move*Dpl.Z());
 
   gp_Dir Vec1(Or.X()-PtPl.X(), Or.Y()-PtPl.Y(), Or.Z()-PtPl.Z());
   Standard_Real Dis;
@@ -187,8 +204,8 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
     Dis = Dis1 - Dis2*Abs(Sin(angle));
 
   gp_Pnt Pt(Or.X()+Dis*PosPl.XDirection().X(),
-	    Or.Y()+Dis*PosPl.XDirection().Y(),
-	    Or.Z()+Dis*PosPl.XDirection().Z());
+        Or.Y()+Dis*PosPl.XDirection().Y(),
+        Or.Z()+Dis*PosPl.XDirection().Z());
   gp_Dir Vec2( Pt.X()-PtPl.X(), Pt.Y()-PtPl.Y(), Pt.Z()-PtPl.Z());
 
     // compute the parameters of the conical chamfer
@@ -225,7 +242,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
     SemiAngl = gcon->SemiAngle();
   }
 
-    // changes due to the fact we have reversed the V direction of 
+    // changes due to the fact we have reversed the V direction of
     // parametrization
   if (ChamfAx3.YDirection().Dot(DSp) <= 0.) {
     ChamfAx3.YReverse();
@@ -253,7 +270,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
   if (toreverse)
     Data->ChangeOrientation() = TopAbs_REVERSED;
   else
-    Data->ChangeOrientation() = TopAbs_FORWARD; 
+    Data->ChangeOrientation() = TopAbs_FORWARD;
 
 
   //we load the faceInterference with the pcurves and
@@ -271,11 +288,11 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
 
   if (!pointu) {
     Pt.SetCoord(PtPl.X()+ChamfRad*Dx.X(),
-		PtPl.Y()+ChamfRad*Dx.Y(),
-		PtPl.Z()+ChamfRad*Dx.Z());
+        PtPl.Y()+ChamfRad*Dx.Y(),
+        PtPl.Z()+ChamfRad*Dx.Z());
     gp_Circ CirPln(CirAx2,ChamfRad);
     GCirPln = new Geom_Circle(CirPln);
-  
+
       //pcurve on the plane
     ElSLib::PlaneParameters(PosPl,Pt ,u,v);
     gp_Pnt2d p2dPln(u,v);
@@ -293,27 +310,27 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
   Handle(Geom2d_Line) GLin2dCh1 = new Geom2d_Line(lin2dch);
 
       //orientation
-  TopAbs_Orientation trans; 
+  TopAbs_Orientation trans;
   gp_Dir norpl = PosPl.XDirection().Crossed(PosPl.YDirection());
   if (!pointu)
     norchamf.SetXYZ (deru.Crossed(derv).XYZ());
   toreverse = ( norchamf.Dot(norpl) <= 0. );
-  if ((toreverse && plandab) || (!toreverse && !plandab)){ 
+  if ((toreverse && plandab) || (!toreverse && !plandab)){
     trans = TopAbs_FORWARD;
   }
-  else { 
-    trans = TopAbs_REVERSED; 
+  else {
+    trans = TopAbs_REVERSED;
   }
 
   if(plandab){
     Data->ChangeInterferenceOnS1().
       SetInterference(ChFiKPart_IndexCurveInDS(GCirPln,DStr),
-		      trans,GCir2dPln,GLin2dCh1);
+              trans,GCir2dPln,GLin2dCh1);
   }
   else{
     Data->ChangeInterferenceOnS2().
       SetInterference(ChFiKPart_IndexCurveInDS(GCirPln,DStr),
-		      trans,GCir2dPln,GLin2dCh1);
+              trans,GCir2dPln,GLin2dCh1);
   }
 
 
@@ -328,7 +345,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
 
   CirAx2.SetLocation(Or);
   gp_Circ CirCon(CirAx2, Rad);
-  Handle(Geom_Circle) GCirCon = new Geom_Circle(CirCon);  
+  Handle(Geom_Circle) GCirCon = new Geom_Circle(CirCon);
 
       //pcurve on chamfer
   if (plandab)
@@ -339,13 +356,13 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
   ElSLib::ConeD1(0.,v,ChamfAx3,ChamfRad,SemiAngl,Pt,deru,derv);
   lin2dch.SetLocation(p2dch);
   Handle(Geom2d_Line) GLin2dCh2 = new Geom2d_Line(lin2dch);
-  
+
       //pcurve on cone
   norchamf.SetXYZ (deru.Crossed(derv).XYZ());
 
   Pt.SetCoord(Or.X()+Rad*Dx.X(),
-	      Or.Y()+Rad*Dx.Y(),
-	      Or.Z()+Rad*Dx.Z());
+          Or.Y()+Rad*Dx.Y(),
+          Or.Z()+Rad*Dx.Z());
   ElSLib::Parameters(Con,Pt ,u,v);
   Standard_Real tol = Precision::PConfusion();
   if(u >= 2*M_PI - tol && u <= 2*M_PI) u = 0.;
@@ -375,22 +392,16 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
   if(plandab){
     Data->ChangeInterferenceOnS2().
       SetInterference(ChFiKPart_IndexCurveInDS(GCirCon,DStr),
-		      trans,GLin2dCon,GLin2dCh2);
+              trans,GLin2dCon,GLin2dCh2);
   }
   else{
     Data->ChangeInterferenceOnS1().
       SetInterference(ChFiKPart_IndexCurveInDS(GCirCon,DStr),
-		      trans,GLin2dCon,GLin2dCh2);
+              trans,GLin2dCon,GLin2dCh2);
   }
-  
+
 
   return Standard_True;
 }
 
 */
-
-
-
-
-
-

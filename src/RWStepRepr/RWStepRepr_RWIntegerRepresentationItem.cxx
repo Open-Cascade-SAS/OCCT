@@ -13,40 +13,39 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include "RWStepRepr_RWIntegerRepresentationItem.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_IntegerRepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepRepr_RWIntegerRepresentationItem::RWStepRepr_RWIntegerRepresentationItem () {}
+RWStepRepr_RWIntegerRepresentationItem::RWStepRepr_RWIntegerRepresentationItem() {}
 
-void RWStepRepr_RWIntegerRepresentationItem::ReadStep
-  (const Handle(StepData_StepReaderData)& data,
-   const Standard_Integer num,
-   Handle(Interface_Check)& ach,
-   const Handle(StepRepr_IntegerRepresentationItem)& ent) const
+void RWStepRepr_RWIntegerRepresentationItem::ReadStep(
+  const Handle(StepData_StepReaderData)&            data,
+  const Standard_Integer                            num,
+  Handle(Interface_Check)&                          ach,
+  const Handle(StepRepr_IntegerRepresentationItem)& ent) const
 {
   // Check number of parameters
-  if ( ! data->CheckNbParams(num,2,ach,"integer_representation_item") ) return;
+  if (!data->CheckNbParams(num, 2, ach, "integer_representation_item"))
+    return;
 
   // --- inherited field : name ---
   Handle(TCollection_HAsciiString) aName;
-  data->ReadString (num,1,"name",ach,aName);
+  data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : value ---
   Standard_Integer aValue;
-  data->ReadInteger (num,2,"value",ach,aValue);
+  data->ReadInteger(num, 2, "value", ach, aValue);
 
   //--- Initialisation of the read entity ---
   ent->Init(aName, aValue);
 }
 
-
-void RWStepRepr_RWIntegerRepresentationItem::WriteStep
-  (StepData_StepWriter& SW,
-   const Handle(StepRepr_IntegerRepresentationItem)& ent) const
+void RWStepRepr_RWIntegerRepresentationItem::WriteStep(
+  StepData_StepWriter&                              SW,
+  const Handle(StepRepr_IntegerRepresentationItem)& ent) const
 {
   SW.Send(ent->Name());
   SW.Send(ent->Value());

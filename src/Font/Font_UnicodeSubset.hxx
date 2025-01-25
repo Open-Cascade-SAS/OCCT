@@ -23,6 +23,9 @@ enum Font_UnicodeSubset
   Font_UnicodeSubset_Arabic,  //!< Arabic  characters
 };
 
-enum { Font_UnicodeSubset_NB = Font_UnicodeSubset_Arabic };
+enum
+{
+  Font_UnicodeSubset_NB = Font_UnicodeSubset_Arabic
+};
 
 #endif // _Font_UnicodeSubset_HeaderFile

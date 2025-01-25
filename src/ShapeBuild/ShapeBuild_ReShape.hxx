@@ -50,8 +50,6 @@ class ShapeBuild_ReShape : public BRepTools_ReShape
 {
 
 public:
-
-  
   //! Returns an empty Reshape
   Standard_EXPORT ShapeBuild_ReShape();
 
@@ -69,8 +67,10 @@ public:
   //! 2: Replace and Remove are both ignored
   //! If Replace/Remove are ignored or absent, the result as same
   //! type as the starting shape
-  Standard_EXPORT virtual TopoDS_Shape Apply (const TopoDS_Shape& shape, const TopAbs_ShapeEnum until, const Standard_Integer buildmode);
-  
+  Standard_EXPORT virtual TopoDS_Shape Apply(const TopoDS_Shape&    shape,
+                                             const TopAbs_ShapeEnum until,
+                                             const Standard_Integer buildmode);
+
   //! Applies the substitutions requests to a shape.
   //!
   //! <until> gives the level of type until which requests are taken
@@ -83,8 +83,10 @@ public:
   //! TopoDS_Wire or TopoDS_Compound containing TopoDS_Edges).
   //! If incompatible shape type is encountered, it is ignored
   //! and flag FAIL1 is set in Status.
-  Standard_EXPORT virtual TopoDS_Shape Apply (const TopoDS_Shape& shape, const TopAbs_ShapeEnum until = TopAbs_SHAPE) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual TopoDS_Shape Apply(const TopoDS_Shape&    shape,
+                                             const TopAbs_ShapeEnum until = TopAbs_SHAPE)
+    Standard_OVERRIDE;
+
   //! Returns a complete substitution status for a shape
   //! 0  : not recorded,   <newsh> = original <shape>
   //! < 0: to be removed,  <newsh> is NULL
@@ -92,8 +94,11 @@ public:
   //! If <last> is False, returns status and new shape recorded in
   //! the map directly for the shape, if True and status > 0 then
   //! recursively searches for the last status and new shape.
-  Standard_EXPORT virtual Standard_Integer Status (const TopoDS_Shape& shape, TopoDS_Shape& newsh, const Standard_Boolean last = Standard_False) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Standard_Integer Status(const TopoDS_Shape&    shape,
+                                                  TopoDS_Shape&          newsh,
+                                                  const Standard_Boolean last = Standard_False)
+    Standard_OVERRIDE;
+
   //! Queries the status of last call to Apply(shape,enum)
   //! OK   : no (sub)shapes replaced or removed
   //! DONE1: source (starting) shape replaced
@@ -101,29 +106,12 @@ public:
   //! DONE3: some subshapes replaced
   //! DONE4: some subshapes removed
   //! FAIL1: some replacements not done because of bad type of subshape
-  Standard_EXPORT virtual Standard_Boolean Status (const ShapeExtend_Status status) const;
+  Standard_EXPORT virtual Standard_Boolean Status(const ShapeExtend_Status status) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(ShapeBuild_ReShape,BRepTools_ReShape)
+  DEFINE_STANDARD_RTTIEXT(ShapeBuild_ReShape, BRepTools_ReShape)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _ShapeBuild_ReShape_HeaderFile

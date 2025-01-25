@@ -11,39 +11,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepAP214_AutoDesignPresentedItem.hxx>
 #include <StepAP214_AutoDesignPresentedItemSelect.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignPresentedItem,StepVisual_PresentedItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignPresentedItem, StepVisual_PresentedItem)
 
-StepAP214_AutoDesignPresentedItem::StepAP214_AutoDesignPresentedItem ()  {}
+StepAP214_AutoDesignPresentedItem::StepAP214_AutoDesignPresentedItem() {}
 
 void StepAP214_AutoDesignPresentedItem::Init(
-	const Handle(StepAP214_HArray1OfAutoDesignPresentedItemSelect)& aItems)
+  const Handle(StepAP214_HArray1OfAutoDesignPresentedItemSelect)& aItems)
 {
-	// --- classe own fields ---
-	items = aItems;
+  // --- classe own fields ---
+  items = aItems;
 }
 
-
-void StepAP214_AutoDesignPresentedItem::SetItems(const Handle(StepAP214_HArray1OfAutoDesignPresentedItemSelect)& aItems)
+void StepAP214_AutoDesignPresentedItem::SetItems(
+  const Handle(StepAP214_HArray1OfAutoDesignPresentedItemSelect)& aItems)
 {
-	items = aItems;
+  items = aItems;
 }
 
-Handle(StepAP214_HArray1OfAutoDesignPresentedItemSelect) StepAP214_AutoDesignPresentedItem::Items() const
+Handle(StepAP214_HArray1OfAutoDesignPresentedItemSelect) StepAP214_AutoDesignPresentedItem::Items()
+  const
 {
-	return items;
+  return items;
 }
 
-StepAP214_AutoDesignPresentedItemSelect  StepAP214_AutoDesignPresentedItem::ItemsValue(const Standard_Integer num) const
+StepAP214_AutoDesignPresentedItemSelect StepAP214_AutoDesignPresentedItem::ItemsValue(
+  const Standard_Integer num) const
 {
-	return items->Value(num);
+  return items->Value(num);
 }
 
-Standard_Integer StepAP214_AutoDesignPresentedItem::NbItems () const
+Standard_Integer StepAP214_AutoDesignPresentedItem::NbItems() const
 {
-	if (items.IsNull()) return 0;
-	return items->Length();
+  if (items.IsNull())
+    return 0;
+  return items->Length();
 }

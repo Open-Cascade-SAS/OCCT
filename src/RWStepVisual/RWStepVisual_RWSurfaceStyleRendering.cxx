@@ -22,79 +22,85 @@
 #include <StepVisual_ShadingSurfaceMethod.hxx>
 #include <StepVisual_Colour.hxx>
 
-//=======================================================================
-//function : RWStepVisual_RWSurfaceStyleRendering
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
 RWStepVisual_RWSurfaceStyleRendering::RWStepVisual_RWSurfaceStyleRendering() {}
 
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  :
-//=======================================================================
-
-void RWStepVisual_RWSurfaceStyleRendering::ReadStep (const Handle(StepData_StepReaderData)& data,
-                                                     const Standard_Integer num,
-                                                     Handle(Interface_Check)& ach,
-                                                     const Handle(StepVisual_SurfaceStyleRendering)& ent) const
+void RWStepVisual_RWSurfaceStyleRendering::ReadStep(
+  const Handle(StepData_StepReaderData)&          data,
+  const Standard_Integer                          num,
+  Handle(Interface_Check)&                        ach,
+  const Handle(StepVisual_SurfaceStyleRendering)& ent) const
 {
   // Check number of parameters
-  if ( ! data->CheckNbParams(num,2,ach,"surface_style_rendering") ) return;
+  if (!data->CheckNbParams(num, 2, ach, "surface_style_rendering"))
+    return;
 
   // Own fields of SurfaceStyleRendering
 
   StepVisual_ShadingSurfaceMethod aRenderingMethod = StepVisual_ssmNormalShading;
-  if (data->ParamType (num, 1) == Interface_ParamEnum) {
+  if (data->ParamType(num, 1) == Interface_ParamEnum)
+  {
     Standard_CString text = data->ParamCValue(num, 1);
-    if      (strcmp(text, ".CONSTANT_SHADING.")) aRenderingMethod = StepVisual_ssmConstantShading;
-    else if (strcmp(text, ".COLOUR_SHADING.")) aRenderingMethod = StepVisual_ssmColourShading;
-    else if (strcmp(text, ".DOT_SHADING.")) aRenderingMethod = StepVisual_ssmDotShading;
-    else if (strcmp(text, ".NORMAL_SHADING.")) aRenderingMethod = StepVisual_ssmNormalShading;
-    else ach->AddFail("Parameter #1 (rendering_method) has not allowed value");
+    if (strcmp(text, ".CONSTANT_SHADING."))
+      aRenderingMethod = StepVisual_ssmConstantShading;
+    else if (strcmp(text, ".COLOUR_SHADING."))
+      aRenderingMethod = StepVisual_ssmColourShading;
+    else if (strcmp(text, ".DOT_SHADING."))
+      aRenderingMethod = StepVisual_ssmDotShading;
+    else if (strcmp(text, ".NORMAL_SHADING."))
+      aRenderingMethod = StepVisual_ssmNormalShading;
+    else
+      ach->AddFail("Parameter #1 (rendering_method) has not allowed value");
   }
-  else ach->AddFail("Parameter #1 (rendering_method) is not enumeration");
+  else
+    ach->AddFail("Parameter #1 (rendering_method) is not enumeration");
 
   Handle(StepVisual_Colour) aSurfaceColour;
-  data->ReadEntity (num, 2, "surface_colour", ach, STANDARD_TYPE(StepVisual_Colour), aSurfaceColour);
+  data->ReadEntity(num, 2, "surface_colour", ach, STANDARD_TYPE(StepVisual_Colour), aSurfaceColour);
 
   // Initialize entity
-  ent->Init(aRenderingMethod,
-            aSurfaceColour);
+  ent->Init(aRenderingMethod, aSurfaceColour);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
-void RWStepVisual_RWSurfaceStyleRendering::WriteStep (StepData_StepWriter& SW,
-                                                      const Handle(StepVisual_SurfaceStyleRendering)& ent) const
+void RWStepVisual_RWSurfaceStyleRendering::WriteStep(
+  StepData_StepWriter&                            SW,
+  const Handle(StepVisual_SurfaceStyleRendering)& ent) const
 {
 
   // Own fields of SurfaceStyleRendering
 
-  switch (ent->RenderingMethod()) {
-    case StepVisual_ssmConstantShading: SW.SendEnum (".CONSTANT_SHADING."); break;
-    case StepVisual_ssmColourShading: SW.SendEnum (".COLOUR_SHADING."); break;
-    case StepVisual_ssmDotShading: SW.SendEnum (".DOT_SHADING."); break;
-    case StepVisual_ssmNormalShading: SW.SendEnum (".NORMAL_SHADING."); break;
+  switch (ent->RenderingMethod())
+  {
+    case StepVisual_ssmConstantShading:
+      SW.SendEnum(".CONSTANT_SHADING.");
+      break;
+    case StepVisual_ssmColourShading:
+      SW.SendEnum(".COLOUR_SHADING.");
+      break;
+    case StepVisual_ssmDotShading:
+      SW.SendEnum(".DOT_SHADING.");
+      break;
+    case StepVisual_ssmNormalShading:
+      SW.SendEnum(".NORMAL_SHADING.");
+      break;
   }
 
-  SW.Send (ent->SurfaceColour());
+  SW.Send(ent->SurfaceColour());
 }
 
-//=======================================================================
-//function : Share
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
-void RWStepVisual_RWSurfaceStyleRendering::Share (const Handle(StepVisual_SurfaceStyleRendering)& ent,
-                                                  Interface_EntityIterator& iter) const
+void RWStepVisual_RWSurfaceStyleRendering::Share(
+  const Handle(StepVisual_SurfaceStyleRendering)& ent,
+  Interface_EntityIterator&                       iter) const
 {
 
   // Own fields of SurfaceStyleRendering
 
-  iter.AddItem (ent->SurfaceColour());
+  iter.AddItem(ent->SurfaceColour());
 }

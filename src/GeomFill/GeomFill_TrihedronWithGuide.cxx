@@ -14,24 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GeomFill_TrihedronWithGuide.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(GeomFill_TrihedronWithGuide,GeomFill_TrihedronLaw)
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_TrihedronWithGuide, GeomFill_TrihedronLaw)
 
-Handle(Adaptor3d_Curve) GeomFill_TrihedronWithGuide::Guide()const
+Handle(Adaptor3d_Curve) GeomFill_TrihedronWithGuide::Guide() const
 {
   return myGuide;
 }
 
-//=======================================================================
-//function : CurrentPointOnGuide
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 gp_Pnt GeomFill_TrihedronWithGuide::CurrentPointOnGuide() const
 {
   return myCurPointOnGuide;
 }
-

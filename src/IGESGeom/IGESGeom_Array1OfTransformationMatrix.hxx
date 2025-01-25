@@ -20,7 +20,7 @@
 #include <IGESGeom_TransformationMatrix.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<Handle(IGESGeom_TransformationMatrix)> IGESGeom_Array1OfTransformationMatrix;
-
+typedef NCollection_Array1<Handle(IGESGeom_TransformationMatrix)>
+  IGESGeom_Array1OfTransformationMatrix;
 
 #endif

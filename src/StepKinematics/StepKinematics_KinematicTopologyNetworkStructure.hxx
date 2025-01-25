@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -27,26 +27,26 @@ DEFINE_STANDARD_HANDLE(StepKinematics_KinematicTopologyNetworkStructure, StepRep
 //! Representation of STEP entity KinematicTopologyNetworkStructure
 class StepKinematics_KinematicTopologyNetworkStructure : public StepRepr_Representation
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_KinematicTopologyNetworkStructure();
 
   //! Initialize all fields (own and inherited)
- Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentation_Name,
-                           const Handle(StepRepr_HArray1OfRepresentationItem)& theRepresentation_Items,
-                           const Handle(StepRepr_RepresentationContext)& theRepresentation_ContextOfItems,
-                           const Handle(StepKinematics_KinematicTopologyStructure)& theParent);
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&                  theRepresentation_Name,
+    const Handle(StepRepr_HArray1OfRepresentationItem)&      theRepresentation_Items,
+    const Handle(StepRepr_RepresentationContext)&            theRepresentation_ContextOfItems,
+    const Handle(StepKinematics_KinematicTopologyStructure)& theParent);
 
   //! Returns field Parent
   Standard_EXPORT Handle(StepKinematics_KinematicTopologyStructure) Parent() const;
   //! Sets field Parent
-  Standard_EXPORT void SetParent (const Handle(StepKinematics_KinematicTopologyStructure)& theParent);
+  Standard_EXPORT void SetParent(
+    const Handle(StepKinematics_KinematicTopologyStructure)& theParent);
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_KinematicTopologyNetworkStructure, StepRepr_Representation)
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_KinematicTopologyNetworkStructure, StepRepr_Representation)
 
 private:
   Handle(StepKinematics_KinematicTopologyStructure) myParent;
-
 };
 #endif // _StepKinematics_KinematicTopologyNetworkStructure_HeaderFile_

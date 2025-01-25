@@ -26,14 +26,12 @@ class TopoDS_Shape;
 class XBRepMesh
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-  
-  Standard_EXPORT static Standard_Integer Discret(
-    const TopoDS_Shape&    theShape,
-    const Standard_Real    theDeflection,
-    const Standard_Real    theAngle,
-    BRepMesh_DiscretRoot* &theAlgo);
+
+  Standard_EXPORT static Standard_Integer Discret(const TopoDS_Shape&    theShape,
+                                                  const Standard_Real    theDeflection,
+                                                  const Standard_Real    theAngle,
+                                                  BRepMesh_DiscretRoot*& theAlgo);
 };
 
 #endif

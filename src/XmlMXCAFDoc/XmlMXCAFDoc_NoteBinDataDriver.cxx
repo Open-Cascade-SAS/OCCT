@@ -26,39 +26,35 @@ IMPLEMENT_DOMSTRING(Title, "title")
 IMPLEMENT_DOMSTRING(MIMEtype, "mime_type")
 IMPLEMENT_DOMSTRING(Size, "size")
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-XmlMXCAFDoc_NoteBinDataDriver::XmlMXCAFDoc_NoteBinDataDriver(const Handle(Message_Messenger)& theMsgDriver)
-  : XmlMXCAFDoc_NoteDriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_NoteBinData)->Name())
+//=================================================================================================
+
+XmlMXCAFDoc_NoteBinDataDriver::XmlMXCAFDoc_NoteBinDataDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : XmlMXCAFDoc_NoteDriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_NoteBinData)->Name())
 {
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Handle(TDF_Attribute) XmlMXCAFDoc_NoteBinDataDriver::NewEmpty() const
 {
   return new XCAFDoc_NoteBinData();
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-Standard_Boolean XmlMXCAFDoc_NoteBinDataDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                      const Handle(TDF_Attribute)& theTarget,
-                                                      XmlObjMgt_RRelocationTable&  theRelocTable) const
+//=================================================================================================
+
+Standard_Boolean XmlMXCAFDoc_NoteBinDataDriver::Paste(
+  const XmlObjMgt_Persistent&  theSource,
+  const Handle(TDF_Attribute)& theTarget,
+  XmlObjMgt_RRelocationTable&  theRelocTable) const
 {
   XmlMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable);
 
   const XmlObjMgt_Element& anElement = theSource;
 
-  XmlObjMgt_DOMString aTitle = anElement.getAttribute(::Title());
+  XmlObjMgt_DOMString aTitle    = anElement.getAttribute(::Title());
   XmlObjMgt_DOMString aMIMEtype = anElement.getAttribute(::MIMEtype());
-  XmlObjMgt_DOMString aSize = anElement.getAttribute(::Size());
+  XmlObjMgt_DOMString aSize     = anElement.getAttribute(::Size());
   if (aTitle == NULL || aMIMEtype == NULL || aSize == NULL)
     return Standard_False;
 
@@ -71,7 +67,7 @@ Standard_Boolean XmlMXCAFDoc_NoteBinDataDriver::Paste(const XmlObjMgt_Persistent
     return Standard_False;
 
   XmlObjMgt_DOMString aDataStr = XmlObjMgt::GetStringValue(theSource);
-  Standard_SStream anSS(aDataStr.GetString());
+  Standard_SStream    anSS(aDataStr.GetString());
 
   Handle(TColStd_HArray1OfByte) aData = new TColStd_HArray1OfByte(1, nbSize);
   for (Standard_Integer i = 1; i <= nbSize; ++i)
@@ -86,10 +82,8 @@ Standard_Boolean XmlMXCAFDoc_NoteBinDataDriver::Paste(const XmlObjMgt_Persistent
   return Standard_True;
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void XmlMXCAFDoc_NoteBinDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
                                           XmlObjMgt_Persistent&        theTarget,
                                           XmlObjMgt_SRelocationTable&  theRelocTable) const
@@ -108,14 +102,14 @@ void XmlMXCAFDoc_NoteBinDataDriver::Paste(const Handle(TDF_Attribute)& theSource
   if (aNote->Size() > 0)
   {
     const Handle(TColStd_HArray1OfByte)& aData = aNote->Data();
-    LDOM_OSStream anOSS(aNote->Size());
+    LDOM_OSStream                        anOSS(aNote->Size());
     for (Standard_Integer i = aData->Lower(); i <= aData->Upper(); ++i)
     {
       anOSS << std::hex << aData->Value(i);
     }
-// clang-format off
+    // clang-format off
     Standard_Character* dump = (Standard_Character*)anOSS.str(); // copying! Don't forget to delete it.
-// clang-format on
+    // clang-format on
     XmlObjMgt::SetStringValue(theTarget, dump, Standard_True);
     delete[] dump;
   }

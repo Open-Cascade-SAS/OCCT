@@ -20,41 +20,24 @@
 
 #include <StepRepr_PropertyDefinitionRepresentation.hxx>
 
-
 class StepRepr_StructuralResponsePropertyDefinitionRepresentation;
-DEFINE_STANDARD_HANDLE(StepRepr_StructuralResponsePropertyDefinitionRepresentation, StepRepr_PropertyDefinitionRepresentation)
+DEFINE_STANDARD_HANDLE(StepRepr_StructuralResponsePropertyDefinitionRepresentation,
+                       StepRepr_PropertyDefinitionRepresentation)
 
 //! Representation of STEP entity StructuralResponsePropertyDefinitionRepresentation
-class StepRepr_StructuralResponsePropertyDefinitionRepresentation : public StepRepr_PropertyDefinitionRepresentation
+class StepRepr_StructuralResponsePropertyDefinitionRepresentation
+    : public StepRepr_PropertyDefinitionRepresentation
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepRepr_StructuralResponsePropertyDefinitionRepresentation();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepRepr_StructuralResponsePropertyDefinitionRepresentation,StepRepr_PropertyDefinitionRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_StructuralResponsePropertyDefinitionRepresentation,
+                          StepRepr_PropertyDefinitionRepresentation)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepRepr_StructuralResponsePropertyDefinitionRepresentation_HeaderFile

@@ -14,20 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GccInt_BLine.hxx>
 #include <gp_Lin2d.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(GccInt_BLine,GccInt_Bisec)
+IMPLEMENT_STANDARD_RTTIEXT(GccInt_BLine, GccInt_Bisec)
 
-GccInt_BLine::
-   GccInt_BLine(const gp_Lin2d& Line) {
-   lin = gp_Lin2d(Line);
- }
+GccInt_BLine::GccInt_BLine(const gp_Lin2d& Line)
+{
+  lin = gp_Lin2d(Line);
+}
 
-GccInt_IType GccInt_BLine::
-   ArcType() const { return GccInt_Lin; }
+GccInt_IType GccInt_BLine::ArcType() const
+{
+  return GccInt_Lin;
+}
 
-gp_Lin2d GccInt_BLine::
-  Line() const { return lin; }
+gp_Lin2d GccInt_BLine::Line() const
+{
+  return lin;
+}

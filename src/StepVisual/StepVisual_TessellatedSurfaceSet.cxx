@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -18,24 +18,17 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedSurfaceSet, StepVisual_TessellatedItem)
 
-//=======================================================================
-//function : StepVisual_TessellatedSurfaceSet
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepVisual_TessellatedSurfaceSet::StepVisual_TessellatedSurfaceSet ()
-{
-}
+StepVisual_TessellatedSurfaceSet::StepVisual_TessellatedSurfaceSet() {}
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedSurfaceSet::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                             const Handle(StepVisual_CoordinatesList)& theCoordinates,
-                                             const Standard_Integer thePnmax,
-                                             const Handle(TColStd_HArray2OfReal)& theNormals)
+void StepVisual_TessellatedSurfaceSet::Init(
+  const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
+  const Handle(StepVisual_CoordinatesList)& theCoordinates,
+  const Standard_Integer                    thePnmax,
+  const Handle(TColStd_HArray2OfReal)&      theNormals)
 {
   StepVisual_TessellatedItem::Init(theRepresentationItem_Name);
 
@@ -46,70 +39,50 @@ void StepVisual_TessellatedSurfaceSet::Init (const Handle(TCollection_HAsciiStri
   myNormals = theNormals;
 }
 
-//=======================================================================
-//function : Coordinates
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepVisual_CoordinatesList) StepVisual_TessellatedSurfaceSet::Coordinates () const
+Handle(StepVisual_CoordinatesList) StepVisual_TessellatedSurfaceSet::Coordinates() const
 {
   return myCoordinates;
 }
 
-//=======================================================================
-//function : SetCoordinates
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedSurfaceSet::SetCoordinates(const Handle(StepVisual_CoordinatesList)& theCoordinates)
+void StepVisual_TessellatedSurfaceSet::SetCoordinates(
+  const Handle(StepVisual_CoordinatesList)& theCoordinates)
 {
   myCoordinates = theCoordinates;
 }
 
-//=======================================================================
-//function : Pnmax
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer StepVisual_TessellatedSurfaceSet::Pnmax () const
+Standard_Integer StepVisual_TessellatedSurfaceSet::Pnmax() const
 {
   return myPnmax;
 }
 
-//=======================================================================
-//function : SetPnmax
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void StepVisual_TessellatedSurfaceSet::SetPnmax(const Standard_Integer thePnmax)
 {
   myPnmax = thePnmax;
 }
 
-//=======================================================================
-//function : Normals
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TColStd_HArray2OfReal) StepVisual_TessellatedSurfaceSet::Normals () const
+Handle(TColStd_HArray2OfReal) StepVisual_TessellatedSurfaceSet::Normals() const
 {
   return myNormals;
 }
 
-//=======================================================================
-//function : SetNormals
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void StepVisual_TessellatedSurfaceSet::SetNormals(const Handle(TColStd_HArray2OfReal)& theNormals)
 {
   myNormals = theNormals;
 }
 
-//=======================================================================
-//function : NbNormals
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer StepVisual_TessellatedSurfaceSet::NbNormals() const
 {

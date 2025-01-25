@@ -13,27 +13,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMDF_ADriverTable.hxx>
 #include <BinXCAFDrivers.hxx>
 #include <BinXCAFDrivers_DocumentRetrievalDriver.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinXCAFDrivers_DocumentRetrievalDriver,BinDrivers_DocumentRetrievalDriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinXCAFDrivers_DocumentRetrievalDriver,
+                           BinDrivers_DocumentRetrievalDriver)
 
-//=======================================================================
-//function : 
-//purpose  :
-//=======================================================================
-BinXCAFDrivers_DocumentRetrievalDriver::BinXCAFDrivers_DocumentRetrievalDriver() {
+//=================================================================================================
+
+BinXCAFDrivers_DocumentRetrievalDriver::BinXCAFDrivers_DocumentRetrievalDriver() {}
+
+//=================================================================================================
+
+Handle(BinMDF_ADriverTable) BinXCAFDrivers_DocumentRetrievalDriver::AttributeDrivers(
+  const Handle(Message_Messenger)& theMsgDriver)
+{
+  return BinXCAFDrivers::AttributeDrivers(theMsgDriver);
 }
-
-//=======================================================================
-//function : 
-//purpose  :
-//=======================================================================
-Handle(BinMDF_ADriverTable) BinXCAFDrivers_DocumentRetrievalDriver::AttributeDrivers(const Handle(Message_Messenger)& theMsgDriver) {
-  return BinXCAFDrivers::AttributeDrivers (theMsgDriver);
-}
-

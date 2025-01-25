@@ -21,5 +21,4 @@
 
 typedef NCollection_Sequence<IntTools_CommonPrt> IntTools_SequenceOfCommonPrts;
 
-
 #endif

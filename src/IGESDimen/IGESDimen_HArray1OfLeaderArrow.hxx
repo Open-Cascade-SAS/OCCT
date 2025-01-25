@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(IGESDimen_HArray1OfLeaderArrow, IGESDimen_Array1OfLeaderArrow)
 
-
 #endif

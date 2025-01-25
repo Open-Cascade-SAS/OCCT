@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -24,23 +24,17 @@
 #include <StepVisual_TessellatedStructuredItem.hxx>
 #include <StepShape_ConnectedFaceSet.hxx>
 
-//=======================================================================
-//function : RWStepVisual_RWTessellatedShell
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 RWStepVisual_RWTessellatedShell::RWStepVisual_RWTessellatedShell() {}
 
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
-
-void RWStepVisual_RWTessellatedShell::ReadStep (const Handle(StepData_StepReaderData)& theData,
-                                                const Standard_Integer theNum,
-                                                Handle(Interface_Check)& theCheck,
-                                                const Handle(StepVisual_TessellatedShell)& theEnt) const
+void RWStepVisual_RWTessellatedShell::ReadStep(
+  const Handle(StepData_StepReaderData)&     theData,
+  const Standard_Integer                     theNum,
+  Handle(Interface_Check)&                   theCheck,
+  const Handle(StepVisual_TessellatedShell)& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theCheck, "tessellated_shell"))
@@ -56,27 +50,35 @@ void RWStepVisual_RWTessellatedShell::ReadStep (const Handle(StepData_StepReader
   // Own fields of TessellatedShell
 
   Handle(StepVisual_HArray1OfTessellatedStructuredItem) aItems;
-  Standard_Integer sub2 = 0;
+  Standard_Integer                                      sub2 = 0;
   if (theData->ReadSubList(theNum, 2, "items", theCheck, sub2))
   {
-    Standard_Integer nb0 = theData->NbParams(sub2);
-    aItems = new StepVisual_HArray1OfTessellatedStructuredItem(1, nb0);
+    Standard_Integer nb0  = theData->NbParams(sub2);
+    aItems                = new StepVisual_HArray1OfTessellatedStructuredItem(1, nb0);
     Standard_Integer num2 = sub2;
     for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
     {
       Handle(StepVisual_TessellatedStructuredItem) anIt0;
-      theData->ReadEntity(num2, i0, "tessellated_structured_item", theCheck,
-        STANDARD_TYPE(StepVisual_TessellatedStructuredItem), anIt0);
+      theData->ReadEntity(num2,
+                          i0,
+                          "tessellated_structured_item",
+                          theCheck,
+                          STANDARD_TYPE(StepVisual_TessellatedStructuredItem),
+                          anIt0);
       aItems->SetValue(i0, anIt0);
     }
   }
 
   Handle(StepShape_ConnectedFaceSet) aTopologicalLink;
-  Standard_Boolean hasTopologicalLink = Standard_True;
+  Standard_Boolean                   hasTopologicalLink = Standard_True;
   if (theData->IsParamDefined(theNum, 3))
   {
-    theData->ReadEntity(theNum, 3, "topological_link", theCheck,
-      STANDARD_TYPE(StepShape_ConnectedFaceSet), aTopologicalLink);
+    theData->ReadEntity(theNum,
+                        3,
+                        "topological_link",
+                        theCheck,
+                        STANDARD_TYPE(StepShape_ConnectedFaceSet),
+                        aTopologicalLink);
   }
   else
   {
@@ -88,13 +90,11 @@ void RWStepVisual_RWTessellatedShell::ReadStep (const Handle(StepData_StepReader
   theEnt->Init(aRepresentationItem_Name, aItems, hasTopologicalLink, aTopologicalLink);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepVisual_RWTessellatedShell::WriteStep (StepData_StepWriter& theSW,
-                                                 const Handle(StepVisual_TessellatedShell)& theEnt) const
+void RWStepVisual_RWTessellatedShell::WriteStep(
+  StepData_StepWriter&                       theSW,
+  const Handle(StepVisual_TessellatedShell)& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -121,13 +121,10 @@ void RWStepVisual_RWTessellatedShell::WriteStep (StepData_StepWriter& theSW,
   }
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepVisual_RWTessellatedShell::Share (const Handle(StepVisual_TessellatedShell)&theEnt,
-                                             Interface_EntityIterator& theIter) const
+void RWStepVisual_RWTessellatedShell::Share(const Handle(StepVisual_TessellatedShell)& theEnt,
+                                            Interface_EntityIterator& theIter) const
 {
 
   // Inherited fields of RepresentationItem

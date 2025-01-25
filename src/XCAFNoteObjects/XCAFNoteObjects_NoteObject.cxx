@@ -15,79 +15,66 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFNoteObjects_NoteObject, Standard_Transient)
 
-//=======================================================================
-//function : XCAFDimTolObjects_DimensionObject
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 XCAFNoteObjects_NoteObject::XCAFNoteObjects_NoteObject()
-: myHasPlane (Standard_False),
-  myHasPnt   (Standard_False),
-  myHasPntTxt(Standard_False)
+    : myHasPlane(Standard_False),
+      myHasPnt(Standard_False),
+      myHasPntTxt(Standard_False)
 {
 }
 
-//=======================================================================
-//function : XCAFDimTolObjects_DimensionObject
-//purpose  :
-//=======================================================================
-XCAFNoteObjects_NoteObject::XCAFNoteObjects_NoteObject (const Handle(XCAFNoteObjects_NoteObject)& theObj)
-: myPlane (theObj->myPlane),
-  myPnt (theObj->myPnt),
-  myPntTxt (theObj->myPntTxt),
-  myPresentation (theObj->myPresentation),
-  myHasPlane (theObj->myHasPlane),
-  myHasPnt (theObj->myHasPnt),
-  myHasPntTxt (theObj->myHasPntTxt)
+//=================================================================================================
+
+XCAFNoteObjects_NoteObject::XCAFNoteObjects_NoteObject(
+  const Handle(XCAFNoteObjects_NoteObject)& theObj)
+    : myPlane(theObj->myPlane),
+      myPnt(theObj->myPnt),
+      myPntTxt(theObj->myPntTxt),
+      myPresentation(theObj->myPresentation),
+      myHasPlane(theObj->myHasPlane),
+      myHasPnt(theObj->myHasPnt),
+      myHasPntTxt(theObj->myHasPntTxt)
 {
 }
 
-//=======================================================================
-//function : SetPlane
-//purpose  :
-//=======================================================================
-void XCAFNoteObjects_NoteObject::SetPlane (const gp_Ax2& thePlane)
+//=================================================================================================
+
+void XCAFNoteObjects_NoteObject::SetPlane(const gp_Ax2& thePlane)
 {
-  myPlane = thePlane;
+  myPlane    = thePlane;
   myHasPlane = Standard_True;
 }
 
-//=======================================================================
-//function : SetPoint
-//purpose  :
-//=======================================================================
-void XCAFNoteObjects_NoteObject::SetPoint (const gp_Pnt& thePnt)
+//=================================================================================================
+
+void XCAFNoteObjects_NoteObject::SetPoint(const gp_Pnt& thePnt)
 {
-  myPnt = thePnt;
+  myPnt    = thePnt;
   myHasPnt = Standard_True;
 }
 
-//=======================================================================
-//function : SetPointText
-//purpose  :
-//=======================================================================
-void XCAFNoteObjects_NoteObject::SetPointText (const gp_Pnt& thePnt)
+//=================================================================================================
+
+void XCAFNoteObjects_NoteObject::SetPointText(const gp_Pnt& thePnt)
 {
-  myPntTxt = thePnt;
+  myPntTxt    = thePnt;
   myHasPntTxt = Standard_True;
 }
 
-//=======================================================================
-//function : SetPresentation
-//purpose  :
-//=======================================================================
-void XCAFNoteObjects_NoteObject::SetPresentation (const TopoDS_Shape& thePresentation)
+//=================================================================================================
+
+void XCAFNoteObjects_NoteObject::SetPresentation(const TopoDS_Shape& thePresentation)
 {
   myPresentation = thePresentation;
 }
 
-//=======================================================================
-//function : Reset
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void XCAFNoteObjects_NoteObject::Reset()
 {
-  myHasPlane = Standard_False;
-  myHasPnt = Standard_False;
+  myHasPlane  = Standard_False;
+  myHasPnt    = Standard_False;
   myHasPntTxt = Standard_False;
   myPresentation.Nullify();
 }

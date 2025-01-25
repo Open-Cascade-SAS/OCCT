@@ -23,7 +23,6 @@
 #include <Geom2d_Curve.hxx>
 class gp_Pnt2d;
 
-
 class Geom2d_BoundedCurve;
 DEFINE_STANDARD_HANDLE(Geom2d_BoundedCurve, Geom2d_Curve)
 
@@ -47,14 +46,10 @@ class Geom2d_BoundedCurve : public Geom2d_Curve
 {
 
 public:
-
-  
-
   //! Returns the end point of the curve.
   //! The end point is the value of the curve for the
   //! "LastParameter" of the curve.
   Standard_EXPORT virtual gp_Pnt2d EndPoint() const = 0;
-  
 
   //! Returns the start point of the curve.
   //! The start point is the value of the curve for the
@@ -62,29 +57,13 @@ public:
   Standard_EXPORT virtual gp_Pnt2d StartPoint() const = 0;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Geom2d_BoundedCurve,Geom2d_Curve)
+  DEFINE_STANDARD_RTTIEXT(Geom2d_BoundedCurve, Geom2d_Curve)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Geom2d_BoundedCurve_HeaderFile

@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowser_PropertyPanel.hxx>
 
@@ -36,29 +36,30 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-DFBrowser_PropertyPanel::DFBrowser_PropertyPanel (QWidget* theParent)
-: QObject (theParent), myAttributesStack (0)
+DFBrowser_PropertyPanel::DFBrowser_PropertyPanel(QWidget* theParent)
+    : QObject(theParent),
+      myAttributesStack(0)
 {
-  myMainWindow = new QWidget (theParent);
-  ViewControl_Tools::SetWhiteBackground (myMainWindow);
+  myMainWindow = new QWidget(theParent);
+  ViewControl_Tools::SetWhiteBackground(myMainWindow);
 
-  QGridLayout* aLayout = new QGridLayout (myMainWindow);
-  aLayout->setContentsMargins (0, 0, 0, 0);
+  QGridLayout* aLayout = new QGridLayout(myMainWindow);
+  aLayout->setContentsMargins(0, 0, 0, 0);
 
-  myAttributesStack = new DFBrowser_AttributePaneStack (this);
-  myAttributesStack->CreateWidget (myMainWindow);
-  aLayout->addWidget (myAttributesStack->GetWidget(), 0, 0);
+  myAttributesStack = new DFBrowser_AttributePaneStack(this);
+  myAttributesStack->CreateWidget(myMainWindow);
+  aLayout->addWidget(myAttributesStack->GetWidget(), 0, 0);
 }
 
 // =======================================================================
 // function : UpdateBySelectionChanged
 // purpose :
 // =======================================================================
-void DFBrowser_PropertyPanel::UpdateBySelectionChanged (const QItemSelection& theSelected,
-                                                        const QItemSelection&)
+void DFBrowser_PropertyPanel::UpdateBySelectionChanged(const QItemSelection& theSelected,
+                                                       const QItemSelection&)
 {
   GetAttributesStack()->GetSearchView()->Reset();
 
-  QModelIndex anIndex = TreeModel_ModelBase::SingleSelected (theSelected.indexes(), 0);
-  myAttributesStack->SetCurrentItem (anIndex);
+  QModelIndex anIndex = TreeModel_ModelBase::SingleSelected(theSelected.indexes(), 0);
+  myAttributesStack->SetCurrentItem(anIndex);
 }

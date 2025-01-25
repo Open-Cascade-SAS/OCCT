@@ -26,63 +26,47 @@ class StepGeom_Direction;
 class TCollection_HAsciiString;
 class StepGeom_CartesianPoint;
 
-
 class StepGeom_Axis2Placement3d;
 DEFINE_STANDARD_HANDLE(StepGeom_Axis2Placement3d, StepGeom_Placement)
-
 
 class StepGeom_Axis2Placement3d : public StepGeom_Placement
 {
 
 public:
-
-  
   //! Returns a Axis2Placement3d
   Standard_EXPORT StepGeom_Axis2Placement3d();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_CartesianPoint)& aLocation, const Standard_Boolean hasAaxis, const Handle(StepGeom_Direction)& aAxis, const Standard_Boolean hasArefDirection, const Handle(StepGeom_Direction)& aRefDirection);
-  
-  Standard_EXPORT void SetAxis (const Handle(StepGeom_Direction)& aAxis);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Handle(StepGeom_CartesianPoint)&  aLocation,
+                            const Standard_Boolean                  hasAaxis,
+                            const Handle(StepGeom_Direction)&       aAxis,
+                            const Standard_Boolean                  hasArefDirection,
+                            const Handle(StepGeom_Direction)&       aRefDirection);
+
+  Standard_EXPORT void SetAxis(const Handle(StepGeom_Direction)& aAxis);
+
   Standard_EXPORT void UnSetAxis();
-  
+
   Standard_EXPORT Handle(StepGeom_Direction) Axis() const;
-  
+
   Standard_EXPORT Standard_Boolean HasAxis() const;
-  
-  Standard_EXPORT void SetRefDirection (const Handle(StepGeom_Direction)& aRefDirection);
-  
+
+  Standard_EXPORT void SetRefDirection(const Handle(StepGeom_Direction)& aRefDirection);
+
   Standard_EXPORT void UnSetRefDirection();
-  
+
   Standard_EXPORT Handle(StepGeom_Direction) RefDirection() const;
-  
+
   Standard_EXPORT Standard_Boolean HasRefDirection() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_Axis2Placement3d,StepGeom_Placement)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_Axis2Placement3d, StepGeom_Placement)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepGeom_Direction) axis;
   Handle(StepGeom_Direction) refDirection;
-  Standard_Boolean hasAxis;
-  Standard_Boolean hasRefDirection;
-
-
+  Standard_Boolean           hasAxis;
+  Standard_Boolean           hasRefDirection;
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_Axis2Placement3d_HeaderFile

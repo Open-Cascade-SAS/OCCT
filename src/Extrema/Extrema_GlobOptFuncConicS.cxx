@@ -16,38 +16,34 @@
 #include <gp_Pnt.hxx>
 #include <ElCLib.hxx>
 
-//F(u, v) = Conic.SquareDistance(myS(u, v))
+// F(u, v) = Conic.SquareDistance(myS(u, v))
 
-//=======================================================================
-//function : value
-//purpose  : 
-//=======================================================================
-void Extrema_GlobOptFuncConicS::value(Standard_Real su,
-                                      Standard_Real sv,
-                                      Standard_Real &F)
+//=================================================================================================
+
+void Extrema_GlobOptFuncConicS::value(Standard_Real su, Standard_Real sv, Standard_Real& F)
 {
   Standard_Real ct;
-  gp_Pnt aPS = myS->Value(su, sv);
+  gp_Pnt        aPS = myS->Value(su, sv);
   switch (myCType)
   {
-  case GeomAbs_Line:
-    ct = ElCLib::Parameter(myLin, aPS);
-    break;
-  case GeomAbs_Circle:
-    ct = ElCLib::Parameter(myCirc, aPS);
-    break;
-  case GeomAbs_Ellipse:
-    ct = ElCLib::Parameter(myElips, aPS);
-    break;
-  case GeomAbs_Hyperbola:
-    ct = ElCLib::Parameter(myHypr, aPS);
-    break;
-  case GeomAbs_Parabola:
-    ct = ElCLib::Parameter(myParab, aPS);
-    break;
-  default:
-    F = Precision::Infinite();
-    return;
+    case GeomAbs_Line:
+      ct = ElCLib::Parameter(myLin, aPS);
+      break;
+    case GeomAbs_Circle:
+      ct = ElCLib::Parameter(myCirc, aPS);
+      break;
+    case GeomAbs_Ellipse:
+      ct = ElCLib::Parameter(myElips, aPS);
+      break;
+    case GeomAbs_Hyperbola:
+      ct = ElCLib::Parameter(myHypr, aPS);
+      break;
+    case GeomAbs_Parabola:
+      ct = ElCLib::Parameter(myParab, aPS);
+      break;
+    default:
+      F = Precision::Infinite();
+      return;
   }
   //
   if (myCType == GeomAbs_Circle || myCType == GeomAbs_Ellipse)
@@ -61,132 +57,126 @@ void Extrema_GlobOptFuncConicS::value(Standard_Real su,
   if (ct >= myTf && ct <= myTl)
   {
     gp_Pnt aPC = myC->Value(ct);
-    F = Min(F, aPS.SquareDistance(aPC));
+    F          = Min(F, aPS.SquareDistance(aPC));
   }
   F = Min(F, aPS.SquareDistance(myCPf));
   F = Min(F, aPS.SquareDistance(myCPl));
-
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : checkInputData
-//purpose  : 
-//=======================================================================
-Standard_Boolean Extrema_GlobOptFuncConicS::checkInputData(const math_Vector   &X,
-                                                           Standard_Real       &su,
-                                                           Standard_Real       &sv)
+Standard_Boolean Extrema_GlobOptFuncConicS::checkInputData(const math_Vector& X,
+                                                           Standard_Real&     su,
+                                                           Standard_Real&     sv)
 {
   Standard_Integer aStartIndex = X.Lower();
-  su = X(aStartIndex);
-  sv = X(aStartIndex + 1);
+  su                           = X(aStartIndex);
+  sv                           = X(aStartIndex + 1);
 
-  if (su < myUf || su > myUl  ||
-      sv < myVf || sv > myVl)
+  if (su < myUf || su > myUl || sv < myVf || sv > myVl)
   {
     return Standard_False;
   }
   return Standard_True;
 }
 
-//=======================================================================
-//function : Extrema_GlobOptFuncConicS
-//purpose  : Constructor
-//=======================================================================
-Extrema_GlobOptFuncConicS::Extrema_GlobOptFuncConicS(const Adaptor3d_Surface *S,
-  const Standard_Real theUf, const Standard_Real theUl,
-  const Standard_Real theVf, const Standard_Real theVl)
-:  myS(S), myUf(theUf), myUl(theUl),
-   myVf(theVf), myVl(theVl)
-{
+//=================================================================================================
 
+Extrema_GlobOptFuncConicS::Extrema_GlobOptFuncConicS(const Adaptor3d_Surface* S,
+                                                     const Standard_Real      theUf,
+                                                     const Standard_Real      theUl,
+                                                     const Standard_Real      theVf,
+                                                     const Standard_Real      theVl)
+    : myS(S),
+      myUf(theUf),
+      myUl(theUl),
+      myVf(theVf),
+      myVl(theVl)
+{
 }
 
-//=======================================================================
-//function : Extrema_GlobOptFuncConicS
-//purpose  : Constructor
-//=======================================================================
-Extrema_GlobOptFuncConicS::Extrema_GlobOptFuncConicS(const Adaptor3d_Surface *S)
-  : myS(S), myUf(S->FirstUParameter()), myUl(S->LastUParameter()),
-  myVf(S->FirstVParameter()), myVl(S->LastVParameter())
-{
+//=================================================================================================
 
+Extrema_GlobOptFuncConicS::Extrema_GlobOptFuncConicS(const Adaptor3d_Surface* S)
+    : myS(S),
+      myUf(S->FirstUParameter()),
+      myUl(S->LastUParameter()),
+      myVf(S->FirstVParameter()),
+      myVl(S->LastVParameter())
+{
 }
-//=======================================================================
-//function : Extrema_GlobOptFuncConicS
-//purpose  : Constructor
-//=======================================================================
-Extrema_GlobOptFuncConicS::Extrema_GlobOptFuncConicS(const Adaptor3d_Curve   *C,
-  const Adaptor3d_Surface *S)
-  : myS(S), myUf(S->FirstUParameter()), myUl(S->LastUParameter()),
-  myVf(S->FirstVParameter()), myVl(S->LastVParameter())
+
+//=================================================================================================
+
+Extrema_GlobOptFuncConicS::Extrema_GlobOptFuncConicS(const Adaptor3d_Curve*   C,
+                                                     const Adaptor3d_Surface* S)
+    : myS(S),
+      myUf(S->FirstUParameter()),
+      myUl(S->LastUParameter()),
+      myVf(S->FirstVParameter()),
+      myVl(S->LastVParameter())
 {
   Standard_Real aCTf = C->FirstParameter();
   Standard_Real aCTl = C->LastParameter();
   LoadConic(C, aCTf, aCTl);
 }
 
-//=======================================================================
-//function : LoadConic
-//purpose  :
-//=======================================================================
-void Extrema_GlobOptFuncConicS::LoadConic(const Adaptor3d_Curve   *C,
-  const Standard_Real theTf, const Standard_Real theTl)
+//=================================================================================================
+
+void Extrema_GlobOptFuncConicS::LoadConic(const Adaptor3d_Curve* C,
+                                          const Standard_Real    theTf,
+                                          const Standard_Real    theTl)
 {
-  myC = C;
+  myC  = C;
   myTf = theTf;
   myTl = theTl;
   if (myC->IsPeriodic())
   {
     constexpr Standard_Real aTMax = 2. * M_PI + Precision::PConfusion();
-    if (myTf > aTMax || myTf < -Precision::PConfusion() ||
-      Abs(myTl - myTf) > aTMax)
+    if (myTf > aTMax || myTf < -Precision::PConfusion() || Abs(myTl - myTf) > aTMax)
     {
-      ElCLib::AdjustPeriodic(0., 2. * M_PI,
-        Min(Abs(myTl - myTf) / 2, Precision::PConfusion()),
-        myTf, myTl);
+      ElCLib::AdjustPeriodic(0.,
+                             2. * M_PI,
+                             Min(Abs(myTl - myTf) / 2, Precision::PConfusion()),
+                             myTf,
+                             myTl);
     }
   }
-  myCPf = myC->Value(myTf);
-  myCPl = myC->Value(myTl);
+  myCPf   = myC->Value(myTf);
+  myCPl   = myC->Value(myTl);
   myCType = myC->GetType();
   switch (myCType)
   {
-  case GeomAbs_Line:
-    myLin = myC->Line();
-    break;
-  case GeomAbs_Circle:
-    myCirc = myC->Circle();
-    break;
-  case GeomAbs_Ellipse:
-    myElips = myC->Ellipse();
-    break;
-  case GeomAbs_Hyperbola:
-    myHypr = myC->Hyperbola();
-    break;
-  case GeomAbs_Parabola:
-    myParab = myC->Parabola();
-    break;
-  default:
-    break;
+    case GeomAbs_Line:
+      myLin = myC->Line();
+      break;
+    case GeomAbs_Circle:
+      myCirc = myC->Circle();
+      break;
+    case GeomAbs_Ellipse:
+      myElips = myC->Ellipse();
+      break;
+    case GeomAbs_Hyperbola:
+      myHypr = myC->Hyperbola();
+      break;
+    case GeomAbs_Parabola:
+      myParab = myC->Parabola();
+      break;
+    default:
+      break;
   }
 }
 
-//=======================================================================
-//function : NbVariables
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer Extrema_GlobOptFuncConicS::NbVariables() const
 {
   return 2;
 }
 
-//=======================================================================
-//function : Value
-//purpose  :
-//=======================================================================
-Standard_Boolean Extrema_GlobOptFuncConicS::Value(const math_Vector &X,
-                                                  Standard_Real     &F)
+//=================================================================================================
+
+Standard_Boolean Extrema_GlobOptFuncConicS::Value(const math_Vector& X, Standard_Real& F)
 {
   Standard_Real su, sv;
   if (!checkInputData(X, su, sv))
@@ -200,34 +190,32 @@ Standard_Boolean Extrema_GlobOptFuncConicS::Value(const math_Vector &X,
   return Standard_True;
 }
 
-//=======================================================================
-//function : ConicParameter
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Real Extrema_GlobOptFuncConicS::ConicParameter(const math_Vector& theUV) const
 {
   Standard_Real ct;
-  gp_Pnt aPS = myS->Value(theUV(1), theUV(2));
+  gp_Pnt        aPS = myS->Value(theUV(1), theUV(2));
   switch (myCType)
   {
-  case GeomAbs_Line:
-    ct = ElCLib::Parameter(myLin, aPS);
-    break;
-  case GeomAbs_Circle:
-    ct = ElCLib::Parameter(myCirc, aPS);
-    break;
-  case GeomAbs_Ellipse:
-    ct = ElCLib::Parameter(myElips, aPS);
-    break;
-  case GeomAbs_Hyperbola:
-    ct = ElCLib::Parameter(myHypr, aPS);
-    break;
-  case GeomAbs_Parabola:
-    ct = ElCLib::Parameter(myParab, aPS);
-    break;
-  default:
-    ct = myTf;
-    return ct;
+    case GeomAbs_Line:
+      ct = ElCLib::Parameter(myLin, aPS);
+      break;
+    case GeomAbs_Circle:
+      ct = ElCLib::Parameter(myCirc, aPS);
+      break;
+    case GeomAbs_Ellipse:
+      ct = ElCLib::Parameter(myElips, aPS);
+      break;
+    case GeomAbs_Hyperbola:
+      ct = ElCLib::Parameter(myHypr, aPS);
+      break;
+    case GeomAbs_Parabola:
+      ct = ElCLib::Parameter(myParab, aPS);
+      break;
+    default:
+      ct = myTf;
+      return ct;
   }
   //
   if (myCType == GeomAbs_Circle || myCType == GeomAbs_Ellipse)
@@ -241,18 +229,18 @@ Standard_Real Extrema_GlobOptFuncConicS::ConicParameter(const math_Vector& theUV
   if (ct >= myTf && ct <= myTl)
   {
     gp_Pnt aPC = myC->Value(ct);
-    F = Min(F, aPS.SquareDistance(aPC));
+    F          = Min(F, aPS.SquareDistance(aPC));
   }
   Standard_Real Fext = aPS.SquareDistance(myCPf);
   if (Fext < F)
   {
-    F = Fext;
+    F  = Fext;
     ct = myTf;
   }
   Fext = aPS.SquareDistance(myCPl);
   if (Fext < F)
   {
-    F = Fext;
+    F  = Fext;
     ct = myTl;
   }
   return ct;

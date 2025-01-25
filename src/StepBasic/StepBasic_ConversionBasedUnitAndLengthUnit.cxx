@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_ConversionBasedUnitAndLengthUnit.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
@@ -19,24 +18,26 @@
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndLengthUnit,StepBasic_ConversionBasedUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndLengthUnit,
+                           StepBasic_ConversionBasedUnit)
 
-StepBasic_ConversionBasedUnitAndLengthUnit::StepBasic_ConversionBasedUnitAndLengthUnit ()  {}
+StepBasic_ConversionBasedUnitAndLengthUnit::StepBasic_ConversionBasedUnitAndLengthUnit() {}
 
-void StepBasic_ConversionBasedUnitAndLengthUnit::Init(const Handle(StepBasic_DimensionalExponents)& aDimensions,
-						      const Handle(TCollection_HAsciiString)& aName,
-						      const Handle(StepBasic_MeasureWithUnit)& aConversionFactor)
+void StepBasic_ConversionBasedUnitAndLengthUnit::Init(
+  const Handle(StepBasic_DimensionalExponents)& aDimensions,
+  const Handle(TCollection_HAsciiString)&       aName,
+  const Handle(StepBasic_MeasureWithUnit)&      aConversionFactor)
 {
   // --- ANDOR component fields ---
   StepBasic_ConversionBasedUnit::Init(aDimensions, aName, aConversionFactor);
-  
+
   // --- ANDOR component fields ---
   lengthUnit = new StepBasic_LengthUnit();
   lengthUnit->Init(aDimensions);
 }
 
-
-void StepBasic_ConversionBasedUnitAndLengthUnit::SetLengthUnit(const Handle(StepBasic_LengthUnit)& aLengthUnit)
+void StepBasic_ConversionBasedUnitAndLengthUnit::SetLengthUnit(
+  const Handle(StepBasic_LengthUnit)& aLengthUnit)
 {
   lengthUnit = aLengthUnit;
 }
@@ -45,4 +46,3 @@ Handle(StepBasic_LengthUnit) StepBasic_ConversionBasedUnitAndLengthUnit::LengthU
 {
   return lengthUnit;
 }
-

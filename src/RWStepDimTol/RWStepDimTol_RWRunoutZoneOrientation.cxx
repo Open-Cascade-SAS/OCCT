@@ -19,44 +19,37 @@
 #include <StepData_StepWriter.hxx>
 #include <StepDimTol_RunoutZoneOrientation.hxx>
 
-//=======================================================================
-//function : RWStepDimTol_RWRunoutZoneOrientation
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-RWStepDimTol_RWRunoutZoneOrientation::RWStepDimTol_RWRunoutZoneOrientation ()
-{
-}
+RWStepDimTol_RWRunoutZoneOrientation::RWStepDimTol_RWRunoutZoneOrientation() {}
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepDimTol_RWRunoutZoneOrientation::ReadStep (const Handle(StepData_StepReaderData)& data,
-                                                     const Standard_Integer num,
-                                                     Handle(Interface_Check)& ach,
-                                                     const Handle(StepDimTol_RunoutZoneOrientation) &ent) const
+void RWStepDimTol_RWRunoutZoneOrientation::ReadStep(
+  const Handle(StepData_StepReaderData)&          data,
+  const Standard_Integer                          num,
+  Handle(Interface_Check)&                        ach,
+  const Handle(StepDimTol_RunoutZoneOrientation)& ent) const
 {
   // Check number of parameters
-  if ( ! data->CheckNbParams(num,1,ach,"runout_zone_orientation") ) return;
+  if (!data->CheckNbParams(num, 1, ach, "runout_zone_orientation"))
+    return;
 
   // Own fields of RunoutZoneOrientation
 
   Handle(StepBasic_PlaneAngleMeasureWithUnit) anAngle;
-  data->ReadEntity (num, 1, "angle", ach, STANDARD_TYPE(StepBasic_PlaneAngleMeasureWithUnit), anAngle);
+  data
+    ->ReadEntity(num, 1, "angle", ach, STANDARD_TYPE(StepBasic_PlaneAngleMeasureWithUnit), anAngle);
 
   // Initialize entity
   ent->Init(anAngle);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepDimTol_RWRunoutZoneOrientation::WriteStep (StepData_StepWriter& SW,
-                                                      const Handle(StepDimTol_RunoutZoneOrientation) &ent) const
+void RWStepDimTol_RWRunoutZoneOrientation::WriteStep(
+  StepData_StepWriter&                            SW,
+  const Handle(StepDimTol_RunoutZoneOrientation)& ent) const
 {
-  SW.Send (ent->Angle());
+  SW.Send(ent->Angle());
 }

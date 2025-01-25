@@ -17,13 +17,12 @@
 #ifndef _IFSelect_RemainMode_HeaderFile
 #define _IFSelect_RemainMode_HeaderFile
 
-
 enum IFSelect_RemainMode
 {
-IFSelect_RemainForget,
-IFSelect_RemainCompute,
-IFSelect_RemainDisplay,
-IFSelect_RemainUndo
+  IFSelect_RemainForget,
+  IFSelect_RemainCompute,
+  IFSelect_RemainDisplay,
+  IFSelect_RemainUndo
 };
 
 #endif // _IFSelect_RemainMode_HeaderFile

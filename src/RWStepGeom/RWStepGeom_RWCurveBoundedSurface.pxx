@@ -28,48 +28,31 @@ class StepGeom_CurveBoundedSurface;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write tool for CurveBoundedSurface
-class RWStepGeom_RWCurveBoundedSurface 
+class RWStepGeom_RWCurveBoundedSurface
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_HIDDEN RWStepGeom_RWCurveBoundedSurface();
-  
+
   //! Reads CurveBoundedSurface
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepGeom_CurveBoundedSurface)& ent) const;
-  
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&      data,
+                                const Standard_Integer                      num,
+                                Handle(Interface_Check)&                    ach,
+                                const Handle(StepGeom_CurveBoundedSurface)& ent) const;
+
   //! Writes CurveBoundedSurface
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepGeom_CurveBoundedSurface)& ent) const;
-  
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                        SW,
+                                 const Handle(StepGeom_CurveBoundedSurface)& ent) const;
+
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepGeom_CurveBoundedSurface)& ent, Interface_EntityIterator& iter) const;
-
-
-
+  Standard_HIDDEN void Share(const Handle(StepGeom_CurveBoundedSurface)& ent,
+                             Interface_EntityIterator&                   iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepGeom_RWCurveBoundedSurface_HeaderFile

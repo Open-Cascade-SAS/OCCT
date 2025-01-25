@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -18,26 +18,21 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_PointOnSurfacePair, StepKinematics_HighOrderKinematicPair)
 
-//=======================================================================
-//function : StepKinematics_PointOnSurfacePair
-//purpose  :
-//=======================================================================
-StepKinematics_PointOnSurfacePair::StepKinematics_PointOnSurfacePair ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_PointOnSurfacePair::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                              const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Name,
-                                              const Standard_Boolean hasItemDefinedTransformation_Description,
-                                              const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Description,
-                                              const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem1,
-                                              const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem2,
-                                              const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-                                              const Handle(StepGeom_Surface)& thePairSurface)
+StepKinematics_PointOnSurfacePair::StepKinematics_PointOnSurfacePair() {}
+
+//=================================================================================================
+
+void StepKinematics_PointOnSurfacePair::Init(
+  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
+  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
+  const Standard_Boolean                       hasItemDefinedTransformation_Description,
+  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
+  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
+  const Handle(StepGeom_Surface)&              thePairSurface)
 {
   StepKinematics_HighOrderKinematicPair::Init(theRepresentationItem_Name,
                                               theItemDefinedTransformation_Name,
@@ -50,20 +45,17 @@ void StepKinematics_PointOnSurfacePair::Init (const Handle(TCollection_HAsciiStr
   myPairSurface = thePairSurface;
 }
 
-//=======================================================================
-//function : PairSurface
-//purpose  :
-//=======================================================================
-Handle(StepGeom_Surface) StepKinematics_PointOnSurfacePair::PairSurface () const
+//=================================================================================================
+
+Handle(StepGeom_Surface) StepKinematics_PointOnSurfacePair::PairSurface() const
 {
   return myPairSurface;
 }
 
-//=======================================================================
-//function : SetPairSurface
-//purpose  :
-//=======================================================================
-void StepKinematics_PointOnSurfacePair::SetPairSurface (const Handle(StepGeom_Surface)& thePairSurface)
+//=================================================================================================
+
+void StepKinematics_PointOnSurfacePair::SetPairSurface(
+  const Handle(StepGeom_Surface)& thePairSurface)
 {
   myPairSurface = thePairSurface;
 }

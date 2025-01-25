@@ -26,51 +26,29 @@ class Standard_Transient;
 class StepDimTol_GeometricTolerance;
 class StepShape_PlusMinusTolerance;
 
-
 //! Representation of STEP SELECT type ShapeToleranceSelect
-class StepDimTol_ShapeToleranceSelect  : public StepData_SelectType
+class StepDimTol_ShapeToleranceSelect : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_EXPORT StepDimTol_ShapeToleranceSelect();
-  
+
   //! Recognizes a kind of ShapeToleranceSelect select type
   //! 1 -> GeometricTolerance from StepDimTol
   //! 2 -> PlusMinusTolerance from StepShape
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! Returns Value as GeometricTolerance (or Null if another type)
   Standard_EXPORT Handle(StepDimTol_GeometricTolerance) GeometricTolerance() const;
-  
+
   //! Returns Value as PlusMinusTolerance (or Null if another type)
   Standard_EXPORT Handle(StepShape_PlusMinusTolerance) PlusMinusTolerance() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepDimTol_ShapeToleranceSelect_HeaderFile

@@ -15,7 +15,7 @@
 
 //      	----------------------------------
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Oct 10 1997	Creation
 
 #include <Standard_GUID.hxx>
@@ -23,28 +23,22 @@
 #include <TDF_DefaultDeltaOnModification.hxx>
 #include <TDF_Label.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDF_DefaultDeltaOnModification,TDF_DeltaOnModification)
+IMPLEMENT_STANDARD_RTTIEXT(TDF_DefaultDeltaOnModification, TDF_DeltaOnModification)
 
-//=======================================================================
-//function : TDF_DefaultDeltaOnModification
-//purpose  : 
-//=======================================================================
-TDF_DefaultDeltaOnModification::TDF_DefaultDeltaOnModification
-(const Handle(TDF_Attribute)& anAttribute)
-: TDF_DeltaOnModification(anAttribute)
-{}
+//=================================================================================================
 
-
-//=======================================================================
-//function : Apply
-//purpose  : 
-//=======================================================================
-
-void TDF_DefaultDeltaOnModification::Apply() 
+TDF_DefaultDeltaOnModification::TDF_DefaultDeltaOnModification(
+  const Handle(TDF_Attribute)& anAttribute)
+    : TDF_DeltaOnModification(anAttribute)
 {
-  const Handle(TDF_Attribute)& savAtt = Attribute();
-  Handle(TDF_Attribute) refAtt;
-  if (Label().FindAttribute(savAtt->ID(),refAtt))
-    refAtt->DeltaOnModification(this);
 }
 
+//=================================================================================================
+
+void TDF_DefaultDeltaOnModification::Apply()
+{
+  const Handle(TDF_Attribute)& savAtt = Attribute();
+  Handle(TDF_Attribute)        refAtt;
+  if (Label().FindAttribute(savAtt->ID(), refAtt))
+    refAtt->DeltaOnModification(this);
+}

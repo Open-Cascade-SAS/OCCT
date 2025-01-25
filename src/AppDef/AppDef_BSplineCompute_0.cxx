@@ -29,7 +29,6 @@
 #include <AppDef_Gradient_BFGSOfMyGradientbisOfBSplineCompute.hxx>
 #include <AppParCurves_MultiBSpCurve.hxx>
 #include <AppParCurves_MultiCurve.hxx>
- 
 
 #define MultiLine AppDef_MultiLine
 #define MultiLine_hxx <AppDef_MultiLine.hxx>
@@ -37,37 +36,54 @@
 #define LineTool_hxx <AppDef_MyLineTool.hxx>
 #define Approx_MyBSplGradient AppDef_MyBSplGradientOfBSplineCompute
 #define Approx_MyBSplGradient_hxx <AppDef_MyBSplGradientOfBSplineCompute.hxx>
-#define Approx_BSpParLeastSquareOfMyBSplGradient AppDef_BSpParLeastSquareOfMyBSplGradientOfBSplineCompute
-#define Approx_BSpParLeastSquareOfMyBSplGradient_hxx <AppDef_BSpParLeastSquareOfMyBSplGradientOfBSplineCompute.hxx>
+#define Approx_BSpParLeastSquareOfMyBSplGradient                                                   \
+  AppDef_BSpParLeastSquareOfMyBSplGradientOfBSplineCompute
+#define Approx_BSpParLeastSquareOfMyBSplGradient_hxx                                               \
+  <AppDef_BSpParLeastSquareOfMyBSplGradientOfBSplineCompute.hxx>
 #define Approx_BSpParFunctionOfMyBSplGradient AppDef_BSpParFunctionOfMyBSplGradientOfBSplineCompute
-#define Approx_BSpParFunctionOfMyBSplGradient_hxx <AppDef_BSpParFunctionOfMyBSplGradientOfBSplineCompute.hxx>
-#define Approx_BSpGradient_BFGSOfMyBSplGradient AppDef_BSpGradient_BFGSOfMyBSplGradientOfBSplineCompute
-#define Approx_BSpGradient_BFGSOfMyBSplGradient_hxx <AppDef_BSpGradient_BFGSOfMyBSplGradientOfBSplineCompute.hxx>
-#define Approx_BSpParLeastSquareOfMyBSplGradient AppDef_BSpParLeastSquareOfMyBSplGradientOfBSplineCompute
-#define Approx_BSpParLeastSquareOfMyBSplGradient_hxx <AppDef_BSpParLeastSquareOfMyBSplGradientOfBSplineCompute.hxx>
+#define Approx_BSpParFunctionOfMyBSplGradient_hxx                                                  \
+  <AppDef_BSpParFunctionOfMyBSplGradientOfBSplineCompute.hxx>
+#define Approx_BSpGradient_BFGSOfMyBSplGradient                                                    \
+  AppDef_BSpGradient_BFGSOfMyBSplGradientOfBSplineCompute
+#define Approx_BSpGradient_BFGSOfMyBSplGradient_hxx                                                \
+  <AppDef_BSpGradient_BFGSOfMyBSplGradientOfBSplineCompute.hxx>
+#define Approx_BSpParLeastSquareOfMyBSplGradient                                                   \
+  AppDef_BSpParLeastSquareOfMyBSplGradientOfBSplineCompute
+#define Approx_BSpParLeastSquareOfMyBSplGradient_hxx                                               \
+  <AppDef_BSpParLeastSquareOfMyBSplGradientOfBSplineCompute.hxx>
 #define Approx_BSpParFunctionOfMyBSplGradient AppDef_BSpParFunctionOfMyBSplGradientOfBSplineCompute
-#define Approx_BSpParFunctionOfMyBSplGradient_hxx <AppDef_BSpParFunctionOfMyBSplGradientOfBSplineCompute.hxx>
-#define Approx_BSpGradient_BFGSOfMyBSplGradient AppDef_BSpGradient_BFGSOfMyBSplGradientOfBSplineCompute
-#define Approx_BSpGradient_BFGSOfMyBSplGradient_hxx <AppDef_BSpGradient_BFGSOfMyBSplGradientOfBSplineCompute.hxx>
+#define Approx_BSpParFunctionOfMyBSplGradient_hxx                                                  \
+  <AppDef_BSpParFunctionOfMyBSplGradientOfBSplineCompute.hxx>
+#define Approx_BSpGradient_BFGSOfMyBSplGradient                                                    \
+  AppDef_BSpGradient_BFGSOfMyBSplGradientOfBSplineCompute
+#define Approx_BSpGradient_BFGSOfMyBSplGradient_hxx                                                \
+  <AppDef_BSpGradient_BFGSOfMyBSplGradientOfBSplineCompute.hxx>
 #define Approx_MyGradientbis AppDef_MyGradientbisOfBSplineCompute
 #define Approx_MyGradientbis_hxx <AppDef_MyGradientbisOfBSplineCompute.hxx>
 #define Approx_ParLeastSquareOfMyGradientbis AppDef_ParLeastSquareOfMyGradientbisOfBSplineCompute
-#define Approx_ParLeastSquareOfMyGradientbis_hxx <AppDef_ParLeastSquareOfMyGradientbisOfBSplineCompute.hxx>
+#define Approx_ParLeastSquareOfMyGradientbis_hxx                                                   \
+  <AppDef_ParLeastSquareOfMyGradientbisOfBSplineCompute.hxx>
 #define Approx_ResConstraintOfMyGradientbis AppDef_ResConstraintOfMyGradientbisOfBSplineCompute
-#define Approx_ResConstraintOfMyGradientbis_hxx <AppDef_ResConstraintOfMyGradientbisOfBSplineCompute.hxx>
+#define Approx_ResConstraintOfMyGradientbis_hxx                                                    \
+  <AppDef_ResConstraintOfMyGradientbisOfBSplineCompute.hxx>
 #define Approx_ParFunctionOfMyGradientbis AppDef_ParFunctionOfMyGradientbisOfBSplineCompute
-#define Approx_ParFunctionOfMyGradientbis_hxx <AppDef_ParFunctionOfMyGradientbisOfBSplineCompute.hxx>
+#define Approx_ParFunctionOfMyGradientbis_hxx                                                      \
+  <AppDef_ParFunctionOfMyGradientbisOfBSplineCompute.hxx>
 #define Approx_Gradient_BFGSOfMyGradientbis AppDef_Gradient_BFGSOfMyGradientbisOfBSplineCompute
-#define Approx_Gradient_BFGSOfMyGradientbis_hxx <AppDef_Gradient_BFGSOfMyGradientbisOfBSplineCompute.hxx>
+#define Approx_Gradient_BFGSOfMyGradientbis_hxx                                                    \
+  <AppDef_Gradient_BFGSOfMyGradientbisOfBSplineCompute.hxx>
 #define Approx_ParLeastSquareOfMyGradientbis AppDef_ParLeastSquareOfMyGradientbisOfBSplineCompute
-#define Approx_ParLeastSquareOfMyGradientbis_hxx <AppDef_ParLeastSquareOfMyGradientbisOfBSplineCompute.hxx>
+#define Approx_ParLeastSquareOfMyGradientbis_hxx                                                   \
+  <AppDef_ParLeastSquareOfMyGradientbisOfBSplineCompute.hxx>
 #define Approx_ResConstraintOfMyGradientbis AppDef_ResConstraintOfMyGradientbisOfBSplineCompute
-#define Approx_ResConstraintOfMyGradientbis_hxx <AppDef_ResConstraintOfMyGradientbisOfBSplineCompute.hxx>
+#define Approx_ResConstraintOfMyGradientbis_hxx                                                    \
+  <AppDef_ResConstraintOfMyGradientbisOfBSplineCompute.hxx>
 #define Approx_ParFunctionOfMyGradientbis AppDef_ParFunctionOfMyGradientbisOfBSplineCompute
-#define Approx_ParFunctionOfMyGradientbis_hxx <AppDef_ParFunctionOfMyGradientbisOfBSplineCompute.hxx>
+#define Approx_ParFunctionOfMyGradientbis_hxx                                                      \
+  <AppDef_ParFunctionOfMyGradientbisOfBSplineCompute.hxx>
 #define Approx_Gradient_BFGSOfMyGradientbis AppDef_Gradient_BFGSOfMyGradientbisOfBSplineCompute
-#define Approx_Gradient_BFGSOfMyGradientbis_hxx <AppDef_Gradient_BFGSOfMyGradientbisOfBSplineCompute.hxx>
+#define Approx_Gradient_BFGSOfMyGradientbis_hxx                                                    \
+  <AppDef_Gradient_BFGSOfMyGradientbisOfBSplineCompute.hxx>
 #define Approx_BSplComputeLine AppDef_BSplineCompute
 #define Approx_BSplComputeLine_hxx <AppDef_BSplineCompute.hxx>
 #include "../Approx/Approx_BSplComputeLine.gxx"
-

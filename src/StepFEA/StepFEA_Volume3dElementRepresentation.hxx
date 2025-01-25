@@ -28,7 +28,6 @@ class StepElement_ElementMaterial;
 class TCollection_HAsciiString;
 class StepRepr_RepresentationContext;
 
-
 class StepFEA_Volume3dElementRepresentation;
 DEFINE_STANDARD_HANDLE(StepFEA_Volume3dElementRepresentation, StepFEA_ElementRepresentation)
 
@@ -37,56 +36,45 @@ class StepFEA_Volume3dElementRepresentation : public StepFEA_ElementRepresentati
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepFEA_Volume3dElementRepresentation();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aRepresentation_Name, const Handle(StepRepr_HArray1OfRepresentationItem)& aRepresentation_Items, const Handle(StepRepr_RepresentationContext)& aRepresentation_ContextOfItems, const Handle(StepFEA_HArray1OfNodeRepresentation)& aElementRepresentation_NodeList, const Handle(StepFEA_FeaModel3d)& aModelRef, const Handle(StepElement_Volume3dElementDescriptor)& aElementDescriptor, const Handle(StepElement_ElementMaterial)& aMaterial);
-  
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&              aRepresentation_Name,
+    const Handle(StepRepr_HArray1OfRepresentationItem)&  aRepresentation_Items,
+    const Handle(StepRepr_RepresentationContext)&        aRepresentation_ContextOfItems,
+    const Handle(StepFEA_HArray1OfNodeRepresentation)&   aElementRepresentation_NodeList,
+    const Handle(StepFEA_FeaModel3d)&                    aModelRef,
+    const Handle(StepElement_Volume3dElementDescriptor)& aElementDescriptor,
+    const Handle(StepElement_ElementMaterial)&           aMaterial);
+
   //! Returns field ModelRef
   Standard_EXPORT Handle(StepFEA_FeaModel3d) ModelRef() const;
-  
+
   //! Set field ModelRef
-  Standard_EXPORT void SetModelRef (const Handle(StepFEA_FeaModel3d)& ModelRef);
-  
+  Standard_EXPORT void SetModelRef(const Handle(StepFEA_FeaModel3d)& ModelRef);
+
   //! Returns field ElementDescriptor
   Standard_EXPORT Handle(StepElement_Volume3dElementDescriptor) ElementDescriptor() const;
-  
+
   //! Set field ElementDescriptor
-  Standard_EXPORT void SetElementDescriptor (const Handle(StepElement_Volume3dElementDescriptor)& ElementDescriptor);
-  
+  Standard_EXPORT void SetElementDescriptor(
+    const Handle(StepElement_Volume3dElementDescriptor)& ElementDescriptor);
+
   //! Returns field Material
   Standard_EXPORT Handle(StepElement_ElementMaterial) Material() const;
-  
+
   //! Set field Material
-  Standard_EXPORT void SetMaterial (const Handle(StepElement_ElementMaterial)& Material);
+  Standard_EXPORT void SetMaterial(const Handle(StepElement_ElementMaterial)& Material);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepFEA_Volume3dElementRepresentation,StepFEA_ElementRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_Volume3dElementRepresentation, StepFEA_ElementRepresentation)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(StepFEA_FeaModel3d) theModelRef;
+  Handle(StepFEA_FeaModel3d)                    theModelRef;
   Handle(StepElement_Volume3dElementDescriptor) theElementDescriptor;
-  Handle(StepElement_ElementMaterial) theMaterial;
-
-
+  Handle(StepElement_ElementMaterial)           theMaterial;
 };
-
-
-
-
-
-
 
 #endif // _StepFEA_Volume3dElementRepresentation_HeaderFile

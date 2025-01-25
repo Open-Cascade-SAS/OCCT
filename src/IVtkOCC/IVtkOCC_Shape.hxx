@@ -1,7 +1,7 @@
-// Created on: 2011-10-14 
+// Created on: 2011-10-14
 // Created by: Roman KOZLOV
-// Copyright (c) 2011-2014 OPEN CASCADE SAS 
-// 
+// Copyright (c) 2011-2014 OPEN CASCADE SAS
+//
 // This file is part of Open CASCADE Technology software library.
 //
 // This library is free software; you can redistribute it and/or modify it under
@@ -22,84 +22,77 @@
 #include <SelectMgr_SelectableObject.hxx>
 
 class IVtkOCC_Shape;
-DEFINE_STANDARD_HANDLE( IVtkOCC_Shape, IVtk_IShape )
+DEFINE_STANDARD_HANDLE(IVtkOCC_Shape, IVtk_IShape)
 
 //! @class IVtkOCC_Shape
 //! @brief OCC implementation of IShape interface.
 class IVtkOCC_Shape : public IVtk_IShape
 {
 public:
-
   typedef Handle(IVtkOCC_Shape) Handle;
 
   //! Constructor for OCC IShape implementation.
   //! @param[in] theShape  shape to display
   //! @param[in] theDrawerLink  default attributes to link
-  Standard_EXPORT IVtkOCC_Shape (const TopoDS_Shape& theShape,
-                                 const Handle(Prs3d_Drawer)& theDrawerLink = Handle(Prs3d_Drawer)());
+  Standard_EXPORT IVtkOCC_Shape(const TopoDS_Shape&         theShape,
+                                const Handle(Prs3d_Drawer)& theDrawerLink = Handle(Prs3d_Drawer)());
 
   //! Destructor
   Standard_EXPORT virtual ~IVtkOCC_Shape();
 
   //! Returns unique ID of the given sub-shape within the top-level shape.
-  Standard_EXPORT IVtk_IdType GetSubShapeId (const IVtk_IShape::Handle&) const;
+  Standard_EXPORT IVtk_IdType GetSubShapeId(const IVtk_IShape::Handle&) const;
 
-  DEFINE_STANDARD_RTTIEXT(IVtkOCC_Shape,IVtk_IShape)
+  DEFINE_STANDARD_RTTIEXT(IVtkOCC_Shape, IVtk_IShape)
 
   //! Get the wrapped original OCCT shape
   //! @return TopoDS_Shape the wrapped original OCCT shape
-  const TopoDS_Shape& GetShape() const
-  {
-    return myTopoDSShape;
-  }
+  const TopoDS_Shape& GetShape() const { return myTopoDSShape; }
 
   //! @brief Get local ID of a sub-shape.
   //!
   //! Returns unique ID of the given sub-shape within the top-level shape.
-  //! Note that the sub-shape ID remains unchanged until the top-level is 
+  //! Note that the sub-shape ID remains unchanged until the top-level is
   //! modified by some operation.
   //! @param[in]  subShape sub-shape whose ID is returned
   //! @return local ID of the sub-shape.
-  Standard_EXPORT IVtk_IdType GetSubShapeId (const TopoDS_Shape& theSubShape) const;
+  Standard_EXPORT IVtk_IdType GetSubShapeId(const TopoDS_Shape& theSubShape) const;
 
   //! Get ids of sub-shapes composing a sub-shape with the given id
-  Standard_EXPORT IVtk_ShapeIdList GetSubIds (const IVtk_IdType) const Standard_OVERRIDE;
+  Standard_EXPORT IVtk_ShapeIdList GetSubIds(const IVtk_IdType) const Standard_OVERRIDE;
 
   //! @brief Get a sub-shape by its local ID.
   //!
   //! @param[in]  id local ID of a sub-shape
   //! @return TopoDS_Shape& a sub-shape
-  Standard_EXPORT const TopoDS_Shape& GetSubShape (const IVtk_IdType theId) const;
+  Standard_EXPORT const TopoDS_Shape& GetSubShape(const IVtk_IdType theId) const;
 
   //! Stores a handle to selectable object used by OCCT selection algorithm
   //! in a data field. This object internally caches selection data
   //! so it should be stored until the shape is no longer selectable.
   //! Note that the selectable object keeps a pointer to OccShape.
   //! @param[in]  selObj Handle to the selectable object
-  void SetSelectableObject (const Handle(SelectMgr_SelectableObject)& theSelObj)
+  void SetSelectableObject(const Handle(SelectMgr_SelectableObject)& theSelObj)
   {
     mySelectable = theSelObj;
   }
 
   //! @return Handle to the selectable object for this shape.
-  const Handle(SelectMgr_SelectableObject)& GetSelectableObject() const
-  {
-    return mySelectable;
-  }
+  const Handle(SelectMgr_SelectableObject)& GetSelectableObject() const { return mySelectable; }
 
   //! Return presentation attributes.
   const Handle(Prs3d_Drawer)& Attributes() const { return myOCCTDrawer; }
 
   //! Set presentation attributes.
-  void SetAttributes (const Handle(Prs3d_Drawer)& theDrawer) { myOCCTDrawer = theDrawer; }
+  void SetAttributes(const Handle(Prs3d_Drawer)& theDrawer) { myOCCTDrawer = theDrawer; }
 
 private:
   //! @brief Build a map of sub-shapes by their IDs
   //!
-  //! Private method, assigns IDs to all sub-shapes of the 
+  //! Private method, assigns IDs to all sub-shapes of the
   //! top-level shape.
   //! @see IVtkOCC_Shape::GetSubShapeId
-  void        buildSubShapeIdMap();
+  void buildSubShapeIdMap();
 
 private:
   TopTools_IndexedMapOfShape         mySubShapeIds; //!< Map of sub-shapes by their IDs

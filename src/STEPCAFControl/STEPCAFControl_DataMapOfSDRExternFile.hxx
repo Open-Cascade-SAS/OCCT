@@ -20,8 +20,11 @@
 #include <STEPCAFControl_ExternFile.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Handle(StepShape_ShapeDefinitionRepresentation),Handle(STEPCAFControl_ExternFile)> STEPCAFControl_DataMapOfSDRExternFile;
-typedef NCollection_DataMap<Handle(StepShape_ShapeDefinitionRepresentation),Handle(STEPCAFControl_ExternFile)>::Iterator STEPCAFControl_DataMapIteratorOfDataMapOfSDRExternFile;
-
+typedef NCollection_DataMap<Handle(StepShape_ShapeDefinitionRepresentation),
+                            Handle(STEPCAFControl_ExternFile)>
+  STEPCAFControl_DataMapOfSDRExternFile;
+typedef NCollection_DataMap<Handle(StepShape_ShapeDefinitionRepresentation),
+                            Handle(STEPCAFControl_ExternFile)>::Iterator
+  STEPCAFControl_DataMapIteratorOfDataMapOfSDRExternFile;
 
 #endif

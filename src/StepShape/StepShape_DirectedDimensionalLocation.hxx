@@ -21,7 +21,6 @@
 
 #include <StepShape_DimensionalLocation.hxx>
 
-
 class StepShape_DirectedDimensionalLocation;
 DEFINE_STANDARD_HANDLE(StepShape_DirectedDimensionalLocation, StepShape_DimensionalLocation)
 
@@ -30,32 +29,13 @@ class StepShape_DirectedDimensionalLocation : public StepShape_DimensionalLocati
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepShape_DirectedDimensionalLocation();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_DirectedDimensionalLocation,StepShape_DimensionalLocation)
+  DEFINE_STANDARD_RTTIEXT(StepShape_DirectedDimensionalLocation, StepShape_DimensionalLocation)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_DirectedDimensionalLocation_HeaderFile

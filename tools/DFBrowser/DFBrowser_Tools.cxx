@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowser_Tools.hxx>
 
@@ -37,69 +37,69 @@
 
 namespace DFBrowser_Tools
 {
-  // =======================================================================
-  // function : IsEmptyLabel
-  // purpose :
-  // =======================================================================
-  bool IsEmptyLabel (const TDF_Label& theLabel)
-  {
-    if (theLabel.IsNull())
-      return true;
-
-    if (theLabel.IsRoot())
-      return false;
-
-    if (theLabel.NbAttributes() > 0)
-      return false;
-
-    for (TDF_ChildIterator aChildIt (theLabel); aChildIt.More(); aChildIt.Next())
-    {
-      if (!IsEmptyLabel (aChildIt.Value()))
-        return false;
-    }
+// =======================================================================
+// function : IsEmptyLabel
+// purpose :
+// =======================================================================
+bool IsEmptyLabel(const TDF_Label& theLabel)
+{
+  if (theLabel.IsNull())
     return true;
-  }
 
-  // =======================================================================
-  // function : GetLabelInfo
-  // purpose :
-  // =======================================================================
-  QString GetLabelInfo (const TDF_Label& theLabel, const bool isUseShortInfo)
+  if (theLabel.IsRoot())
+    return false;
+
+  if (theLabel.NbAttributes() > 0)
+    return false;
+
+  for (TDF_ChildIterator aChildIt(theLabel); aChildIt.More(); aChildIt.Next())
   {
-    QString aValue = DFBrowserPane_Tools::GetEntry (theLabel).ToCString();
-    if (!isUseShortInfo)
-      return aValue;
-
-    Handle(TDataStd_Name) aName;
-    if (!theLabel.FindAttribute (TDataStd_Name::GetID(), aName))
-      return aValue;
-
-    aValue += " ";
-    aValue += DFBrowserPane_Tools::ToString (aName->Get());
-
-    return aValue;
+    if (!IsEmptyLabel(aChildIt.Value()))
+      return false;
   }
-
-
-  enum DFBrowser_IconType
-  {
-    DFBrowser_IconType_16x16,
-    DFBrowser_IconType_40x40
-  };
-  static QMap<DFBrowser_IconType, QIcon> MyLabelIcons;
-
-  // =======================================================================
-  // function : GetLabelIcon
-  // purpose :
-  // =======================================================================
-  QIcon GetLabelIcon (const TDF_Label& theLabel, bool isStandard16x16)
-  {
-    (void)theLabel;
-    if (MyLabelIcons.empty())
-    {
-      MyLabelIcons[DFBrowser_IconType_16x16] = QIcon (":/icons/label_folder_16x16.png");
-      MyLabelIcons[DFBrowser_IconType_40x40] = QIcon (":/icons/label_folder_40x40.png");
-    }
-    return MyLabelIcons[isStandard16x16 ? DFBrowser_IconType_16x16 : DFBrowser_IconType_40x40];
-  }
+  return true;
 }
+
+// =======================================================================
+// function : GetLabelInfo
+// purpose :
+// =======================================================================
+QString GetLabelInfo(const TDF_Label& theLabel, const bool isUseShortInfo)
+{
+  QString aValue = DFBrowserPane_Tools::GetEntry(theLabel).ToCString();
+  if (!isUseShortInfo)
+    return aValue;
+
+  Handle(TDataStd_Name) aName;
+  if (!theLabel.FindAttribute(TDataStd_Name::GetID(), aName))
+    return aValue;
+
+  aValue += " ";
+  aValue += DFBrowserPane_Tools::ToString(aName->Get());
+
+  return aValue;
+}
+
+enum DFBrowser_IconType
+{
+  DFBrowser_IconType_16x16,
+  DFBrowser_IconType_40x40
+};
+
+static QMap<DFBrowser_IconType, QIcon> MyLabelIcons;
+
+// =======================================================================
+// function : GetLabelIcon
+// purpose :
+// =======================================================================
+QIcon GetLabelIcon(const TDF_Label& theLabel, bool isStandard16x16)
+{
+  (void)theLabel;
+  if (MyLabelIcons.empty())
+  {
+    MyLabelIcons[DFBrowser_IconType_16x16] = QIcon(":/icons/label_folder_16x16.png");
+    MyLabelIcons[DFBrowser_IconType_40x40] = QIcon(":/icons/label_folder_40x40.png");
+  }
+  return MyLabelIcons[isStandard16x16 ? DFBrowser_IconType_16x16 : DFBrowser_IconType_40x40];
+}
+} // namespace DFBrowser_Tools

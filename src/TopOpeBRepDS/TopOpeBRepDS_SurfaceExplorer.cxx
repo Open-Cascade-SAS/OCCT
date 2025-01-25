@@ -14,86 +14,72 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopOpeBRepDS_DataStructure.hxx>
 #include <TopOpeBRepDS_Surface.hxx>
 #include <TopOpeBRepDS_SurfaceExplorer.hxx>
 
 #define MYDS (*((TopOpeBRepDS_DataStructure*)myDS))
 
-//=======================================================================
-//function : TopOpeBRepDS_SurfaceExplorer
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TopOpeBRepDS_SurfaceExplorer::TopOpeBRepDS_SurfaceExplorer() 
-: myIndex(1),myMax(0),myDS(NULL),myFound(Standard_False)
+TopOpeBRepDS_SurfaceExplorer::TopOpeBRepDS_SurfaceExplorer()
+    : myIndex(1),
+      myMax(0),
+      myDS(NULL),
+      myFound(Standard_False)
 {
 }
 
-//=======================================================================
-//function : TopOpeBRepDS_SurfaceExplorer
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TopOpeBRepDS_SurfaceExplorer::TopOpeBRepDS_SurfaceExplorer
-(const TopOpeBRepDS_DataStructure& DS,
- const Standard_Boolean FindKeep)
-{ 
-  Init(DS,FindKeep);
+TopOpeBRepDS_SurfaceExplorer::TopOpeBRepDS_SurfaceExplorer(const TopOpeBRepDS_DataStructure& DS,
+                                                           const Standard_Boolean FindKeep)
+{
+  Init(DS, FindKeep);
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TopOpeBRepDS_SurfaceExplorer::Init
-(const TopOpeBRepDS_DataStructure& DS,
- const Standard_Boolean FindKeep)
+void TopOpeBRepDS_SurfaceExplorer::Init(const TopOpeBRepDS_DataStructure& DS,
+                                        const Standard_Boolean            FindKeep)
 {
-  myIndex = 1; 
-  myMax = DS.NbSurfaces();
-  myDS = (TopOpeBRepDS_DataStructure*)&DS;
+  myIndex    = 1;
+  myMax      = DS.NbSurfaces();
+  myDS       = (TopOpeBRepDS_DataStructure*)&DS;
   myFindKeep = FindKeep;
   Find();
 }
 
-
-//=======================================================================
-//function : Find
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TopOpeBRepDS_SurfaceExplorer::Find()
 {
   myFound = Standard_False;
-  while (myIndex <= myMax) {
-    if (myFindKeep) {
+  while (myIndex <= myMax)
+  {
+    if (myFindKeep)
+    {
       myFound = IsSurfaceKeep(myIndex);
     }
-    else {
+    else
+    {
       myFound = IsSurface(myIndex);
     }
-    if (myFound) break;
-    else myIndex++;
+    if (myFound)
+      break;
+    else
+      myIndex++;
   }
 }
 
-//=======================================================================
-//function : More
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean TopOpeBRepDS_SurfaceExplorer::More() const
 {
   return myFound;
 }
 
-//=======================================================================
-//function : Next
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TopOpeBRepDS_SurfaceExplorer::Next()
 {
@@ -101,82 +87,68 @@ void TopOpeBRepDS_SurfaceExplorer::Next()
   Find();
 }
 
-//=======================================================================
-//function : Surface
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-const TopOpeBRepDS_Surface& TopOpeBRepDS_SurfaceExplorer::Surface()const
+const TopOpeBRepDS_Surface& TopOpeBRepDS_SurfaceExplorer::Surface() const
 {
-  if ( myFound ) {
+  if (myFound)
+  {
     return MYDS.Surface(myIndex);
   }
-  else {
+  else
+  {
     return myEmpty;
   }
 }
 
-//=======================================================================
-//function : IsSurface
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_SurfaceExplorer::IsSurface
-   (const Standard_Integer I)const
+Standard_Boolean TopOpeBRepDS_SurfaceExplorer::IsSurface(const Standard_Integer I) const
 {
   Standard_Boolean b = MYDS.mySurfaces.IsBound(I);
   return b;
 }
 
-//=======================================================================
-//function : IsSurfaceKeep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_SurfaceExplorer::IsSurfaceKeep
-   (const Standard_Integer I)const
+Standard_Boolean TopOpeBRepDS_SurfaceExplorer::IsSurfaceKeep(const Standard_Integer I) const
 {
   Standard_Boolean b = MYDS.mySurfaces.IsBound(I);
-  if (b) b = MYDS.Surface(I).Keep();
+  if (b)
+    b = MYDS.Surface(I).Keep();
   return b;
 }
 
-//=======================================================================
-//function : Surface
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-const TopOpeBRepDS_Surface& TopOpeBRepDS_SurfaceExplorer::Surface
-   (const Standard_Integer I)const
+const TopOpeBRepDS_Surface& TopOpeBRepDS_SurfaceExplorer::Surface(const Standard_Integer I) const
 {
-  if ( IsSurface(I) ) {
+  if (IsSurface(I))
+  {
     return MYDS.Surface(I);
   }
-  else {
+  else
+  {
     return myEmpty;
   }
 }
 
-//=======================================================================
-//function : NbSurface
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer TopOpeBRepDS_SurfaceExplorer::NbSurface()
 {
-  myIndex = 1; myMax = MYDS.NbSurfaces();
+  myIndex = 1;
+  myMax   = MYDS.NbSurfaces();
   Find();
   Standard_Integer n = 0;
-  for (; More(); Next() ) n++;
+  for (; More(); Next())
+    n++;
   return n;
 }
 
-//=======================================================================
-//function : Index
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer TopOpeBRepDS_SurfaceExplorer::Index()const
+Standard_Integer TopOpeBRepDS_SurfaceExplorer::Index() const
 {
   return myIndex;
 }

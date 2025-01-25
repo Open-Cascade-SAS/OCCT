@@ -37,72 +37,61 @@ class Contap_ArcFunction;
 class Contap_ThePathPointOfTheSearch;
 class Contap_TheSegmentOfTheSearch;
 
-class Contap_TheSearch 
+class Contap_TheSearch
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor.
   Standard_EXPORT Contap_TheSearch();
-  
+
   //! Algorithm to find the points and parts of curves of Domain
   //! (domain of of restriction of a surface) which verify
   //! F = 0.
   //! TolBoundary defines if a curve is on Q.
   //! TolTangency defines if a point is on Q.
-  Standard_EXPORT void Perform (Contap_ArcFunction& F, const Handle(Adaptor3d_TopolTool)& Domain, const Standard_Real TolBoundary, const Standard_Real TolTangency, const Standard_Boolean RecheckOnRegularity = Standard_False);
-  
+  Standard_EXPORT void Perform(Contap_ArcFunction&                F,
+                               const Handle(Adaptor3d_TopolTool)& Domain,
+                               const Standard_Real                TolBoundary,
+                               const Standard_Real                TolTangency,
+                               const Standard_Boolean RecheckOnRegularity = Standard_False);
+
   //! Returns True if the calculus was successful.
-    Standard_Boolean IsDone() const;
-  
+  Standard_Boolean IsDone() const;
+
   //! Returns true if all arc of the Arcs are solution (inside
   //! the surface).
   //! An exception is raised if IsDone returns False.
-    Standard_Boolean AllArcSolution() const;
-  
+  Standard_Boolean AllArcSolution() const;
+
   //! Returns the number of resulting points.
   //! An exception is raised if IsDone returns False (NotDone).
-    Standard_Integer NbPoints() const;
-  
+  Standard_Integer NbPoints() const;
+
   //! Returns the resulting point of range Index.
   //! The exception NotDone is raised if IsDone() returns
   //! False.
   //! The exception OutOfRange is raised if
   //! Index <= 0 or Index > NbPoints.
-    const Contap_ThePathPointOfTheSearch& Point (const Standard_Integer Index) const;
-  
+  const Contap_ThePathPointOfTheSearch& Point(const Standard_Integer Index) const;
+
   //! Returns the number of the resulting segments.
   //! An exception is raised if IsDone returns False (NotDone).
-    Standard_Integer NbSegments() const;
-  
+  Standard_Integer NbSegments() const;
+
   //! Returns the resulting segment of range Index.
   //! The exception NotDone is raised if IsDone() returns
   //! False.
   //! The exception OutOfRange is raised if
   //! Index <= 0 or Index > NbPoints.
-    const Contap_TheSegmentOfTheSearch& Segment (const Standard_Integer Index) const;
-
-
-
+  const Contap_TheSegmentOfTheSearch& Segment(const Standard_Integer Index) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Boolean done;
-  Standard_Boolean all;
-  Contap_SequenceOfSegmentOfTheSearch sseg;
+  Standard_Boolean                      done;
+  Standard_Boolean                      all;
+  Contap_SequenceOfSegmentOfTheSearch   sseg;
   Contap_SequenceOfPathPointOfTheSearch spnt;
-
-
 };
 
 #define TheVertex Handle(Adaptor3d_HVertex)
@@ -154,8 +143,5 @@ private:
 #undef IntStart_SequenceOfSegment_hxx
 #undef IntStart_SearchOnBoundaries
 #undef IntStart_SearchOnBoundaries_hxx
-
-
-
 
 #endif // _Contap_TheSearch_HeaderFile

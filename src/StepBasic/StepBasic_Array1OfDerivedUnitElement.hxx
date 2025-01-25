@@ -20,7 +20,7 @@
 #include <StepBasic_DerivedUnitElement.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<Handle(StepBasic_DerivedUnitElement)> StepBasic_Array1OfDerivedUnitElement;
-
+typedef NCollection_Array1<Handle(StepBasic_DerivedUnitElement)>
+  StepBasic_Array1OfDerivedUnitElement;
 
 #endif

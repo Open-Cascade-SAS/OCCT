@@ -21,8 +21,8 @@
 
 /**
  * Purpose:     This class is used to  represent a node  in the BaseList and
- *              BaseMap. 
- */              
+ *              BaseMap.
+ */
 class NCollection_ListNode
 {
 public:
@@ -30,26 +30,26 @@ public:
   DEFINE_NCOLLECTION_ALLOC
 public:
   //! The only constructor
-  NCollection_ListNode (NCollection_ListNode* theNext)
-  : myNext(theNext) {}
+  NCollection_ListNode(NCollection_ListNode* theNext)
+      : myNext(theNext)
+  {
+  }
 
   //! Next pointer access
-  NCollection_ListNode*& Next (void)
-  { return myNext; }
+  NCollection_ListNode*& Next(void) { return myNext; }
 
   //! Next pointer const access
-  NCollection_ListNode* Next (void) const
-  { return myNext; }
+  NCollection_ListNode* Next(void) const { return myNext; }
 
- private:
+private:
   //! operator= - forbidden
-  NCollection_ListNode& operator= (const NCollection_ListNode&);
-  
-  //! copy constructor - forbidden
-  NCollection_ListNode (const NCollection_ListNode&);
+  NCollection_ListNode& operator=(const NCollection_ListNode&);
 
- private:
-  NCollection_ListNode * myNext; //!< Pointer to the next node
+  //! copy constructor - forbidden
+  NCollection_ListNode(const NCollection_ListNode&);
+
+private:
+  NCollection_ListNode* myNext; //!< Pointer to the next node
 };
 
 #endif

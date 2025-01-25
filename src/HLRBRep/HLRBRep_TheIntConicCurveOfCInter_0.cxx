@@ -27,7 +27,6 @@
 #include <gp_Elips2d.hxx>
 #include <gp_Parab2d.hxx>
 #include <gp_Hypr2d.hxx>
- 
 
 #define TheImpTool IntCurve_IConicTool
 #define TheImpTool_hxx <IntCurve_IConicTool.hxx>
@@ -39,11 +38,14 @@
 #define TheProjPCur_hxx <HLRBRep_TheProjPCurOfCInter.hxx>
 #define IntCurve_TheIntersector HLRBRep_TheIntersectorOfTheIntConicCurveOfCInter
 #define IntCurve_TheIntersector_hxx <HLRBRep_TheIntersectorOfTheIntConicCurveOfCInter.hxx>
-#define IntCurve_MyImpParToolOfTheIntersector HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter
-#define IntCurve_MyImpParToolOfTheIntersector_hxx <HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter.hxx>
-#define IntCurve_MyImpParToolOfTheIntersector HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter
-#define IntCurve_MyImpParToolOfTheIntersector_hxx <HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter.hxx>
+#define IntCurve_MyImpParToolOfTheIntersector                                                      \
+  HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter
+#define IntCurve_MyImpParToolOfTheIntersector_hxx                                                  \
+  <HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter.hxx>
+#define IntCurve_MyImpParToolOfTheIntersector                                                      \
+  HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter
+#define IntCurve_MyImpParToolOfTheIntersector_hxx                                                  \
+  <HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter.hxx>
 #define IntCurve_IntConicCurveGen HLRBRep_TheIntConicCurveOfCInter
 #define IntCurve_IntConicCurveGen_hxx <HLRBRep_TheIntConicCurveOfCInter.hxx>
 #include "../IntCurve/IntCurve_IntConicCurveGen.gxx"
-

@@ -14,62 +14,48 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 #include <TopoDS_Shape.hxx>
 
-//=======================================================================
-//function : BRepAlgoAPI_Cut
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 BRepAlgoAPI_Cut::BRepAlgoAPI_Cut()
-:
-  BRepAlgoAPI_BooleanOperation()
+    : BRepAlgoAPI_BooleanOperation()
 {
-  myOperation=BOPAlgo_CUT;
+  myOperation = BOPAlgo_CUT;
 }
-//=======================================================================
-//function : BRepAlgoAPI_Cut
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
 BRepAlgoAPI_Cut::BRepAlgoAPI_Cut(const BOPAlgo_PaveFiller& aPF)
-:
-  BRepAlgoAPI_BooleanOperation(aPF)
+    : BRepAlgoAPI_BooleanOperation(aPF)
 {
-  myOperation=BOPAlgo_CUT;
+  myOperation = BOPAlgo_CUT;
 }
-//=======================================================================
-//function : ~BRepAlgoAPI_Cut
-//purpose  : 
-//=======================================================================
-BRepAlgoAPI_Cut::~BRepAlgoAPI_Cut()
-{
-}
-//=======================================================================
-//function : BRepAlgoAPI_Cut
-//purpose  : 
-//=======================================================================
-BRepAlgoAPI_Cut::BRepAlgoAPI_Cut(const TopoDS_Shape& S1, 
-                                 const TopoDS_Shape& S2,
+
+//=================================================================================================
+
+BRepAlgoAPI_Cut::~BRepAlgoAPI_Cut() {}
+
+//=================================================================================================
+
+BRepAlgoAPI_Cut::BRepAlgoAPI_Cut(const TopoDS_Shape&          S1,
+                                 const TopoDS_Shape&          S2,
                                  const Message_ProgressRange& theRange)
-:
-  BRepAlgoAPI_BooleanOperation(S1, S2, BOPAlgo_CUT)
+    : BRepAlgoAPI_BooleanOperation(S1, S2, BOPAlgo_CUT)
 {
   Build(theRange);
 }
-//=======================================================================
-//function : BRepAlgoAPI_Cut
-//purpose  : 
-//=======================================================================
-BRepAlgoAPI_Cut::BRepAlgoAPI_Cut(const TopoDS_Shape& S1, 
-                                 const TopoDS_Shape& S2,
-                                 const BOPAlgo_PaveFiller& aDSF,
-                                 const Standard_Boolean bFWD,
+
+//=================================================================================================
+
+BRepAlgoAPI_Cut::BRepAlgoAPI_Cut(const TopoDS_Shape&          S1,
+                                 const TopoDS_Shape&          S2,
+                                 const BOPAlgo_PaveFiller&    aDSF,
+                                 const Standard_Boolean       bFWD,
                                  const Message_ProgressRange& theRange)
-: 
-  BRepAlgoAPI_BooleanOperation(S1, S2, aDSF, 
-                               (bFWD) ? BOPAlgo_CUT : BOPAlgo_CUT21)
+    : BRepAlgoAPI_BooleanOperation(S1, S2, aDSF, (bFWD) ? BOPAlgo_CUT : BOPAlgo_CUT21)
 {
   Build(theRange);
 }

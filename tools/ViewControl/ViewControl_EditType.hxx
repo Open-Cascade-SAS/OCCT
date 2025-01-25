@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef ViewControl_EditType_H
 #define ViewControl_EditType_H
@@ -19,12 +19,12 @@
 //! Type of context used in a tool library
 enum ViewControl_EditType
 {
-  ViewControl_EditType_None, //!< View widget is null
-  ViewControl_EditType_Bool, //!< check box widget
-  ViewControl_EditType_Color, //!< color selector widget
-  ViewControl_EditType_Double, //!< line edit widget used double validator
-  ViewControl_EditType_Line, //!< line edit widget
-  ViewControl_EditType_Spin, //!< spin box widget
+  ViewControl_EditType_None,    //!< View widget is null
+  ViewControl_EditType_Bool,    //!< check box widget
+  ViewControl_EditType_Color,   //!< color selector widget
+  ViewControl_EditType_Double,  //!< line edit widget used double validator
+  ViewControl_EditType_Line,    //!< line edit widget
+  ViewControl_EditType_Spin,    //!< spin box widget
   ViewControl_EditType_DoAction //!< control to perform the row action
 };
 

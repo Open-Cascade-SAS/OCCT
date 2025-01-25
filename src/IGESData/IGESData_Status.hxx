@@ -17,13 +17,12 @@
 #ifndef _IGESData_Status_HeaderFile
 #define _IGESData_Status_HeaderFile
 
-
 enum IGESData_Status
 {
-IGESData_EntityOK,
-IGESData_EntityError,
-IGESData_ReferenceError,
-IGESData_TypeError
+  IGESData_EntityOK,
+  IGESData_EntityError,
+  IGESData_ReferenceError,
+  IGESData_TypeError
 };
 
 #endif // _IGESData_Status_HeaderFile

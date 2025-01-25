@@ -24,18 +24,18 @@ class BinMDF_ADriverTable;
 class Message_Messenger;
 class TDocStd_Application;
 
-class BinLDrivers 
+class BinLDrivers
 {
 public:
+  Standard_EXPORT static const Handle(Standard_Transient)& Factory(const Standard_GUID& theGUID);
 
-  Standard_EXPORT static const Handle(Standard_Transient)& Factory (const Standard_GUID& theGUID);
-  
   //! Defines format "BinLOcaf" and registers its read and write drivers
   //! in the specified application
-  Standard_EXPORT static void DefineFormat (const Handle(TDocStd_Application)& theApp);
+  Standard_EXPORT static void DefineFormat(const Handle(TDocStd_Application)& theApp);
 
   //! Creates a table of the supported drivers' types
-  Standard_EXPORT static Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& MsgDrv);
+  Standard_EXPORT static Handle(BinMDF_ADriverTable) AttributeDrivers(
+    const Handle(Message_Messenger)& MsgDrv);
 };
 
 #endif // _BinLDrivers_HeaderFile

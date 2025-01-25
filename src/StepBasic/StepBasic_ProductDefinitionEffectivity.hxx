@@ -24,47 +24,27 @@
 class StepBasic_ProductDefinitionRelationship;
 class TCollection_HAsciiString;
 
-
 class StepBasic_ProductDefinitionEffectivity;
 DEFINE_STANDARD_HANDLE(StepBasic_ProductDefinitionEffectivity, StepBasic_Effectivity)
-
 
 class StepBasic_ProductDefinitionEffectivity : public StepBasic_Effectivity
 {
 
 public:
-
-  
   Standard_EXPORT StepBasic_ProductDefinitionEffectivity();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aId, const Handle(StepBasic_ProductDefinitionRelationship)& aUsage);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&                aId,
+                            const Handle(StepBasic_ProductDefinitionRelationship)& aUsage);
+
   Standard_EXPORT Handle(StepBasic_ProductDefinitionRelationship) Usage() const;
-  
-  Standard_EXPORT void SetUsage (const Handle(StepBasic_ProductDefinitionRelationship)& aUsage);
 
+  Standard_EXPORT void SetUsage(const Handle(StepBasic_ProductDefinitionRelationship)& aUsage);
 
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionEffectivity,StepBasic_Effectivity)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionEffectivity, StepBasic_Effectivity)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_ProductDefinitionRelationship) theUsage;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_ProductDefinitionEffectivity_HeaderFile

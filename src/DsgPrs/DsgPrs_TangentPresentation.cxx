@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <DsgPrs_TangentPresentation.hxx>
 #include <Geom_CartesianPoint.hxx>
 #include <gp_Dir.hxx>
@@ -27,25 +26,25 @@
 #include <Prs3d_Presentation.hxx>
 #include <StdPrs_Point.hxx>
 
-void DsgPrs_TangentPresentation::Add (const Handle(Prs3d_Presentation)& aPresentation,
-				      const Handle(Prs3d_Drawer)& aDrawer,
-				      const gp_Pnt& OffsetPoint,
-				      const gp_Dir& aDirection,
-				      const Standard_Real length)
+void DsgPrs_TangentPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
+                                     const Handle(Prs3d_Drawer)&       aDrawer,
+                                     const gp_Pnt&                     OffsetPoint,
+                                     const gp_Dir&                     aDirection,
+                                     const Standard_Real               length)
 {
   gp_Vec vec(aDirection);
   gp_Vec vec1 = vec.Multiplied(length);
   gp_Vec vec2 = vec.Multiplied(-length);
-  gp_Pnt p1 = OffsetPoint.Translated(vec1);
-  gp_Pnt p2 = OffsetPoint.Translated(vec2);
-  
+  gp_Pnt p1   = OffsetPoint.Translated(vec1);
+  gp_Pnt p2   = OffsetPoint.Translated(vec2);
+
   // Aspect
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   LA->LineAspect()->SetTypeOfLine(Aspect_TOL_SOLID);
   Handle(Prs3d_ArrowAspect) ARR1 = LA->ArrowAspect();
   Handle(Prs3d_ArrowAspect) ARR2 = LA->ArrowAspect();
-  ARR1->SetLength(length/5);
-  ARR2->SetLength(length/5);
+  ARR1->SetLength(length / 5);
+  ARR2->SetLength(length / 5);
 
   // Array1OfVertex
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
@@ -55,13 +54,21 @@ void DsgPrs_TangentPresentation::Add (const Handle(Prs3d_Presentation)& aPresent
   aPrims->AddVertex(p2);
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
-  // fleche 1 : 
+  // fleche 1 :
   aPresentation->NewGroup();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), p1, aDirection, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw(aPresentation->CurrentGroup(),
+                    p1,
+                    aDirection,
+                    LA->ArrowAspect()->Angle(),
+                    LA->ArrowAspect()->Length());
 
   // fleche 2
   aPresentation->NewGroup();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), p2, aDirection.Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw(aPresentation->CurrentGroup(),
+                    p2,
+                    aDirection.Reversed(),
+                    LA->ArrowAspect()->Angle(),
+                    LA->ArrowAspect()->Length());
 }

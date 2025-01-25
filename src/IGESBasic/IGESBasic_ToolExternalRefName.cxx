@@ -30,44 +30,44 @@
 #include <Interface_ShareTool.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESBasic_ToolExternalRefName::IGESBasic_ToolExternalRefName ()    {  }
+IGESBasic_ToolExternalRefName::IGESBasic_ToolExternalRefName() {}
 
-
-void  IGESBasic_ToolExternalRefName::ReadOwnParams
-  (const Handle(IGESBasic_ExternalRefName)& ent,
-   const Handle(IGESData_IGESReaderData)& /* IR */, IGESData_ParamReader& PR) const
+void IGESBasic_ToolExternalRefName::ReadOwnParams(const Handle(IGESBasic_ExternalRefName)& ent,
+                                                  const Handle(IGESData_IGESReaderData)& /* IR */,
+                                                  IGESData_ParamReader& PR) const
 {
-  //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
   Handle(TCollection_HAsciiString) tempExtRefEntitySymbName;
-  PR.ReadText(PR.Current(), "External Reference Symbolic Name",
-	      tempExtRefEntitySymbName); //szv#4:S4163:12Mar99 `st=` not needed
+  PR.ReadText(PR.Current(),
+              "External Reference Symbolic Name",
+              tempExtRefEntitySymbName); // szv#4:S4163:12Mar99 `st=` not needed
 
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempExtRefEntitySymbName);
 }
 
-void  IGESBasic_ToolExternalRefName::WriteOwnParams
-  (const Handle(IGESBasic_ExternalRefName)& ent, IGESData_IGESWriter& IW) const
+void IGESBasic_ToolExternalRefName::WriteOwnParams(const Handle(IGESBasic_ExternalRefName)& ent,
+                                                   IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->ReferenceName());
 }
 
-void  IGESBasic_ToolExternalRefName::OwnShared
-  (const Handle(IGESBasic_ExternalRefName)& /* ent */, Interface_EntityIterator& /* iter */) const
+void IGESBasic_ToolExternalRefName::OwnShared(const Handle(IGESBasic_ExternalRefName)& /* ent */,
+                                              Interface_EntityIterator& /* iter */) const
 {
 }
 
-void  IGESBasic_ToolExternalRefName::OwnCopy
-  (const Handle(IGESBasic_ExternalRefName)& another,
-   const Handle(IGESBasic_ExternalRefName)& ent, Interface_CopyTool& /* TC */) const
+void IGESBasic_ToolExternalRefName::OwnCopy(const Handle(IGESBasic_ExternalRefName)& another,
+                                            const Handle(IGESBasic_ExternalRefName)& ent,
+                                            Interface_CopyTool& /* TC */) const
 {
   Handle(TCollection_HAsciiString) tempRefName =
     new TCollection_HAsciiString(another->ReferenceName());
   ent->Init(tempRefName);
 }
 
-IGESData_DirChecker  IGESBasic_ToolExternalRefName::DirChecker
-  (const Handle(IGESBasic_ExternalRefName)& /* ent */ ) const
+IGESData_DirChecker IGESBasic_ToolExternalRefName::DirChecker(
+  const Handle(IGESBasic_ExternalRefName)& /* ent */) const
 {
   IGESData_DirChecker DC(416, 3);
   DC.Structure(IGESData_DefVoid);
@@ -80,18 +80,19 @@ IGESData_DirChecker  IGESBasic_ToolExternalRefName::DirChecker
   return DC;
 }
 
-void  IGESBasic_ToolExternalRefName::OwnCheck
-  (const Handle(IGESBasic_ExternalRefName)& /* ent */,
-   const Interface_ShareTool& , Handle(Interface_Check)& /* ach */) const
+void IGESBasic_ToolExternalRefName::OwnCheck(const Handle(IGESBasic_ExternalRefName)& /* ent */,
+                                             const Interface_ShareTool&,
+                                             Handle(Interface_Check)& /* ach */) const
 {
 }
 
-void  IGESBasic_ToolExternalRefName::OwnDump
-  (const Handle(IGESBasic_ExternalRefName)& ent, const IGESData_IGESDumper& /* dumper */,
-   Standard_OStream& S, const Standard_Integer /* level */) const
+void IGESBasic_ToolExternalRefName::OwnDump(const Handle(IGESBasic_ExternalRefName)& ent,
+                                            const IGESData_IGESDumper& /* dumper */,
+                                            Standard_OStream& S,
+                                            const Standard_Integer /* level */) const
 {
   S << "IGESBasic_ExternalRefName\n"
     << "External Reference Symbolic Name : ";
-  IGESData_DumpString(S,ent->ReferenceName());
+  IGESData_DumpString(S, ent->ReferenceName());
   S << std::endl;
 }

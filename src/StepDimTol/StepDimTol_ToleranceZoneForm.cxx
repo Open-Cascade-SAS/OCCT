@@ -15,22 +15,15 @@
 
 #include <StepDimTol_ToleranceZoneForm.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ToleranceZoneForm,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ToleranceZoneForm, Standard_Transient)
 
-//=======================================================================
-//function : StepDimTol_ToleranceZoneForm
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepDimTol_ToleranceZoneForm::StepDimTol_ToleranceZoneForm ()  {}
+StepDimTol_ToleranceZoneForm::StepDimTol_ToleranceZoneForm() {}
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepDimTol_ToleranceZoneForm::Init(
-  const Handle(TCollection_HAsciiString)& theName)
+void StepDimTol_ToleranceZoneForm::Init(const Handle(TCollection_HAsciiString)& theName)
 {
   // --- classe own fields ---
   myName = theName;

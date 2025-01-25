@@ -12,15 +12,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPDS_IndexRange.hxx>
 
 #include <stdio.h>
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-  void BOPDS_IndexRange::Dump()const
+
+//=================================================================================================
+
+void BOPDS_IndexRange::Dump() const
 {
   printf(" range: %d %d", myFirst, myLast);
 }

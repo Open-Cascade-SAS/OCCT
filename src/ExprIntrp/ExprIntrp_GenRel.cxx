@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Expr_GeneralRelation.hxx>
 #include <ExprIntrp.hxx>
 #include <ExprIntrp_GenRel.hxx>
@@ -23,46 +22,50 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ExprIntrp_GenRel,ExprIntrp_Generator)
+IMPLEMENT_STANDARD_RTTIEXT(ExprIntrp_GenRel, ExprIntrp_Generator)
 
-ExprIntrp_GenRel::ExprIntrp_GenRel ()
+ExprIntrp_GenRel::ExprIntrp_GenRel()
 {
   done = Standard_False;
 }
 
-Handle( ExprIntrp_GenRel ) ExprIntrp_GenRel::Create()
+Handle(ExprIntrp_GenRel) ExprIntrp_GenRel::Create()
 {
   return new ExprIntrp_GenRel();
 }
 
-void ExprIntrp_GenRel::Process (const TCollection_AsciiString& str)
+void ExprIntrp_GenRel::Process(const TCollection_AsciiString& str)
 {
   Handle(ExprIntrp_GenRel) me = this;
-  done = Standard_False;
-  if (ExprIntrp::Parse(me,str)) {
-    if (!ExprIntrp_Recept.IsRelStackEmpty()) {
+  done                        = Standard_False;
+  if (ExprIntrp::Parse(me, str))
+  {
+    if (!ExprIntrp_Recept.IsRelStackEmpty())
+    {
       myRelation = ExprIntrp_Recept.PopRelation();
-      done = Standard_True;
+      done       = Standard_True;
     }
-    else {
+    else
+    {
       myRelation.Nullify();
     }
   }
-  else {
+  else
+  {
     myRelation.Nullify();
   }
 }
- 
+
 Standard_Boolean ExprIntrp_GenRel::IsDone() const
 {
   return done;
 }
 
-Handle(Expr_GeneralRelation) ExprIntrp_GenRel::Relation () const
+Handle(Expr_GeneralRelation) ExprIntrp_GenRel::Relation() const
 {
-  if (!done) {
+  if (!done)
+  {
     throw Standard_NoSuchObject();
   }
   return myRelation;
 }
-

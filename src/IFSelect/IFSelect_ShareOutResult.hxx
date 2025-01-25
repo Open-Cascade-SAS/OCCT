@@ -36,42 +36,45 @@ class TCollection_AsciiString;
 //! Transfer itself will later be performed, either by a
 //! TransferCopy to simply divide up a file, or a TransferDispatch
 //! which can be parametred with more details
-class IFSelect_ShareOutResult 
+class IFSelect_ShareOutResult
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Creates a ShareOutResult from a ShareOut, to work on a Model
   //! (without any more precision; uses Active Protocol)
-  Standard_EXPORT IFSelect_ShareOutResult(const Handle(IFSelect_ShareOut)& sho, const Handle(Interface_InterfaceModel)& mod);
-  
+  Standard_EXPORT IFSelect_ShareOutResult(const Handle(IFSelect_ShareOut)&        sho,
+                                          const Handle(Interface_InterfaceModel)& mod);
+
   //! Creates a ShareOutResult from a ShareOut, to work on a Graph
   //! already computed, which defines the Input Model and can
   //! specialize some Entities
-  Standard_EXPORT IFSelect_ShareOutResult(const Handle(IFSelect_ShareOut)& sho, const Interface_Graph& G);
-  
+  Standard_EXPORT IFSelect_ShareOutResult(const Handle(IFSelect_ShareOut)& sho,
+                                          const Interface_Graph&           G);
+
   //! Creates a ShareOutResult from a unique Dispatch, to work on
   //! a Model. As if it was a ShareOut with only one Dispatch
   //! (without any more precision; uses Active Protocol)
   //! Allows to compute the effect of a single Dispatch
-  Standard_EXPORT IFSelect_ShareOutResult(const Handle(IFSelect_Dispatch)& disp, const Handle(Interface_InterfaceModel)& mod);
-  
+  Standard_EXPORT IFSelect_ShareOutResult(const Handle(IFSelect_Dispatch)&        disp,
+                                          const Handle(Interface_InterfaceModel)& mod);
+
   //! Creates a ShareOutResult from a unique Dispatch, to work on
   //! a Graph. As if it was a ShareOut with only one Dispatch
   //! Allows to compute the effect of a single Dispatch
-  Standard_EXPORT IFSelect_ShareOutResult(const Handle(IFSelect_Dispatch)& disp, const Interface_Graph& G);
-  
+  Standard_EXPORT IFSelect_ShareOutResult(const Handle(IFSelect_Dispatch)& disp,
+                                          const Interface_Graph&           G);
+
   //! Returns the ShareOut used to create the ShareOutResult
   //! if creation from a Dispatch, returns a Null Handle
   Standard_EXPORT Handle(IFSelect_ShareOut) ShareOut() const;
-  
+
   //! Returns the Graph used to create theShareOutResult
   Standard_EXPORT const Interface_Graph& Graph() const;
-  
+
   //! Erases computed data, in order to command a new Evaluation
   Standard_EXPORT void Reset();
-  
+
   //! Evaluates the result of a ShareOut : determines Entities to be
   //! forgotten by the ShareOut, Entities to be transferred several
   //! times (duplicated), prepares an iteration on the packets to be
@@ -88,12 +91,13 @@ public:
   //! this mode allows to evaluate duplications
   //! Remark that to send packets, iteration remains preferable
   //! (file names are managed)
-  Standard_EXPORT Handle(IFSelect_PacketList) Packets (const Standard_Boolean complete = Standard_True);
+  Standard_EXPORT Handle(IFSelect_PacketList) Packets(
+    const Standard_Boolean complete = Standard_True);
 
   //! Returns the total count of produced non empty packets
   //! (in out : calls Evaluate as necessary)
   Standard_EXPORT Standard_Integer NbPackets();
-  
+
   //! Prepares the iteration on the packets
   //! This method is called by Evaluate, but can be called anytime
   //! The iteration consists in taking each Dispatch of the ShareOut
@@ -107,38 +111,39 @@ public:
   //!
   //! Prepare sets the iteration to the first Dispatch, first Packet
   Standard_EXPORT void Prepare();
-  
+
   //! Returns True if there is more packets in the current Dispatch,
   //! else if there is more Dispatch in the ShareOut
   Standard_EXPORT Standard_Boolean More();
-  
+
   //! Passes to the next Packet in the current Dispatch, or if there
   //! is none, to the next Dispatch in the ShareOut
   Standard_EXPORT void Next();
-  
+
   //! Passes to the next Dispatch, regardless about remaining packets
   Standard_EXPORT void NextDispatch();
-  
+
   //! Returns the current Dispatch
   Standard_EXPORT Handle(IFSelect_Dispatch) Dispatch() const;
-  
+
   //! Returns the Rank of the current Dispatch in the ShareOut
   //! Returns Zero if there is none (iteration finished)
   Standard_EXPORT Standard_Integer DispatchRank() const;
-  
+
   //! Returns Number (rank) of current Packet in current Dispatch,
   //! and total count of Packets in current Dispatch, as arguments
-  Standard_EXPORT void PacketsInDispatch (Standard_Integer& numpack, Standard_Integer& nbpacks) const;
-  
+  Standard_EXPORT void PacketsInDispatch(Standard_Integer& numpack,
+                                         Standard_Integer& nbpacks) const;
+
   //! Returns the list of Roots of the current Packet (never empty)
   //! (i.e. the Entities to be themselves asked for transfer)
   //! Error if there is none (iteration finished)
   Standard_EXPORT Interface_EntityIterator PacketRoot();
-  
+
   //! Returns the complete content of the current Packet (i.e.
   //! with shared entities, which will also be put in the file)
   Standard_EXPORT Interface_EntityIterator PacketContent();
-  
+
   //! Returns the File Name which corresponds to current Packet
   //! (computed by ShareOut)
   //! If current Packet has no associated name (see ShareOut),
@@ -146,21 +151,18 @@ public:
   Standard_EXPORT TCollection_AsciiString FileName() const;
 
 protected:
-
-  Interface_Graph thegraph;
+  Interface_Graph          thegraph;
   IFGraph_SubPartsIterator thedispres;
 
 private:
-
   Handle(IFSelect_ShareOut) theshareout;
   Handle(IFSelect_Dispatch) thedispatch;
-  Standard_Boolean theeval;
-  Standard_Integer thedispnum;
-  Standard_Integer thepacknum;
-  Standard_Integer thepackdisp;
-  Standard_Integer thenbindisp;
+  Standard_Boolean          theeval;
+  Standard_Integer          thedispnum;
+  Standard_Integer          thepacknum;
+  Standard_Integer          thepackdisp;
+  Standard_Integer          thenbindisp;
   TColStd_SequenceOfInteger thedisplist;
-
 };
 
 #endif // _IFSelect_ShareOutResult_HeaderFile

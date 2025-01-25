@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/ShapeView_OpenFileDialog.hxx>
 #include <inspector/ShapeView_OpenFileViewModel.hxx>
@@ -39,10 +39,10 @@
 
 static const int ICON_SIZE = 40;
 
-static const int OPEN_DIALOG_WIDTH = 550;
+static const int OPEN_DIALOG_WIDTH  = 550;
 static const int OPEN_DIALOG_HEIGHT = 200;
 
-static const int MARGIN_DIALOG = 4;
+static const int MARGIN_DIALOG  = 4;
 static const int SPACING_DIALOG = 2;
 
 // =======================================================================
@@ -54,8 +54,8 @@ QPushButton* ShapeView_OpenButton::StartButton()
   if (!myStartButton)
   {
     myStartButton = new QPushButton();
-    myStartButton->setIcon (QIcon (":/icons/folder_open.png"));
-    connect (myStartButton, SIGNAL (clicked()), this, SLOT (onStartButtonClicked()));
+    myStartButton->setIcon(QIcon(":/icons/folder_open.png"));
+    connect(myStartButton, SIGNAL(clicked()), this, SLOT(onStartButtonClicked()));
   }
   return myStartButton;
 }
@@ -68,12 +68,12 @@ void ShapeView_OpenButton::onStartButtonClicked()
 {
   QString aDataDirName = QDir::currentPath();
 
-  QString aFileName = ShapeView_OpenFileDialog::OpenFile (0, aDataDirName);
-  aFileName = QDir().toNativeSeparators (aFileName);
+  QString aFileName = ShapeView_OpenFileDialog::OpenFile(0, aDataDirName);
+  aFileName         = QDir().toNativeSeparators(aFileName);
   if (!aFileName.isEmpty())
   {
-    QApplication::setOverrideCursor (Qt::WaitCursor);
-    emit OpenFile (aFileName);
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    emit OpenFile(aFileName);
     QApplication::restoreOverrideCursor();
   }
 }
@@ -82,79 +82,82 @@ void ShapeView_OpenButton::onStartButtonClicked()
 // function : changeMargins
 // purpose :
 // =======================================================================
-void changeMargins (QBoxLayout* theLayout)
+void changeMargins(QBoxLayout* theLayout)
 {
-  theLayout->setContentsMargins (MARGIN_DIALOG, MARGIN_DIALOG, MARGIN_DIALOG, MARGIN_DIALOG);
-  theLayout->setSpacing (SPACING_DIALOG);
+  theLayout->setContentsMargins(MARGIN_DIALOG, MARGIN_DIALOG, MARGIN_DIALOG, MARGIN_DIALOG);
+  theLayout->setSpacing(SPACING_DIALOG);
 }
 
 // =======================================================================
 // function : Constructor
 // purpose :
 // =======================================================================
-ShapeView_OpenFileDialog::ShapeView_OpenFileDialog (QWidget* theParent, const QString& theDataDirName)
-: QDialog (theParent)
+ShapeView_OpenFileDialog::ShapeView_OpenFileDialog(QWidget*       theParent,
+                                                   const QString& theDataDirName)
+    : QDialog(theParent)
 {
-  setWindowTitle (theDataDirName);
+  setWindowTitle(theDataDirName);
   myDataDir = theDataDirName;
 
-  QVBoxLayout* aDialogLay = new QVBoxLayout (this);
-  changeMargins (aDialogLay);
+  QVBoxLayout* aDialogLay = new QVBoxLayout(this);
+  changeMargins(aDialogLay);
 
   // Title label
-  QLabel* aTitleLabel = new QLabel (this);
-  aTitleLabel->setText (tr ("Open File"));
-  aDialogLay->addWidget (aTitleLabel);
+  QLabel* aTitleLabel = new QLabel(this);
+  aTitleLabel->setText(tr("Open File"));
+  aDialogLay->addWidget(aTitleLabel);
 
   // Samples View
-  QGroupBox* aSamplesBox = new QGroupBox (this);
-  aSamplesBox->setTitle (tr ("Samples"));
-  aDialogLay->addWidget (aSamplesBox);
-  QVBoxLayout* aSampleLay = new QVBoxLayout (aSamplesBox);
-  changeMargins (aSampleLay);
-  mySamplesView = createTableView (readSampleNames());
-  aSampleLay->addWidget (mySamplesView);
+  QGroupBox* aSamplesBox = new QGroupBox(this);
+  aSamplesBox->setTitle(tr("Samples"));
+  aDialogLay->addWidget(aSamplesBox);
+  QVBoxLayout* aSampleLay = new QVBoxLayout(aSamplesBox);
+  changeMargins(aSampleLay);
+  mySamplesView = createTableView(readSampleNames());
+  aSampleLay->addWidget(mySamplesView);
 
   // Select file
-  QGroupBox* aSelectFileBox = new QGroupBox (this);
-  aSelectFileBox->setTitle (tr ("Select file"));
-  aDialogLay->addWidget (aSelectFileBox);
-  QGridLayout* aSelectFileLay = new QGridLayout (aSelectFileBox);
-  aSelectFileLay->setContentsMargins (MARGIN_DIALOG, MARGIN_DIALOG, MARGIN_DIALOG, MARGIN_DIALOG);
+  QGroupBox* aSelectFileBox = new QGroupBox(this);
+  aSelectFileBox->setTitle(tr("Select file"));
+  aDialogLay->addWidget(aSelectFileBox);
+  QGridLayout* aSelectFileLay = new QGridLayout(aSelectFileBox);
+  aSelectFileLay->setContentsMargins(MARGIN_DIALOG, MARGIN_DIALOG, MARGIN_DIALOG, MARGIN_DIALOG);
 
-  mySelectedName = new QLineEdit (aSelectFileBox);
-  QCompleter* aCompleter = new QCompleter();
+  mySelectedName                     = new QLineEdit(aSelectFileBox);
+  QCompleter*       aCompleter       = new QCompleter();
   QFileSystemModel* aFileSystemModel = new QFileSystemModel;
-  aFileSystemModel->setRootPath (QDir::rootPath());
-  aCompleter->setModel (aFileSystemModel);
-  mySelectedName->setCompleter (aCompleter);
-  aSelectFileLay->addWidget (mySelectedName, 1, 0);
+  aFileSystemModel->setRootPath(QDir::rootPath());
+  aCompleter->setModel(aFileSystemModel);
+  mySelectedName->setCompleter(aCompleter);
+  aSelectFileLay->addWidget(mySelectedName, 1, 0);
 
-  QToolButton* aSelectFileBtn = new QToolButton (aSelectFileBox);
-  aSelectFileBtn->setIcon (QIcon (":/icons/folder_open.png"));
-  aSelectFileLay->addWidget (aSelectFileBtn, 1, 1);
+  QToolButton* aSelectFileBtn = new QToolButton(aSelectFileBox);
+  aSelectFileBtn->setIcon(QIcon(":/icons/folder_open.png"));
+  aSelectFileLay->addWidget(aSelectFileBtn, 1, 1);
 
-  myFolderApplyOpen = new QToolButton (aSelectFileBox);
-  myFolderApplyOpen->setIcon (QIcon (":/icons/folder_import.png"));
-  myFolderApplyOpen->setIconSize (QSize (ICON_SIZE, ICON_SIZE));
-  myFolderApplyOpen->setEnabled (false);
-  aSelectFileLay->addWidget (myFolderApplyOpen, 0, 2, 2, 1);
+  myFolderApplyOpen = new QToolButton(aSelectFileBox);
+  myFolderApplyOpen->setIcon(QIcon(":/icons/folder_import.png"));
+  myFolderApplyOpen->setIconSize(QSize(ICON_SIZE, ICON_SIZE));
+  myFolderApplyOpen->setEnabled(false);
+  aSelectFileLay->addWidget(myFolderApplyOpen, 0, 2, 2, 1);
 
-  connect (mySelectedName, SIGNAL (textChanged (const QString&)),
-           this, SLOT (onNameChanged (const QString&)));
-  connect (aSelectFileBtn, SIGNAL (clicked()), this, SLOT (onSelectClicked()));
-  connect (myFolderApplyOpen, SIGNAL (clicked()), this, SLOT (onApplySelectClicked()));
+  connect(mySelectedName,
+          SIGNAL(textChanged(const QString&)),
+          this,
+          SLOT(onNameChanged(const QString&)));
+  connect(aSelectFileBtn, SIGNAL(clicked()), this, SLOT(onSelectClicked()));
+  connect(myFolderApplyOpen, SIGNAL(clicked()), this, SLOT(onApplySelectClicked()));
 
-  resize (OPEN_DIALOG_WIDTH, OPEN_DIALOG_HEIGHT);
+  resize(OPEN_DIALOG_WIDTH, OPEN_DIALOG_HEIGHT);
 }
 
 // =======================================================================
 // function : OpenFile
 // purpose :
 // =======================================================================
-QString ShapeView_OpenFileDialog::OpenFile (QWidget* theParent, const QString& theDataDirName)
+QString ShapeView_OpenFileDialog::OpenFile(QWidget* theParent, const QString& theDataDirName)
 {
-  QString aFileName;
+  QString                   aFileName;
   ShapeView_OpenFileDialog* aDialog = new ShapeView_OpenFileDialog(theParent, theDataDirName);
   if (aDialog->exec() == QDialog::Accepted)
     aFileName = aDialog->GetFileName();
@@ -166,8 +169,8 @@ QString ShapeView_OpenFileDialog::OpenFile (QWidget* theParent, const QString& t
 // function : onSampleSelectionChanged
 // purpose :
 // =======================================================================
-void ShapeView_OpenFileDialog::onSampleSelectionChanged (const QItemSelection& theSelected,
-                                                           const QItemSelection&)
+void ShapeView_OpenFileDialog::onSampleSelectionChanged(const QItemSelection& theSelected,
+                                                        const QItemSelection&)
 {
   QItemSelectionModel* aSelectionModel = (QItemSelectionModel*)sender();
   if (!aSelectionModel)
@@ -179,7 +182,7 @@ void ShapeView_OpenFileDialog::onSampleSelectionChanged (const QItemSelection& t
   if (!anIndex.isValid())
     return;
 
-  myFileName = aSelectionModel->model()->data (anIndex, Qt::ToolTipRole).toString();
+  myFileName = aSelectionModel->model()->data(anIndex, Qt::ToolTipRole).toString();
   accept();
 }
 
@@ -187,11 +190,11 @@ void ShapeView_OpenFileDialog::onSampleSelectionChanged (const QItemSelection& t
 // function : onNameChanged
 // purpose :
 // =======================================================================
-void ShapeView_OpenFileDialog::onNameChanged (const QString& theText)
+void ShapeView_OpenFileDialog::onNameChanged(const QString& theText)
 {
-  QFileInfo aFileInfo (theText);
-  bool anExists = aFileInfo.exists() && aFileInfo.isFile();
-  myFolderApplyOpen->setEnabled (anExists);
+  QFileInfo aFileInfo(theText);
+  bool      anExists = aFileInfo.exists() && aFileInfo.isFile();
+  myFolderApplyOpen->setEnabled(anExists);
 }
 
 // =======================================================================
@@ -204,19 +207,19 @@ void ShapeView_OpenFileDialog::onSelectClicked()
   QString aDirName = mySelectedName->text();
   if (!aDirName.isEmpty())
   {
-    QDir aDir (aDirName);
+    QDir aDir(aDirName);
     if (aDir.exists())
       anEnteredPath = aDirName;
   }
 
-  QString aFilter (tr ("BREP file (*.brep*)"));
-  QString aFileName = QFileDialog::getOpenFileName (0, "Open document", anEnteredPath, aFilter);
+  QString aFilter(tr("BREP file (*.brep*)"));
+  QString aFileName = QFileDialog::getOpenFileName(0, "Open document", anEnteredPath, aFilter);
 
   if (aFileName.isEmpty())
     return; // do nothing, left the previous value
 
-  mySelectedName->setText (aFileName);
-  onNameChanged (aFileName);
+  mySelectedName->setText(aFileName);
+  onNameChanged(aFileName);
 }
 
 // =======================================================================
@@ -233,30 +236,33 @@ void ShapeView_OpenFileDialog::onApplySelectClicked()
 // function : createTableView
 // purpose :
 // =======================================================================
-QTableView* ShapeView_OpenFileDialog::createTableView (const QStringList& theFileNames)
+QTableView* ShapeView_OpenFileDialog::createTableView(const QStringList& theFileNames)
 {
-  QTableView* aTableView = new QTableView (this);
-  aTableView->setFrameStyle (QFrame::NoFrame);
-  QPalette aPalette = aTableView->viewport()->palette();
-  QColor aWindowColor = aPalette.color (QPalette::Window);
-  aPalette.setBrush (QPalette::Base, aWindowColor);
-  aTableView->viewport()->setPalette (aPalette);
+  QTableView* aTableView = new QTableView(this);
+  aTableView->setFrameStyle(QFrame::NoFrame);
+  QPalette aPalette     = aTableView->viewport()->palette();
+  QColor   aWindowColor = aPalette.color(QPalette::Window);
+  aPalette.setBrush(QPalette::Base, aWindowColor);
+  aTableView->viewport()->setPalette(aPalette);
 
-  aTableView->horizontalHeader()->setVisible (false);
-  aTableView->verticalHeader()->setVisible (false);
-  aTableView->setGridStyle (Qt::NoPen);
-  aTableView->setModel (createModel (theFileNames));
-  aTableView->setItemDelegateForRow (0, new ShapeView_OpenFileItemDelegate (aTableView,
-                                                          aPalette.color (QPalette::Highlight)));
-  aTableView->viewport()->setAttribute (Qt::WA_Hover);
+  aTableView->horizontalHeader()->setVisible(false);
+  aTableView->verticalHeader()->setVisible(false);
+  aTableView->setGridStyle(Qt::NoPen);
+  aTableView->setModel(createModel(theFileNames));
+  aTableView->setItemDelegateForRow(
+    0,
+    new ShapeView_OpenFileItemDelegate(aTableView, aPalette.color(QPalette::Highlight)));
+  aTableView->viewport()->setAttribute(Qt::WA_Hover);
   int aCellHeight = ICON_SIZE + aTableView->verticalHeader()->defaultSectionSize();
-  aTableView->setRowHeight (0, aCellHeight);
+  aTableView->setRowHeight(0, aCellHeight);
   int aScrollHeight = aTableView->horizontalScrollBar()->sizeHint().height();
-  aTableView->setMinimumHeight (aCellHeight + aScrollHeight);
-  QItemSelectionModel* aSelectionModel = new QItemSelectionModel (aTableView->model());
-  connect (aSelectionModel, SIGNAL (selectionChanged (const QItemSelection&, const QItemSelection&)),
-           this, SLOT (onSampleSelectionChanged (const QItemSelection&, const QItemSelection&)));
-  aTableView->setSelectionModel (aSelectionModel);
+  aTableView->setMinimumHeight(aCellHeight + aScrollHeight);
+  QItemSelectionModel* aSelectionModel = new QItemSelectionModel(aTableView->model());
+  connect(aSelectionModel,
+          SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+          this,
+          SLOT(onSampleSelectionChanged(const QItemSelection&, const QItemSelection&)));
+  aTableView->setSelectionModel(aSelectionModel);
 
   return aTableView;
 }
@@ -265,10 +271,10 @@ QTableView* ShapeView_OpenFileDialog::createTableView (const QStringList& theFil
 // function : createModel
 // purpose :
 // =======================================================================
-QAbstractItemModel* ShapeView_OpenFileDialog::createModel (const QStringList& theFileNames)
+QAbstractItemModel* ShapeView_OpenFileDialog::createModel(const QStringList& theFileNames)
 {
   ShapeView_OpenFileViewModel* aModel = new ShapeView_OpenFileViewModel(this);
-  aModel->Init (theFileNames);
+  aModel->Init(theFileNames);
   return aModel;
 }
 
@@ -280,15 +286,15 @@ QStringList ShapeView_OpenFileDialog::readSampleNames()
 {
   QStringList aNames;
 
-  QDir aDir (myDataDir);
+  QDir aDir(myDataDir);
   aDir.setSorting(QDir::Name);
 
   QFileInfoList aDirEntries = aDir.entryInfoList();
   for (int aDirId = 0; aDirId < aDirEntries.size(); ++aDirId)
   {
-    QFileInfo aFileInfo = aDirEntries.at (aDirId);
+    QFileInfo aFileInfo = aDirEntries.at(aDirId);
     if (aFileInfo.isFile())
-      aNames.append (aFileInfo.absoluteFilePath());
+      aNames.append(aFileInfo.absoluteFilePath());
   }
   return aNames;
 }

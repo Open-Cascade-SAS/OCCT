@@ -21,41 +21,23 @@
 
 #include <StepShape_ShapeRepresentation.hxx>
 
-
 class StepShape_EdgeBasedWireframeShapeRepresentation;
-DEFINE_STANDARD_HANDLE(StepShape_EdgeBasedWireframeShapeRepresentation, StepShape_ShapeRepresentation)
+DEFINE_STANDARD_HANDLE(StepShape_EdgeBasedWireframeShapeRepresentation,
+                       StepShape_ShapeRepresentation)
 
 //! Representation of STEP entity EdgeBasedWireframeShapeRepresentation
 class StepShape_EdgeBasedWireframeShapeRepresentation : public StepShape_ShapeRepresentation
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepShape_EdgeBasedWireframeShapeRepresentation();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_EdgeBasedWireframeShapeRepresentation,StepShape_ShapeRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepShape_EdgeBasedWireframeShapeRepresentation,
+                          StepShape_ShapeRepresentation)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_EdgeBasedWireframeShapeRepresentation_HeaderFile

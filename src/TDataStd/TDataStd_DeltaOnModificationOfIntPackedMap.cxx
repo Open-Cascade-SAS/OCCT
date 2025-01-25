@@ -20,20 +20,17 @@
 #include <TDF_DeltaOnModification.hxx>
 #include <TDF_Label.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfIntPackedMap,TDF_DeltaOnModification)
+IMPLEMENT_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfIntPackedMap, TDF_DeltaOnModification)
 
 #ifdef OCCT_DEBUG
-#define MAXUP 1000
+  #define MAXUP 1000
 #endif
 
-//=======================================================================
-//function : TDataStd_DeltaOnModificationOfIntPackedMap
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TDataStd_DeltaOnModificationOfIntPackedMap::TDataStd_DeltaOnModificationOfIntPackedMap(
-                             const Handle(TDataStd_IntPackedMap)& OldAtt)
-: TDF_DeltaOnModification(OldAtt)
+  const Handle(TDataStd_IntPackedMap)& OldAtt)
+    : TDF_DeltaOnModification(OldAtt)
 {
   Handle(TDataStd_IntPackedMap) CurrAtt;
   if (Label().FindAttribute(OldAtt->ID(), CurrAtt))
@@ -43,27 +40,36 @@ TDataStd_DeltaOnModificationOfIntPackedMap::TDataStd_DeltaOnModificationOfIntPac
     aMap2 = CurrAtt->GetHMap();
 #ifdef OCCT_DEBUG_disable
     if (aMap1.IsNull())
-      std::cout <<"DeltaOnModificationOfIntPackedMap:: Old Map is Null" <<std::endl;
+      std::cout << "DeltaOnModificationOfIntPackedMap:: Old Map is Null" << std::endl;
     if (aMap2.IsNull())
-      std::cout <<"DeltaOnModificationOfIntPackedMap:: Current Map is Null" <<std::endl;
+      std::cout << "DeltaOnModificationOfIntPackedMap:: Current Map is Null" << std::endl;
 #endif
-      
-    if (aMap1.IsNull() || aMap2.IsNull()) return;
-    if (aMap1 != aMap2) {
+
+    if (aMap1.IsNull() || aMap2.IsNull())
+      return;
+    if (aMap1 != aMap2)
+    {
       const TColStd_PackedMapOfInteger& map1 = aMap1->Map();
       const TColStd_PackedMapOfInteger& map2 = aMap2->Map();
-      if (map1.IsSubset(map2)) {
+      if (map1.IsSubset(map2))
+      {
         myDeletion = new TColStd_HPackedMapOfInteger();
         myDeletion->ChangeMap().Subtraction(map2, map1);
-      } else if (map2.IsSubset(map1)) { 
+      }
+      else if (map2.IsSubset(map1))
+      {
         myAddition = new TColStd_HPackedMapOfInteger();
         myAddition->ChangeMap().Subtraction(map1, map2);
-      } else if (map1.HasIntersection(map2)) {
+      }
+      else if (map1.HasIntersection(map2))
+      {
         myAddition = new TColStd_HPackedMapOfInteger();
         myAddition->ChangeMap().Subtraction(map1, map2);
         myDeletion = new TColStd_HPackedMapOfInteger();
         myDeletion->ChangeMap().Subtraction(map2, map1);
-      } else {
+      }
+      else
+      {
         myAddition = new TColStd_HPackedMapOfInteger(map1);
         myDeletion = new TColStd_HPackedMapOfInteger(map2);
       }
@@ -71,62 +77,62 @@ TDataStd_DeltaOnModificationOfIntPackedMap::TDataStd_DeltaOnModificationOfIntPac
   }
 }
 
-
-//=======================================================================
-//function : Apply
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
 {
 
-  Handle(TDF_Attribute) aTDFAttribute = Attribute();
-  Handle(TDataStd_IntPackedMap) aBackAtt = Handle(TDataStd_IntPackedMap)::DownCast (aTDFAttribute);
-  if(aBackAtt.IsNull()) {
+  Handle(TDF_Attribute)         aTDFAttribute = Attribute();
+  Handle(TDataStd_IntPackedMap) aBackAtt = Handle(TDataStd_IntPackedMap)::DownCast(aTDFAttribute);
+  if (aBackAtt.IsNull())
+  {
 #ifdef OCCT_DEBUG
-    std::cout << "DeltaOnModificationOfIntPAckedMap::Apply: OldAtt is Null" <<std::endl;
+    std::cout << "DeltaOnModificationOfIntPAckedMap::Apply: OldAtt is Null" << std::endl;
 #endif
     return;
   }
-  
+
   Handle(TDataStd_IntPackedMap) aCurAtt;
-  if (!Label().FindAttribute(aBackAtt->ID(),aCurAtt)) {
+  if (!Label().FindAttribute(aBackAtt->ID(), aCurAtt))
+  {
 
     Label().AddAttribute(aBackAtt);
   }
 
-  if(aCurAtt.IsNull()) {
+  if (aCurAtt.IsNull())
+  {
 #ifdef OCCT_DEBUG
-    std::cout << "DeltaOnModificationOfIntAPckedMAp::Apply: CurAtt is Null" <<std::endl;
+    std::cout << "DeltaOnModificationOfIntAPckedMAp::Apply: CurAtt is Null" << std::endl;
 #endif
     return;
   }
-  else 
+  else
     aCurAtt->Backup();
 
-  
-  
   Handle(TColStd_HPackedMapOfInteger) IntMap = aCurAtt->GetHMap();
-  if (IntMap.IsNull()) return;
+  if (IntMap.IsNull())
+    return;
 
   if (myDeletion.IsNull() && myAddition.IsNull())
     return;
 
-  if (!myDeletion.IsNull()) {
+  if (!myDeletion.IsNull())
+  {
     if (myDeletion->Map().Extent())
       IntMap->ChangeMap().Subtract(myDeletion->Map());
   }
-  if (!myAddition.IsNull()) {
+  if (!myAddition.IsNull())
+  {
     if (myAddition->Map().Extent())
       IntMap->ChangeMap().Unite(myAddition->Map());
   }
-  
+
 #ifdef OCCT_DEBUG_disable
-  std::cout << " << Map Dump after Delta Apply >>" <<std::endl;
-  Handle(TColStd_HPackedMapOfInteger) aIntMap = aCurAtt->GetHMap();
+  std::cout << " << Map Dump after Delta Apply >>" << std::endl;
+  Handle(TColStd_HPackedMapOfInteger)     aIntMap = aCurAtt->GetHMap();
   TColStd_MapIteratorOfPackedMapOfInteger it(aIntMap->Map());
-  for (Standard_Integer i=1;it.More() && i <= MAXUP; it.Next(), i++) 
+  for (Standard_Integer i = 1; it.More() && i <= MAXUP; it.Next(), i++)
     std::cout << it.Key() << "  ";
-  std::cout <<std::endl;
+  std::cout << std::endl;
 #endif
 }

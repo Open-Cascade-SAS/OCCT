@@ -24,7 +24,6 @@
 #include <IGESData_IGESEntity.hxx>
 class gp_Vec;
 
-
 class IGESGeom_Direction;
 DEFINE_STANDARD_HANDLE(IGESGeom_Direction, IGESData_IGESEntity)
 
@@ -38,42 +37,23 @@ class IGESGeom_Direction : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESGeom_Direction();
-  
+
   //! This method is used to set the fields of the class
   //! Direction
   //! - aDirection : Direction ratios, Z is 0 by default
-  Standard_EXPORT void Init (const gp_XYZ& aDirection);
-  
+  Standard_EXPORT void Init(const gp_XYZ& aDirection);
+
   Standard_EXPORT gp_Vec Value() const;
-  
+
   //! returns the Direction value after applying Transformation matrix
   Standard_EXPORT gp_Vec TransformedValue() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESGeom_Direction,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_Direction, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
   gp_XYZ theDirection;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESGeom_Direction_HeaderFile

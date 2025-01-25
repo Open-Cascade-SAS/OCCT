@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef VInspector_ItemV3dViewer_H
 #define VInspector_ItemV3dViewer_H
@@ -29,10 +29,13 @@ typedef QExplicitlySharedDataPointer<VInspector_ItemV3dViewer> VInspector_ItemV3
 class VInspector_ItemV3dViewer : public VInspector_ItemBase
 {
 public:
-
   //! Creates an item wrapped by a shared pointer
-  static VInspector_ItemV3dViewerPtr CreateItem (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
-  { return VInspector_ItemV3dViewerPtr (new VInspector_ItemV3dViewer (theParent, theRow, theColumn)); }
+  static VInspector_ItemV3dViewerPtr CreateItem(TreeModel_ItemBasePtr theParent,
+                                                const int             theRow,
+                                                const int             theColumn)
+  {
+    return VInspector_ItemV3dViewerPtr(new VInspector_ItemV3dViewer(theParent, theRow, theColumn));
+  }
 
   //! Destructor
   virtual ~VInspector_ItemV3dViewer() Standard_OVERRIDE {};
@@ -45,11 +48,15 @@ public:
 
   //! Returns data object of the item.
   //! \return object
-  virtual const Handle(Standard_Transient)& Object() const Standard_OVERRIDE { initItem(); return myViewer; }
+  virtual const Handle(Standard_Transient)& Object() const Standard_OVERRIDE
+  {
+    initItem();
+    return myViewer;
+  }
 
   //! Returns the current viewer, init item if it was not initialized yet
   //! \return interactive object
-  Handle(V3d_Viewer) GetViewer() const { return Handle(V3d_Viewer)::DownCast (Object()); }
+  Handle(V3d_Viewer) GetViewer() const { return Handle(V3d_Viewer)::DownCast(Object()); }
 
 protected:
   //! Initializes the current item. It is empty because Reset() is also empty.
@@ -62,23 +69,23 @@ protected:
   //! Returns item information for the given role. Fills internal container if it was not filled yet
   //! \param theItemRole a value role
   //! \return the value
-  Standard_EXPORT virtual QVariant initValue (const int theItemRole) const Standard_OVERRIDE;
+  Standard_EXPORT virtual QVariant initValue(const int theItemRole) const Standard_OVERRIDE;
 
   //! Returns stream value of the item to fulfill property panel.
   //! \return stream value or dummy
-  Standard_EXPORT virtual void initStream (Standard_OStream& theOStream) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void initStream(Standard_OStream& theOStream) const Standard_OVERRIDE;
 
 private:
-
   //! Constructor
   //! param theParent a parent item
   //! \param theRow the item row positition in the parent item
   //! \param theColumn the item column positition in the parent item
   VInspector_ItemV3dViewer(TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
-    : VInspector_ItemBase(theParent, theRow, theColumn) {}
+      : VInspector_ItemBase(theParent, theRow, theColumn)
+  {
+  }
 
 protected:
-
   Handle(V3d_Viewer) myViewer; //!< the current viewer
 };
 

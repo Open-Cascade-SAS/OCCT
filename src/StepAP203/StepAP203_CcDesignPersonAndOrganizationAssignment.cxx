@@ -20,47 +20,43 @@
 #include <StepBasic_PersonAndOrganization.hxx>
 #include <StepBasic_PersonAndOrganizationRole.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignPersonAndOrganizationAssignment,StepBasic_PersonAndOrganizationAssignment)
+IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignPersonAndOrganizationAssignment,
+                           StepBasic_PersonAndOrganizationAssignment)
 
-//=======================================================================
-//function : StepAP203_CcDesignPersonAndOrganizationAssignment
-//purpose  : 
-//=======================================================================
-StepAP203_CcDesignPersonAndOrganizationAssignment::StepAP203_CcDesignPersonAndOrganizationAssignment ()
+//=================================================================================================
+
+StepAP203_CcDesignPersonAndOrganizationAssignment::
+  StepAP203_CcDesignPersonAndOrganizationAssignment()
 {
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepAP203_CcDesignPersonAndOrganizationAssignment::Init (const Handle(StepBasic_PersonAndOrganization) &aPersonAndOrganizationAssignment_AssignedPersonAndOrganization,
-                                                              const Handle(StepBasic_PersonAndOrganizationRole) &aPersonAndOrganizationAssignment_Role,
-                                                              const Handle(StepAP203_HArray1OfPersonOrganizationItem) &aItems)
+void StepAP203_CcDesignPersonAndOrganizationAssignment::Init(
+  const Handle(StepBasic_PersonAndOrganization)&
+    aPersonAndOrganizationAssignment_AssignedPersonAndOrganization,
+  const Handle(StepBasic_PersonAndOrganizationRole)&       aPersonAndOrganizationAssignment_Role,
+  const Handle(StepAP203_HArray1OfPersonOrganizationItem)& aItems)
 {
-  StepBasic_PersonAndOrganizationAssignment::Init(aPersonAndOrganizationAssignment_AssignedPersonAndOrganization,
-                                                  aPersonAndOrganizationAssignment_Role);
+  StepBasic_PersonAndOrganizationAssignment::Init(
+    aPersonAndOrganizationAssignment_AssignedPersonAndOrganization,
+    aPersonAndOrganizationAssignment_Role);
 
   theItems = aItems;
 }
 
-//=======================================================================
-//function : Items
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepAP203_HArray1OfPersonOrganizationItem) StepAP203_CcDesignPersonAndOrganizationAssignment::Items () const
+Handle(StepAP203_HArray1OfPersonOrganizationItem)
+  StepAP203_CcDesignPersonAndOrganizationAssignment::Items() const
 {
   return theItems;
 }
 
-//=======================================================================
-//function : SetItems
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepAP203_CcDesignPersonAndOrganizationAssignment::SetItems (const Handle(StepAP203_HArray1OfPersonOrganizationItem) &aItems)
+void StepAP203_CcDesignPersonAndOrganizationAssignment::SetItems(
+  const Handle(StepAP203_HArray1OfPersonOrganizationItem)& aItems)
 {
   theItems = aItems;
 }

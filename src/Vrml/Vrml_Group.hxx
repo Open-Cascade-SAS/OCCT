@@ -24,7 +24,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 
-
 //! defines a Group node of VRML specifying group properties.
 //! This node defines the base class for all group nodes. Group is a node that
 //! contains an ordered list of child nodes. This node is simply a container for
@@ -32,39 +31,18 @@
 //! During traversal, state accumulated for a child is passed on to each successive
 //! child and then to the parents of the group (Group does not push or pop traversal
 //! state as separator does).
-class Vrml_Group 
+class Vrml_Group
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Vrml_Group();
-  
-  Standard_EXPORT Standard_OStream& Print (Standard_OStream& anOStream);
 
-
-
+  Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream);
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Boolean myFlagPrint;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Vrml_Group_HeaderFile

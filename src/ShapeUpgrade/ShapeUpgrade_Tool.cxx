@@ -14,28 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Precision.hxx>
 #include <ShapeBuild_ReShape.hxx>
 #include <ShapeUpgrade_Tool.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_Tool,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_Tool, Standard_Transient)
 
-//=======================================================================
-//function : ShapeUpgrade_Tool
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 ShapeUpgrade_Tool::ShapeUpgrade_Tool()
 {
   myPrecision = myMinTol = Precision::Confusion();
-  myMaxTol = 1; //Precision::Infinite() ?? pdn
+  myMaxTol               = 1; // Precision::Infinite() ?? pdn
 }
 
-//=======================================================================
-//function : Set
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void ShapeUpgrade_Tool::Set(const Handle(ShapeUpgrade_Tool)& tool)
 {
@@ -44,4 +38,3 @@ void ShapeUpgrade_Tool::Set(const Handle(ShapeUpgrade_Tool)& tool)
   myMinTol    = tool->myMinTol;
   myMaxTol    = tool->myMaxTol;
 }
-

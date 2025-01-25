@@ -29,104 +29,119 @@ class AIS_MultipleConnectedInteractive : public AIS_InteractiveObject
 {
   DEFINE_STANDARD_RTTIEXT(AIS_MultipleConnectedInteractive, AIS_InteractiveObject)
 public:
-
   //! Initializes the Interactive Object with multiple
   //! connections to AIS_Interactive objects.
   Standard_EXPORT AIS_MultipleConnectedInteractive();
 
-  //! Establishes the connection between the Connected Interactive Object, theInteractive, and its reference.
-  //! Locates instance in theLocation and applies specified transformation persistence mode.
+  //! Establishes the connection between the Connected Interactive Object, theInteractive, and its
+  //! reference. Locates instance in theLocation and applies specified transformation persistence
+  //! mode.
   //! @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
-  Handle(AIS_InteractiveObject) Connect (const Handle(AIS_InteractiveObject)& theAnotherObj,
-                                         const Handle(TopLoc_Datum3D)& theLocation,
-                                         const Handle(Graphic3d_TransformPers)& theTrsfPers)
+  Handle(AIS_InteractiveObject) Connect(const Handle(AIS_InteractiveObject)&   theAnotherObj,
+                                        const Handle(TopLoc_Datum3D)&          theLocation,
+                                        const Handle(Graphic3d_TransformPers)& theTrsfPers)
   {
-    return connect (theAnotherObj, theLocation, theTrsfPers);
+    return connect(theAnotherObj, theLocation, theTrsfPers);
   }
 
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KindOfInteractive_Object; }
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
+  {
+    return AIS_KindOfInteractive_Object;
+  }
 
   virtual Standard_Integer Signature() const Standard_OVERRIDE { return 1; }
-  
+
   //! Returns true if the object is connected to others.
   Standard_EXPORT Standard_Boolean HasConnection() const;
-  
+
   //! Removes the connection with theInteractive.
-  Standard_EXPORT void Disconnect (const Handle(AIS_InteractiveObject)& theInteractive);
-  
+  Standard_EXPORT void Disconnect(const Handle(AIS_InteractiveObject)& theInteractive);
+
   //! Clears all the connections to objects.
   Standard_EXPORT void DisconnectAll();
-  
+
   //! Informs the graphic context that the interactive Object
   //! may be decomposed into sub-shapes for dynamic selection.
   Standard_EXPORT virtual Standard_Boolean AcceptShapeDecomposition() const Standard_OVERRIDE;
 
   //! Returns common entity owner if the object is an assembly
-  virtual const Handle(SelectMgr_EntityOwner)& GetAssemblyOwner() const Standard_OVERRIDE { return myAssemblyOwner; }
+  virtual const Handle(SelectMgr_EntityOwner)& GetAssemblyOwner() const Standard_OVERRIDE
+  {
+    return myAssemblyOwner;
+  }
 
   //! Returns the owner of mode for selection of object as a whole
-  virtual Handle(SelectMgr_EntityOwner) GlobalSelOwner() const Standard_OVERRIDE { return myAssemblyOwner; }
+  virtual Handle(SelectMgr_EntityOwner) GlobalSelOwner() const Standard_OVERRIDE
+  {
+    return myAssemblyOwner;
+  }
 
   //! Assigns interactive context.
-  Standard_EXPORT virtual void SetContext (const Handle(AIS_InteractiveContext)& theCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetContext(const Handle(AIS_InteractiveContext)& theCtx)
+    Standard_OVERRIDE;
 
 public: // short aliases to Connect() method
-
-  //! Establishes the connection between the Connected Interactive Object, theInteractive, and its reference.
-  //! Copies local transformation and transformation persistence mode from theInteractive.
+  //! Establishes the connection between the Connected Interactive Object, theInteractive, and its
+  //! reference. Copies local transformation and transformation persistence mode from
+  //! theInteractive.
   //! @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
-  Handle(AIS_InteractiveObject) Connect (const Handle(AIS_InteractiveObject)& theAnotherObj)
+  Handle(AIS_InteractiveObject) Connect(const Handle(AIS_InteractiveObject)& theAnotherObj)
   {
-    return connect (theAnotherObj, theAnotherObj->LocalTransformationGeom(), theAnotherObj->TransformPersistence());
+    return connect(theAnotherObj,
+                   theAnotherObj->LocalTransformationGeom(),
+                   theAnotherObj->TransformPersistence());
   }
 
-  //! Establishes the connection between the Connected Interactive Object, theInteractive, and its reference.
-  //! Locates instance in theLocation and copies transformation persistence mode from theInteractive.
+  //! Establishes the connection between the Connected Interactive Object, theInteractive, and its
+  //! reference. Locates instance in theLocation and copies transformation persistence mode from
+  //! theInteractive.
   //! @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
-  Handle(AIS_InteractiveObject) Connect (const Handle(AIS_InteractiveObject)& theAnotherObj,
-                                         const gp_Trsf& theLocation)
+  Handle(AIS_InteractiveObject) Connect(const Handle(AIS_InteractiveObject)& theAnotherObj,
+                                        const gp_Trsf&                       theLocation)
   {
-    return connect (theAnotherObj, new TopLoc_Datum3D (theLocation), theAnotherObj->TransformPersistence());
+    return connect(theAnotherObj,
+                   new TopLoc_Datum3D(theLocation),
+                   theAnotherObj->TransformPersistence());
   }
 
-  //! Establishes the connection between the Connected Interactive Object, theInteractive, and its reference.
-  //! Locates instance in theLocation and applies specified transformation persistence mode.
+  //! Establishes the connection between the Connected Interactive Object, theInteractive, and its
+  //! reference. Locates instance in theLocation and applies specified transformation persistence
+  //! mode.
   //! @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
-  Handle(AIS_InteractiveObject) Connect (const Handle(AIS_InteractiveObject)& theAnotherObj,
-                                         const gp_Trsf& theLocation,
-                                         const Handle(Graphic3d_TransformPers)& theTrsfPers)
+  Handle(AIS_InteractiveObject) Connect(const Handle(AIS_InteractiveObject)&   theAnotherObj,
+                                        const gp_Trsf&                         theLocation,
+                                        const Handle(Graphic3d_TransformPers)& theTrsfPers)
   {
-    return connect (theAnotherObj, new TopLoc_Datum3D (theLocation), theTrsfPers);
+    return connect(theAnotherObj, new TopLoc_Datum3D(theLocation), theTrsfPers);
   }
 
 protected:
-  
   //! this method is redefined virtual;
   //! when the instance is connected to another
   //! InteractiveObject,this method doesn't
   //! compute anything, but just uses the
   //! presentation of this last object, with
   //! a transformation if there's one stored.
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                        const Handle(Prs3d_Presentation)& thePrs,
-                                        const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                       const Handle(Prs3d_Presentation)&         thePrs,
+                                       const Standard_Integer theMode) Standard_OVERRIDE;
 
-  //! Establishes the connection between the Connected Interactive Object, theInteractive, and its reference.
-  //! Locates instance in theLocation and applies specified transformation persistence mode.
+  //! Establishes the connection between the Connected Interactive Object, theInteractive, and its
+  //! reference. Locates instance in theLocation and applies specified transformation persistence
+  //! mode.
   //! @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
-  Standard_EXPORT virtual Handle(AIS_InteractiveObject) connect (const Handle(AIS_InteractiveObject)& theInteractive,
-                                                                 const Handle(TopLoc_Datum3D)& theLocation,
-                                                                 const Handle(Graphic3d_TransformPers)& theTrsfPers);
+  Standard_EXPORT virtual Handle(AIS_InteractiveObject) connect(
+    const Handle(AIS_InteractiveObject)&   theInteractive,
+    const Handle(TopLoc_Datum3D)&          theLocation,
+    const Handle(Graphic3d_TransformPers)& theTrsfPers);
 
 private:
-  
   //! Computes the selection for whole subtree in scene hierarchy.
-  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection, const Standard_Integer aMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
+                                                const Standard_Integer aMode) Standard_OVERRIDE;
 
 protected:
-
   Handle(SelectMgr_EntityOwner) myAssemblyOwner;
-
 };
 
 DEFINE_STANDARD_HANDLE(AIS_MultipleConnectedInteractive, AIS_InteractiveObject)

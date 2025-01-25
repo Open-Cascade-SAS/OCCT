@@ -12,32 +12,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <IntSurf_InteriorPoint.hxx>
 
-IntSurf_InteriorPoint::IntSurf_InteriorPoint ()
-: paramu(0.0),
-  paramv(0.0)
+IntSurf_InteriorPoint::IntSurf_InteriorPoint()
+    : paramu(0.0),
+      paramv(0.0)
 {
 }
 
+IntSurf_InteriorPoint::IntSurf_InteriorPoint(const gp_Pnt&       P,
+                                             const Standard_Real U,
+                                             const Standard_Real V,
+                                             const gp_Vec&       Direc,
+                                             const gp_Vec2d&     Direc2d)
+    : point(P),
+      paramu(U),
+      paramv(V),
+      direc(Direc),
+      direc2d(Direc2d)
 
-IntSurf_InteriorPoint::IntSurf_InteriorPoint (const gp_Pnt& P,
-					      const Standard_Real U,
-					      const Standard_Real V,
-					      const gp_Vec& Direc,
-					      const gp_Vec2d& Direc2d):
-  point(P),paramu(U),paramv(V),direc(Direc),direc2d(Direc2d)
+{
+}
 
-{}
-
-void IntSurf_InteriorPoint::SetValue (const gp_Pnt& P,
-				      const Standard_Real U,
-				      const Standard_Real V,
-				      const gp_Vec& Direc,
-				      const gp_Vec2d& Direc2d) {
+void IntSurf_InteriorPoint::SetValue(const gp_Pnt&       P,
+                                     const Standard_Real U,
+                                     const Standard_Real V,
+                                     const gp_Vec&       Direc,
+                                     const gp_Vec2d&     Direc2d)
+{
 
   point   = P;
   paramu  = U;
@@ -45,6 +49,3 @@ void IntSurf_InteriorPoint::SetValue (const gp_Pnt& P,
   direc   = Direc;
   direc2d = Direc2d;
 }
-
-
-

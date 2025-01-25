@@ -34,195 +34,181 @@
 #include <Message_Msg.hxx>
 
 // MGE 31/07/98
-//=======================================================================
-//function : IGESSolid_ToolPlaneSurface
-//purpose  : 
-//=======================================================================
-IGESSolid_ToolPlaneSurface::IGESSolid_ToolPlaneSurface ()
-{
-}
+//=================================================================================================
 
+IGESSolid_ToolPlaneSurface::IGESSolid_ToolPlaneSurface() {}
 
-//=======================================================================
-//function : ReadOwnParams
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void IGESSolid_ToolPlaneSurface::ReadOwnParams(const Handle(IGESSolid_PlaneSurface)& ent,
+void IGESSolid_ToolPlaneSurface::ReadOwnParams(const Handle(IGESSolid_PlaneSurface)&  ent,
                                                const Handle(IGESData_IGESReaderData)& IR,
-                                               IGESData_ParamReader& PR) const
+                                               IGESData_ParamReader&                  PR) const
 {
-  Handle(IGESGeom_Point) tempLocation;
+  Handle(IGESGeom_Point)     tempLocation;
   Handle(IGESGeom_Direction) tempNormal;
-  Handle(IGESGeom_Direction) tempRefdir;          // default Unparametrised
-  IGESData_Status aStatus;
-  //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  Handle(IGESGeom_Direction) tempRefdir; // default Unparametrised
+  IGESData_Status            aStatus;
+  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
 
-  if (!PR.ReadEntity(IR, PR.Current(),aStatus,STANDARD_TYPE(IGESGeom_Point), tempLocation)){ //szv#4:S4163:12Mar99 `st=` not needed
+  if (!PR.ReadEntity(IR, PR.Current(), aStatus, STANDARD_TYPE(IGESGeom_Point), tempLocation))
+  { // szv#4:S4163:12Mar99 `st=` not needed
     Message_Msg Msg174("XSTEP_174");
-    switch(aStatus) {
-    case IGESData_ReferenceError: {  
-      Message_Msg Msg216 ("IGES_216");
-      Msg174.Arg(Msg216.Value());
-      PR.SendFail(Msg174);
-      break; }
-    case IGESData_EntityError: {
-      Message_Msg Msg217 ("IGES_217");
-      Msg174.Arg(Msg217.Value());
-      PR.SendFail(Msg174);
-      break; }
-    case IGESData_TypeError: {
-      Message_Msg Msg218 ("IGES_218");
-      Msg174.Arg(Msg218.Value());
-      PR.SendFail(Msg174);
-      break; }
-    default:{
-    }
-    }
-  }
-/*
-  st = PR.ReadEntity(IR, PR.Current(), "Point on axis",
-		     STANDARD_TYPE(IGESGeom_Point), tempLocation);
-*/
-  if (!PR.ReadEntity(IR, PR.Current(),aStatus,STANDARD_TYPE(IGESGeom_Direction), tempNormal)){ //szv#4:S4163:12Mar99 `st=` not needed
-    Message_Msg Msg175("XSTEP_175");
-    switch(aStatus) {
-    case IGESData_ReferenceError: {  
-      Message_Msg Msg216 ("IGES_216");
-      Msg175.Arg(Msg216.Value());
-      PR.SendFail(Msg175);
-      break; }
-    case IGESData_EntityError: {
-      Message_Msg Msg217 ("IGES_217");
-      Msg175.Arg(Msg217.Value());
-      PR.SendFail(Msg175);
-      break; }
-    case IGESData_TypeError: {
-      Message_Msg Msg218 ("IGES_218");
-      Msg175.Arg(Msg218.Value());
-      PR.SendFail(Msg175);
-      break; }
-    default:{
-    }
-    }
-}
-/*
-  st = PR.ReadEntity(IR, PR.Current(), "Normal direction",
-		     STANDARD_TYPE(IGESGeom_Direction), tempNormal);
-*/
-  if (ent->FormNumber() == 1){
-      // Parametrised surface
-    if (!PR.ReadEntity(IR, PR.Current(), aStatus, STANDARD_TYPE(IGESGeom_Direction), tempRefdir)){ //szv#4:S4163:12Mar99 `st=` not needed
-      Message_Msg Msg176("XSTEP_176");
-      switch(aStatus) {
-      case IGESData_ReferenceError: {  
-	Message_Msg Msg216 ("IGES_216");
-	Msg176.Arg(Msg216.Value());
-	PR.SendFail(Msg176);
-	break; }
+    switch (aStatus)
+    {
+      case IGESData_ReferenceError: {
+        Message_Msg Msg216("IGES_216");
+        Msg174.Arg(Msg216.Value());
+        PR.SendFail(Msg174);
+        break;
+      }
       case IGESData_EntityError: {
-	Message_Msg Msg217 ("IGES_217");
-	Msg176.Arg(Msg217.Value());
-	PR.SendFail(Msg176);
-	break; }
-      case IGESData_TypeError: {
-	Message_Msg Msg218 ("IGES_218");
-	Msg176.Arg(Msg218.Value());
-	PR.SendFail(Msg176);
-	break; }
-      default:{
+        Message_Msg Msg217("IGES_217");
+        Msg174.Arg(Msg217.Value());
+        PR.SendFail(Msg174);
+        break;
       }
+      case IGESData_TypeError: {
+        Message_Msg Msg218("IGES_218");
+        Msg174.Arg(Msg218.Value());
+        PR.SendFail(Msg174);
+        break;
+      }
+      default: {
       }
     }
   }
-/*
-    st = PR.ReadEntity(IR, PR.Current(), "Reference direction",
-		       STANDARD_TYPE(IGESGeom_Direction), tempRefdir);
-*/
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
-  ent->Init (tempLocation, tempNormal, tempRefdir);
+  /*
+    st = PR.ReadEntity(IR, PR.Current(), "Point on axis",
+               STANDARD_TYPE(IGESGeom_Point), tempLocation);
+  */
+  if (!PR.ReadEntity(IR, PR.Current(), aStatus, STANDARD_TYPE(IGESGeom_Direction), tempNormal))
+  { // szv#4:S4163:12Mar99 `st=` not needed
+    Message_Msg Msg175("XSTEP_175");
+    switch (aStatus)
+    {
+      case IGESData_ReferenceError: {
+        Message_Msg Msg216("IGES_216");
+        Msg175.Arg(Msg216.Value());
+        PR.SendFail(Msg175);
+        break;
+      }
+      case IGESData_EntityError: {
+        Message_Msg Msg217("IGES_217");
+        Msg175.Arg(Msg217.Value());
+        PR.SendFail(Msg175);
+        break;
+      }
+      case IGESData_TypeError: {
+        Message_Msg Msg218("IGES_218");
+        Msg175.Arg(Msg218.Value());
+        PR.SendFail(Msg175);
+        break;
+      }
+      default: {
+      }
+    }
+  }
+  /*
+    st = PR.ReadEntity(IR, PR.Current(), "Normal direction",
+               STANDARD_TYPE(IGESGeom_Direction), tempNormal);
+  */
+  if (ent->FormNumber() == 1)
+  {
+    // Parametrised surface
+    if (!PR.ReadEntity(IR, PR.Current(), aStatus, STANDARD_TYPE(IGESGeom_Direction), tempRefdir))
+    { // szv#4:S4163:12Mar99 `st=` not needed
+      Message_Msg Msg176("XSTEP_176");
+      switch (aStatus)
+      {
+        case IGESData_ReferenceError: {
+          Message_Msg Msg216("IGES_216");
+          Msg176.Arg(Msg216.Value());
+          PR.SendFail(Msg176);
+          break;
+        }
+        case IGESData_EntityError: {
+          Message_Msg Msg217("IGES_217");
+          Msg176.Arg(Msg217.Value());
+          PR.SendFail(Msg176);
+          break;
+        }
+        case IGESData_TypeError: {
+          Message_Msg Msg218("IGES_218");
+          Msg176.Arg(Msg218.Value());
+          PR.SendFail(Msg176);
+          break;
+        }
+        default: {
+        }
+      }
+    }
+  }
+  /*
+      st = PR.ReadEntity(IR, PR.Current(), "Reference direction",
+                 STANDARD_TYPE(IGESGeom_Direction), tempRefdir);
+  */
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
+  ent->Init(tempLocation, tempNormal, tempRefdir);
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : WriteOwnParams
-//purpose  : 
-//=======================================================================
-
-void IGESSolid_ToolPlaneSurface::WriteOwnParams
-  (const Handle(IGESSolid_PlaneSurface)& ent, IGESData_IGESWriter& IW) const
+void IGESSolid_ToolPlaneSurface::WriteOwnParams(const Handle(IGESSolid_PlaneSurface)& ent,
+                                                IGESData_IGESWriter&                  IW) const
 {
   IW.Send(ent->LocationPoint());
   IW.Send(ent->Normal());
-  if (ent->IsParametrised())    IW.Send(ent->ReferenceDir());
+  if (ent->IsParametrised())
+    IW.Send(ent->ReferenceDir());
 }
 
-
-//=======================================================================
-//function : OwnShared
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void IGESSolid_ToolPlaneSurface::OwnShared(const Handle(IGESSolid_PlaneSurface)& ent,
-                                           Interface_EntityIterator& iter) const
+                                           Interface_EntityIterator&             iter) const
 {
   iter.GetOneItem(ent->LocationPoint());
   iter.GetOneItem(ent->Normal());
   iter.GetOneItem(ent->ReferenceDir());
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : OwnCopy
-//purpose  : 
-//=======================================================================
-
-void IGESSolid_ToolPlaneSurface::OwnCopy
-  (const Handle(IGESSolid_PlaneSurface)& another,
-   const Handle(IGESSolid_PlaneSurface)& ent, Interface_CopyTool& TC) const
+void IGESSolid_ToolPlaneSurface::OwnCopy(const Handle(IGESSolid_PlaneSurface)& another,
+                                         const Handle(IGESSolid_PlaneSurface)& ent,
+                                         Interface_CopyTool&                   TC) const
 {
-  DeclareAndCast(IGESGeom_Point, tempLocation,
-		 TC.Transferred(another->LocationPoint()));
-  DeclareAndCast(IGESGeom_Direction, tempNormal,
-		 TC.Transferred(another->Normal()));
+  DeclareAndCast(IGESGeom_Point, tempLocation, TC.Transferred(another->LocationPoint()));
+  DeclareAndCast(IGESGeom_Direction, tempNormal, TC.Transferred(another->Normal()));
   if (another->IsParametrised())
-    {
-      DeclareAndCast(IGESGeom_Direction, tempRefdir,
-		     TC.Transferred(another->ReferenceDir()));
-      ent->Init (tempLocation, tempNormal, tempRefdir);
-    }
+  {
+    DeclareAndCast(IGESGeom_Direction, tempRefdir, TC.Transferred(another->ReferenceDir()));
+    ent->Init(tempLocation, tempNormal, tempRefdir);
+  }
   else
-    {
-      Handle(IGESGeom_Direction) tempRefdir;
-      ent->Init (tempLocation, tempNormal, tempRefdir);
-    }
+  {
+    Handle(IGESGeom_Direction) tempRefdir;
+    ent->Init(tempLocation, tempNormal, tempRefdir);
+  }
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : DirChecker
-//purpose  : 
-//=======================================================================
-
-IGESData_DirChecker IGESSolid_ToolPlaneSurface::DirChecker
-  (const Handle(IGESSolid_PlaneSurface)& /*ent*/) const
+IGESData_DirChecker IGESSolid_ToolPlaneSurface::DirChecker(
+  const Handle(IGESSolid_PlaneSurface)& /*ent*/) const
 {
   IGESData_DirChecker DC(190, 0, 1);
 
-  DC.Structure  (IGESData_DefVoid);
-  DC.LineFont   (IGESData_DefAny);
-  DC.Color      (IGESData_DefAny);
+  DC.Structure(IGESData_DefVoid);
+  DC.LineFont(IGESData_DefAny);
+  DC.Color(IGESData_DefAny);
 
-  DC.BlankStatusIgnored ();
-  DC.HierarchyStatusIgnored ();
+  DC.BlankStatusIgnored();
+  DC.HierarchyStatusIgnored();
   return DC;
 }
 
-
-//=======================================================================
-//function : OwnCheck
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void IGESSolid_ToolPlaneSurface::OwnCheck(const Handle(IGESSolid_PlaneSurface)& ent,
                                           const Interface_ShareTool&,
@@ -232,42 +218,41 @@ void IGESSolid_ToolPlaneSurface::OwnCheck(const Handle(IGESSolid_PlaneSurface)& 
   // MGE 31/07/98
   // Building of messages
   //========================================
-  //Message_Msg Msg177("XSTEP_177");
+  // Message_Msg Msg177("XSTEP_177");
   //========================================
 
   Standard_Integer fn = 0;
-  if (ent->IsParametrised()) fn = 1;
-  if (fn != ent->FormNumber()) {
+  if (ent->IsParametrised())
+    fn = 1;
+  if (fn != ent->FormNumber())
+  {
     Message_Msg Msg177("XSTEP_177");
-    ach->SendFail (Msg177);
+    ach->SendFail(Msg177);
   }
 }
 
-
-//=======================================================================
-//function : OwnDump
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void IGESSolid_ToolPlaneSurface::OwnDump(const Handle(IGESSolid_PlaneSurface)& ent,
-                                         const IGESData_IGESDumper& dumper,
-                                         Standard_OStream& S,
-                                         const Standard_Integer level) const
+                                         const IGESData_IGESDumper&            dumper,
+                                         Standard_OStream&                     S,
+                                         const Standard_Integer                level) const
 {
   S << "IGESSolid_PlaneSurface\n";
 
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
   S << "Point on axis    : ";
-  dumper.Dump(ent->LocationPoint(),S, sublevel);
+  dumper.Dump(ent->LocationPoint(), S, sublevel);
   S << "\n"
     << "Normal direction : ";
-  dumper.Dump(ent->Normal(),S, sublevel);
+  dumper.Dump(ent->Normal(), S, sublevel);
   S << "\n";
   if (ent->IsParametrised())
-    {
-      S << "Surface is Parametrised  -  Reference direction : ";
-      dumper.Dump(ent->ReferenceDir(),S, sublevel);
-      S << std::endl;
-    }
-  else S << "Surface is UnParametrised" << std::endl;
+  {
+    S << "Surface is Parametrised  -  Reference direction : ";
+    dumper.Dump(ent->ReferenceDir(), S, sublevel);
+    S << std::endl;
+  }
+  else
+    S << "Surface is UnParametrised" << std::endl;
 }

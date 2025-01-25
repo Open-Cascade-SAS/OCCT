@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Vrml_Info.hxx>
 
 Vrml_Info::Vrml_Info(const TCollection_AsciiString& aString)
@@ -19,26 +18,26 @@ Vrml_Info::Vrml_Info(const TCollection_AsciiString& aString)
   myString = aString;
 }
 
- void Vrml_Info::SetString(const TCollection_AsciiString& aString) 
+void Vrml_Info::SetString(const TCollection_AsciiString& aString)
 {
   myString = aString;
 }
 
- TCollection_AsciiString Vrml_Info::String() const
+TCollection_AsciiString Vrml_Info::String() const
 {
-  return myString; 
+  return myString;
 }
 
- Standard_OStream& Vrml_Info::Print(Standard_OStream& anOStream) const
+Standard_OStream& Vrml_Info::Print(Standard_OStream& anOStream) const
 {
- anOStream  << "Info {\n";
+  anOStream << "Info {\n";
 
- if ( !(myString.IsEqual( "<Undefined info>") ) )
-   {
-    anOStream  << "    string\t";
+  if (!(myString.IsEqual("<Undefined info>")))
+  {
+    anOStream << "    string\t";
     anOStream << '"' << myString << '"' << "\n";
-   }
+  }
 
- anOStream  << "}\n";
- return anOStream;
+  anOStream << "}\n";
+  return anOStream;
 }

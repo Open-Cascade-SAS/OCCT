@@ -33,33 +33,33 @@ class XCAFDoc_Dimension;
 DEFINE_STANDARD_HANDLE(XCAFDoc_Dimension, TDataStd_GenericEmpty)
 
 //! Attribute that identifies a dimension in the GD&T table.
-//! Its parent label is used as a container to store data provided 
+//! Its parent label is used as a container to store data provided
 //! by XCAFDimTolObjects_DimensionObject.
 class XCAFDoc_Dimension : public TDataStd_GenericEmpty
 {
 
 public:
-
   Standard_EXPORT XCAFDoc_Dimension();
-  
+
   Standard_EXPORT static const Standard_GUID& GetID();
-  
-  Standard_EXPORT static Handle(XCAFDoc_Dimension) Set (const TDF_Label& theLabel);
-  
+
+  Standard_EXPORT static Handle(XCAFDoc_Dimension) Set(const TDF_Label& theLabel);
+
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
-  
+
   //! Updates parent's label and its sub-labels with data taken from theDimensionObject.
   //! Old data associated with the label will be lost.
-  Standard_EXPORT void SetObject (const Handle(XCAFDimTolObjects_DimensionObject)& theDimensionObject);
-  
+  Standard_EXPORT void SetObject(
+    const Handle(XCAFDimTolObjects_DimensionObject)& theDimensionObject);
+
   //! Returns dimension object data taken from the parent's label and its sub-labels.
   Standard_EXPORT Handle(XCAFDimTolObjects_DimensionObject) GetObject() const;
-  
+
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
-  DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_Dimension,TDataStd_GenericEmpty)
-
+  DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_Dimension, TDataStd_GenericEmpty)
 };
 
 #endif

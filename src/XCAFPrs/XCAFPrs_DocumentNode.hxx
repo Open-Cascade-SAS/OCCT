@@ -33,26 +33,25 @@ struct XCAFPrs_DocumentNode
   TDF_ChildIterator       ChildIter;  //!< child iterator
   Standard_Boolean        IsAssembly; //!< flag indicating that this label is assembly
 
-  XCAFPrs_DocumentNode() : IsAssembly (Standard_False) {}
+  XCAFPrs_DocumentNode()
+      : IsAssembly(Standard_False)
+  {
+  }
 
 public: // Methods for hash map
-
-  bool operator==(const XCAFPrs_DocumentNode& theOther) const
-  {
-    return Id == theOther.Id;
-  }
+  bool operator==(const XCAFPrs_DocumentNode& theOther) const { return Id == theOther.Id; }
 };
 
 namespace std
 {
-  template <>
-  struct hash<XCAFPrs_DocumentNode>
+template <>
+struct hash<XCAFPrs_DocumentNode>
+{
+  size_t operator()(const XCAFPrs_DocumentNode& theDocumentNode) const
   {
-    size_t operator()(const XCAFPrs_DocumentNode& theDocumentNode) const
-    {
-      return std::hash<TCollection_AsciiString>{}(theDocumentNode.Id);
-    }
-  };
-}
+    return std::hash<TCollection_AsciiString>{}(theDocumentNode.Id);
+  }
+};
+} // namespace std
 
 #endif // _XCAFPrs_DocumentNode_HeaderFile

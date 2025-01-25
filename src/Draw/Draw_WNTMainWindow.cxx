@@ -16,16 +16,16 @@
 
 #ifdef _WIN32
 
-#include <windows.h>
+  #include <windows.h>
 
-#include <Draw_Window.hxx>
+  #include <Draw_Window.hxx>
 
-#include "Draw_WNTCommandWindow.pxx"
-#include "Draw_WNTInit.pxx"
-#include "Draw_WNTMainWindow.pxx"
-#include "Draw_WNTRessource.pxx"
+  #include "Draw_WNTCommandWindow.pxx"
+  #include "Draw_WNTInit.pxx"
+  #include "Draw_WNTMainWindow.pxx"
+  #include "Draw_WNTRessource.pxx"
 
-Standard_Boolean Draw_Interprete(const char* command); // Implemented in Draw.cxx
+Standard_Boolean        Draw_Interprete(const char* command); // Implemented in Draw.cxx
 extern Standard_Boolean Draw_IsConsoleSubsystem;
 
 /*--------------------------------------------------------*\
@@ -33,37 +33,33 @@ extern Standard_Boolean Draw_IsConsoleSubsystem;
 |
 |
 \*--------------------------------------------------------*/
-LRESULT APIENTRY WndProc(HWND hWndFrame, UINT wMsg, WPARAM wParam, LPARAM lParam )
+LRESULT APIENTRY WndProc(HWND hWndFrame, UINT wMsg, WPARAM wParam, LPARAM lParam)
 {
   switch (wMsg)
   {
-    case WM_CREATE:
-    {
-      CreateProc (hWndFrame);
-      HWND hWndClient = (HWND )GetWindowLongPtrW (hWndFrame, CLIENTWND);
+    case WM_CREATE: {
+      CreateProc(hWndFrame);
+      HWND hWndClient            = (HWND)GetWindowLongPtrW(hWndFrame, CLIENTWND);
       Draw_Window::hWndClientMDI = hWndClient;
       if (!Draw_IsConsoleSubsystem)
       {
-        CreateCommandWindow (hWndFrame, 0);
+        CreateCommandWindow(hWndFrame, 0);
       }
       return 0;
     }
-    case WM_COMMAND:
-    {
-      CmdProc (hWndFrame, LOWORD(wParam), wParam, lParam);
+    case WM_COMMAND: {
+      CmdProc(hWndFrame, LOWORD(wParam), wParam, lParam);
       return 0;
     }
-    case WM_DESTROY:
-    {
-      Draw_Interprete ("exit");
-      DestroyProc (hWndFrame);
+    case WM_DESTROY: {
+      Draw_Interprete("exit");
+      DestroyProc(hWndFrame);
       return 0;
     }
   }
   HWND hWndClient = (HWND)GetWindowLongPtrW(hWndFrame, CLIENTWND);
   return DefFrameProcW(hWndFrame, hWndClient, wMsg, wParam, lParam);
 }
-
 
 /*--------------------------------------------------------------------------*\
 |  CLIENT CREATE PROCEDURE
@@ -72,13 +68,13 @@ LRESULT APIENTRY WndProc(HWND hWndFrame, UINT wMsg, WPARAM wParam, LPARAM lParam
 \*--------------------------------------------------------------------------*/
 BOOL CreateProc(HWND hWndFrame)
 {
-  HWND hWnd = CreateMDIClientWindow (hWndFrame);
+  HWND hWnd = CreateMDIClientWindow(hWndFrame);
   if (hWnd != NULL)
   {
     // Save hWnd in the main window in extra memory in 0
-    SetWindowLongPtrW (hWndFrame, CLIENTWND, (LONG_PTR)hWnd);
+    SetWindowLongPtrW(hWndFrame, CLIENTWND, (LONG_PTR)hWnd);
   }
-  return(TRUE);
+  return (TRUE);
 }
 
 /*--------------------------------------------------------------------------*\
@@ -90,46 +86,41 @@ BOOL CreateProc(HWND hWndFrame)
 LRESULT APIENTRY CmdProc(HWND hWndFrame, UINT wMsg, WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
   // Handle on window MDI
-  HWND hWndClient = (HWND )GetWindowLongPtrW (hWndFrame, CLIENTWND);
+  HWND hWndClient = (HWND)GetWindowLongPtrW(hWndFrame, CLIENTWND);
   switch (wMsg)
   {
-    case IDM_WINDOW_NEXT:
-    {
+    case IDM_WINDOW_NEXT: {
       if (hWndClient != NULL)
       {
-        HWND hWndActive = (HWND )SendMessageW (hWndClient, WM_MDIGETACTIVE, 0, 0l);
-        SendMessageW (hWndClient, WM_MDINEXT, (WPARAM )hWndActive, 0l);
+        HWND hWndActive = (HWND)SendMessageW(hWndClient, WM_MDIGETACTIVE, 0, 0l);
+        SendMessageW(hWndClient, WM_MDINEXT, (WPARAM)hWndActive, 0l);
       }
       break;
     }
-    case IDM_WINDOW_CASCADE:
-    {
+    case IDM_WINDOW_CASCADE: {
       if (hWndClient != NULL)
       {
-        SendMessageW (hWndClient, WM_MDICASCADE, 0, 0l);
+        SendMessageW(hWndClient, WM_MDICASCADE, 0, 0l);
       }
       break;
     }
-    case IDM_WINDOW_TILEHOR:
-    {
+    case IDM_WINDOW_TILEHOR: {
       if (hWndClient != NULL)
       {
-        SendMessageW (hWndClient, WM_MDITILE, MDITILE_HORIZONTAL, 0l);
+        SendMessageW(hWndClient, WM_MDITILE, MDITILE_HORIZONTAL, 0l);
       }
       break;
     }
-    case IDM_WINDOW_TILEVERT:
-    {
+    case IDM_WINDOW_TILEVERT: {
       if (hWndClient != NULL)
       {
-        SendMessageW (hWndClient, WM_MDITILE, MDITILE_VERTICAL, 0l);
+        SendMessageW(hWndClient, WM_MDITILE, MDITILE_VERTICAL, 0l);
       }
       break;
     }
-    case IDM_FILE_EXIT:
-    {
-      Draw_Interprete ("exit");
-      DestroyProc (hWndFrame);
+    case IDM_FILE_EXIT: {
+      Draw_Interprete("exit");
+      DestroyProc(hWndFrame);
       break;
     }
   }
@@ -143,7 +134,7 @@ LRESULT APIENTRY CmdProc(HWND hWndFrame, UINT wMsg, WPARAM /*wParam*/, LPARAM /*
 \*--------------------------------------------------------------------------*/
 VOID DestroyProc(HWND hWnd)
 {
-  HINSTANCE hInst = (HINSTANCE )GetWindowLongPtrW (hWnd, GWLP_HINSTANCE);
+  HINSTANCE hInst = (HINSTANCE)GetWindowLongPtrW(hWnd, GWLP_HINSTANCE);
 
   Destroy_Appli(hInst);
   PostQuitMessage(0);

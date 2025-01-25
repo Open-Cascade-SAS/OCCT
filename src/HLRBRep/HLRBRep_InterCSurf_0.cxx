@@ -35,7 +35,6 @@
 #include <gp_Hypr.hxx>
 #include <IntAna_IntConicQuad.hxx>
 #include <Bnd_Box.hxx>
- 
 
 #define TheCurve gp_Lin
 #define TheCurve_hxx <gp_Lin.hxx>
@@ -61,11 +60,14 @@
 #define IntCurveSurface_TheExactInter_hxx <HLRBRep_TheExactInterCSurf.hxx>
 #define IntCurveSurface_TheQuadCurvExactInter HLRBRep_TheQuadCurvExactInterCSurf
 #define IntCurveSurface_TheQuadCurvExactInter_hxx <HLRBRep_TheQuadCurvExactInterCSurf.hxx>
-#define IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactInter HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf
-#define IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactInter_hxx <HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf.hxx>
-#define IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactInter HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf
-#define IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactInter_hxx <HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf.hxx>
+#define IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactInter                                     \
+  HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf
+#define IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactInter_hxx                                 \
+  <HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf.hxx>
+#define IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactInter                                     \
+  HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf
+#define IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactInter_hxx                                 \
+  <HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf.hxx>
 #define IntCurveSurface_Inter HLRBRep_InterCSurf
 #define IntCurveSurface_Inter_hxx <HLRBRep_InterCSurf.hxx>
 #include "../IntCurveSurface/IntCurveSurface_Inter.gxx"
-

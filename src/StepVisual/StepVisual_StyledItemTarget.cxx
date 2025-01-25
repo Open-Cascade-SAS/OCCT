@@ -20,44 +20,45 @@
 #include <StepRepr_Representation.hxx>
 #include <StepShape_TopologicalRepresentationItem.hxx>
 
-//=======================================================================
-//function : StepVisual_StyledItemTarget
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepVisual_StyledItemTarget::StepVisual_StyledItemTarget () {  }
+StepVisual_StyledItemTarget::StepVisual_StyledItemTarget() {}
 
-//=======================================================================
-//function : CaseNum
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer StepVisual_StyledItemTarget::CaseNum(const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepGeom_GeometricRepresentationItem))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepRepr_MappedItem))) return 2;
-  if (ent->IsKind(STANDARD_TYPE(StepRepr_Representation))) return 3;
-  if (ent->IsKind(STANDARD_TYPE(StepShape_TopologicalRepresentationItem))) return 4;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepGeom_GeometricRepresentationItem)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepRepr_MappedItem)))
+    return 2;
+  if (ent->IsKind(STANDARD_TYPE(StepRepr_Representation)))
+    return 3;
+  if (ent->IsKind(STANDARD_TYPE(StepShape_TopologicalRepresentationItem)))
+    return 4;
   return 0;
 }
 
-Handle(StepGeom_GeometricRepresentationItem) StepVisual_StyledItemTarget::GeometricRepresentationItem() const
+Handle(StepGeom_GeometricRepresentationItem) StepVisual_StyledItemTarget::
+  GeometricRepresentationItem() const
 {
-  return GetCasted(StepGeom_GeometricRepresentationItem,Value());
+  return GetCasted(StepGeom_GeometricRepresentationItem, Value());
 }
 
 Handle(StepRepr_MappedItem) StepVisual_StyledItemTarget::MappedItem() const
 {
-  return GetCasted(StepRepr_MappedItem,Value());
+  return GetCasted(StepRepr_MappedItem, Value());
 }
 
 Handle(StepRepr_Representation) StepVisual_StyledItemTarget::Representation() const
 {
-  return GetCasted(StepRepr_Representation,Value());
+  return GetCasted(StepRepr_Representation, Value());
 }
 
-Handle(StepShape_TopologicalRepresentationItem) StepVisual_StyledItemTarget::TopologicalRepresentationItem() const
+Handle(StepShape_TopologicalRepresentationItem) StepVisual_StyledItemTarget::
+  TopologicalRepresentationItem() const
 {
-  return GetCasted(StepShape_TopologicalRepresentationItem,Value());
+  return GetCasted(StepShape_TopologicalRepresentationItem, Value());
 }

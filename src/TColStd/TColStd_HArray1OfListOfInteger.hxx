@@ -20,5 +20,4 @@
 
 DEFINE_HARRAY1(TColStd_HArray1OfListOfInteger, TColStd_Array1OfListOfInteger)
 
-
 #endif

@@ -24,16 +24,11 @@
 class BRepMesh_TorusRangeSplitter : public BRepMesh_UVParamRangeSplitter
 {
 public:
-
   //! Constructor.
-  BRepMesh_TorusRangeSplitter()
-  {
-  }
+  BRepMesh_TorusRangeSplitter() {}
 
   //! Destructor.
-  virtual ~BRepMesh_TorusRangeSplitter()
-  {
-  }
+  virtual ~BRepMesh_TorusRangeSplitter() {}
 
   //! Returns list of nodes generated using surface data and specified parameters.
   Standard_EXPORT virtual Handle(IMeshData::ListOfPnt2d) GenerateSurfaceNodes(
@@ -43,7 +38,6 @@ public:
   Standard_EXPORT virtual void AddPoint(const gp_Pnt2d& thePoint) Standard_OVERRIDE;
 
 private:
-
   Handle(IMeshData::SequenceOfReal) fillParams(
     const IMeshData::IMapOfReal&                   theParams,
     const std::pair<Standard_Real, Standard_Real>& theRange,

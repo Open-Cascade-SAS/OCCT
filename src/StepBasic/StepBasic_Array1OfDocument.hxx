@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(StepBasic_Document)> StepBasic_Array1OfDocument;
 
-
 #endif

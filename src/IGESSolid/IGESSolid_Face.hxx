@@ -24,7 +24,6 @@
 #include <Standard_Integer.hxx>
 class IGESSolid_Loop;
 
-
 class IGESSolid_Face;
 DEFINE_STANDARD_HANDLE(IGESSolid_Face, IGESData_IGESEntity)
 
@@ -35,53 +34,36 @@ class IGESSolid_Face : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESSolid_Face();
-  
+
   //! This method is used to set the fields of the class Face
   //! - aSurface      : Pointer to the underlying surface
   //! - outerLoopFlag : True means the first loop is the outer loop
   //! - loops         : Array of loops bounding the face
-  Standard_EXPORT void Init (const Handle(IGESData_IGESEntity)& aSurface, const Standard_Boolean outerLoopFlag, const Handle(IGESSolid_HArray1OfLoop)& loops);
-  
+  Standard_EXPORT void Init(const Handle(IGESData_IGESEntity)&     aSurface,
+                            const Standard_Boolean                 outerLoopFlag,
+                            const Handle(IGESSolid_HArray1OfLoop)& loops);
+
   //! returns the underlying surface of the face
   Standard_EXPORT Handle(IGESData_IGESEntity) Surface() const;
-  
+
   //! returns the number of the loops bounding the face
   Standard_EXPORT Standard_Integer NbLoops() const;
-  
+
   //! checks whether there is an outer loop or not
   Standard_EXPORT Standard_Boolean HasOuterLoop() const;
-  
+
   //! returns the Index'th loop that bounds the face
   //! raises exception if Index < 0 or Index >= NbLoops
-  Standard_EXPORT Handle(IGESSolid_Loop) Loop (const Standard_Integer Index) const;
+  Standard_EXPORT Handle(IGESSolid_Loop) Loop(const Standard_Integer Index) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSolid_Face,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_Face, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(IGESData_IGESEntity) theSurface;
-  Standard_Boolean hasOuterLoop;
+  Handle(IGESData_IGESEntity)     theSurface;
+  Standard_Boolean                hasOuterLoop;
   Handle(IGESSolid_HArray1OfLoop) theLoops;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESSolid_Face_HeaderFile

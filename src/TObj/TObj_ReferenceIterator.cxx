@@ -18,39 +18,32 @@
 #include <TObj_ReferenceIterator.hxx>
 #include <TObj_TReference.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TObj_ReferenceIterator, TObj_LabelIterator)
 
-IMPLEMENT_STANDARD_RTTIEXT(TObj_ReferenceIterator,TObj_LabelIterator)
+//=================================================================================================
 
-//=======================================================================
-//function : TObj_ObjectIterator
-//purpose  :
-//=======================================================================
-
-TObj_ReferenceIterator::TObj_ReferenceIterator
-                         (const TDF_Label&             theLabel,
-                          const Handle(Standard_Type)& theType,
-                          const Standard_Boolean       theRecursive)
-  : TObj_LabelIterator (theLabel, theRecursive), myType (theType)
+TObj_ReferenceIterator::TObj_ReferenceIterator(const TDF_Label&             theLabel,
+                                               const Handle(Standard_Type)& theType,
+                                               const Standard_Boolean       theRecursive)
+    : TObj_LabelIterator(theLabel, theRecursive),
+      myType(theType)
 {
   MakeStep();
 }
 
-//=======================================================================
-//function : MakeStep
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
 void TObj_ReferenceIterator::MakeStep()
 {
-  for(;myIterator.More() && myNode.IsNull(); myIterator.Next())
+  for (; myIterator.More() && myNode.IsNull(); myIterator.Next())
   {
     TDF_Label L = myIterator.Value();
 
     Handle(TObj_TReference) A;
-    if ( L.FindAttribute(TObj_TReference::GetID(), A) )
+    if (L.FindAttribute(TObj_TReference::GetID(), A))
     {
       myObject = A->Get();
-      if (! myType.IsNull() && !myObject.IsNull() && !myObject->IsKind( myType ))
+      if (!myType.IsNull() && !myObject.IsNull() && !myObject->IsKind(myType))
         continue;
 
       myNode = L;

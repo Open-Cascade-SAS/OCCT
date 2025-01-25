@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _ShapePersistent_Poly_HeaderFile
 #define _ShapePersistent_Poly_HeaderFile
 
@@ -24,7 +23,6 @@ class Poly_Polygon3D;
 class Poly_PolygonOnTriangulation;
 class Poly_Triangulation;
 
-
 class ShapePersistent_Poly : private StdObjMgt_SharedObject
 {
   class pPolygon2D : public Standard_Transient
@@ -33,14 +31,19 @@ class ShapePersistent_Poly : private StdObjMgt_SharedObject
 
   public:
     pPolygon2D()
-    : myDeflection(0.0)
+        : myDeflection(0.0)
     {
     }
-    inline void Read (StdObjMgt_ReadData& theReadData)
-      { theReadData >> myDeflection >> myNodes; }
-    inline void Write (StdObjMgt_WriteData& theWriteData) const
-      { theWriteData << myDeflection << myNodes; }
+
+    inline void Read(StdObjMgt_ReadData& theReadData) { theReadData >> myDeflection >> myNodes; }
+
+    inline void Write(StdObjMgt_WriteData& theWriteData) const
+    {
+      theWriteData << myDeflection << myNodes;
+    }
+
     Standard_EXPORT void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+
     inline Standard_CString PName() const { return "PPoly_Polygon2D"; }
 
     Handle(Poly_Polygon2D) Import() const;
@@ -55,11 +58,18 @@ class ShapePersistent_Poly : private StdObjMgt_SharedObject
     friend class ShapePersistent_Poly;
 
   public:
-    inline void Read (StdObjMgt_ReadData& theReadData)
-      { theReadData >> myDeflection >> myNodes >> myParameters; }
-    inline void Write (StdObjMgt_WriteData& theWriteData) const
-      { theWriteData << myDeflection << myNodes << myParameters; }
+    inline void Read(StdObjMgt_ReadData& theReadData)
+    {
+      theReadData >> myDeflection >> myNodes >> myParameters;
+    }
+
+    inline void Write(StdObjMgt_WriteData& theWriteData) const
+    {
+      theWriteData << myDeflection << myNodes << myParameters;
+    }
+
     Standard_EXPORT void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+
     inline Standard_CString PName() const { return "PPoly_Polygon3D"; }
 
     Handle(Poly_Polygon3D) Import() const;
@@ -76,14 +86,22 @@ class ShapePersistent_Poly : private StdObjMgt_SharedObject
 
   public:
     pPolygonOnTriangulation()
-    : myDeflection(0.0)
+        : myDeflection(0.0)
     {
     }
-    inline void Read (StdObjMgt_ReadData& theReadData)
-      { theReadData >> myDeflection >> myNodes >> myParameters; }
-    inline void Write (StdObjMgt_WriteData& theWriteData) const
-      { theWriteData << myDeflection << myNodes << myParameters; }
+
+    inline void Read(StdObjMgt_ReadData& theReadData)
+    {
+      theReadData >> myDeflection >> myNodes >> myParameters;
+    }
+
+    inline void Write(StdObjMgt_WriteData& theWriteData) const
+    {
+      theWriteData << myDeflection << myNodes << myParameters;
+    }
+
     Standard_EXPORT void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+
     inline Standard_CString PName() const { return "PPoly_PolygonOnTriangulation"; }
 
     Handle(Poly_PolygonOnTriangulation) Import() const;
@@ -100,14 +118,22 @@ class ShapePersistent_Poly : private StdObjMgt_SharedObject
 
   public:
     pTriangulation()
-    : myDeflection(0.0)
+        : myDeflection(0.0)
     {
     }
-    inline void Read (StdObjMgt_ReadData& theReadData)
-      { theReadData >> myDeflection >> myNodes >> myUVNodes >> myTriangles; }
-    inline void Write (StdObjMgt_WriteData& theWriteData) const
-      { theWriteData << myDeflection << myNodes << myUVNodes << myTriangles; }
+
+    inline void Read(StdObjMgt_ReadData& theReadData)
+    {
+      theReadData >> myDeflection >> myNodes >> myUVNodes >> myTriangles;
+    }
+
+    inline void Write(StdObjMgt_WriteData& theWriteData) const
+    {
+      theWriteData << myDeflection << myNodes << myUVNodes << myTriangles;
+    }
+
     Standard_EXPORT void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
+
     inline Standard_CString PName() const { return "PPoly_Triangulation"; }
 
     Handle(Poly_Triangulation) Import() const;
@@ -120,29 +146,31 @@ class ShapePersistent_Poly : private StdObjMgt_SharedObject
   };
 
   template <class Persistent, class Transient>
-  struct instance
-    : public Delayed <DelayedBase<StdObjMgt_Persistent, Transient, Persistent> > {};
+  struct instance : public Delayed<DelayedBase<StdObjMgt_Persistent, Transient, Persistent>>
+  {
+  };
 
 public:
-  typedef instance <pPolygon2D, Poly_Polygon2D>         Polygon2D;
-  typedef instance <pPolygon3D, Poly_Polygon3D>         Polygon3D;
-  typedef instance <pPolygonOnTriangulation,
-                    Poly_PolygonOnTriangulation>        PolygonOnTriangulation;
-  typedef instance <pTriangulation, Poly_Triangulation> Triangulation;
+  typedef instance<pPolygon2D, Poly_Polygon2D>                           Polygon2D;
+  typedef instance<pPolygon3D, Poly_Polygon3D>                           Polygon3D;
+  typedef instance<pPolygonOnTriangulation, Poly_PolygonOnTriangulation> PolygonOnTriangulation;
+  typedef instance<pTriangulation, Poly_Triangulation>                   Triangulation;
 
 public:
   //! Create a persistent object for a 2D polygon
-  Standard_EXPORT static Handle(Polygon2D) Translate (const Handle(Poly_Polygon2D)& thePoly,
-                                                      StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static Handle(Polygon2D) Translate(const Handle(Poly_Polygon2D)&     thePoly,
+                                                     StdObjMgt_TransientPersistentMap& theMap);
   //! Create a persistent object for a 3D polygon
-  Standard_EXPORT static Handle(Polygon3D) Translate (const Handle(Poly_Polygon3D)& thePoly,
-                                                      StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static Handle(Polygon3D) Translate(const Handle(Poly_Polygon3D)&     thePoly,
+                                                     StdObjMgt_TransientPersistentMap& theMap);
   //! Create a persistent object for a triangulation
-  Standard_EXPORT static Handle(PolygonOnTriangulation) Translate (const Handle(Poly_PolygonOnTriangulation)& thePolyOnTriang,
-                                                                   StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static Handle(PolygonOnTriangulation) Translate(
+    const Handle(Poly_PolygonOnTriangulation)& thePolyOnTriang,
+    StdObjMgt_TransientPersistentMap&          theMap);
   //! Create a persistent object for a polygon on triangulation
-  Standard_EXPORT static Handle(Triangulation) Translate(const Handle(Poly_Triangulation)& thePolyTriang,
-                                                         StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static Handle(Triangulation) Translate(
+    const Handle(Poly_Triangulation)& thePolyTriang,
+    StdObjMgt_TransientPersistentMap& theMap);
 };
 
 #endif

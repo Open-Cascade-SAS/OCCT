@@ -36,10 +36,10 @@
    private implementation details that can be changed or removed.  */
 
 #ifndef YY_EXPRINTRP_EXPRINTRP_EXPRINTRP_TAB_H_INCLUDED
-# define YY_EXPRINTRP_EXPRINTRP_EXPRINTRP_TAB_H_INCLUDED
+#define YY_EXPRINTRP_EXPRINTRP_EXPRINTRP_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+  #define YYDEBUG 0
 #endif
 #if YYDEBUG
 extern int ExprIntrpdebug;
@@ -47,49 +47,49 @@ extern int ExprIntrpdebug;
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-  enum yytokentype
-  {
-    YYEMPTY = -2,
-    YYEOF = 0,                     /* "end of file"  */
-    YYerror = 256,                 /* error  */
-    YYUNDEF = 257,                 /* "invalid token"  */
-    SUMOP = 258,                   /* SUMOP  */
-    MINUSOP = 259,                 /* MINUSOP  */
-    DIVIDEOP = 260,                /* DIVIDEOP  */
-    EXPOP = 261,                   /* EXPOP  */
-    MULTOP = 262,                  /* MULTOP  */
-    PARENTHESIS = 263,             /* PARENTHESIS  */
-    BRACKET = 264,                 /* BRACKET  */
-    ENDPARENTHESIS = 265,          /* ENDPARENTHESIS  */
-    ENDBRACKET = 266,              /* ENDBRACKET  */
-    VALUE = 267,                   /* VALUE  */
-    IDENTIFIER = 268,              /* IDENTIFIER  */
-    COMMA = 269,                   /* COMMA  */
-    DIFFERENTIAL = 270,            /* DIFFERENTIAL  */
-    DERIVATE = 271,                /* DERIVATE  */
-    DERIVKEY = 272,                /* DERIVKEY  */
-    ASSIGNOP = 273,                /* ASSIGNOP  */
-    DEASSIGNKEY = 274,             /* DEASSIGNKEY  */
-    EQUALOP = 275,                 /* EQUALOP  */
-    RELSEPARATOR = 276,            /* RELSEPARATOR  */
-    CONSTKEY = 277,                /* CONSTKEY  */
-    SUMKEY = 278,                  /* SUMKEY  */
-    PRODKEY = 279                  /* PRODKEY  */
-  };
-  typedef enum yytokentype yytoken_kind_t;
+  #define YYTOKENTYPE
+
+enum yytokentype
+{
+  YYEMPTY        = -2,
+  YYEOF          = 0,   /* "end of file"  */
+  YYerror        = 256, /* error  */
+  YYUNDEF        = 257, /* "invalid token"  */
+  SUMOP          = 258, /* SUMOP  */
+  MINUSOP        = 259, /* MINUSOP  */
+  DIVIDEOP       = 260, /* DIVIDEOP  */
+  EXPOP          = 261, /* EXPOP  */
+  MULTOP         = 262, /* MULTOP  */
+  PARENTHESIS    = 263, /* PARENTHESIS  */
+  BRACKET        = 264, /* BRACKET  */
+  ENDPARENTHESIS = 265, /* ENDPARENTHESIS  */
+  ENDBRACKET     = 266, /* ENDBRACKET  */
+  VALUE          = 267, /* VALUE  */
+  IDENTIFIER     = 268, /* IDENTIFIER  */
+  COMMA          = 269, /* COMMA  */
+  DIFFERENTIAL   = 270, /* DIFFERENTIAL  */
+  DERIVATE       = 271, /* DERIVATE  */
+  DERIVKEY       = 272, /* DERIVKEY  */
+  ASSIGNOP       = 273, /* ASSIGNOP  */
+  DEASSIGNKEY    = 274, /* DEASSIGNKEY  */
+  EQUALOP        = 275, /* EQUALOP  */
+  RELSEPARATOR   = 276, /* RELSEPARATOR  */
+  CONSTKEY       = 277, /* CONSTKEY  */
+  SUMKEY         = 278, /* SUMKEY  */
+  PRODKEY        = 279  /* PRODKEY  */
+};
+typedef enum yytokentype yytoken_kind_t;
 #endif
 
 /* Value type.  */
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+#if !defined YYSTYPE && !defined YYSTYPE_IS_DECLARED
 typedef int YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
-# define YYSTYPE_IS_DECLARED 1
+  #define YYSTYPE_IS_TRIVIAL 1
+  #define YYSTYPE_IS_DECLARED 1
 #endif
-
 
 extern YYSTYPE ExprIntrplval;
 
-int ExprIntrpparse (void);
+int ExprIntrpparse(void);
 
 #endif /* !YY_EXPRINTRP_EXPRINTRP_EXPRINTRP_TAB_H_INCLUDED  */

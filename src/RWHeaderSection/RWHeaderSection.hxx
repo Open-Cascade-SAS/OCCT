@@ -21,19 +21,13 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-
-
-
-class RWHeaderSection 
+class RWHeaderSection
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! enforced the initialisation of the  libraries
   Standard_EXPORT static void Init();
-
 };
 
 #endif // _RWHeaderSection_HeaderFile

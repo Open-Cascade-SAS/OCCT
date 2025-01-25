@@ -27,26 +27,18 @@
 class XmlObjMgt_RRelocationTable : public TColStd_DataMapOfIntegerTransient
 {
 public:
-
   //! Returns a handle to the header data of the file that is begin read
   Standard_EXPORT const Handle(Storage_HeaderData)& GetHeaderData() const;
 
   //! Sets the storage header data.
   //!
   //! @param theHeaderData header data of the file that is begin read
-  Standard_EXPORT void SetHeaderData(
-      const Handle(Storage_HeaderData)& theHeaderData);
+  Standard_EXPORT void SetHeaderData(const Handle(Storage_HeaderData)& theHeaderData);
 
   Standard_EXPORT void Clear(const Standard_Boolean doReleaseMemory = Standard_True);
 
-
-
 protected:
-
-
-
 private:
-
   Handle(Storage_HeaderData) myHeaderData;
 };
 

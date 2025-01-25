@@ -25,7 +25,6 @@
 #include <TopAbs_ShapeEnum.hxx>
 class SelectMgr_EntityOwner;
 
-
 class StdSelect_FaceFilter;
 DEFINE_STANDARD_HANDLE(StdSelect_FaceFilter, SelectMgr_Filter)
 
@@ -41,43 +40,26 @@ class StdSelect_FaceFilter : public SelectMgr_Filter
 {
 
 public:
-
-  
   //! Constructs a face filter object defined by the type of face aTypeOfFace.
   Standard_EXPORT StdSelect_FaceFilter(const StdSelect_TypeOfFace aTypeOfFace);
-  
+
   //! Sets the type of face aNewType. aNewType is to be highlighted in selection.
-  Standard_EXPORT void SetType (const StdSelect_TypeOfFace aNewType);
-  
+  Standard_EXPORT void SetType(const StdSelect_TypeOfFace aNewType);
+
   //! Returns the type of face to be highlighted in selection.
   Standard_EXPORT StdSelect_TypeOfFace Type() const;
-  
-  Standard_EXPORT virtual Standard_Boolean IsOk (const Handle(SelectMgr_EntityOwner)& anobj) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_Boolean ActsOn (const TopAbs_ShapeEnum aStandardMode) const Standard_OVERRIDE;
 
+  Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& anobj) const
+    Standard_OVERRIDE;
 
+  Standard_EXPORT virtual Standard_Boolean ActsOn(const TopAbs_ShapeEnum aStandardMode) const
+    Standard_OVERRIDE;
 
-
-  DEFINE_STANDARD_RTTIEXT(StdSelect_FaceFilter,SelectMgr_Filter)
+  DEFINE_STANDARD_RTTIEXT(StdSelect_FaceFilter, SelectMgr_Filter)
 
 protected:
-
-
-
-
 private:
-
-
   StdSelect_TypeOfFace mytype;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StdSelect_FaceFilter_HeaderFile

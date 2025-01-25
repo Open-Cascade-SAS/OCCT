@@ -20,7 +20,6 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dHatch_Intersector.hxx>
 #include <gp_Lin2d.hxx>
- 
 
 #define TheEdge Geom2dAdaptor_Curve
 #define TheEdge_hxx <Geom2dAdaptor_Curve.hxx>
@@ -29,4 +28,3 @@
 #define TopClass_Classifier2d Geom2dHatch_FClass2dOfClassifier
 #define TopClass_Classifier2d_hxx <Geom2dHatch_FClass2dOfClassifier.hxx>
 #include "../TopClass/TopClass_Classifier2d.gxx"
-

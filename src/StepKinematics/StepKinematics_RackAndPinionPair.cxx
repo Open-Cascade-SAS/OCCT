@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -16,54 +16,47 @@
 
 #include <StepKinematics_RackAndPinionPair.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_RackAndPinionPair, StepKinematics_LowOrderKinematicPairWithMotionCoupling)
+IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_RackAndPinionPair,
+                           StepKinematics_LowOrderKinematicPairWithMotionCoupling)
 
-//=======================================================================
-//function : StepKinematics_RackAndPinionPair
-//purpose  :
-//=======================================================================
-StepKinematics_RackAndPinionPair::StepKinematics_RackAndPinionPair ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_RackAndPinionPair::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                             const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Name,
-                                             const Standard_Boolean hasItemDefinedTransformation_Description,
-                                             const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Description,
-                                             const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem1,
-                                             const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem2,
-                                             const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-                                             const Standard_Real thePinionRadius)
+StepKinematics_RackAndPinionPair::StepKinematics_RackAndPinionPair() {}
+
+//=================================================================================================
+
+void StepKinematics_RackAndPinionPair::Init(
+  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
+  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
+  const Standard_Boolean                       hasItemDefinedTransformation_Description,
+  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
+  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
+  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
+  const Standard_Real                          thePinionRadius)
 {
-  StepKinematics_LowOrderKinematicPairWithMotionCoupling::Init(theRepresentationItem_Name,
-                                                               theItemDefinedTransformation_Name,
-                                                               hasItemDefinedTransformation_Description,
-                                                               theItemDefinedTransformation_Description,
-                                                               theItemDefinedTransformation_TransformItem1,
-                                                               theItemDefinedTransformation_TransformItem2,
-                                                               theKinematicPair_Joint);
+  StepKinematics_LowOrderKinematicPairWithMotionCoupling::Init(
+    theRepresentationItem_Name,
+    theItemDefinedTransformation_Name,
+    hasItemDefinedTransformation_Description,
+    theItemDefinedTransformation_Description,
+    theItemDefinedTransformation_TransformItem1,
+    theItemDefinedTransformation_TransformItem2,
+    theKinematicPair_Joint);
 
   myPinionRadius = thePinionRadius;
 }
 
-//=======================================================================
-//function : PinionRadius
-//purpose  :
-//=======================================================================
-Standard_Real StepKinematics_RackAndPinionPair::PinionRadius () const
+//=================================================================================================
+
+Standard_Real StepKinematics_RackAndPinionPair::PinionRadius() const
 {
   return myPinionRadius;
 }
 
-//=======================================================================
-//function : SetPinionRadius
-//purpose  :
-//=======================================================================
-void StepKinematics_RackAndPinionPair::SetPinionRadius (const Standard_Real thePinionRadius)
+//=================================================================================================
+
+void StepKinematics_RackAndPinionPair::SetPinionRadius(const Standard_Real thePinionRadius)
 {
   myPinionRadius = thePinionRadius;
 }

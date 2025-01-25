@@ -17,143 +17,170 @@
 #include <Standard_NullValue.hxx>
 #include <Standard_NumericError.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Aspect_CircularGrid,Aspect_Grid)
+IMPLEMENT_STANDARD_RTTIEXT(Aspect_CircularGrid, Aspect_Grid)
 
-Aspect_CircularGrid::Aspect_CircularGrid
-     (const Standard_Real aRadiusStep,
-      const Standard_Integer aDivisionNumber,
-      const Standard_Real anXOrigin,
-      const Standard_Real anYOrigin,
-      const Standard_Real aRotationAngle)
-:Aspect_Grid(anXOrigin,anYOrigin,aRotationAngle),myRadiusStep(aRadiusStep),
-myDivisionNumber(aDivisionNumber) {
-   }
+Aspect_CircularGrid::Aspect_CircularGrid(const Standard_Real    aRadiusStep,
+                                         const Standard_Integer aDivisionNumber,
+                                         const Standard_Real    anXOrigin,
+                                         const Standard_Real    anYOrigin,
+                                         const Standard_Real    aRotationAngle)
+    : Aspect_Grid(anXOrigin, anYOrigin, aRotationAngle),
+      myRadiusStep(aRadiusStep),
+      myDivisionNumber(aDivisionNumber)
+{
+}
 
-void Aspect_CircularGrid::SetRadiusStep(const Standard_Real aRadiusStep) {
+void Aspect_CircularGrid::SetRadiusStep(const Standard_Real aRadiusStep)
+{
   Standard_NegativeValue_Raise_if(aRadiusStep < 0., "invalid radius step");
-  Standard_NullValue_Raise_if(aRadiusStep == 0. , "invalid radius step");
-  myRadiusStep= aRadiusStep;
+  Standard_NullValue_Raise_if(aRadiusStep == 0., "invalid radius step");
+  myRadiusStep = aRadiusStep;
   Init();
   UpdateDisplay();
 }
-void Aspect_CircularGrid::SetDivisionNumber(const Standard_Integer aNumber) {
+
+void Aspect_CircularGrid::SetDivisionNumber(const Standard_Integer aNumber)
+{
   Standard_NegativeValue_Raise_if(aNumber < 0., "invalid division number");
-  Standard_NullValue_Raise_if(aNumber == 0. , "invalid division number");
+  Standard_NullValue_Raise_if(aNumber == 0., "invalid division number");
   myDivisionNumber = aNumber;
   Init();
   UpdateDisplay();
 }
-void Aspect_CircularGrid::SetGridValues
-     (const Standard_Real theXOrigin,
-      const Standard_Real theYOrigin,
-      const Standard_Real theRadiusStep,
-      const Standard_Integer theDivisionNumber,
-      const Standard_Real theRotationAngle) {
+
+void Aspect_CircularGrid::SetGridValues(const Standard_Real    theXOrigin,
+                                        const Standard_Real    theYOrigin,
+                                        const Standard_Real    theRadiusStep,
+                                        const Standard_Integer theDivisionNumber,
+                                        const Standard_Real    theRotationAngle)
+{
   myXOrigin = theXOrigin;
   myYOrigin = theYOrigin;
   Standard_NegativeValue_Raise_if(theRadiusStep < 0., "invalid radius step");
-  Standard_NullValue_Raise_if(theRadiusStep == 0. , "invalid radius step");
-  myRadiusStep= theRadiusStep;
+  Standard_NullValue_Raise_if(theRadiusStep == 0., "invalid radius step");
+  myRadiusStep = theRadiusStep;
   Standard_NegativeValue_Raise_if(theDivisionNumber < 0., "invalid division number");
-  Standard_NullValue_Raise_if(theDivisionNumber == 0. , "invalid division number");
+  Standard_NullValue_Raise_if(theDivisionNumber == 0., "invalid division number");
   myDivisionNumber = theDivisionNumber;
-  myRotationAngle = theRotationAngle;
+  myRotationAngle  = theRotationAngle;
   Init();
   UpdateDisplay();
 }
+
 void Aspect_CircularGrid::Compute(const Standard_Real X,
                                   const Standard_Real Y,
-                                  Standard_Real& gridX,
-                                  Standard_Real& gridY) const {
+                                  Standard_Real&      gridX,
+                                  Standard_Real&      gridY) const
+{
 
-  Standard_Real xo = XOrigin();
-  Standard_Real yo = YOrigin();
-  Standard_Real d = Sqrt( (xo-X)*(xo-X) + (yo-Y)*(yo-Y) );
-  Standard_Integer n = (Standard_Integer ) ( d/myRadiusStep + 0.5 ) ;
-  Standard_Real radius = Standard_Real(n) * myRadiusStep;
-  Standard_Real cosinus = (X-xo)/d;
-  Standard_Real a = ACos(cosinus);
-  Standard_Real ra = RotationAngle();
-  if ( Y < yo ) a = 2 * M_PI - a;
-  n = (Standard_Integer ) ((a-ra)/myAlpha + Sign(0.5, a-ra)) ;
+  Standard_Real    xo      = XOrigin();
+  Standard_Real    yo      = YOrigin();
+  Standard_Real    d       = Sqrt((xo - X) * (xo - X) + (yo - Y) * (yo - Y));
+  Standard_Integer n       = (Standard_Integer)(d / myRadiusStep + 0.5);
+  Standard_Real    radius  = Standard_Real(n) * myRadiusStep;
+  Standard_Real    cosinus = (X - xo) / d;
+  Standard_Real    a       = ACos(cosinus);
+  Standard_Real    ra      = RotationAngle();
+  if (Y < yo)
+    a = 2 * M_PI - a;
+  n = (Standard_Integer)((a - ra) / myAlpha + Sign(0.5, a - ra));
 
-  Standard_Real cs=0,sn=0;
+  Standard_Real    cs = 0, sn = 0;
   Standard_Boolean done = Standard_False;
-  Standard_Integer nmax = 2*myDivisionNumber;
-  Standard_Integer nquad,qmax;
+  Standard_Integer nmax = 2 * myDivisionNumber;
+  Standard_Integer nquad, qmax;
 
-  if( ra == 0. ) {
-    nquad = 4; qmax = nmax/nquad;
-    if( (n == 0) || (!(nmax % nquad) && !(n % qmax)) ) {
-      Standard_Integer q = n/qmax;
-      switch (q) {
-	default:
+  if (ra == 0.)
+  {
+    nquad = 4;
+    qmax  = nmax / nquad;
+    if ((n == 0) || (!(nmax % nquad) && !(n % qmax)))
+    {
+      Standard_Integer q = n / qmax;
+      switch (q)
+      {
+        default:
         case 0:
-          cs = 1.; sn = 0.;
+          cs = 1.;
+          sn = 0.;
           break;
         case 1:
-          cs = 0.; sn = 1.;
+          cs = 0.;
+          sn = 1.;
           break;
         case 2:
-          cs = -1.; sn = 0.;
+          cs = -1.;
+          sn = 0.;
           break;
         case 3:
-          cs = 0.; sn = -1.;
+          cs = 0.;
+          sn = -1.;
           break;
       }
       done = Standard_True;
-    } else {
-      nquad = 2; qmax = nmax/nquad;
-      if( !(nmax % nquad) && !(n % qmax) ) {
-        Standard_Integer q = n/qmax;
-        switch (q) {
-	  default:
+    }
+    else
+    {
+      nquad = 2;
+      qmax  = nmax / nquad;
+      if (!(nmax % nquad) && !(n % qmax))
+      {
+        Standard_Integer q = n / qmax;
+        switch (q)
+        {
+          default:
           case 0:
-            cs = 1.; sn = 0.;
+            cs = 1.;
+            sn = 0.;
             break;
           case 1:
-            cs = -1.; sn = 0.;
+            cs = -1.;
+            sn = 0.;
             break;
         }
         done = Standard_True;
       }
     }
-  } 
+  }
 
-  if( !done ) {
-    Standard_Real ang = ra + Standard_Real(n)*myAlpha;
-    cs = Cos(ang); sn = Sin(ang);
+  if (!done)
+  {
+    Standard_Real ang = ra + Standard_Real(n) * myAlpha;
+    cs                = Cos(ang);
+    sn                = Sin(ang);
   }
   gridX = xo + cs * radius;
   gridY = yo + sn * radius;
 }
 
-Standard_Real Aspect_CircularGrid::RadiusStep() const {
+Standard_Real Aspect_CircularGrid::RadiusStep() const
+{
   return myRadiusStep;
 }
 
-Standard_Integer Aspect_CircularGrid::DivisionNumber () const {
-return myDivisionNumber;
-}
-
-void Aspect_CircularGrid::Init () {
-  myAlpha = M_PI / Standard_Real(myDivisionNumber);
-  myA1 = Cos(myAlpha); myB1=Sin(myAlpha);
-}
-
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void Aspect_CircularGrid::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+Standard_Integer Aspect_CircularGrid::DivisionNumber() const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  return myDivisionNumber;
+}
+
+void Aspect_CircularGrid::Init()
+{
+  myAlpha = M_PI / Standard_Real(myDivisionNumber);
+  myA1    = Cos(myAlpha);
+  myB1    = Sin(myAlpha);
+}
+
+//=================================================================================================
+
+void Aspect_CircularGrid::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Aspect_Grid)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myRadiusStep)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDivisionNumber)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAlpha)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myA1)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myB1)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myRadiusStep)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myDivisionNumber)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myAlpha)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myA1)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myB1)
 }

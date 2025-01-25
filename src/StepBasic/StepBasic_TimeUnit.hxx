@@ -22,41 +22,20 @@
 
 #include <StepBasic_NamedUnit.hxx>
 
-
 class StepBasic_TimeUnit;
 DEFINE_STANDARD_HANDLE(StepBasic_TimeUnit, StepBasic_NamedUnit)
-
 
 class StepBasic_TimeUnit : public StepBasic_NamedUnit
 {
 
 public:
-
-  
   //! Returns a TimeUnit
   Standard_EXPORT StepBasic_TimeUnit();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_TimeUnit,StepBasic_NamedUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_TimeUnit, StepBasic_NamedUnit)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_TimeUnit_HeaderFile

@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY2(Extrema_HArray2OfPOnSurf, Extrema_Array2OfPOnSurf)
 
-
 #endif

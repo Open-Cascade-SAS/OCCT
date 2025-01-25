@@ -16,31 +16,35 @@
 
 #include <StdFail_NotDone.hxx>
 
-
 //=======================================================================
-//function : LocOpe_Gluer
-//purpose  : 
-//=======================================================================
-
-inline LocOpe_Gluer::LocOpe_Gluer () : 
-   myDone(Standard_False),myOri(TopAbs_INTERNAL),myOpe(LocOpe_INVALID)
-{}
-
-
-//=======================================================================
-//function : LocOpe_Gluer
-//purpose  : 
+// function : LocOpe_Gluer
+// purpose  :
 //=======================================================================
 
-inline LocOpe_Gluer::LocOpe_Gluer (const TopoDS_Shape& Sbase,
-			       const TopoDS_Shape& Snew) :
-   myDone(Standard_False),mySb(Sbase),mySn(Snew),myOri(TopAbs_INTERNAL),myOpe(LocOpe_INVALID)
-{}
-
+inline LocOpe_Gluer::LocOpe_Gluer()
+    : myDone(Standard_False),
+      myOri(TopAbs_INTERNAL),
+      myOpe(LocOpe_INVALID)
+{
+}
 
 //=======================================================================
-//function : IsDone
-//purpose  : 
+// function : LocOpe_Gluer
+// purpose  :
+//=======================================================================
+
+inline LocOpe_Gluer::LocOpe_Gluer(const TopoDS_Shape& Sbase, const TopoDS_Shape& Snew)
+    : myDone(Standard_False),
+      mySb(Sbase),
+      mySn(Snew),
+      myOri(TopAbs_INTERNAL),
+      myOpe(LocOpe_INVALID)
+{
+}
+
+//=======================================================================
+// function : IsDone
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean LocOpe_Gluer::IsDone() const
@@ -48,43 +52,43 @@ inline Standard_Boolean LocOpe_Gluer::IsDone() const
   return myDone;
 }
 
-
 //=======================================================================
-//function : ResultingShape
-//purpose  : 
+// function : ResultingShape
+// purpose  :
 //=======================================================================
 
-inline const TopoDS_Shape& LocOpe_Gluer::ResultingShape () const
+inline const TopoDS_Shape& LocOpe_Gluer::ResultingShape() const
 {
-  if (!myDone) {
+  if (!myDone)
+  {
     throw StdFail_NotDone();
   }
   return myRes;
 }
 
 //=======================================================================
-//function : BasisShape
-//purpose  : 
+// function : BasisShape
+// purpose  :
 //=======================================================================
 
-inline const TopoDS_Shape& LocOpe_Gluer::BasisShape () const
+inline const TopoDS_Shape& LocOpe_Gluer::BasisShape() const
 {
   return mySb;
 }
 
 //=======================================================================
-//function : GluedShape
-//purpose  : 
+// function : GluedShape
+// purpose  :
 //=======================================================================
 
-inline const TopoDS_Shape& LocOpe_Gluer::GluedShape () const
+inline const TopoDS_Shape& LocOpe_Gluer::GluedShape() const
 {
   return mySn;
 }
 
 //=======================================================================
-//function : OpeType
-//purpose  : 
+// function : OpeType
+// purpose  :
 //=======================================================================
 
 inline LocOpe_Operation LocOpe_Gluer::OpeType() const
@@ -92,10 +96,9 @@ inline LocOpe_Operation LocOpe_Gluer::OpeType() const
   return myOpe;
 }
 
-
 //=======================================================================
-//function : Edges
-//purpose  : 
+// function : Edges
+// purpose  :
 //=======================================================================
 
 inline const TopTools_ListOfShape& LocOpe_Gluer::Edges() const
@@ -103,10 +106,9 @@ inline const TopTools_ListOfShape& LocOpe_Gluer::Edges() const
   return myEdges;
 }
 
-
 //=======================================================================
-//function : TgtEdges
-//purpose  : 
+// function : TgtEdges
+// purpose  :
 //=======================================================================
 
 inline const TopTools_ListOfShape& LocOpe_Gluer::TgtEdges() const

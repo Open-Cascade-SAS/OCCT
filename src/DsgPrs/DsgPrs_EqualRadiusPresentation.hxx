@@ -28,13 +28,11 @@ class gp_Pnt;
 class Geom_Plane;
 
 //! A framework to define display of equality in radii.
-class DsgPrs_EqualRadiusPresentation 
+class DsgPrs_EqualRadiusPresentation
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Adds the points FirstCenter, SecondCenter,
   //! FirstPoint, SecondPoint, and the plane Plane to the
   //! presentation object aPresentation.
@@ -43,29 +41,16 @@ public:
   //! FirstCenter and SecondCenter are the centers of the
   //! first and second shapes respectively, and FirstPoint
   //! and SecondPoint are the attachment points of the radii to arcs.
-  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Handle(Prs3d_Drawer)& aDrawer, const gp_Pnt& FirstCenter, const gp_Pnt& SecondCenter, const gp_Pnt& FirstPoint, const gp_Pnt& SecondPoint, const Handle(Geom_Plane)& Plane);
-
-
-
+  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
+                                  const Handle(Prs3d_Drawer)&       aDrawer,
+                                  const gp_Pnt&                     FirstCenter,
+                                  const gp_Pnt&                     SecondCenter,
+                                  const gp_Pnt&                     FirstPoint,
+                                  const gp_Pnt&                     SecondPoint,
+                                  const Handle(Geom_Plane)&         Plane);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _DsgPrs_EqualRadiusPresentation_HeaderFile

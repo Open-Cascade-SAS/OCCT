@@ -16,35 +16,28 @@
 #include <NCollection_AlignedAllocator.hxx>
 #include <NCollection_Buffer.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(NCollection_AlignedAllocator, NCollection_BaseAllocator)
 
+//=================================================================================================
 
-
-IMPLEMENT_STANDARD_RTTIEXT(NCollection_AlignedAllocator,NCollection_BaseAllocator)
-
-//=======================================================================
-//function : NCollection_AlignedAllocator()
-//purpose  : Constructor
-//=======================================================================
-NCollection_AlignedAllocator::NCollection_AlignedAllocator (const size_t theAlignment)
-: myAlignment (theAlignment)
+NCollection_AlignedAllocator::NCollection_AlignedAllocator(const size_t theAlignment)
+    : myAlignment(theAlignment)
 {
   //
 }
 
 //=======================================================================
-//function : Allocate
-//purpose  : allocate a memory
+// function : Allocate
+// purpose  : allocate a memory
 //=======================================================================
-void* NCollection_AlignedAllocator::Allocate (const size_t theSize)
+void* NCollection_AlignedAllocator::Allocate(const size_t theSize)
 {
-  return Standard::AllocateAligned (theSize, myAlignment);
+  return Standard::AllocateAligned(theSize, myAlignment);
 }
 
-//=======================================================================
-//function : Free
-//purpose  :
-//=======================================================================
-void NCollection_AlignedAllocator::Free (void* thePtr)
+//=================================================================================================
+
+void NCollection_AlignedAllocator::Free(void* thePtr)
 {
-  Standard::FreeAligned (thePtr);
+  Standard::FreeAligned(thePtr);
 }

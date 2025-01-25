@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <CDF_Application.hxx>
 #include <CDF_MetaDataDriver.hxx>
 #include <CDM_MetaData.hxx>
@@ -23,95 +22,81 @@
 #include <TCollection_ExtendedString.hxx>
 #include <OSD_Thread.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(CDF_MetaDataDriver,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(CDF_MetaDataDriver, Standard_Transient)
 
-//=======================================================================
-//function : CDF_MetaDataDriver
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 CDF_MetaDataDriver::CDF_MetaDataDriver() {}
 
-//=======================================================================
-//function : HasVersion
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean CDF_MetaDataDriver::HasVersion(const TCollection_ExtendedString& ,const TCollection_ExtendedString& ) {
+Standard_Boolean CDF_MetaDataDriver::HasVersion(const TCollection_ExtendedString&,
+                                                const TCollection_ExtendedString&)
+{
   return Standard_True;
 }
 
-//=======================================================================
-//function : HasVersionCapability
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-//=======================================================================
-//function : HasVersionCapability
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean CDF_MetaDataDriver::HasVersionCapability() {
+Standard_Boolean CDF_MetaDataDriver::HasVersionCapability()
+{
   return Standard_False;
 }
-//=======================================================================
-//function : CreateDependsOn
-//purpose  : 
-//=======================================================================
 
-void CDF_MetaDataDriver::CreateDependsOn(const Handle(CDM_MetaData)& ,
-				     const Handle(CDM_MetaData)& ) {}
+//=================================================================================================
 
-//=======================================================================
-//function : CreateReference
-//purpose  : 
-//=======================================================================
+void CDF_MetaDataDriver::CreateDependsOn(const Handle(CDM_MetaData)&, const Handle(CDM_MetaData)&)
+{
+}
 
-void CDF_MetaDataDriver::CreateReference(const Handle(CDM_MetaData)& ,
-  const Handle(CDM_MetaData)& , const Standard_Integer , const Standard_Integer ) {}
+//=================================================================================================
 
-//=======================================================================
-//function : ReferenceIterator
-//purpose  : 
-//=======================================================================
+void CDF_MetaDataDriver::CreateReference(const Handle(CDM_MetaData)&,
+                                         const Handle(CDM_MetaData)&,
+                                         const Standard_Integer,
+                                         const Standard_Integer)
+{
+}
 
-Handle(PCDM_ReferenceIterator) CDF_MetaDataDriver::ReferenceIterator(const Handle(Message_Messenger)& theMessageDriver)
+//=================================================================================================
+
+Handle(PCDM_ReferenceIterator) CDF_MetaDataDriver::ReferenceIterator(
+  const Handle(Message_Messenger)& theMessageDriver)
 {
   return new PCDM_ReferenceIterator(theMessageDriver);
 }
 
-//=======================================================================
-//function : Find
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean CDF_MetaDataDriver::Find(const TCollection_ExtendedString& aFolder, 
-  const TCollection_ExtendedString& aName) 
+Standard_Boolean CDF_MetaDataDriver::Find(const TCollection_ExtendedString& aFolder,
+                                          const TCollection_ExtendedString& aName)
 {
   TCollection_ExtendedString aVersion;
-  return Find(aFolder,aName,aVersion);
+  return Find(aFolder, aName, aVersion);
 }
-//=======================================================================
-//function : MetaData
-//purpose  : 
-//=======================================================================
 
-Handle(CDM_MetaData) CDF_MetaDataDriver::MetaData(const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName) {
+//=================================================================================================
+
+Handle(CDM_MetaData) CDF_MetaDataDriver::MetaData(const TCollection_ExtendedString& aFolder,
+                                                  const TCollection_ExtendedString& aName)
+{
   TCollection_ExtendedString aVersion;
-  return MetaData(aFolder,aName,aVersion);
+  return MetaData(aFolder, aName, aVersion);
 }
-//=======================================================================
-//function : LastVersion
-//purpose  : 
-//=======================================================================
 
-Handle(CDM_MetaData) CDF_MetaDataDriver::LastVersion(const Handle(CDM_MetaData)& aMetaData) {
+//=================================================================================================
+
+Handle(CDM_MetaData) CDF_MetaDataDriver::LastVersion(const Handle(CDM_MetaData)& aMetaData)
+{
   return aMetaData;
 }
-//=======================================================================
-//function : SetName
-//purpose  : 
-//=======================================================================
 
-TCollection_ExtendedString CDF_MetaDataDriver::SetName(const Handle(CDM_Document)& , const TCollection_ExtendedString& aName) {
+//=================================================================================================
+
+TCollection_ExtendedString CDF_MetaDataDriver::SetName(const Handle(CDM_Document)&,
+                                                       const TCollection_ExtendedString& aName)
+{
   return aName;
 }

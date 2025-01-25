@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY1(StepBasic_HArray1OfProductDefinition, StepBasic_Array1OfProductDefinition)
 
-
 #endif

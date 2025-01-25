@@ -14,46 +14,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopOpeBRepDS_CurvePointInterference.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_CurvePointInterference,TopOpeBRepDS_Interference)
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_CurvePointInterference, TopOpeBRepDS_Interference)
 
-//=======================================================================
-//function : TopOpeBRepDS_CurvePointInterference
-//purpose  : 
-//=======================================================================
-TopOpeBRepDS_CurvePointInterference::TopOpeBRepDS_CurvePointInterference
-  (const TopOpeBRepDS_Transition& T, 
-   const TopOpeBRepDS_Kind ST,
-   const Standard_Integer S, 
-   const TopOpeBRepDS_Kind GT,
-   const Standard_Integer G, 
-   const Standard_Real P) :
-  TopOpeBRepDS_Interference(T,ST,S,GT,G),
-  myParam(P)
+//=================================================================================================
+
+TopOpeBRepDS_CurvePointInterference::TopOpeBRepDS_CurvePointInterference(
+  const TopOpeBRepDS_Transition& T,
+  const TopOpeBRepDS_Kind        ST,
+  const Standard_Integer         S,
+  const TopOpeBRepDS_Kind        GT,
+  const Standard_Integer         G,
+  const Standard_Real            P)
+    : TopOpeBRepDS_Interference(T, ST, S, GT, G),
+      myParam(P)
 {
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Parameter
-//purpose  : 
-//=======================================================================
-
-Standard_Real  TopOpeBRepDS_CurvePointInterference::Parameter()const 
+Standard_Real TopOpeBRepDS_CurvePointInterference::Parameter() const
 {
   return myParam;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Parameter
-//purpose  : 
-//=======================================================================
-
-void  TopOpeBRepDS_CurvePointInterference::Parameter(const Standard_Real P)
+void TopOpeBRepDS_CurvePointInterference::Parameter(const Standard_Real P)
 {
   myParam = P;
 }

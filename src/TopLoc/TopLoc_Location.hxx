@@ -32,143 +32,122 @@ class TopLoc_Datum3D;
 //! series of elementary reference coordinates, i.e.
 //! objects of type TopLoc_Datum3D, and the powers to
 //! which these objects are raised.
-class TopLoc_Location 
+class TopLoc_Location
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs an empty local coordinate system object.
   //! Note: A Location constructed from a default datum is said to be "empty".
   Standard_EXPORT TopLoc_Location();
-  
+
   //! Constructs the local coordinate system object defined
   //! by the transformation T. T invokes in turn, a TopLoc_Datum3D object.
   Standard_EXPORT TopLoc_Location(const gp_Trsf& T);
-  
+
   //! Constructs the local coordinate system object defined by the 3D datum D.
   //! Exceptions
   //! Standard_ConstructionError if the transformation
   //! T does not represent a 3D coordinate system.
   Standard_EXPORT TopLoc_Location(const Handle(TopLoc_Datum3D)& D);
-  
+
   //! Returns true if this location is equal to the Identity transformation.
-    Standard_Boolean IsIdentity() const;
-  
+  Standard_Boolean IsIdentity() const;
+
   //! Resets this location to the Identity transformation.
-    void Identity();
-  
+  void Identity();
+
   //! Returns    the  first   elementary  datum  of  the
   //! Location.  Use the NextLocation function recursively to access
   //! the other data comprising this location.
   //! Exceptions
   //! Standard_NoSuchObject if this location is empty.
-    const Handle(TopLoc_Datum3D)& FirstDatum() const;
-  
+  const Handle(TopLoc_Datum3D)& FirstDatum() const;
+
   //! Returns   the  power  elevation  of    the   first
   //! elementary datum.
   //! Exceptions
   //! Standard_NoSuchObject if this location is empty.
-    Standard_Integer FirstPower() const;
-  
+  Standard_Integer FirstPower() const;
+
   //! Returns  a Location representing  <me> without the
   //! first datum. We have the relation :
   //!
   //! <me> = NextLocation() * FirstDatum() ^ FirstPower()
   //! Exceptions
   //! Standard_NoSuchObject if this location is empty.
-    const TopLoc_Location& NextLocation() const;
-  
+  const TopLoc_Location& NextLocation() const;
+
   //! Returns  the transformation    associated  to  the
   //! coordinate system.
   Standard_EXPORT const gp_Trsf& Transformation() const;
-Standard_EXPORT operator gp_Trsf() const;
-  
+  Standard_EXPORT                operator gp_Trsf() const;
+
   //! Returns the inverse of <me>.
   //!
   //! <me> * Inverted() is an Identity.
   Standard_NODISCARD Standard_EXPORT TopLoc_Location Inverted() const;
-  
+
   //! Returns <me> * <Other>, the  elementary datums are
   //! concatenated.
-  Standard_NODISCARD Standard_EXPORT TopLoc_Location Multiplied (const TopLoc_Location& Other) const;
-Standard_NODISCARD TopLoc_Location operator* (const TopLoc_Location& Other) const
-{
-  return Multiplied(Other);
-}
-  
+  Standard_NODISCARD Standard_EXPORT TopLoc_Location Multiplied(const TopLoc_Location& Other) const;
+
+  Standard_NODISCARD TopLoc_Location operator*(const TopLoc_Location& Other) const
+  {
+    return Multiplied(Other);
+  }
+
   //! Returns  <me> / <Other>.
-  Standard_NODISCARD Standard_EXPORT TopLoc_Location Divided (const TopLoc_Location& Other) const;
-Standard_NODISCARD TopLoc_Location operator/ (const TopLoc_Location& Other) const
-{
-  return Divided(Other);
-}
-  
+  Standard_NODISCARD Standard_EXPORT TopLoc_Location Divided(const TopLoc_Location& Other) const;
+
+  Standard_NODISCARD TopLoc_Location operator/(const TopLoc_Location& Other) const
+  {
+    return Divided(Other);
+  }
+
   //! Returns <Other>.Inverted() * <me>.
-  Standard_NODISCARD Standard_EXPORT TopLoc_Location Predivided (const TopLoc_Location& Other) const;
-  
+  Standard_NODISCARD Standard_EXPORT TopLoc_Location Predivided(const TopLoc_Location& Other) const;
+
   //! Returns me at the power <pwr>.   If <pwr>  is zero
   //! returns  Identity.  <pwr> can  be lower  than zero
   //! (usual meaning for powers).
-  Standard_NODISCARD Standard_EXPORT TopLoc_Location Powered (const Standard_Integer pwr) const;
+  Standard_NODISCARD Standard_EXPORT TopLoc_Location Powered(const Standard_Integer pwr) const;
 
-  //! Returns a hashed value for this local coordinate system. This value is used, with map tables, to store and
-  //! retrieve the object easily
+  //! Returns a hashed value for this local coordinate system. This value is used, with map tables,
+  //! to store and retrieve the object easily
   //! @return a computed hash code
-  size_t HashCode () const;
-  
+  size_t HashCode() const;
+
   //! Returns true if this location and the location Other
   //! have the same elementary data, i.e. contain the same
   //! series of TopLoc_Datum3D and respective powers.
   //! This method is an alias for operator ==.
-  Standard_EXPORT Standard_Boolean IsEqual (const TopLoc_Location& Other) const;
-Standard_Boolean operator == (const TopLoc_Location& Other) const
-{
-  return IsEqual(Other);
-}
-  
+  Standard_EXPORT Standard_Boolean IsEqual(const TopLoc_Location& Other) const;
+
+  Standard_Boolean operator==(const TopLoc_Location& Other) const { return IsEqual(Other); }
+
   //! Returns true if this location and the location Other do
   //! not have the same elementary data, i.e. do not
   //! contain the same series of TopLoc_Datum3D and respective powers.
   //! This method is an alias for operator !=.
-  Standard_EXPORT Standard_Boolean IsDifferent (const TopLoc_Location& Other) const;
-Standard_Boolean operator != (const TopLoc_Location& Other) const
-{
-  return IsDifferent(Other);
-}
-  
+  Standard_EXPORT Standard_Boolean IsDifferent(const TopLoc_Location& Other) const;
+
+  Standard_Boolean operator!=(const TopLoc_Location& Other) const { return IsDifferent(Other); }
+
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
   //! Prints the contents of <me> on the stream <s>.
-  Standard_EXPORT void ShallowDump (Standard_OStream& S) const;
+  Standard_EXPORT void ShallowDump(Standard_OStream& S) const;
 
   //! Clear myItems
-  void Clear()
-  {
-    myItems.Clear();
-  }
+  void Clear() { myItems.Clear(); }
 
-
-  static Standard_Real ScalePrec()
-  {
-    return  1.e-14;
-  }
+  static Standard_Real ScalePrec() { return 1.e-14; }
 
 protected:
-
-
-
-
-
 private:
-
-
-
   TopLoc_SListOfItemLocation myItems;
-
-
 };
 
 #include <TopLoc_Location.lxx>

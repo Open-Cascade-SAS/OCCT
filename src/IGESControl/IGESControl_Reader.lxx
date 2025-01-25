@@ -12,22 +12,21 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : SetReadVisible
-//purpose  : 
+// function : SetReadVisible
+// purpose  :
 //=======================================================================
 
-inline void IGESControl_Reader::SetReadVisible (const Standard_Boolean ReadRoot)
+inline void IGESControl_Reader::SetReadVisible(const Standard_Boolean ReadRoot)
 {
- theReadOnlyVisible = ReadRoot;
+  theReadOnlyVisible = ReadRoot;
 }
 
-
 //=======================================================================
-//function : GetReadVisible
-//purpose  : 
+// function : GetReadVisible
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean IGESControl_Reader::GetReadVisible ()const
+inline Standard_Boolean IGESControl_Reader::GetReadVisible() const
 {
- return  theReadOnlyVisible;
+  return theReadOnlyVisible;
 }

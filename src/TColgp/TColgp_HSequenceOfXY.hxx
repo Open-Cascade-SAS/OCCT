@@ -23,5 +23,4 @@
 
 DEFINE_HSEQUENCE(TColgp_HSequenceOfXY, TColgp_SequenceOfXY)
 
-
 #endif

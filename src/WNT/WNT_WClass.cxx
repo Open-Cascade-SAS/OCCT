@@ -26,53 +26,49 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(WNT_WClass, Standard_Transient)
 
-//=======================================================================
-//function : WNT_WClass
-//purpose  :
-//=======================================================================
-WNT_WClass::WNT_WClass (const TCollection_AsciiString& theClassName,
-                        const Standard_Address theWndProc,
-                        const unsigned int theStyle,
-                        const Standard_Integer theClassExtra,
-                        const Standard_Integer theWindowExtra,
-                        const Aspect_Handle theCursor,
-                        const Aspect_Handle theIcon,
-                        const TCollection_AsciiString& theMenuName)
-: myClassName (theClassName),
-  myAppInstance (GetModuleHandleW (NULL)),
-  myWndProc (NULL)
+//=================================================================================================
+
+WNT_WClass::WNT_WClass(const TCollection_AsciiString& theClassName,
+                       const Standard_Address         theWndProc,
+                       const unsigned int             theStyle,
+                       const Standard_Integer         theClassExtra,
+                       const Standard_Integer         theWindowExtra,
+                       const Aspect_Handle            theCursor,
+                       const Aspect_Handle            theIcon,
+                       const TCollection_AsciiString& theMenuName)
+    : myClassName(theClassName),
+      myAppInstance(GetModuleHandleW(NULL)),
+      myWndProc(NULL)
 {
-  const TCollection_ExtendedString aClassNameW (theClassName);
-  const TCollection_ExtendedString aMenuNameW  (theMenuName);
-  WNDCLASSW aWinClass;
+  const TCollection_ExtendedString aClassNameW(theClassName);
+  const TCollection_ExtendedString aMenuNameW(theMenuName);
+  WNDCLASSW                        aWinClass;
   aWinClass.style         = (UINT)theStyle;
-  aWinClass.lpfnWndProc   = theWndProc != NULL ? (WNDPROC )theWndProc : DefWindowProcW;
+  aWinClass.lpfnWndProc   = theWndProc != NULL ? (WNDPROC)theWndProc : DefWindowProcW;
   aWinClass.cbClsExtra    = theClassExtra;
   aWinClass.cbWndExtra    = theWindowExtra;
-  aWinClass.hInstance     = (HINSTANCE )myAppInstance;
-  aWinClass.hIcon         = theIcon   != NULL ? (HICON   )theIcon   : LoadIcon   (NULL, IDI_APPLICATION);
-  aWinClass.hCursor       = theCursor != NULL ? (HCURSOR )theCursor : LoadCursor (NULL, IDC_NO);
+  aWinClass.hInstance     = (HINSTANCE)myAppInstance;
+  aWinClass.hIcon         = theIcon != NULL ? (HICON)theIcon : LoadIcon(NULL, IDI_APPLICATION);
+  aWinClass.hCursor       = theCursor != NULL ? (HCURSOR)theCursor : LoadCursor(NULL, IDC_NO);
   aWinClass.hbrBackground = 0;
   aWinClass.lpszMenuName  = !aMenuNameW.IsEmpty() ? aMenuNameW.ToWideString() : NULL;
   aWinClass.lpszClassName = aClassNameW.ToWideString();
-  if (!RegisterClassW (&aWinClass))
+  if (!RegisterClassW(&aWinClass))
   {
     myClassName.Clear();
     throw WNT_ClassDefinitionError("Unable to register window class");
   }
-  myWndProc = (Standard_Address )aWinClass.lpfnWndProc;
+  myWndProc = (Standard_Address)aWinClass.lpfnWndProc;
 }
 
-//=======================================================================
-//function : ~WNT_WClass
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 WNT_WClass::~WNT_WClass()
 {
   if (!myClassName.IsEmpty())
   {
-    const TCollection_ExtendedString aClassNameW (myClassName);
-    UnregisterClassW (aClassNameW.ToWideString(), (HINSTANCE )myAppInstance);
+    const TCollection_ExtendedString aClassNameW(myClassName);
+    UnregisterClassW(aClassNameW.ToWideString(), (HINSTANCE)myAppInstance);
   }
 }
 

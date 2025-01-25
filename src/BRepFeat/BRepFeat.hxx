@@ -35,7 +35,6 @@ class BRepTopAdaptor_FClass2d;
 class Geom2dAdaptor_Curve;
 class TopoDS_Solid;
 
-
 //! BRepFeat is necessary for the
 //! creation and manipulation of both form and mechanical features in a
 //! Boundary Representation framework. Form features can be depressions or
@@ -79,34 +78,43 @@ class TopoDS_Solid;
 //! -          to a limiting face of the basis shape
 //! -          to or from a limiting plane
 //! -          to a height.
-class BRepFeat 
+class BRepFeat
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT static void SampleEdges (const TopoDS_Shape& S, TColgp_SequenceOfPnt& Pt);
-  
-  Standard_EXPORT static void Barycenter (const TopoDS_Shape& S, gp_Pnt& Pt);
-  
-  Standard_EXPORT static Standard_Real ParametricBarycenter (const TopoDS_Shape& S, const Handle(Geom_Curve)& C);
-  
+  Standard_EXPORT static void SampleEdges(const TopoDS_Shape& S, TColgp_SequenceOfPnt& Pt);
+
+  Standard_EXPORT static void Barycenter(const TopoDS_Shape& S, gp_Pnt& Pt);
+
+  Standard_EXPORT static Standard_Real ParametricBarycenter(const TopoDS_Shape&       S,
+                                                            const Handle(Geom_Curve)& C);
+
   //! Ori = True taking account the orientation
-  Standard_EXPORT static void ParametricMinMax (const TopoDS_Shape& S, const Handle(Geom_Curve)& C, Standard_Real& prmin, Standard_Real& prmax, Standard_Real& prbmin, Standard_Real& prbmax, Standard_Boolean& flag, const Standard_Boolean Ori = Standard_False);
-  
-  Standard_EXPORT static Standard_Boolean IsInside (const TopoDS_Face& F1, const TopoDS_Face& F2);
-  
-  Standard_EXPORT static Standard_Boolean IsInOut (const BRepTopAdaptor_FClass2d& FC, const Geom2dAdaptor_Curve& AC);
-  
-  Standard_EXPORT static void FaceUntil (const TopoDS_Shape& S, TopoDS_Face& F);
-  
-  Standard_EXPORT static TopoDS_Solid Tool (const TopoDS_Shape& SRef, const TopoDS_Face& Fac, const TopAbs_Orientation Orf);
-  
+  Standard_EXPORT static void ParametricMinMax(const TopoDS_Shape&       S,
+                                               const Handle(Geom_Curve)& C,
+                                               Standard_Real&            prmin,
+                                               Standard_Real&            prmax,
+                                               Standard_Real&            prbmin,
+                                               Standard_Real&            prbmax,
+                                               Standard_Boolean&         flag,
+                                               const Standard_Boolean    Ori = Standard_False);
+
+  Standard_EXPORT static Standard_Boolean IsInside(const TopoDS_Face& F1, const TopoDS_Face& F2);
+
+  Standard_EXPORT static Standard_Boolean IsInOut(const BRepTopAdaptor_FClass2d& FC,
+                                                  const Geom2dAdaptor_Curve&     AC);
+
+  Standard_EXPORT static void FaceUntil(const TopoDS_Shape& S, TopoDS_Face& F);
+
+  Standard_EXPORT static TopoDS_Solid Tool(const TopoDS_Shape&      SRef,
+                                           const TopoDS_Face&       Fac,
+                                           const TopAbs_Orientation Orf);
+
   //! Prints the Error description of the State <St> as a String on
   //! the Stream <S> and returns <S>.
-  Standard_EXPORT static Standard_OStream& Print (const BRepFeat_StatusError SE, Standard_OStream& S);
-
+  Standard_EXPORT static Standard_OStream& Print(const BRepFeat_StatusError SE,
+                                                 Standard_OStream&          S);
 };
 
 #endif // _BRepFeat_HeaderFile

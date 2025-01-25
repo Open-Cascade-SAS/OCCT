@@ -26,7 +26,6 @@
 #include <Standard_Integer.hxx>
 class IGESSolid_VertexList;
 
-
 class IGESSolid_EdgeList;
 DEFINE_STANDARD_HANDLE(IGESSolid_EdgeList, IGESData_IGESEntity)
 
@@ -38,10 +37,8 @@ class IGESSolid_EdgeList : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESSolid_EdgeList();
-  
+
   //! This method is used to set the fields of the class
   //! EdgeList
   //! - curves           : the model space curves
@@ -55,59 +52,46 @@ public:
   //! corresponding vertex list
   //! raises exception if size of curves,startVertexList,startVertexIndex,
   //! endVertexList and endVertexIndex do no match
-  Standard_EXPORT void Init (const Handle(IGESData_HArray1OfIGESEntity)& curves, const Handle(IGESSolid_HArray1OfVertexList)& startVertexList, const Handle(TColStd_HArray1OfInteger)& startVertexIndex, const Handle(IGESSolid_HArray1OfVertexList)& endVertexList, const Handle(TColStd_HArray1OfInteger)& endVertexIndex);
-  
+  Standard_EXPORT void Init(const Handle(IGESData_HArray1OfIGESEntity)&  curves,
+                            const Handle(IGESSolid_HArray1OfVertexList)& startVertexList,
+                            const Handle(TColStd_HArray1OfInteger)&      startVertexIndex,
+                            const Handle(IGESSolid_HArray1OfVertexList)& endVertexList,
+                            const Handle(TColStd_HArray1OfInteger)&      endVertexIndex);
+
   //! returns the number of edges in the edge list
   Standard_EXPORT Standard_Integer NbEdges() const;
-  
+
   //! returns the num'th model space curve
   //! raises Exception if num <= 0 or num > NbEdges()
-  Standard_EXPORT Handle(IGESData_IGESEntity) Curve (const Standard_Integer num) const;
-  
+  Standard_EXPORT Handle(IGESData_IGESEntity) Curve(const Standard_Integer num) const;
+
   //! returns the num'th start vertex list
   //! raises Exception if num <= 0 or num > NbEdges()
-  Standard_EXPORT Handle(IGESSolid_VertexList) StartVertexList (const Standard_Integer num) const;
-  
+  Standard_EXPORT Handle(IGESSolid_VertexList) StartVertexList(const Standard_Integer num) const;
+
   //! returns the index of num'th start vertex in
   //! the corresponding start vertex list
   //! raises Exception if num <= 0 or num > NbEdges()
-  Standard_EXPORT Standard_Integer StartVertexIndex (const Standard_Integer num) const;
-  
+  Standard_EXPORT Standard_Integer StartVertexIndex(const Standard_Integer num) const;
+
   //! returns the num'th end vertex list
   //! raises Exception if num <= 0 or num > NbEdges()
-  Standard_EXPORT Handle(IGESSolid_VertexList) EndVertexList (const Standard_Integer num) const;
-  
+  Standard_EXPORT Handle(IGESSolid_VertexList) EndVertexList(const Standard_Integer num) const;
+
   //! returns the index of num'th end vertex in
   //! the corresponding end vertex list
   //! raises Exception if num <= 0 or num > NbEdges()
-  Standard_EXPORT Standard_Integer EndVertexIndex (const Standard_Integer num) const;
+  Standard_EXPORT Standard_Integer EndVertexIndex(const Standard_Integer num) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSolid_EdgeList,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_EdgeList, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(IGESData_HArray1OfIGESEntity) theCurves;
+  Handle(IGESData_HArray1OfIGESEntity)  theCurves;
   Handle(IGESSolid_HArray1OfVertexList) theStartVertexList;
-  Handle(TColStd_HArray1OfInteger) theStartVertexIndex;
+  Handle(TColStd_HArray1OfInteger)      theStartVertexIndex;
   Handle(IGESSolid_HArray1OfVertexList) theEndVertexList;
-  Handle(TColStd_HArray1OfInteger) theEndVertexIndex;
-
-
+  Handle(TColStd_HArray1OfInteger)      theEndVertexIndex;
 };
-
-
-
-
-
-
 
 #endif // _IGESSolid_EdgeList_HeaderFile

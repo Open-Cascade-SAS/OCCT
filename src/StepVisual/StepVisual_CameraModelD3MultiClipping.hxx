@@ -30,17 +30,18 @@ DEFINE_STANDARD_HANDLE(StepVisual_CameraModelD3MultiClipping, StepVisual_CameraM
 class StepVisual_CameraModelD3MultiClipping : public StepVisual_CameraModelD3
 {
 public:
-
-  
   //! Returns a CameraModelD3MultiClipping
   Standard_EXPORT StepVisual_CameraModelD3MultiClipping();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theName,
-                             const Handle(StepGeom_Axis2Placement3d)& theViewReferenceSystem,
-                             const Handle(StepVisual_ViewVolume)& thePerspectiveOfVolume,
-                             const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect)& theShapeClipping);
-  
-  void SetShapeClipping(const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect)& theShapeClipping)
+
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&  theName,
+    const Handle(StepGeom_Axis2Placement3d)& theViewReferenceSystem,
+    const Handle(StepVisual_ViewVolume)&     thePerspectiveOfVolume,
+    const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect)&
+      theShapeClipping);
+
+  void SetShapeClipping(
+    const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect)& theShapeClipping)
   {
     myShapeClipping = theShapeClipping;
   }
@@ -50,9 +51,8 @@ public:
     return myShapeClipping;
   }
   DEFINE_STANDARD_RTTIEXT(StepVisual_CameraModelD3MultiClipping, StepVisual_CameraModelD3)
-  
-private:
 
-Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect) myShapeClipping;
+private:
+  Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect) myShapeClipping;
 };
 #endif // _StepVisual_CameraModelD3MultiClipping_HeaderFile

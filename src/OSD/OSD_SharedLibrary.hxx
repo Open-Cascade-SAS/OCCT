@@ -1,5 +1,5 @@
 // Created on: 1994-08-30
-// Created by: J.P. TIRAULT    
+// Created by: J.P. TIRAULT
 // Copyright (c) 1994-1999 Matra Datavision
 // Copyright (c) 1999-2014 OPEN CASCADE SAS
 //
@@ -24,29 +24,26 @@
 #include <OSD_LoadMode.hxx>
 #include <OSD_Function.hxx>
 
-
 //! Interface to dynamic library loader.
 //! Provides tools to load a shared library
 //! and retrieve the address of an entry point.
-class OSD_SharedLibrary 
+class OSD_SharedLibrary
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates a SharedLibrary object with name NULL.
   Standard_EXPORT OSD_SharedLibrary();
-  
+
   //! Creates a SharedLibrary object with name aFilename.
   Standard_EXPORT OSD_SharedLibrary(const Standard_CString aFilename);
-  
+
   //! Sets a name associated to the shared object.
-  Standard_EXPORT void SetName (const Standard_CString aName);
-  
+  Standard_EXPORT void SetName(const Standard_CString aName);
+
   //! Returns the name associated to the shared object.
   Standard_EXPORT Standard_CString Name() const;
-  
+
   //! The DlOpen method provides an interface to the
   //! dynamic library loader to allow shared libraries
   //! to be loaded and called at runtime.  The DlOpen
@@ -67,14 +64,14 @@ public:
   //! If a NULL Filename is specified, DlOpen returns a handle
   //! for the main	executable, which allows access to dynamic
   //! symbols in the running program.
-  Standard_EXPORT Standard_Boolean DlOpen (const OSD_LoadMode Mode);
-  
+  Standard_EXPORT Standard_Boolean DlOpen(const OSD_LoadMode Mode);
+
   //! The dlsym function returns the address of the
   //! symbol name found in the shared library.
   //! If the symbol is not found, a NULL pointer is
   //! returned.
-  Standard_EXPORT OSD_Function DlSymb (const Standard_CString Name) const;
-  
+  Standard_EXPORT OSD_Function DlSymb(const Standard_CString Name) const;
+
   //! Deallocates the address space for the library
   //! corresponding to the shared object.
   //! If any user function continues to call a symbol
@@ -82,42 +79,21 @@ public:
   //! that has been since been deallocated by DlClose,
   //! the results are undefined.
   Standard_EXPORT void DlClose() const;
-  
+
   //! The dlerror function returns a string describing
   //! the last error that occurred from
   //! a call to DlOpen, DlClose or DlSym.
   Standard_EXPORT Standard_CString DlError() const;
-  
+
   //! Frees memory allocated.
   Standard_EXPORT void Destroy();
-~OSD_SharedLibrary()
-{
-  Destroy();
-}
 
-
-
+  ~OSD_SharedLibrary() { Destroy(); }
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Standard_Address myHandle;
+  Standard_Address    myHandle;
   Standard_PCharacter myName;
-
-
 };
-
-
-
-
-
-
 
 #endif // _OSD_SharedLibrary_HeaderFile

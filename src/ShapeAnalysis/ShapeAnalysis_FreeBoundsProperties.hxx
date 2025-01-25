@@ -27,7 +27,6 @@
 class ShapeAnalysis_FreeBoundData;
 class TopoDS_Wire;
 
-
 //! This class is intended to calculate shape free bounds
 //! properties.
 //! This class provides the following functionalities:
@@ -47,32 +46,42 @@ class TopoDS_Wire;
 //!
 //! Properties of each contour are stored in the data structure
 //! ShapeAnalysis_FreeBoundData.
-class ShapeAnalysis_FreeBoundsProperties 
+class ShapeAnalysis_FreeBoundsProperties
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_EXPORT ShapeAnalysis_FreeBoundsProperties();
-  
+
   //! Creates the object and calls corresponding Init.
   //! <shape> should be a compound of faces.
-  Standard_EXPORT ShapeAnalysis_FreeBoundsProperties(const TopoDS_Shape& shape, const Standard_Real tolerance, const Standard_Boolean splitclosed = Standard_False, const Standard_Boolean splitopen = Standard_False);
-  
+  Standard_EXPORT ShapeAnalysis_FreeBoundsProperties(
+    const TopoDS_Shape&    shape,
+    const Standard_Real    tolerance,
+    const Standard_Boolean splitclosed = Standard_False,
+    const Standard_Boolean splitopen   = Standard_False);
+
   //! Creates the object and calls corresponding Init.
   //! <shape> should be a compound of shells.
-  Standard_EXPORT ShapeAnalysis_FreeBoundsProperties(const TopoDS_Shape& shape, const Standard_Boolean splitclosed = Standard_False, const Standard_Boolean splitopen = Standard_False);
-  
+  Standard_EXPORT ShapeAnalysis_FreeBoundsProperties(
+    const TopoDS_Shape&    shape,
+    const Standard_Boolean splitclosed = Standard_False,
+    const Standard_Boolean splitopen   = Standard_False);
+
   //! Initializes the object with given parameters.
   //! <shape> should be a compound of faces.
-  Standard_EXPORT void Init (const TopoDS_Shape& shape, const Standard_Real tolerance, const Standard_Boolean splitclosed = Standard_False, const Standard_Boolean splitopen = Standard_False);
-  
+  Standard_EXPORT void Init(const TopoDS_Shape&    shape,
+                            const Standard_Real    tolerance,
+                            const Standard_Boolean splitclosed = Standard_False,
+                            const Standard_Boolean splitopen   = Standard_False);
+
   //! Initializes the object with given parameters.
   //! <shape> should be a compound of shells.
-  Standard_EXPORT void Init (const TopoDS_Shape& shape, const Standard_Boolean splitclosed = Standard_False, const Standard_Boolean splitopen = Standard_False);
-  
+  Standard_EXPORT void Init(const TopoDS_Shape&    shape,
+                            const Standard_Boolean splitclosed = Standard_False,
+                            const Standard_Boolean splitopen   = Standard_False);
+
   //! Builds and analyzes free bounds of the shape.
   //! First calls ShapeAnalysis_FreeBounds for building free
   //! bounds.
@@ -84,79 +93,67 @@ public:
   //! - notches on the contour and for each notch
   //! - maximum width of the notch.
   Standard_EXPORT Standard_Boolean Perform();
-  
+
   //! Returns True if shape is loaded
-    Standard_Boolean IsLoaded() const;
-  
+  Standard_Boolean IsLoaded() const;
+
   //! Returns shape
-    TopoDS_Shape Shape() const;
-  
+  TopoDS_Shape Shape() const;
+
   //! Returns tolerance
-    Standard_Real Tolerance() const;
-  
+  Standard_Real Tolerance() const;
+
   //! Returns number of free bounds
-    Standard_Integer NbFreeBounds() const;
-  
+  Standard_Integer NbFreeBounds() const;
+
   //! Returns number of closed free bounds
-    Standard_Integer NbClosedFreeBounds() const;
-  
+  Standard_Integer NbClosedFreeBounds() const;
+
   //! Returns number of open free bounds
-    Standard_Integer NbOpenFreeBounds() const;
-  
+  Standard_Integer NbOpenFreeBounds() const;
+
   //! Returns all closed free bounds
-    Handle(ShapeAnalysis_HSequenceOfFreeBounds) ClosedFreeBounds() const;
-  
+  Handle(ShapeAnalysis_HSequenceOfFreeBounds) ClosedFreeBounds() const;
+
   //! Returns all open free bounds
-    Handle(ShapeAnalysis_HSequenceOfFreeBounds) OpenFreeBounds() const;
-  
+  Handle(ShapeAnalysis_HSequenceOfFreeBounds) OpenFreeBounds() const;
+
   //! Returns properties of closed free bound specified by its rank
   //! number
-    Handle(ShapeAnalysis_FreeBoundData) ClosedFreeBound (const Standard_Integer index) const;
-  
+  Handle(ShapeAnalysis_FreeBoundData) ClosedFreeBound(const Standard_Integer index) const;
+
   //! Returns properties of open free bound specified by its rank
   //! number
-    Handle(ShapeAnalysis_FreeBoundData) OpenFreeBound (const Standard_Integer index) const;
-  
+  Handle(ShapeAnalysis_FreeBoundData) OpenFreeBound(const Standard_Integer index) const;
+
   Standard_EXPORT Standard_Boolean DispatchBounds();
-  
-  Standard_EXPORT Standard_Boolean CheckContours (const Standard_Real prec = 0.0);
-  
-  Standard_EXPORT Standard_Boolean CheckNotches (const Standard_Real prec = 0.0);
-  
-  Standard_EXPORT Standard_Boolean CheckNotches (Handle(ShapeAnalysis_FreeBoundData)& fbData, const Standard_Real prec = 0.0);
-  
-  Standard_EXPORT Standard_Boolean CheckNotches (const TopoDS_Wire& freebound, const Standard_Integer num, TopoDS_Wire& notch, Standard_Real& distMax, const Standard_Real prec = 0.0);
-  
-  Standard_EXPORT Standard_Boolean FillProperties (Handle(ShapeAnalysis_FreeBoundData)& fbData, const Standard_Real prec = 0.0);
 
+  Standard_EXPORT Standard_Boolean CheckContours(const Standard_Real prec = 0.0);
 
+  Standard_EXPORT Standard_Boolean CheckNotches(const Standard_Real prec = 0.0);
 
+  Standard_EXPORT Standard_Boolean CheckNotches(Handle(ShapeAnalysis_FreeBoundData)& fbData,
+                                                const Standard_Real                  prec = 0.0);
+
+  Standard_EXPORT Standard_Boolean CheckNotches(const TopoDS_Wire&     freebound,
+                                                const Standard_Integer num,
+                                                TopoDS_Wire&           notch,
+                                                Standard_Real&         distMax,
+                                                const Standard_Real    prec = 0.0);
+
+  Standard_EXPORT Standard_Boolean FillProperties(Handle(ShapeAnalysis_FreeBoundData)& fbData,
+                                                  const Standard_Real                  prec = 0.0);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  TopoDS_Shape myShape;
-  Standard_Real myTolerance;
-  Standard_Boolean mySplitClosed;
-  Standard_Boolean mySplitOpen;
+  TopoDS_Shape                                myShape;
+  Standard_Real                               myTolerance;
+  Standard_Boolean                            mySplitClosed;
+  Standard_Boolean                            mySplitOpen;
   Handle(ShapeAnalysis_HSequenceOfFreeBounds) myClosedFreeBounds;
   Handle(ShapeAnalysis_HSequenceOfFreeBounds) myOpenFreeBounds;
-
-
 };
 
-
 #include <ShapeAnalysis_FreeBoundsProperties.lxx>
-
-
-
-
 
 #endif // _ShapeAnalysis_FreeBoundsProperties_HeaderFile

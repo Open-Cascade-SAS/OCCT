@@ -15,37 +15,31 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : More
-//purpose  : 
+// function : More
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean  Sweep_NumShapeIterator::More()const 
+inline Standard_Boolean Sweep_NumShapeIterator::More() const
 {
   return myMore;
 }
 
-
 //=======================================================================
-//function : Value
-//purpose  : 
+// function : Value
+// purpose  :
 //=======================================================================
 
-inline const Sweep_NumShape&  Sweep_NumShapeIterator::Value()const 
+inline const Sweep_NumShape& Sweep_NumShapeIterator::Value() const
 {
   return myCurrentNumShape;
 }
 
-
 //=======================================================================
-//function : Orientation
-//purpose  : 
+// function : Orientation
+// purpose  :
 //=======================================================================
 
-inline TopAbs_Orientation  Sweep_NumShapeIterator::Orientation()const 
+inline TopAbs_Orientation Sweep_NumShapeIterator::Orientation() const
 {
   return myCurrentOrientation;
 }
-
-
-
-

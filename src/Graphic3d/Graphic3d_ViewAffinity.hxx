@@ -24,34 +24,29 @@
 class Graphic3d_ViewAffinity : public Standard_Transient
 {
 public:
-
   //! Empty constructor.
-  Graphic3d_ViewAffinity()
-  {
-    SetVisible (Standard_True);
-  }
+  Graphic3d_ViewAffinity() { SetVisible(Standard_True); }
 
   //! Return visibility flag.
-  bool IsVisible (const Standard_Integer theViewId) const
+  bool IsVisible(const Standard_Integer theViewId) const
   {
     const unsigned int aBit = 1 << theViewId;
     return (myMask & aBit) != 0;
   }
 
   //! Setup visibility flag for all views.
-  void SetVisible (const Standard_Boolean theIsVisible)
+  void SetVisible(const Standard_Boolean theIsVisible)
   {
-    ::memset (&myMask, theIsVisible ? 0xFF : 0x00, sizeof(myMask));
+    ::memset(&myMask, theIsVisible ? 0xFF : 0x00, sizeof(myMask));
   }
 
   //! Setup visibility flag.
-  void SetVisible (const Standard_Integer theViewId,
-                   const bool             theIsVisible)
+  void SetVisible(const Standard_Integer theViewId, const bool theIsVisible)
   {
     const unsigned int aBit = 1 << theViewId;
     if (theIsVisible)
     {
-      myMask |=  aBit;
+      myMask |= aBit;
     }
     else
     {
@@ -60,16 +55,13 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 private:
-
   unsigned int myMask; //!< affinity mask
 
 public:
-
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_ViewAffinity,Standard_Transient)
-
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_ViewAffinity, Standard_Transient)
 };
 
 DEFINE_STANDARD_HANDLE(Graphic3d_ViewAffinity, Standard_Transient)

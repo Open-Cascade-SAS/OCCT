@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <MoniTool_DataMapIteratorOfDataMapOfTimer.hxx>
 #include <MoniTool_DataMapOfTimer.hxx>
 #include <MoniTool_Timer.hxx>
@@ -20,114 +19,118 @@
 #include <Standard_Type.hxx>
 
 #include <stdio.h>
-IMPLEMENT_STANDARD_RTTIEXT(MoniTool_Timer,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(MoniTool_Timer, Standard_Transient)
 
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-void MoniTool_Timer::Dump(Standard_OStream &ostr)
+//=================================================================================================
+
+void MoniTool_Timer::Dump(Standard_OStream& ostr)
 {
   Standard_Integer hours, minutes;
-  Standard_Real seconds, CPUtime, user, system;
-    
-  myTimer.Show(seconds,minutes,hours,CPUtime);
-  myTimer.OSD_Chronometer::Show(user,system);
-      
-  Standard_Real elapsed = seconds + minutes*60 + hours*3600;
-  
+  Standard_Real    seconds, CPUtime, user, system;
+
+  myTimer.Show(seconds, minutes, hours, CPUtime);
+  myTimer.OSD_Chronometer::Show(user, system);
+
+  Standard_Real elapsed = seconds + minutes * 60 + hours * 3600;
+
   char buff[1024];
-  Sprintf ( buff, "Elapsed:%6.1f sec, CPU User:%9.4f sec, CPU Sys:%9.4f sec, hits: %d",
-                   elapsed, user, system, myCount );
-    
+  Sprintf(buff,
+          "Elapsed:%6.1f sec, CPU User:%9.4f sec, CPU Sys:%9.4f sec, hits: %d",
+          elapsed,
+          user,
+          system,
+          myCount);
+
   ostr << buff << std::endl;
 }
 
 //=======================================================================
-//function : Dictionary
-//purpose  : Return DataMapOfTimer
+// function : Dictionary
+// purpose  : Return DataMapOfTimer
 //=======================================================================
 
-MoniTool_DataMapOfTimer& MoniTool_Timer::Dictionary () 
+MoniTool_DataMapOfTimer& MoniTool_Timer::Dictionary()
 {
   static MoniTool_DataMapOfTimer dic;
   return dic;
 }
 
 //=======================================================================
-//function : Timer
-//purpose  : Return handle for timer from map
+// function : Timer
+// purpose  : Return handle for timer from map
 //=======================================================================
 
-Handle(MoniTool_Timer) MoniTool_Timer::Timer(const Standard_CString name) 
+Handle(MoniTool_Timer) MoniTool_Timer::Timer(const Standard_CString name)
 {
-//  AmendAccess();
-  MoniTool_DataMapOfTimer &dic = Dictionary();
-  if ( dic.IsBound(name) )
+  //  AmendAccess();
+  MoniTool_DataMapOfTimer& dic = Dictionary();
+  if (dic.IsBound(name))
     return dic.Find(name);
   Handle(MoniTool_Timer) MT = new MoniTool_Timer;
   MT->Timer().Reset();
-  dic.Bind(name,MT);
+  dic.Bind(name, MT);
   return MT;
 }
 
 //=======================================================================
-//function : ClearTimers
-//purpose  : Clears all the map of timers
+// function : ClearTimers
+// purpose  : Clears all the map of timers
 //=======================================================================
 
-void MoniTool_Timer::ClearTimers() 
+void MoniTool_Timer::ClearTimers()
 {
   Dictionary().Clear();
 }
 
 //=======================================================================
-//function : DumpTimers
-//purpose  : Shows all timer from Dictionary
+// function : DumpTimers
+// purpose  : Shows all timer from Dictionary
 //=======================================================================
 
-void MoniTool_Timer::DumpTimers (Standard_OStream &ostr) 
+void MoniTool_Timer::DumpTimers(Standard_OStream& ostr)
 {
-  MoniTool_DataMapOfTimer &dic = Dictionary();
+  MoniTool_DataMapOfTimer&                 dic = Dictionary();
   MoniTool_DataMapIteratorOfDataMapOfTimer iter(dic);
 
   Standard_Integer NbTimers = dic.Extent();
 
   ostr << "DUMP OF TIMERS:" << std::endl;
-  Standard_CString *keys = new Standard_CString[NbTimers];
-  Standard_Integer i=0;
-  for( ; iter.More() && i < NbTimers; iter.Next()) {
+  Standard_CString* keys = new Standard_CString[NbTimers];
+  Standard_Integer  i    = 0;
+  for (; iter.More() && i < NbTimers; iter.Next())
+  {
     keys[i++] = iter.Key();
   }
-  for(i=0; i < NbTimers; i++) {
+  for (i = 0; i < NbTimers; i++)
+  {
     Standard_Integer ntmp = 0;
     Standard_CString stmp = 0;
-    for(Standard_Integer j=0; j < NbTimers; j++) {
-      if ( keys[j] && ( ! stmp || strcmp(stmp,keys[j]) > 0 ) ) {
-        ntmp=j;
-        stmp=keys[j];
+    for (Standard_Integer j = 0; j < NbTimers; j++)
+    {
+      if (keys[j] && (!stmp || strcmp(stmp, keys[j]) > 0))
+      {
+        ntmp = j;
+        stmp = keys[j];
       }
     }
-    //Handle(MoniTool_Timer) MT = iter.Value();    
+    // Handle(MoniTool_Timer) MT = iter.Value();
     char buff[1024];
-    Sprintf ( buff, "%-20s\t", stmp );
+    Sprintf(buff, "%-20s\t", stmp);
     ostr << "TIMER: " << buff;
-    //iter.Value()->Dump ( ostr );
+    // iter.Value()->Dump ( ostr );
     Timer(stmp)->Dump(ostr);
-    keys[ntmp]=0;
-    if ( Timer(stmp)->IsRunning() ) std::cerr << "Warning: timer " << stmp << " is running" << std::endl;
+    keys[ntmp] = 0;
+    if (Timer(stmp)->IsRunning())
+      std::cerr << "Warning: timer " << stmp << " is running" << std::endl;
   }
   delete[] keys;
 }
 
-//=======================================================================
-//function : ComputeAmendments
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-static Standard_Real amAccess=0., amInternal=0., amExternal=0., amError=0.;
+static Standard_Real amAccess = 0., amInternal = 0., amExternal = 0., amError = 0.;
 
-void MoniTool_Timer::ComputeAmendments ()
+void MoniTool_Timer::ComputeAmendments()
 {
   const Standard_Integer NBTESTS = 100000;
 
@@ -144,74 +147,78 @@ void MoniTool_Timer::ComputeAmendments ()
   MoniTool_Timer::Timer("_mt_amend_t1_")->Reset();
   MoniTool_Timer::Timer("_mt_amend_t2_")->Reset();
   MoniTool_Timer::Timer("_mt_amend_t3_")->Reset();
-  
+
   // reference test
   MT0->Start();
-  for ( i=1; i <= NBTESTS; i++ ) {
-    for ( int k=1; k <= 100; k++ ) Sqrt ( i+k );
+  for (i = 1; i <= NBTESTS; i++)
+  {
+    for (int k = 1; k <= 100; k++)
+      Sqrt(i + k);
   }
   MT0->Stop();
-  
+
   // test for direct access
   Handle(MoniTool_Timer) MT = MoniTool_Timer::Timer("_mt_amend_t1_");
   MT1->Start();
-  for ( i=1; i <= NBTESTS; i++ ) {
+  for (i = 1; i <= NBTESTS; i++)
+  {
     MT->Start();
-    for ( int k=1; k <= 100; k++ ) Sqrt ( i+k );
+    for (int k = 1; k <= 100; k++)
+      Sqrt(i + k);
     MT->Stop();
   }
   MT1->Stop();
 
   // test for using Sentry
   MT2->Start();
-  for ( i=1; i <= NBTESTS; i++ ) {
-    MoniTool_TimerSentry TS ("_mt_amend_t2_");
-    for ( int k=1; k <= 100; k++ ) Sqrt ( i+k );
+  for (i = 1; i <= NBTESTS; i++)
+  {
+    MoniTool_TimerSentry TS("_mt_amend_t2_");
+    for (int k = 1; k <= 100; k++)
+      Sqrt(i + k);
   }
   MT2->Stop();
 
   // test for access by name
   MT3->Start();
-  for ( i=1; i <= NBTESTS; i++ ) {
+  for (i = 1; i <= NBTESTS; i++)
+  {
     MoniTool_Timer::Start("_mt_amend_t3_");
-    for ( int k=1; k <= 100; k++ ) Sqrt ( i+k );
+    for (int k = 1; k <= 100; k++)
+      Sqrt(i + k);
     MoniTool_Timer::Stop("_mt_amend_t3_");
   }
   MT3->Stop();
-  
+
   // analyze results
   Standard_Real cpu0, cpu1, cpu2, cpu3, cput1, cput2, cput3;
-  cpu0 = MoniTool_Timer::Timer("_mt_amend_0_")->CPU();
-  cpu1 = MoniTool_Timer::Timer("_mt_amend_1_")->CPU();
+  cpu0  = MoniTool_Timer::Timer("_mt_amend_0_")->CPU();
+  cpu1  = MoniTool_Timer::Timer("_mt_amend_1_")->CPU();
   cput1 = MT->CPU();
-  cpu2 = MoniTool_Timer::Timer("_mt_amend_2_")->CPU();
+  cpu2  = MoniTool_Timer::Timer("_mt_amend_2_")->CPU();
   cput2 = MoniTool_Timer::Timer("_mt_amend_t2_")->CPU();
-  cpu3 = MoniTool_Timer::Timer("_mt_amend_3_")->CPU();
+  cpu3  = MoniTool_Timer::Timer("_mt_amend_3_")->CPU();
   cput3 = MoniTool_Timer::Timer("_mt_amend_t3_")->CPU();
-  
-  amExternal += ( cpu1  - cpu0 ) / NBTESTS;
-  amInternal += ( cput1 - cpu0 ) / NBTESTS;
-  amAccess   += ( 0.5 * ( cpu3 - cpu1 ) ) / NBTESTS;
-  amError     = Abs ( cpu1 + cpu3 - 2 * cpu2 ) / NBTESTS;
-  
+
+  amExternal += (cpu1 - cpu0) / NBTESTS;
+  amInternal += (cput1 - cpu0) / NBTESTS;
+  amAccess += (0.5 * (cpu3 - cpu1)) / NBTESTS;
+  amError = Abs(cpu1 + cpu3 - 2 * cpu2) / NBTESTS;
+
   std::cout << "CPU 0: " << cpu0 << std::endl;
   std::cout << "CPU 1: " << cpu1 << " INTERNAL: " << cput1 << std::endl;
   std::cout << "CPU 2: " << cpu2 << " INTERNAL: " << cput2 << std::endl;
   std::cout << "CPU 3: " << cpu3 << " INTERNAL: " << cput3 << std::endl;
-  std::cout << "Access: " << amAccess << ", External: " << amExternal << 
-          ", Internal: " << amInternal << ", Error: " << amError << std::endl;
-  
+  std::cout << "Access: " << amAccess << ", External: " << amExternal
+            << ", Internal: " << amInternal << ", Error: " << amError << std::endl;
 }
-  
-//=======================================================================
-//function : GetAmendments
-//purpose  : 
-//=======================================================================
 
-void MoniTool_Timer::GetAmendments (Standard_Real &access, 
-                                    Standard_Real &internal, 
-                                    Standard_Real &external, 
-                                    Standard_Real &error10)
+//=================================================================================================
+
+void MoniTool_Timer::GetAmendments(Standard_Real& access,
+                                   Standard_Real& internal,
+                                   Standard_Real& external,
+                                   Standard_Real& error10)
 {
   access   = amAccess;
   internal = amInternal;
@@ -219,43 +226,44 @@ void MoniTool_Timer::GetAmendments (Standard_Real &access,
   error10  = amError;
 }
 
-//=======================================================================
-//function : AmendAccess
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 static Handle(MoniTool_Timer) myActive;
-     
-void MoniTool_Timer::AmendAccess ()
+
+void MoniTool_Timer::AmendAccess()
 {
   Standard_Real amend = amAccess;
-  for ( Handle(MoniTool_Timer) act = myActive; ! act.IsNull(); act = act->myNext )
+  for (Handle(MoniTool_Timer) act = myActive; !act.IsNull(); act = act->myNext)
     act->myAmend += amend;
 }
 
-void MoniTool_Timer::AmendStart ()
+void MoniTool_Timer::AmendStart()
 {
   Standard_Real amend = amExternal;
-  for ( Handle(MoniTool_Timer) act = myActive; ! act.IsNull(); act = act->myNext )
+  for (Handle(MoniTool_Timer) act = myActive; !act.IsNull(); act = act->myNext)
     act->myAmend += amend;
   myAmend += amInternal;
 
   // add to list
-  if ( ! myActive.IsNull() ) {
+  if (!myActive.IsNull())
+  {
     myActive->myPrev = this;
-    myNext = myActive;
+    myNext           = myActive;
   }
   myActive = this;
 }
 
-void MoniTool_Timer::AmendStop ()
-{ 
-  Handle (MoniTool_Timer) thisActive(this);
-  if ( myActive == thisActive )  myActive = myNext;
-//    if ( myActive == this )  myActive = myNext;
- 
-  if ( ! myPrev.IsNull() ) myPrev->myNext = myNext;
-  if ( ! myNext.IsNull() ) myNext->myPrev = myPrev;
- 
+void MoniTool_Timer::AmendStop()
+{
+  Handle(MoniTool_Timer) thisActive(this);
+  if (myActive == thisActive)
+    myActive = myNext;
+  //    if ( myActive == this )  myActive = myNext;
+
+  if (!myPrev.IsNull())
+    myPrev->myNext = myNext;
+  if (!myNext.IsNull())
+    myNext->myPrev = myPrev;
+
   myNext = myPrev = 0;
 }

@@ -14,22 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <DBRep_Edge.hxx>
 #include <Draw_Color.hxx>
 #include <Standard_Type.hxx>
 #include <TopoDS_Edge.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(DBRep_Edge,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(DBRep_Edge, Standard_Transient)
 
-//=======================================================================
-//function : DBRep_Edge
-//purpose  : 
-//=======================================================================
-DBRep_Edge::DBRep_Edge(const TopoDS_Edge& E, const Draw_Color& C) :
-       myEdge(E),
-       myColor(C)
+//=================================================================================================
+
+DBRep_Edge::DBRep_Edge(const TopoDS_Edge& E, const Draw_Color& C)
+    : myEdge(E),
+      myColor(C)
 {
 }
-
-

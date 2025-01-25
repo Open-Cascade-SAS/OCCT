@@ -24,7 +24,6 @@ class OSD_File;
 class XCAFDoc_NoteBinData : public XCAFDoc_Note
 {
 public:
-
   DEFINE_STANDARD_RTTIEXT(XCAFDoc_NoteBinData, XCAFDoc_Note)
 
   //! Returns default attribute GUID
@@ -44,12 +43,13 @@ public:
   //! \param[in]  theMIMEtype  - MIME type of the file.
   //! \param[in]  theFile      - input binary file.
   //! \return A handle to the attribute instance.
-  Standard_EXPORT static Handle(XCAFDoc_NoteBinData) Set(const TDF_Label&                  theLabel,
-                                                         const TCollection_ExtendedString& theUserName,
-                                                         const TCollection_ExtendedString& theTimeStamp,
-                                                         const TCollection_ExtendedString& theTitle,
-                                                         const TCollection_AsciiString&    theMIMEtype,
-                                                         OSD_File&                         theFile);
+  Standard_EXPORT static Handle(XCAFDoc_NoteBinData) Set(
+    const TDF_Label&                  theLabel,
+    const TCollection_ExtendedString& theUserName,
+    const TCollection_ExtendedString& theTimeStamp,
+    const TCollection_ExtendedString& theTitle,
+    const TCollection_AsciiString&    theMIMEtype,
+    OSD_File&                         theFile);
 
   //! Create (if not exist) a binary note byte data array.
   //! \param[in]  theLabel     - label to add the attribute.
@@ -59,12 +59,13 @@ public:
   //! \param[in]  theMIMEtype  - MIME type of data.
   //! \param[in]  theData      - byte data array.
   //! \return A handle to the attribute instance.
-  Standard_EXPORT static Handle(XCAFDoc_NoteBinData) Set(const TDF_Label&                     theLabel,
-                                                         const TCollection_ExtendedString&    theUserName,
-                                                         const TCollection_ExtendedString&    theTimeStamp,
-                                                         const TCollection_ExtendedString&    theTitle,
-                                                         const TCollection_AsciiString&       theMIMEtype,
-                                                         const Handle(TColStd_HArray1OfByte)& theData);
+  Standard_EXPORT static Handle(XCAFDoc_NoteBinData) Set(
+    const TDF_Label&                     theLabel,
+    const TCollection_ExtendedString&    theUserName,
+    const TCollection_ExtendedString&    theTimeStamp,
+    const TCollection_ExtendedString&    theTitle,
+    const TCollection_AsciiString&       theMIMEtype,
+    const Handle(TColStd_HArray1OfByte)& theData);
 
   //! @}
 
@@ -96,7 +97,7 @@ public:
   const TCollection_ExtendedString& Title() const { return myTitle; }
 
   //! Returns data MIME type.
-  const TCollection_AsciiString& MIMEtype() const { return myMIMEtype;  }
+  const TCollection_AsciiString& MIMEtype() const { return myMIMEtype; }
 
   //! Size of data in bytes.
   Standard_Integer Size() const { return (!myData.IsNull() ? myData->Length() : 0); }
@@ -105,9 +106,8 @@ public:
   const Handle(TColStd_HArray1OfByte)& Data() const { return myData; }
 
 public:
-
   // Overrides TDF_Attribute virtuals
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID&  ID() const Standard_OVERRIDE;
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
   Standard_EXPORT void Restore(const Handle(TDF_Attribute)& theAttrFrom) Standard_OVERRIDE;
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       theAttrInto,
@@ -115,11 +115,9 @@ public:
   Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theOS) const Standard_OVERRIDE;
 
 protected:
-
   TCollection_ExtendedString    myTitle;    ///< Note title.
   TCollection_AsciiString       myMIMEtype; ///< MIME type of data.
   Handle(TColStd_HArray1OfByte) myData;     ///< Byte data array.
-
 };
 
 DEFINE_STANDARD_HANDLE(XCAFDoc_NoteBinData, XCAFDoc_Note)

@@ -28,7 +28,7 @@ class Message_ProgressScope;
 //! This includes progress indication and user break mechanisms.
 //!
 //! The progress indicator controls the progress scale with range from 0 to 1.
-//! 
+//!
 //! Method Start() should be called once, at the top level of the call stack,
 //! to reset progress indicator and get access to the root range:
 //!
@@ -41,13 +41,13 @@ class Message_ProgressScope;
 //! use the class Message_ProgressScope that provides iterator-like
 //! interface for incrementing progress; see documentation of that
 //! class for details.
-//! The object of class Message_ProgressRange will automatically advance 
+//! The object of class Message_ProgressRange will automatically advance
 //! the indicator if it is not passed to any Message_ProgressScope.
 //!
-//! The progress indicator supports concurrent processing and 
+//! The progress indicator supports concurrent processing and
 //! can be used in multithreaded applications.
 //!
-//! The derived class should be created to connect this interface to 
+//! The derived class should be created to connect this interface to
 //! actual implementation of progress indicator, to take care of visualization
 //! of the progress (e.g. show total position at the graphical bar,
 //! print scopes in text mode, or else), and for implementation
@@ -70,8 +70,8 @@ public:
   //! If argument is non-null handle, returns theProgress->Start().
   //! Otherwise, returns dummy range that can be safely used in the algorithms
   //! but not bound to progress indicator.
-  Standard_EXPORT static Message_ProgressRange Start
-                      (const Handle(Message_ProgressIndicator)& theProgress);
+  Standard_EXPORT static Message_ProgressRange Start(
+    const Handle(Message_ProgressIndicator)& theProgress);
 
 protected:
   //!@name Virtual methods to be defined by descendant.
@@ -84,10 +84,7 @@ protected:
   //! as possible to avoid delaying the calling algorithm.
   //!
   //! Default implementation returns False.
-  virtual Standard_Boolean UserBreak()
-  {
-    return Standard_False;
-  }
+  virtual Standard_Boolean UserBreak() { return Standard_False; }
 
   //! Virtual method to be defined by descendant.
   //! Should update presentation of the progress indicator.
@@ -101,65 +98,58 @@ protected:
   //! It is recommended to update (redraw, output etc.) only if progress is
   //! advanced by at least 1% from previous update.
   //!
-  //! Flag isForce is intended for forcing update in case if it is required 
-  //! at particular step of the algorithm; all calls to it from inside the core 
+  //! Flag isForce is intended for forcing update in case if it is required
+  //! at particular step of the algorithm; all calls to it from inside the core
   //! mechanism (Message_Progress... classes) are done with this flag equal to False.
   //!
   //! The parameter theScope is the current scope being advanced;
   //! it can be used to show the names and ranges of the on-going scope and
   //! its parents, providing more visibility of the current stage of the process.
-  virtual void Show (const Message_ProgressScope& theScope, 
-                     const Standard_Boolean isForce) = 0;
+  virtual void Show(const Message_ProgressScope& theScope, const Standard_Boolean isForce) = 0;
 
   //! Call-back method called by Start(), can be redefined by descendants
   //! if some actions are needed when the indicator is restarted.
   virtual void Reset() {}
-  
+
 public:
   //!@name Auxiliary methods
 
   //! Returns total progress position ranged from 0 to 1.
   //! Should not be called concurrently while the progress is advancing,
   //! except from implementation of method Show().
-  Standard_Real GetPosition() const
-  {
-    return myPosition;
-  }
+  Standard_Real GetPosition() const { return myPosition; }
 
   //! Destructor
   Standard_EXPORT ~Message_ProgressIndicator();
 
 protected:
-  
   //! Constructor
   Standard_EXPORT Message_ProgressIndicator();
 
 private:
-
-  //! Increment the progress value by the specified step, 
+  //! Increment the progress value by the specified step,
   //! then calls Show() to update presentation.
   //! The parameter theScope is reference to the caller object;
   //! it is passed to Show() where can be used to track context of the process.
-  void Increment (const Standard_Real theStep, const Message_ProgressScope& theScope);
+  void Increment(const Standard_Real theStep, const Message_ProgressScope& theScope);
 
 private:
-
-  Standard_Real myPosition;            //!< Total progress position ranged from 0 to 1
-  Standard_Mutex myMutex;              //!< Protection of myPosition from concurrent increment
-  Message_ProgressScope* myRootScope;  //!< The root progress scope
+  Standard_Real          myPosition;  //!< Total progress position ranged from 0 to 1
+  Standard_Mutex         myMutex;     //!< Protection of myPosition from concurrent increment
+  Message_ProgressScope* myRootScope; //!< The root progress scope
 
 private:
-  friend class Message_ProgressScope;  //!< Friend: can call Increment()
-  friend class Message_ProgressRange;  //!< Friend: can call Increment()
+  friend class Message_ProgressScope; //!< Friend: can call Increment()
+  friend class Message_ProgressRange; //!< Friend: can call Increment()
 };
 
 #include <Message_ProgressScope.hxx>
 
 //=======================================================================
-//function : Increment
-//purpose  :
+// function : Increment
+// purpose  :
 //=======================================================================
-inline void Message_ProgressIndicator::Increment(const Standard_Real theStep,
+inline void Message_ProgressIndicator::Increment(const Standard_Real          theStep,
                                                  const Message_ProgressScope& theScope)
 {
   // protect incrementation by mutex to avoid problems in multithreaded scenarios

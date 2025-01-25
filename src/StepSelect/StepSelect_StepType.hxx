@@ -28,7 +28,6 @@ class Interface_Protocol;
 class Standard_Transient;
 class Interface_InterfaceModel;
 
-
 class StepSelect_StepType;
 DEFINE_STANDARD_HANDLE(StepSelect_StepType, IFSelect_Signature)
 
@@ -45,44 +44,28 @@ class StepSelect_StepType : public IFSelect_Signature
 {
 
 public:
-
-  
   //! Creates a Signature for Step Type. Protocol is undefined here,
   //! hence no Signature may yet be produced. The StepType signature
   //! requires a Protocol before working
   Standard_EXPORT StepSelect_StepType();
-  
+
   //! Sets the StepType signature to work with a Protocol : this
   //! initialises the library
-  Standard_EXPORT void SetProtocol (const Handle(Interface_Protocol)& proto);
-  
+  Standard_EXPORT void SetProtocol(const Handle(Interface_Protocol)& proto);
+
   //! Returns the Step Type defined from the Protocol (see above).
   //! If <ent> is not recognised, produces "..NOT FROM SCHEMA <name>.."
-  Standard_EXPORT Standard_CString Value (const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_CString
+    Value(const Handle(Standard_Transient)&       ent,
+          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepSelect_StepType,IFSelect_Signature)
+  DEFINE_STANDARD_RTTIEXT(StepSelect_StepType, IFSelect_Signature)
 
 protected:
-
-
   StepData_WriterLib thelib;
 
-
 private:
-
-
   Handle(StepData_Protocol) theproto;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepSelect_StepType_HeaderFile

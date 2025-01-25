@@ -51,12 +51,12 @@
 //! removed by a Boolean operation.
 enum TNaming_Evolution
 {
-TNaming_PRIMITIVE,
-TNaming_GENERATED,
-TNaming_MODIFY,
-TNaming_DELETE,
-TNaming_REPLACE,
-TNaming_SELECTED
+  TNaming_PRIMITIVE,
+  TNaming_GENERATED,
+  TNaming_MODIFY,
+  TNaming_DELETE,
+  TNaming_REPLACE,
+  TNaming_SELECTED
 };
 
 #endif // _TNaming_Evolution_HeaderFile

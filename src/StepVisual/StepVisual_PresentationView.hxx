@@ -22,41 +22,20 @@
 
 #include <StepVisual_PresentationRepresentation.hxx>
 
-
 class StepVisual_PresentationView;
 DEFINE_STANDARD_HANDLE(StepVisual_PresentationView, StepVisual_PresentationRepresentation)
-
 
 class StepVisual_PresentationView : public StepVisual_PresentationRepresentation
 {
 
 public:
-
-  
   //! Returns a PresentationView
   Standard_EXPORT StepVisual_PresentationView();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationView,StepVisual_PresentationRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationView, StepVisual_PresentationRepresentation)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_PresentationView_HeaderFile

@@ -37,49 +37,31 @@ class IntTools_CommonPrt;
 //! Common parts between Edge and Face can be:
 //! - Vertices - in case of intersection or touching;
 //! - Edge - in case of full coincidence of the edge with the face.
-class IntTools_EdgeFace 
+class IntTools_EdgeFace
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
 public: //! @name Constructors
-
   //! Empty Constructor
   Standard_EXPORT IntTools_EdgeFace();
 
 public: //! @name Setters/Getters
-
   //! Sets the edge for intersection
-  void SetEdge(const TopoDS_Edge& theEdge)
-  {
-    myEdge = theEdge;
-  }
+  void SetEdge(const TopoDS_Edge& theEdge) { myEdge = theEdge; }
 
   //! Returns the edge
-  const TopoDS_Edge& Edge() const
-  {
-    return myEdge;
-  }
+  const TopoDS_Edge& Edge() const { return myEdge; }
 
   //! Sets the face for intersection
-  void SetFace(const TopoDS_Face& theFace)
-  {
-    myFace = theFace;
-  }
+  void SetFace(const TopoDS_Face& theFace) { myFace = theFace; }
 
   //! Returns the face
-  const TopoDS_Face& Face() const
-  {
-    return myFace;
-  }
+  const TopoDS_Face& Face() const { return myFace; }
 
   //! Sets the boundaries for the edge.
   //! The algorithm processes edge inside these boundaries.
-  void SetRange(const IntTools_Range& theRange)
-  {
-    myRange = theRange;
-  }
+  void SetRange(const IntTools_Range& theRange) { myRange = theRange; }
 
   //! Sets the boundaries for the edge.
   //! The algorithm processes edge inside these boundaries.
@@ -90,22 +72,13 @@ public: //! @name Setters/Getters
   }
 
   //! Returns intersection range of the edge
-  const IntTools_Range& Range() const
-  {
-    return myRange;
-  }
+  const IntTools_Range& Range() const { return myRange; }
 
   //! Sets the intersection context
-  void SetContext(const Handle(IntTools_Context)& theContext)
-  {
-    myContext = theContext;
-  }
+  void SetContext(const Handle(IntTools_Context)& theContext) { myContext = theContext; }
 
   //! Returns the intersection context
-  const Handle(IntTools_Context)& Context() const
-  {
-    return myContext;
-  }
+  const Handle(IntTools_Context)& Context() const { return myContext; }
 
   //! Sets the Fuzzy value
   void SetFuzzyValue(const Standard_Real theFuzz)
@@ -114,10 +87,7 @@ public: //! @name Setters/Getters
   }
 
   //! Returns the Fuzzy value
-  Standard_Real FuzzyValue() const
-  {
-    return myFuzzyValue;
-  }
+  Standard_Real FuzzyValue() const { return myFuzzyValue; }
 
   //! Sets the flag for quick coincidence check.
   //! It is safe to use the quick check for coincidence only if both
@@ -130,86 +100,66 @@ public: //! @name Setters/Getters
   }
 
   //! Returns the flag myQuickCoincidenceCheck
-  Standard_Boolean IsCoincidenceCheckedQuickly()
-  {
-    return myQuickCoincidenceCheck;
-  }
-
-
+  Standard_Boolean IsCoincidenceCheckedQuickly() { return myQuickCoincidenceCheck; }
 
 public: //! @name Performing the operation
-
   //! Launches the process
   Standard_EXPORT void Perform();
 
-
 public: //! @name Checking validity of the intersection
-
   //! Returns TRUE if computation was successful.
   //! Otherwise returns FALSE.
-  Standard_Boolean IsDone() const
-  {
-    return myIsDone;
-  }
+  Standard_Boolean IsDone() const { return myIsDone; }
 
   //! Returns the code of completion:
   //! 0 - means successful completion;
   //! 1 - the process was not started;
   //! 2,3 - invalid source data for the algorithm;
   //! 4 - projection failed.
-  Standard_Integer ErrorStatus() const
-  {
-    return myErrorStatus;
-  }
-
+  Standard_Integer ErrorStatus() const { return myErrorStatus; }
 
 public: //! @name Obtaining results
-
   //! Returns resulting common parts
-  const IntTools_SequenceOfCommonPrts& CommonParts() const
-  {
-    return mySeqOfCommonPrts;
-  }
+  const IntTools_SequenceOfCommonPrts& CommonParts() const { return mySeqOfCommonPrts; }
 
   //! Returns the minimal distance found between edge and face
-  Standard_Real MinimalDistance() const
-  {
-    return myMinDistance;
-  }
+  Standard_Real MinimalDistance() const { return myMinDistance; }
 
 protected: //! @name Protected methods performing the intersection
+  Standard_EXPORT static Standard_Boolean IsEqDistance(const gp_Pnt&              aP,
+                                                       const BRepAdaptor_Surface& aS,
+                                                       const Standard_Real        aT,
+                                                       Standard_Real&             aD);
+  Standard_EXPORT void                    CheckData();
 
-  Standard_EXPORT static Standard_Boolean IsEqDistance (const gp_Pnt& aP, const BRepAdaptor_Surface& aS, const Standard_Real aT, Standard_Real& aD);
-  Standard_EXPORT void CheckData();
-  
-  Standard_EXPORT Standard_Boolean IsProjectable (const Standard_Real t) const;
-  
-  Standard_EXPORT Standard_Real DistanceFunction (const Standard_Real t);
-  
-  Standard_EXPORT Standard_Integer MakeType (IntTools_CommonPrt& aCP);
-   
-  Standard_EXPORT Standard_Boolean CheckTouch (const IntTools_CommonPrt& aCP, Standard_Real& aTX);
-  
-  Standard_EXPORT Standard_Boolean CheckTouchVertex (const IntTools_CommonPrt& aCP, Standard_Real& aTX);
+  Standard_EXPORT Standard_Boolean IsProjectable(const Standard_Real t) const;
+
+  Standard_EXPORT Standard_Real DistanceFunction(const Standard_Real t);
+
+  Standard_EXPORT Standard_Integer MakeType(IntTools_CommonPrt& aCP);
+
+  Standard_EXPORT Standard_Boolean CheckTouch(const IntTools_CommonPrt& aCP, Standard_Real& aTX);
+
+  Standard_EXPORT Standard_Boolean CheckTouchVertex(const IntTools_CommonPrt& aCP,
+                                                    Standard_Real&            aTX);
 
   //! Checks if the edge is in the face really.
   Standard_EXPORT Standard_Boolean IsCoincident();
 
 protected:
-
-  TopoDS_Edge myEdge;
-  TopoDS_Face myFace;
-  Standard_Real myFuzzyValue;
-  BRepAdaptor_Curve myC;
-  BRepAdaptor_Surface myS;
-  Standard_Real myCriteria;
-  Standard_Boolean myIsDone;
-  Standard_Integer myErrorStatus;
-  Handle(IntTools_Context) myContext;
+  TopoDS_Edge                   myEdge;
+  TopoDS_Face                   myFace;
+  Standard_Real                 myFuzzyValue;
+  BRepAdaptor_Curve             myC;
+  BRepAdaptor_Surface           myS;
+  Standard_Real                 myCriteria;
+  Standard_Boolean              myIsDone;
+  Standard_Integer              myErrorStatus;
+  Handle(IntTools_Context)      myContext;
   IntTools_SequenceOfCommonPrts mySeqOfCommonPrts;
-  IntTools_Range myRange;
-  Standard_Boolean myQuickCoincidenceCheck;
-  Standard_Real myMinDistance; //!< Minimal distance found
+  IntTools_Range                myRange;
+  Standard_Boolean              myQuickCoincidenceCheck;
+  Standard_Real                 myMinDistance; //!< Minimal distance found
 };
 
 #endif // _IntTools_EdgeFace_HeaderFile

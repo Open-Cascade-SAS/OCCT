@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:14 2020 
+// Created on : Sat May 02 12:41:14 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -18,44 +18,38 @@
 #include <StepRepr_Representation.hxx>
 #include <StepRepr_RepresentationReference.hxx>
 
-//=======================================================================
-//function : StepRepr_RepresentationOrRepresentationReference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepRepr_RepresentationOrRepresentationReference::StepRepr_RepresentationOrRepresentationReference ()
+StepRepr_RepresentationOrRepresentationReference::StepRepr_RepresentationOrRepresentationReference()
 {
 }
 
-//=======================================================================
-//function : CaseNum
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer StepRepr_RepresentationOrRepresentationReference::CaseNum (const Handle(Standard_Transient)& ent) const
+Standard_Integer StepRepr_RepresentationOrRepresentationReference::CaseNum(
+  const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepRepr_Representation))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepRepr_RepresentationReference))) return 2;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepRepr_Representation)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepRepr_RepresentationReference)))
+    return 2;
   return 0;
 }
 
-//=======================================================================
-//function : Representation
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepRepr_Representation) StepRepr_RepresentationOrRepresentationReference::Representation () const
+Handle(StepRepr_Representation) StepRepr_RepresentationOrRepresentationReference::Representation()
+  const
 {
   return Handle(StepRepr_Representation)::DownCast(Value());
 }
 
-//=======================================================================
-//function : RepresentationReference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepRepr_RepresentationReference) StepRepr_RepresentationOrRepresentationReference::RepresentationReference () const
+Handle(StepRepr_RepresentationReference) StepRepr_RepresentationOrRepresentationReference::
+  RepresentationReference() const
 {
   return Handle(StepRepr_RepresentationReference)::DownCast(Value());
 }

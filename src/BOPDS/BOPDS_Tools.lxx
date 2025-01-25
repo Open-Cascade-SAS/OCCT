@@ -14,116 +14,119 @@
 
 //=======================================================================
 // function: HasBRep
-// purpose: 
+// purpose:
 //=======================================================================
 inline Standard_Boolean BOPDS_Tools::HasBRep(const TopAbs_ShapeEnum aTi)
 {
-  return (aTi==TopAbs_VERTEX || aTi==TopAbs_EDGE || aTi==TopAbs_FACE);
+  return (aTi == TopAbs_VERTEX || aTi == TopAbs_EDGE || aTi == TopAbs_FACE);
 }
+
 //=======================================================================
 // function: IsInterfering
-// purpose: 
+// purpose:
 //=======================================================================
-inline Standard_Boolean BOPDS_Tools::IsInterfering
-  (const TopAbs_ShapeEnum aTi)
+inline Standard_Boolean BOPDS_Tools::IsInterfering(const TopAbs_ShapeEnum aTi)
 {
-  return (BOPDS_Tools::HasBRep(aTi) || aTi==TopAbs_SOLID);
+  return (BOPDS_Tools::HasBRep(aTi) || aTi == TopAbs_SOLID);
 }
+
 //=======================================================================
-//function : TypeToInteger
-//purpose  : 
+// function : TypeToInteger
+// purpose  :
 //=======================================================================
 inline Standard_Integer BOPDS_Tools::TypeToInteger(const TopAbs_ShapeEnum aType1,
-						   const TopAbs_ShapeEnum aType2)
+                                                   const TopAbs_ShapeEnum aType2)
 {
   Standard_Integer iRet, iT1, iT2, iX;
   //
-  iRet=-1;
-  iT1=BOPDS_Tools::TypeToInteger(aType1);
-  iT2=BOPDS_Tools::TypeToInteger(aType2);
+  iRet = -1;
+  iT1  = BOPDS_Tools::TypeToInteger(aType1);
+  iT2  = BOPDS_Tools::TypeToInteger(aType2);
   //
-  iX=iT2*10+iT1;
-  switch (iX) {
+  iX = iT2 * 10 + iT1;
+  switch (iX)
+  {
     case 77:
-      iRet=0; // VV
+      iRet = 0; // VV
       break;
     case 76:
     case 67:
-      iRet=1; // VE
+      iRet = 1; // VE
       break;
     case 66:
-      iRet=2; // EE
+      iRet = 2; // EE
       break;
     case 74:
     case 47:
-      iRet=3; // VF
+      iRet = 3; // VF
       break;
     case 64:
     case 46:
-      iRet=4; // EF
+      iRet = 4; // EF
       break;
     case 44:
-      iRet=5; // FF
+      iRet = 5; // FF
       break;
     case 72:
     case 27:
-      iRet=6; // VZ
+      iRet = 6; // VZ
       break;
     case 62:
     case 26:
-      iRet=7; // EZ
+      iRet = 7; // EZ
       break;
     case 42:
     case 24:
-      iRet=8; // FZ
+      iRet = 8; // FZ
       break;
     case 22:
-      iRet=9; // ZZ
+      iRet = 9; // ZZ
       break;
     default:
       break;
   }
-  return iRet; 
+  return iRet;
 }
+
 //=======================================================================
-//function : TypeToInteger
-//purpose  : 
+// function : TypeToInteger
+// purpose  :
 //=======================================================================
 inline Standard_Integer BOPDS_Tools::TypeToInteger(const TopAbs_ShapeEnum aType1)
 {
-  Standard_Integer iRet=9;
+  Standard_Integer iRet = 9;
   //
-  switch(aType1) {
+  switch (aType1)
+  {
     case TopAbs_COMPOUND:
-      iRet=0;
+      iRet = 0;
       break;
     case TopAbs_COMPSOLID:
-      iRet=1;
+      iRet = 1;
       break;
     case TopAbs_SOLID:
-      iRet=2;
+      iRet = 2;
       break;
     case TopAbs_SHELL:
-      iRet=3;
+      iRet = 3;
       break;
     case TopAbs_FACE:
-      iRet=4;
+      iRet = 4;
       break;
     case TopAbs_WIRE:
-      iRet=5;
+      iRet = 5;
       break;
     case TopAbs_EDGE:
-      iRet=6;
+      iRet = 6;
       break;
     case TopAbs_VERTEX:
-      iRet=7;
+      iRet = 7;
       break;
     case TopAbs_SHAPE:
-      iRet=8;
+      iRet = 8;
       break;
     default:
       break;
-    }
+  }
   return iRet;
-
 }

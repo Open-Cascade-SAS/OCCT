@@ -24,59 +24,37 @@
 #include <gp_Pnt.hxx>
 class TopoDS_Shape;
 
-
 //! A Geom point and a tolerance.
-class TopOpeBRepDS_Point 
+class TopOpeBRepDS_Point
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopOpeBRepDS_Point();
-  
+
   Standard_EXPORT TopOpeBRepDS_Point(const gp_Pnt& P, const Standard_Real T);
-  
+
   Standard_EXPORT TopOpeBRepDS_Point(const TopoDS_Shape& S);
-  
-  Standard_EXPORT Standard_Boolean IsEqual (const TopOpeBRepDS_Point& other) const;
-  
+
+  Standard_EXPORT Standard_Boolean IsEqual(const TopOpeBRepDS_Point& other) const;
+
   Standard_EXPORT const gp_Pnt& Point() const;
-  
+
   Standard_EXPORT gp_Pnt& ChangePoint();
-  
+
   Standard_EXPORT Standard_Real Tolerance() const;
-  
-  Standard_EXPORT void Tolerance (const Standard_Real Tol);
-  
+
+  Standard_EXPORT void Tolerance(const Standard_Real Tol);
+
   Standard_EXPORT Standard_Boolean Keep() const;
-  
-  Standard_EXPORT void ChangeKeep (const Standard_Boolean B);
 
-
-
+  Standard_EXPORT void ChangeKeep(const Standard_Boolean B);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  gp_Pnt myPoint;
-  Standard_Real myTolerance;
+  gp_Pnt           myPoint;
+  Standard_Real    myTolerance;
   Standard_Boolean myKeep;
-
-
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepDS_Point_HeaderFile

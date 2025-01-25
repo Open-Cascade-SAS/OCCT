@@ -15,123 +15,152 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : EDataArray
-//purpose  : 
+// function : EDataArray
+// purpose  :
 //=======================================================================
 
-inline HLRBRep_Array1OfEData & HLRBRep_Data::EDataArray ()
-{ return myEData; }
+inline HLRBRep_Array1OfEData& HLRBRep_Data::EDataArray()
+{
+  return myEData;
+}
 
 //=======================================================================
-//function : FDataArray
-//purpose  : 
+// function : FDataArray
+// purpose  :
 //=======================================================================
 
-inline HLRBRep_Array1OfFData & HLRBRep_Data::FDataArray ()
-{ return myFData; }
+inline HLRBRep_Array1OfFData& HLRBRep_Data::FDataArray()
+{
+  return myFData;
+}
 
 //=======================================================================
-//function : Tolerance
-//purpose  : 
+// function : Tolerance
+// purpose  :
 //=======================================================================
 
-inline void HLRBRep_Data::Tolerance (const Standard_ShortReal tol)
-{ myToler = tol; }
+inline void HLRBRep_Data::Tolerance(const Standard_ShortReal tol)
+{
+  myToler = tol;
+}
 
 //=======================================================================
-//function : Tolerance
-//purpose  : 
+// function : Tolerance
+// purpose  :
 //=======================================================================
 
-inline Standard_ShortReal HLRBRep_Data::Tolerance () const
-{ return myToler; }
+inline Standard_ShortReal HLRBRep_Data::Tolerance() const
+{
+  return myToler;
+}
 
 //=======================================================================
-//function : Projector
-//purpose  : 
+// function : Projector
+// purpose  :
 //=======================================================================
 
-inline HLRAlgo_Projector & HLRBRep_Data::Projector ()
-{ return myProj; }
+inline HLRAlgo_Projector& HLRBRep_Data::Projector()
+{
+  return myProj;
+}
 
 //=======================================================================
-//function : NbVertices
-//purpose  : 
+// function : NbVertices
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer HLRBRep_Data::NbVertices () const
-{ return myNbVertices; }
+inline Standard_Integer HLRBRep_Data::NbVertices() const
+{
+  return myNbVertices;
+}
 
 //=======================================================================
-//function : NbEdges
-//purpose  : 
+// function : NbEdges
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer HLRBRep_Data::NbEdges () const
-{ return myNbEdges; }
+inline Standard_Integer HLRBRep_Data::NbEdges() const
+{
+  return myNbEdges;
+}
 
 //=======================================================================
-//function : NbFaces
-//purpose  : 
+// function : NbFaces
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer HLRBRep_Data::NbFaces () const
-{ return myNbFaces; }
+inline Standard_Integer HLRBRep_Data::NbFaces() const
+{
+  return myNbFaces;
+}
 
 //=======================================================================
-//function : EdgeMap
-//purpose  : 
+// function : EdgeMap
+// purpose  :
 //=======================================================================
 
-inline TopTools_IndexedMapOfShape & HLRBRep_Data::EdgeMap ()
-{ return myEMap; }
+inline TopTools_IndexedMapOfShape& HLRBRep_Data::EdgeMap()
+{
+  return myEMap;
+}
 
 //=======================================================================
-//function : FaceMap
-//purpose  : 
+// function : FaceMap
+// purpose  :
 //=======================================================================
 
-inline TopTools_IndexedMapOfShape & HLRBRep_Data::FaceMap ()
-{ return myFMap; }
+inline TopTools_IndexedMapOfShape& HLRBRep_Data::FaceMap()
+{
+  return myFMap;
+}
 
 //=======================================================================
-//function : SimpleHidingFace
-//purpose  : 
-//=======================================================================
-       
-inline Standard_Boolean HLRBRep_Data::SimpleHidingFace () const
-{ return iFaceSimp; }
-
-//=======================================================================
-//function : HidingTheFace
-//purpose  : 
-//=======================================================================
-       
-inline Standard_Boolean HLRBRep_Data::HidingTheFace () const
-{ return iFaceTest; }
-
-//=======================================================================
-//function : MoreInterference
-//purpose  : 
-//=======================================================================
-       
-inline Standard_Boolean HLRBRep_Data::MoreInterference () const
-{ return (iInterf <= myNbPoints + 2*myNbSegments); }
-
-//=======================================================================
-//function : Interference
-//purpose  : 
+// function : SimpleHidingFace
+// purpose  :
 //=======================================================================
 
-inline HLRAlgo_Interference & HLRBRep_Data::Interference ()
-{ return myIntf; }
+inline Standard_Boolean HLRBRep_Data::SimpleHidingFace() const
+{
+  return iFaceSimp;
+}
 
 //=======================================================================
-//function :EdgeOfTheHidingFace
-//purpose  : 
+// function : HidingTheFace
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean 
-HLRBRep_Data::EdgeOfTheHidingFace (const Standard_Integer,
-				   const HLRBRep_EdgeData& ED) const
-{ return ED.HideCount() == myHideCount-1; }
+inline Standard_Boolean HLRBRep_Data::HidingTheFace() const
+{
+  return iFaceTest;
+}
+
+//=======================================================================
+// function : MoreInterference
+// purpose  :
+//=======================================================================
+
+inline Standard_Boolean HLRBRep_Data::MoreInterference() const
+{
+  return (iInterf <= myNbPoints + 2 * myNbSegments);
+}
+
+//=======================================================================
+// function : Interference
+// purpose  :
+//=======================================================================
+
+inline HLRAlgo_Interference& HLRBRep_Data::Interference()
+{
+  return myIntf;
+}
+
+//=======================================================================
+// function :EdgeOfTheHidingFace
+// purpose  :
+//=======================================================================
+
+inline Standard_Boolean HLRBRep_Data::EdgeOfTheHidingFace(const Standard_Integer,
+                                                          const HLRBRep_EdgeData& ED) const
+{
+  return ED.HideCount() == myHideCount - 1;
+}

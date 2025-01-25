@@ -19,8 +19,7 @@
 #include <Standard_GUID.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<Standard_GUID> TDF_IDList;
+typedef NCollection_List<Standard_GUID>           TDF_IDList;
 typedef NCollection_List<Standard_GUID>::Iterator TDF_ListIteratorOfIDList;
-
 
 #endif

@@ -23,17 +23,14 @@
 class XmlMDF_ADriverTable;
 class Message_Messenger;
 
-
-
-class XmlMFunction 
+class XmlMFunction
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Adds the attribute storage drivers to <aDriverTable>.
-  Standard_EXPORT static void AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable, const Handle(Message_Messenger)& theMessageDriver);
-
+  Standard_EXPORT static void AddDrivers(const Handle(XmlMDF_ADriverTable)& aDriverTable,
+                                         const Handle(Message_Messenger)&   theMessageDriver);
 };
 
 #endif // _XmlMFunction_HeaderFile

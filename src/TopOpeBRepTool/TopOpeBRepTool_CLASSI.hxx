@@ -30,57 +30,40 @@ class TopoDS_Shape;
 class Bnd_Box2d;
 class TopOpeBRepTool_face;
 
-
-
-class TopOpeBRepTool_CLASSI 
+class TopOpeBRepTool_CLASSI
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT TopOpeBRepTool_CLASSI();
-  
-  Standard_EXPORT void Init2d (const TopoDS_Face& Fref);
-  
+
+  Standard_EXPORT void Init2d(const TopoDS_Face& Fref);
+
   Standard_EXPORT Standard_Boolean HasInit2d() const;
-  
-  Standard_EXPORT Standard_Boolean Add2d (const TopoDS_Shape& S);
-  
-  Standard_EXPORT Standard_Boolean GetBox2d (const TopoDS_Shape& S, Bnd_Box2d& Box2d);
-  
-  Standard_EXPORT Standard_Integer ClassiBnd2d (const TopoDS_Shape& S1, const TopoDS_Shape& S2, const Standard_Real tol, const Standard_Boolean checklarge);
-  
-  Standard_EXPORT Standard_Integer Classip2d (const TopoDS_Shape& S1, const TopoDS_Shape& S2, const Standard_Integer stabnd2d12);
-  
-  Standard_EXPORT Standard_Boolean Getface (const TopoDS_Shape& S, TopOpeBRepTool_face& fa) const;
-  
-  Standard_EXPORT Standard_Boolean Classilist (const TopTools_ListOfShape& lS, TopTools_DataMapOfShapeListOfShape& mapgreasma);
 
+  Standard_EXPORT Standard_Boolean Add2d(const TopoDS_Shape& S);
 
+  Standard_EXPORT Standard_Boolean GetBox2d(const TopoDS_Shape& S, Bnd_Box2d& Box2d);
 
+  Standard_EXPORT Standard_Integer ClassiBnd2d(const TopoDS_Shape&    S1,
+                                               const TopoDS_Shape&    S2,
+                                               const Standard_Real    tol,
+                                               const Standard_Boolean checklarge);
+
+  Standard_EXPORT Standard_Integer Classip2d(const TopoDS_Shape&    S1,
+                                             const TopoDS_Shape&    S2,
+                                             const Standard_Integer stabnd2d12);
+
+  Standard_EXPORT Standard_Boolean Getface(const TopoDS_Shape& S, TopOpeBRepTool_face& fa) const;
+
+  Standard_EXPORT Standard_Boolean Classilist(const TopTools_ListOfShape&         lS,
+                                              TopTools_DataMapOfShapeListOfShape& mapgreasma);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  TopoDS_Face myFref;
+  TopoDS_Face                               myFref;
   TopOpeBRepTool_IndexedDataMapOfShapeBox2d mymapsbox2d;
-  TopOpeBRepTool_DataMapOfShapeface mymapsface;
-
-
+  TopOpeBRepTool_DataMapOfShapeface         mymapsface;
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepTool_CLASSI_HeaderFile

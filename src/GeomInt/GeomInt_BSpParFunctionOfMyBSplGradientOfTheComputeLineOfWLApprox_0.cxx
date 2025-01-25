@@ -21,7 +21,6 @@
 #include <GeomInt_BSpParLeastSquareOfMyBSplGradientOfTheComputeLineOfWLApprox.hxx>
 #include <AppParCurves_MultiBSpCurve.hxx>
 #include <math_Matrix.hxx>
- 
 
 #define MultiLine GeomInt_TheMultiLineOfWLApprox
 #define MultiLine_hxx <GeomInt_TheMultiLineOfWLApprox.hxx>
@@ -30,6 +29,6 @@
 #define Squares GeomInt_BSpParLeastSquareOfMyBSplGradientOfTheComputeLineOfWLApprox
 #define Squares_hxx <GeomInt_BSpParLeastSquareOfMyBSplGradientOfTheComputeLineOfWLApprox.hxx>
 #define AppParCurves_BSpFunction GeomInt_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfWLApprox
-#define AppParCurves_BSpFunction_hxx <GeomInt_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfWLApprox.hxx>
+#define AppParCurves_BSpFunction_hxx                                                               \
+  <GeomInt_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfWLApprox.hxx>
 #include "../AppParCurves/AppParCurves_BSpFunction.gxx"
-

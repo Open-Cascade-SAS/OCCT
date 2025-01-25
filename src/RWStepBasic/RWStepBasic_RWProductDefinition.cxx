@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//gka 05.03.99 S4134 upgrade from CD to DIS
+// gka 05.03.99 S4134 upgrade from CD to DIS
 
 #include <Interface_EntityIterator.hxx>
 #include "RWStepBasic_RWProductDefinition.pxx"
@@ -21,88 +21,94 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWProductDefinition::RWStepBasic_RWProductDefinition () {}
+RWStepBasic_RWProductDefinition::RWStepBasic_RWProductDefinition() {}
 
-void RWStepBasic_RWProductDefinition::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepBasic_ProductDefinition)& ent) const
+void RWStepBasic_RWProductDefinition::ReadStep(const Handle(StepData_StepReaderData)&     data,
+                                               const Standard_Integer                     num,
+                                               Handle(Interface_Check)&                   ach,
+                                               const Handle(StepBasic_ProductDefinition)& ent) const
 {
 
+  // --- Number of Parameter Control ---
 
-	// --- Number of Parameter Control ---
+  if (!data->CheckNbParams(num, 4, ach, "product_definition"))
+    return;
 
-	if (!data->CheckNbParams(num,4,ach,"product_definition")) return;
+  // --- own field : id ---
 
-	// --- own field : id ---
+  Handle(TCollection_HAsciiString) aId;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadString(num, 1, "id", ach, aId);
 
-	Handle(TCollection_HAsciiString) aId;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	data->ReadString (num,1,"id",ach,aId);
+  // --- own field : description ---
 
-	// --- own field : description ---
+  Handle(TCollection_HAsciiString) aDescription;
+  if (data->IsParamDefined(num, 2))
+  { // gka 05.03.99 S4134 upgrade from CD to DIS
+    // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+    data->ReadString(num, 2, "description", ach, aDescription);
+  }
+  // --- own field : formation ---
 
-	Handle(TCollection_HAsciiString) aDescription;
-	if (data->IsParamDefined (num,2)) { //gka 05.03.99 S4134 upgrade from CD to DIS
-	  //szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
-	  data->ReadString (num,2,"description",ach,aDescription);
-	}
-	// --- own field : formation ---
+  Handle(StepBasic_ProductDefinitionFormation) aFormation;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  data->ReadEntity(num,
+                   3,
+                   "formation",
+                   ach,
+                   STANDARD_TYPE(StepBasic_ProductDefinitionFormation),
+                   aFormation);
 
-	Handle(StepBasic_ProductDefinitionFormation) aFormation;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
-	data->ReadEntity(num, 3,"formation", ach, STANDARD_TYPE(StepBasic_ProductDefinitionFormation), aFormation);
+  // --- own field : frameOfReference ---
 
-	// --- own field : frameOfReference ---
+  Handle(StepBasic_ProductDefinitionContext) aFrameOfReference;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  data->ReadEntity(num,
+                   4,
+                   "frame_of_reference",
+                   ach,
+                   STANDARD_TYPE(StepBasic_ProductDefinitionContext),
+                   aFrameOfReference);
 
-	Handle(StepBasic_ProductDefinitionContext) aFrameOfReference;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
-	data->ReadEntity(num, 4,"frame_of_reference", ach, STANDARD_TYPE(StepBasic_ProductDefinitionContext), aFrameOfReference);
+  //--- Initialisation of the read entity ---
 
-	//--- Initialisation of the read entity ---
-
-
-	ent->Init(aId, aDescription, aFormation, aFrameOfReference);
+  ent->Init(aId, aDescription, aFormation, aFrameOfReference);
 }
 
-
-void RWStepBasic_RWProductDefinition::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepBasic_ProductDefinition)& ent) const
+void RWStepBasic_RWProductDefinition::WriteStep(
+  StepData_StepWriter&                       SW,
+  const Handle(StepBasic_ProductDefinition)& ent) const
 {
 
-	// --- own field : id ---
+  // --- own field : id ---
 
-	SW.Send(ent->Id());
+  SW.Send(ent->Id());
 
-	// --- own field : description ---
+  // --- own field : description ---
 
-	if (!ent->Description().IsNull())
-	{
-		SW.Send(ent->Description());
-	}
-	else
-	{
-		SW.SendUndef();
-	}
+  if (!ent->Description().IsNull())
+  {
+    SW.Send(ent->Description());
+  }
+  else
+  {
+    SW.SendUndef();
+  }
 
-	// --- own field : formation ---
+  // --- own field : formation ---
 
-	SW.Send(ent->Formation());
+  SW.Send(ent->Formation());
 
-	// --- own field : frameOfReference ---
+  // --- own field : frameOfReference ---
 
-	SW.Send(ent->FrameOfReference());
+  SW.Send(ent->FrameOfReference());
 }
 
-
-void RWStepBasic_RWProductDefinition::Share(const Handle(StepBasic_ProductDefinition)& ent, Interface_EntityIterator& iter) const
+void RWStepBasic_RWProductDefinition::Share(const Handle(StepBasic_ProductDefinition)& ent,
+                                            Interface_EntityIterator&                  iter) const
 {
 
-	iter.GetOneItem(ent->Formation());
+  iter.GetOneItem(ent->Formation());
 
-
-	iter.GetOneItem(ent->FrameOfReference());
+  iter.GetOneItem(ent->FrameOfReference());
 }
-

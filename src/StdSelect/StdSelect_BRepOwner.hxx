@@ -42,18 +42,20 @@ class StdSelect_BRepOwner : public SelectMgr_EntityOwner
 {
   DEFINE_STANDARD_RTTIEXT(StdSelect_BRepOwner, SelectMgr_EntityOwner)
 public:
-
   //! Constructs an owner specification framework defined
   //! by the priority aPriority.
   Standard_EXPORT StdSelect_BRepOwner(const Standard_Integer aPriority);
-  
+
   //! Constructs an owner specification framework defined
   //! by the shape aShape and the priority aPriority.
   //! aShape and aPriority are stored in this framework. If
   //! more than one owner are detected during dynamic
   //! selection, the one with the highest priority is the one stored.
-  Standard_EXPORT StdSelect_BRepOwner(const TopoDS_Shape& aShape, const Standard_Integer aPriority = 0, const Standard_Boolean ComesFromDecomposition = Standard_False);
-  
+  Standard_EXPORT StdSelect_BRepOwner(
+    const TopoDS_Shape&    aShape,
+    const Standard_Integer aPriority              = 0,
+    const Standard_Boolean ComesFromDecomposition = Standard_False);
+
   //! Constructs an owner specification framework defined
   //! by the shape aShape, the selectable object theOrigin
   //! and the priority aPriority.
@@ -61,8 +63,11 @@ public:
   //! framework. If more than one owner are detected
   //! during dynamic selection, the one with the highest
   //! priority is the one stored.
-  Standard_EXPORT StdSelect_BRepOwner(const TopoDS_Shape& aShape, const Handle(SelectMgr_SelectableObject)& theOrigin, const Standard_Integer aPriority = 0, const Standard_Boolean FromDecomposition = Standard_False);
-  
+  Standard_EXPORT StdSelect_BRepOwner(const TopoDS_Shape&                       aShape,
+                                      const Handle(SelectMgr_SelectableObject)& theOrigin,
+                                      const Standard_Integer                    aPriority = 0,
+                                      const Standard_Boolean FromDecomposition = Standard_False);
+
   //! returns False if no shape was set
   Standard_Boolean HasShape() const { return !myShape.IsNull(); }
 
@@ -71,12 +76,12 @@ public:
 
   //! Returns true if this framework has a highlight mode defined for it.
   Standard_Boolean HasHilightMode() const { return myCurMode == -1; }
-  
+
   //! Sets the highlight mode for this framework.
   //! This defines the type of display used to highlight the
   //! owner of the shape when it is detected by the selector.
   //! The default type of display is wireframe, defined by the index 0.
-  void SetHilightMode (const Standard_Integer theMode) { myCurMode = theMode; }
+  void SetHilightMode(const Standard_Integer theMode) { myCurMode = theMode; }
 
   //! Resets the higlight mode for this framework.
   //! This defines the type of display used to highlight the
@@ -92,36 +97,41 @@ public:
 
   //! Returns true if an object with the selection mode
   //! aMode is highlighted in the presentation manager aPM.
-  Standard_EXPORT virtual Standard_Boolean IsHilighted (const Handle(PrsMgr_PresentationManager)& aPM, const Standard_Integer aMode = 0) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
-                                                 const Handle(Prs3d_Drawer)& theStyle,
-                                                 const Standard_Integer theMode) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Standard_Boolean IsHilighted(
+    const Handle(PrsMgr_PresentationManager)& aPM,
+    const Standard_Integer                    aMode = 0) const Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePM,
+                                                const Handle(Prs3d_Drawer)&               theStyle,
+                                                const Standard_Integer theMode) Standard_OVERRIDE;
+
   //! Removes highlighting from the type of shape
   //! identified the selection mode aMode in the presentation manager aPM.
-  Standard_EXPORT virtual void Unhilight (const Handle(PrsMgr_PresentationManager)& aPM, const Standard_Integer aMode = 0) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void Unhilight(const Handle(PrsMgr_PresentationManager)& aPM,
+                                         const Standard_Integer aMode = 0) Standard_OVERRIDE;
+
   //! Clears the presentation manager object aPM of all
   //! shapes with the selection mode aMode.
-  Standard_EXPORT virtual void Clear (const Handle(PrsMgr_PresentationManager)& aPM, const Standard_Integer aMode = 0) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void SetLocation (const TopLoc_Location& aLoc) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear(const Handle(PrsMgr_PresentationManager)& aPM,
+                                     const Standard_Integer aMode = 0) Standard_OVERRIDE;
 
-  //! Implements immediate application of location transformation of parent object to dynamic highlight structure
-  Standard_EXPORT virtual void UpdateHighlightTrsf (const Handle(V3d_Viewer)& theViewer,
-                                                    const Handle(PrsMgr_PresentationManager)& theManager,
-                                                    const Standard_Integer theDispMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetLocation(const TopLoc_Location& aLoc) Standard_OVERRIDE;
+
+  //! Implements immediate application of location transformation of parent object to dynamic
+  //! highlight structure
+  Standard_EXPORT virtual void UpdateHighlightTrsf(
+    const Handle(V3d_Viewer)&                 theViewer,
+    const Handle(PrsMgr_PresentationManager)& theManager,
+    const Standard_Integer                    theDispMode) Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
 protected:
-
-  TopoDS_Shape myShape;
+  TopoDS_Shape            myShape;
   Handle(StdSelect_Shape) myPrsSh;
-  Standard_Integer myCurMode;
-
+  Standard_Integer        myCurMode;
 };
 
 #endif // _StdSelect_BRepOwner_HeaderFile

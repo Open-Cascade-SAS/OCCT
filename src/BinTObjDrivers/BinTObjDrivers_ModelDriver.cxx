@@ -25,25 +25,19 @@
 #include <TObj_Model.hxx>
 #include <TObj_Assistant.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_ModelDriver, BinMDF_ADriver)
 
+//=================================================================================================
 
-
-IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_ModelDriver,BinMDF_ADriver)
-
-//=======================================================================
-//function : BinTObjDrivers_ModelDriver
-//purpose  : constructor
-//=======================================================================
-
-BinTObjDrivers_ModelDriver::BinTObjDrivers_ModelDriver
-                         (const Handle(Message_Messenger)& theMessageDriver)
-: BinMDF_ADriver( theMessageDriver, NULL)
+BinTObjDrivers_ModelDriver::BinTObjDrivers_ModelDriver(
+  const Handle(Message_Messenger)& theMessageDriver)
+    : BinMDF_ADriver(theMessageDriver, NULL)
 {
 }
 
 //=======================================================================
-//function : NewEmpty
-//purpose  : Creates a new attribute
+// function : NewEmpty
+// purpose  : Creates a new attribute
 //=======================================================================
 
 Handle(TDF_Attribute) BinTObjDrivers_ModelDriver::NewEmpty() const
@@ -52,23 +46,24 @@ Handle(TDF_Attribute) BinTObjDrivers_ModelDriver::NewEmpty() const
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : Translate the contents of <theSource> and put it
+// function : Paste
+// purpose  : Translate the contents of <theSource> and put it
 //           into <theTarget>.
 //           Set CurrentModel of TObj_Assistant into theTarget TObj_TModel
 //           if its GUID and GUID stored in theSource are same
 //=======================================================================
 
-Standard_Boolean BinTObjDrivers_ModelDriver::Paste
-                         (const BinObjMgt_Persistent&  theSource,
-                          const Handle(TDF_Attribute)& theTarget,
-                          BinObjMgt_RRelocationTable&) const
+Standard_Boolean BinTObjDrivers_ModelDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                   const Handle(TDF_Attribute)& theTarget,
+                                                   BinObjMgt_RRelocationTable&) const
 {
   Standard_GUID aGUID;
-  if (! (theSource >> aGUID)) return Standard_False;
+  if (!(theSource >> aGUID))
+    return Standard_False;
 
   Handle(TObj_Model) aCurrentModel = TObj_Assistant::GetCurrentModel();
-  if (aCurrentModel.IsNull()) return Standard_False;
+  if (aCurrentModel.IsNull())
+    return Standard_False;
 
   if (aGUID != aCurrentModel->GetGUID())
   {
@@ -76,27 +71,25 @@ Standard_Boolean BinTObjDrivers_ModelDriver::Paste
     return Standard_False;
   }
 
-  Handle(TObj_TModel) aTModel = Handle(TObj_TModel)::DownCast( theTarget );
-  aCurrentModel->SetLabel ( aTModel->Label() );
-  aTModel->Set( aCurrentModel );
+  Handle(TObj_TModel) aTModel = Handle(TObj_TModel)::DownCast(theTarget);
+  aCurrentModel->SetLabel(aTModel->Label());
+  aTModel->Set(aCurrentModel);
   return Standard_True;
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : Translate the contents of <theSource> and put it
+// function : Paste
+// purpose  : Translate the contents of <theSource> and put it
 //           into <theTarget>.
 //           a Model is stored as its GUID
 //=======================================================================
 
-void BinTObjDrivers_ModelDriver::Paste
-                         (const Handle(TDF_Attribute)& theSource,
-                          BinObjMgt_Persistent&        theTarget,
-                          BinObjMgt_SRelocationTable&) const
+void BinTObjDrivers_ModelDriver::Paste(const Handle(TDF_Attribute)& theSource,
+                                       BinObjMgt_Persistent&        theTarget,
+                                       BinObjMgt_SRelocationTable&) const
 {
-  Handle(TObj_TModel) aTModel =
-    Handle(TObj_TModel)::DownCast( theSource );
-  Handle(TObj_Model) aModel = aTModel->Model();
+  Handle(TObj_TModel) aTModel = Handle(TObj_TModel)::DownCast(theSource);
+  Handle(TObj_Model)  aModel  = aTModel->Model();
   if (!aModel.IsNull())
   {
     // Store model GUID.

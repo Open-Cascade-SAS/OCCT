@@ -36,24 +36,23 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESDraw_ToolPerspectiveView::IGESDraw_ToolPerspectiveView ()    {  }
+IGESDraw_ToolPerspectiveView::IGESDraw_ToolPerspectiveView() {}
 
-
-void IGESDraw_ToolPerspectiveView::ReadOwnParams
-  (const Handle(IGESDraw_PerspectiveView)& ent,
-   const Handle(IGESData_IGESReaderData)& /*IR*/, IGESData_ParamReader& PR) const
+void IGESDraw_ToolPerspectiveView::ReadOwnParams(const Handle(IGESDraw_PerspectiveView)& ent,
+                                                 const Handle(IGESData_IGESReaderData)& /*IR*/,
+                                                 IGESData_ParamReader& PR) const
 {
-  //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
 
-  gp_XY tempTopLeft, tempBottomRight;
-  Standard_Real tempLeft, tempRight, tempTop, tempBottom;
-  gp_XYZ tempCenterOfProjection, tempViewUpVector;
-  gp_XYZ tempViewNormalVector, tempViewReferencePoint;
+  gp_XY            tempTopLeft, tempBottomRight;
+  Standard_Real    tempLeft, tempRight, tempTop, tempBottom;
+  gp_XYZ           tempCenterOfProjection, tempViewUpVector;
+  gp_XYZ           tempViewNormalVector, tempViewReferencePoint;
   Standard_Integer tempViewNumber, tempDepthClip;
-  Standard_Real tempScaleFactor, tempViewPlaneDistance;
-  Standard_Real tempBackPlaneDistance, tempFrontPlaneDistance;
+  Standard_Real    tempScaleFactor, tempViewPlaneDistance;
+  Standard_Real    tempBackPlaneDistance, tempFrontPlaneDistance;
 
-  //szv#4:S4163:12Mar99 `st=` not needed
+  // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "View Number", tempViewNumber);
   PR.ReadReal(PR.Current(), "Scale Number", tempScaleFactor);
   PR.ReadXYZ(PR.CurrentList(1, 3), "View Plane Normal Vector", tempViewNormalVector);
@@ -62,37 +61,48 @@ void IGESDraw_ToolPerspectiveView::ReadOwnParams
   PR.ReadXYZ(PR.CurrentList(1, 3), "View Up Vector", tempViewUpVector);
   PR.ReadReal(PR.Current(), "View Plane Distance", tempViewPlaneDistance);
 
-  //st = PR.ReadReal(PR.Current(), "Left Side Of Clipping Window", tempLeft); //szv#4:S4163:12Mar99 moved in if
+  // st = PR.ReadReal(PR.Current(), "Left Side Of Clipping Window", tempLeft); //szv#4:S4163:12Mar99
+  // moved in if
   if (PR.ReadReal(PR.Current(), "Left Side Of Clipping Window", tempLeft))
     tempTopLeft.SetX(tempLeft);
 
-  //st = PR.ReadReal(PR.Current(), "Right Side Of Clipping Window", tempRight); //szv#4:S4163:12Mar99 moved in if
+  // st = PR.ReadReal(PR.Current(), "Right Side Of Clipping Window", tempRight);
+  // //szv#4:S4163:12Mar99 moved in if
   if (PR.ReadReal(PR.Current(), "Right Side Of Clipping Window", tempRight))
     tempBottomRight.SetX(tempRight);
 
-  //st = PR.ReadReal(PR.Current(), "Bottom Of Clipping Window", tempBottom); //szv#4:S4163:12Mar99 moved in if
+  // st = PR.ReadReal(PR.Current(), "Bottom Of Clipping Window", tempBottom); //szv#4:S4163:12Mar99
+  // moved in if
   if (PR.ReadReal(PR.Current(), "Bottom Of Clipping Window", tempBottom))
     tempBottomRight.SetY(tempBottom);
 
-  //st = PR.ReadReal(PR.Current(), "Top Of Clipping Window", tempTop); //szv#4:S4163:12Mar99 moved in if
+  // st = PR.ReadReal(PR.Current(), "Top Of Clipping Window", tempTop); //szv#4:S4163:12Mar99 moved
+  // in if
   if (PR.ReadReal(PR.Current(), "Top Of Clipping Window", tempTop))
     tempTopLeft.SetY(tempTop);
 
-  //szv#4:S4163:12Mar99 `st=` not needed
+  // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "Depth Clipping Indicator", tempDepthClip);
   PR.ReadReal(PR.Current(), "Back Plane Distance", tempBackPlaneDistance);
   PR.ReadReal(PR.Current(), "Front Plane Distance", tempFrontPlaneDistance);
 
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
-  ent->Init
-    (tempViewNumber, tempScaleFactor, tempViewNormalVector,
-     tempViewReferencePoint, tempCenterOfProjection, tempViewUpVector,
-     tempViewPlaneDistance, tempTopLeft, tempBottomRight, tempDepthClip,
-     tempBackPlaneDistance, tempFrontPlaneDistance);
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
+  ent->Init(tempViewNumber,
+            tempScaleFactor,
+            tempViewNormalVector,
+            tempViewReferencePoint,
+            tempCenterOfProjection,
+            tempViewUpVector,
+            tempViewPlaneDistance,
+            tempTopLeft,
+            tempBottomRight,
+            tempDepthClip,
+            tempBackPlaneDistance,
+            tempFrontPlaneDistance);
 }
 
-void IGESDraw_ToolPerspectiveView::WriteOwnParams
-  (const Handle(IGESDraw_PerspectiveView)& ent, IGESData_IGESWriter& IW)  const
+void IGESDraw_ToolPerspectiveView::WriteOwnParams(const Handle(IGESDraw_PerspectiveView)& ent,
+                                                  IGESData_IGESWriter&                    IW) const
 {
   IW.Send(ent->ViewNumber());
   IW.Send(ent->ScaleFactor());
@@ -118,27 +128,31 @@ void IGESDraw_ToolPerspectiveView::WriteOwnParams
   IW.Send(ent->FrontPlaneDistance());
 }
 
-void  IGESDraw_ToolPerspectiveView::OwnShared
-  (const Handle(IGESDraw_PerspectiveView)& /*ent*/, Interface_EntityIterator& /*iter*/) const
+void IGESDraw_ToolPerspectiveView::OwnShared(const Handle(IGESDraw_PerspectiveView)& /*ent*/,
+                                             Interface_EntityIterator& /*iter*/) const
 {
 }
 
-void IGESDraw_ToolPerspectiveView::OwnCopy
-  (const Handle(IGESDraw_PerspectiveView)& another,
-   const Handle(IGESDraw_PerspectiveView)& ent, Interface_CopyTool& /*TC*/) const
+void IGESDraw_ToolPerspectiveView::OwnCopy(const Handle(IGESDraw_PerspectiveView)& another,
+                                           const Handle(IGESDraw_PerspectiveView)& ent,
+                                           Interface_CopyTool& /*TC*/) const
 {
-  ent->Init
-    (another->ViewNumber(), another->ScaleFactor(),
-     another->ViewNormalVector().XYZ(),   another->ViewReferencePoint().XYZ(),
-     another->CenterOfProjection().XYZ(), another->ViewUpVector().XYZ(),
-     another->ViewPlaneDistance(),
-     another->TopLeft().XY(),another->BottomRight().XY(), another->DepthClip(),
-     another->BackPlaneDistance(), another->FrontPlaneDistance());
+  ent->Init(another->ViewNumber(),
+            another->ScaleFactor(),
+            another->ViewNormalVector().XYZ(),
+            another->ViewReferencePoint().XYZ(),
+            another->CenterOfProjection().XYZ(),
+            another->ViewUpVector().XYZ(),
+            another->ViewPlaneDistance(),
+            another->TopLeft().XY(),
+            another->BottomRight().XY(),
+            another->DepthClip(),
+            another->BackPlaneDistance(),
+            another->FrontPlaneDistance());
 }
 
-
-IGESData_DirChecker IGESDraw_ToolPerspectiveView::DirChecker
-  (const Handle(IGESDraw_PerspectiveView)& /*ent*/)  const
+IGESData_DirChecker IGESDraw_ToolPerspectiveView::DirChecker(
+  const Handle(IGESDraw_PerspectiveView)& /*ent*/) const
 {
   IGESData_DirChecker DC(410, 1);
   DC.Structure(IGESData_DefVoid);
@@ -152,47 +166,60 @@ IGESData_DirChecker IGESDraw_ToolPerspectiveView::DirChecker
   return DC;
 }
 
-void IGESDraw_ToolPerspectiveView::OwnCheck
-  (const Handle(IGESDraw_PerspectiveView)& ent,
-   const Interface_ShareTool& , Handle(Interface_Check)& ach)  const
+void IGESDraw_ToolPerspectiveView::OwnCheck(const Handle(IGESDraw_PerspectiveView)& ent,
+                                            const Interface_ShareTool&,
+                                            Handle(Interface_Check)& ach) const
 {
   if ((ent->DepthClip() < 0) || (ent->DepthClip() > 3))
     ach->AddFail("DepthClip has invalid value");
-  if (ent->HasTransf()) {
+  if (ent->HasTransf())
+  {
     if (ent->Transf()->FormNumber() != 0)
       ach->AddFail("Associated Matrix has not Form Number 0");
   }
 }
 
-void IGESDraw_ToolPerspectiveView::OwnDump
-  (const Handle(IGESDraw_PerspectiveView)& ent, const IGESData_IGESDumper& /*dumper*/,
-   Standard_OStream& S, const Standard_Integer level)  const
+void IGESDraw_ToolPerspectiveView::OwnDump(const Handle(IGESDraw_PerspectiveView)& ent,
+                                           const IGESData_IGESDumper& /*dumper*/,
+                                           Standard_OStream&      S,
+                                           const Standard_Integer level) const
 {
   S << "IGESDraw_PerspectiveView\n"
-    << "View Number  : " << ent->ViewNumber()  << "  "
+    << "View Number  : " << ent->ViewNumber() << "  "
     << "Scale Factor : " << ent->ScaleFactor() << "\n"
     << "View Plane Normal Vector : ";
-  IGESData_DumpXYZL(S,level, ent->ViewNormalVector(), ent->Location());
+  IGESData_DumpXYZL(S, level, ent->ViewNormalVector(), ent->Location());
   S << "\nView Reference Point     : ";
-  IGESData_DumpXYZL(S,level, ent->ViewReferencePoint() , ent->Location());
+  IGESData_DumpXYZL(S, level, ent->ViewReferencePoint(), ent->Location());
   S << "\nCenter Of Projection     : ";
-  IGESData_DumpXYZL(S,level, ent->CenterOfProjection() , ent->Location());
+  IGESData_DumpXYZL(S, level, ent->CenterOfProjection(), ent->Location());
   S << "\nView Up Vector           : ";
-  IGESData_DumpXYZL(S,level, ent->ViewUpVector() , ent->Location());
-  S << "\nView Plane Distance      : " << ent->ViewPlaneDistance()<< "\n"
-    << "Left   Side Of Clipping Window : " << ent->TopLeft().X()     << "\n"
+  IGESData_DumpXYZL(S, level, ent->ViewUpVector(), ent->Location());
+  S << "\nView Plane Distance      : " << ent->ViewPlaneDistance() << "\n"
+    << "Left   Side Of Clipping Window : " << ent->TopLeft().X() << "\n"
     << "Right  Side Of Clipping Window : " << ent->BottomRight().X() << "\n"
     << "Bottom Side Of Clipping Window : " << ent->BottomRight().Y() << "\n"
-    << "Top    Side Of Clipping Window : " << ent->TopLeft().Y()     << "\n"
+    << "Top    Side Of Clipping Window : " << ent->TopLeft().Y() << "\n"
     << "Depth Clipping : " << ent->DepthClip();
-  switch (ent->DepthClip()) {
-    case 0 :  S << " (No Depth Clipping)\n";                 break;
-    case 1 :  S << " (Back Clipping Plane ON)\n";            break;
-    case 2 :  S << " (Front Clipping Plane ON)\n";           break;
-    case 3 :  S << " (Front and Back Clipping Planes ON)\n"; break;
-    default : S << " (Invalid Value)\n";                     break;
+  switch (ent->DepthClip())
+  {
+    case 0:
+      S << " (No Depth Clipping)\n";
+      break;
+    case 1:
+      S << " (Back Clipping Plane ON)\n";
+      break;
+    case 2:
+      S << " (Front Clipping Plane ON)\n";
+      break;
+    case 3:
+      S << " (Front and Back Clipping Planes ON)\n";
+      break;
+    default:
+      S << " (Invalid Value)\n";
+      break;
   }
-  S << "Back Plane Distance  : " << ent->BackPlaneDistance()  << "  "
+  S << "Back Plane Distance  : " << ent->BackPlaneDistance() << "  "
     << "Front Plane Distance : " << ent->FrontPlaneDistance() << "\n"
     << std::endl;
 }

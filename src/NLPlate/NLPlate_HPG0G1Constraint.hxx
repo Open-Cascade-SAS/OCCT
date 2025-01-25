@@ -25,7 +25,6 @@
 class gp_XY;
 class gp_XYZ;
 
-
 class NLPlate_HPG0G1Constraint;
 DEFINE_STANDARD_HANDLE(NLPlate_HPG0G1Constraint, NLPlate_HPG0Constraint)
 
@@ -35,41 +34,24 @@ class NLPlate_HPG0G1Constraint : public NLPlate_HPG0Constraint
 {
 
 public:
+  Standard_EXPORT NLPlate_HPG0G1Constraint(const gp_XY&    UV,
+                                           const gp_XYZ&   Value,
+                                           const Plate_D1& D1T);
 
-  
-  Standard_EXPORT NLPlate_HPG0G1Constraint(const gp_XY& UV, const gp_XYZ& Value, const Plate_D1& D1T);
-  
-  Standard_EXPORT virtual void SetOrientation (const Standard_Integer Orient = 0) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void SetOrientation(const Standard_Integer Orient = 0) Standard_OVERRIDE;
+
   Standard_EXPORT virtual Standard_Integer ActiveOrder() const Standard_OVERRIDE;
-  
+
   Standard_EXPORT virtual Standard_Integer Orientation() Standard_OVERRIDE;
-  
+
   Standard_EXPORT virtual const Plate_D1& G1Target() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(NLPlate_HPG0G1Constraint,NLPlate_HPG0Constraint)
+  DEFINE_STANDARD_RTTIEXT(NLPlate_HPG0G1Constraint, NLPlate_HPG0Constraint)
 
 protected:
-
-
-
-
 private:
-
-
-  Plate_D1 myG1Target;
+  Plate_D1         myG1Target;
   Standard_Integer myOrientation;
-
-
 };
-
-
-
-
-
-
 
 #endif // _NLPlate_HPG0G1Constraint_HeaderFile

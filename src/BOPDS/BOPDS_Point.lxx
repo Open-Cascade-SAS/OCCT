@@ -13,84 +13,91 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : 
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
-  inline BOPDS_Point::BOPDS_Point()
+inline BOPDS_Point::BOPDS_Point()
 {
-  myPnt.SetCoord(99.,99.,99.);
-  myPnt2D1.SetCoord(99.,99.);
-  myPnt2D2=myPnt2D1;
-  myIndex=-1;
+  myPnt.SetCoord(99., 99., 99.);
+  myPnt2D1.SetCoord(99., 99.);
+  myPnt2D2 = myPnt2D1;
+  myIndex  = -1;
 }
+
 //=======================================================================
-//function : ~
-//purpose  : 
+// function : ~
+// purpose  :
 //=======================================================================
-  inline BOPDS_Point::~BOPDS_Point()
+inline BOPDS_Point::~BOPDS_Point() {}
+
+//=======================================================================
+// function : SetIndex
+// purpose  :
+//=======================================================================
+inline void BOPDS_Point::SetIndex(const Standard_Integer theIndex)
 {
+  myIndex = theIndex;
 }
+
 //=======================================================================
-//function : SetIndex
-//purpose  : 
+// function : Index
+// purpose  :
 //=======================================================================
-  inline void BOPDS_Point::SetIndex(const Standard_Integer theIndex)
-{
-  myIndex=theIndex;
-}
-//=======================================================================
-//function : Index
-//purpose  : 
-//=======================================================================
-  inline Standard_Integer BOPDS_Point::Index()const
+inline Standard_Integer BOPDS_Point::Index() const
 {
   return myIndex;
 }
+
 //=======================================================================
-//function : SetPnt
-//purpose  : 
+// function : SetPnt
+// purpose  :
 //=======================================================================
-  inline void BOPDS_Point::SetPnt(const gp_Pnt& thePnt)
+inline void BOPDS_Point::SetPnt(const gp_Pnt& thePnt)
 {
-  myPnt=thePnt;
+  myPnt = thePnt;
 }
+
 //=======================================================================
-//function : Pnt
-//purpose  : 
+// function : Pnt
+// purpose  :
 //=======================================================================
-  inline const gp_Pnt& BOPDS_Point::Pnt()const
+inline const gp_Pnt& BOPDS_Point::Pnt() const
 {
   return myPnt;
 }
+
 //=======================================================================
-//function : SetPnt2D1
-//purpose  : 
+// function : SetPnt2D1
+// purpose  :
 //=======================================================================
-  inline void BOPDS_Point::SetPnt2D1(const gp_Pnt2d& thePnt)
+inline void BOPDS_Point::SetPnt2D1(const gp_Pnt2d& thePnt)
 {
-  myPnt2D1=thePnt;
+  myPnt2D1 = thePnt;
 }
+
 //=======================================================================
-//function : Pnt2D1
-//purpose  : 
+// function : Pnt2D1
+// purpose  :
 //=======================================================================
-  inline const gp_Pnt2d& BOPDS_Point::Pnt2D1()const
+inline const gp_Pnt2d& BOPDS_Point::Pnt2D1() const
 {
   return myPnt2D1;
 }
+
 //=======================================================================
-//function : SetPnt2D2
-//purpose  : 
+// function : SetPnt2D2
+// purpose  :
 //=======================================================================
-  inline void BOPDS_Point::SetPnt2D2(const gp_Pnt2d& thePnt)
+inline void BOPDS_Point::SetPnt2D2(const gp_Pnt2d& thePnt)
 {
-  myPnt2D2=thePnt;
+  myPnt2D2 = thePnt;
 }
+
 //=======================================================================
-//function : Pnt2D2
-//purpose  : 
+// function : Pnt2D2
+// purpose  :
 //=======================================================================
-  inline const gp_Pnt2d& BOPDS_Point::Pnt2D2()const
+inline const gp_Pnt2d& BOPDS_Point::Pnt2D2() const
 {
   return myPnt2D2;
 }

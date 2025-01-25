@@ -18,7 +18,7 @@
 #define _TopOpeBRep_DRAW_HeaderFile
 
 #ifdef DRAW
-#include <TopOpeBRepDS_DRAW.hxx>
+  #include <TopOpeBRepDS_DRAW.hxx>
 #endif
 
 #endif

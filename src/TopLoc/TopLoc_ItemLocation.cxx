@@ -14,35 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopLoc_Datum3D.hxx>
 #include <Standard_Dump.hxx>
 #include <TopLoc_ItemLocation.hxx>
 #include <TopLoc_Location.hxx>
 
-//=======================================================================
-//function : TopLoc_ItemLocation
-//purpose  : constructor
-//=======================================================================
-TopLoc_ItemLocation::TopLoc_ItemLocation 
-  (const Handle(TopLoc_Datum3D)& D, 
-   const Standard_Integer P) :
-  myDatum(D),
-  myPower(P),
-  myTrsf (D->Transformation().Powered (P))
+//=================================================================================================
+
+TopLoc_ItemLocation::TopLoc_ItemLocation(const Handle(TopLoc_Datum3D)& D, const Standard_Integer P)
+    : myDatum(D),
+      myPower(P),
+      myTrsf(D->Transformation().Powered(P))
 {
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void TopLoc_ItemLocation::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+//=================================================================================================
+
+void TopLoc_ItemLocation::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_CLASS_BEGIN (theOStream, TopLoc_ItemLocation)
+  OCCT_DUMP_CLASS_BEGIN(theOStream, TopLoc_ItemLocation)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myTrsf)
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myDatum.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myTrsf)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myDatum.get())
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPower)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myPower)
 }

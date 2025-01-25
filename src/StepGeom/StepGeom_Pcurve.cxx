@@ -11,45 +11,43 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepGeom_Pcurve.hxx>
 #include <StepGeom_Surface.hxx>
 #include <StepRepr_DefinitionalRepresentation.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Pcurve,StepGeom_Curve)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Pcurve, StepGeom_Curve)
 
-StepGeom_Pcurve::StepGeom_Pcurve ()  {}
+StepGeom_Pcurve::StepGeom_Pcurve() {}
 
-void StepGeom_Pcurve::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_Surface)& aBasisSurface,
-	const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve)
+void StepGeom_Pcurve::Init(const Handle(TCollection_HAsciiString)&            aName,
+                           const Handle(StepGeom_Surface)&                    aBasisSurface,
+                           const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve)
 {
-	// --- classe own fields ---
-	basisSurface = aBasisSurface;
-	referenceToCurve = aReferenceToCurve;
-	// --- classe inherited fields ---
-	StepRepr_RepresentationItem::Init(aName);
+  // --- classe own fields ---
+  basisSurface     = aBasisSurface;
+  referenceToCurve = aReferenceToCurve;
+  // --- classe inherited fields ---
+  StepRepr_RepresentationItem::Init(aName);
 }
-
 
 void StepGeom_Pcurve::SetBasisSurface(const Handle(StepGeom_Surface)& aBasisSurface)
 {
-	basisSurface = aBasisSurface;
+  basisSurface = aBasisSurface;
 }
 
 Handle(StepGeom_Surface) StepGeom_Pcurve::BasisSurface() const
 {
-	return basisSurface;
+  return basisSurface;
 }
 
-void StepGeom_Pcurve::SetReferenceToCurve(const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve)
+void StepGeom_Pcurve::SetReferenceToCurve(
+  const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve)
 {
-	referenceToCurve = aReferenceToCurve;
+  referenceToCurve = aReferenceToCurve;
 }
 
 Handle(StepRepr_DefinitionalRepresentation) StepGeom_Pcurve::ReferenceToCurve() const
 {
-	return referenceToCurve;
+  return referenceToCurve;
 }

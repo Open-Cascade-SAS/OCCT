@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(TDocStd_ApplicationDelta)> TDocStd_SequenceOfApplicationDelta;
 
-
 #endif

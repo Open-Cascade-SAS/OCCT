@@ -22,8 +22,9 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TopoDS_Shape,MAT_SequenceOfBasicElt,TopTools_ShapeMapHasher> BRepMAT2d_DataMapOfShapeSequenceOfBasicElt;
-typedef NCollection_DataMap<TopoDS_Shape,MAT_SequenceOfBasicElt,TopTools_ShapeMapHasher>::Iterator BRepMAT2d_DataMapIteratorOfDataMapOfShapeSequenceOfBasicElt;
-
+typedef NCollection_DataMap<TopoDS_Shape, MAT_SequenceOfBasicElt, TopTools_ShapeMapHasher>
+  BRepMAT2d_DataMapOfShapeSequenceOfBasicElt;
+typedef NCollection_DataMap<TopoDS_Shape, MAT_SequenceOfBasicElt, TopTools_ShapeMapHasher>::Iterator
+  BRepMAT2d_DataMapIteratorOfDataMapOfShapeSequenceOfBasicElt;
 
 #endif

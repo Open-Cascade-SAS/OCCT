@@ -27,228 +27,246 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ShapeBuild_ReShape,BRepTools_ReShape)
+IMPLEMENT_STANDARD_RTTIEXT(ShapeBuild_ReShape, BRepTools_ReShape)
 
-//=======================================================================
-//function : ShapeBuild_ReShape
-//purpose  : 
-//=======================================================================
-ShapeBuild_ReShape::ShapeBuild_ReShape()
+//=================================================================================================
+
+ShapeBuild_ReShape::ShapeBuild_ReShape() {}
+
+//=================================================================================================
+
+TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    shape,
+                                       const TopAbs_ShapeEnum until,
+                                       const Standard_Integer buildmode)
 {
-}
-
-//=======================================================================
-//function : Apply
-//purpose  : 
-//=======================================================================
-
-TopoDS_Shape ShapeBuild_ReShape::Apply (const TopoDS_Shape& shape,
-					const TopAbs_ShapeEnum until,
-					const Standard_Integer buildmode) 
-{
-  if (shape.IsNull()) return shape;
+  if (shape.IsNull())
+    return shape;
   TopoDS_Shape newsh;
-  if (Status (shape,newsh,Standard_False) != 0) return newsh;
+  if (Status(shape, newsh, Standard_False) != 0)
+    return newsh;
 
   TopAbs_ShapeEnum st = shape.ShapeType();
-  if (st == until) return newsh;    // critere d arret
+  if (st == until)
+    return newsh; // critere d arret
 
   Standard_Integer modif = 0;
-  if (st == TopAbs_COMPOUND || st == TopAbs_COMPSOLID) {
-    BRep_Builder B;
+  if (st == TopAbs_COMPOUND || st == TopAbs_COMPSOLID)
+  {
+    BRep_Builder    B;
     TopoDS_Compound C;
-    B.MakeCompound (C);
-    for (TopoDS_Iterator it (shape); it.More(); it.Next()) {
-      const TopoDS_Shape& sh = it.Value();
-      Standard_Integer stat = Status (sh,newsh,Standard_False);
-      if (stat != 0) modif = 1;
-      if (stat >= 0) B.Add (C,newsh);
+    B.MakeCompound(C);
+    for (TopoDS_Iterator it(shape); it.More(); it.Next())
+    {
+      const TopoDS_Shape& sh   = it.Value();
+      Standard_Integer    stat = Status(sh, newsh, Standard_False);
+      if (stat != 0)
+        modif = 1;
+      if (stat >= 0)
+        B.Add(C, newsh);
     }
-    if (modif == 0) return shape;
+    if (modif == 0)
+      return shape;
     return C;
   }
 
-  if (st == TopAbs_SOLID) {
-    BRep_Builder B;
+  if (st == TopAbs_SOLID)
+  {
+    BRep_Builder    B;
     TopoDS_Compound C;
-    B.MakeCompound (C);
+    B.MakeCompound(C);
     TopoDS_Solid S;
-    B.MakeSolid (S);
-    for (TopoDS_Iterator it (shape); it.More(); it.Next()) {
+    B.MakeSolid(S);
+    for (TopoDS_Iterator it(shape); it.More(); it.Next())
+    {
       const TopoDS_Shape& sh = it.Value();
-      newsh = Apply (sh,until,buildmode);
-      if (newsh.IsNull()) {
-	modif = -1;
-      } 
-      else if (newsh.ShapeType() != TopAbs_SHELL) {
-	Standard_Integer nbsub = 0;
-	for (TopExp_Explorer exh(newsh,TopAbs_SHELL); exh.More(); exh.Next()) {
-	  const TopoDS_Shape& onesh = exh.Current ();
-	  B.Add (S,onesh);
-	  nbsub ++;
-	}
-	if (nbsub == 0) modif = -1;
-	B.Add (C,newsh);  // c est tout
-      } 
-      else {
-	if (modif == 0 && !sh.IsEqual(newsh)) modif = 1;
-	B.Add (C,newsh);
-	B.Add (S,newsh);
+      newsh                  = Apply(sh, until, buildmode);
+      if (newsh.IsNull())
+      {
+        modif = -1;
+      }
+      else if (newsh.ShapeType() != TopAbs_SHELL)
+      {
+        Standard_Integer nbsub = 0;
+        for (TopExp_Explorer exh(newsh, TopAbs_SHELL); exh.More(); exh.Next())
+        {
+          const TopoDS_Shape& onesh = exh.Current();
+          B.Add(S, onesh);
+          nbsub++;
+        }
+        if (nbsub == 0)
+          modif = -1;
+        B.Add(C, newsh); // c est tout
+      }
+      else
+      {
+        if (modif == 0 && !sh.IsEqual(newsh))
+          modif = 1;
+        B.Add(C, newsh);
+        B.Add(S, newsh);
       }
     }
 
-    if ( (modif < 0 && buildmode < 2) || (modif == 0 && buildmode < 1) )
+    if ((modif < 0 && buildmode < 2) || (modif == 0 && buildmode < 1))
       return C;
     else
       return S;
   }
 
-  if (st == TopAbs_SHELL) {
-    BRep_Builder B;
+  if (st == TopAbs_SHELL)
+  {
+    BRep_Builder    B;
     TopoDS_Compound C;
-    B.MakeCompound (C);
+    B.MakeCompound(C);
     TopoDS_Shell S;
-    B.MakeShell (S);
-    for (TopoDS_Iterator it (shape); it.More(); it.Next()) {
+    B.MakeShell(S);
+    for (TopoDS_Iterator it(shape); it.More(); it.Next())
+    {
       const TopoDS_Shape& sh = it.Value();
-      newsh = Apply (sh,until,buildmode);
-      if (newsh.IsNull()) {
-	modif = -1;
-      } 
-      else if (newsh.ShapeType() != TopAbs_FACE) {
-	Standard_Integer nbsub = 0;
-	for (TopExp_Explorer exf(newsh,TopAbs_FACE); exf.More(); exf.Next()) {
-	  const TopoDS_Shape& onesh = exf.Current ();
-	  B.Add (S,onesh);
-	  nbsub ++;
-	}
-	if (nbsub == 0) modif = -1;
-	B.Add (C,newsh);  // c est tout
-      } 
-      else {
-	if (modif == 0 && !sh.IsEqual(newsh)) modif = 1;
-	B.Add (C,newsh);
-	B.Add (S,newsh);
+      newsh                  = Apply(sh, until, buildmode);
+      if (newsh.IsNull())
+      {
+        modif = -1;
+      }
+      else if (newsh.ShapeType() != TopAbs_FACE)
+      {
+        Standard_Integer nbsub = 0;
+        for (TopExp_Explorer exf(newsh, TopAbs_FACE); exf.More(); exf.Next())
+        {
+          const TopoDS_Shape& onesh = exf.Current();
+          B.Add(S, onesh);
+          nbsub++;
+        }
+        if (nbsub == 0)
+          modif = -1;
+        B.Add(C, newsh); // c est tout
+      }
+      else
+      {
+        if (modif == 0 && !sh.IsEqual(newsh))
+          modif = 1;
+        B.Add(C, newsh);
+        B.Add(S, newsh);
       }
     }
-    if ( (modif < 0 && buildmode < 2) || (modif == 0 && buildmode < 1) )
+    if ((modif < 0 && buildmode < 2) || (modif == 0 && buildmode < 1))
       return C;
     else
     {
-      S.Closed (BRep_Tool::IsClosed (S));
+      S.Closed(BRep_Tool::IsClosed(S));
       return S;
     }
   }
-  std::cout<<"BRepTools_ReShape::Apply NOT YET IMPLEMENTED"<<std::endl;
+  std::cout << "BRepTools_ReShape::Apply NOT YET IMPLEMENTED" << std::endl;
   return shape;
 }
 
-//=======================================================================
-//function : Apply
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TopoDS_Shape ShapeBuild_ReShape::Apply (const TopoDS_Shape& shape,
-					const TopAbs_ShapeEnum until) 
+TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape& shape, const TopAbs_ShapeEnum until)
 {
-  myStatus = ShapeExtend::EncodeStatus ( ShapeExtend_OK );
-  if ( shape.IsNull() ) return shape;
+  myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
+  if (shape.IsNull())
+    return shape;
 
   // apply direct replacement
-  TopoDS_Shape newsh = Value ( shape );
-  
+  TopoDS_Shape newsh = Value(shape);
+
   // if shape removed, return NULL
-  if ( newsh.IsNull() ) {
-    myStatus = ShapeExtend::EncodeStatus ( ShapeExtend_DONE2 );
+  if (newsh.IsNull())
+  {
+    myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
     return newsh;
   }
-  
-  // if shape replaced, apply modifications to the result recursively 
+
+  // if shape replaced, apply modifications to the result recursively
   Standard_Boolean aConsLoc = ModeConsiderLocation();
-  if ( (aConsLoc && ! newsh.IsPartner (shape)) || 
-      (!aConsLoc &&! newsh.IsSame ( shape )) )
+  if ((aConsLoc && !newsh.IsPartner(shape)) || (!aConsLoc && !newsh.IsSame(shape)))
   {
-    TopoDS_Shape res = Apply ( newsh, until );
-    myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
+    TopoDS_Shape res = Apply(newsh, until);
+    myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
     return res;
   }
 
   TopAbs_ShapeEnum st = shape.ShapeType();
-  if ( st >= until ) return newsh;    // critere d arret
-  if(st == TopAbs_VERTEX || st == TopAbs_SHAPE)
+  if (st >= until)
+    return newsh; // critere d arret
+  if (st == TopAbs_VERTEX || st == TopAbs_SHAPE)
     return shape;
   // define allowed types of components
 
   BRep_Builder B;
-  
-  TopoDS_Shape result = shape.EmptyCopied();
-  TopAbs_Orientation orient = shape.Orientation(); //JR/Hp: or -> orient
-  result.Orientation(TopAbs_FORWARD); // protect against INTERNAL or EXTERNAL shapes
-  Standard_Boolean modif = Standard_False;
+
+  TopoDS_Shape       result = shape.EmptyCopied();
+  TopAbs_Orientation orient = shape.Orientation(); // JR/Hp: or -> orient
+  result.Orientation(TopAbs_FORWARD);              // protect against INTERNAL or EXTERNAL shapes
+  Standard_Boolean modif     = Standard_False;
   Standard_Integer locStatus = myStatus;
-  
+
   // apply recorded modifications to subshapes
-  for ( TopoDS_Iterator it(shape,Standard_False); it.More(); it.Next() ) {
+  for (TopoDS_Iterator it(shape, Standard_False); it.More(); it.Next())
+  {
     const TopoDS_Shape& sh = it.Value();
-    newsh = Apply ( sh, until );
-    if ( newsh != sh ) {
-      if ( ShapeExtend::DecodeStatus ( myStatus, ShapeExtend_DONE4 ) )
-	locStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE4 );
+    newsh                  = Apply(sh, until);
+    if (newsh != sh)
+    {
+      if (ShapeExtend::DecodeStatus(myStatus, ShapeExtend_DONE4))
+        locStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
       modif = 1;
     }
-    if ( newsh.IsNull() ) {
-      locStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE4 );
+    if (newsh.IsNull())
+    {
+      locStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
       continue;
     }
-    locStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE3 );
-    if ( st == TopAbs_COMPOUND || newsh.ShapeType() == sh.ShapeType()) { //fix for SAMTECH bug OCC322 about abcense internal vertices after sewing.
-      B.Add ( result, newsh );
+    locStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
+    if (st == TopAbs_COMPOUND || newsh.ShapeType() == sh.ShapeType())
+    { // fix for SAMTECH bug OCC322 about abcense internal vertices after sewing.
+      B.Add(result, newsh);
       continue;
     }
     Standard_Integer nitems = 0;
-    for ( TopoDS_Iterator subit(newsh); subit.More(); subit.Next(), nitems++ ) {
+    for (TopoDS_Iterator subit(newsh); subit.More(); subit.Next(), nitems++)
+    {
       const TopoDS_Shape& subsh = subit.Value();
-      if ( subsh.ShapeType() == sh.ShapeType() ) B.Add ( result, subsh );
-      else locStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL1 );
+      if (subsh.ShapeType() == sh.ShapeType())
+        B.Add(result, subsh);
+      else
+        locStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
     }
-    if ( ! nitems ) locStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL1 );
+    if (!nitems)
+      locStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
   }
-  if ( ! modif ) return shape;
+  if (!modif)
+    return shape;
 
   // restore Range on edge broken by EmptyCopied()
-  if ( st == TopAbs_EDGE ) {
+  if (st == TopAbs_EDGE)
+  {
     ShapeBuild_Edge sbe;
-    sbe.CopyRanges ( TopoDS::Edge ( result ), TopoDS::Edge ( shape ));
+    sbe.CopyRanges(TopoDS::Edge(result), TopoDS::Edge(shape));
   }
   else if (st == TopAbs_WIRE || st == TopAbs_SHELL)
-    result.Closed (BRep_Tool::IsClosed (result));
+    result.Closed(BRep_Tool::IsClosed(result));
   result.Orientation(orient);
   myStatus = locStatus;
 
-  replace(shape, result,
-    result.IsNull() ? TReplacementKind_Remove : TReplacementKind_Modify);
+  replace(shape, result, result.IsNull() ? TReplacementKind_Remove : TReplacementKind_Modify);
 
   return result;
 }
 
-//=======================================================================
-//function : Status
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer ShapeBuild_ReShape::Status(const TopoDS_Shape& ashape,
-					    TopoDS_Shape& newsh,
-					    const Standard_Boolean last) 
+Standard_Integer ShapeBuild_ReShape::Status(const TopoDS_Shape&    ashape,
+                                            TopoDS_Shape&          newsh,
+                                            const Standard_Boolean last)
 {
-  return BRepTools_ReShape::Status(ashape,newsh,last);
+  return BRepTools_ReShape::Status(ashape, newsh, last);
 }
 
-//=======================================================================
-//function : Status
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean ShapeBuild_ReShape::Status (const ShapeExtend_Status status) const
+Standard_Boolean ShapeBuild_ReShape::Status(const ShapeExtend_Status status) const
 {
-  return ShapeExtend::DecodeStatus ( myStatus, status );
+  return ShapeExtend::DecodeStatus(myStatus, status);
 }

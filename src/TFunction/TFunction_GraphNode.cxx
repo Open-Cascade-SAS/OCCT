@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_DataSet.hxx>
@@ -22,27 +21,27 @@
 #include <TFunction_GraphNode.hxx>
 #include <TFunction_Scope.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TFunction_GraphNode,TDF_Attribute)
+IMPLEMENT_STANDARD_RTTIEXT(TFunction_GraphNode, TDF_Attribute)
 
 //=======================================================================
-//function : GetID
-//purpose  : Static method to get an ID
+// function : GetID
+// purpose  : Static method to get an ID
 //=======================================================================
-const Standard_GUID&  TFunction_GraphNode::GetID() 
-{  
+const Standard_GUID& TFunction_GraphNode::GetID()
+{
   static Standard_GUID TFunction_GraphNodeID("DD51FA86-E171-41a4-A2C1-3A0FBF286798");
-  return TFunction_GraphNodeID; 
+  return TFunction_GraphNodeID;
 }
 
 //=======================================================================
-//function : Set
-//purpose  : Finds or creates a graph node attribute
+// function : Set
+// purpose  : Finds or creates a graph node attribute
 //=======================================================================
 
 Handle(TFunction_GraphNode) TFunction_GraphNode::Set(const TDF_Label& L)
 {
   Handle(TFunction_GraphNode) G;
-  if (!L.FindAttribute(TFunction_GraphNode::GetID(), G)) 
+  if (!L.FindAttribute(TFunction_GraphNode::GetID(), G))
   {
     G = new TFunction_GraphNode();
     L.AddAttribute(G);
@@ -51,28 +50,25 @@ Handle(TFunction_GraphNode) TFunction_GraphNode::Set(const TDF_Label& L)
 }
 
 //=======================================================================
-//function : ID
-//purpose  : Returns GUID of the function
+// function : ID
+// purpose  : Returns GUID of the function
 //=======================================================================
 
 const Standard_GUID& TFunction_GraphNode::ID() const
-{ 
-  return GetID(); 
-}
-
-//=======================================================================
-//function : TFunction_GraphNode
-//purpose  : Constructor
-//=======================================================================
-
-TFunction_GraphNode::TFunction_GraphNode():myStatus(TFunction_ES_WrongDefinition)
 {
+  return GetID();
+}
 
+//=================================================================================================
+
+TFunction_GraphNode::TFunction_GraphNode()
+    : myStatus(TFunction_ES_WrongDefinition)
+{
 }
 
 //=======================================================================
-//function : AddPrevious
-//purpose  : Adds a function to the previous functions of this function.
+// function : AddPrevious
+// purpose  : Adds a function to the previous functions of this function.
 //=======================================================================
 
 Standard_Boolean TFunction_GraphNode::AddPrevious(const Standard_Integer funcID)
@@ -86,8 +82,8 @@ Standard_Boolean TFunction_GraphNode::AddPrevious(const Standard_Integer funcID)
 }
 
 //=======================================================================
-//function : AddPrevious
-//purpose  : Adds a function to the previous functions of this function.
+// function : AddPrevious
+// purpose  : Adds a function to the previous functions of this function.
 //=======================================================================
 
 Standard_Boolean TFunction_GraphNode::AddPrevious(const TDF_Label& func)
@@ -100,8 +96,8 @@ Standard_Boolean TFunction_GraphNode::AddPrevious(const TDF_Label& func)
 }
 
 //=======================================================================
-//function : RemovePrevious
-//purpose  : Removes a function to the previous functions of this function.
+// function : RemovePrevious
+// purpose  : Removes a function to the previous functions of this function.
 //=======================================================================
 
 Standard_Boolean TFunction_GraphNode::RemovePrevious(const Standard_Integer funcID)
@@ -115,8 +111,8 @@ Standard_Boolean TFunction_GraphNode::RemovePrevious(const Standard_Integer func
 }
 
 //=======================================================================
-//function : RemovePrevious
-//purpose  : Removes a function to the previous functions of this function.
+// function : RemovePrevious
+// purpose  : Removes a function to the previous functions of this function.
 //=======================================================================
 
 Standard_Boolean TFunction_GraphNode::RemovePrevious(const TDF_Label& func)
@@ -129,8 +125,8 @@ Standard_Boolean TFunction_GraphNode::RemovePrevious(const TDF_Label& func)
 }
 
 //=======================================================================
-//function : GetPrevious
-//purpose  : Returns a map of previous functions.
+// function : GetPrevious
+// purpose  : Returns a map of previous functions.
 //=======================================================================
 
 const TColStd_MapOfInteger& TFunction_GraphNode::GetPrevious() const
@@ -139,8 +135,8 @@ const TColStd_MapOfInteger& TFunction_GraphNode::GetPrevious() const
 }
 
 //=======================================================================
-//function : RemoveAllPrevious
-//purpose  : Clear the map of previous functions.
+// function : RemoveAllPrevious
+// purpose  : Clear the map of previous functions.
 //=======================================================================
 
 void TFunction_GraphNode::RemoveAllPrevious()
@@ -154,8 +150,8 @@ void TFunction_GraphNode::RemoveAllPrevious()
 }
 
 //=======================================================================
-//function : AddNext
-//purpose  : Adds a function to the next functions of this function.
+// function : AddNext
+// purpose  : Adds a function to the next functions of this function.
 //=======================================================================
 
 Standard_Boolean TFunction_GraphNode::AddNext(const Standard_Integer funcID)
@@ -169,8 +165,8 @@ Standard_Boolean TFunction_GraphNode::AddNext(const Standard_Integer funcID)
 }
 
 //=======================================================================
-//function : AddNext
-//purpose  : Adds a function to the next functions of this function.
+// function : AddNext
+// purpose  : Adds a function to the next functions of this function.
 //=======================================================================
 
 Standard_Boolean TFunction_GraphNode::AddNext(const TDF_Label& func)
@@ -183,8 +179,8 @@ Standard_Boolean TFunction_GraphNode::AddNext(const TDF_Label& func)
 }
 
 //=======================================================================
-//function : RemoveNext
-//purpose  : Removes a function to the next functions of this function.
+// function : RemoveNext
+// purpose  : Removes a function to the next functions of this function.
 //=======================================================================
 
 Standard_Boolean TFunction_GraphNode::RemoveNext(const Standard_Integer funcID)
@@ -198,8 +194,8 @@ Standard_Boolean TFunction_GraphNode::RemoveNext(const Standard_Integer funcID)
 }
 
 //=======================================================================
-//function : RemoveNext
-//purpose  : Remove a function to the next functions of this function.
+// function : RemoveNext
+// purpose  : Remove a function to the next functions of this function.
 //=======================================================================
 
 Standard_Boolean TFunction_GraphNode::RemoveNext(const TDF_Label& func)
@@ -212,8 +208,8 @@ Standard_Boolean TFunction_GraphNode::RemoveNext(const TDF_Label& func)
 }
 
 //=======================================================================
-//function : GetNext
-//purpose  : Returns a map of next functions.
+// function : GetNext
+// purpose  : Returns a map of next functions.
 //=======================================================================
 
 const TColStd_MapOfInteger& TFunction_GraphNode::GetNext() const
@@ -222,8 +218,8 @@ const TColStd_MapOfInteger& TFunction_GraphNode::GetNext() const
 }
 
 //=======================================================================
-//function : RemoveAllNext
-//purpose  : Clear the map of next functions.
+// function : RemoveAllNext
+// purpose  : Clear the map of next functions.
 //=======================================================================
 
 void TFunction_GraphNode::RemoveAllNext()
@@ -237,8 +233,8 @@ void TFunction_GraphNode::RemoveAllNext()
 }
 
 //=======================================================================
-//function : GetStatus
-//purpose  : Returns the execution status of the function.
+// function : GetStatus
+// purpose  : Returns the execution status of the function.
 //=======================================================================
 
 TFunction_ExecutionStatus TFunction_GraphNode::GetStatus() const
@@ -247,8 +243,8 @@ TFunction_ExecutionStatus TFunction_GraphNode::GetStatus() const
 }
 
 //=======================================================================
-//function : SetStatus
-//purpose  : Defines an execution status for a function.
+// function : SetStatus
+// purpose  : Defines an execution status for a function.
 //=======================================================================
 
 void TFunction_GraphNode::SetStatus(const TFunction_ExecutionStatus status)
@@ -261,12 +257,9 @@ void TFunction_GraphNode::SetStatus(const TFunction_ExecutionStatus status)
   myStatus = status;
 }
 
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TFunction_GraphNode::Restore(const Handle(TDF_Attribute)& other) 
+void TFunction_GraphNode::Restore(const Handle(TDF_Attribute)& other)
 {
   Handle(TFunction_GraphNode) G = Handle(TFunction_GraphNode)::DownCast(other);
 
@@ -275,18 +268,18 @@ void TFunction_GraphNode::Restore(const Handle(TDF_Attribute)& other)
 
   // Next
   myNext = G->myNext;
-  
+
   // Status
   myStatus = G->myStatus;
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : Method for Copy mechanism
+// function : Paste
+// purpose  : Method for Copy mechanism
 //=======================================================================
 
 void TFunction_GraphNode::Paste(const Handle(TDF_Attribute)& into,
-				const Handle(TDF_RelocationTable)& /*RT*/) const
+                                const Handle(TDF_RelocationTable)& /*RT*/) const
 {
   Handle(TFunction_GraphNode) G = Handle(TFunction_GraphNode)::DownCast(into);
 
@@ -301,8 +294,8 @@ void TFunction_GraphNode::Paste(const Handle(TDF_Attribute)& into,
 }
 
 //=======================================================================
-//function : NewEmpty
-//purpose  : Returns new empty graph node attribute
+// function : NewEmpty
+// purpose  : Returns new empty graph node attribute
 //=======================================================================
 
 Handle(TDF_Attribute) TFunction_GraphNode::NewEmpty() const
@@ -311,21 +304,18 @@ Handle(TDF_Attribute) TFunction_GraphNode::NewEmpty() const
 }
 
 //=======================================================================
-//function : References
-//purpose  : Collects the references
+// function : References
+// purpose  : Collects the references
 //=======================================================================
 
-void TFunction_GraphNode::References(const Handle(TDF_DataSet)& /*aDataSet*/) const
-{
-
-}
+void TFunction_GraphNode::References(const Handle(TDF_DataSet)& /*aDataSet*/) const {}
 
 //=======================================================================
-//function : Dump
-//purpose  : Dump of the graph node
+// function : Dump
+// purpose  : Dump of the graph node
 //=======================================================================
 
-Standard_OStream& TFunction_GraphNode::Dump (Standard_OStream& anOS) const
+Standard_OStream& TFunction_GraphNode::Dump(Standard_OStream& anOS) const
 {
   TDF_Attribute::Dump(anOS);
   return anOS;

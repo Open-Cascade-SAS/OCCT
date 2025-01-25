@@ -31,56 +31,57 @@
 #include <Interface_ShareTool.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESAppli_ToolFlowLineSpec::IGESAppli_ToolFlowLineSpec ()    {  }
+IGESAppli_ToolFlowLineSpec::IGESAppli_ToolFlowLineSpec() {}
 
-
-void  IGESAppli_ToolFlowLineSpec::ReadOwnParams
-  (const Handle(IGESAppli_FlowLineSpec)& ent,
-   const Handle(IGESData_IGESReaderData)& /* IR */, IGESData_ParamReader& PR) const
+void IGESAppli_ToolFlowLineSpec::ReadOwnParams(const Handle(IGESAppli_FlowLineSpec)& ent,
+                                               const Handle(IGESData_IGESReaderData)& /* IR */,
+                                               IGESData_ParamReader& PR) const
 {
-  //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Standard_Integer num;
+  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  Standard_Integer                        num;
   Handle(Interface_HArray1OfHAsciiString) tempNameAndModifiers;
-  if (!PR.ReadInteger(PR.Current(), "Number of property values", num)) num = 0;
-  if (num > 0) tempNameAndModifiers = new Interface_HArray1OfHAsciiString(1, num);
-  else PR.AddFail("Number of property values: Not Positive");
-  //szv#4:S4163:12Mar99 `st=` not needed
+  if (!PR.ReadInteger(PR.Current(), "Number of property values", num))
+    num = 0;
+  if (num > 0)
+    tempNameAndModifiers = new Interface_HArray1OfHAsciiString(1, num);
+  else
+    PR.AddFail("Number of property values: Not Positive");
+  // szv#4:S4163:12Mar99 `st=` not needed
   if (!tempNameAndModifiers.IsNull())
     PR.ReadTexts(PR.CurrentList(num), "Name and Modifiers", tempNameAndModifiers);
 
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempNameAndModifiers);
 }
 
-void  IGESAppli_ToolFlowLineSpec::WriteOwnParams
-  (const Handle(IGESAppli_FlowLineSpec)& ent, IGESData_IGESWriter& IW) const
+void IGESAppli_ToolFlowLineSpec::WriteOwnParams(const Handle(IGESAppli_FlowLineSpec)& ent,
+                                                IGESData_IGESWriter&                  IW) const
 {
   Standard_Integer i, num;
   IW.Send(ent->NbPropertyValues());
-  for ( num = ent->NbPropertyValues(), i = 1; i <= num; i++ )
+  for (num = ent->NbPropertyValues(), i = 1; i <= num; i++)
     IW.Send(ent->Modifier(i));
 }
 
-void  IGESAppli_ToolFlowLineSpec::OwnShared
-  (const Handle(IGESAppli_FlowLineSpec)& /* ent */, Interface_EntityIterator& /* iter */) const
+void IGESAppli_ToolFlowLineSpec::OwnShared(const Handle(IGESAppli_FlowLineSpec)& /* ent */,
+                                           Interface_EntityIterator& /* iter */) const
 {
 }
 
-void  IGESAppli_ToolFlowLineSpec::OwnCopy
-  (const Handle(IGESAppli_FlowLineSpec)& another,
-   const Handle(IGESAppli_FlowLineSpec)& ent, Interface_CopyTool& /* TC */) const
+void IGESAppli_ToolFlowLineSpec::OwnCopy(const Handle(IGESAppli_FlowLineSpec)& another,
+                                         const Handle(IGESAppli_FlowLineSpec)& ent,
+                                         Interface_CopyTool& /* TC */) const
 {
-  Standard_Integer num = another->NbPropertyValues();
+  Standard_Integer                        num = another->NbPropertyValues();
   Handle(Interface_HArray1OfHAsciiString) tempNameAndModifiers =
     new Interface_HArray1OfHAsciiString(1, num);
-  for ( Standard_Integer i = 1; i <= num; i++ )
-    tempNameAndModifiers->SetValue
-      (i, new TCollection_HAsciiString(another->Modifier(i)));
+  for (Standard_Integer i = 1; i <= num; i++)
+    tempNameAndModifiers->SetValue(i, new TCollection_HAsciiString(another->Modifier(i)));
   ent->Init(tempNameAndModifiers);
 }
 
-IGESData_DirChecker  IGESAppli_ToolFlowLineSpec::DirChecker
-  (const Handle(IGESAppli_FlowLineSpec)& /* ent */ ) const
+IGESData_DirChecker IGESAppli_ToolFlowLineSpec::DirChecker(
+  const Handle(IGESAppli_FlowLineSpec)& /* ent */) const
 {
   IGESData_DirChecker DC(406, 14);
   DC.Structure(IGESData_DefVoid);
@@ -94,19 +95,19 @@ IGESData_DirChecker  IGESAppli_ToolFlowLineSpec::DirChecker
   return DC;
 }
 
-void  IGESAppli_ToolFlowLineSpec::OwnCheck
-  (const Handle(IGESAppli_FlowLineSpec)& /* ent */,
-   const Interface_ShareTool& , Handle(Interface_Check)& /* ach */) const
+void IGESAppli_ToolFlowLineSpec::OwnCheck(const Handle(IGESAppli_FlowLineSpec)& /* ent */,
+                                          const Interface_ShareTool&,
+                                          Handle(Interface_Check)& /* ach */) const
 {
 }
 
-void  IGESAppli_ToolFlowLineSpec::OwnDump
-  (const Handle(IGESAppli_FlowLineSpec)& ent, const IGESData_IGESDumper& /* dumper */,
-   Standard_OStream& S, const Standard_Integer level) const
+void IGESAppli_ToolFlowLineSpec::OwnDump(const Handle(IGESAppli_FlowLineSpec)& ent,
+                                         const IGESData_IGESDumper& /* dumper */,
+                                         Standard_OStream&      S,
+                                         const Standard_Integer level) const
 {
   S << "IGESAppli_FlowLineSpec\n";
   S << "Name and Modifiers : ";
-  IGESData_DumpStrings(S ,level,1, ent->NbPropertyValues(),ent->Modifier);
+  IGESData_DumpStrings(S, level, 1, ent->NbPropertyValues(), ent->Modifier);
   S << "\n";
 }
-

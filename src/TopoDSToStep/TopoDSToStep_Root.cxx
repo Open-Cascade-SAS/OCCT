@@ -14,16 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopoDSToStep_Root.hxx>
 
-TopoDSToStep_Root::TopoDSToStep_Root ()
-{  done = Standard_False;  toler = 0.0001;  }
-
-Standard_Real& TopoDSToStep_Root::Tolerance ()
-{  return toler;  }
-
-Standard_Boolean TopoDSToStep_Root::IsDone () const
+TopoDSToStep_Root::TopoDSToStep_Root()
 {
-  return done; 
+  done  = Standard_False;
+  toler = 0.0001;
+}
+
+Standard_Real& TopoDSToStep_Root::Tolerance()
+{
+  return toler;
+}
+
+Standard_Boolean TopoDSToStep_Root::IsDone() const
+{
+  return done;
 }

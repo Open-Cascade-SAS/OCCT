@@ -11,41 +11,39 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Vrml_Material.hxx>
 #include <VrmlConverter_LineAspect.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_LineAspect,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_LineAspect, Standard_Transient)
 
 VrmlConverter_LineAspect::VrmlConverter_LineAspect()
 {
- myHasMaterial = Standard_False;
+  myHasMaterial = Standard_False;
 }
 
-VrmlConverter_LineAspect::VrmlConverter_LineAspect (const Handle(Vrml_Material)& aMaterial,
-                                                    const Standard_Boolean OnOff)
+VrmlConverter_LineAspect::VrmlConverter_LineAspect(const Handle(Vrml_Material)& aMaterial,
+                                                   const Standard_Boolean       OnOff)
 {
- myMaterial = aMaterial;
- myHasMaterial = OnOff;
+  myMaterial    = aMaterial;
+  myHasMaterial = OnOff;
 }
-
 
 void VrmlConverter_LineAspect::SetMaterial(const Handle(Vrml_Material)& aMaterial)
 {
- myMaterial = aMaterial;
+  myMaterial = aMaterial;
 }
 
-Handle(Vrml_Material) VrmlConverter_LineAspect::Material() const 
+Handle(Vrml_Material) VrmlConverter_LineAspect::Material() const
 {
- return myMaterial;
+  return myMaterial;
 }
+
 void VrmlConverter_LineAspect::SetHasMaterial(const Standard_Boolean OnOff)
 {
- myHasMaterial = OnOff;
+  myHasMaterial = OnOff;
 }
 
-Standard_Boolean VrmlConverter_LineAspect::HasMaterial() const 
+Standard_Boolean VrmlConverter_LineAspect::HasMaterial() const
 {
- return myHasMaterial;
+  return myHasMaterial;
 }
-

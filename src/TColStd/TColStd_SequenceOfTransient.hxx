@@ -20,5 +20,4 @@
 
 typedef NCollection_Sequence<Handle(Standard_Transient)> TColStd_SequenceOfTransient;
 
-
 #endif

@@ -26,34 +26,33 @@
 #include <BinMDataXtd_TriangulationDriver.hxx>
 
 static Standard_Integer myDocumentVersion = -1;
-//=======================================================================
-//function : AddDrivers
-//purpose  : 
-//=======================================================================
 
-void BinMDataXtd::AddDrivers (const Handle(BinMDF_ADriverTable)& theDriverTable,
-                              const Handle(Message_Messenger)&   theMsgDriver)
+//=================================================================================================
+
+void BinMDataXtd::AddDrivers(const Handle(BinMDF_ADriverTable)& theDriverTable,
+                             const Handle(Message_Messenger)&   theMsgDriver)
 {
-  theDriverTable->AddDriver (new BinMDataXtd_ConstraintDriver   (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataXtd_GeometryDriver     (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataXtd_PatternStdDriver   (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataXtd_TriangulationDriver(theMsgDriver) );
+  theDriverTable->AddDriver(new BinMDataXtd_ConstraintDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataXtd_GeometryDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataXtd_PatternStdDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataXtd_TriangulationDriver(theMsgDriver));
 
-  theDriverTable->AddDriver (new BinMDataXtd_PresentationDriver (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataXtd_PositionDriver     (theMsgDriver) );
+  theDriverTable->AddDriver(new BinMDataXtd_PresentationDriver(theMsgDriver));
+  theDriverTable->AddDriver(new BinMDataXtd_PositionDriver(theMsgDriver));
 }
 
 //=======================================================================
-//function : SetDocumentVersion
-//purpose  : Sets current document version
+// function : SetDocumentVersion
+// purpose  : Sets current document version
 //=======================================================================
 void BinMDataXtd::SetDocumentVersion(const Standard_Integer theVersion)
 {
   myDocumentVersion = theVersion;
 }
+
 //=======================================================================
-//function : DocumentVersion
-//purpose  : Retrieved document version
+// function : DocumentVersion
+// purpose  : Retrieved document version
 //=======================================================================
 Standard_Integer BinMDataXtd::DocumentVersion()
 {

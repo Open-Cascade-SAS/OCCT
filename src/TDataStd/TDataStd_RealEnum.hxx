@@ -17,14 +17,13 @@
 #ifndef _TDataStd_RealEnum_HeaderFile
 #define _TDataStd_RealEnum_HeaderFile
 
-
 //! The terms of this enumeration define the
 //! semantics of a real number value.
 enum TDataStd_RealEnum
 {
-TDataStd_SCALAR,
-TDataStd_LENGTH,
-TDataStd_ANGULAR
+  TDataStd_SCALAR,
+  TDataStd_LENGTH,
+  TDataStd_ANGULAR
 };
 
 #endif // _TDataStd_RealEnum_HeaderFile

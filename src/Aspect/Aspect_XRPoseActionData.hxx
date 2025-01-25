@@ -22,12 +22,16 @@ struct Aspect_XRPoseActionData
 {
   Aspect_TrackedDevicePose Pose;         //!< pose state
   uint64_t                 ActiveOrigin; //!< The origin that caused this action's current state
-// clang-format off
+                                         // clang-format off
   bool                     IsActive;     //!< whether or not this action is currently available to be bound in the active action set
-// clang-format on
+                                         // clang-format on
 
   //! Empty constructor.
-  Aspect_XRPoseActionData() : ActiveOrigin (0), IsActive (false) {}
+  Aspect_XRPoseActionData()
+      : ActiveOrigin(0),
+        IsActive(false)
+  {
+  }
 };
 
 #endif // _Aspect_XRPoseActionData_HeaderFile

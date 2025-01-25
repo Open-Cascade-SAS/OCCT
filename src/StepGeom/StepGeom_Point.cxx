@@ -11,11 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepGeom_Point.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Point,StepGeom_GeometricRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Point, StepGeom_GeometricRepresentationItem)
 
-StepGeom_Point::StepGeom_Point ()  {}
-
+StepGeom_Point::StepGeom_Point() {}

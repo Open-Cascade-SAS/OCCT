@@ -38,52 +38,55 @@ class Interface_EntityIterator;
 //! A default action is available to get all roots of the Model
 //! Result is given as a TransferIterator (see TransferProcess)
 //! Also, it is possible to pilot directly the TransientProcess
-class Transfer_TransferOutput 
+class Transfer_TransferOutput
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates a TransferOutput ready to use, with a TransientProcess
-  Standard_EXPORT Transfer_TransferOutput(const Handle(Transfer_ActorOfTransientProcess)& actor, const Handle(Interface_InterfaceModel)& amodel);
-  
+  Standard_EXPORT Transfer_TransferOutput(const Handle(Transfer_ActorOfTransientProcess)& actor,
+                                          const Handle(Interface_InterfaceModel)&         amodel);
+
   //! Creates a TransferOutput from an already existing
   //! TransientProcess, and a Model
   //! Returns (by Reference, hence can be changed) the Mode for
   //! Scope Management. False (D) means Scope is ignored.
   //! True means that each individual Transfer (direct or through
   //! TransferRoots) is regarded as one Scope
-  Standard_EXPORT Transfer_TransferOutput(const Handle(Transfer_TransientProcess)& proc, const Handle(Interface_InterfaceModel)& amodel);
-  
+  Standard_EXPORT Transfer_TransferOutput(const Handle(Transfer_TransientProcess)& proc,
+                                          const Handle(Interface_InterfaceModel)&  amodel);
+
   //! Returns the Starting Model
   Standard_EXPORT Handle(Interface_InterfaceModel) Model() const;
-  
+
   //! Returns the TransientProcess used to work
   Standard_EXPORT Handle(Transfer_TransientProcess) TransientProcess() const;
-  
+
   //! Transfer checks that all taken Entities come from the same
   //! Model, then calls Transfer from TransientProcess
-  Standard_EXPORT void Transfer (const Handle(Standard_Transient)& obj,
-                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+  Standard_EXPORT void Transfer(const Handle(Standard_Transient)& obj,
+                                const Message_ProgressRange& theProgress = Message_ProgressRange());
+
   //! Runs transfer on the roots of the Interface Model
   //! The Roots are computed with a ShareFlags created from a
   //! Protocol given as Argument
-  Standard_EXPORT void TransferRoots (const Handle(Interface_Protocol)& protocol,
-                                      const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+  Standard_EXPORT void TransferRoots(
+    const Handle(Interface_Protocol)& protocol,
+    const Message_ProgressRange&      theProgress = Message_ProgressRange());
+
   //! Runs transfer on the roots defined by a Graph of dependences
   //! (which detains also a Model and its Entities)
   //! Roots are computed with a ShareFlags created from the Graph
-  Standard_EXPORT void TransferRoots (const Interface_Graph& G,
-                                      const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+  Standard_EXPORT void TransferRoots(
+    const Interface_Graph&       G,
+    const Message_ProgressRange& theProgress = Message_ProgressRange());
+
   //! Runs transfer on the roots of the Interface Model
   //! Remark : the Roots are computed with a ShareFlags created
   //! from the Active Protocol
-  Standard_EXPORT void TransferRoots(const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+  Standard_EXPORT void TransferRoots(
+    const Message_ProgressRange& theProgress = Message_ProgressRange());
+
   //! Returns the list of Starting Entities with these criteria :
   //! - <normal> False, gives the entities bound with ABNORMAL STATUS
   //! (e.g. : Fail recorded, Exception raised during Transfer)
@@ -94,8 +97,10 @@ public:
   //! - <roots> True (Default), considers only roots of Transfer
   //! (the Entities recorded at highest level)
   //! This method is based on AbnormalResult from TransferProcess
-  Standard_EXPORT Interface_EntityIterator ListForStatus (const Standard_Boolean normal, const Standard_Boolean roots = Standard_True) const;
-  
+  Standard_EXPORT Interface_EntityIterator
+    ListForStatus(const Standard_Boolean normal,
+                  const Standard_Boolean roots = Standard_True) const;
+
   //! Fills a Model with the list determined by ListForStatus
   //! This model starts from scratch (made by NewEmptyModel from the
   //! current Model), then is filled by AddWithRefs
@@ -104,31 +109,15 @@ public:
   //! have caused problem, in order to furtherly analyse them (with
   //! normal = False), or the "good" entities, to obtain a data set
   //! "which works well" (with normal = True)
-  Standard_EXPORT Handle(Interface_InterfaceModel) ModelForStatus (const Handle(Interface_Protocol)& protocol, const Standard_Boolean normal, const Standard_Boolean roots = Standard_True) const;
-
-
-
+  Standard_EXPORT Handle(Interface_InterfaceModel) ModelForStatus(
+    const Handle(Interface_Protocol)& protocol,
+    const Standard_Boolean            normal,
+    const Standard_Boolean            roots = Standard_True) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   Handle(Transfer_TransientProcess) theproc;
-  Handle(Interface_InterfaceModel) themodel;
-
-
+  Handle(Interface_InterfaceModel)  themodel;
 };
-
-
-
-
-
-
 
 #endif // _Transfer_TransferOutput_HeaderFile

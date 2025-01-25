@@ -23,6 +23,10 @@ enum Graphic3d_FrameStatsTimer
   Graphic3d_FrameStatsTimer_CpuPicking,
   Graphic3d_FrameStatsTimer_CpuDynamics,
 };
-enum { Graphic3d_FrameStatsTimer_NB = Graphic3d_FrameStatsTimer_CpuDynamics + 1 };
+
+enum
+{
+  Graphic3d_FrameStatsTimer_NB = Graphic3d_FrameStatsTimer_CpuDynamics + 1
+};
 
 #endif // _Graphic3d_FrameStatsTimer_HeaderFile

@@ -23,7 +23,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Transient.hxx>
 
-
 class MoniTool_RealVal;
 DEFINE_STANDARD_HANDLE(MoniTool_RealVal, Standard_Transient)
 
@@ -32,36 +31,17 @@ class MoniTool_RealVal : public Standard_Transient
 {
 
 public:
-
-  
   Standard_EXPORT MoniTool_RealVal(const Standard_Real val = 0.0);
-  
+
   Standard_EXPORT Standard_Real Value() const;
-  
+
   Standard_EXPORT Standard_Real& CValue();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(MoniTool_RealVal,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(MoniTool_RealVal, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Real theval;
-
-
 };
-
-
-
-
-
-
 
 #endif // _MoniTool_RealVal_HeaderFile

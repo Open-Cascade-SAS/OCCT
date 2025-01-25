@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -28,12 +28,10 @@ DEFINE_STANDARD_HANDLE(StepKinematics_ProductDefinitionKinematics, StepRepr_Prop
 //! Representation of STEP entity ProductDefinitionKinematics
 class StepKinematics_ProductDefinitionKinematics : public StepRepr_PropertyDefinition
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_ProductDefinitionKinematics();
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_ProductDefinitionKinematics, StepRepr_PropertyDefinition)
-
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_ProductDefinitionKinematics, StepRepr_PropertyDefinition)
 };
 #endif // _StepKinematics_ProductDefinitionKinematics_HeaderFile_

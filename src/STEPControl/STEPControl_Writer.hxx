@@ -41,44 +41,46 @@ class Transfer_ActorOfFinderProcess;
 //! written to an existing STEP file or to a new one.
 //! Translation can be performed in one or several operations. Each
 //! translation operation outputs a distinct root entity in the STEP file.
-class STEPControl_Writer 
+class STEPControl_Writer
 {
 public:
   DEFINE_STANDARD_ALLOC
 
   using ParameterMap = std::unordered_map<std::string, std::string>;
   // Flags defining operations to be performed on shapes. Since there is no std::optional in C++11,
-  // we use a pair. The first element is the flags, the second element is a boolean value that indicates
-  // whether the flags were set.
+  // we use a pair. The first element is the flags, the second element is a boolean value that
+  // indicates whether the flags were set.
   using ProcessingFlags = std::pair<ShapeProcess::OperationsFlags, bool>;
-  
+
   //! Creates a Writer from scratch
   Standard_EXPORT STEPControl_Writer();
-  
+
   //! Creates a Writer from an already existing Session
   //! If <scratch> is True (D), clears already recorded data
-  Standard_EXPORT STEPControl_Writer(const Handle(XSControl_WorkSession)& WS, const Standard_Boolean scratch = Standard_True);
-  
+  Standard_EXPORT STEPControl_Writer(const Handle(XSControl_WorkSession)& WS,
+                                     const Standard_Boolean               scratch = Standard_True);
+
   //! Sets a length-measure value that
   //! will be written to uncertainty-measure-with-unit
   //! when the next shape is translated.
-  Standard_EXPORT void SetTolerance (const Standard_Real Tol);
-  
+  Standard_EXPORT void SetTolerance(const Standard_Real Tol);
+
   //! Unsets the tolerance formerly forced by SetTolerance
   Standard_EXPORT void UnsetTolerance();
-  
+
   //! Sets a specific session to <me>
-  Standard_EXPORT void SetWS (const Handle(XSControl_WorkSession)& WS, const Standard_Boolean scratch = Standard_True);
-  
+  Standard_EXPORT void SetWS(const Handle(XSControl_WorkSession)& WS,
+                             const Standard_Boolean               scratch = Standard_True);
+
   //! Returns the session used in <me>
   Standard_EXPORT Handle(XSControl_WorkSession) WS() const;
-  
+
   //! Returns the produced model. Produces a new one if not yet done
   //! or if <newone> is True
   //! This method allows for instance to edit product or header
   //! data before writing.
-  Standard_EXPORT Handle(StepData_StepModel) Model (const Standard_Boolean newone = Standard_False);
-  
+  Standard_EXPORT Handle(StepData_StepModel) Model(const Standard_Boolean newone = Standard_False);
+
   //! Translates shape sh to a STEP
   //! entity. mode defines the STEP entity type to be output:
   //! - STEPControlStd_AsIs translates a shape to its highest possible
@@ -91,25 +93,25 @@ public:
   //! shell_based_surface_model entity.
   //! - STEPControlStd_GeometricCurveSet translates a shape into a STEP
   //! geometric_curve_set entity.
-  Standard_EXPORT IFSelect_ReturnStatus Transfer
-                   (const TopoDS_Shape& sh,
-                    const STEPControl_StepModelType mode,
-                    const Standard_Boolean compgraph = Standard_True,
-                    const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT IFSelect_ReturnStatus
+    Transfer(const TopoDS_Shape&             sh,
+             const STEPControl_StepModelType mode,
+             const Standard_Boolean          compgraph   = Standard_True,
+             const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
   //! Translates shape sh to a STEP entity
-  Standard_EXPORT IFSelect_ReturnStatus Transfer
-                   (const TopoDS_Shape& sh,
-                    const STEPControl_StepModelType mode,
-                    const DESTEP_Parameters& theParams,
-                    const Standard_Boolean compgraph = Standard_True,
-                    const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT IFSelect_ReturnStatus
+    Transfer(const TopoDS_Shape&             sh,
+             const STEPControl_StepModelType mode,
+             const DESTEP_Parameters&        theParams,
+             const Standard_Boolean          compgraph   = Standard_True,
+             const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
   //! Writes a STEP model in the file identified by filename.
-  Standard_EXPORT IFSelect_ReturnStatus Write (const Standard_CString theFileName);
+  Standard_EXPORT IFSelect_ReturnStatus Write(const Standard_CString theFileName);
 
   //! Writes a STEP model in the std::ostream.
-  Standard_EXPORT IFSelect_ReturnStatus WriteStream (std::ostream& theOStream);
+  Standard_EXPORT IFSelect_ReturnStatus WriteStream(std::ostream& theOStream);
 
   //! Displays the statistics for the
   //! last translation. what defines the kind of statistics that are displayed:
@@ -131,7 +133,8 @@ public:
   //! - 5 gives the number of pairs (STEP or result type and status),
   //! - 6 gives the number of pairs (STEP or result type and status)
   //! AND the list of entity numbers in the STEP model.
-  Standard_EXPORT void PrintStatsTransfer (const Standard_Integer what, const Standard_Integer mode = 0) const;
+  Standard_EXPORT void PrintStatsTransfer(const Standard_Integer what,
+                                          const Standard_Integer mode = 0) const;
 
   //! Sets parameters for shape processing.
   //! @param theParameters the parameters for shape processing.
@@ -149,7 +152,7 @@ public:
   //! @param theParameters the parameters for shape processing.
   //! @param theAdditionalParameters the additional parameters for shape processing.
   Standard_EXPORT void SetShapeFixParameters(const DE_ShapeFixParameters& theParameters,
-                                             const ParameterMap&          theAdditionalParameters = {});
+                                             const ParameterMap& theAdditionalParameters = {});
 
   //! Returns parameters for shape processing that was set by SetParameters() method.
   //! @return the parameters for shape processing. Empty map if no parameters were set.

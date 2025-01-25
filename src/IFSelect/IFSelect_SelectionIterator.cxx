@@ -11,44 +11,53 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IFSelect_Selection.hxx>
 #include <IFSelect_SelectionIterator.hxx>
 #include <Standard_NoSuchObject.hxx>
 
-IFSelect_SelectionIterator::IFSelect_SelectionIterator ()
+IFSelect_SelectionIterator::IFSelect_SelectionIterator()
 {
   thecurr = 1;
   thelist = new IFSelect_HSeqOfSelection();
 }
 
-    IFSelect_SelectionIterator::IFSelect_SelectionIterator
-  (const Handle(IFSelect_Selection)& sel)
+IFSelect_SelectionIterator::IFSelect_SelectionIterator(const Handle(IFSelect_Selection)& sel)
 {
   thecurr = 1;
   thelist = new IFSelect_HSeqOfSelection();
   sel->FillIterator(*this);
 }
 
-    void  IFSelect_SelectionIterator::AddFromIter (IFSelect_SelectionIterator& iter)
-      {  for (; iter.More(); iter.Next()) AddItem(iter.Value());  }
-
-    void  IFSelect_SelectionIterator::AddItem
-  (const Handle(IFSelect_Selection)& sel)
-      {  if (!sel.IsNull()) thelist->Append(sel);  }
-
-    void  IFSelect_SelectionIterator::AddList
-  (const IFSelect_TSeqOfSelection& list)
+void IFSelect_SelectionIterator::AddFromIter(IFSelect_SelectionIterator& iter)
 {
-  Standard_Integer nb = list.Length();  // <list> Pas Handle  <thelist> Handle
-  for (Standard_Integer i = 1; i <= nb; i ++) thelist->Append(list.Value(i));
+  for (; iter.More(); iter.Next())
+    AddItem(iter.Value());
 }
 
-    Standard_Boolean  IFSelect_SelectionIterator::More () const 
-      {  return (thecurr <= thelist->Length());  }
+void IFSelect_SelectionIterator::AddItem(const Handle(IFSelect_Selection)& sel)
+{
+  if (!sel.IsNull())
+    thelist->Append(sel);
+}
 
-    void  IFSelect_SelectionIterator::Next () 
-      {  thecurr ++;  }
+void IFSelect_SelectionIterator::AddList(const IFSelect_TSeqOfSelection& list)
+{
+  Standard_Integer nb = list.Length(); // <list> Pas Handle  <thelist> Handle
+  for (Standard_Integer i = 1; i <= nb; i++)
+    thelist->Append(list.Value(i));
+}
 
-    const Handle(IFSelect_Selection)&  IFSelect_SelectionIterator::Value () const 
-      {  return thelist->Value(thecurr);  }
+Standard_Boolean IFSelect_SelectionIterator::More() const
+{
+  return (thecurr <= thelist->Length());
+}
+
+void IFSelect_SelectionIterator::Next()
+{
+  thecurr++;
+}
+
+const Handle(IFSelect_Selection)& IFSelect_SelectionIterator::Value() const
+{
+  return thelist->Value(thecurr);
+}

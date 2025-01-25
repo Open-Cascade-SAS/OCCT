@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -18,23 +18,16 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedPointSet, StepVisual_TessellatedItem)
 
-//=======================================================================
-//function : StepVisual_TessellatedPointSet
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepVisual_TessellatedPointSet::StepVisual_TessellatedPointSet ()
-{
-}
+StepVisual_TessellatedPointSet::StepVisual_TessellatedPointSet() {}
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedPointSet::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                           const Handle(StepVisual_CoordinatesList)& theCoordinates,
-                                           const Handle(TColStd_HArray1OfInteger)& thePointList)
+void StepVisual_TessellatedPointSet::Init(
+  const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
+  const Handle(StepVisual_CoordinatesList)& theCoordinates,
+  const Handle(TColStd_HArray1OfInteger)&   thePointList)
 {
   StepVisual_TessellatedItem::Init(theRepresentationItem_Name);
 
@@ -43,51 +36,37 @@ void StepVisual_TessellatedPointSet::Init (const Handle(TCollection_HAsciiString
   myPointList = thePointList;
 }
 
-//=======================================================================
-//function : Coordinates
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepVisual_CoordinatesList) StepVisual_TessellatedPointSet::Coordinates () const
+Handle(StepVisual_CoordinatesList) StepVisual_TessellatedPointSet::Coordinates() const
 {
   return myCoordinates;
 }
 
-//=======================================================================
-//function : SetCoordinates
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedPointSet::SetCoordinates(const Handle(StepVisual_CoordinatesList)& theCoordinates)
+void StepVisual_TessellatedPointSet::SetCoordinates(
+  const Handle(StepVisual_CoordinatesList)& theCoordinates)
 {
   myCoordinates = theCoordinates;
 }
 
-//=======================================================================
-//function : PointList
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TColStd_HArray1OfInteger) StepVisual_TessellatedPointSet::PointList () const
+Handle(TColStd_HArray1OfInteger) StepVisual_TessellatedPointSet::PointList() const
 {
   return myPointList;
 }
 
-//=======================================================================
-//function : SetPointList
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedPointSet::SetPointList(const Handle(TColStd_HArray1OfInteger)& thePointList)
+void StepVisual_TessellatedPointSet::SetPointList(
+  const Handle(TColStd_HArray1OfInteger)& thePointList)
 {
   myPointList = thePointList;
 }
 
-
-//=======================================================================
-//function : NbPointList
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer StepVisual_TessellatedPointSet::NbPointList() const
 {
@@ -98,11 +77,7 @@ Standard_Integer StepVisual_TessellatedPointSet::NbPointList() const
   return myPointList->Length();
 }
 
-
-//=======================================================================
-//function : PointListValue
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer StepVisual_TessellatedPointSet::PointListValue(const Standard_Integer theNum) const
 {

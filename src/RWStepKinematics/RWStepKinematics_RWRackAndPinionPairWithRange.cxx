@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -26,163 +26,205 @@
 #include <StepKinematics_KinematicJoint.hxx>
 #include <Standard_Real.hxx>
 
-//=======================================================================
-//function : RWStepKinematics_RWRackAndPinionPairWithRange
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 RWStepKinematics_RWRackAndPinionPairWithRange::RWStepKinematics_RWRackAndPinionPairWithRange() {}
 
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  :
-//=======================================================================
-void RWStepKinematics_RWRackAndPinionPairWithRange::ReadStep (const Handle(StepData_StepReaderData)& theData,
-                                                              const Standard_Integer theNum,
-                                                              Handle(Interface_Check)& theArch,
-                                                              const Handle(StepKinematics_RackAndPinionPairWithRange)& theEnt) const
+void RWStepKinematics_RWRackAndPinionPairWithRange::ReadStep(
+  const Handle(StepData_StepReaderData)&                   theData,
+  const Standard_Integer                                   theNum,
+  Handle(Interface_Check)&                                 theArch,
+  const Handle(StepKinematics_RackAndPinionPairWithRange)& theEnt) const
 {
   // Check number of parameters
-  if ( ! theData->CheckNbParams(theNum,9,theArch,"rack_and_pinion_pair_with_range") ) return;
+  if (!theData->CheckNbParams(theNum, 9, theArch, "rack_and_pinion_pair_with_range"))
+    return;
 
   // Inherited fields of RepresentationItem
 
   Handle(TCollection_HAsciiString) aRepresentationItem_Name;
-  theData->ReadString (theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
+  theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of ItemDefinedTransformation
 
   Handle(TCollection_HAsciiString) aItemDefinedTransformation_Name;
-  theData->ReadString (theNum, 2, "item_defined_transformation.name", theArch, aItemDefinedTransformation_Name);
+  theData->ReadString(theNum,
+                      2,
+                      "item_defined_transformation.name",
+                      theArch,
+                      aItemDefinedTransformation_Name);
 
   Handle(TCollection_HAsciiString) aItemDefinedTransformation_Description;
-  Standard_Boolean hasItemDefinedTransformation_Description = Standard_True;
-  if ( theData->IsParamDefined (theNum,3) ) {
-    theData->ReadString (theNum, 3, "item_defined_transformation.description", theArch, aItemDefinedTransformation_Description);
+  Standard_Boolean                 hasItemDefinedTransformation_Description = Standard_True;
+  if (theData->IsParamDefined(theNum, 3))
+  {
+    theData->ReadString(theNum,
+                        3,
+                        "item_defined_transformation.description",
+                        theArch,
+                        aItemDefinedTransformation_Description);
   }
-  else {
+  else
+  {
     hasItemDefinedTransformation_Description = Standard_False;
     aItemDefinedTransformation_Description.Nullify();
   }
 
   Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem1;
-  theData->ReadEntity (theNum, 4, "item_defined_transformation.transform_item1", theArch, STANDARD_TYPE(StepRepr_RepresentationItem), aItemDefinedTransformation_TransformItem1);
+  theData->ReadEntity(theNum,
+                      4,
+                      "item_defined_transformation.transform_item1",
+                      theArch,
+                      STANDARD_TYPE(StepRepr_RepresentationItem),
+                      aItemDefinedTransformation_TransformItem1);
 
   Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem2;
-  theData->ReadEntity (theNum, 5, "item_defined_transformation.transform_item2", theArch, STANDARD_TYPE(StepRepr_RepresentationItem), aItemDefinedTransformation_TransformItem2);
+  theData->ReadEntity(theNum,
+                      5,
+                      "item_defined_transformation.transform_item2",
+                      theArch,
+                      STANDARD_TYPE(StepRepr_RepresentationItem),
+                      aItemDefinedTransformation_TransformItem2);
 
   // Inherited fields of KinematicPair
 
   Handle(StepKinematics_KinematicJoint) aKinematicPair_Joint;
-  theData->ReadEntity (theNum, 6, "kinematic_pair.joint", theArch, STANDARD_TYPE(StepKinematics_KinematicJoint), aKinematicPair_Joint);
+  theData->ReadEntity(theNum,
+                      6,
+                      "kinematic_pair.joint",
+                      theArch,
+                      STANDARD_TYPE(StepKinematics_KinematicJoint),
+                      aKinematicPair_Joint);
 
   // Inherited fields of RackAndPinionPair
 
   Standard_Real aRackAndPinionPair_PinionRadius;
-  theData->ReadReal (theNum, 7, "rack_and_pinion_pair.pinion_radius", theArch, aRackAndPinionPair_PinionRadius);
+  theData->ReadReal(theNum,
+                    7,
+                    "rack_and_pinion_pair.pinion_radius",
+                    theArch,
+                    aRackAndPinionPair_PinionRadius);
 
   // Own fields of RackAndPinionPairWithRange
 
-  Standard_Real aLowerLimitRackDisplacement;
+  Standard_Real    aLowerLimitRackDisplacement;
   Standard_Boolean hasLowerLimitRackDisplacement = Standard_True;
-  if ( theData->IsParamDefined (theNum,8) ) {
-    theData->ReadReal (theNum, 8, "lower_limit_rack_displacement", theArch, aLowerLimitRackDisplacement);
+  if (theData->IsParamDefined(theNum, 8))
+  {
+    theData->ReadReal(theNum,
+                      8,
+                      "lower_limit_rack_displacement",
+                      theArch,
+                      aLowerLimitRackDisplacement);
   }
-  else {
+  else
+  {
     hasLowerLimitRackDisplacement = Standard_False;
-    aLowerLimitRackDisplacement = 0;
+    aLowerLimitRackDisplacement   = 0;
   }
 
-  Standard_Real aUpperLimitRackDisplacement;
+  Standard_Real    aUpperLimitRackDisplacement;
   Standard_Boolean hasUpperLimitRackDisplacement = Standard_True;
-  if ( theData->IsParamDefined (theNum,9) ) {
-    theData->ReadReal (theNum, 9, "upper_limit_rack_displacement", theArch, aUpperLimitRackDisplacement);
+  if (theData->IsParamDefined(theNum, 9))
+  {
+    theData->ReadReal(theNum,
+                      9,
+                      "upper_limit_rack_displacement",
+                      theArch,
+                      aUpperLimitRackDisplacement);
   }
-  else {
+  else
+  {
     hasUpperLimitRackDisplacement = Standard_False;
-    aUpperLimitRackDisplacement = 0;
+    aUpperLimitRackDisplacement   = 0;
   }
 
   // Initialize entity
   theEnt->Init(aRepresentationItem_Name,
-            aItemDefinedTransformation_Name,
-            hasItemDefinedTransformation_Description,
-            aItemDefinedTransformation_Description,
-            aItemDefinedTransformation_TransformItem1,
-            aItemDefinedTransformation_TransformItem2,
-            aKinematicPair_Joint,
-            aRackAndPinionPair_PinionRadius,
-            hasLowerLimitRackDisplacement,
-            aLowerLimitRackDisplacement,
-            hasUpperLimitRackDisplacement,
-            aUpperLimitRackDisplacement);
+               aItemDefinedTransformation_Name,
+               hasItemDefinedTransformation_Description,
+               aItemDefinedTransformation_Description,
+               aItemDefinedTransformation_TransformItem1,
+               aItemDefinedTransformation_TransformItem2,
+               aKinematicPair_Joint,
+               aRackAndPinionPair_PinionRadius,
+               hasLowerLimitRackDisplacement,
+               aLowerLimitRackDisplacement,
+               hasUpperLimitRackDisplacement,
+               aUpperLimitRackDisplacement);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  :
-//=======================================================================
-void RWStepKinematics_RWRackAndPinionPairWithRange::WriteStep (StepData_StepWriter& theSW,
-                                                               const Handle(StepKinematics_RackAndPinionPairWithRange)& theEnt) const
+//=================================================================================================
+
+void RWStepKinematics_RWRackAndPinionPairWithRange::WriteStep(
+  StepData_StepWriter&                                     theSW,
+  const Handle(StepKinematics_RackAndPinionPairWithRange)& theEnt) const
 {
 
   // Own fields of RepresentationItem
 
-  theSW.Send (theEnt->Name());
+  theSW.Send(theEnt->Name());
 
   // Inherited fields of ItemDefinedTransformation
 
-  theSW.Send (theEnt->ItemDefinedTransformation()->Name());
+  theSW.Send(theEnt->ItemDefinedTransformation()->Name());
 
-  if ( theEnt->ItemDefinedTransformation()->HasDescription() ) {
-    theSW.Send (theEnt->ItemDefinedTransformation()->Description());
+  if (theEnt->ItemDefinedTransformation()->HasDescription())
+  {
+    theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
-  else theSW.SendUndef();
+  else
+    theSW.SendUndef();
 
-  theSW.Send (theEnt->ItemDefinedTransformation()->TransformItem1());
+  theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 
-  theSW.Send (theEnt->ItemDefinedTransformation()->TransformItem2());
+  theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem2());
 
   // Own fields of KinematicPair
 
-  theSW.Send (theEnt->Joint());
+  theSW.Send(theEnt->Joint());
 
   // Own fields of RackAndPinionPair
 
-  theSW.Send (theEnt->PinionRadius());
+  theSW.Send(theEnt->PinionRadius());
 
   // Own fields of RackAndPinionPairWithRange
 
-  if ( theEnt->HasLowerLimitRackDisplacement() ) {
-    theSW.Send (theEnt->LowerLimitRackDisplacement());
+  if (theEnt->HasLowerLimitRackDisplacement())
+  {
+    theSW.Send(theEnt->LowerLimitRackDisplacement());
   }
-  else theSW.SendUndef();
+  else
+    theSW.SendUndef();
 
-  if ( theEnt->HasUpperLimitRackDisplacement() ) {
-    theSW.Send (theEnt->UpperLimitRackDisplacement());
+  if (theEnt->HasUpperLimitRackDisplacement())
+  {
+    theSW.Send(theEnt->UpperLimitRackDisplacement());
   }
-  else theSW.SendUndef();
+  else
+    theSW.SendUndef();
 }
 
-//=======================================================================
-//function : Share
-//purpose  :
-//=======================================================================
-void RWStepKinematics_RWRackAndPinionPairWithRange::Share (const Handle(StepKinematics_RackAndPinionPairWithRange)& theEnt,
-                                                           Interface_EntityIterator& iter) const
+//=================================================================================================
+
+void RWStepKinematics_RWRackAndPinionPairWithRange::Share(
+  const Handle(StepKinematics_RackAndPinionPairWithRange)& theEnt,
+  Interface_EntityIterator&                                iter) const
 {
 
   // Inherited fields of RepresentationItem
 
   // Inherited fields of ItemDefinedTransformation
 
-  iter.AddItem (theEnt->ItemDefinedTransformation()->TransformItem1());
+  iter.AddItem(theEnt->ItemDefinedTransformation()->TransformItem1());
 
-  iter.AddItem (theEnt->ItemDefinedTransformation()->TransformItem2());
+  iter.AddItem(theEnt->ItemDefinedTransformation()->TransformItem2());
 
   // Inherited fields of KinematicPair
 
-  iter.AddItem (theEnt->StepKinematics_KinematicPair::Joint());
+  iter.AddItem(theEnt->StepKinematics_KinematicPair::Joint());
 
   // Inherited fields of RackAndPinionPair
 

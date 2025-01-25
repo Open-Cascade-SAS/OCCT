@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/ViewControl_TableModel.hxx>
 
@@ -19,7 +19,7 @@
 // function : SetModelValues
 // purpose :
 // =======================================================================
-void ViewControl_TableModel::SetModelValues (ViewControl_TableModelValues* theModelValues)
+void ViewControl_TableModel::SetModelValues(ViewControl_TableModelValues* theModelValues)
 {
   if (myModelValues)
     delete myModelValues;
@@ -36,47 +36,49 @@ int ViewControl_TableModel::columnCount(const QModelIndex& theParent) const
   if (!myModelValues)
     return 0;
 
-  return myModelValues->ColumnCount (theParent);
+  return myModelValues->ColumnCount(theParent);
 }
 
 // =======================================================================
 // function : rowCount
 // purpose :
 // =======================================================================
-int ViewControl_TableModel::rowCount(const QModelIndex& theParent ) const
+int ViewControl_TableModel::rowCount(const QModelIndex& theParent) const
 {
   if (!myModelValues)
     return 0;
 
-  return myModelValues->RowCount (theParent);
+  return myModelValues->RowCount(theParent);
 }
 
 // =======================================================================
 // function : data
 // purpose :
 // =======================================================================
-QVariant ViewControl_TableModel::data (const QModelIndex& theIndex, int theRole) const
+QVariant ViewControl_TableModel::data(const QModelIndex& theIndex, int theRole) const
 {
   if (!myModelValues)
     return QVariant();
 
   int aRow = theIndex.row(), aColumn = theIndex.column();
-  return myModelValues->Data (aRow, aColumn, theRole);
+  return myModelValues->Data(aRow, aColumn, theRole);
 }
 
 // =======================================================================
 // function : setData
 // purpose :
 // =======================================================================
-bool ViewControl_TableModel::setData (const QModelIndex& theIndex, const QVariant& theValue, int theRole)
+bool ViewControl_TableModel::setData(const QModelIndex& theIndex,
+                                     const QVariant&    theValue,
+                                     int                theRole)
 {
   if (!myModelValues)
     return false;
 
-  int aRow = theIndex.row(), aColumn = theIndex.column();
-  bool aResult = myModelValues->SetData (aRow, aColumn, theValue, theRole);
+  int  aRow = theIndex.row(), aColumn = theIndex.column();
+  bool aResult = myModelValues->SetData(aRow, aColumn, theValue, theRole);
 
-  emit dataChanged (theIndex, theIndex);
+  emit dataChanged(theIndex, theIndex);
 
   return aResult;
 }

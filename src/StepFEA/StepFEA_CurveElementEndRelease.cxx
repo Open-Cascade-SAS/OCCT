@@ -17,23 +17,17 @@
 
 #include <StepFEA_CurveElementEndRelease.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_CurveElementEndRelease,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_CurveElementEndRelease, Standard_Transient)
 
-//=======================================================================
-//function : StepFEA_CurveElementEndRelease
-//purpose  : 
-//=======================================================================
-StepFEA_CurveElementEndRelease::StepFEA_CurveElementEndRelease ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepFEA_CurveElementEndRelease::StepFEA_CurveElementEndRelease() {}
 
-void StepFEA_CurveElementEndRelease::Init (const StepFEA_CurveElementEndCoordinateSystem &aCoordinateSystem,
-                                           const Handle(StepElement_HArray1OfCurveElementEndReleasePacket) &aReleases)
+//=================================================================================================
+
+void StepFEA_CurveElementEndRelease::Init(
+  const StepFEA_CurveElementEndCoordinateSystem&                   aCoordinateSystem,
+  const Handle(StepElement_HArray1OfCurveElementEndReleasePacket)& aReleases)
 {
 
   theCoordinateSystem = aCoordinateSystem;
@@ -41,42 +35,33 @@ void StepFEA_CurveElementEndRelease::Init (const StepFEA_CurveElementEndCoordina
   theReleases = aReleases;
 }
 
-//=======================================================================
-//function : CoordinateSystem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepFEA_CurveElementEndCoordinateSystem StepFEA_CurveElementEndRelease::CoordinateSystem () const
+StepFEA_CurveElementEndCoordinateSystem StepFEA_CurveElementEndRelease::CoordinateSystem() const
 {
   return theCoordinateSystem;
 }
 
-//=======================================================================
-//function : SetCoordinateSystem
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_CurveElementEndRelease::SetCoordinateSystem (const StepFEA_CurveElementEndCoordinateSystem &aCoordinateSystem)
+void StepFEA_CurveElementEndRelease::SetCoordinateSystem(
+  const StepFEA_CurveElementEndCoordinateSystem& aCoordinateSystem)
 {
   theCoordinateSystem = aCoordinateSystem;
 }
 
-//=======================================================================
-//function : Releases
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepElement_HArray1OfCurveElementEndReleasePacket) StepFEA_CurveElementEndRelease::Releases () const
+Handle(StepElement_HArray1OfCurveElementEndReleasePacket) StepFEA_CurveElementEndRelease::Releases()
+  const
 {
   return theReleases;
 }
 
-//=======================================================================
-//function : SetReleases
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_CurveElementEndRelease::SetReleases (const Handle(StepElement_HArray1OfCurveElementEndReleasePacket) &aReleases)
+void StepFEA_CurveElementEndRelease::SetReleases(
+  const Handle(StepElement_HArray1OfCurveElementEndReleasePacket)& aReleases)
 {
   theReleases = aReleases;
 }

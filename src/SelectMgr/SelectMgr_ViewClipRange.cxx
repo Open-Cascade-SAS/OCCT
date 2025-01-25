@@ -19,14 +19,15 @@
 // function : AddClippingPlanes
 // purpose  :
 // =======================================================================
-void SelectMgr_ViewClipRange::AddClippingPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes,
-                                                 const gp_Ax1& thePickRay)
+void SelectMgr_ViewClipRange::AddClippingPlanes(const Graphic3d_SequenceOfHClipPlane& thePlanes,
+                                                const gp_Ax1&                         thePickRay)
 {
   const gp_Dir& aViewRayDir = thePickRay.Direction();
   const gp_Pnt& aNearPnt    = thePickRay.Location();
 
   Graphic3d_Vec4d aPlaneABCD;
-  for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (thePlanes); aPlaneIt.More(); aPlaneIt.Next())
+  for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt(thePlanes); aPlaneIt.More();
+       aPlaneIt.Next())
   {
     const Handle(Graphic3d_ClipPlane)& aClipPlane = aPlaneIt.Value();
     if (!aClipPlane->IsOn())
@@ -34,19 +35,20 @@ void SelectMgr_ViewClipRange::AddClippingPlanes (const Graphic3d_SequenceOfHClip
       continue;
     }
 
-    Bnd_Range aSubRange (RealFirst(), RealLast());
-    for (const Graphic3d_ClipPlane* aSubPlaneIter = aClipPlane.get(); aSubPlaneIter != NULL; aSubPlaneIter = aSubPlaneIter->ChainNextPlane().get())
+    Bnd_Range aSubRange(RealFirst(), RealLast());
+    for (const Graphic3d_ClipPlane* aSubPlaneIter = aClipPlane.get(); aSubPlaneIter != NULL;
+         aSubPlaneIter                            = aSubPlaneIter->ChainNextPlane().get())
     {
       const gp_Pln aGeomPlane = aSubPlaneIter->ToPlane();
-      aGeomPlane.Coefficients (aPlaneABCD[0], aPlaneABCD[1], aPlaneABCD[2], aPlaneABCD[3]);
+      aGeomPlane.Coefficients(aPlaneABCD[0], aPlaneABCD[1], aPlaneABCD[2], aPlaneABCD[3]);
 
       const gp_XYZ& aPlaneDirXYZ = aGeomPlane.Axis().Direction().XYZ();
-      Standard_Real aDotProduct = aViewRayDir.XYZ().Dot (aPlaneDirXYZ);
-      Standard_Real aDistance   = -aNearPnt.XYZ().Dot (aPlaneDirXYZ) - aPlaneABCD[3];
-      Standard_Real aDistToPln  = 0.0;
+      Standard_Real aDotProduct  = aViewRayDir.XYZ().Dot(aPlaneDirXYZ);
+      Standard_Real aDistance    = -aNearPnt.XYZ().Dot(aPlaneDirXYZ) - aPlaneABCD[3];
+      Standard_Real aDistToPln   = 0.0;
 
       // check whether the pick line is parallel to clip plane
-      if (Abs (aDotProduct) < Precision::Angular())
+      if (Abs(aDotProduct) < Precision::Angular())
       {
         if (aDistance < 0.0)
         {
@@ -61,7 +63,7 @@ void SelectMgr_ViewClipRange::AddClippingPlanes (const Graphic3d_SequenceOfHClip
         const Standard_Real aParam = aDistance / aDotProduct;
 
         const gp_Pnt anIntersectionPnt = aNearPnt.XYZ() + aViewRayDir.XYZ() * aParam;
-        aDistToPln = anIntersectionPnt.Distance (aNearPnt);
+        aDistToPln                     = anIntersectionPnt.Distance(aNearPnt);
         if (aParam < 0.0)
         {
           // the plane is "behind" the ray
@@ -74,30 +76,29 @@ void SelectMgr_ViewClipRange::AddClippingPlanes (const Graphic3d_SequenceOfHClip
       {
         if (aDotProduct < 0.0)
         {
-          ChangeUnclipRange().TrimTo (aDistToPln);
+          ChangeUnclipRange().TrimTo(aDistToPln);
         }
         else
         {
-          ChangeUnclipRange().TrimFrom (aDistToPln);
+          ChangeUnclipRange().TrimFrom(aDistToPln);
         }
       }
       else
       {
         if (aDotProduct < 0.0)
         {
-          aSubRange.TrimFrom (aDistToPln);
+          aSubRange.TrimFrom(aDistToPln);
         }
         else
         {
-          aSubRange.TrimTo (aDistToPln);
+          aSubRange.TrimTo(aDistToPln);
         }
       }
     }
 
-    if (!aSubRange.IsVoid()
-      && aClipPlane->IsChain())
+    if (!aSubRange.IsVoid() && aClipPlane->IsChain())
     {
-      AddClipSubRange (aSubRange);
+      AddClipSubRange(aSubRange);
     }
   }
 }
@@ -106,14 +107,15 @@ void SelectMgr_ViewClipRange::AddClippingPlanes (const Graphic3d_SequenceOfHClip
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void SelectMgr_ViewClipRange::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void SelectMgr_ViewClipRange::DumpJson(Standard_OStream& theOStream,
+                                       Standard_Integer  theDepth) const
 {
-  OCCT_DUMP_CLASS_BEGIN (theOStream, SelectMgr_ViewClipRange)
+  OCCT_DUMP_CLASS_BEGIN(theOStream, SelectMgr_ViewClipRange)
 
   for (size_t aRangeIter = 0; aRangeIter < myClipRanges.size(); ++aRangeIter)
   {
     Bnd_Range aClipRange = myClipRanges[aRangeIter];
-    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &aClipRange)
+    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &aClipRange)
   }
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myUnclipRange)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myUnclipRange)
 }

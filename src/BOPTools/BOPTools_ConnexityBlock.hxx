@@ -19,55 +19,48 @@
 #include <TopTools_ListOfShape.hxx>
 
 //=======================================================================
-//class : ConnexityBlock
-//purpose  : 
+// class : ConnexityBlock
+// purpose  :
 //=======================================================================
-class BOPTools_ConnexityBlock {
- public:
-  BOPTools_ConnexityBlock()    : 
-    myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
-    myRegular(Standard_True),
-    myShapes(myAllocator),
-    myLoops(myAllocator)    {
-  };
+class BOPTools_ConnexityBlock
+{
+public:
+  BOPTools_ConnexityBlock()
+      : myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
+        myRegular(Standard_True),
+        myShapes(myAllocator),
+        myLoops(myAllocator) {};
   //
-  BOPTools_ConnexityBlock(const Handle(NCollection_BaseAllocator)& theAllocator):
-	myAllocator(theAllocator),  
-	myRegular(Standard_True),
-    myShapes(myAllocator),
-    myLoops(myAllocator)  {
-  };
-  //
-  const TopTools_ListOfShape& Shapes()const {
-    return myShapes;
-  };
-  //
-  TopTools_ListOfShape& ChangeShapes() {
-    return myShapes;
-  };
-  //
-  void SetRegular(const Standard_Boolean theFlag) {
-    myRegular=theFlag;
-  }
-  //
-  Standard_Boolean IsRegular()const {
-    return myRegular;
-  }
-  //
-  const TopTools_ListOfShape& Loops()const {
-    return myLoops;
-  };
-  //
-  TopTools_ListOfShape& ChangeLoops() {
-    return myLoops;
-  };
-  //
- protected:
-  Handle(NCollection_BaseAllocator) myAllocator;
-  Standard_Boolean myRegular;
-  TopTools_ListOfShape myShapes;
-  TopTools_ListOfShape myLoops;
-};
+  BOPTools_ConnexityBlock(const Handle(NCollection_BaseAllocator)& theAllocator)
+      : myAllocator(theAllocator),
+        myRegular(Standard_True),
+        myShapes(myAllocator),
+        myLoops(myAllocator) {};
 
+  //
+  const TopTools_ListOfShape& Shapes() const { return myShapes; };
+
+  //
+  TopTools_ListOfShape& ChangeShapes() { return myShapes; };
+
+  //
+  void SetRegular(const Standard_Boolean theFlag) { myRegular = theFlag; }
+
+  //
+  Standard_Boolean IsRegular() const { return myRegular; }
+
+  //
+  const TopTools_ListOfShape& Loops() const { return myLoops; };
+
+  //
+  TopTools_ListOfShape& ChangeLoops() { return myLoops; };
+
+  //
+protected:
+  Handle(NCollection_BaseAllocator) myAllocator;
+  Standard_Boolean                  myRegular;
+  TopTools_ListOfShape              myShapes;
+  TopTools_ListOfShape              myLoops;
+};
 
 #endif

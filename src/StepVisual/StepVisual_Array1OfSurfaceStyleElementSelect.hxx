@@ -20,7 +20,7 @@
 #include <StepVisual_SurfaceStyleElementSelect.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<StepVisual_SurfaceStyleElementSelect> StepVisual_Array1OfSurfaceStyleElementSelect;
-
+typedef NCollection_Array1<StepVisual_SurfaceStyleElementSelect>
+  StepVisual_Array1OfSurfaceStyleElementSelect;
 
 #endif

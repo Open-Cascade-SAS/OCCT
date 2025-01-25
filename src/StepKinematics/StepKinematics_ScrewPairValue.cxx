@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:16 2020 
+// Created on : Sat May 02 12:41:16 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -18,42 +18,32 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_ScrewPairValue, StepKinematics_PairValue)
 
-//=======================================================================
-//function : StepKinematics_ScrewPairValue
-//purpose  :
-//=======================================================================
-StepKinematics_ScrewPairValue::StepKinematics_ScrewPairValue ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_ScrewPairValue::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                          const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                                          const Standard_Real theActualRotation)
+StepKinematics_ScrewPairValue::StepKinematics_ScrewPairValue() {}
+
+//=================================================================================================
+
+void StepKinematics_ScrewPairValue::Init(
+  const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
+  const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
+  const Standard_Real                         theActualRotation)
 {
-  StepKinematics_PairValue::Init(theRepresentationItem_Name,
-                                 thePairValue_AppliesToPair);
+  StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
   myActualRotation = theActualRotation;
 }
 
-//=======================================================================
-//function : ActualRotation
-//purpose  :
-//=======================================================================
-Standard_Real StepKinematics_ScrewPairValue::ActualRotation () const
+//=================================================================================================
+
+Standard_Real StepKinematics_ScrewPairValue::ActualRotation() const
 {
   return myActualRotation;
 }
 
-//=======================================================================
-//function : SetActualRotation
-//purpose  :
-//=======================================================================
-void StepKinematics_ScrewPairValue::SetActualRotation (const Standard_Real theActualRotation)
+//=================================================================================================
+
+void StepKinematics_ScrewPairValue::SetActualRotation(const Standard_Real theActualRotation)
 {
   myActualRotation = theActualRotation;
 }

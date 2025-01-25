@@ -18,24 +18,18 @@
 #include <StepElement_ElementMaterial.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepElement_ElementMaterial,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_ElementMaterial, Standard_Transient)
 
-//=======================================================================
-//function : StepElement_ElementMaterial
-//purpose  : 
-//=======================================================================
-StepElement_ElementMaterial::StepElement_ElementMaterial ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepElement_ElementMaterial::StepElement_ElementMaterial() {}
 
-void StepElement_ElementMaterial::Init (const Handle(TCollection_HAsciiString) &aMaterialId,
-                                        const Handle(TCollection_HAsciiString) &aDescription,
-                                        const Handle(StepRepr_HArray1OfMaterialPropertyRepresentation) &aProperties)
+//=================================================================================================
+
+void StepElement_ElementMaterial::Init(
+  const Handle(TCollection_HAsciiString)&                         aMaterialId,
+  const Handle(TCollection_HAsciiString)&                         aDescription,
+  const Handle(StepRepr_HArray1OfMaterialPropertyRepresentation)& aProperties)
 {
 
   theMaterialId = aMaterialId;
@@ -45,62 +39,47 @@ void StepElement_ElementMaterial::Init (const Handle(TCollection_HAsciiString) &
   theProperties = aProperties;
 }
 
-//=======================================================================
-//function : MaterialId
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepElement_ElementMaterial::MaterialId () const
+Handle(TCollection_HAsciiString) StepElement_ElementMaterial::MaterialId() const
 {
   return theMaterialId;
 }
 
-//=======================================================================
-//function : SetMaterialId
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepElement_ElementMaterial::SetMaterialId (const Handle(TCollection_HAsciiString) &aMaterialId)
+void StepElement_ElementMaterial::SetMaterialId(const Handle(TCollection_HAsciiString)& aMaterialId)
 {
   theMaterialId = aMaterialId;
 }
 
-//=======================================================================
-//function : Description
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepElement_ElementMaterial::Description () const
+Handle(TCollection_HAsciiString) StepElement_ElementMaterial::Description() const
 {
   return theDescription;
 }
 
-//=======================================================================
-//function : SetDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepElement_ElementMaterial::SetDescription (const Handle(TCollection_HAsciiString) &aDescription)
+void StepElement_ElementMaterial::SetDescription(
+  const Handle(TCollection_HAsciiString)& aDescription)
 {
   theDescription = aDescription;
 }
 
-//=======================================================================
-//function : Properties
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepRepr_HArray1OfMaterialPropertyRepresentation) StepElement_ElementMaterial::Properties () const
+Handle(StepRepr_HArray1OfMaterialPropertyRepresentation) StepElement_ElementMaterial::Properties()
+  const
 {
   return theProperties;
 }
 
-//=======================================================================
-//function : SetProperties
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepElement_ElementMaterial::SetProperties (const Handle(StepRepr_HArray1OfMaterialPropertyRepresentation) &aProperties)
+void StepElement_ElementMaterial::SetProperties(
+  const Handle(StepRepr_HArray1OfMaterialPropertyRepresentation)& aProperties)
 {
   theProperties = aProperties;
 }

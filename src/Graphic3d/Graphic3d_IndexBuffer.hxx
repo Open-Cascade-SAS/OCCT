@@ -21,27 +21,26 @@ class Graphic3d_IndexBuffer : public Graphic3d_Buffer
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_IndexBuffer, Graphic3d_Buffer)
 public:
-
   //! Empty constructor.
-  Graphic3d_IndexBuffer (const Handle(NCollection_BaseAllocator)& theAlloc)
-  : Graphic3d_Buffer (theAlloc) {}
+  Graphic3d_IndexBuffer(const Handle(NCollection_BaseAllocator)& theAlloc)
+      : Graphic3d_Buffer(theAlloc)
+  {
+  }
 
   //! Allocates new empty index array
-  template<typename IndexType_t>
-  bool Init (const Standard_Integer theNbElems)
+  template <typename IndexType_t>
+  bool Init(const Standard_Integer theNbElems)
   {
     release();
     Stride = sizeof(IndexType_t);
-    if (Stride != sizeof(unsigned short)
-     && Stride != sizeof(unsigned int))
+    if (Stride != sizeof(unsigned short) && Stride != sizeof(unsigned int))
     {
       return false;
     }
 
     NbElements   = theNbElems;
     NbAttributes = 0;
-    if (NbElements != 0
-    && !Allocate (size_t(Stride) * size_t(NbElements)))
+    if (NbElements != 0 && !Allocate(size_t(Stride) * size_t(NbElements)))
     {
       release();
       return false;
@@ -50,40 +49,35 @@ public:
   }
 
   //! Allocates new empty index array
-  bool InitInt32 (const Standard_Integer theNbElems)
-  {
-    return Init<int> (theNbElems);
-  }
+  bool InitInt32(const Standard_Integer theNbElems) { return Init<int>(theNbElems); }
 
   //! Access index at specified position
-  Standard_Integer Index (const Standard_Integer theIndex) const
+  Standard_Integer Index(const Standard_Integer theIndex) const
   {
-    return Stride == sizeof(unsigned short)
-         ? Standard_Integer(Value<unsigned short> (theIndex))
-         : Standard_Integer(Value<unsigned int>   (theIndex));
+    return Stride == sizeof(unsigned short) ? Standard_Integer(Value<unsigned short>(theIndex))
+                                            : Standard_Integer(Value<unsigned int>(theIndex));
   }
 
   //! Change index at specified position
-  void SetIndex (const Standard_Integer theIndex,
-                 const Standard_Integer theValue)
+  void SetIndex(const Standard_Integer theIndex, const Standard_Integer theValue)
   {
     if (Stride == sizeof(unsigned short))
     {
-      ChangeValue<unsigned short> (theIndex) = (unsigned short )theValue;
+      ChangeValue<unsigned short>(theIndex) = (unsigned short)theValue;
     }
     else
     {
-      ChangeValue<unsigned int>   (theIndex) = (unsigned int   )theValue;
+      ChangeValue<unsigned int>(theIndex) = (unsigned int)theValue;
     }
   }
 
   //! Dumps the content of me into the stream
-  virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE
+  virtual void DumpJson(Standard_OStream& theOStream,
+                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE
   {
-    OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-    OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Graphic3d_Buffer)
+    OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+    OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Graphic3d_Buffer)
   }
-
 };
 
 DEFINE_STANDARD_HANDLE(Graphic3d_IndexBuffer, Graphic3d_Buffer)

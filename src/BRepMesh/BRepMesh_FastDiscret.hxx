@@ -16,11 +16,14 @@
 
 #include <IMeshTools_Parameters.hxx>
 
-class Standard_DEPRECATED("The class BRepMesh_FastDiscret is deprecated. Please use IMeshTools package") BRepMesh_FastDiscret
+class Standard_DEPRECATED(
+  "The class BRepMesh_FastDiscret is deprecated. Please use IMeshTools package")
+  BRepMesh_FastDiscret
 {
 public:
-  Standard_DEPRECATED("The class BRepMesh_FastDiscret is deprecated. Please use IMeshTools package")
-  typedef  IMeshTools_Parameters  Parameters;
+  Standard_DEPRECATED("The class BRepMesh_FastDiscret is deprecated. Please use IMeshTools "
+                      "package")
+  typedef IMeshTools_Parameters Parameters;
 };
 
 #endif

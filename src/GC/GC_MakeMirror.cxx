@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GC_MakeMirror.hxx>
 #include <Geom_Transformation.hxx>
 #include <gp_Dir.hxx>
@@ -25,7 +24,8 @@
 //=========================================================================
 //   Creation d une symetrie de Geom par rapport a un point.              +
 //=========================================================================
-GC_MakeMirror::GC_MakeMirror(const gp_Pnt&  Point ) {
+GC_MakeMirror::GC_MakeMirror(const gp_Pnt& Point)
+{
   TheMirror = new Geom_Transformation();
   TheMirror->SetMirror(Point);
 }
@@ -34,7 +34,8 @@ GC_MakeMirror::GC_MakeMirror(const gp_Pnt&  Point ) {
 //   Creation d une symetrie de Geom par rapport a une droite.            +
 //=========================================================================
 
-GC_MakeMirror::GC_MakeMirror(const gp_Ax1&  Axis ) {
+GC_MakeMirror::GC_MakeMirror(const gp_Ax1& Axis)
+{
   TheMirror = new Geom_Transformation();
   TheMirror->SetMirror(Axis);
 }
@@ -43,9 +44,10 @@ GC_MakeMirror::GC_MakeMirror(const gp_Ax1&  Axis ) {
 //   Creation d une symetrie de Geom par rapport a une droite.            +
 //=========================================================================
 
-GC_MakeMirror::GC_MakeMirror(const gp_Lin&  Line ) {
+GC_MakeMirror::GC_MakeMirror(const gp_Lin& Line)
+{
   TheMirror = new Geom_Transformation();
-  TheMirror->SetMirror(gp_Ax1(Line.Location(),Line.Direction()));
+  TheMirror->SetMirror(gp_Ax1(Line.Location(), Line.Direction()));
 }
 
 //=========================================================================
@@ -53,10 +55,10 @@ GC_MakeMirror::GC_MakeMirror(const gp_Lin&  Line ) {
 //   par un point et une direction.                                       +
 //=========================================================================
 
-GC_MakeMirror::GC_MakeMirror(const gp_Pnt&  Point ,
-					const gp_Dir&  Direc ) {
+GC_MakeMirror::GC_MakeMirror(const gp_Pnt& Point, const gp_Dir& Direc)
+{
   TheMirror = new Geom_Transformation();
-  TheMirror->SetMirror(gp_Ax1(Point,Direc));
+  TheMirror->SetMirror(gp_Ax1(Point, Direc));
 }
 
 //=========================================================================
@@ -64,7 +66,8 @@ GC_MakeMirror::GC_MakeMirror(const gp_Pnt&  Point ,
 //   un Ax2 (Normale au plan et axe x du plan).                           +
 //=========================================================================
 
-GC_MakeMirror::GC_MakeMirror(const gp_Ax2&  Plane ) {
+GC_MakeMirror::GC_MakeMirror(const gp_Ax2& Plane)
+{
   TheMirror = new Geom_Transformation();
   TheMirror->SetMirror(Plane);
 }
@@ -73,12 +76,13 @@ GC_MakeMirror::GC_MakeMirror(const gp_Ax2&  Plane ) {
 //   Creation d une symetrie 3d de gp par rapport a un plan Plane.        +
 //=========================================================================
 
-GC_MakeMirror::GC_MakeMirror(const gp_Pln&  Plane ) {
+GC_MakeMirror::GC_MakeMirror(const gp_Pln& Plane)
+{
   TheMirror = new Geom_Transformation();
   TheMirror->SetMirror(Plane.Position().Ax2());
 }
 
 const Handle(Geom_Transformation)& GC_MakeMirror::Value() const
-{ 
+{
   return TheMirror;
 }

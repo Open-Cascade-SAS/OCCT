@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowserPane_AttributePaneSelector.hxx>
 
@@ -21,8 +21,9 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-DFBrowserPane_AttributePaneSelector::DFBrowserPane_AttributePaneSelector (QObject* theParent)
-: QObject (theParent), mySendSelectionChangeBlocked (false)
+DFBrowserPane_AttributePaneSelector::DFBrowserPane_AttributePaneSelector(QObject* theParent)
+    : QObject(theParent),
+      mySendSelectionChangeBlocked(false)
 {
 }
 
@@ -32,25 +33,34 @@ DFBrowserPane_AttributePaneSelector::DFBrowserPane_AttributePaneSelector (QObjec
 // =======================================================================
 DFBrowserPane_AttributePaneSelector::~DFBrowserPane_AttributePaneSelector()
 {
-  SetCurrentSelectionModels (std::list<QItemSelectionModel*>());
+  SetCurrentSelectionModels(std::list<QItemSelectionModel*>());
 }
 
 // =======================================================================
 // function : SetCurrentSelectionModels
 // purpose :
 // =======================================================================
-void DFBrowserPane_AttributePaneSelector::SetCurrentSelectionModels (const std::list<QItemSelectionModel*>& theModels)
+void DFBrowserPane_AttributePaneSelector::SetCurrentSelectionModels(
+  const std::list<QItemSelectionModel*>& theModels)
 {
   for (std::list<QItemSelectionModel*>::const_iterator anModelsIt = mySelectionModels.begin(),
-       aLast = mySelectionModels.end(); anModelsIt != aLast; anModelsIt++)
-    disconnect (*anModelsIt, SIGNAL (selectionChanged (const QItemSelection&, const QItemSelection&)),
-                this, SLOT (onTableSelectionChanged (const QItemSelection&, const QItemSelection&)));
+                                                       aLast      = mySelectionModels.end();
+       anModelsIt != aLast;
+       anModelsIt++)
+    disconnect(*anModelsIt,
+               SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+               this,
+               SLOT(onTableSelectionChanged(const QItemSelection&, const QItemSelection&)));
 
   mySelectionModels = theModels;
   for (std::list<QItemSelectionModel*>::const_iterator anModelsIt = mySelectionModels.begin(),
-       aLast = mySelectionModels.end(); anModelsIt != aLast; anModelsIt++)
-    connect (*anModelsIt, SIGNAL (selectionChanged (const QItemSelection&, const QItemSelection&)),
-             this, SLOT (onTableSelectionChanged (const QItemSelection&, const QItemSelection&)));
+                                                       aLast      = mySelectionModels.end();
+       anModelsIt != aLast;
+       anModelsIt++)
+    connect(*anModelsIt,
+            SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+            this,
+            SLOT(onTableSelectionChanged(const QItemSelection&, const QItemSelection&)));
 }
 
 // =======================================================================
@@ -61,21 +71,24 @@ void DFBrowserPane_AttributePaneSelector::ClearSelected()
 {
   mySendSelectionChangeBlocked = true;
   for (std::list<QItemSelectionModel*>::const_iterator anModelsIt = mySelectionModels.begin(),
-       aLast = mySelectionModels.end(); anModelsIt != aLast; anModelsIt++)
+                                                       aLast      = mySelectionModels.end();
+       anModelsIt != aLast;
+       anModelsIt++)
     (*anModelsIt)->clearSelection();
   mySendSelectionChangeBlocked = false;
 }
 
 // =======================================================================
-// function : 
+// function :
 // purpose :
 // =======================================================================
-void DFBrowserPane_AttributePaneSelector::onTableSelectionChanged (const QItemSelection& theSelected,
-                                                                   const QItemSelection& theDeselected)
+void DFBrowserPane_AttributePaneSelector::onTableSelectionChanged(
+  const QItemSelection& theSelected,
+  const QItemSelection& theDeselected)
 {
   if (mySendSelectionChangeBlocked)
     return;
 
   QItemSelectionModel* aModel = (QItemSelectionModel*)sender();
-  emit tableSelectionChanged (theSelected, theDeselected, aModel);
+  emit                 tableSelectionChanged(theSelected, theDeselected, aModel);
 }

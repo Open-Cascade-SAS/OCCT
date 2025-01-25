@@ -11,10 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepBasic_PlaneAngleMeasureWithUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_PlaneAngleMeasureWithUnit,StepBasic_MeasureWithUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_PlaneAngleMeasureWithUnit, StepBasic_MeasureWithUnit)
 
-StepBasic_PlaneAngleMeasureWithUnit::StepBasic_PlaneAngleMeasureWithUnit ()  {}
-
+StepBasic_PlaneAngleMeasureWithUnit::StepBasic_PlaneAngleMeasureWithUnit() {}

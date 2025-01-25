@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -18,22 +18,17 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_MechanismRepresentation, StepRepr_Representation)
 
-//=======================================================================
-//function : StepKinematics_MechanismRepresentation
-//purpose  :
-//=======================================================================
-StepKinematics_MechanismRepresentation::StepKinematics_MechanismRepresentation ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_MechanismRepresentation::Init (const Handle(TCollection_HAsciiString)& theRepresentation_Name,
-                                                   const Handle(StepRepr_HArray1OfRepresentationItem)& theRepresentation_Items,
-                                                   const Handle(StepRepr_RepresentationContext)& theRepresentation_ContextOfItems,
-                                                   const StepKinematics_KinematicTopologyRepresentationSelect& theRepresentedTopology)
+StepKinematics_MechanismRepresentation::StepKinematics_MechanismRepresentation() {}
+
+//=================================================================================================
+
+void StepKinematics_MechanismRepresentation::Init(
+  const Handle(TCollection_HAsciiString)&                     theRepresentation_Name,
+  const Handle(StepRepr_HArray1OfRepresentationItem)&         theRepresentation_Items,
+  const Handle(StepRepr_RepresentationContext)&               theRepresentation_ContextOfItems,
+  const StepKinematics_KinematicTopologyRepresentationSelect& theRepresentedTopology)
 {
   StepRepr_Representation::Init(theRepresentation_Name,
                                 theRepresentation_Items,
@@ -42,20 +37,18 @@ void StepKinematics_MechanismRepresentation::Init (const Handle(TCollection_HAsc
   myRepresentedTopology = theRepresentedTopology;
 }
 
-//=======================================================================
-//function : RepresentedTopology
-//purpose  :
-//=======================================================================
-StepKinematics_KinematicTopologyRepresentationSelect StepKinematics_MechanismRepresentation::RepresentedTopology () const
+//=================================================================================================
+
+StepKinematics_KinematicTopologyRepresentationSelect StepKinematics_MechanismRepresentation::
+  RepresentedTopology() const
 {
   return myRepresentedTopology;
 }
 
-//=======================================================================
-//function : SetRepresentedTopology
-//purpose  :
-//=======================================================================
-void StepKinematics_MechanismRepresentation::SetRepresentedTopology (const StepKinematics_KinematicTopologyRepresentationSelect& theRepresentedTopology)
+//=================================================================================================
+
+void StepKinematics_MechanismRepresentation::SetRepresentedTopology(
+  const StepKinematics_KinematicTopologyRepresentationSelect& theRepresentedTopology)
 {
   myRepresentedTopology = theRepresentedTopology;
 }

@@ -23,36 +23,31 @@
 
 class StepBasic_ExternalSource;
 
-DEFINE_STANDARD_HANDLE(StepBasic_ProductDefinitionReferenceWithLocalRepresentation, StepBasic_ProductDefinition)
+DEFINE_STANDARD_HANDLE(StepBasic_ProductDefinitionReferenceWithLocalRepresentation,
+                       StepBasic_ProductDefinition)
 
-
-class StepBasic_ProductDefinitionReferenceWithLocalRepresentation : public StepBasic_ProductDefinition
+class StepBasic_ProductDefinitionReferenceWithLocalRepresentation
+    : public StepBasic_ProductDefinition
 {
 
 public:
-  
   //! Returns a ProductDefinitionReferenceWithLocalRepresentation
   Standard_EXPORT StepBasic_ProductDefinitionReferenceWithLocalRepresentation();
-  
-  Standard_EXPORT void Init (const Handle(StepBasic_ExternalSource)& theSource,
-                             const Handle(TCollection_HAsciiString)& theId,
-                             const Handle(TCollection_HAsciiString)& theDescription,
-                             const Handle(StepBasic_ProductDefinitionFormation)& theFormation,
-                             const Handle(StepBasic_ProductDefinitionContext)& theFrameOfReference);
+
+  Standard_EXPORT void Init(const Handle(StepBasic_ExternalSource)&             theSource,
+                            const Handle(TCollection_HAsciiString)&             theId,
+                            const Handle(TCollection_HAsciiString)&             theDescription,
+                            const Handle(StepBasic_ProductDefinitionFormation)& theFormation,
+                            const Handle(StepBasic_ProductDefinitionContext)& theFrameOfReference);
 
   //! Returns field Source
-  inline Handle(StepBasic_ExternalSource) Source() const
-  {
-    return mySource;
-  }
-  
+  inline Handle(StepBasic_ExternalSource) Source() const { return mySource; }
+
   //! Set field Source
-  inline void SetSource (const Handle(StepBasic_ExternalSource)& theSource)
-  {
-    mySource = theSource;
-  }
-  
-  DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionReferenceWithLocalRepresentation, StepBasic_ProductDefinition)
+  inline void SetSource(const Handle(StepBasic_ExternalSource)& theSource) { mySource = theSource; }
+
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionReferenceWithLocalRepresentation,
+                          StepBasic_ProductDefinition)
 
 private:
   Handle(StepBasic_ExternalSource) mySource;

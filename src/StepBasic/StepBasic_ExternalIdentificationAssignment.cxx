@@ -20,24 +20,19 @@
 #include <StepBasic_IdentificationRole.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ExternalIdentificationAssignment,StepBasic_IdentificationAssignment)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ExternalIdentificationAssignment,
+                           StepBasic_IdentificationAssignment)
 
-//=======================================================================
-//function : StepBasic_ExternalIdentificationAssignment
-//purpose  : 
-//=======================================================================
-StepBasic_ExternalIdentificationAssignment::StepBasic_ExternalIdentificationAssignment ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepBasic_ExternalIdentificationAssignment::StepBasic_ExternalIdentificationAssignment() {}
 
-void StepBasic_ExternalIdentificationAssignment::Init (const Handle(TCollection_HAsciiString) &aIdentificationAssignment_AssignedId,
-                                                       const Handle(StepBasic_IdentificationRole) &aIdentificationAssignment_Role,
-                                                       const Handle(StepBasic_ExternalSource) &aSource)
+//=================================================================================================
+
+void StepBasic_ExternalIdentificationAssignment::Init(
+  const Handle(TCollection_HAsciiString)&     aIdentificationAssignment_AssignedId,
+  const Handle(StepBasic_IdentificationRole)& aIdentificationAssignment_Role,
+  const Handle(StepBasic_ExternalSource)&     aSource)
 {
   StepBasic_IdentificationAssignment::Init(aIdentificationAssignment_AssignedId,
                                            aIdentificationAssignment_Role);
@@ -45,22 +40,17 @@ void StepBasic_ExternalIdentificationAssignment::Init (const Handle(TCollection_
   theSource = aSource;
 }
 
-//=======================================================================
-//function : Source
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_ExternalSource) StepBasic_ExternalIdentificationAssignment::Source () const
+Handle(StepBasic_ExternalSource) StepBasic_ExternalIdentificationAssignment::Source() const
 {
   return theSource;
 }
 
-//=======================================================================
-//function : SetSource
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_ExternalIdentificationAssignment::SetSource (const Handle(StepBasic_ExternalSource) &aSource)
+void StepBasic_ExternalIdentificationAssignment::SetSource(
+  const Handle(StepBasic_ExternalSource)& aSource)
 {
   theSource = aSource;
 }

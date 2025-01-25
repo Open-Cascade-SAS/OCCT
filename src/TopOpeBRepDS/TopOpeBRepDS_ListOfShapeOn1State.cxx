@@ -14,44 +14,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
 
-//=======================================================================
-//function : TopOpeBRepDS_ListOfShapeOn1State
-//purpose  : 
-//=======================================================================
-TopOpeBRepDS_ListOfShapeOn1State::TopOpeBRepDS_ListOfShapeOn1State() 
-: mySplits(0)
+//=================================================================================================
+
+TopOpeBRepDS_ListOfShapeOn1State::TopOpeBRepDS_ListOfShapeOn1State()
+    : mySplits(0)
 {
 }
 
-//=======================================================================
-//function : ListOnState
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-const TopTools_ListOfShape& TopOpeBRepDS_ListOfShapeOn1State::ListOnState
-() const
+const TopTools_ListOfShape& TopOpeBRepDS_ListOfShapeOn1State::ListOnState() const
 {
   return myList;
 }
 
-//=======================================================================
-//function : ChangeListOnState
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TopTools_ListOfShape& TopOpeBRepDS_ListOfShapeOn1State::ChangeListOnState
-()
+TopTools_ListOfShape& TopOpeBRepDS_ListOfShapeOn1State::ChangeListOnState()
 {
   return myList;
 }
 
-//=======================================================================
-//function : Clear
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TopOpeBRepDS_ListOfShapeOn1State::Clear()
 {
@@ -59,28 +45,23 @@ void TopOpeBRepDS_ListOfShapeOn1State::Clear()
   mySplits = 0;
 }
 
-//=======================================================================
-//function : IsSplit
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_ListOfShapeOn1State::IsSplit
-() const
+Standard_Boolean TopOpeBRepDS_ListOfShapeOn1State::IsSplit() const
 {
   Standard_Boolean res = Standard_False;
-  if (mySplits & 1) res = Standard_True;
+  if (mySplits & 1)
+    res = Standard_True;
   return res;
 }
 
-//=======================================================================
-//function : Split
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TopOpeBRepDS_ListOfShapeOn1State::Split
-(const Standard_Boolean B)
+void TopOpeBRepDS_ListOfShapeOn1State::Split(const Standard_Boolean B)
 {
   Standard_Integer mask = 1;
-  if (B) mySplits |= mask;
-  else   mySplits &= ~mask;
+  if (B)
+    mySplits |= mask;
+  else
+    mySplits &= ~mask;
 }

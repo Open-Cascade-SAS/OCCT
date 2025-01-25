@@ -17,12 +17,11 @@
 #ifndef _StepGeom_PreferredSurfaceCurveRepresentation_HeaderFile
 #define _StepGeom_PreferredSurfaceCurveRepresentation_HeaderFile
 
-
 enum StepGeom_PreferredSurfaceCurveRepresentation
 {
-StepGeom_pscrCurve3d,
-StepGeom_pscrPcurveS1,
-StepGeom_pscrPcurveS2
+  StepGeom_pscrCurve3d,
+  StepGeom_pscrPcurveS1,
+  StepGeom_pscrPcurveS2
 };
 
 #endif // _StepGeom_PreferredSurfaceCurveRepresentation_HeaderFile

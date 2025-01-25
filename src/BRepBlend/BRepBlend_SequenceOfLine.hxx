@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(BRepBlend_Line)> BRepBlend_SequenceOfLine;
 
-
 #endif

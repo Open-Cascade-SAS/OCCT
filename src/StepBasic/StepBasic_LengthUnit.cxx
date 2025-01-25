@@ -11,11 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_LengthUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_LengthUnit,StepBasic_NamedUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_LengthUnit, StepBasic_NamedUnit)
 
-StepBasic_LengthUnit::StepBasic_LengthUnit ()  {}
-
+StepBasic_LengthUnit::StepBasic_LengthUnit() {}

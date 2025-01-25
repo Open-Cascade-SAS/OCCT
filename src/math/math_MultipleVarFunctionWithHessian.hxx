@@ -25,63 +25,45 @@
 #include <math_Vector.hxx>
 class math_Matrix;
 
-
-
-class math_MultipleVarFunctionWithHessian  : public math_MultipleVarFunctionWithGradient
+class math_MultipleVarFunctionWithHessian : public math_MultipleVarFunctionWithGradient
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! returns the number of variables of the function.
   Standard_EXPORT virtual Standard_Integer NbVariables() const = 0;
-  
+
   //! computes the values of the Functions <F> for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Value (const math_Vector& X, Standard_Real& F) = 0;
-  
+  Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& X, Standard_Real& F) = 0;
+
   //! computes the gradient <G> of the functions for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Gradient (const math_Vector& X, math_Vector& G) = 0;
-  
+  Standard_EXPORT virtual Standard_Boolean Gradient(const math_Vector& X, math_Vector& G) = 0;
+
   //! computes the value <F> and the gradient <G> of the
   //! functions for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Values (const math_Vector& X, Standard_Real& F, math_Vector& G) = 0;
-  
+  Standard_EXPORT virtual Standard_Boolean Values(const math_Vector& X,
+                                                  Standard_Real&     F,
+                                                  math_Vector&       G) = 0;
+
   //! computes the value  <F>, the gradient <G> and  the
   //! hessian   <H> of  the functions  for the  variable <X>.
   //! Returns  True  if  the computation  was  done
   //! successfully, False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Values (const math_Vector& X, Standard_Real& F, math_Vector& G, math_Matrix& H) = 0;
-
-
-
+  Standard_EXPORT virtual Standard_Boolean Values(const math_Vector& X,
+                                                  Standard_Real&     F,
+                                                  math_Vector&       G,
+                                                  math_Matrix&       H) = 0;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _math_MultipleVarFunctionWithHessian_HeaderFile

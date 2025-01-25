@@ -27,7 +27,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 
-
 class Units_Lexicon;
 DEFINE_STANDARD_HANDLE(Units_Lexicon, Standard_Transient)
 
@@ -39,49 +38,34 @@ class Units_Lexicon : public Standard_Transient
 {
 
 public:
-
-  
   //! Creates an empty instance of Lexicon.
   Standard_EXPORT Units_Lexicon();
-  
+
   //! Reads the file <afilename> to create a sequence  of tokens
   //! stored in <thesequenceoftokens>.
-  Standard_EXPORT void Creates ();
-  
+  Standard_EXPORT void Creates();
+
   //! Returns the first item of the sequence of tokens.
-    Handle(Units_TokensSequence) Sequence() const;
+  Handle(Units_TokensSequence) Sequence() const;
 
   //! Adds to the lexicon a new token with <aword>, <amean>,
   //! <avalue>  as  arguments.  If there is  already a token
   //! with   the  field  <theword>  equal    to <aword>, the
   //! existing token is updated.
-  Standard_EXPORT void AddToken (const Standard_CString aword, const Standard_CString amean, const Standard_Real avalue);
-  
+  Standard_EXPORT void AddToken(const Standard_CString aword,
+                                const Standard_CString amean,
+                                const Standard_Real    avalue);
+
   //! Useful for debugging.
-    virtual void Dump() const;
+  virtual void Dump() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Units_Lexicon,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Units_Lexicon, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
   Handle(Units_TokensSequence) thesequenceoftokens;
-
-
 };
 
-
 #include <Units_Lexicon.lxx>
-
-
-
-
 
 #endif // _Units_Lexicon_HeaderFile

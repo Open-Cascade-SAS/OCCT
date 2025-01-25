@@ -35,81 +35,69 @@ class TObj_Assistant
 {
 public:
   /**
-  * Interface for DataMap of Modeller name
-  */
+   * Interface for DataMap of Modeller name
+   */
 
   //! Finds model by name
-  static Standard_EXPORT Handle(TObj_Model)
-    FindModel     (const Standard_CString theName);
+  static Standard_EXPORT Handle(TObj_Model) FindModel(const Standard_CString theName);
 
   //! Binds model to the map
-  static Standard_EXPORT void
-    BindModel     (const Handle(TObj_Model)& theModel);
+  static Standard_EXPORT void BindModel(const Handle(TObj_Model)& theModel);
 
   //! Clears all records from the model map
-  static Standard_EXPORT void
-    ClearModelMap ();
+  static Standard_EXPORT void ClearModelMap();
 
 public:
   /**
-  * Interface for Map of Standard Types
-  */
+   * Interface for Map of Standard Types
+   */
 
   //! Finds Standard_Type by index;
   //! returns NULL handle if not found
-  static Standard_EXPORT Handle(Standard_Type)
-    FindType      (const Standard_Integer theTypeIndex);
+  static Standard_EXPORT Handle(Standard_Type) FindType(const Standard_Integer theTypeIndex);
 
   //! Rinds index by Standard_Type;
   //! returns 0 if not found
-  static Standard_EXPORT Standard_Integer
-    FindTypeIndex (const Handle(Standard_Type)& theType);
+  static Standard_EXPORT Standard_Integer FindTypeIndex(const Handle(Standard_Type)& theType);
 
   //! Binds Standard_Type to the map;
   //! returns index of bound type
-  static Standard_EXPORT Standard_Integer
-    BindType      (const Handle(Standard_Type)& theType);
+  static Standard_EXPORT Standard_Integer BindType(const Handle(Standard_Type)& theType);
 
   //! Clears map of types
-  static Standard_EXPORT void
-    ClearTypeMap  ();
+  static Standard_EXPORT void ClearTypeMap();
 
 public:
   /**
-  * Interface to the current model
-  */
+   * Interface to the current model
+   */
 
   //! Sets current model
-  static Standard_EXPORT void
-    SetCurrentModel (const Handle(TObj_Model)& theModel);
+  static Standard_EXPORT void SetCurrentModel(const Handle(TObj_Model)& theModel);
 
   //! Returns current model
-  static Standard_EXPORT Handle(TObj_Model)
-    GetCurrentModel();
+  static Standard_EXPORT Handle(TObj_Model) GetCurrentModel();
 
   //! Unsets current model
-  static Standard_EXPORT void
-    UnSetCurrentModel ();
+  static Standard_EXPORT void UnSetCurrentModel();
 
 public:
-
   //! Returns the version of application which wrote the currently read document.
   //! Returns 0 if it has not been set yet for the current document.
-  static Standard_EXPORT Standard_Integer               GetAppVersion();
+  static Standard_EXPORT Standard_Integer GetAppVersion();
 
 private:
-
   //! Method for taking fields for map of models
-  static Standard_EXPORT TColStd_SequenceOfTransient&   getModels();
+  static Standard_EXPORT TColStd_SequenceOfTransient& getModels();
 
   //! Method for taking fields for map types
   static Standard_EXPORT TColStd_IndexedMapOfTransient& getTypes();
 
   //! Method for taking fields for the Current model
-  static Standard_EXPORT Handle(TObj_Model)&            getCurrentModel();
+  static Standard_EXPORT Handle(TObj_Model)& getCurrentModel();
 
   //! Returns application version
-  static Standard_EXPORT Standard_Integer&              getVersion();
+  static Standard_EXPORT Standard_Integer& getVersion();
 };
 
 #endif

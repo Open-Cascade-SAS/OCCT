@@ -17,43 +17,36 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_VisMaterialToolDriver, BinMDF_ADriver)
 
-//=======================================================================
-//function : BinMXCAFDoc_VisMaterialToolDriver
-//purpose  :
-//=======================================================================
-BinMXCAFDoc_VisMaterialToolDriver::BinMXCAFDoc_VisMaterialToolDriver (const Handle(Message_Messenger)& theMsgDriver)
-: BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(XCAFDoc_VisMaterialTool)->Name())
+//=================================================================================================
+
+BinMXCAFDoc_VisMaterialToolDriver::BinMXCAFDoc_VisMaterialToolDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_VisMaterialTool)->Name())
 {
   //
 }
 
-//=======================================================================
-//function : NewEmpty
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Handle(TDF_Attribute) BinMXCAFDoc_VisMaterialToolDriver::NewEmpty() const
 {
   return new XCAFDoc_VisMaterialTool();
 }
 
-//=======================================================================
-//function : Paste
-//purpose  :
-//=======================================================================
-Standard_Boolean BinMXCAFDoc_VisMaterialToolDriver::Paste (const BinObjMgt_Persistent& ,
-                                                           const Handle(TDF_Attribute)& ,
-                                                           BinObjMgt_RRelocationTable& ) const
+//=================================================================================================
+
+Standard_Boolean BinMXCAFDoc_VisMaterialToolDriver::Paste(const BinObjMgt_Persistent&,
+                                                          const Handle(TDF_Attribute)&,
+                                                          BinObjMgt_RRelocationTable&) const
 {
   return Standard_True;
 }
 
-//=======================================================================
-//function : Paste
-//purpose  :
-//=======================================================================
-void BinMXCAFDoc_VisMaterialToolDriver::Paste (const Handle(TDF_Attribute)& ,
-                                               BinObjMgt_Persistent& ,
-                                               BinObjMgt_SRelocationTable& ) const
+//=================================================================================================
+
+void BinMXCAFDoc_VisMaterialToolDriver::Paste(const Handle(TDF_Attribute)&,
+                                              BinObjMgt_Persistent&,
+                                              BinObjMgt_SRelocationTable&) const
 {
   //
 }

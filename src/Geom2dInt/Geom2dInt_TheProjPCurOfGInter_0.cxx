@@ -22,7 +22,6 @@
 #include <Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter.hxx>
 #include <Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter.hxx>
 #include <gp_Pnt2d.hxx>
- 
 
 #define TheCurve Adaptor2d_Curve2d
 #define TheCurve_hxx <Adaptor2d_Curve2d.hxx>
@@ -33,10 +32,11 @@
 #define IntCurve_TheLocateExtPC Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter
 #define IntCurve_TheLocateExtPC_hxx <Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter.hxx>
 #define IntCurve_PCLocFOfTheLocateExtPC Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter
-#define IntCurve_PCLocFOfTheLocateExtPC_hxx <Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter.hxx>
+#define IntCurve_PCLocFOfTheLocateExtPC_hxx                                                        \
+  <Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter.hxx>
 #define IntCurve_PCLocFOfTheLocateExtPC Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter
-#define IntCurve_PCLocFOfTheLocateExtPC_hxx <Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter.hxx>
+#define IntCurve_PCLocFOfTheLocateExtPC_hxx                                                        \
+  <Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter.hxx>
 #define IntCurve_ProjPCurGen Geom2dInt_TheProjPCurOfGInter
 #define IntCurve_ProjPCurGen_hxx <Geom2dInt_TheProjPCurOfGInter.hxx>
 #include "../IntCurve/IntCurve_ProjPCurGen.gxx"
-

@@ -20,29 +20,23 @@
 #include <StepGeom_Direction.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaAxis2Placement3d,StepGeom_Axis2Placement3d)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaAxis2Placement3d, StepGeom_Axis2Placement3d)
 
-//=======================================================================
-//function : StepFEA_FeaAxis2Placement3d
-//purpose  : 
-//=======================================================================
-StepFEA_FeaAxis2Placement3d::StepFEA_FeaAxis2Placement3d ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepFEA_FeaAxis2Placement3d::StepFEA_FeaAxis2Placement3d() {}
 
-void StepFEA_FeaAxis2Placement3d::Init (const Handle(TCollection_HAsciiString) &aRepresentationItem_Name,
-                                        const Handle(StepGeom_CartesianPoint) &aPlacement_Location,
-                                        const Standard_Boolean hasAxis2Placement3d_Axis,
-                                        const Handle(StepGeom_Direction) &aAxis2Placement3d_Axis,
-                                        const Standard_Boolean hasAxis2Placement3d_RefDirection,
-                                        const Handle(StepGeom_Direction) &aAxis2Placement3d_RefDirection,
-                                        const StepFEA_CoordinateSystemType aSystemType,
-                                        const Handle(TCollection_HAsciiString) &aDescription)
+//=================================================================================================
+
+void StepFEA_FeaAxis2Placement3d::Init(
+  const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
+  const Handle(StepGeom_CartesianPoint)&  aPlacement_Location,
+  const Standard_Boolean                  hasAxis2Placement3d_Axis,
+  const Handle(StepGeom_Direction)&       aAxis2Placement3d_Axis,
+  const Standard_Boolean                  hasAxis2Placement3d_RefDirection,
+  const Handle(StepGeom_Direction)&       aAxis2Placement3d_RefDirection,
+  const StepFEA_CoordinateSystemType      aSystemType,
+  const Handle(TCollection_HAsciiString)& aDescription)
 {
   StepGeom_Axis2Placement3d::Init(aRepresentationItem_Name,
                                   aPlacement_Location,
@@ -56,42 +50,31 @@ void StepFEA_FeaAxis2Placement3d::Init (const Handle(TCollection_HAsciiString) &
   theDescription = aDescription;
 }
 
-//=======================================================================
-//function : SystemType
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepFEA_CoordinateSystemType StepFEA_FeaAxis2Placement3d::SystemType () const
+StepFEA_CoordinateSystemType StepFEA_FeaAxis2Placement3d::SystemType() const
 {
   return theSystemType;
 }
 
-//=======================================================================
-//function : SetSystemType
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_FeaAxis2Placement3d::SetSystemType (const StepFEA_CoordinateSystemType aSystemType)
+void StepFEA_FeaAxis2Placement3d::SetSystemType(const StepFEA_CoordinateSystemType aSystemType)
 {
   theSystemType = aSystemType;
 }
 
-//=======================================================================
-//function : Description
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepFEA_FeaAxis2Placement3d::Description () const
+Handle(TCollection_HAsciiString) StepFEA_FeaAxis2Placement3d::Description() const
 {
   return theDescription;
 }
 
-//=======================================================================
-//function : SetDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_FeaAxis2Placement3d::SetDescription (const Handle(TCollection_HAsciiString) &aDescription)
+void StepFEA_FeaAxis2Placement3d::SetDescription(
+  const Handle(TCollection_HAsciiString)& aDescription)
 {
   theDescription = aDescription;
 }

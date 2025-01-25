@@ -23,21 +23,17 @@
 
 class IGESBasic_Protocol;
 
-
 //! This package represents basic entities from IGES
-class IGESBasic 
+class IGESBasic
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Prepares dynqmic data (Protocol, Modules) for this package
   Standard_EXPORT static void Init();
-  
+
   //! Returns the Protocol for this Package
   Standard_EXPORT static Handle(IGESBasic_Protocol) Protocol();
-
 };
 
 #endif // _IGESBasic_HeaderFile

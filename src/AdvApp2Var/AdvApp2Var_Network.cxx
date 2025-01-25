@@ -23,38 +23,31 @@
 #include <AdvApp2Var_SequenceOfPatch.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 
-//==========================================================================================
-//function : AdvApp2Var_Network
-//purpose  : 
-//==========================================================================================
-AdvApp2Var_Network::AdvApp2Var_Network()
-{
-}
+//=================================================================================================
 
+AdvApp2Var_Network::AdvApp2Var_Network() {}
 
-//==========================================================================================
-//function : AdvApp2Var_Network
-//purpose  : 
-//==========================================================================================
+//=================================================================================================
 
 AdvApp2Var_Network::AdvApp2Var_Network(const AdvApp2Var_SequenceOfPatch& Net,
-				       const TColStd_SequenceOfReal& TheU,
-				       const TColStd_SequenceOfReal& TheV)
+                                       const TColStd_SequenceOfReal&     TheU,
+                                       const TColStd_SequenceOfReal&     TheV)
 {
-  myNet=Net;
-  myUParameters=TheU;
-  myVParameters=TheV;
+  myNet         = Net;
+  myUParameters = TheU;
+  myVParameters = TheV;
 }
 
 //==========================================================================================
-//function : FirstNotApprox
-//purpose  : return the first Patch not approximated
+// function : FirstNotApprox
+// purpose  : return the first Patch not approximated
 //==========================================================================================
 
 Standard_Boolean AdvApp2Var_Network::FirstNotApprox(Standard_Integer& theIndex) const
 {
   Standard_Integer anIndex = 1;
-  for (AdvApp2Var_SequenceOfPatch::Iterator aPatchIter (myNet); aPatchIter.More(); aPatchIter.Next(), ++anIndex)
+  for (AdvApp2Var_SequenceOfPatch::Iterator aPatchIter(myNet); aPatchIter.More();
+       aPatchIter.Next(), ++anIndex)
   {
     const Handle(AdvApp2Var_Patch)& aPatch = aPatchIter.Value();
     if (!aPatch->IsApproximated())
@@ -67,152 +60,141 @@ Standard_Boolean AdvApp2Var_Network::FirstNotApprox(Standard_Integer& theIndex) 
 }
 
 //==========================================================================================
-//function : UpdateInU
-//purpose  : modification and insertion of patches and parameters
+// function : UpdateInU
+// purpose  : modification and insertion of patches and parameters
 //==========================================================================================
 
 void AdvApp2Var_Network::UpdateInU(const Standard_Real CuttingValue)
 {
 
-//  insertion du nouveau parametre de decoupe
-  Standard_Integer i=1,j;
-  while (myUParameters.Value(i)<CuttingValue) {
+  //  insertion du nouveau parametre de decoupe
+  Standard_Integer i = 1, j;
+  while (myUParameters.Value(i) < CuttingValue)
+  {
     i++;
   }
-  myUParameters.InsertBefore(i,CuttingValue);
+  myUParameters.InsertBefore(i, CuttingValue);
 
-  for (j=1; j< myVParameters.Length() ; j++)
+  for (j = 1; j < myVParameters.Length(); j++)
   {
-//    modification des patches concernes par la decoupe
-    Standard_Integer indice = (myUParameters.Length()-1) * (j-1) + i - 1;
-    const Handle(AdvApp2Var_Patch)& aPat = myNet.Value(indice);
-    aPat->ChangeDomain (aPat->U0(), CuttingValue, aPat->V0(), aPat->V1());
+    //    modification des patches concernes par la decoupe
+    Standard_Integer                indice = (myUParameters.Length() - 1) * (j - 1) + i - 1;
+    const Handle(AdvApp2Var_Patch)& aPat   = myNet.Value(indice);
+    aPat->ChangeDomain(aPat->U0(), CuttingValue, aPat->V0(), aPat->V1());
     aPat->ResetApprox();
 
-//    insertion des nouveaux patches
-    Handle(AdvApp2Var_Patch) aNewPat = new AdvApp2Var_Patch (CuttingValue,myUParameters.Value(i+1),
-			    myVParameters.Value(j),myVParameters.Value(j+1),
-                aPat->UOrder(), aPat->VOrder());
+    //    insertion des nouveaux patches
+    Handle(AdvApp2Var_Patch) aNewPat = new AdvApp2Var_Patch(CuttingValue,
+                                                            myUParameters.Value(i + 1),
+                                                            myVParameters.Value(j),
+                                                            myVParameters.Value(j + 1),
+                                                            aPat->UOrder(),
+                                                            aPat->VOrder());
     aNewPat->ResetApprox();
     myNet.InsertAfter(indice, aNewPat);
   }
-
 }
 
 //==========================================================================================
-//function : UpdateInV
-//purpose  : modification and insertion of patches and parameters
+// function : UpdateInV
+// purpose  : modification and insertion of patches and parameters
 //==========================================================================================
 
 void AdvApp2Var_Network::UpdateInV(const Standard_Real CuttingValue)
 {
 
-//  insertion du nouveau parametre de decoupe
-  Standard_Integer j = 1;
+  //  insertion du nouveau parametre de decoupe
+  Standard_Integer         j = 1;
   Handle(AdvApp2Var_Patch) Pat;
-  while (myVParameters.Value(j)<CuttingValue)
+  while (myVParameters.Value(j) < CuttingValue)
   {
     j++;
   }
-  myVParameters.InsertBefore(j,CuttingValue);
+  myVParameters.InsertBefore(j, CuttingValue);
 
-//  modification des patches concernes par la decoupe
+  //  modification des patches concernes par la decoupe
   for (Standard_Integer i = 1; i < myUParameters.Length(); i++)
   {
-    const Standard_Integer indice = (myUParameters.Length()-1) * (j-2) + i;
-    Pat = myNet.Value(indice);
+    const Standard_Integer indice = (myUParameters.Length() - 1) * (j - 2) + i;
+    Pat                           = myNet.Value(indice);
     Pat->ChangeDomain(Pat->U0(), Pat->U1(), Pat->V0(), CuttingValue);
     Pat->ResetApprox();
   }
 
-//  insertion des nouveaux patches
+  //  insertion des nouveaux patches
   for (Standard_Integer i = 1; i < myUParameters.Length(); i++)
   {
-    const Standard_Integer indice = (myUParameters.Length()-1) * (j-1) + i-1;
-    Handle(AdvApp2Var_Patch) aNewPat = new AdvApp2Var_Patch (myUParameters.Value(i), myUParameters.Value(i+1),
-			    CuttingValue,myVParameters.Value(j+1),
-                Pat->UOrder(),Pat->VOrder());
+    const Standard_Integer   indice  = (myUParameters.Length() - 1) * (j - 1) + i - 1;
+    Handle(AdvApp2Var_Patch) aNewPat = new AdvApp2Var_Patch(myUParameters.Value(i),
+                                                            myUParameters.Value(i + 1),
+                                                            CuttingValue,
+                                                            myVParameters.Value(j + 1),
+                                                            Pat->UOrder(),
+                                                            Pat->VOrder());
     aNewPat->ResetApprox();
-    myNet.InsertAfter (indice, aNewPat);
+    myNet.InsertAfter(indice, aNewPat);
   }
 }
 
 //=======================================================================
-//function : SameDegree
-//purpose  : same numbers of coefficients for all patches
+// function : SameDegree
+// purpose  : same numbers of coefficients for all patches
 //=======================================================================
 
 void AdvApp2Var_Network::SameDegree(const Standard_Integer iu,
-				    const Standard_Integer iv,
-				    Standard_Integer& ncfu,
-				    Standard_Integer& ncfv)
+                                    const Standard_Integer iv,
+                                    Standard_Integer&      ncfu,
+                                    Standard_Integer&      ncfv)
 {
-//  calcul des coeff. max avec init selon l'ordre de continuite
-  ncfu = 2*iu+2;
-  ncfv = 2*iv+2;
-  for (AdvApp2Var_SequenceOfPatch::Iterator aPatIter (myNet); aPatIter.More(); aPatIter.Next())
+  //  calcul des coeff. max avec init selon l'ordre de continuite
+  ncfu = 2 * iu + 2;
+  ncfv = 2 * iv + 2;
+  for (AdvApp2Var_SequenceOfPatch::Iterator aPatIter(myNet); aPatIter.More(); aPatIter.Next())
   {
     const Handle(AdvApp2Var_Patch)& aPat = aPatIter.Value();
-    ncfu = Max(ncfu, aPat->NbCoeffInU());
-    ncfv = Max(ncfv, aPat->NbCoeffInV());
+    ncfu                                 = Max(ncfu, aPat->NbCoeffInU());
+    ncfv                                 = Max(ncfv, aPat->NbCoeffInV());
   }
 
-//  augmentation des nombres de coeff.
-  for (AdvApp2Var_SequenceOfPatch::Iterator aPatIter (myNet); aPatIter.More(); aPatIter.Next())
+  //  augmentation des nombres de coeff.
+  for (AdvApp2Var_SequenceOfPatch::Iterator aPatIter(myNet); aPatIter.More(); aPatIter.Next())
   {
     const Handle(AdvApp2Var_Patch)& aPat = aPatIter.Value();
-    aPat->ChangeNbCoeff (ncfu, ncfv);
+    aPat->ChangeNbCoeff(ncfu, ncfv);
   }
-
 }
 
-//=======================================================================
-//function : NbPatch
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer AdvApp2Var_Network::NbPatch() const
 {
   return myNet.Length();
 }
 
-//=======================================================================
-//function : NbPatchInU
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer AdvApp2Var_Network::NbPatchInU() const
 {
-  return myUParameters.Length()-1;
+  return myUParameters.Length() - 1;
 }
 
-//=======================================================================
-//function : NbPatchInV
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer AdvApp2Var_Network::NbPatchInV() const
 {
-  return myVParameters.Length()-1;
+  return myVParameters.Length() - 1;
 }
 
-//=======================================================================
-//function : UParameter
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Real AdvApp2Var_Network::UParameter(const Standard_Integer Index) const 
+Standard_Real AdvApp2Var_Network::UParameter(const Standard_Integer Index) const
 {
   return myUParameters.Value(Index);
 }
 
-//=======================================================================
-//function : VParameter
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Real AdvApp2Var_Network::VParameter(const Standard_Integer Index) const 
+Standard_Real AdvApp2Var_Network::VParameter(const Standard_Integer Index) const
 {
   return myVParameters.Value(Index);
 }
-

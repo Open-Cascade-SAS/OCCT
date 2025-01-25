@@ -23,7 +23,6 @@
 #include <GccInt_Bisec.hxx>
 #include <GccInt_IType.hxx>
 
-
 class GccInt_BParab;
 DEFINE_STANDARD_HANDLE(GccInt_BParab, GccInt_Bisec)
 
@@ -33,39 +32,20 @@ class GccInt_BParab : public GccInt_Bisec
 {
 
 public:
-
-  
   //! Constructs a bisecting curve whose geometry is the 2D parabola Parab.
   Standard_EXPORT GccInt_BParab(const gp_Parab2d& Parab);
-  
+
   //! Returns a 2D parabola which is the geometry of this bisecting curve.
   Standard_EXPORT virtual gp_Parab2d Parabola() const Standard_OVERRIDE;
-  
+
   //! Returns GccInt_Par, which is the type of any GccInt_BParab bisecting curve.
   Standard_EXPORT GccInt_IType ArcType() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(GccInt_BParab,GccInt_Bisec)
+  DEFINE_STANDARD_RTTIEXT(GccInt_BParab, GccInt_Bisec)
 
 protected:
-
-
-
-
 private:
-
-
   gp_Parab2d par;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GccInt_BParab_HeaderFile

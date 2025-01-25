@@ -19,8 +19,7 @@
 #include <MeshVS_TwoNodes.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_Map<MeshVS_TwoNodes> MeshVS_MapOfTwoNodes;
+typedef NCollection_Map<MeshVS_TwoNodes>           MeshVS_MapOfTwoNodes;
 typedef NCollection_Map<MeshVS_TwoNodes>::Iterator MeshVS_MapIteratorOfMapOfTwoNodes;
-
 
 #endif

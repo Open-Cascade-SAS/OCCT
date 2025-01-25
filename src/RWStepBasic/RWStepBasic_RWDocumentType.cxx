@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_EntityIterator.hxx>
 #include "RWStepBasic_RWDocumentType.pxx"
 #include <StepBasic_DocumentType.hxx>
@@ -19,45 +18,40 @@
 #include <StepData_StepWriter.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepBasic_RWDocumentType::RWStepBasic_RWDocumentType () {}
+RWStepBasic_RWDocumentType::RWStepBasic_RWDocumentType() {}
 
-void RWStepBasic_RWDocumentType::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepBasic_DocumentType)& ent) const
+void RWStepBasic_RWDocumentType::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                          const Standard_Integer                 num,
+                                          Handle(Interface_Check)&               ach,
+                                          const Handle(StepBasic_DocumentType)&  ent) const
 {
 
+  // --- Number of Parameter Control ---
 
-	// --- Number of Parameter Control ---
+  if (!data->CheckNbParams(num, 1, ach, "document_type"))
+    return;
 
-	if (!data->CheckNbParams(num,1,ach,"document_type")) return;
+  // --- own field : product_data_type ---
 
-	// --- own field : product_data_type ---
+  Handle(TCollection_HAsciiString) aId;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadString(num, 1, "product_data_type", ach, aId);
 
-	Handle(TCollection_HAsciiString) aId;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	data->ReadString (num,1,"product_data_type",ach,aId);
+  //--- Initialisation of the read entity ---
 
-	//--- Initialisation of the read entity ---
-
-
-	ent->Init(aId);
+  ent->Init(aId);
 }
 
-
-void RWStepBasic_RWDocumentType::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepBasic_DocumentType)& ent) const
+void RWStepBasic_RWDocumentType::WriteStep(StepData_StepWriter&                  SW,
+                                           const Handle(StepBasic_DocumentType)& ent) const
 {
 
-	// --- own field : id ---
+  // --- own field : id ---
 
-	SW.Send(ent->ProductDataType());
+  SW.Send(ent->ProductDataType());
 }
 
-
-void RWStepBasic_RWDocumentType::Share(const Handle(StepBasic_DocumentType)&, Interface_EntityIterator&) const
+void RWStepBasic_RWDocumentType::Share(const Handle(StepBasic_DocumentType)&,
+                                       Interface_EntityIterator&) const
 {
 }
-

@@ -41,42 +41,42 @@ static Standard_Boolean initSubShapes(const TopoDS_Shape&              theShape,
 }
 
 //=======================================================================
-//function : BRepExtrema_ShapeProximity
-//purpose  : Creates uninitialized proximity tool
+// function : BRepExtrema_ShapeProximity
+// purpose  : Creates uninitialized proximity tool
 //=======================================================================
-BRepExtrema_ShapeProximity::BRepExtrema_ShapeProximity (const Standard_Real theTolerance)
-: myTolerance   (theTolerance),
-  myElementSet1 (new BRepExtrema_TriangleSet),
-  myElementSet2 (new BRepExtrema_TriangleSet),
-  myNbSamples1  (0),
-  myNbSamples2  (0)
+BRepExtrema_ShapeProximity::BRepExtrema_ShapeProximity(const Standard_Real theTolerance)
+    : myTolerance(theTolerance),
+      myElementSet1(new BRepExtrema_TriangleSet),
+      myElementSet2(new BRepExtrema_TriangleSet),
+      myNbSamples1(0),
+      myNbSamples2(0)
 {
   // Should be initialized later
   myIsInitS1 = myIsInitS2 = Standard_False;
 }
 
 //=======================================================================
-//function : BRepExtrema_ShapeProximity
-//purpose  : Creates proximity tool for the given two shapes
+// function : BRepExtrema_ShapeProximity
+// purpose  : Creates proximity tool for the given two shapes
 //=======================================================================
-BRepExtrema_ShapeProximity::BRepExtrema_ShapeProximity (const TopoDS_Shape& theShape1,
-                                                        const TopoDS_Shape& theShape2,
-                                                        const Standard_Real theTolerance)
-: myTolerance   (theTolerance),
-  myElementSet1 (new BRepExtrema_TriangleSet),
-  myElementSet2 (new BRepExtrema_TriangleSet),
-  myNbSamples1  (0),
-  myNbSamples2  (0)
+BRepExtrema_ShapeProximity::BRepExtrema_ShapeProximity(const TopoDS_Shape& theShape1,
+                                                       const TopoDS_Shape& theShape2,
+                                                       const Standard_Real theTolerance)
+    : myTolerance(theTolerance),
+      myElementSet1(new BRepExtrema_TriangleSet),
+      myElementSet2(new BRepExtrema_TriangleSet),
+      myNbSamples1(0),
+      myNbSamples2(0)
 {
-  LoadShape1 (theShape1);
-  LoadShape2 (theShape2);
+  LoadShape1(theShape1);
+  LoadShape2(theShape2);
 }
 
 //=======================================================================
-//function : LoadShape1
-//purpose  : Loads 1st shape into proximity tool
+// function : LoadShape1
+// purpose  : Loads 1st shape into proximity tool
 //=======================================================================
-Standard_Boolean BRepExtrema_ShapeProximity::LoadShape1 (const TopoDS_Shape& theShape1)
+Standard_Boolean BRepExtrema_ShapeProximity::LoadShape1(const TopoDS_Shape& theShape1)
 {
   myIsInitS1 = initSubShapes(theShape1, myShapeList1, myElementSet1);
 
@@ -93,10 +93,10 @@ Standard_Boolean BRepExtrema_ShapeProximity::LoadShape1 (const TopoDS_Shape& the
 }
 
 //=======================================================================
-//function : LoadShape2
-//purpose  : Loads 2nd shape into proximity tool
+// function : LoadShape2
+// purpose  : Loads 2nd shape into proximity tool
 //=======================================================================
-Standard_Boolean BRepExtrema_ShapeProximity::LoadShape2 (const TopoDS_Shape& theShape2)
+Standard_Boolean BRepExtrema_ShapeProximity::LoadShape2(const TopoDS_Shape& theShape2)
 {
   myIsInitS2 = initSubShapes(theShape2, myShapeList2, myElementSet2);
 
@@ -113,8 +113,8 @@ Standard_Boolean BRepExtrema_ShapeProximity::LoadShape2 (const TopoDS_Shape& the
 }
 
 //=======================================================================
-//function : Perform
-//purpose  : Performs search of overlapped faces
+// function : Perform
+// purpose  : Performs search of overlapped faces
 //=======================================================================
 void BRepExtrema_ShapeProximity::Perform()
 {
@@ -125,15 +125,13 @@ void BRepExtrema_ShapeProximity::Perform()
       return;
     }
 
-    myProxValTool.LoadTriangleSets (myElementSet1,
-                                    myElementSet2);
-    myProxValTool.LoadShapeLists (myShapeList1,
-                                  myShapeList2);
-    myProxValTool.SetNbSamplePoints (myNbSamples1, myNbSamples2);
+    myProxValTool.LoadTriangleSets(myElementSet1, myElementSet2);
+    myProxValTool.LoadShapeLists(myShapeList1, myShapeList2);
+    myProxValTool.SetNbSamplePoints(myNbSamples1, myNbSamples2);
 
-    myProxValTool.Perform (myTolerance);
+    myProxValTool.Perform(myTolerance);
     myProxValTool.ProximityPoints(myProxPoint1, myProxPoint2);
-    myProxValTool.ProximityPointsStatus (myProxPntStatus1, myProxPntStatus2);
+    myProxValTool.ProximityPointsStatus(myProxPntStatus1, myProxPntStatus2);
   }
   else
   {
@@ -142,9 +140,8 @@ void BRepExtrema_ShapeProximity::Perform()
       return;
     }
 
-    myOverlapTool.LoadTriangleSets (myElementSet1,
-                                    myElementSet2);
+    myOverlapTool.LoadTriangleSets(myElementSet1, myElementSet2);
 
-    myOverlapTool.Perform (myTolerance);
+    myOverlapTool.Perform(myTolerance);
   }
 }

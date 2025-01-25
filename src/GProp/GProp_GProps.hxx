@@ -25,8 +25,6 @@
 class gp_Ax1;
 class GProp_PrincipalProps;
 
-
-
 //! Implements a general mechanism to compute the global properties of
 //! a "compound geometric system" in 3d space    by composition of the
 //! global properties of "elementary geometric entities"       such as
@@ -96,18 +94,14 @@ class GProp_PrincipalProps;
 //! Real Ixx, Iyy, Izz, Rxx, Ryy, Rzz;
 //! Pp.Moments (Ixx, Iyy, Izz);
 //! Pp.RadiusOfGyration (Ixx, Iyy, Izz);
-class GProp_GProps 
+class GProp_GProps
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! The origin (0, 0, 0) of the absolute cartesian coordinate system
   //! is used to compute the global properties.
   Standard_EXPORT GProp_GProps();
-  
 
   //! The point SystemLocation is used to compute the global properties
   //! of the system. For more accuracy it is better to define this
@@ -129,7 +123,7 @@ public:
   //! and then use the interrogation functions available to
   //! access the computed values.
   Standard_EXPORT GProp_GProps(const gp_Pnt& SystemLocation);
-  
+
   //! Either
   //! - initializes the global properties retained by this
   //! framework from those retained by the framework Item, or
@@ -167,8 +161,8 @@ public:
   //! Exceptions
   //! Standard_DomainError if Density is less than or
   //! equal to gp::Resolution().
-  Standard_EXPORT void Add (const GProp_GProps& Item, const Standard_Real Density = 1.0);
-  
+  Standard_EXPORT void Add(const GProp_GProps& Item, const Standard_Real Density = 1.0);
+
   //! Returns the mass of the current system.
   //! If no density is attached to the components of the
   //! current system the returned value corresponds to :
@@ -194,14 +188,12 @@ public:
   //! or its volume by the given density. You must be
   //! consistent with respect to the units used.
   Standard_EXPORT Standard_Real Mass() const;
-  
 
   //! Returns the center of mass of the current system. If
   //! the gravitational field is uniform, it is the center of gravity.
   //! The coordinates returned for the center of mass are
   //! expressed in the absolute Cartesian coordinate system.
   Standard_EXPORT gp_Pnt CentreOfMass() const;
-  
 
   //! returns the matrix of inertia. It is a symmetrical matrix.
   //! The coefficients of the matrix are the quadratic moments of
@@ -221,17 +213,16 @@ public:
   //! inertia at another location point using the Huyghens theorem
   //! (you can use the method of package GProp : HOperator).
   Standard_EXPORT gp_Mat MatrixOfInertia() const;
-  
+
   //! Returns Ix, Iy, Iz, the static moments of inertia of the
   //! current system; i.e. the moments of inertia about the
   //! three axes of the Cartesian coordinate system.
-  Standard_EXPORT void StaticMoments (Standard_Real& Ix, Standard_Real& Iy, Standard_Real& Iz) const;
-  
+  Standard_EXPORT void StaticMoments(Standard_Real& Ix, Standard_Real& Iy, Standard_Real& Iz) const;
 
   //! computes the moment of inertia of the material system about the
   //! axis A.
-  Standard_EXPORT Standard_Real MomentOfInertia (const gp_Ax1& A) const;
-  
+  Standard_EXPORT Standard_Real MomentOfInertia(const gp_Ax1& A) const;
+
   //! Computes the principal properties of inertia of the current system.
   //! There is always a set of axes for which the products
   //! of inertia of a geometric system are equal to 0; i.e. the
@@ -246,35 +237,17 @@ public:
   //! (GProp_PrincipalProps object) which may be
   //! queried to access the value sought.
   Standard_EXPORT GProp_PrincipalProps PrincipalProperties() const;
-  
+
   //! Returns the radius of gyration of the current system about the axis A.
-  Standard_EXPORT Standard_Real RadiusOfGyration (const gp_Ax1& A) const;
-
-
-
+  Standard_EXPORT Standard_Real RadiusOfGyration(const gp_Ax1& A) const;
 
 protected:
-
-
-
-  gp_Pnt g;
-  gp_Pnt loc;
+  gp_Pnt        g;
+  gp_Pnt        loc;
   Standard_Real dim;
-  gp_Mat inertia;
-
+  gp_Mat        inertia;
 
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _GProp_GProps_HeaderFile

@@ -20,6 +20,4 @@
 
 typedef Prs3d_NListOfSequenceOfPnt::Iterator Prs3d_NListIteratorOfListOfSequenceOfPnt;
 
-
 #endif
-

@@ -25,15 +25,11 @@
 class TopoDS_Face;
 class gp_Dir;
 
-
-
-class Draft 
+class Draft
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns the draft angle of the  face <F> using the
   //! direction <Direction>.  The  method is valid for :
   //! - Plane  faces,
@@ -41,8 +37,7 @@ public:
   //! of the axis of the surface is colinear with the
   //! direction.
   //! Otherwise, the exception DomainError is raised.
-  Standard_EXPORT static Standard_Real Angle (const TopoDS_Face& F, const gp_Dir& Direction);
-
+  Standard_EXPORT static Standard_Real Angle(const TopoDS_Face& F, const gp_Dir& Direction);
 };
 
 #endif // _Draft_HeaderFile

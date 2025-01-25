@@ -21,8 +21,8 @@
 #include <gp_Vec2d.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,gp_Vec2d> MAT2d_DataMapOfIntegerVec2d;
-typedef NCollection_DataMap<Standard_Integer,gp_Vec2d>::Iterator MAT2d_DataMapIteratorOfDataMapOfIntegerVec2d;
-
+typedef NCollection_DataMap<Standard_Integer, gp_Vec2d> MAT2d_DataMapOfIntegerVec2d;
+typedef NCollection_DataMap<Standard_Integer, gp_Vec2d>::Iterator
+  MAT2d_DataMapIteratorOfDataMapOfIntegerVec2d;
 
 #endif

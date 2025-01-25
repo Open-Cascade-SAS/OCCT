@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -23,64 +22,58 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_DatumDriver,XmlMDF_ADriver)
-IMPLEMENT_DOMSTRING (DescrIndexString, "descr")
-IMPLEMENT_DOMSTRING (IdIndexString,    "ident")
+IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_DatumDriver, XmlMDF_ADriver)
+IMPLEMENT_DOMSTRING(DescrIndexString, "descr")
+IMPLEMENT_DOMSTRING(IdIndexString, "ident")
 
-//=======================================================================
-//function : XmlMXCAFDoc_DatumDriver
-//purpose  : Constructor
-//=======================================================================
-XmlMXCAFDoc_DatumDriver::XmlMXCAFDoc_DatumDriver
-  (const Handle(Message_Messenger)& theMsgDriver)
-: XmlMDF_ADriver (theMsgDriver, "xcaf", "Datum")
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+XmlMXCAFDoc_DatumDriver::XmlMXCAFDoc_DatumDriver(const Handle(Message_Messenger)& theMsgDriver)
+    : XmlMDF_ADriver(theMsgDriver, "xcaf", "Datum")
+{
+}
+
+//=================================================================================================
+
 Handle(TDF_Attribute) XmlMXCAFDoc_DatumDriver::NewEmpty() const
 {
   return (new XCAFDoc_Datum());
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMXCAFDoc_DatumDriver::Paste
-                                (const XmlObjMgt_Persistent&  theSource,
-                                 const Handle(TDF_Attribute)& theTarget,
-                                 XmlObjMgt_RRelocationTable&  ) const
+Standard_Boolean XmlMXCAFDoc_DatumDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                const Handle(TDF_Attribute)& theTarget,
+                                                XmlObjMgt_RRelocationTable&) const
 {
   XmlObjMgt_DOMString aNameStr = XmlObjMgt::GetStringValue(theSource);
 
-  if (aNameStr == NULL) {
+  if (aNameStr == NULL)
+  {
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve Datum attribute");
-    myMessageDriver->Send (aMessageString, Message_Fail);
+    myMessageDriver->Send(aMessageString, Message_Fail);
     return Standard_False;
   }
-  
+
   const XmlObjMgt_Element& anElement = theSource;
 
   XmlObjMgt_DOMString aDescrStr = anElement.getAttribute(::DescrIndexString());
-  XmlObjMgt_DOMString anIdStr = anElement.getAttribute(::IdIndexString());
-  if ( aDescrStr == NULL || anIdStr == NULL ) {
-    TCollection_ExtendedString aMessageString
-      ("Cannot retrieve Datum attribute description or identification");
-    myMessageDriver->Send (aMessageString, Message_Fail);
+  XmlObjMgt_DOMString anIdStr   = anElement.getAttribute(::IdIndexString());
+  if (aDescrStr == NULL || anIdStr == NULL)
+  {
+    TCollection_ExtendedString aMessageString(
+      "Cannot retrieve Datum attribute description or identification");
+    myMessageDriver->Send(aMessageString, Message_Fail);
     return Standard_False;
   }
 
-  Handle(TCollection_HAsciiString) aName =
-    new TCollection_HAsciiString( aNameStr.GetString() );
-  Handle(TCollection_HAsciiString) aDescr =
-    new TCollection_HAsciiString( aDescrStr.GetString() );
-  Handle(TCollection_HAsciiString) anId =
-    new TCollection_HAsciiString( anIdStr.GetString() );
-  
+  Handle(TCollection_HAsciiString) aName  = new TCollection_HAsciiString(aNameStr.GetString());
+  Handle(TCollection_HAsciiString) aDescr = new TCollection_HAsciiString(aDescrStr.GetString());
+  Handle(TCollection_HAsciiString) anId   = new TCollection_HAsciiString(anIdStr.GetString());
+
   Handle(XCAFDoc_Datum) anAtt = Handle(XCAFDoc_Datum)::DownCast(theTarget);
   anAtt->Set(aName, aDescr, anId);
 
@@ -88,24 +81,24 @@ Standard_Boolean XmlMXCAFDoc_DatumDriver::Paste
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMXCAFDoc_DatumDriver::Paste (const Handle(TDF_Attribute)& theSource,
-                                       XmlObjMgt_Persistent&        theTarget,
-                                       XmlObjMgt_SRelocationTable&  ) const
+void XmlMXCAFDoc_DatumDriver::Paste(const Handle(TDF_Attribute)& theSource,
+                                    XmlObjMgt_Persistent&        theTarget,
+                                    XmlObjMgt_SRelocationTable&) const
 {
   Handle(XCAFDoc_Datum) anAtt = Handle(XCAFDoc_Datum)::DownCast(theSource);
-  
+
   XmlObjMgt_DOMString aNameString, aDescrString, anIdString;
-  if ( !anAtt->GetName().IsNull() )
+  if (!anAtt->GetName().IsNull())
     aNameString = anAtt->GetName()->String().ToCString();
-  if ( !anAtt->GetDescription().IsNull() )
+  if (!anAtt->GetDescription().IsNull())
     aDescrString = anAtt->GetDescription()->String().ToCString();
-  if ( !anAtt->GetIdentification().IsNull() )
+  if (!anAtt->GetIdentification().IsNull())
     anIdString = anAtt->GetIdentification()->String().ToCString();
 
-  XmlObjMgt::SetStringValue (theTarget, aNameString);
-  theTarget.Element().setAttribute(::DescrIndexString(),aDescrString);
+  XmlObjMgt::SetStringValue(theTarget, aNameString);
+  theTarget.Element().setAttribute(::DescrIndexString(), aDescrString);
   theTarget.Element().setAttribute(::IdIndexString(), anIdString);
 }

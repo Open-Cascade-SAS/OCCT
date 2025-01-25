@@ -24,7 +24,6 @@
 class TopoDS_Shape;
 class Standard_Transient;
 
-
 class HLRBRep_Algo;
 DEFINE_STANDARD_HANDLE(HLRBRep_Algo, HLRBRep_InternalAlgo)
 
@@ -37,8 +36,8 @@ DEFINE_STANDARD_HANDLE(HLRBRep_Algo, HLRBRep_InternalAlgo)
 //! the basic entities which will be visualized or hidden), and
 //! -   faces in these shapes which hide the edges.
 //! HLRBRep_Algo is based on the principle of comparing each edge of the shape to be
-//! visualized with each of its faces, and calculating the visible and the hidden parts of each edge.
-//! For a given projection, HLRBRep_Algo calculates a set of lines characteristic of the
+//! visualized with each of its faces, and calculating the visible and the hidden parts of each
+//! edge. For a given projection, HLRBRep_Algo calculates a set of lines characteristic of the
 //! object being represented. It is also used in conjunction with the
 //! HLRBRep_HLRToShape extraction utilities, which reconstruct a new, simplified shape
 //! from a selection of calculation results. This new shape is made up of edges, which
@@ -64,8 +63,6 @@ class HLRBRep_Algo : public HLRBRep_InternalAlgo
 {
 
 public:
-
-  
   //! Constructs an empty framework for the
   //! calculation of visible and hidden lines of a shape in a projection.
   //! Use the function:
@@ -74,45 +71,30 @@ public:
   //! -   Update to compute the outlines of the shape, and
   //! -   Hide to compute the visible and hidden lines of the shape.
   Standard_EXPORT HLRBRep_Algo();
-  
+
   Standard_EXPORT HLRBRep_Algo(const Handle(HLRBRep_Algo)& A);
-  
+
   //! add the Shape <S>.
-  Standard_EXPORT void Add (const TopoDS_Shape& S, const Handle(Standard_Transient)& SData, const Standard_Integer nbIso = 0);
-  
+  Standard_EXPORT void Add(const TopoDS_Shape&               S,
+                           const Handle(Standard_Transient)& SData,
+                           const Standard_Integer            nbIso = 0);
+
   //! Adds the shape S to this framework, and
   //! specifies the number of isoparameters nbiso desired in visualizing S.
   //! You may add as many shapes as you wish. Use the function Add once for each shape.
-  Standard_EXPORT void Add (const TopoDS_Shape& S, const Standard_Integer nbIso = 0);
-  
+  Standard_EXPORT void Add(const TopoDS_Shape& S, const Standard_Integer nbIso = 0);
+
   //! return  the index  of  the  Shape <S>  and
   //! return 0 if the Shape <S> is not found.
-  Standard_EXPORT Standard_Integer Index (const TopoDS_Shape& S);
-  
+  Standard_EXPORT Standard_Integer Index(const TopoDS_Shape& S);
+
   //! nullify all the results of OutLiner from HLRTopoBRep.
   Standard_EXPORT void OutLinedShapeNullify();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(HLRBRep_Algo,HLRBRep_InternalAlgo)
+  DEFINE_STANDARD_RTTIEXT(HLRBRep_Algo, HLRBRep_InternalAlgo)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _HLRBRep_Algo_HeaderFile

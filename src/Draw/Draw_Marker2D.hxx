@@ -26,54 +26,42 @@
 #include <Draw_Drawable2D.hxx>
 class Draw_Display;
 
-
 class Draw_Marker2D;
 DEFINE_STANDARD_HANDLE(Draw_Marker2D, Draw_Drawable2D)
-
 
 class Draw_Marker2D : public Draw_Drawable2D
 {
 
 public:
+  Standard_EXPORT Draw_Marker2D(const gp_Pnt2d&        P,
+                                const Draw_MarkerShape T,
+                                const Draw_Color&      C,
+                                const Standard_Integer Size = 5);
 
-  
-  Standard_EXPORT Draw_Marker2D(const gp_Pnt2d& P, const Draw_MarkerShape T, const Draw_Color& C, const Standard_Integer Size = 5);
-  
-  Standard_EXPORT Draw_Marker2D(const gp_Pnt2d& P, const Draw_MarkerShape T, const Draw_Color& C, const Standard_Real RSize);
-  
+  Standard_EXPORT Draw_Marker2D(const gp_Pnt2d&        P,
+                                const Draw_MarkerShape T,
+                                const Draw_Color&      C,
+                                const Standard_Real    RSize);
+
   //! myPos field
   Standard_EXPORT gp_Pnt2d& ChangePos();
-  
-  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
-  
+
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+
   //! Returns always false
-  Standard_EXPORT virtual Standard_Boolean PickReject (const Standard_Real X, const Standard_Real Y, const Standard_Real Prec) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean PickReject(const Standard_Real X,
+                                                      const Standard_Real Y,
+                                                      const Standard_Real Prec) const
+    Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Draw_Marker2D,Draw_Drawable2D)
+  DEFINE_STANDARD_RTTIEXT(Draw_Marker2D, Draw_Drawable2D)
 
 protected:
-
-
-
-
 private:
-
-
-  gp_Pnt2d myPos;
-  Draw_Color myCol;
+  gp_Pnt2d         myPos;
+  Draw_Color       myCol;
   Draw_MarkerShape myTyp;
   Standard_Integer mySiz;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Draw_Marker2D_HeaderFile

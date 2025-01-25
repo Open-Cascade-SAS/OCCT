@@ -21,40 +21,38 @@
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_SingleParent,IGESData_SingleParentEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_SingleParent, IGESData_SingleParentEntity)
 
-IGESBasic_SingleParent::IGESBasic_SingleParent ()    {  }
+IGESBasic_SingleParent::IGESBasic_SingleParent() {}
 
-
-    void  IGESBasic_SingleParent::Init
-  (const Standard_Integer nbParentEntities,
-   const Handle(IGESData_IGESEntity)& aParentEntity,
-   const Handle(IGESData_HArray1OfIGESEntity)& allChildren)
+void IGESBasic_SingleParent::Init(const Standard_Integer                      nbParentEntities,
+                                  const Handle(IGESData_IGESEntity)&          aParentEntity,
+                                  const Handle(IGESData_HArray1OfIGESEntity)& allChildren)
 {
   if (!allChildren.IsNull() && allChildren->Lower() != 1)
     throw Standard_DimensionMismatch("IGESBasic_SingleParent : Init");
   theParentEntity     = aParentEntity;
   theChildren         = allChildren;
   theNbParentEntities = nbParentEntities;
-  InitTypeAndForm(402,9);
+  InitTypeAndForm(402, 9);
 }
 
-
-    Standard_Integer  IGESBasic_SingleParent::NbChildren () const
+Standard_Integer IGESBasic_SingleParent::NbChildren() const
 {
-  return(theChildren.IsNull() ? 0 : theChildren->Length());
+  return (theChildren.IsNull() ? 0 : theChildren->Length());
 }
 
-    Handle(IGESData_IGESEntity)  IGESBasic_SingleParent::Child
-  (const Standard_Integer Index) const
+Handle(IGESData_IGESEntity) IGESBasic_SingleParent::Child(const Standard_Integer Index) const
 {
   return theChildren->Value(Index);
 }
 
-    Standard_Integer  IGESBasic_SingleParent::NbParentEntities () const
+Standard_Integer IGESBasic_SingleParent::NbParentEntities() const
 {
   return theNbParentEntities;
 }
-    Handle(IGESData_IGESEntity)  IGESBasic_SingleParent::SingleParent () const
-{  return theParentEntity;  }
 
+Handle(IGESData_IGESEntity) IGESBasic_SingleParent::SingleParent() const
+{
+  return theParentEntity;
+}

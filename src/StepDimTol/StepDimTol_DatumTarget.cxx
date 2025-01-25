@@ -19,26 +19,20 @@
 #include <StepRepr_ProductDefinitionShape.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_DatumTarget,StepRepr_ShapeAspect)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_DatumTarget, StepRepr_ShapeAspect)
 
-//=======================================================================
-//function : StepDimTol_DatumTarget
-//purpose  : 
-//=======================================================================
-StepDimTol_DatumTarget::StepDimTol_DatumTarget ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepDimTol_DatumTarget::StepDimTol_DatumTarget() {}
 
-void StepDimTol_DatumTarget::Init (const Handle(TCollection_HAsciiString) &theShapeAspect_Name,
-                                   const Handle(TCollection_HAsciiString) &theShapeAspect_Description,
-                                   const Handle(StepRepr_ProductDefinitionShape) &theShapeAspect_OfShape,
-                                   const StepData_Logical theShapeAspect_ProductDefinitional,
-                                   const Handle(TCollection_HAsciiString) &theTargetId)
+//=================================================================================================
+
+void StepDimTol_DatumTarget::Init(
+  const Handle(TCollection_HAsciiString)&        theShapeAspect_Name,
+  const Handle(TCollection_HAsciiString)&        theShapeAspect_Description,
+  const Handle(StepRepr_ProductDefinitionShape)& theShapeAspect_OfShape,
+  const StepData_Logical                         theShapeAspect_ProductDefinitional,
+  const Handle(TCollection_HAsciiString)&        theTargetId)
 {
   StepRepr_ShapeAspect::Init(theShapeAspect_Name,
                              theShapeAspect_Description,
@@ -47,22 +41,16 @@ void StepDimTol_DatumTarget::Init (const Handle(TCollection_HAsciiString) &theSh
   myTargetId = theTargetId;
 }
 
-//=======================================================================
-//function : TargetId
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepDimTol_DatumTarget::TargetId () const
+Handle(TCollection_HAsciiString) StepDimTol_DatumTarget::TargetId() const
 {
   return myTargetId;
 }
 
-//=======================================================================
-//function : SetTargetId
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepDimTol_DatumTarget::SetTargetId (const Handle(TCollection_HAsciiString) &theTargetId)
+void StepDimTol_DatumTarget::SetTargetId(const Handle(TCollection_HAsciiString)& theTargetId)
 {
   myTargetId = theTargetId;
 }

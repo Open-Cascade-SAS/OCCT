@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_EntityIterator.hxx>
 #include "RWStepBasic_RWPlaneAngleUnit.pxx"
 #include <StepBasic_DimensionalExponents.hxx>
@@ -19,47 +18,47 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWPlaneAngleUnit::RWStepBasic_RWPlaneAngleUnit () {}
+RWStepBasic_RWPlaneAngleUnit::RWStepBasic_RWPlaneAngleUnit() {}
 
-void RWStepBasic_RWPlaneAngleUnit::ReadStep
-	(const Handle(StepData_StepReaderData)& data,
-	 const Standard_Integer num,
-	 Handle(Interface_Check)& ach,
-	 const Handle(StepBasic_PlaneAngleUnit)& ent) const
+void RWStepBasic_RWPlaneAngleUnit::ReadStep(const Handle(StepData_StepReaderData)&  data,
+                                            const Standard_Integer                  num,
+                                            Handle(Interface_Check)&                ach,
+                                            const Handle(StepBasic_PlaneAngleUnit)& ent) const
 {
 
+  // --- Number of Parameter Control ---
 
-	// --- Number of Parameter Control ---
+  if (!data->CheckNbParams(num, 1, ach, "plane_angle_unit"))
+    return;
 
-	if (!data->CheckNbParams(num,1,ach,"plane_angle_unit")) return;
+  // --- inherited field : dimensions ---
 
-	// --- inherited field : dimensions ---
+  Handle(StepBasic_DimensionalExponents) aDimensions;
+  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  data->ReadEntity(num,
+                   1,
+                   "dimensions",
+                   ach,
+                   STANDARD_TYPE(StepBasic_DimensionalExponents),
+                   aDimensions);
 
-	Handle(StepBasic_DimensionalExponents) aDimensions;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-	data->ReadEntity(num, 1,"dimensions", ach, STANDARD_TYPE(StepBasic_DimensionalExponents), aDimensions);
+  //--- Initialisation of the read entity ---
 
-	//--- Initialisation of the read entity ---
-
-
-	ent->Init(aDimensions);
+  ent->Init(aDimensions);
 }
 
-
-void RWStepBasic_RWPlaneAngleUnit::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepBasic_PlaneAngleUnit)& ent) const
+void RWStepBasic_RWPlaneAngleUnit::WriteStep(StepData_StepWriter&                    SW,
+                                             const Handle(StepBasic_PlaneAngleUnit)& ent) const
 {
 
-	// --- inherited field dimensions ---
+  // --- inherited field dimensions ---
 
-	SW.Send(ent->Dimensions());
+  SW.Send(ent->Dimensions());
 }
 
-
-void RWStepBasic_RWPlaneAngleUnit::Share(const Handle(StepBasic_PlaneAngleUnit)& ent, Interface_EntityIterator& iter) const
+void RWStepBasic_RWPlaneAngleUnit::Share(const Handle(StepBasic_PlaneAngleUnit)& ent,
+                                         Interface_EntityIterator&               iter) const
 {
 
-	iter.GetOneItem(ent->Dimensions());
+  iter.GetOneItem(ent->Dimensions());
 }
-

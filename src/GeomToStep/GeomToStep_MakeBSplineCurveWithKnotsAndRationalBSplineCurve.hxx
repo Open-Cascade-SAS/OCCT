@@ -27,49 +27,31 @@ class StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve;
 class Geom_BSplineCurve;
 class Geom2d_BSplineCurve;
 
-
 //! This class implements the mapping between classes
 //! BSplineCurve from Geom, Geom2d and the class
 //! BSplineCurveWithKnotsAndRationalBSplineCurve from StepGeom
 //! which describes a rational_bspline_curve_with_knots from
 //! Prostep
-class GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve  : public GeomToStep_Root
+class GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve : public GeomToStep_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve(const Handle(Geom_BSplineCurve)& Bsplin,
-                                                                              const StepData_Factors& theLocalFactors = StepData_Factors());
-  
-  Standard_EXPORT GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve(const Handle(Geom2d_BSplineCurve)& Bsplin,
-                                                                              const StepData_Factors& theLocalFactors = StepData_Factors());
-  
-  Standard_EXPORT const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& Value() const;
+  Standard_EXPORT GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve(
+    const Handle(Geom_BSplineCurve)& Bsplin,
+    const StepData_Factors&          theLocalFactors = StepData_Factors());
 
+  Standard_EXPORT GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve(
+    const Handle(Geom2d_BSplineCurve)& Bsplin,
+    const StepData_Factors&            theLocalFactors = StepData_Factors());
 
-
+  Standard_EXPORT const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& Value()
+    const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve) theBSplineCurveWithKnotsAndRationalBSplineCurve;
-
-
+  Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)
+    theBSplineCurveWithKnotsAndRationalBSplineCurve;
 };
-
-
-
-
-
-
 
 #endif // _GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve_HeaderFile

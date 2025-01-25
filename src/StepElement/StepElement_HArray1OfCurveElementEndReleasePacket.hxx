@@ -17,7 +17,7 @@
 #include <StepElement_Array1OfCurveElementEndReleasePacket.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepElement_HArray1OfCurveElementEndReleasePacket, StepElement_Array1OfCurveElementEndReleasePacket)
-
+DEFINE_HARRAY1(StepElement_HArray1OfCurveElementEndReleasePacket,
+               StepElement_Array1OfCurveElementEndReleasePacket)
 
 #endif

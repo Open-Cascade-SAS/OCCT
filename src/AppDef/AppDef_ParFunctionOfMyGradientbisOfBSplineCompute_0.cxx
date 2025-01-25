@@ -21,7 +21,6 @@
 #include <AppDef_ParLeastSquareOfMyGradientbisOfBSplineCompute.hxx>
 #include <AppDef_ResConstraintOfMyGradientbisOfBSplineCompute.hxx>
 #include <AppParCurves_MultiCurve.hxx>
- 
 
 #define MultiLine AppDef_MultiLine
 #define MultiLine_hxx <AppDef_MultiLine.hxx>
@@ -34,4 +33,3 @@
 #define AppParCurves_Function AppDef_ParFunctionOfMyGradientbisOfBSplineCompute
 #define AppParCurves_Function_hxx <AppDef_ParFunctionOfMyGradientbisOfBSplineCompute.hxx>
 #include "../AppParCurves/AppParCurves_Function.gxx"
-

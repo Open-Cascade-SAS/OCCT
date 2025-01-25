@@ -18,7 +18,8 @@
 #define _Graphic3d_NameOfMaterial_HeaderFile
 
 //! List of named materials (predefined presets).
-//! Each preset defines either physical (having natural color) or generic (mutable color) material (@sa Graphic3d_TypeOfMaterial).
+//! Each preset defines either physical (having natural color) or generic (mutable color) material
+//! (@sa Graphic3d_TypeOfMaterial).
 enum Graphic3d_NameOfMaterial
 {
   Graphic3d_NameOfMaterial_Brass,           //!< Brass        (Physic)
@@ -46,9 +47,10 @@ enum Graphic3d_NameOfMaterial
   Graphic3d_NameOfMaterial_Diamond,         //!< Diamond      (Physic)
   Graphic3d_NameOfMaterial_Transparent,     //!< Transparent  (Physic)
   Graphic3d_NameOfMaterial_DEFAULT,         //!< Default      (Generic);
-                                            //!  normally used as out-of-range value pointing to some application default
-  Graphic3d_NameOfMaterial_UserDefined,     //!< User-defined (Physic);
-                                            //!  used for any material with non-standard definition
+                                    //!  normally used as out-of-range value pointing to some
+                                    //!  application default
+  Graphic3d_NameOfMaterial_UserDefined, //!< User-defined (Physic);
+                                        //!  used for any material with non-standard definition
 
   // old aliases
   Graphic3d_NOM_BRASS         = Graphic3d_NameOfMaterial_Brass,

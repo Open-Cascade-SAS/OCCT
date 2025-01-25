@@ -27,9 +27,9 @@ enum AIS_WalkTranslation
 //! Walking rotation components.
 enum AIS_WalkRotation
 {
-  AIS_WalkRotation_Yaw = 0,  //!< yaw   rotation angle
-  AIS_WalkRotation_Pitch,    //!< pitch rotation angle
-  AIS_WalkRotation_Roll,     //!< roll  rotation angle
+  AIS_WalkRotation_Yaw = 0, //!< yaw   rotation angle
+  AIS_WalkRotation_Pitch,   //!< pitch rotation angle
+  AIS_WalkRotation_Roll,    //!< roll  rotation angle
 };
 
 //! Walking value.
@@ -40,10 +40,15 @@ struct AIS_WalkPart
   Standard_Real Duration; //!< duration
 
   //! Return TRUE if delta is empty.
-  bool IsEmpty() const { return Abs (Value) <= RealSmall(); }
+  bool IsEmpty() const { return Abs(Value) <= RealSmall(); }
 
   //! Empty constructor.
-  AIS_WalkPart() : Value (0.0), Pressure (1.0), Duration (0.0) {}
+  AIS_WalkPart()
+      : Value(0.0),
+        Pressure(1.0),
+        Duration(0.0)
+  {
+  }
 };
 
 //! Walking values.
@@ -51,43 +56,51 @@ struct AIS_WalkDelta
 {
   //! Empty constructor.
   AIS_WalkDelta()
-  : myIsDefined (false), myIsJumping (false), myIsCrouching (false), myIsRunning (false) {}
+      : myIsDefined(false),
+        myIsJumping(false),
+        myIsCrouching(false),
+        myIsRunning(false)
+  {
+  }
 
   //! Return translation component.
-  const AIS_WalkPart& operator[] (AIS_WalkTranslation thePart) const { return myTranslation[thePart]; }
+  const AIS_WalkPart& operator[](AIS_WalkTranslation thePart) const
+  {
+    return myTranslation[thePart];
+  }
 
   //! Return translation component.
-  AIS_WalkPart&       operator[] (AIS_WalkTranslation thePart)       { return myTranslation[thePart]; }
+  AIS_WalkPart& operator[](AIS_WalkTranslation thePart) { return myTranslation[thePart]; }
 
   //! Return rotation component.
-  const AIS_WalkPart& operator[] (AIS_WalkRotation thePart) const { return myRotation[thePart]; }
+  const AIS_WalkPart& operator[](AIS_WalkRotation thePart) const { return myRotation[thePart]; }
 
   //! Return rotation component.
-  AIS_WalkPart&       operator[] (AIS_WalkRotation thePart)       { return myRotation[thePart]; }
+  AIS_WalkPart& operator[](AIS_WalkRotation thePart) { return myRotation[thePart]; }
 
   //! Return jumping state.
   bool IsJumping() const { return myIsJumping; }
 
   //! Set jumping state.
-  void SetJumping (bool theIsJumping) { myIsJumping = theIsJumping; }
+  void SetJumping(bool theIsJumping) { myIsJumping = theIsJumping; }
 
   //! Return crouching state.
   bool IsCrouching() const { return myIsCrouching; }
 
   //! Set crouching state.
-  void SetCrouching (bool theIsCrouching) { myIsCrouching = theIsCrouching; }
+  void SetCrouching(bool theIsCrouching) { myIsCrouching = theIsCrouching; }
 
   //! Return running state.
   bool IsRunning() const { return myIsRunning; }
 
   //! Set running state.
-  void SetRunning (bool theIsRunning) { myIsRunning = theIsRunning; }
+  void SetRunning(bool theIsRunning) { myIsRunning = theIsRunning; }
 
   //! Return TRUE if navigation keys are pressed even if delta from the previous frame is empty.
   bool IsDefined() const { return myIsDefined || !IsEmpty(); }
 
   //! Set if any navigation key is pressed.
-  void SetDefined (bool theIsDefined) { myIsDefined = theIsDefined; }
+  void SetDefined(bool theIsDefined) { myIsDefined = theIsDefined; }
 
   //! Return TRUE when both Rotation and Translation deltas are empty.
   bool IsEmpty() const { return !ToMove() && !ToRotate(); }
@@ -96,27 +109,25 @@ struct AIS_WalkDelta
   bool ToMove() const
   {
     return !myTranslation[AIS_WalkTranslation_Forward].IsEmpty()
-        || !myTranslation[AIS_WalkTranslation_Side].IsEmpty()
-        || !myTranslation[AIS_WalkTranslation_Up].IsEmpty();
+           || !myTranslation[AIS_WalkTranslation_Side].IsEmpty()
+           || !myTranslation[AIS_WalkTranslation_Up].IsEmpty();
   }
 
   //! Return TRUE if rotation delta is defined.
   bool ToRotate() const
   {
     return !myRotation[AIS_WalkRotation_Yaw].IsEmpty()
-        || !myRotation[AIS_WalkRotation_Pitch].IsEmpty()
-        || !myRotation[AIS_WalkRotation_Roll].IsEmpty();
+           || !myRotation[AIS_WalkRotation_Pitch].IsEmpty()
+           || !myRotation[AIS_WalkRotation_Roll].IsEmpty();
   }
 
 private:
-
   AIS_WalkPart myTranslation[3];
   AIS_WalkPart myRotation[3];
-  bool myIsDefined;
-  bool myIsJumping;
-  bool myIsCrouching;
-  bool myIsRunning;
-
+  bool         myIsDefined;
+  bool         myIsJumping;
+  bool         myIsCrouching;
+  bool         myIsRunning;
 };
 
 #endif // _AIS_WalkDelta_HeaderFile

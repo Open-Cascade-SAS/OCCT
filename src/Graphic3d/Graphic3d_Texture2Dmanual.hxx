@@ -20,7 +20,7 @@
 #include <Graphic3d_Texture2D.hxx>
 #include <Graphic3d_NameOfTexture2D.hxx>
 
-Standard_DEPRECATED ("Deprecated alias to Graphic3d_Texture2D")
+Standard_DEPRECATED("Deprecated alias to Graphic3d_Texture2D")
 typedef Graphic3d_Texture2D Graphic3d_Texture2Dmanual;
 
 #endif // _Graphic3d_Texture2Dmanual_HeaderFile

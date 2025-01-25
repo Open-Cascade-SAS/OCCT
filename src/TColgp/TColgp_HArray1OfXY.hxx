@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY1(TColgp_HArray1OfXY, TColgp_Array1OfXY)
 
-
 #endif

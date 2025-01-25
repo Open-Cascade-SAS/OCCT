@@ -24,7 +24,6 @@
 #include <IntCurve_MyImpParToolOfIntImpConicParConic.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <gp_Pnt2d.hxx>
- 
 
 #define ImpTool IntCurve_IConicTool
 #define ImpTool_hxx <IntCurve_IConicTool.hxx>
@@ -39,4 +38,3 @@
 #define IntImpParGen_Intersector IntCurve_IntImpConicParConic
 #define IntImpParGen_Intersector_hxx <IntCurve_IntImpConicParConic.hxx>
 #include "../IntImpParGen/IntImpParGen_Intersector.gxx"
-

@@ -22,5 +22,4 @@
 
 typedef NCollection_Array2<gp_Vec> TColgp_Array2OfVec;
 
-
 #endif

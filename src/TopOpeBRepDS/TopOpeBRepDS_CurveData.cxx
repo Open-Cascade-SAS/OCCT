@@ -14,22 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopOpeBRepDS_CurveData.hxx>
 #include <TopOpeBRepDS_DataStructure.hxx>
 
-//=======================================================================
-//function : TopOpeBRepDS_CurveData
-//purpose  : 
-//=======================================================================
-TopOpeBRepDS_CurveData::TopOpeBRepDS_CurveData()
-{}
+//=================================================================================================
 
-//=======================================================================
-//function : TopOpeBRepDS_CurveData
-//purpose  : 
-//=======================================================================
+TopOpeBRepDS_CurveData::TopOpeBRepDS_CurveData() {}
+
+//=================================================================================================
 
 TopOpeBRepDS_CurveData::TopOpeBRepDS_CurveData(const TopOpeBRepDS_Curve& C)
-: myCurve(C)
-{}
+    : myCurve(C)
+{
+}

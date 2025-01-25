@@ -14,10 +14,9 @@
 #ifndef _StepElement_UnspecifiedValue_HeaderFile
 #define _StepElement_UnspecifiedValue_HeaderFile
 
-
 enum StepElement_UnspecifiedValue
 {
-StepElement_Unspecified
+  StepElement_Unspecified
 };
 
 #endif // _StepElement_UnspecifiedValue_HeaderFile

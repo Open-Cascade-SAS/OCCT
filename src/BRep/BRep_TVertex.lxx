@@ -15,79 +15,72 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : Tolerance
-//purpose  : 
+// function : Tolerance
+// purpose  :
 //=======================================================================
 
-inline Standard_Real  BRep_TVertex::Tolerance()const 
+inline Standard_Real BRep_TVertex::Tolerance() const
 {
   return myTolerance;
 }
 
-
 //=======================================================================
-//function : Tolerance
-//purpose  : 
+// function : Tolerance
+// purpose  :
 //=======================================================================
 
- inline void  BRep_TVertex::Tolerance(const Standard_Real T)
+inline void BRep_TVertex::Tolerance(const Standard_Real T)
 {
   myTolerance = T;
 }
 
-
 //=======================================================================
-//function : UpdateTolerance
-//purpose  : 
+// function : UpdateTolerance
+// purpose  :
 //=======================================================================
 
- inline void  BRep_TVertex::UpdateTolerance(const Standard_Real T)
+inline void BRep_TVertex::UpdateTolerance(const Standard_Real T)
 {
-  if (T > myTolerance) myTolerance = T;
+  if (T > myTolerance)
+    myTolerance = T;
 }
 
-
 //=======================================================================
-//function : Pnt
-//purpose  : 
+// function : Pnt
+// purpose  :
 //=======================================================================
 
- inline const gp_Pnt&  BRep_TVertex::Pnt()const 
+inline const gp_Pnt& BRep_TVertex::Pnt() const
 {
   return myPnt;
 }
 
-
 //=======================================================================
-//function : Pnt
-//purpose  : 
+// function : Pnt
+// purpose  :
 //=======================================================================
 
- inline void  BRep_TVertex::Pnt(const gp_Pnt& P)
+inline void BRep_TVertex::Pnt(const gp_Pnt& P)
 {
   myPnt = P;
 }
 
-
 //=======================================================================
-//function : Points
-//purpose  : 
+// function : Points
+// purpose  :
 //=======================================================================
 
-inline const BRep_ListOfPointRepresentation&  BRep_TVertex::Points()const 
+inline const BRep_ListOfPointRepresentation& BRep_TVertex::Points() const
 {
   return myPoints;
 }
 
-
 //=======================================================================
-//function : ChangePoints
-//purpose  : 
+// function : ChangePoints
+// purpose  :
 //=======================================================================
 
-inline BRep_ListOfPointRepresentation&  BRep_TVertex::ChangePoints()
+inline BRep_ListOfPointRepresentation& BRep_TVertex::ChangePoints()
 {
   return myPoints;
 }
-
-

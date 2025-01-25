@@ -23,72 +23,97 @@
 #include <StepDimTol_HArray1OfGeometricToleranceModifier.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
 
-//=======================================================================
-//function : RWStepDimTol_RWGeometricTolerance
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-RWStepDimTol_RWGeometricToleranceWithMaximumTolerance::RWStepDimTol_RWGeometricToleranceWithMaximumTolerance ()
+RWStepDimTol_RWGeometricToleranceWithMaximumTolerance::
+  RWStepDimTol_RWGeometricToleranceWithMaximumTolerance()
 {
 }
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepDimTol_RWGeometricToleranceWithMaximumTolerance::
-  ReadStep (const Handle(StepData_StepReaderData)& data,
-            const Standard_Integer num,
-            Handle(Interface_Check)& ach,
-            const Handle(StepDimTol_GeometricToleranceWithMaximumTolerance) &ent) const
+void RWStepDimTol_RWGeometricToleranceWithMaximumTolerance::ReadStep(
+  const Handle(StepData_StepReaderData)&                           data,
+  const Standard_Integer                                           num,
+  Handle(Interface_Check)&                                         ach,
+  const Handle(StepDimTol_GeometricToleranceWithMaximumTolerance)& ent) const
 {
   // Check number of parameters
-  if ( ! data->CheckNbParams(num, 6, ach, "geometric_tolerance_with_modifiers") ) return;
+  if (!data->CheckNbParams(num, 6, ach, "geometric_tolerance_with_modifiers"))
+    return;
 
   // inherited fields from GeometricTolerance
 
   Handle(TCollection_HAsciiString) aName;
-  data->ReadString (num, 1, "geometric_tolerance.name", ach, aName);
+  data->ReadString(num, 1, "geometric_tolerance.name", ach, aName);
 
   Handle(TCollection_HAsciiString) aDescription;
-  data->ReadString (num, 2, "geometric_tolerance.description", ach, aDescription);
+  data->ReadString(num, 2, "geometric_tolerance.description", ach, aDescription);
 
   Handle(StepBasic_MeasureWithUnit) aMagnitude;
-  data->ReadEntity (num, 3, "geometric_tolerance.magnitude", ach, STANDARD_TYPE(StepBasic_MeasureWithUnit), aMagnitude);
+  data->ReadEntity(num,
+                   3,
+                   "geometric_tolerance.magnitude",
+                   ach,
+                   STANDARD_TYPE(StepBasic_MeasureWithUnit),
+                   aMagnitude);
 
   StepDimTol_GeometricToleranceTarget aTolerancedShapeAspect;
-  data->ReadEntity (num, 4, "geometric_tolerance.toleranced_shape_aspect", ach, aTolerancedShapeAspect);
+  data->ReadEntity(num,
+                   4,
+                   "geometric_tolerance.toleranced_shape_aspect",
+                   ach,
+                   aTolerancedShapeAspect);
 
   // inherited fields from GeometricToleranceWithModifiers
   Handle(StepDimTol_HArray1OfGeometricToleranceModifier) aModifiers;
-  Standard_Integer sub5 = 0;
-  if ( data->ReadSubList (num, 5, "geometric_tolerance_with_modifiers.modifiers", ach, sub5) ) {
-    Standard_Integer nb0 = data->NbParams(sub5);
-    aModifiers = new StepDimTol_HArray1OfGeometricToleranceModifier (1, nb0);
+  Standard_Integer                                       sub5 = 0;
+  if (data->ReadSubList(num, 5, "geometric_tolerance_with_modifiers.modifiers", ach, sub5))
+  {
+    Standard_Integer nb0  = data->NbParams(sub5);
+    aModifiers            = new StepDimTol_HArray1OfGeometricToleranceModifier(1, nb0);
     Standard_Integer num2 = sub5;
-    for ( Standard_Integer i0=1; i0 <= nb0; i0++ ) {
+    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    {
       StepDimTol_GeometricToleranceModifier anIt0 = StepDimTol_GTMMaximumMaterialRequirement;
-      if (data->ParamType (num2, i0) == Interface_ParamEnum) {
+      if (data->ParamType(num2, i0) == Interface_ParamEnum)
+      {
         Standard_CString text = data->ParamCValue(num2, i0);
-        if      (strcmp(text, ".ANY_CROSS_SECTION.")==0) anIt0 = StepDimTol_GTMAnyCrossSection;
-        else if (strcmp(text, ".COMMON_ZONE.")==0) anIt0 = StepDimTol_GTMCommonZone;
-        else if (strcmp(text, ".EACH_RADIAL_ELEMENT.")==0) anIt0 = StepDimTol_GTMEachRadialElement;
-        else if (strcmp(text, ".FREE_STATE.")==0) anIt0 = StepDimTol_GTMFreeState;
-        else if (strcmp(text, ".LEAST_MATERIAL_REQUIREMENT.")==0) anIt0 = StepDimTol_GTMLeastMaterialRequirement;
-        else if (strcmp(text, ".LINE_ELEMENT.")==0) anIt0 = StepDimTol_GTMLineElement;
-        else if (strcmp(text, ".MAJOR_DIAMETER.")==0) anIt0 = StepDimTol_GTMMajorDiameter;
-        else if (strcmp(text, ".MAXIMUM_MATERIAL_REQUIREMENT.")==0) anIt0 = StepDimTol_GTMMaximumMaterialRequirement;
-        else if (strcmp(text, ".MINOR_DIAMETER.")==0) anIt0 = StepDimTol_GTMMinorDiameter;
-        else if (strcmp(text, ".NOT_CONVEX.")==0) anIt0 = StepDimTol_GTMNotConvex;
-        else if (strcmp(text, ".PITCH_DIAMETER.")==0) anIt0 = StepDimTol_GTMPitchDiameter;
-        else if (strcmp(text, ".RECIPROCITY_REQUIREMENT.")==0) anIt0 = StepDimTol_GTMReciprocityRequirement;
-        else if (strcmp(text, ".SEPARATE_REQUIREMENT.")==0) anIt0 = StepDimTol_GTMSeparateRequirement;
-        else if (strcmp(text, ".STATISTICAL_TOLERANCE.")==0) anIt0 = StepDimTol_GTMStatisticalTolerance;
-        else if (strcmp(text, ".TANGENT_PLANE.")==0) anIt0 = StepDimTol_GTMTangentPlane;
-        else ach->AddFail("Parameter #5 (modifiers) has not allowed value");
+        if (strcmp(text, ".ANY_CROSS_SECTION.") == 0)
+          anIt0 = StepDimTol_GTMAnyCrossSection;
+        else if (strcmp(text, ".COMMON_ZONE.") == 0)
+          anIt0 = StepDimTol_GTMCommonZone;
+        else if (strcmp(text, ".EACH_RADIAL_ELEMENT.") == 0)
+          anIt0 = StepDimTol_GTMEachRadialElement;
+        else if (strcmp(text, ".FREE_STATE.") == 0)
+          anIt0 = StepDimTol_GTMFreeState;
+        else if (strcmp(text, ".LEAST_MATERIAL_REQUIREMENT.") == 0)
+          anIt0 = StepDimTol_GTMLeastMaterialRequirement;
+        else if (strcmp(text, ".LINE_ELEMENT.") == 0)
+          anIt0 = StepDimTol_GTMLineElement;
+        else if (strcmp(text, ".MAJOR_DIAMETER.") == 0)
+          anIt0 = StepDimTol_GTMMajorDiameter;
+        else if (strcmp(text, ".MAXIMUM_MATERIAL_REQUIREMENT.") == 0)
+          anIt0 = StepDimTol_GTMMaximumMaterialRequirement;
+        else if (strcmp(text, ".MINOR_DIAMETER.") == 0)
+          anIt0 = StepDimTol_GTMMinorDiameter;
+        else if (strcmp(text, ".NOT_CONVEX.") == 0)
+          anIt0 = StepDimTol_GTMNotConvex;
+        else if (strcmp(text, ".PITCH_DIAMETER.") == 0)
+          anIt0 = StepDimTol_GTMPitchDiameter;
+        else if (strcmp(text, ".RECIPROCITY_REQUIREMENT.") == 0)
+          anIt0 = StepDimTol_GTMReciprocityRequirement;
+        else if (strcmp(text, ".SEPARATE_REQUIREMENT.") == 0)
+          anIt0 = StepDimTol_GTMSeparateRequirement;
+        else if (strcmp(text, ".STATISTICAL_TOLERANCE.") == 0)
+          anIt0 = StepDimTol_GTMStatisticalTolerance;
+        else if (strcmp(text, ".TANGENT_PLANE.") == 0)
+          anIt0 = StepDimTol_GTMTangentPlane;
+        else
+          ach->AddFail("Parameter #5 (modifiers) has not allowed value");
       }
-      else ach->AddFail("Parameter #5 (modifier) is not set of enumerations");
+      else
+        ach->AddFail("Parameter #5 (modifier) is not set of enumerations");
       aModifiers->SetValue(i0, anIt0);
     }
   }
@@ -96,7 +121,12 @@ void RWStepDimTol_RWGeometricToleranceWithMaximumTolerance::
   // own fields of GeometricToleranceWithMaximumTolerance
 
   Handle(StepBasic_LengthMeasureWithUnit) aMaximumUpperTolerance;
-  data->ReadEntity (num, 6, "maximum_upper_tolerance", ach, STANDARD_TYPE(StepBasic_LengthMeasureWithUnit), aMaximumUpperTolerance);
+  data->ReadEntity(num,
+                   6,
+                   "maximum_upper_tolerance",
+                   ach,
+                   STANDARD_TYPE(StepBasic_LengthMeasureWithUnit),
+                   aMaximumUpperTolerance);
 
   // Initialize entity
   ent->Init(aName,
@@ -107,68 +137,94 @@ void RWStepDimTol_RWGeometricToleranceWithMaximumTolerance::
             aMaximumUpperTolerance);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepDimTol_RWGeometricToleranceWithMaximumTolerance::
-  WriteStep (StepData_StepWriter& SW,
-  const Handle(StepDimTol_GeometricToleranceWithMaximumTolerance) &ent) const
+void RWStepDimTol_RWGeometricToleranceWithMaximumTolerance::WriteStep(
+  StepData_StepWriter&                                             SW,
+  const Handle(StepDimTol_GeometricToleranceWithMaximumTolerance)& ent) const
 {
 
   // inherited fields from GeometricTolerance
 
-  SW.Send (ent->Name());
+  SW.Send(ent->Name());
 
-  SW.Send (ent->Description());
+  SW.Send(ent->Description());
 
-  SW.Send (ent->Magnitude());
+  SW.Send(ent->Magnitude());
 
-  SW.Send (ent->TolerancedShapeAspect().Value());
+  SW.Send(ent->TolerancedShapeAspect().Value());
 
   // inherited fields from GeometricToleranceWithModifiers
 
   SW.OpenSub();
-  for (Standard_Integer i = 1;  i <= ent->NbModifiers();  i++) {
-    switch (ent->ModifierValue(i)) {
-      case StepDimTol_GTMAnyCrossSection: SW.SendEnum (".ANY_CROSS_SECTION."); break;
-      case StepDimTol_GTMCommonZone: SW.SendEnum (".COMMON_ZONE."); break;
-      case StepDimTol_GTMEachRadialElement: SW.SendEnum (".EACH_RADIAL_ELEMENT."); break;
-      case StepDimTol_GTMFreeState: SW.SendEnum (".FREE_STATE."); break;
-      case StepDimTol_GTMLeastMaterialRequirement: SW.SendEnum (".LEAST_MATERIAL_REQUIREMENT."); break;
-      case StepDimTol_GTMLineElement: SW.SendEnum (".LINE_ELEMENT."); break;
-      case StepDimTol_GTMMajorDiameter: SW.SendEnum (".MAJOR_DIAMETER."); break;
-      case StepDimTol_GTMMaximumMaterialRequirement: SW.SendEnum (".MAXIMUM_MATERIAL_REQUIREMENT."); break;
-      case StepDimTol_GTMMinorDiameter: SW.SendEnum (".MINOR_DIAMETER."); break;
-      case StepDimTol_GTMNotConvex: SW.SendEnum (".NOT_CONVEX."); break;
-      case StepDimTol_GTMPitchDiameter: SW.SendEnum (".PITCH_DIAMETER."); break;
-      case StepDimTol_GTMReciprocityRequirement: SW.SendEnum (".RECIPROCITY_REQUIREMENT."); break;
-      case StepDimTol_GTMSeparateRequirement: SW.SendEnum (".SEPARATE_REQUIREMENT."); break;
-      case StepDimTol_GTMStatisticalTolerance: SW.SendEnum (".STATISTICAL_TOLERANCE."); break;
-      case StepDimTol_GTMTangentPlane: SW.SendEnum (".TANGENT_PLANE."); break;
+  for (Standard_Integer i = 1; i <= ent->NbModifiers(); i++)
+  {
+    switch (ent->ModifierValue(i))
+    {
+      case StepDimTol_GTMAnyCrossSection:
+        SW.SendEnum(".ANY_CROSS_SECTION.");
+        break;
+      case StepDimTol_GTMCommonZone:
+        SW.SendEnum(".COMMON_ZONE.");
+        break;
+      case StepDimTol_GTMEachRadialElement:
+        SW.SendEnum(".EACH_RADIAL_ELEMENT.");
+        break;
+      case StepDimTol_GTMFreeState:
+        SW.SendEnum(".FREE_STATE.");
+        break;
+      case StepDimTol_GTMLeastMaterialRequirement:
+        SW.SendEnum(".LEAST_MATERIAL_REQUIREMENT.");
+        break;
+      case StepDimTol_GTMLineElement:
+        SW.SendEnum(".LINE_ELEMENT.");
+        break;
+      case StepDimTol_GTMMajorDiameter:
+        SW.SendEnum(".MAJOR_DIAMETER.");
+        break;
+      case StepDimTol_GTMMaximumMaterialRequirement:
+        SW.SendEnum(".MAXIMUM_MATERIAL_REQUIREMENT.");
+        break;
+      case StepDimTol_GTMMinorDiameter:
+        SW.SendEnum(".MINOR_DIAMETER.");
+        break;
+      case StepDimTol_GTMNotConvex:
+        SW.SendEnum(".NOT_CONVEX.");
+        break;
+      case StepDimTol_GTMPitchDiameter:
+        SW.SendEnum(".PITCH_DIAMETER.");
+        break;
+      case StepDimTol_GTMReciprocityRequirement:
+        SW.SendEnum(".RECIPROCITY_REQUIREMENT.");
+        break;
+      case StepDimTol_GTMSeparateRequirement:
+        SW.SendEnum(".SEPARATE_REQUIREMENT.");
+        break;
+      case StepDimTol_GTMStatisticalTolerance:
+        SW.SendEnum(".STATISTICAL_TOLERANCE.");
+        break;
+      case StepDimTol_GTMTangentPlane:
+        SW.SendEnum(".TANGENT_PLANE.");
+        break;
     }
   }
   SW.CloseSub();
 
   // own fields of GeometricToleranceWithMaximumTolerance
 
-  SW.Send (ent->MaximumUpperTolerance());
+  SW.Send(ent->MaximumUpperTolerance());
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepDimTol_RWGeometricToleranceWithMaximumTolerance::
-  Share (const Handle(StepDimTol_GeometricToleranceWithMaximumTolerance) &ent,
-         Interface_EntityIterator& iter) const
+void RWStepDimTol_RWGeometricToleranceWithMaximumTolerance::Share(
+  const Handle(StepDimTol_GeometricToleranceWithMaximumTolerance)& ent,
+  Interface_EntityIterator&                                        iter) const
 {
 
   // inherited fields from GeometricTolerance
 
-  iter.AddItem (ent->Magnitude());
+  iter.AddItem(ent->Magnitude());
 
-  iter.AddItem (ent->TolerancedShapeAspect().Value());
+  iter.AddItem(ent->TolerancedShapeAspect().Value());
 }

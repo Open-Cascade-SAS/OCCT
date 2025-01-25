@@ -15,7 +15,8 @@
 
 #include <QABugs.hxx>
 
-void QABugs::Commands(Draw_Interpretor& theCommands) {
+void QABugs::Commands(Draw_Interpretor& theCommands)
+{
   QABugs::Commands_1(theCommands);
   QABugs::Commands_2(theCommands);
   QABugs::Commands_3(theCommands);

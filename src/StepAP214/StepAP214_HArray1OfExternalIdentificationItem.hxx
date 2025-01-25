@@ -20,7 +20,7 @@
 #include <StepAP214_Array1OfExternalIdentificationItem.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepAP214_HArray1OfExternalIdentificationItem, StepAP214_Array1OfExternalIdentificationItem)
-
+DEFINE_HARRAY1(StepAP214_HArray1OfExternalIdentificationItem,
+               StepAP214_Array1OfExternalIdentificationItem)
 
 #endif

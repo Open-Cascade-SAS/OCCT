@@ -20,47 +20,36 @@
 #include <StepBasic_Document.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignSpecificationReference,StepBasic_DocumentReference)
+IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignSpecificationReference, StepBasic_DocumentReference)
 
-//=======================================================================
-//function : StepAP203_CcDesignSpecificationReference
-//purpose  : 
-//=======================================================================
-StepAP203_CcDesignSpecificationReference::StepAP203_CcDesignSpecificationReference ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepAP203_CcDesignSpecificationReference::StepAP203_CcDesignSpecificationReference() {}
 
-void StepAP203_CcDesignSpecificationReference::Init (const Handle(StepBasic_Document) &aDocumentReference_AssignedDocument,
-                                                     const Handle(TCollection_HAsciiString) &aDocumentReference_Source,
-                                                     const Handle(StepAP203_HArray1OfSpecifiedItem) &aItems)
+//=================================================================================================
+
+void StepAP203_CcDesignSpecificationReference::Init(
+  const Handle(StepBasic_Document)&               aDocumentReference_AssignedDocument,
+  const Handle(TCollection_HAsciiString)&         aDocumentReference_Source,
+  const Handle(StepAP203_HArray1OfSpecifiedItem)& aItems)
 {
   StepBasic_DocumentReference::Init0(aDocumentReference_AssignedDocument,
-				     aDocumentReference_Source);
+                                     aDocumentReference_Source);
 
   theItems = aItems;
 }
 
-//=======================================================================
-//function : Items
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepAP203_HArray1OfSpecifiedItem) StepAP203_CcDesignSpecificationReference::Items () const
+Handle(StepAP203_HArray1OfSpecifiedItem) StepAP203_CcDesignSpecificationReference::Items() const
 {
   return theItems;
 }
 
-//=======================================================================
-//function : SetItems
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepAP203_CcDesignSpecificationReference::SetItems (const Handle(StepAP203_HArray1OfSpecifiedItem) &aItems)
+void StepAP203_CcDesignSpecificationReference::SetItems(
+  const Handle(StepAP203_HArray1OfSpecifiedItem)& aItems)
 {
   theItems = aItems;
 }

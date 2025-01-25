@@ -26,7 +26,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CubeMapSeparate, Graphic3d_CubeMap)
 // function : Graphic3d_CubeMapSeparate
 // purpose  :
 // =======================================================================
-Graphic3d_CubeMapSeparate::Graphic3d_CubeMapSeparate (const NCollection_Array1<TCollection_AsciiString>& thePaths)
+Graphic3d_CubeMapSeparate::Graphic3d_CubeMapSeparate(
+  const NCollection_Array1<TCollection_AsciiString>& thePaths)
 {
   if (thePaths.Size() == 6)
   {
@@ -45,7 +46,8 @@ Graphic3d_CubeMapSeparate::Graphic3d_CubeMapSeparate (const NCollection_Array1<T
 // function : Graphic3d_CubeMapSeparate
 // purpose  :
 // =======================================================================
-Graphic3d_CubeMapSeparate::Graphic3d_CubeMapSeparate (const NCollection_Array1<Handle(Image_PixMap)>& theImages)
+Graphic3d_CubeMapSeparate::Graphic3d_CubeMapSeparate(
+  const NCollection_Array1<Handle(Image_PixMap)>& theImages)
 {
   if (theImages.Size() == 6)
   {
@@ -67,9 +69,9 @@ Graphic3d_CubeMapSeparate::Graphic3d_CubeMapSeparate (const NCollection_Array1<H
       if (!theImages[i].IsNull())
       {
         if (theImages[i]->SizeX() == myImages[0]->SizeX()
-         && theImages[i]->SizeY() == myImages[0]->SizeY()
-         && theImages[i]->Format() == myImages[0]->Format()
-         && theImages[i]->IsTopDown() == myImages[0]->IsTopDown())
+            && theImages[i]->SizeY() == myImages[0]->SizeY()
+            && theImages[i]->Format() == myImages[0]->Format()
+            && theImages[i]->IsTopDown() == myImages[0]->IsTopDown())
         {
           myImages[i] = theImages[i];
           continue;
@@ -89,7 +91,8 @@ Graphic3d_CubeMapSeparate::Graphic3d_CubeMapSeparate (const NCollection_Array1<H
 // function : CompressedValue
 // purpose  :
 // =======================================================================
-Handle(Image_CompressedPixMap) Graphic3d_CubeMapSeparate::CompressedValue (const Handle(Image_SupportedFormats)& theSupported)
+Handle(Image_CompressedPixMap) Graphic3d_CubeMapSeparate::CompressedValue(
+  const Handle(Image_SupportedFormats)& theSupported)
 {
   if (!myImages[0].IsNull())
   {
@@ -97,35 +100,34 @@ Handle(Image_CompressedPixMap) Graphic3d_CubeMapSeparate::CompressedValue (const
   }
 
   const Graphic3d_CubeMapOrder anOrder = Graphic3d_CubeMapOrder::Default();
-  TCollection_AsciiString aFilePath;
+  TCollection_AsciiString      aFilePath;
   myPaths[anOrder[myCurrentSide]].SystemName(aFilePath);
   if (aFilePath.IsEmpty())
   {
     return Handle(Image_CompressedPixMap)();
   }
 
-  Handle(Image_CompressedPixMap) anImage = Image_DDSParser::Load (theSupported, aFilePath, 0);
-  if (anImage.IsNull()
-   || anImage->SizeX() != anImage->SizeY())
+  Handle(Image_CompressedPixMap) anImage = Image_DDSParser::Load(theSupported, aFilePath, 0);
+  if (anImage.IsNull() || anImage->SizeX() != anImage->SizeY())
   {
     return Handle(Image_CompressedPixMap)();
   }
 
   if (myCurrentSide == 0)
   {
-    mySize =   anImage->SizeX();
-    myFormat = anImage->BaseFormat();
+    mySize      = anImage->SizeX();
+    myFormat    = anImage->BaseFormat();
     myIsTopDown = anImage->IsTopDown();
     return anImage;
   }
 
-  if (anImage->BaseFormat() == myFormat
-   && anImage->SizeX() == (Standard_Integer )mySize)
+  if (anImage->BaseFormat() == myFormat && anImage->SizeX() == (Standard_Integer)mySize)
   {
     return anImage;
   }
 
-  Message::SendWarning (TCollection_AsciiString() + "'" + aFilePath + "' inconsistent image format or dimension in Graphic3d_CubeMapSeparate");
+  Message::SendWarning(TCollection_AsciiString() + "'" + aFilePath
+                       + "' inconsistent image format or dimension in Graphic3d_CubeMapSeparate");
   return Handle(Image_CompressedPixMap)();
 }
 
@@ -133,7 +135,8 @@ Handle(Image_CompressedPixMap) Graphic3d_CubeMapSeparate::CompressedValue (const
 // function : Value
 // purpose  :
 // =======================================================================
-Handle(Image_PixMap) Graphic3d_CubeMapSeparate::Value (const Handle(Image_SupportedFormats)& theSupported)
+Handle(Image_PixMap) Graphic3d_CubeMapSeparate::Value(
+  const Handle(Image_SupportedFormats)& theSupported)
 {
   Graphic3d_CubeMapOrder anOrder = Graphic3d_CubeMapOrder::Default();
   if (!myIsTopDown)
@@ -154,39 +157,42 @@ Handle(Image_PixMap) Graphic3d_CubeMapSeparate::Value (const Handle(Image_Suppor
       Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap;
       if (anImage->Load(aFilePath))
       {
-        convertToCompatible (theSupported, anImage);
+        convertToCompatible(theSupported, anImage);
         if (anImage->SizeX() == anImage->SizeY())
         {
           if (myCurrentSide == 0)
           {
-            mySize =   anImage->SizeX();
-            myFormat = anImage->Format();
+            mySize      = anImage->SizeX();
+            myFormat    = anImage->Format();
             myIsTopDown = anImage->IsTopDown();
             return anImage;
           }
           else
           {
-            if (anImage->Format() == myFormat
-             && anImage->SizeX() == mySize
-             && anImage->IsTopDown() == myIsTopDown)
+            if (anImage->Format() == myFormat && anImage->SizeX() == mySize
+                && anImage->IsTopDown() == myIsTopDown)
             {
               return anImage;
             }
             else
             {
-              Message::SendWarning (TCollection_AsciiString() + "'" + aFilePath + "' inconsistent image format or dimension in Graphic3d_CubeMapSeparate");
+              Message::SendWarning(
+                TCollection_AsciiString() + "'" + aFilePath
+                + "' inconsistent image format or dimension in Graphic3d_CubeMapSeparate");
             }
           }
         }
       }
       else
       {
-        Message::SendWarning (TCollection_AsciiString() + "Unable to load '" + aFilePath + "' image of Graphic3d_CubeMapSeparate");
+        Message::SendWarning(TCollection_AsciiString() + "Unable to load '" + aFilePath
+                             + "' image of Graphic3d_CubeMapSeparate");
       }
     }
     else
     {
-      Message::SendWarning (TCollection_AsciiString() + "[" + myCurrentSide + "] path of Graphic3d_CubeMapSeparate is invalid");
+      Message::SendWarning(TCollection_AsciiString() + "[" + myCurrentSide
+                           + "] path of Graphic3d_CubeMapSeparate is invalid");
     }
   }
 
@@ -223,7 +229,7 @@ Standard_Boolean Graphic3d_CubeMapSeparate::IsDone() const
 void Graphic3d_CubeMapSeparate::resetImages()
 {
   for (unsigned int i = 0; i < 6; ++i)
-  { 
+  {
     myImages[i].Nullify();
   }
 }

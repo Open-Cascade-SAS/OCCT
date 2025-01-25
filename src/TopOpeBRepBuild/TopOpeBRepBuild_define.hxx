@@ -57,6 +57,6 @@
 #define MTBlioloslos TopOpeBRepBuild_ListIteratorOfListOfShapeListOfShape
 #define MTBloslos TopOpeBRepBuild_ListOfShapeListOfShape
 #define MTBslos TopOpeBRepBuild_ShapeListOfShape
-#define MTBhb  Handle(TopOpeBRepBuild_HBuilder)
+#define MTBhb Handle(TopOpeBRepBuild_HBuilder)
 
 #endif

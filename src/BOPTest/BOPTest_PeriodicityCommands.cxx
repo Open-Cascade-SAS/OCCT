@@ -36,57 +36,68 @@ static Standard_Integer ClearRepetitions(Draw_Interpretor&, Standard_Integer, co
 
 namespace
 {
-  static BOPAlgo_MakePeriodic& getPeriodicityMaker()
-  {
-    static BOPAlgo_MakePeriodic ThePeriodicityMaker;
-    return ThePeriodicityMaker;
-  }
+static BOPAlgo_MakePeriodic& getPeriodicityMaker()
+{
+  static BOPAlgo_MakePeriodic ThePeriodicityMaker;
+  return ThePeriodicityMaker;
 }
+} // namespace
 
-//=======================================================================
-//function : PeriodicityCommands
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BOPTest::PeriodicityCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
-  if (done) return;
+  if (done)
+    return;
   done = Standard_True;
   // Chapter's name
   const char* group = "BOPTest commands";
   // Commands
-  theCommands.Add("makeperiodic", "makeperiodic result shape [-x/y/z period [-trim first]]\n"
+  theCommands.Add("makeperiodic",
+                  "makeperiodic result shape [-x/y/z period [-trim first]]\n"
                   "\t\tMake the shape periodic in the required directions.\n"
                   "\t\tresult        - resulting periodic shape;\n"
                   "\t\t-x/y/z period - option to make the shape periodic in X, Y or Z\n "
                   "\t\t                direction with the given period;\n"
                   "\t\t-trim first   - option to trim the shape to fit the required period,\n"
                   "\t\t                starting the period in first.",
-                  __FILE__, MakePeriodic, group);
+                  __FILE__,
+                  MakePeriodic,
+                  group);
 
-  theCommands.Add("periodictwins", "periodictwins twins shape\n"
-                  "\t\tReturns the twins for the shape located on the opposite side of the periodic shape.",
-                  __FILE__, GetTwins, group);
+  theCommands.Add(
+    "periodictwins",
+    "periodictwins twins shape\n"
+    "\t\tReturns the twins for the shape located on the opposite side of the periodic shape.",
+    __FILE__,
+    GetTwins,
+    group);
 
   // Repetition commands
-  theCommands.Add("repeatshape", "repeatshape result -x/y/z times\n"
-                  "\t\tRepeats the periodic shape in periodic directions required number of times.\n"
-                  "\t\tresult       - resulting shape;\n"
-                  "\t\t-x/y/z times - direction for repetition and number of repetitions.",
-                  __FILE__, RepeatShape, group);
+  theCommands.Add(
+    "repeatshape",
+    "repeatshape result -x/y/z times\n"
+    "\t\tRepeats the periodic shape in periodic directions required number of times.\n"
+    "\t\tresult       - resulting shape;\n"
+    "\t\t-x/y/z times - direction for repetition and number of repetitions.",
+    __FILE__,
+    RepeatShape,
+    group);
 
-  theCommands.Add("clearrepetitions", "clearrepetitions [result]\n"
+  theCommands.Add("clearrepetitions",
+                  "clearrepetitions [result]\n"
                   "\t\tClears all previous repetitions of the periodic shape.",
-                  __FILE__, ClearRepetitions, group);
+                  __FILE__,
+                  ClearRepetitions,
+                  group);
 }
 
-//=======================================================================
-//function : MakePeriodic
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
                               Standard_Integer  theArgc,
-                              const char ** theArgv)
+                              const char**      theArgv)
 {
   if (theArgc < 5)
   {
@@ -178,13 +189,9 @@ Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : GetTwin
-//purpose  : 
-//=======================================================================
-Standard_Integer GetTwins(Draw_Interpretor& theDI,
-                          Standard_Integer  theArgc,
-                          const char ** theArgv)
+//=================================================================================================
+
+Standard_Integer GetTwins(Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
 {
   if (theArgc != 3)
   {
@@ -219,13 +226,11 @@ Standard_Integer GetTwins(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : RepeatShape
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer RepeatShape(Draw_Interpretor& theDI,
                              Standard_Integer  theArgc,
-                             const char ** theArgv)
+                             const char**      theArgv)
 {
   if (theArgc < 4)
   {
@@ -282,13 +287,9 @@ Standard_Integer RepeatShape(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : ClearRepetitions
-//purpose  : 
-//=======================================================================
-Standard_Integer ClearRepetitions(Draw_Interpretor&,
-                                  Standard_Integer theArgc,
-                                  const char **theArgv)
+//=================================================================================================
+
+Standard_Integer ClearRepetitions(Draw_Interpretor&, Standard_Integer theArgc, const char** theArgv)
 {
   // Clear all previous repetitions
   getPeriodicityMaker().ClearRepetitions();

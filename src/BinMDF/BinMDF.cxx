@@ -19,13 +19,11 @@
 #include <BinMDF_TagSourceDriver.hxx>
 #include <Message_Messenger.hxx>
 
-//=======================================================================
-//function : AddDrivers
-//purpose  : 
-//=======================================================================
-void BinMDF::AddDrivers (const Handle(BinMDF_ADriverTable)& aDriverTable,
-                         const Handle(Message_Messenger)&   aMsgDrv)
+//=================================================================================================
+
+void BinMDF::AddDrivers(const Handle(BinMDF_ADriverTable)& aDriverTable,
+                        const Handle(Message_Messenger)&   aMsgDrv)
 {
-  aDriverTable->AddDriver (new BinMDF_ReferenceDriver (aMsgDrv) );
-  aDriverTable->AddDriver (new BinMDF_TagSourceDriver (aMsgDrv) );
+  aDriverTable->AddDriver(new BinMDF_ReferenceDriver(aMsgDrv));
+  aDriverTable->AddDriver(new BinMDF_TagSourceDriver(aMsgDrv));
 }

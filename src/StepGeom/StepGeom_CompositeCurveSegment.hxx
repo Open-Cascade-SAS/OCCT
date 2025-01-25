@@ -24,58 +24,39 @@
 #include <Standard_Transient.hxx>
 class StepGeom_Curve;
 
-
 class StepGeom_CompositeCurveSegment;
 DEFINE_STANDARD_HANDLE(StepGeom_CompositeCurveSegment, Standard_Transient)
-
 
 class StepGeom_CompositeCurveSegment : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a CompositeCurveSegment
   Standard_EXPORT StepGeom_CompositeCurveSegment();
-  
-  Standard_EXPORT void Init (const StepGeom_TransitionCode aTransition, const Standard_Boolean aSameSense, const Handle(StepGeom_Curve)& aParentCurve);
-  
-  Standard_EXPORT void SetTransition (const StepGeom_TransitionCode aTransition);
-  
+
+  Standard_EXPORT void Init(const StepGeom_TransitionCode aTransition,
+                            const Standard_Boolean        aSameSense,
+                            const Handle(StepGeom_Curve)& aParentCurve);
+
+  Standard_EXPORT void SetTransition(const StepGeom_TransitionCode aTransition);
+
   Standard_EXPORT StepGeom_TransitionCode Transition() const;
-  
-  Standard_EXPORT void SetSameSense (const Standard_Boolean aSameSense);
-  
+
+  Standard_EXPORT void SetSameSense(const Standard_Boolean aSameSense);
+
   Standard_EXPORT Standard_Boolean SameSense() const;
-  
-  Standard_EXPORT void SetParentCurve (const Handle(StepGeom_Curve)& aParentCurve);
-  
+
+  Standard_EXPORT void SetParentCurve(const Handle(StepGeom_Curve)& aParentCurve);
+
   Standard_EXPORT Handle(StepGeom_Curve) ParentCurve() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepGeom_CompositeCurveSegment,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_CompositeCurveSegment, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   StepGeom_TransitionCode transition;
-  Standard_Boolean sameSense;
-  Handle(StepGeom_Curve) parentCurve;
-
-
+  Standard_Boolean        sameSense;
+  Handle(StepGeom_Curve)  parentCurve;
 };
-
-
-
-
-
-
 
 #endif // _StepGeom_CompositeCurveSegment_HeaderFile

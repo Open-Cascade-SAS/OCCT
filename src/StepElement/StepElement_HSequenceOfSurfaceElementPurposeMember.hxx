@@ -17,7 +17,7 @@
 #include <StepElement_SequenceOfSurfaceElementPurposeMember.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(StepElement_HSequenceOfSurfaceElementPurposeMember, StepElement_SequenceOfSurfaceElementPurposeMember)
-
+DEFINE_HSEQUENCE(StepElement_HSequenceOfSurfaceElementPurposeMember,
+                 StepElement_SequenceOfSurfaceElementPurposeMember)
 
 #endif

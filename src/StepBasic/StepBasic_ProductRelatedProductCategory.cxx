@@ -11,44 +11,45 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepBasic_ProductRelatedProductCategory.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductRelatedProductCategory,StepBasic_ProductCategory)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductRelatedProductCategory, StepBasic_ProductCategory)
 
-StepBasic_ProductRelatedProductCategory::StepBasic_ProductRelatedProductCategory ()  {}
+StepBasic_ProductRelatedProductCategory::StepBasic_ProductRelatedProductCategory() {}
 
 void StepBasic_ProductRelatedProductCategory::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Standard_Boolean hasAdescription,
-	const Handle(TCollection_HAsciiString)& aDescription,
-	const Handle(StepBasic_HArray1OfProduct)& aProducts)
+  const Handle(TCollection_HAsciiString)&   aName,
+  const Standard_Boolean                    hasAdescription,
+  const Handle(TCollection_HAsciiString)&   aDescription,
+  const Handle(StepBasic_HArray1OfProduct)& aProducts)
 {
-	// --- classe own fields ---
-	products = aProducts;
-	// --- classe inherited fields ---
-	StepBasic_ProductCategory::Init(aName, hasAdescription, aDescription);
+  // --- classe own fields ---
+  products = aProducts;
+  // --- classe inherited fields ---
+  StepBasic_ProductCategory::Init(aName, hasAdescription, aDescription);
 }
 
-
-void StepBasic_ProductRelatedProductCategory::SetProducts(const Handle(StepBasic_HArray1OfProduct)& aProducts)
+void StepBasic_ProductRelatedProductCategory::SetProducts(
+  const Handle(StepBasic_HArray1OfProduct)& aProducts)
 {
-	products = aProducts;
+  products = aProducts;
 }
 
 Handle(StepBasic_HArray1OfProduct) StepBasic_ProductRelatedProductCategory::Products() const
 {
-	return products;
+  return products;
 }
 
-Handle(StepBasic_Product) StepBasic_ProductRelatedProductCategory::ProductsValue(const Standard_Integer num) const
+Handle(StepBasic_Product) StepBasic_ProductRelatedProductCategory::ProductsValue(
+  const Standard_Integer num) const
 {
-	return products->Value(num);
+  return products->Value(num);
 }
 
-Standard_Integer StepBasic_ProductRelatedProductCategory::NbProducts () const
+Standard_Integer StepBasic_ProductRelatedProductCategory::NbProducts() const
 {
-	if (products.IsNull()) return 0;
-	return products->Length();
+  if (products.IsNull())
+    return 0;
+  return products->Length();
 }

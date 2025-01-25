@@ -14,13 +14,13 @@
 // commercial license or contractual agreement.
 
 //! Access to the map
-inline const TColStd_PackedMapOfInteger& TColStd_HPackedMapOfInteger::Map () const 
-{ 
-  return myMap; 
+inline const TColStd_PackedMapOfInteger& TColStd_HPackedMapOfInteger::Map() const
+{
+  return myMap;
 }
 
 //! Access to the map for modification
-inline TColStd_PackedMapOfInteger& TColStd_HPackedMapOfInteger::ChangeMap () 
-{ 
-  return myMap; 
+inline TColStd_PackedMapOfInteger& TColStd_HPackedMapOfInteger::ChangeMap()
+{
+  return myMap;
 }

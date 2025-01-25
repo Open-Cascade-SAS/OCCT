@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY1(StepVisual_HArray1OfTextOrCharacter, StepVisual_Array1OfTextOrCharacter)
 
-
 #endif

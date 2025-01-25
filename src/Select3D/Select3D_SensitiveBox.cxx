@@ -16,43 +16,37 @@
 
 #include <Select3D_SensitiveBox.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveBox,Select3D_SensitiveEntity)
+IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveBox, Select3D_SensitiveEntity)
 
-//==================================================
-// Function: Select3D_SensitiveBox
-// Purpose :
-//==================================================
-Select3D_SensitiveBox::Select3D_SensitiveBox (const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                              const Bnd_Box& theBox)
-: Select3D_SensitiveEntity (theOwnerId)
+//=================================================================================================
+
+Select3D_SensitiveBox::Select3D_SensitiveBox(const Handle(SelectMgr_EntityOwner)& theOwnerId,
+                                             const Bnd_Box&                       theBox)
+    : Select3D_SensitiveEntity(theOwnerId)
 {
   Standard_Real aXMax, aYMax, aZMax;
   Standard_Real aXMin, aYMin, aZMin;
-  theBox.Get (aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
-  myBox = Select3D_BndBox3d (SelectMgr_Vec3 (aXMin, aYMin, aZMin),
-                             SelectMgr_Vec3 (aXMax, aYMax, aZMax));
-  myCenter3d = (gp_XYZ (aXMin, aYMin, aZMin) + gp_XYZ (aXMax, aYMax, aZMax))
-                * (1.0 / 2.0);
+  theBox.Get(aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
+  myBox =
+    Select3D_BndBox3d(SelectMgr_Vec3(aXMin, aYMin, aZMin), SelectMgr_Vec3(aXMax, aYMax, aZMax));
+  myCenter3d = (gp_XYZ(aXMin, aYMin, aZMin) + gp_XYZ(aXMax, aYMax, aZMax)) * (1.0 / 2.0);
 }
 
-//==================================================
-// Function: Select3D_SensitiveBox
-// Purpose :
-//==================================================
+//=================================================================================================
 
-Select3D_SensitiveBox::Select3D_SensitiveBox (const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                              const Standard_Real theXMin,
-                                              const Standard_Real theYMin,
-                                              const Standard_Real theZMin,
-                                              const Standard_Real theXMax,
-                                              const Standard_Real theYMax,
-                                              const Standard_Real theZMax)
-: Select3D_SensitiveEntity (theOwnerId)
+Select3D_SensitiveBox::Select3D_SensitiveBox(const Handle(SelectMgr_EntityOwner)& theOwnerId,
+                                             const Standard_Real                  theXMin,
+                                             const Standard_Real                  theYMin,
+                                             const Standard_Real                  theZMin,
+                                             const Standard_Real                  theXMax,
+                                             const Standard_Real                  theYMax,
+                                             const Standard_Real                  theZMax)
+    : Select3D_SensitiveEntity(theOwnerId)
 {
-  myBox = Select3D_BndBox3d (SelectMgr_Vec3 (theXMin, theYMin, theZMin),
-                             SelectMgr_Vec3 (theXMax, theYMax, theZMax));
-  myCenter3d = (gp_XYZ (theXMin, theYMin, theZMin) + gp_XYZ (theXMax, theYMax, theZMax))
-                * (1.0 / 2.0);
+  myBox = Select3D_BndBox3d(SelectMgr_Vec3(theXMin, theYMin, theZMin),
+                            SelectMgr_Vec3(theXMax, theYMax, theZMax));
+  myCenter3d =
+    (gp_XYZ(theXMin, theYMin, theZMin) + gp_XYZ(theXMax, theYMax, theZMax)) * (1.0 / 2.0);
 }
 
 //=======================================================================
@@ -64,17 +58,18 @@ Standard_Integer Select3D_SensitiveBox::NbSubElements() const
   return 1;
 }
 
-//=======================================================================
-//function : GetConnected
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(Select3D_SensitiveEntity) Select3D_SensitiveBox::GetConnected()
 {
   Bnd_Box aBox;
-  aBox.Update (myBox.CornerMin().x(), myBox.CornerMin().y(), myBox.CornerMin().z(),
-               myBox.CornerMax().x(), myBox.CornerMax().y(), myBox.CornerMax().z());
-  Handle(Select3D_SensitiveBox) aNewEntity =  new Select3D_SensitiveBox (myOwnerId, aBox);
+  aBox.Update(myBox.CornerMin().x(),
+              myBox.CornerMin().y(),
+              myBox.CornerMin().z(),
+              myBox.CornerMax().x(),
+              myBox.CornerMax().y(),
+              myBox.CornerMax().z());
+  Handle(Select3D_SensitiveBox) aNewEntity = new Select3D_SensitiveBox(myOwnerId, aBox);
 
   return aNewEntity;
 }
@@ -83,21 +78,21 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveBox::GetConnected()
 // function : Matches
 // purpose  : Checks whether the box overlaps current selecting volume
 //=======================================================================
-Standard_Boolean Select3D_SensitiveBox::Matches (SelectBasics_SelectingVolumeManager& theMgr,
-                                                 SelectBasics_PickResult& thePickResult)
+Standard_Boolean Select3D_SensitiveBox::Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                                                SelectBasics_PickResult&             thePickResult)
 {
   if (!theMgr.IsOverlapAllowed()) // check for inclusion
   {
     Standard_Boolean isInside = Standard_True;
-    return theMgr.OverlapsBox (myBox.CornerMin(), myBox.CornerMax(), &isInside) && isInside;
+    return theMgr.OverlapsBox(myBox.CornerMin(), myBox.CornerMax(), &isInside) && isInside;
   }
 
-  if (!theMgr.OverlapsBox (myBox.CornerMin(), myBox.CornerMax(), thePickResult)) // check for overlap
+  if (!theMgr.OverlapsBox(myBox.CornerMin(), myBox.CornerMax(), thePickResult)) // check for overlap
   {
     return Standard_False;
   }
 
-  thePickResult.SetDistToGeomCenter (theMgr.DistToGeometryCenter(myCenter3d));
+  thePickResult.SetDistToGeomCenter(theMgr.DistToGeometryCenter(myCenter3d));
   return Standard_True;
 }
 
@@ -121,14 +116,12 @@ Select3D_BndBox3d Select3D_SensitiveBox::BoundingBox()
   return myBox;
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  :
-//=======================================================================
-void Select3D_SensitiveBox::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Select3D_SensitiveEntity)
+//=================================================================================================
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBox)
+void Select3D_SensitiveBox::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Select3D_SensitiveEntity)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myBox)
 }

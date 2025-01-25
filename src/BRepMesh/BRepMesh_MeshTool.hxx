@@ -29,16 +29,13 @@
 class BRepMesh_MeshTool : public Standard_Transient
 {
 public:
-
   //! Helper functor intended to separate points to left and right from the constraint.
   class NodeClassifier
   {
   public:
-
-    NodeClassifier(
-      const BRepMesh_Edge&                          theConstraint,
-      const Handle(BRepMesh_DataStructureOfDelaun)& theStructure)
-      : myStructure(theStructure)
+    NodeClassifier(const BRepMesh_Edge&                          theConstraint,
+                   const Handle(BRepMesh_DataStructureOfDelaun)& theStructure)
+        : myStructure(theStructure)
     {
       const BRepMesh_Vertex& aVertex1 = myStructure->GetNode(theConstraint.FirstNode());
       const BRepMesh_Vertex& aVertex2 = myStructure->GetNode(theConstraint.LastNode());
@@ -51,15 +48,13 @@ public:
     Standard_Boolean IsAbove(const Standard_Integer theNodeIndex) const
     {
       const BRepMesh_Vertex& aVertex = myStructure->GetNode(theNodeIndex);
-      const gp_Vec2d aNodeVec(myConstraint.Location(), aVertex.Coord());
+      const gp_Vec2d         aNodeVec(myConstraint.Location(), aVertex.Coord());
       if (aNodeVec.SquareMagnitude() > gp::Resolution())
       {
         const Standard_Real aCross = aNodeVec.Crossed(myConstraint.Direction());
         if (Abs(aCross) > gp::Resolution())
         {
-          return mySign ? 
-            aCross < 0. :
-            aCross > 0.;
+          return mySign ? aCross < 0. : aCross > 0.;
         }
       }
 
@@ -67,13 +62,11 @@ public:
     }
 
   private:
-
-    NodeClassifier (const NodeClassifier& theOther);
+    NodeClassifier(const NodeClassifier& theOther);
 
     void operator=(const NodeClassifier& theOther);
 
   private:
-
     const Handle(BRepMesh_DataStructureOfDelaun)& myStructure;
     gp_Lin2d                                      myConstraint;
     Standard_Boolean                              mySign;
@@ -87,20 +80,16 @@ public:
   Standard_EXPORT virtual ~BRepMesh_MeshTool();
 
   //! Returns data structure manipulated by this tool.
-  const Handle(BRepMesh_DataStructureOfDelaun)& GetStructure() const
-  {
-    return myStructure;
-  }
+  const Handle(BRepMesh_DataStructureOfDelaun)& GetStructure() const { return myStructure; }
 
   //! Dumps triangles to specified file.
   void DumpTriangles(const Standard_CString theFileName, IMeshData::MapOfInteger* theTriangles);
 
   //! Adds new triangle with specified nodes to mesh.
   //! Legalizes triangle in case if it violates circle criteria.
-  void AddAndLegalizeTriangle(
-    const Standard_Integer thePoint1,
-    const Standard_Integer thePoint2,
-    const Standard_Integer thePoint3)
+  void AddAndLegalizeTriangle(const Standard_Integer thePoint1,
+                              const Standard_Integer thePoint2,
+                              const Standard_Integer thePoint3)
   {
     Standard_Integer aEdges[3];
     AddTriangle(thePoint1, thePoint2, thePoint3, aEdges);
@@ -111,11 +100,10 @@ public:
   }
 
   //! Adds new triangle with specified nodes to mesh.
-  void AddTriangle(
-    const Standard_Integer thePoint1,
-    const Standard_Integer thePoint2,
-    const Standard_Integer thePoint3,
-    Standard_Integer     (&theEdges)[3])
+  void AddTriangle(const Standard_Integer thePoint1,
+                   const Standard_Integer thePoint2,
+                   const Standard_Integer thePoint3,
+                   Standard_Integer (&theEdges)[3])
   {
     Standard_Boolean aOri[3];
     AddLink(thePoint1, thePoint2, theEdges[0], aOri[0]);
@@ -132,11 +120,11 @@ public:
                Standard_Integer&      theLinkIndex,
                Standard_Boolean&      theLinkOri)
   {
-    const Standard_Integer aLinkIt = myStructure->AddLink(
-      BRepMesh_Edge(theFirstNode, theLastNode, BRepMesh_Free));
+    const Standard_Integer aLinkIt =
+      myStructure->AddLink(BRepMesh_Edge(theFirstNode, theLastNode, BRepMesh_Free));
 
     theLinkIndex = Abs(aLinkIt);
-    theLinkOri = (aLinkIt > 0);
+    theLinkOri   = (aLinkIt > 0);
   }
 
   //! Performs legalization of triangles connected to the specified link.
@@ -166,31 +154,32 @@ public:
   Standard_EXPORT void EraseFreeLinks(const IMeshData::MapOfIntegerInteger& theLinks);
 
   //! Gives the list of edges with type defined by input parameter.
-  Standard_EXPORT Handle(IMeshData::MapOfInteger) GetEdgesByType(const BRepMesh_DegreeOfFreedom theEdgeType) const;
+  Standard_EXPORT Handle(IMeshData::MapOfInteger) GetEdgesByType(
+    const BRepMesh_DegreeOfFreedom theEdgeType) const;
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_MeshTool, Standard_Transient)
 
 private:
-
   //! Returns True if the given point lies within circumcircle of the given triangle.
-  Standard_Boolean checkCircle(
-    const Standard_Integer(&aNodes)[3],
-    const Standard_Integer thePoint)
+  Standard_Boolean checkCircle(const Standard_Integer (&aNodes)[3], const Standard_Integer thePoint)
   {
     const BRepMesh_Vertex& aVertex0 = myStructure->GetNode(aNodes[0]);
     const BRepMesh_Vertex& aVertex1 = myStructure->GetNode(aNodes[1]);
     const BRepMesh_Vertex& aVertex2 = myStructure->GetNode(aNodes[2]);
 
-    gp_XY aLocation;
-    Standard_Real aRadius;
-    const Standard_Boolean isOk = BRepMesh_CircleTool::MakeCircle(
-      aVertex0.Coord(), aVertex1.Coord(), aVertex2.Coord(),
-      aLocation, aRadius);
+    gp_XY                  aLocation;
+    Standard_Real          aRadius;
+    const Standard_Boolean isOk = BRepMesh_CircleTool::MakeCircle(aVertex0.Coord(),
+                                                                  aVertex1.Coord(),
+                                                                  aVertex2.Coord(),
+                                                                  aLocation,
+                                                                  aRadius);
 
     if (isOk)
     {
       const BRepMesh_Vertex& aVertex = myStructure->GetNode(thePoint);
-      const Standard_Real aDist = (aVertex.Coord() - aLocation).SquareModulus() - (aRadius * aRadius);
+      const Standard_Real    aDist =
+        (aVertex.Coord() - aLocation).SquareModulus() - (aRadius * aRadius);
       return (aDist < Precision::SquareConfusion());
     }
 
@@ -199,12 +188,11 @@ private:
 
   //! Adds new triangle with the given nodes and updates
   //! links stack by ones are not in used map.
-  void addTriangleAndUpdateStack(
-    const Standard_Integer         theNode0,
-    const Standard_Integer         theNode1,
-    const Standard_Integer         theNode2,
-    const IMeshData::MapOfInteger& theUsedLinks,
-    std::stack<Standard_Integer>&  theStack)
+  void addTriangleAndUpdateStack(const Standard_Integer         theNode0,
+                                 const Standard_Integer         theNode1,
+                                 const Standard_Integer         theNode2,
+                                 const IMeshData::MapOfInteger& theUsedLinks,
+                                 std::stack<Standard_Integer>&  theStack)
   {
     Standard_Integer aEdges[3];
     AddTriangle(theNode0, theNode1, theNode2, aEdges);
@@ -221,13 +209,11 @@ private:
   //! Iteratively erases triangles and their neighbours consisting
   //! of free links using the given link as starting front.
   //! Only triangles around the constraint's saddle nodes will be removed.
-  void collectTrianglesOnFreeLinksAroundNodesOf(
-    const BRepMesh_Edge&     theConstraint,
-    const Standard_Integer   theStartLink,
-    IMeshData::MapOfInteger& theTriangles);
+  void collectTrianglesOnFreeLinksAroundNodesOf(const BRepMesh_Edge&     theConstraint,
+                                                const Standard_Integer   theStartLink,
+                                                IMeshData::MapOfInteger& theTriangles);
 
 private:
-
   Handle(BRepMesh_DataStructureOfDelaun) myStructure;
 };
 

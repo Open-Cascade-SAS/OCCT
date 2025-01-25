@@ -28,7 +28,6 @@
 #include <Standard_Real.hxx>
 class GccInt_Bisec;
 
-
 //! Describes functions for building a bisecting curve
 //! between a 2D circle and a point.
 //! A bisecting curve between a circle and a point is such a
@@ -41,64 +40,45 @@ class GccInt_Bisec;
 //! -   defining the construction of the bisecting curves,
 //! -   implementing the construction algorithm, and
 //! -   consulting the result.
-class GccAna_CircPnt2dBisec 
+class GccAna_CircPnt2dBisec
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs bisecting curves between the circle Circle1 and the point Point2.
   Standard_EXPORT GccAna_CircPnt2dBisec(const gp_Circ2d& Circle1, const gp_Pnt2d& Point2);
-  
+
   //! Constructs bisecting curves between the circle Circle1 and the point Point2.
   //! Tolerance is used.
-  Standard_EXPORT GccAna_CircPnt2dBisec(const gp_Circ2d& Circle1, const gp_Pnt2d& Point2, const Standard_Real Tolerance);
-  
+  Standard_EXPORT GccAna_CircPnt2dBisec(const gp_Circ2d&    Circle1,
+                                        const gp_Pnt2d&     Point2,
+                                        const Standard_Real Tolerance);
+
   //! Returns true (this construction algorithm never fails).
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
+
   //! Returns the number of curves, representing solutions computed by this algorithm.
   Standard_EXPORT Standard_Integer NbSolutions() const;
-  
+
   //! Returns the solution number Index and raises OutOfRange
   //! exception if Index is greater than the number of solutions.
   //! Exceptions
   //! Standard_OutOfRange if Index is less than zero or
   //! greater than the number of solutions computed by this algorithm.
-  Standard_EXPORT Handle(GccInt_Bisec) ThisSolution (const Standard_Integer Index) const;
-
-
-
+  Standard_EXPORT Handle(GccInt_Bisec) ThisSolution(const Standard_Integer Index) const;
 
 protected:
-
-
-
-
-
 private:
-
-  
   //! Defines the number and the type of solutions
   //! depending on input data
   Standard_EXPORT void DefineSolutions();
 
-
   Standard_Boolean WellDone;
   Standard_Integer NbrSol;
-  gp_Circ2d circle;
-  gp_Pnt2d point;
+  gp_Circ2d        circle;
+  gp_Pnt2d         point;
   Standard_Integer theposition;
-  Standard_Real myTolerance;
-
-
+  Standard_Real    myTolerance;
 };
-
-
-
-
-
-
 
 #endif // _GccAna_CircPnt2dBisec_HeaderFile

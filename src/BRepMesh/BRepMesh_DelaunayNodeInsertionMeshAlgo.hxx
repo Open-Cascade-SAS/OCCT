@@ -19,44 +19,38 @@
 #include <BRepMesh_NodeInsertionMeshAlgo.hxx>
 #include <BRepMesh_GeomTool.hxx>
 
-//! Extends base Delaunay meshing algo in order to enable possibility 
+//! Extends base Delaunay meshing algo in order to enable possibility
 //! of addition of free vertices and internal nodes into the mesh.
-template<class RangeSplitter, class BaseAlgo>
-class BRepMesh_DelaunayNodeInsertionMeshAlgo : public BRepMesh_NodeInsertionMeshAlgo<RangeSplitter, BaseAlgo>
+template <class RangeSplitter, class BaseAlgo>
+class BRepMesh_DelaunayNodeInsertionMeshAlgo
+    : public BRepMesh_NodeInsertionMeshAlgo<RangeSplitter, BaseAlgo>
 {
 private:
   // Typedef for OCCT RTTI
   typedef BRepMesh_NodeInsertionMeshAlgo<RangeSplitter, BaseAlgo> InsertionBaseClass;
 
 public:
-
   //! Constructor.
   BRepMesh_DelaunayNodeInsertionMeshAlgo()
-    : myIsPreProcessSurfaceNodes (Standard_False)
+      : myIsPreProcessSurfaceNodes(Standard_False)
   {
   }
 
   //! Destructor.
-  virtual ~BRepMesh_DelaunayNodeInsertionMeshAlgo()
-  {
-  }
+  virtual ~BRepMesh_DelaunayNodeInsertionMeshAlgo() {}
 
-  //! Returns PreProcessSurfaceNodes flag. 
-  Standard_Boolean IsPreProcessSurfaceNodes () const
-  {
-    return myIsPreProcessSurfaceNodes;
-  }
+  //! Returns PreProcessSurfaceNodes flag.
+  Standard_Boolean IsPreProcessSurfaceNodes() const { return myIsPreProcessSurfaceNodes; }
 
   //! Sets PreProcessSurfaceNodes flag.
   //! If TRUE, registers surface nodes before generation of base mesh.
-  //! If FALSE, inserts surface nodes after generation of base mesh. 
-  void SetPreProcessSurfaceNodes (const Standard_Boolean isPreProcessSurfaceNodes)
+  //! If FALSE, inserts surface nodes after generation of base mesh.
+  void SetPreProcessSurfaceNodes(const Standard_Boolean isPreProcessSurfaceNodes)
   {
     myIsPreProcessSurfaceNodes = isPreProcessSurfaceNodes;
   }
 
 protected:
-
   //! Performs initialization of data structure using existing model data.
   virtual Standard_Boolean initDataStructure() Standard_OVERRIDE
   {
@@ -70,31 +64,34 @@ protected:
       const Handle(IMeshData::ListOfPnt2d) aSurfaceNodes =
         this->getRangeSplitter().GenerateSurfaceNodes(this->getParameters());
 
-      registerSurfaceNodes (aSurfaceNodes);
+      registerSurfaceNodes(aSurfaceNodes);
     }
 
     return Standard_True;
   }
 
   //! Returns size of cell to be used by acceleration circles grid structure.
-  virtual std::pair<Standard_Integer, Standard_Integer> getCellsCount (const Standard_Integer theVerticesNb) Standard_OVERRIDE
+  virtual std::pair<Standard_Integer, Standard_Integer> getCellsCount(
+    const Standard_Integer theVerticesNb) Standard_OVERRIDE
   {
-    return BRepMesh_GeomTool::CellsCount (this->getDFace()->GetSurface(), theVerticesNb,
-                                          this->getDFace()->GetDeflection(),
-                                          &this->getRangeSplitter());
+    return BRepMesh_GeomTool::CellsCount(this->getDFace()->GetSurface(),
+                                         theVerticesNb,
+                                         this->getDFace()->GetDeflection(),
+                                         &this->getRangeSplitter());
   }
 
-  //! Performs processing of generated mesh. Generates surface nodes and inserts them into structure.
-  virtual void postProcessMesh (BRepMesh_Delaun& theMesher,
-                                const Message_ProgressRange& theRange) Standard_OVERRIDE
+  //! Performs processing of generated mesh. Generates surface nodes and inserts them into
+  //! structure.
+  virtual void postProcessMesh(BRepMesh_Delaun&             theMesher,
+                               const Message_ProgressRange& theRange) Standard_OVERRIDE
   {
     if (!theRange.More())
     {
       return;
     }
-// clang-format off
+    // clang-format off
     InsertionBaseClass::postProcessMesh (theMesher, Message_ProgressRange()); // shouldn't be range passed here?
-// clang-format on
+    // clang-format on
 
     if (!myIsPreProcessSurfaceNodes)
     {
@@ -106,17 +103,16 @@ protected:
   }
 
   //! Inserts nodes into mesh.
-  Standard_Boolean insertNodes(
-    const Handle(IMeshData::ListOfPnt2d)& theNodes,
-    BRepMesh_Delaun&                      theMesher,
-    const Message_ProgressRange&          theRange)
+  Standard_Boolean insertNodes(const Handle(IMeshData::ListOfPnt2d)& theNodes,
+                               BRepMesh_Delaun&                      theMesher,
+                               const Message_ProgressRange&          theRange)
   {
     if (theNodes.IsNull() || theNodes->IsEmpty())
     {
       return Standard_False;
     }
 
-    IMeshData::VectorOfInteger aVertexIndexes(theNodes->Size(), this->getAllocator());
+    IMeshData::VectorOfInteger       aVertexIndexes(theNodes->Size(), this->getAllocator());
     IMeshData::ListOfPnt2d::Iterator aNodesIt(*theNodes);
     for (Standard_Integer aNodeIt = 1; aNodesIt.More(); aNodesIt.Next(), ++aNodeIt)
     {
@@ -124,11 +120,13 @@ protected:
       if (this->getClassifier()->Perform(aPnt2d) == TopAbs_IN)
       {
         aVertexIndexes.Append(this->registerNode(this->getRangeSplitter().Point(aPnt2d),
-                                                 aPnt2d, BRepMesh_Free, Standard_False));
+                                                 aPnt2d,
+                                                 BRepMesh_Free,
+                                                 Standard_False));
       }
     }
 
-    theMesher.AddVertices (aVertexIndexes, theRange);
+    theMesher.AddVertices(aVertexIndexes, theRange);
     if (!theRange.More())
     {
       return Standard_False;
@@ -137,17 +135,15 @@ protected:
   }
 
 private:
-  
   //! Registers surface nodes in data structure.
-  Standard_Boolean registerSurfaceNodes(
-    const Handle(IMeshData::ListOfPnt2d)& theNodes)
+  Standard_Boolean registerSurfaceNodes(const Handle(IMeshData::ListOfPnt2d)& theNodes)
   {
     if (theNodes.IsNull() || theNodes->IsEmpty())
     {
       return Standard_False;
     }
 
-    Standard_Boolean isAdded = Standard_False;
+    Standard_Boolean                 isAdded = Standard_False;
     IMeshData::ListOfPnt2d::Iterator aNodesIt(*theNodes);
     for (Standard_Integer aNodeIt = 1; aNodesIt.More(); aNodesIt.Next(), ++aNodeIt)
     {
@@ -156,7 +152,9 @@ private:
       {
         isAdded = Standard_True;
         this->registerNode(this->getRangeSplitter().Point(aPnt2d),
-                           aPnt2d, BRepMesh_Free, Standard_False);
+                           aPnt2d,
+                           BRepMesh_Free,
+                           Standard_False);
       }
     }
 
@@ -164,7 +162,6 @@ private:
   }
 
 private:
-
   Standard_Boolean myIsPreProcessSurfaceNodes;
 };
 

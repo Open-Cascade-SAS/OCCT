@@ -14,17 +14,19 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline Standard_OStream& operator<<(Standard_OStream& o,
-				    const math_GaussSingleIntegration& G) 
+inline Standard_OStream& operator<<(Standard_OStream& o, const math_GaussSingleIntegration& G)
 {
   G.Dump(o);
   return o;
 }
 
-inline Standard_Boolean math_GaussSingleIntegration::IsDone() const 
-{ return Done; }
+inline Standard_Boolean math_GaussSingleIntegration::IsDone() const
+{
+  return Done;
+}
 
-inline Standard_Real math_GaussSingleIntegration::Value() const{
+inline Standard_Real math_GaussSingleIntegration::Value() const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   return Val;
 }

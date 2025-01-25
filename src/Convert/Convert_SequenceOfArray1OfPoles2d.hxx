@@ -21,5 +21,4 @@
 
 typedef TColgp_SequenceOfArray1OfPnt2d Convert_SequenceOfArray1OfPoles2d;
 
-
 #endif // _Convert_SequenceOfArray1OfPoles2d_HeaderFile

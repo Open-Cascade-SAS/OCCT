@@ -26,143 +26,197 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
-
 inline Standard_Real HLRBRep_LineTool::FirstParameter(const gp_Lin&)
-{ return RealFirst(); }
-
-inline Standard_Real HLRBRep_LineTool::LastParameter(const gp_Lin& ) 
-{ return RealLast(); }
-
-inline GeomAbs_Shape HLRBRep_LineTool::Continuity( const gp_Lin& )
-{ return GeomAbs_CN; }
-
-inline Standard_Integer HLRBRep_LineTool::NbIntervals
-  (const gp_Lin& , const GeomAbs_Shape )
-{ return 1; }
-
-inline void HLRBRep_LineTool::Intervals
-  (const gp_Lin& , TColStd_Array1OfReal& , const GeomAbs_Shape)
-{}
-
-inline Standard_Real HLRBRep_LineTool::IntervalFirst(const gp_Lin& )
-{ return RealFirst(); }
-
-inline Standard_Real HLRBRep_LineTool::IntervalLast(const gp_Lin& )
-{ return RealLast(); }
-
-inline GeomAbs_Shape HLRBRep_LineTool::IntervalContinuity(const gp_Lin& )
-{ return GeomAbs_CN; }
-
-inline Standard_Boolean HLRBRep_LineTool::IsClosed( const gp_Lin& )
-{ return Standard_False; }
-
-inline Standard_Boolean HLRBRep_LineTool::IsPeriodic( const gp_Lin& )
-{ return Standard_False; }
-
-inline Standard_Real HLRBRep_LineTool::Period(const gp_Lin& )
-{ return 0.; }
-
-inline gp_Pnt HLRBRep_LineTool::Value(const gp_Lin& C,const Standard_Real U)
-{ return ElCLib::Value(U,C); }
-
-inline void HLRBRep_LineTool::D0
-  (const gp_Lin& C,const Standard_Real U, gp_Pnt& P)
-{ P = ElCLib::Value(U,C); }
-
-inline void HLRBRep_LineTool::D1
-  (const gp_Lin& C,const Standard_Real U, 
-   gp_Pnt& P, gp_Vec& V)
-{ ElCLib::D1(U,C,P,V); }
-
-inline void HLRBRep_LineTool::D2
-  (const gp_Lin& C, const Standard_Real U,
-   gp_Pnt& P, gp_Vec& V1, gp_Vec& V2)
-{ 
-  ElCLib::D1(U,C,P,V1);
-  V2 = gp_Vec(0,0,0);
-}
-
-inline void HLRBRep_LineTool::D3
-  (const gp_Lin& C, const Standard_Real U,
-   gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3)
 {
-  ElCLib::D1(U,C,P,V1);
-  V2 = V3 = gp_Vec(0,0,0);
+  return RealFirst();
 }
 
-inline gp_Vec HLRBRep_LineTool::DN
-  (const gp_Lin& C, const Standard_Real U, const Standard_Integer N)
-{ return ElCLib::DN(U,C,N); }
+inline Standard_Real HLRBRep_LineTool::LastParameter(const gp_Lin&)
+{
+  return RealLast();
+}
 
-inline Standard_Real HLRBRep_LineTool::Resolution
-  ( const gp_Lin& , const Standard_Real R3D)
-{ return R3D; }
+inline GeomAbs_Shape HLRBRep_LineTool::Continuity(const gp_Lin&)
+{
+  return GeomAbs_CN;
+}
 
-inline GeomAbs_CurveType HLRBRep_LineTool::GetType(const gp_Lin& )
-{ return GeomAbs_Line; }
+inline Standard_Integer HLRBRep_LineTool::NbIntervals(const gp_Lin&, const GeomAbs_Shape)
+{
+  return 1;
+}
 
-inline gp_Lin HLRBRep_LineTool::Line(const gp_Lin& C)  
-{ return C; }
+inline void HLRBRep_LineTool::Intervals(const gp_Lin&, TColStd_Array1OfReal&, const GeomAbs_Shape)
+{
+}
 
-inline gp_Circ HLRBRep_LineTool::Circle(const gp_Lin&) 
-{ return gp_Circ(); }
+inline Standard_Real HLRBRep_LineTool::IntervalFirst(const gp_Lin&)
+{
+  return RealFirst();
+}
 
-inline gp_Elips HLRBRep_LineTool::Ellipse(const gp_Lin&) 
-{ return gp_Elips(); }
+inline Standard_Real HLRBRep_LineTool::IntervalLast(const gp_Lin&)
+{
+  return RealLast();
+}
 
-inline gp_Hypr HLRBRep_LineTool::Hyperbola(const gp_Lin&)  
-{ return gp_Hypr(); }
+inline GeomAbs_Shape HLRBRep_LineTool::IntervalContinuity(const gp_Lin&)
+{
+  return GeomAbs_CN;
+}
 
-inline gp_Parab HLRBRep_LineTool::Parabola(const gp_Lin&) 
-{ return gp_Parab(); }
+inline Standard_Boolean HLRBRep_LineTool::IsClosed(const gp_Lin&)
+{
+  return Standard_False;
+}
 
-inline Handle(Geom_BezierCurve) HLRBRep_LineTool::Bezier(const gp_Lin&) 
+inline Standard_Boolean HLRBRep_LineTool::IsPeriodic(const gp_Lin&)
+{
+  return Standard_False;
+}
+
+inline Standard_Real HLRBRep_LineTool::Period(const gp_Lin&)
+{
+  return 0.;
+}
+
+inline gp_Pnt HLRBRep_LineTool::Value(const gp_Lin& C, const Standard_Real U)
+{
+  return ElCLib::Value(U, C);
+}
+
+inline void HLRBRep_LineTool::D0(const gp_Lin& C, const Standard_Real U, gp_Pnt& P)
+{
+  P = ElCLib::Value(U, C);
+}
+
+inline void HLRBRep_LineTool::D1(const gp_Lin& C, const Standard_Real U, gp_Pnt& P, gp_Vec& V)
+{
+  ElCLib::D1(U, C, P, V);
+}
+
+inline void HLRBRep_LineTool::D2(const gp_Lin&       C,
+                                 const Standard_Real U,
+                                 gp_Pnt&             P,
+                                 gp_Vec&             V1,
+                                 gp_Vec&             V2)
+{
+  ElCLib::D1(U, C, P, V1);
+  V2 = gp_Vec(0, 0, 0);
+}
+
+inline void HLRBRep_LineTool::D3(const gp_Lin&       C,
+                                 const Standard_Real U,
+                                 gp_Pnt&             P,
+                                 gp_Vec&             V1,
+                                 gp_Vec&             V2,
+                                 gp_Vec&             V3)
+{
+  ElCLib::D1(U, C, P, V1);
+  V2 = V3 = gp_Vec(0, 0, 0);
+}
+
+inline gp_Vec HLRBRep_LineTool::DN(const gp_Lin& C, const Standard_Real U, const Standard_Integer N)
+{
+  return ElCLib::DN(U, C, N);
+}
+
+inline Standard_Real HLRBRep_LineTool::Resolution(const gp_Lin&, const Standard_Real R3D)
+{
+  return R3D;
+}
+
+inline GeomAbs_CurveType HLRBRep_LineTool::GetType(const gp_Lin&)
+{
+  return GeomAbs_Line;
+}
+
+inline gp_Lin HLRBRep_LineTool::Line(const gp_Lin& C)
+{
+  return C;
+}
+
+inline gp_Circ HLRBRep_LineTool::Circle(const gp_Lin&)
+{
+  return gp_Circ();
+}
+
+inline gp_Elips HLRBRep_LineTool::Ellipse(const gp_Lin&)
+{
+  return gp_Elips();
+}
+
+inline gp_Hypr HLRBRep_LineTool::Hyperbola(const gp_Lin&)
+{
+  return gp_Hypr();
+}
+
+inline gp_Parab HLRBRep_LineTool::Parabola(const gp_Lin&)
+{
+  return gp_Parab();
+}
+
+inline Handle(Geom_BezierCurve) HLRBRep_LineTool::Bezier(const gp_Lin&)
 {
   Handle(Geom_BezierCurve) NullCurve;
   return NullCurve;
 }
 
-inline Handle(Geom_BSplineCurve) HLRBRep_LineTool::BSpline(const gp_Lin&) 
+inline Handle(Geom_BSplineCurve) HLRBRep_LineTool::BSpline(const gp_Lin&)
 {
   Handle(Geom_BSplineCurve) NullCurve;
   return NullCurve;
 }
 
-inline Standard_Integer HLRBRep_LineTool::Degree(const gp_Lin& )
-{ return 1; }
+inline Standard_Integer HLRBRep_LineTool::Degree(const gp_Lin&)
+{
+  return 1;
+}
 
 inline Standard_Integer HLRBRep_LineTool::NbPoles(const gp_Lin&)
-{ return 0; }
+{
+  return 0;
+}
 
-inline void HLRBRep_LineTool::Poles(const gp_Lin&, TColgp_Array1OfPnt&)
-{}
+inline void HLRBRep_LineTool::Poles(const gp_Lin&, TColgp_Array1OfPnt&) {}
 
 inline Standard_Boolean HLRBRep_LineTool::IsRational(const gp_Lin&)
-{ return Standard_False; }
+{
+  return Standard_False;
+}
 
-inline void HLRBRep_LineTool::PolesAndWeights
-  (const gp_Lin&, TColgp_Array1OfPnt&, TColStd_Array1OfReal&)
-{}
+inline void HLRBRep_LineTool::PolesAndWeights(const gp_Lin&,
+                                              TColgp_Array1OfPnt&,
+                                              TColStd_Array1OfReal&)
+{
+}
 
 inline Standard_Integer HLRBRep_LineTool::NbKnots(const gp_Lin&)
-{ return 0; }
+{
+  return 0;
+}
 
-inline void HLRBRep_LineTool::KnotsAndMultiplicities
-  (const gp_Lin&, TColStd_Array1OfReal&, TColStd_Array1OfInteger&)
-{}
+inline void HLRBRep_LineTool::KnotsAndMultiplicities(const gp_Lin&,
+                                                     TColStd_Array1OfReal&,
+                                                     TColStd_Array1OfInteger&)
+{
+}
 
 inline Standard_Integer HLRBRep_LineTool::NbSamples(const gp_Lin&,
-						    const Standard_Real,
-						    const Standard_Real ) 
-{ return 3; }
+                                                    const Standard_Real,
+                                                    const Standard_Real)
+{
+  return 3;
+}
 
 // modified by NIZHNY-MKK  Tue Nov  1 18:49:28 2005
-inline void HLRBRep_LineTool::SamplePars (const gp_Lin&,
-					  const Standard_Real U0,
-					  const Standard_Real U1,
-					  const Standard_Real,
-					  const Standard_Integer,
-					  Handle(TColStd_HArray1OfReal)& Pars) {
+inline void HLRBRep_LineTool::SamplePars(const gp_Lin&,
+                                         const Standard_Real U0,
+                                         const Standard_Real U1,
+                                         const Standard_Real,
+                                         const Standard_Integer,
+                                         Handle(TColStd_HArray1OfReal)& Pars)
+{
 
   Pars = new TColStd_HArray1OfReal(1, 3);
   Pars->SetValue(1, U0);

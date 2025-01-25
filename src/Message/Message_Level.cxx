@@ -21,76 +21,66 @@
 
 #include <OSD_Chronometer.hxx>
 
-//=======================================================================
-//function : Constructor
-//purpose  :
-//=======================================================================
-Message_Level::Message_Level (const TCollection_AsciiString& theName)
+//=================================================================================================
+
+Message_Level::Message_Level(const TCollection_AsciiString& theName)
 {
   const Handle(Message_Report)& aDefaultReport = Message::DefaultReport();
   if (!aDefaultReport.IsNull() && aDefaultReport->IsActiveInMessenger())
   {
-    aDefaultReport->AddLevel (this, theName);
+    aDefaultReport->AddLevel(this, theName);
   }
 }
 
-//=======================================================================
-//function : Destructor
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Message_Level::~Message_Level()
 {
   remove();
 }
 
-//=======================================================================
-//function : SetRootAlert
-//purpose  :
-//=======================================================================
-void Message_Level::SetRootAlert (const Handle(Message_AlertExtended)& theAlert,
-                                  const Standard_Boolean isRequiredToStart)
+//=================================================================================================
+
+void Message_Level::SetRootAlert(const Handle(Message_AlertExtended)& theAlert,
+                                 const Standard_Boolean               isRequiredToStart)
 {
   myRootAlert = theAlert;
   if (isRequiredToStart)
   {
-    Message_AttributeMeter::StartAlert (myRootAlert);
+    Message_AttributeMeter::StartAlert(myRootAlert);
   }
 }
 
-//=======================================================================
-//function : AddAlert
-//purpose  :
-//=======================================================================
-Standard_Boolean Message_Level::AddAlert (const Message_Gravity theGravity,
-                                          const Handle(Message_Alert)& theAlert)
+//=================================================================================================
+
+Standard_Boolean Message_Level::AddAlert(const Message_Gravity        theGravity,
+                                         const Handle(Message_Alert)& theAlert)
 {
-  Handle(Message_AlertExtended) anAlertExtended = Handle(Message_AlertExtended)::DownCast (theAlert);
+  Handle(Message_AlertExtended) anAlertExtended = Handle(Message_AlertExtended)::DownCast(theAlert);
   if (anAlertExtended.IsNull())
   {
     return Standard_False;
   }
 
   // looking for the parent of the parameter alert to release the previous alert
-  Handle(Message_AlertExtended) aRootAlert = myRootAlert;
-  Handle(Message_CompositeAlerts) aCompositeAlert = aRootAlert->CompositeAlerts (Standard_True);
+  Handle(Message_AlertExtended)   aRootAlert      = myRootAlert;
+  Handle(Message_CompositeAlerts) aCompositeAlert = aRootAlert->CompositeAlerts(Standard_True);
 
   // update metrics of the previous alert
-  Message_AttributeMeter::StopAlert (myLastAlert);
+  Message_AttributeMeter::StopAlert(myLastAlert);
 
   myLastAlert = anAlertExtended;
   // set start metrics of the new alert
-  Message_AttributeMeter::StartAlert (myLastAlert);
+  Message_AttributeMeter::StartAlert(myLastAlert);
 
   // add child alert
-  aCompositeAlert->AddAlert (theGravity, theAlert);
+  aCompositeAlert->AddAlert(theGravity, theAlert);
 
   return Standard_True;
 }
 
-//=======================================================================
-//function : remove
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void Message_Level::remove()
 {
   const Handle(Message_Report)& aDefaultReport = Message::DefaultReport();
@@ -99,10 +89,10 @@ void Message_Level::remove()
     return;
   }
 
-  Message_AttributeMeter::StopAlert (myLastAlert);
+  Message_AttributeMeter::StopAlert(myLastAlert);
 
   if (!Message::DefaultReport().IsNull())
   {
-    Message::DefaultReport()->RemoveLevel (this);
+    Message::DefaultReport()->RemoveLevel(this);
   }
 }

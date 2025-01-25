@@ -21,8 +21,8 @@
 #include <NCollection_DefineAlloc.hxx>
 #include <NCollection_ListNode.hxx>
 
-typedef void (* NCollection_DelMapNode) 
-     (NCollection_ListNode*, Handle(NCollection_BaseAllocator)& theAl);
+typedef void (*NCollection_DelMapNode)(NCollection_ListNode*,
+                                       Handle(NCollection_BaseAllocator)& theAl);
 
 /**
  * Purpose:     This is a base class for all Maps:
@@ -32,9 +32,9 @@ typedef void (* NCollection_DelMapNode)
  *                IndexedMap
  *                IndexedDataMap
  *              Provides utilitites for managing the buckets.
- */              
+ */
 
-class NCollection_BaseMap 
+class NCollection_BaseMap
 {
 public:
   //! Memory allocation
@@ -47,25 +47,28 @@ public:
   {
   protected:
     //! Empty constructor
-    Iterator (void) :
-      myNbBuckets (0),
-      myBuckets   (nullptr),
-      myBucket    (0),
-      myNode      (nullptr) {}
-    
-    //! Constructor
-    Iterator (const NCollection_BaseMap& theMap) :
-      myNbBuckets (theMap.myNbBuckets),
-      myBuckets   (theMap.myData1),
-      myBucket    (-1),
-      myNode      (nullptr)
+    Iterator(void)
+        : myNbBuckets(0),
+          myBuckets(nullptr),
+          myBucket(0),
+          myNode(nullptr)
     {
-      if (!myBuckets) 
+    }
+
+    //! Constructor
+    Iterator(const NCollection_BaseMap& theMap)
+        : myNbBuckets(theMap.myNbBuckets),
+          myBuckets(theMap.myData1),
+          myBucket(-1),
+          myNode(nullptr)
+    {
+      if (!myBuckets)
         myNbBuckets = -1;
       else
-        do {
+        do
+        {
           myBucket++;
-          if (myBucket > myNbBuckets) 
+          if (myBucket > myNbBuckets)
             return;
           myNode = myBuckets[myBucket];
         } while (!myNode);
@@ -73,51 +76,50 @@ public:
 
   public:
     //! Initialize
-    void Initialize (const NCollection_BaseMap& theMap)
+    void Initialize(const NCollection_BaseMap& theMap)
     {
       myNbBuckets = theMap.myNbBuckets;
-      myBuckets = theMap.myData1;
-      myBucket = -1;
-      myNode = nullptr;
-      if (!myBuckets) 
+      myBuckets   = theMap.myData1;
+      myBucket    = -1;
+      myNode      = nullptr;
+      if (!myBuckets)
         myNbBuckets = -1;
       PNext();
     }
 
     //! Reset
-    void Reset (void)
+    void Reset(void)
     {
       myBucket = -1;
-      myNode = nullptr;
+      myNode   = nullptr;
       PNext();
     }
-    
+
     //! Performs comparison of two iterators.
-    Standard_Boolean IsEqual (const Iterator& theOther) const
+    Standard_Boolean IsEqual(const Iterator& theOther) const
     {
       return myBucket == theOther.myBucket && myNode == theOther.myNode;
     }
 
   protected:
     //! PMore
-    Standard_Boolean PMore (void) const
-    { return (myNode != nullptr); }
-    
+    Standard_Boolean PMore(void) const { return (myNode != nullptr); }
+
     //! PNext
-    void PNext (void)
+    void PNext(void)
     {
-      if (!myBuckets) 
-        return; 
-      if (myNode) 
+      if (!myBuckets)
+        return;
+      if (myNode)
       {
         myNode = myNode->Next();
-        if (myNode) 
+        if (myNode)
           return;
       }
-      while (!myNode) 
+      while (!myNode)
       {
         myBucket++;
-        if (myBucket > myNbBuckets) 
+        if (myBucket > myNbBuckets)
           return;
         myNode = myBuckets[myBucket];
       }
@@ -126,60 +128,58 @@ public:
   protected:
     // ---------- PRIVATE FIELDS ------------
     Standard_Integer       myNbBuckets; //!< Total buckets in the map
-    NCollection_ListNode **myBuckets;   //!< Location in memory 
+    NCollection_ListNode** myBuckets;   //!< Location in memory
     Standard_Integer       myBucket;    //!< Current bucket
-    NCollection_ListNode * myNode;      //!< Current node
+    NCollection_ListNode*  myNode;      //!< Current node
   };
 
- public:
+public:
   // ---------- PUBLIC METHODS ------------
 
   //! NbBuckets
-  Standard_Integer NbBuckets() const
-  { return myNbBuckets; }
+  Standard_Integer NbBuckets() const { return myNbBuckets; }
 
   //! Extent
-  Standard_Integer Extent() const
-  { return mySize; }
+  Standard_Integer Extent() const { return mySize; }
 
   //! IsEmpty
-  Standard_Boolean IsEmpty() const
-  { return mySize == 0; }
+  Standard_Boolean IsEmpty() const { return mySize == 0; }
 
   //! Statistics
   Standard_EXPORT void Statistics(Standard_OStream& S) const;
 
   //! Returns attached allocator
-  const Handle(NCollection_BaseAllocator)& Allocator() const
-  { return myAllocator; }
+  const Handle(NCollection_BaseAllocator)& Allocator() const { return myAllocator; }
 
- protected:
+protected:
   // -------- PROTECTED METHODS -----------
 
   //! Constructor
-  NCollection_BaseMap (const Standard_Integer NbBuckets,
-                       const Standard_Boolean single,
-                       const Handle(NCollection_BaseAllocator)& theAllocator) :
-    myAllocator(theAllocator.IsNull() ? NCollection_BaseAllocator::CommonBaseAllocator() : theAllocator),
-    myData1(nullptr),
-    myData2(nullptr),
-    myNbBuckets(NbBuckets),
-    mySize(0),
-    isDouble(!single)
-  {}
+  NCollection_BaseMap(const Standard_Integer                   NbBuckets,
+                      const Standard_Boolean                   single,
+                      const Handle(NCollection_BaseAllocator)& theAllocator)
+      : myAllocator(theAllocator.IsNull() ? NCollection_BaseAllocator::CommonBaseAllocator()
+                                          : theAllocator),
+        myData1(nullptr),
+        myData2(nullptr),
+        myNbBuckets(NbBuckets),
+        mySize(0),
+        isDouble(!single)
+  {
+  }
 
   //! Move Constructor
-  NCollection_BaseMap(NCollection_BaseMap&& theOther) noexcept :
-    myAllocator(theOther.myAllocator),
-    myData1(theOther.myData1),
-    myData2(theOther.myData2),
-    myNbBuckets(theOther.myNbBuckets),
-    mySize(theOther.mySize),
-    isDouble(theOther.isDouble)
+  NCollection_BaseMap(NCollection_BaseMap&& theOther) noexcept
+      : myAllocator(theOther.myAllocator),
+        myData1(theOther.myData1),
+        myData2(theOther.myData2),
+        myNbBuckets(theOther.myNbBuckets),
+        mySize(theOther.mySize),
+        isDouble(theOther.isDouble)
   {
-    theOther.myData1 = nullptr;
-    theOther.myData2 = nullptr;
-    theOther.mySize = 0;
+    theOther.myData1     = nullptr;
+    theOther.myData2     = nullptr;
+    theOther.mySize      = 0;
     theOther.myNbBuckets = 0;
   }
 
@@ -187,45 +187,41 @@ public:
   virtual ~NCollection_BaseMap() {}
 
   //! BeginResize
-  Standard_EXPORT Standard_Boolean BeginResize 
-    (const Standard_Integer  NbBuckets,
-     Standard_Integer&       NewBuckets,
-     NCollection_ListNode**& data1,
-     NCollection_ListNode**& data2) const;
+  Standard_EXPORT Standard_Boolean BeginResize(const Standard_Integer  NbBuckets,
+                                               Standard_Integer&       NewBuckets,
+                                               NCollection_ListNode**& data1,
+                                               NCollection_ListNode**& data2) const;
 
   //! EndResize
-  Standard_EXPORT void EndResize 
-    (const Standard_Integer NbBuckets,
-     const Standard_Integer NewBuckets,
-     NCollection_ListNode** data1,
-     NCollection_ListNode** data2);
+  Standard_EXPORT void EndResize(const Standard_Integer NbBuckets,
+                                 const Standard_Integer NewBuckets,
+                                 NCollection_ListNode** data1,
+                                 NCollection_ListNode** data2);
 
   //! Resizable
-  Standard_Boolean Resizable() const
-  { return IsEmpty() || (mySize > myNbBuckets); }
+  Standard_Boolean Resizable() const { return IsEmpty() || (mySize > myNbBuckets); }
 
   //! Increment
   Standard_Integer Increment() { return ++mySize; }
 
   //! Decrement
-  Standard_Integer Decrement()  { return --mySize; }
+  Standard_Integer Decrement() { return --mySize; }
 
   //! Destroy
   Standard_EXPORT void Destroy(NCollection_DelMapNode fDel,
-                               Standard_Boolean doReleaseMemory = Standard_True);
+                               Standard_Boolean       doReleaseMemory = Standard_True);
 
   //! NextPrimeForMap
-  Standard_EXPORT Standard_Integer NextPrimeForMap
-    (const Standard_Integer N) const;
+  Standard_EXPORT Standard_Integer NextPrimeForMap(const Standard_Integer N) const;
 
   //! Exchange content of two maps without data copying
-  void exchangeMapsData (NCollection_BaseMap& theOther)
+  void exchangeMapsData(NCollection_BaseMap& theOther)
   {
-    std::swap (myAllocator, theOther.myAllocator);
-    std::swap (myData1,     theOther.myData1);
-    std::swap (myData2,     theOther.myData2);
-    std::swap (myNbBuckets, theOther.myNbBuckets);
-    std::swap (mySize,      theOther.mySize);
+    std::swap(myAllocator, theOther.myAllocator);
+    std::swap(myData1, theOther.myData1);
+    std::swap(myData2, theOther.myData2);
+    std::swap(myNbBuckets, theOther.myNbBuckets);
+    std::swap(mySize, theOther.mySize);
   }
 
   //! Move operator
@@ -237,16 +233,16 @@ public:
   //! Assign operator
   NCollection_BaseMap& operator=(const NCollection_BaseMap&) = delete;
 
- protected:
+protected:
   // --------- PROTECTED FIELDS -----------
   Handle(NCollection_BaseAllocator) myAllocator;
-  NCollection_ListNode ** myData1;
-  NCollection_ListNode ** myData2;
+  NCollection_ListNode**            myData1;
+  NCollection_ListNode**            myData2;
 
- private: 
+private:
   // ---------- PRIVATE FIELDS ------------
-  Standard_Integer myNbBuckets;
-  Standard_Integer mySize;
+  Standard_Integer       myNbBuckets;
+  Standard_Integer       mySize;
   const Standard_Boolean isDouble;
 
   // ---------- FRIEND CLASSES ------------

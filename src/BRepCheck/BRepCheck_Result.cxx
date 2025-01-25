@@ -20,82 +20,68 @@
 #include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Result,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Result, Standard_Transient)
 
-//=======================================================================
-//function : BRepCheck_Result
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 BRepCheck_Result::BRepCheck_Result()
-: myMin (Standard_False),
-  myBlind (Standard_False)
+    : myMin(Standard_False),
+      myBlind(Standard_False)
 {
   //
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void BRepCheck_Result::Init(const TopoDS_Shape& S)
 {
   myShape = S;
-  myMin = Standard_False;
+  myMin   = Standard_False;
   myBlind = Standard_False;
   myMap.Clear();
   Minimum();
 }
 
-//=======================================================================
-//function : SetFailStatus
-//purpose  :
-//=======================================================================
-void BRepCheck_Result::SetFailStatus (const TopoDS_Shape& S)
+//=================================================================================================
+
+void BRepCheck_Result::SetFailStatus(const TopoDS_Shape& S)
 {
-  Standard_Mutex::Sentry aLock(myMutex.get());
+  Standard_Mutex::Sentry          aLock(myMutex.get());
   Handle(BRepCheck_HListOfStatus) aList;
-  if (!myMap.Find (S, aList))
+  if (!myMap.Find(S, aList))
   {
     aList = new BRepCheck_HListOfStatus();
-    myMap.Bind (S, aList);
+    myMap.Bind(S, aList);
   }
 
-  BRepCheck::Add (*aList, BRepCheck_CheckFail);
+  BRepCheck::Add(*aList, BRepCheck_CheckFail);
 }
 
-//=======================================================================
-//function : InitContextIterator
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void BRepCheck_Result::InitContextIterator()
 {
   myIter.Initialize(myMap);
   // At least 1 element : the Shape itself
-  if (myIter.Key().IsSame(myShape)) {
+  if (myIter.Key().IsSame(myShape))
+  {
     myIter.Next();
   }
 }
 
-
-//=======================================================================
-//function : NextShapeInContext
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void BRepCheck_Result::NextShapeInContext()
 {
   myIter.Next();
-  if (myIter.More() && myIter.Key().IsSame(myShape)) {
+  if (myIter.More() && myIter.Key().IsSame(myShape))
+  {
     myIter.Next();
   }
 }
 
-//=======================================================================
-//function : SetParallel
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BRepCheck_Result::SetParallel(Standard_Boolean theIsParallel)
 {
   if (theIsParallel && myMutex.IsNull())

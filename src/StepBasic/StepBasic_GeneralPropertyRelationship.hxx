@@ -29,15 +29,13 @@ class StepBasic_GeneralPropertyRelationship : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepBasic_GeneralPropertyRelationship();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Standard_Boolean hasDescription,
-                            const Handle(TCollection_HAsciiString)& aDescription,
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&  aName,
+                            const Standard_Boolean                   hasDescription,
+                            const Handle(TCollection_HAsciiString)&  aDescription,
                             const Handle(StepBasic_GeneralProperty)& aRelatingGeneralProperty,
                             const Handle(StepBasic_GeneralProperty)& aRelatedGeneralProperty);
 
@@ -60,29 +58,25 @@ public:
   Standard_EXPORT Handle(StepBasic_GeneralProperty) RelatingGeneralProperty() const;
 
   //! Set field RelatingGeneralProperty
-  Standard_EXPORT void SetRelatingGeneralProperty(const Handle(StepBasic_GeneralProperty)& RelatingGeneralProperty);
+  Standard_EXPORT void SetRelatingGeneralProperty(
+    const Handle(StepBasic_GeneralProperty)& RelatingGeneralProperty);
 
   //! Returns field RelatedGeneralProperty
   Standard_EXPORT Handle(StepBasic_GeneralProperty) RelatedGeneralProperty() const;
 
   //! Set field RelatedGeneralProperty
-  Standard_EXPORT void SetRelatedGeneralProperty(const Handle(StepBasic_GeneralProperty)& RelatedGeneralProperty);
+  Standard_EXPORT void SetRelatedGeneralProperty(
+    const Handle(StepBasic_GeneralProperty)& RelatedGeneralProperty);
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_GeneralPropertyRelationship, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-  Standard_Boolean defDescription;
-  Handle(TCollection_HAsciiString) theName;
-  Handle(TCollection_HAsciiString) theDescription;
+  Standard_Boolean                  defDescription;
+  Handle(TCollection_HAsciiString)  theName;
+  Handle(TCollection_HAsciiString)  theDescription;
   Handle(StepBasic_GeneralProperty) theRelatingGeneralProperty;
   Handle(StepBasic_GeneralProperty) theRelatedGeneralProperty;
-
 };
 
 #endif // _StepBasic_GeneralPropertyRelationship_HeaderFile

@@ -23,71 +23,66 @@
  */
 class VrmlData_Texture : public VrmlData_Node
 {
- public:
+public:
   // ---------- PUBLIC METHODS ----------
 
   /**
    * Empty constructor
    */
-  inline VrmlData_Texture ()
-    : myRepeatS (Standard_False),
-      myRepeatT (Standard_False)
-  {}
+  inline VrmlData_Texture()
+      : myRepeatS(Standard_False),
+        myRepeatT(Standard_False)
+  {
+  }
 
   /**
    * Constructor
    */
-  inline VrmlData_Texture (const VrmlData_Scene&  theScene,
-                           const char             * theName,
-                           const Standard_Boolean theRepeatS = Standard_False,
-                           const Standard_Boolean theRepeatT = Standard_False)
-    : VrmlData_Node     (theScene, theName),
-      myRepeatS         (theRepeatS),
-      myRepeatT         (theRepeatT)
-  {}
+  inline VrmlData_Texture(const VrmlData_Scene&  theScene,
+                          const char*            theName,
+                          const Standard_Boolean theRepeatS = Standard_False,
+                          const Standard_Boolean theRepeatT = Standard_False)
+      : VrmlData_Node(theScene, theName),
+        myRepeatS(theRepeatS),
+        myRepeatT(theRepeatT)
+  {
+  }
 
   /**
    * Query the RepeatS value
    */
-  inline Standard_Boolean
-                RepeatS         () const { return myRepeatS; }
+  inline Standard_Boolean RepeatS() const { return myRepeatS; }
 
   /**
    * Query the RepeatT value
    */
-  inline Standard_Boolean
-                RepeatT         () const { return myRepeatT; }
+  inline Standard_Boolean RepeatT() const { return myRepeatT; }
 
   /**
    * Set the RepeatS flag
    */
-  inline void   SetRepeatS      (const Standard_Boolean theFlag)
-  { myRepeatS = theFlag; }
+  inline void SetRepeatS(const Standard_Boolean theFlag) { myRepeatS = theFlag; }
 
   /**
    * Set the RepeatT flag
    */
-  inline void   SetRepeatT      (const Standard_Boolean theFlag)
-  { myRepeatT = theFlag; }
+  inline void SetRepeatT(const Standard_Boolean theFlag) { myRepeatT = theFlag; }
 
- protected:
+protected:
   // ---------- PROTECTED METHODS ----------
 
-
-
- private:
+private:
   // ---------- PRIVATE FIELDS ----------
 
-  Standard_Boolean      myRepeatS;
-  Standard_Boolean      myRepeatT;
+  Standard_Boolean myRepeatS;
+  Standard_Boolean myRepeatT;
 
- public:
-// Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI_INLINE(VrmlData_Texture,VrmlData_Node)
+public:
+  // Declaration of CASCADE RTTI
+  DEFINE_STANDARD_RTTI_INLINE(VrmlData_Texture, VrmlData_Node)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE (VrmlData_Texture, VrmlData_Node)
-
+DEFINE_STANDARD_HANDLE(VrmlData_Texture, VrmlData_Node)
 
 #endif

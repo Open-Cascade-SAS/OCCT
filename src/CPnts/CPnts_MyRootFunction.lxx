@@ -14,9 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline CPnts_MyRootFunction::CPnts_MyRootFunction() :
-   myX0( 0. ),
-   myL( 0. ),
-   myOrder( 0 ),
-   myTol( 0. )
- {}
+inline CPnts_MyRootFunction::CPnts_MyRootFunction()
+    : myX0(0.),
+      myL(0.),
+      myOrder(0),
+      myTol(0.)
+{
+}

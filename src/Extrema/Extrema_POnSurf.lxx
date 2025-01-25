@@ -14,36 +14,38 @@
 
 #include <Precision.hxx>
 
-inline Extrema_POnSurf::Extrema_POnSurf ()
-: myU (Precision::Infinite()),
-  myV (Precision::Infinite()),
-  myP (gp_Pnt(Precision::Infinite(),Precision::Infinite(),Precision::Infinite()))
+inline Extrema_POnSurf::Extrema_POnSurf()
+    : myU(Precision::Infinite()),
+      myV(Precision::Infinite()),
+      myP(gp_Pnt(Precision::Infinite(), Precision::Infinite(), Precision::Infinite()))
 {
 }
 
-inline Extrema_POnSurf::Extrema_POnSurf (const Standard_Real U,
-                                         const Standard_Real V,
-                                         const gp_Pnt& P)
-: myU (U),
-  myV (V),
-  myP (P)
+inline Extrema_POnSurf::Extrema_POnSurf(const Standard_Real U,
+                                        const Standard_Real V,
+                                        const gp_Pnt&       P)
+    : myU(U),
+      myV(V),
+      myP(P)
 {
 }
 
-inline void Extrema_POnSurf::SetParameters (const Standard_Real U,
-                                            const Standard_Real V,
-                                            const gp_Pnt& P)
+inline void Extrema_POnSurf::SetParameters(const Standard_Real U,
+                                           const Standard_Real V,
+                                           const gp_Pnt&       P)
 {
   myU = U;
   myV = V;
   myP = P;
 }
 
-inline void Extrema_POnSurf::Parameter ( Standard_Real& U, Standard_Real& V) const
+inline void Extrema_POnSurf::Parameter(Standard_Real& U, Standard_Real& V) const
 {
   U = myU;
   V = myV;
 }
 
-
-inline const gp_Pnt& Extrema_POnSurf::Value () const { return myP; }
+inline const gp_Pnt& Extrema_POnSurf::Value() const
+{
+  return myP;
+}

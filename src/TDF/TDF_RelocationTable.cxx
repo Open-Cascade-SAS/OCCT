@@ -15,175 +15,162 @@
 
 //      	-----------------------
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Mar  7 1997	Creation
 
 #include <Standard_Transient.hxx>
 #include <TDF_RelocationTable.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDF_RelocationTable,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(TDF_RelocationTable, Standard_Transient)
 
-//=======================================================================
-//function : TDF_RelocationTable
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 TDF_RelocationTable::TDF_RelocationTable(const Standard_Boolean selfRelocate)
-: mySelfRelocate(selfRelocate),myAfterRelocate(Standard_False)
-{}
+    : mySelfRelocate(selfRelocate),
+      myAfterRelocate(Standard_False)
+{
+}
 
-
-//=======================================================================
-//function : SelfRelocate
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TDF_RelocationTable::SelfRelocate(const Standard_Boolean selfRelocate)
-{ mySelfRelocate = selfRelocate; }
+{
+  mySelfRelocate = selfRelocate;
+}
 
-
-//=======================================================================
-//function : SelfRelocate
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean TDF_RelocationTable::SelfRelocate() const
-{ return mySelfRelocate; }
+{
+  return mySelfRelocate;
+}
 
-//=======================================================================
-//function : SelfRelocate
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TDF_RelocationTable::AfterRelocate(const Standard_Boolean afterRelocate)
-{ myAfterRelocate = afterRelocate; }
+{
+  myAfterRelocate = afterRelocate;
+}
 
-
-//=======================================================================
-//function : SelfRelocate
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean TDF_RelocationTable::AfterRelocate() const
-{ return myAfterRelocate; }
-
+{
+  return myAfterRelocate;
+}
 
 //=======================================================================
-//function : SetRelocation
-//purpose  : Sets the relocation value of <aSourceLabel>
+// function : SetRelocation
+// purpose  : Sets the relocation value of <aSourceLabel>
 //           to <aTargetLabel>.
 //=======================================================================
 
-void TDF_RelocationTable::SetRelocation
-(const TDF_Label& aSourceLabel,
- const TDF_Label& aTargetLabel) 
+void TDF_RelocationTable::SetRelocation(const TDF_Label& aSourceLabel,
+                                        const TDF_Label& aTargetLabel)
 {
   if (!myLabelTable.IsBound(aSourceLabel))
-    myLabelTable.Bind(aSourceLabel,aTargetLabel);
+    myLabelTable.Bind(aSourceLabel, aTargetLabel);
 }
 
-
 //=======================================================================
-//function : HasRelocation
-//purpose  : Finds the relocation value of <aSourceLabel>
+// function : HasRelocation
+// purpose  : Finds the relocation value of <aSourceLabel>
 //           and returns it into <aTargetLabel>.
 //=======================================================================
 
-Standard_Boolean TDF_RelocationTable::HasRelocation
-(const TDF_Label& aSourceLabel,
- TDF_Label& aTargetLabel) const
+Standard_Boolean TDF_RelocationTable::HasRelocation(const TDF_Label& aSourceLabel,
+                                                    TDF_Label&       aTargetLabel) const
 {
   aTargetLabel.Nullify();
-  if (myLabelTable.IsBound(aSourceLabel)) {
+  if (myLabelTable.IsBound(aSourceLabel))
+  {
     aTargetLabel = myLabelTable.Find(aSourceLabel);
     return Standard_True;
   }
-  if (mySelfRelocate) {
+  if (mySelfRelocate)
+  {
     aTargetLabel = aSourceLabel;
     return !myAfterRelocate;
   }
   return Standard_False;
 }
 
-
 //=======================================================================
-//function : SetRelocation
-//purpose  : Sets the relocation value of <aSourceAttribute>
+// function : SetRelocation
+// purpose  : Sets the relocation value of <aSourceAttribute>
 //           to <aTargetAttribute>.
 //=======================================================================
 
-void TDF_RelocationTable::SetRelocation
-(const Handle(TDF_Attribute)& aSourceAttribute,
- const Handle(TDF_Attribute)& aTargetAttribute) 
+void TDF_RelocationTable::SetRelocation(const Handle(TDF_Attribute)& aSourceAttribute,
+                                        const Handle(TDF_Attribute)& aTargetAttribute)
 {
   if (!myAttributeTable.IsBound(aSourceAttribute))
-    myAttributeTable.Bind(aSourceAttribute,aTargetAttribute);
+    myAttributeTable.Bind(aSourceAttribute, aTargetAttribute);
 }
 
-
 //=======================================================================
-//function : HasRelocation
-//purpose  : Finds the relocation value of <aSourceAttribute>
+// function : HasRelocation
+// purpose  : Finds the relocation value of <aSourceAttribute>
 //           and returns it into <aTargetAttribute>.
 //=======================================================================
 
-Standard_Boolean TDF_RelocationTable::HasRelocation
-(const Handle(TDF_Attribute)& aSourceAttribute,
- Handle(TDF_Attribute)& aTargetAttribute) const
+Standard_Boolean TDF_RelocationTable::HasRelocation(const Handle(TDF_Attribute)& aSourceAttribute,
+                                                    Handle(TDF_Attribute)& aTargetAttribute) const
 {
   aTargetAttribute.Nullify();
-  if (myAttributeTable.IsBound(aSourceAttribute)) {
+  if (myAttributeTable.IsBound(aSourceAttribute))
+  {
     aTargetAttribute = myAttributeTable.Find(aSourceAttribute);
     return Standard_True;
   }
-  if (mySelfRelocate) {
+  if (mySelfRelocate)
+  {
     aTargetAttribute = aSourceAttribute;
     return !myAfterRelocate;
   }
   return Standard_False;
 }
 
-
 //=======================================================================
-//function : SetTransientRelocation
-//purpose  : Sets the relocation value of <aSourceTransient>
+// function : SetTransientRelocation
+// purpose  : Sets the relocation value of <aSourceTransient>
 //           to <aTargetTransient>.
 //=======================================================================
 
-void TDF_RelocationTable::SetTransientRelocation
-(const Handle(Standard_Transient)& aSourceTransient,
- const Handle(Standard_Transient)& aTargetTransient) 
+void TDF_RelocationTable::SetTransientRelocation(const Handle(Standard_Transient)& aSourceTransient,
+                                                 const Handle(Standard_Transient)& aTargetTransient)
 {
   if (!myTransientTable.Contains(aSourceTransient))
-    myTransientTable.Add(aSourceTransient,aTargetTransient);
+    myTransientTable.Add(aSourceTransient, aTargetTransient);
 }
 
-
 //=======================================================================
-//function : HasTransientRelocation
-//purpose  : Finds the relocation value of <aSourceTransient>
+// function : HasTransientRelocation
+// purpose  : Finds the relocation value of <aSourceTransient>
 //           and returns it into <aTargetTransient>.
 //=======================================================================
 
-Standard_Boolean TDF_RelocationTable::HasTransientRelocation
-(const Handle(Standard_Transient)& aSourceTransient,
- Handle(Standard_Transient)& aTargetTransient) const
+Standard_Boolean TDF_RelocationTable::HasTransientRelocation(
+  const Handle(Standard_Transient)& aSourceTransient,
+  Handle(Standard_Transient)&       aTargetTransient) const
 {
   aTargetTransient.Nullify();
-  if (myTransientTable.Contains(aSourceTransient)) {
+  if (myTransientTable.Contains(aSourceTransient))
+  {
     aTargetTransient = myTransientTable.FindFromKey(aSourceTransient);
     return Standard_True;
   }
-  if (mySelfRelocate) {
+  if (mySelfRelocate)
+  {
     aTargetTransient = aSourceTransient;
     return !myAfterRelocate;
   }
   return Standard_False;
 }
 
-
 //=======================================================================
-//function : Clear
-//purpose  : Clears the relocation dictonnary.
+// function : Clear
+// purpose  : Clears the relocation dictonnary.
 //=======================================================================
 
 void TDF_RelocationTable::Clear()
@@ -193,112 +180,101 @@ void TDF_RelocationTable::Clear()
   myTransientTable.Clear();
 }
 
-
-//=======================================================================
-//function : TargetLabelMap
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TDF_RelocationTable::TargetLabelMap(TDF_LabelMap& aLabelMap) const
 {
-  for (TDF_DataMapIteratorOfLabelDataMap itr(myLabelTable);
-       itr.More(); itr.Next())
+  for (TDF_DataMapIteratorOfLabelDataMap itr(myLabelTable); itr.More(); itr.Next())
     aLabelMap.Add(itr.Value());
 }
 
-
-//=======================================================================
-//function : TargetAttributeMap
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TDF_RelocationTable::TargetAttributeMap(TDF_AttributeMap& anAttributeMap) const
 {
-  for (TDF_DataMapIteratorOfAttributeDataMap itr(myAttributeTable);
-       itr.More(); itr.Next())
+  for (TDF_DataMapIteratorOfAttributeDataMap itr(myAttributeTable); itr.More(); itr.Next())
     anAttributeMap.Add(itr.Value());
 }
 
-
-//=======================================================================
-//function : LabelTable
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TDF_LabelDataMap& TDF_RelocationTable::LabelTable()
-{ return myLabelTable; }
+{
+  return myLabelTable;
+}
 
-
-//=======================================================================
-//function : AttributeTable
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TDF_AttributeDataMap& TDF_RelocationTable::AttributeTable()
-{ return myAttributeTable; }
+{
+  return myAttributeTable;
+}
 
-
-//=======================================================================
-//function : TransientTable
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TColStd_IndexedDataMapOfTransientTransient& TDF_RelocationTable::TransientTable()
-{ return myTransientTable; }
-
-
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-
-Standard_OStream& TDF_RelocationTable::Dump
-(const Standard_Boolean dumpLabels,
- const Standard_Boolean dumpAttributes,
- const Standard_Boolean dumpTransients,
- Standard_OStream& anOS) const
 {
-  anOS<<"Relocation Table  ";
-  if (mySelfRelocate) anOS<<"IS"; else anOS<<"NOT";
-  anOS<<" self relocate ";
-  if (myAfterRelocate) anOS<<"WITH"; else anOS<<"WITHOUT";
-  anOS<<" after relocate"<<std::endl;
-  anOS<<"Nb labels="<<myLabelTable.Extent();
-  anOS<<"  Nb attributes="<<myAttributeTable.Extent();
-  anOS<<"  Nb transients="<<myTransientTable.Extent()<<std::endl;
+  return myTransientTable;
+}
+
+//=================================================================================================
+
+Standard_OStream& TDF_RelocationTable::Dump(const Standard_Boolean dumpLabels,
+                                            const Standard_Boolean dumpAttributes,
+                                            const Standard_Boolean dumpTransients,
+                                            Standard_OStream&      anOS) const
+{
+  anOS << "Relocation Table  ";
+  if (mySelfRelocate)
+    anOS << "IS";
+  else
+    anOS << "NOT";
+  anOS << " self relocate ";
+  if (myAfterRelocate)
+    anOS << "WITH";
+  else
+    anOS << "WITHOUT";
+  anOS << " after relocate" << std::endl;
+  anOS << "Nb labels=" << myLabelTable.Extent();
+  anOS << "  Nb attributes=" << myAttributeTable.Extent();
+  anOS << "  Nb transients=" << myTransientTable.Extent() << std::endl;
 
   Standard_Integer nb = 0;
-  if (dumpLabels) {
-    anOS<<"Label Table:"<<std::endl;
-    for (TDF_DataMapIteratorOfLabelDataMap itr(myLabelTable);
-	 itr.More(); itr.Next()) {
+  if (dumpLabels)
+  {
+    anOS << "Label Table:" << std::endl;
+    for (TDF_DataMapIteratorOfLabelDataMap itr(myLabelTable); itr.More(); itr.Next())
+    {
       ++nb;
-      anOS<<nb<<" ";
+      anOS << nb << " ";
       itr.Key().EntryDump(anOS);
-      anOS<<"<=>";
+      anOS << "<=>";
       itr.Value().EntryDump(anOS);
-      anOS<<"| ";
+      anOS << "| ";
     }
-    std::cout<<std::endl;
+    std::cout << std::endl;
   }
 
   nb = 0;
-  if (dumpAttributes) {
-    anOS<<"Attribute Table:"<<std::endl;
-    for (TDF_DataMapIteratorOfAttributeDataMap itr(myAttributeTable);
-	 itr.More(); itr.Next()) {
+  if (dumpAttributes)
+  {
+    anOS << "Attribute Table:" << std::endl;
+    for (TDF_DataMapIteratorOfAttributeDataMap itr(myAttributeTable); itr.More(); itr.Next())
+    {
       ++nb;
-      anOS<<nb<<" ";
+      anOS << nb << " ";
       itr.Key()->Dump(anOS);
-      anOS<<"<=>";
+      anOS << "<=>";
       itr.Value()->Dump(anOS);
-      anOS<<"| ";
-      anOS<<std::endl;
+      anOS << "| ";
+      anOS << std::endl;
     }
   }
-  
-  if (dumpTransients) {
-    anOS<<"Transient Table:"<<myTransientTable.Extent()<<" transient(s) in table."<<std::endl;
+
+  if (dumpTransients)
+  {
+    anOS << "Transient Table:" << myTransientTable.Extent() << " transient(s) in table."
+         << std::endl;
   }
 
   return anOS;

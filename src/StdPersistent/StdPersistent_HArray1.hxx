@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _StdPersistent_HArray1_HeaderFile
 #define _StdPersistent_HArray1_HeaderFile
 
@@ -20,10 +19,7 @@
 
 #include <NCollection_DefineHArray1.hxx>
 
-
-DEFINE_HARRAY1 (StdPersistent_HArray1OfShape1,
-                NCollection_Array1<StdObject_Shape>)
-
+DEFINE_HARRAY1(StdPersistent_HArray1OfShape1, NCollection_Array1<StdObject_Shape>)
 
 class StdPersistent_HArray1 : private StdLPersistent_HArray1
 {

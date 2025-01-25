@@ -26,7 +26,6 @@
 class Geom_Surface;
 class gp_Pnt;
 
-
 //! Describes functions for computing all the extrema
 //! between two surfaces.
 //! An ExtremaSurfaceSurface algorithm minimizes or
@@ -47,22 +46,21 @@ class gp_Pnt;
 //! -   its orthogonal projection on the other surface,
 //! -   a point of a bounding curve of the other surface; or
 //! -   any point on intersection curves between the two surfaces.
-class GeomAPI_ExtremaSurfaceSurface 
+class GeomAPI_ExtremaSurfaceSurface
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs an empty algorithm for computing
   //! extrema between two surfaces. Use an Init function
   //! to define the surfaces on which it is going to work.
   Standard_EXPORT GeomAPI_ExtremaSurfaceSurface();
-  
+
   //! Computes  the  extrema  distances  between  the
   //! surfaces <S1>  and <S2>
-  Standard_EXPORT GeomAPI_ExtremaSurfaceSurface(const Handle(Geom_Surface)& S1, const Handle(Geom_Surface)& S2);
-  
+  Standard_EXPORT GeomAPI_ExtremaSurfaceSurface(const Handle(Geom_Surface)& S1,
+                                                const Handle(Geom_Surface)& S2);
+
   //! Computes  the  extrema  distances  between
   //! the portion of the surface S1 limited by the
   //! two values of parameter (U1min,U1max) in
@@ -74,13 +72,22 @@ public:
   //! the u parametric direction, and by the two
   //! values of parameter (V2min,V2max) in the v
   //! parametric direction.
-  Standard_EXPORT GeomAPI_ExtremaSurfaceSurface(const Handle(Geom_Surface)& S1, const Handle(Geom_Surface)& S2, const Standard_Real U1min, const Standard_Real U1max, const Standard_Real V1min, const Standard_Real V1max, const Standard_Real U2min, const Standard_Real U2max, const Standard_Real V2min, const Standard_Real V2max);
-  
+  Standard_EXPORT GeomAPI_ExtremaSurfaceSurface(const Handle(Geom_Surface)& S1,
+                                                const Handle(Geom_Surface)& S2,
+                                                const Standard_Real         U1min,
+                                                const Standard_Real         U1max,
+                                                const Standard_Real         V1min,
+                                                const Standard_Real         V1max,
+                                                const Standard_Real         U2min,
+                                                const Standard_Real         U2max,
+                                                const Standard_Real         V2min,
+                                                const Standard_Real         V2max);
+
   //! Initializes this algorithm with the given arguments
   //! and computes  the  extrema  distances  between  the
   //! surfaces <S1>  and <S2>
-  Standard_EXPORT void Init (const Handle(Geom_Surface)& S1, const Handle(Geom_Surface)& S2);
-  
+  Standard_EXPORT void Init(const Handle(Geom_Surface)& S1, const Handle(Geom_Surface)& S2);
+
   //! Initializes this algorithm with the given arguments
   //! and computes  the  extrema  distances  between -
   //! the portion of the surface S1 limited by the two
@@ -91,13 +98,22 @@ public:
   //! values of parameter (U2min,U2max) in the u
   //! parametric direction, and by the two values of
   //! parameter (V2min,V2max) in the v parametric direction.
-  Standard_EXPORT void Init (const Handle(Geom_Surface)& S1, const Handle(Geom_Surface)& S2, const Standard_Real U1min, const Standard_Real U1max, const Standard_Real V1min, const Standard_Real V1max, const Standard_Real U2min, const Standard_Real U2max, const Standard_Real V2min, const Standard_Real V2max);
-  
+  Standard_EXPORT void Init(const Handle(Geom_Surface)& S1,
+                            const Handle(Geom_Surface)& S2,
+                            const Standard_Real         U1min,
+                            const Standard_Real         U1max,
+                            const Standard_Real         V1min,
+                            const Standard_Real         V1max,
+                            const Standard_Real         U2min,
+                            const Standard_Real         U2max,
+                            const Standard_Real         V2min,
+                            const Standard_Real         V2max);
+
   //! Returns the number of extrema computed by this algorithm.
   //! Note: if this algorithm fails, NbExtrema returns 0.
   Standard_EXPORT Standard_Integer NbExtrema() const;
-Standard_EXPORT operator Standard_Integer() const;
-  
+  Standard_EXPORT                  operator Standard_Integer() const;
+
   //! Returns the points P1 on the first surface and P2 on
   //! the second surface, which are the ends of the
   //! extremum of index Index computed by this algorithm.
@@ -105,8 +121,8 @@ Standard_EXPORT operator Standard_Integer() const;
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT void Points (const Standard_Integer Index, gp_Pnt& P1, gp_Pnt& P2) const;
-  
+  Standard_EXPORT void Points(const Standard_Integer Index, gp_Pnt& P1, gp_Pnt& P2) const;
+
   //! Returns the parameters (U1,V1) of the point on the
   //! first surface, and (U2,V2) of the point on the second
   //! surface, which are the ends of the extremum of index
@@ -115,57 +131,54 @@ Standard_EXPORT operator Standard_Integer() const;
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT void Parameters (const Standard_Integer Index, Standard_Real& U1, Standard_Real& V1, Standard_Real& U2, Standard_Real& V2) const;
-  
+  Standard_EXPORT void Parameters(const Standard_Integer Index,
+                                  Standard_Real&         U1,
+                                  Standard_Real&         V1,
+                                  Standard_Real&         U2,
+                                  Standard_Real&         V2) const;
+
   //! Computes the distance between the end points of the
   //! extremum of index Index computed by this algorithm.
   //! Exceptions
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT Standard_Real Distance (const Standard_Integer Index) const;
+  Standard_EXPORT Standard_Real Distance(const Standard_Integer Index) const;
 
   //! Returns True if the surfaces are parallel
-  Standard_Boolean IsParallel() const
-  {
-    return myExtSS.IsParallel();
-  }
-  
+  Standard_Boolean IsParallel() const { return myExtSS.IsParallel(); }
+
   //! Returns the points P1 on the first surface and P2 on
   //! the second surface, which are the ends of the
   //! shortest extremum computed by this algorithm.
   //! Exceptions StdFail_NotDone if this algorithm fails.
-  Standard_EXPORT void NearestPoints (gp_Pnt& P1, gp_Pnt& P2) const;
-  
+  Standard_EXPORT void NearestPoints(gp_Pnt& P1, gp_Pnt& P2) const;
+
   //! Returns the parameters (U1,V1) of the point on the
   //! first surface and (U2,V2) of the point on the second
   //! surface, which are the ends of the shortest extremum
   //! computed by this algorithm.
   //! Exceptions - StdFail_NotDone if this algorithm fails.
-  Standard_EXPORT void LowerDistanceParameters (Standard_Real& U1, Standard_Real& V1, Standard_Real& U2, Standard_Real& V2) const;
-  
+  Standard_EXPORT void LowerDistanceParameters(Standard_Real& U1,
+                                               Standard_Real& V1,
+                                               Standard_Real& U2,
+                                               Standard_Real& V2) const;
+
   //! Computes the distance between the end points of the
   //! shortest extremum computed by this algorithm.
   //! Exceptions StdFail_NotDone if this algorithm fails.
   Standard_EXPORT Standard_Real LowerDistance() const;
-Standard_EXPORT operator Standard_Real() const;
-  
+  Standard_EXPORT               operator Standard_Real() const;
+
   //! return the algorithmic object from Extrema
-    const Extrema_ExtSS& Extrema() const;
+  const Extrema_ExtSS& Extrema() const;
 
 private:
-
   Standard_Boolean myIsDone;
   Standard_Integer myIndex;
-  Extrema_ExtSS myExtSS;
-
+  Extrema_ExtSS    myExtSS;
 };
 
-
 #include <GeomAPI_ExtremaSurfaceSurface.lxx>
-
-
-
-
 
 #endif // _GeomAPI_ExtremaSurfaceSurface_HeaderFile

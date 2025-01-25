@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include "RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.pxx"
@@ -24,49 +23,48 @@
 #include <StepDimTol_HArray1OfDatumSystemOrReference.hxx>
 #include <StepDimTol_UnequallyDisposedGeometricTolerance.hxx>
 
-//=======================================================================
-//function : RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol
-//purpose  : 
-//=======================================================================
-RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol()
+//=================================================================================================
+
+RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::
+  RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol()
 {
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
-
-void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::ReadStep
-  (const Handle(StepData_StepReaderData)& data,
-   const Standard_Integer num0, Handle(Interface_Check)& ach,
-   const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol)& ent) const
+void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::ReadStep(
+  const Handle(StepData_StepReaderData)&                             data,
+  const Standard_Integer                                             num0,
+  Handle(Interface_Check)&                                           ach,
+  const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol)& ent) const
 {
-  Standard_Integer num = 0;//num0;
-  data->NamedForComplex("GEOMETRIC_TOLERANCE","GMTTLR",num0,num,ach);
-  if (!data->CheckNbParams(num,4,ach,"geometric_tolerance")) return;
+  Standard_Integer num = 0; // num0;
+  data->NamedForComplex("GEOMETRIC_TOLERANCE", "GMTTLR", num0, num, ach);
+  if (!data->CheckNbParams(num, 4, ach, "geometric_tolerance"))
+    return;
   // Own fields of GeometricTolerance
   Handle(TCollection_HAsciiString) aName;
-  data->ReadString (num, 1, "name", ach, aName);
+  data->ReadString(num, 1, "name", ach, aName);
   Handle(TCollection_HAsciiString) aDescription;
-  data->ReadString (num, 2, "description", ach, aDescription);
+  data->ReadString(num, 2, "description", ach, aDescription);
   Handle(StepBasic_MeasureWithUnit) aMagnitude;
-  data->ReadEntity (num, 3, "magnitude", ach, STANDARD_TYPE(StepBasic_MeasureWithUnit), aMagnitude);
+  data->ReadEntity(num, 3, "magnitude", ach, STANDARD_TYPE(StepBasic_MeasureWithUnit), aMagnitude);
   StepDimTol_GeometricToleranceTarget aTolerancedShapeAspect;
-  data->ReadEntity (num, 4, "toleranced_shape_aspect", ach, aTolerancedShapeAspect);
+  data->ReadEntity(num, 4, "toleranced_shape_aspect", ach, aTolerancedShapeAspect);
 
-  data->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE","GTWDR",num0,num,ach);
+  data->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE", "GTWDR", num0, num, ach);
   // Own fields of GeometricToleranceWithDatumReference
   Handle(StepDimTol_HArray1OfDatumSystemOrReference) aDatumSystem;
-  Standard_Integer sub5 = 0;
-  if ( data->ReadSubList (num, 1, "datum_system", ach, sub5) ) {
-    Standard_Integer nb0 = data->NbParams(sub5);
-    aDatumSystem = new StepDimTol_HArray1OfDatumSystemOrReference (1, nb0);
+  Standard_Integer                                   sub5 = 0;
+  if (data->ReadSubList(num, 1, "datum_system", ach, sub5))
+  {
+    Standard_Integer nb0  = data->NbParams(sub5);
+    aDatumSystem          = new StepDimTol_HArray1OfDatumSystemOrReference(1, nb0);
     Standard_Integer num2 = sub5;
-    for ( Standard_Integer i0=1; i0 <= nb0; i0++ ) {
+    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    {
       StepDimTol_DatumSystemOrReference anIt0;
-      data->ReadEntity (num2, i0, "datum_system_or_reference", ach, anIt0);
+      data->ReadEntity(num2, i0, "datum_system_or_reference", ach, anIt0);
       aDatumSystem->SetValue(i0, anIt0);
     }
   }
@@ -74,51 +72,68 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::ReadStep
   Handle(StepDimTol_GeometricToleranceWithDatumReference) aGTWDR =
     new StepDimTol_GeometricToleranceWithDatumReference;
   aGTWDR->SetDatumSystem(aDatumSystem);
-  
+
   data->NamedForComplex("UNEQUALLY_DISPOSED_GEOMETRIC_TOLERANCE", num0, num, ach);
-  Handle (StepBasic_LengthMeasureWithUnit) aDisplacement;
-  data->ReadEntity(num, 1, "displacement", ach, STANDARD_TYPE(StepBasic_LengthMeasureWithUnit), aDisplacement);
-  //Initialize entity
-  Handle(StepDimTol_UnequallyDisposedGeometricTolerance) anUDGT = new 
-    StepDimTol_UnequallyDisposedGeometricTolerance;
+  Handle(StepBasic_LengthMeasureWithUnit) aDisplacement;
+  data->ReadEntity(num,
+                   1,
+                   "displacement",
+                   ach,
+                   STANDARD_TYPE(StepBasic_LengthMeasureWithUnit),
+                   aDisplacement);
+  // Initialize entity
+  Handle(StepDimTol_UnequallyDisposedGeometricTolerance) anUDGT =
+    new StepDimTol_UnequallyDisposedGeometricTolerance;
   anUDGT->SetDisplacement(aDisplacement);
 
-  //Choose type of geometric tolerance
+  // Choose type of geometric tolerance
   TColStd_SequenceOfAsciiString aTypes;
   data->ComplexType(num0, aTypes);
-  Standard_CString aFirst = aTypes.First().ToCString();
-  Standard_CString aLast = aTypes.Value(3).ToCString();
-  StepDimTol_GeometricToleranceType aType = StepDimTol_GTTPositionTolerance;
-  if (strcmp(aFirst, "ANGULARITY_TOLERANCE") == 0) aType = StepDimTol_GTTAngularityTolerance;
-  else if (strcmp(aFirst, "CIRCULAR_RUNOUT_TOLERANCE") == 0) aType = StepDimTol_GTTCircularRunoutTolerance;
-  else if (strcmp(aFirst, "COAXIALITY_TOLERANCE") == 0) aType = StepDimTol_GTTCoaxialityTolerance;
-  else if (strcmp(aFirst, "CONCENTRICITY_TOLERANCE") == 0) aType = StepDimTol_GTTConcentricityTolerance;
-  else if (strcmp(aFirst, "CYLINDRICITY_TOLERANCE") == 0) aType = StepDimTol_GTTCylindricityTolerance;
-  else if (strcmp(aFirst, "FLATNESS_TOLERANCE") == 0) aType = StepDimTol_GTTFlatnessTolerance;
-  else if (strcmp(aLast, "LINE_PROFILE_TOLERANCE") == 0) aType = StepDimTol_GTTLineProfileTolerance;
-  else if (strcmp(aLast, "PARALLELISM_TOLERANCE") == 0) aType = StepDimTol_GTTParallelismTolerance;
-  else if (strcmp(aLast, "PERPENDICULARITY_TOLERANCE") == 0) aType = StepDimTol_GTTPerpendicularityTolerance;
-  else if (strcmp(aLast, "POSITION_TOLERANCE") == 0) aType = StepDimTol_GTTPositionTolerance;
-  else if (strcmp(aLast, "ROUNDNESS_TOLERANCE") == 0) aType = StepDimTol_GTTRoundnessTolerance;
-  else if (strcmp(aLast, "STRAIGHTNESS_TOLERANCE") == 0) aType = StepDimTol_GTTStraightnessTolerance;
-  else if (strcmp(aLast, "SURFACE_PROFILE_TOLERANCE") == 0) aType = StepDimTol_GTTSurfaceProfileTolerance;
-  else if (strcmp(aLast, "SYMMETRY_TOLERANCE") == 0) aType = StepDimTol_GTTSymmetryTolerance;
-  else if (strcmp(aLast, "TOTAL_RUNOUT_TOLERANCE") == 0) aType = StepDimTol_GTTTotalRunoutTolerance;
-  else ach->AddFail("The type of geometric tolerance is not supported");
+  Standard_CString                  aFirst = aTypes.First().ToCString();
+  Standard_CString                  aLast  = aTypes.Value(3).ToCString();
+  StepDimTol_GeometricToleranceType aType  = StepDimTol_GTTPositionTolerance;
+  if (strcmp(aFirst, "ANGULARITY_TOLERANCE") == 0)
+    aType = StepDimTol_GTTAngularityTolerance;
+  else if (strcmp(aFirst, "CIRCULAR_RUNOUT_TOLERANCE") == 0)
+    aType = StepDimTol_GTTCircularRunoutTolerance;
+  else if (strcmp(aFirst, "COAXIALITY_TOLERANCE") == 0)
+    aType = StepDimTol_GTTCoaxialityTolerance;
+  else if (strcmp(aFirst, "CONCENTRICITY_TOLERANCE") == 0)
+    aType = StepDimTol_GTTConcentricityTolerance;
+  else if (strcmp(aFirst, "CYLINDRICITY_TOLERANCE") == 0)
+    aType = StepDimTol_GTTCylindricityTolerance;
+  else if (strcmp(aFirst, "FLATNESS_TOLERANCE") == 0)
+    aType = StepDimTol_GTTFlatnessTolerance;
+  else if (strcmp(aLast, "LINE_PROFILE_TOLERANCE") == 0)
+    aType = StepDimTol_GTTLineProfileTolerance;
+  else if (strcmp(aLast, "PARALLELISM_TOLERANCE") == 0)
+    aType = StepDimTol_GTTParallelismTolerance;
+  else if (strcmp(aLast, "PERPENDICULARITY_TOLERANCE") == 0)
+    aType = StepDimTol_GTTPerpendicularityTolerance;
+  else if (strcmp(aLast, "POSITION_TOLERANCE") == 0)
+    aType = StepDimTol_GTTPositionTolerance;
+  else if (strcmp(aLast, "ROUNDNESS_TOLERANCE") == 0)
+    aType = StepDimTol_GTTRoundnessTolerance;
+  else if (strcmp(aLast, "STRAIGHTNESS_TOLERANCE") == 0)
+    aType = StepDimTol_GTTStraightnessTolerance;
+  else if (strcmp(aLast, "SURFACE_PROFILE_TOLERANCE") == 0)
+    aType = StepDimTol_GTTSurfaceProfileTolerance;
+  else if (strcmp(aLast, "SYMMETRY_TOLERANCE") == 0)
+    aType = StepDimTol_GTTSymmetryTolerance;
+  else if (strcmp(aLast, "TOTAL_RUNOUT_TOLERANCE") == 0)
+    aType = StepDimTol_GTTTotalRunoutTolerance;
+  else
+    ach->AddFail("The type of geometric tolerance is not supported");
 
   // Initialize entity
   ent->Init(aName, aDescription, aMagnitude, aTolerancedShapeAspect, aGTWDR, aType, anUDGT);
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
-
-void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::WriteStep
-  (StepData_StepWriter& SW,
-   const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol)& ent) const
+void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::WriteStep(
+  StepData_StepWriter&                                               SW,
+  const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol)& ent) const
 {
   StepDimTol_GeometricToleranceType aType = ent->GetToleranceType();
   if (aType == StepDimTol_GTTAngularityTolerance)
@@ -141,7 +156,10 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::WriteStep
   SW.Send(ent->TolerancedShapeAspect().Value());
   SW.StartEntity("GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE");
   SW.OpenSub();
-  for(Standard_Integer i4=1; i4<=ent->GetGeometricToleranceWithDatumReference()->DatumSystemAP242()->Length(); i4++) {
+  for (Standard_Integer i4 = 1;
+       i4 <= ent->GetGeometricToleranceWithDatumReference()->DatumSystemAP242()->Length();
+       i4++)
+  {
     StepDimTol_DatumSystemOrReference Var0 =
       ent->GetGeometricToleranceWithDatumReference()->DatumSystemAP242()->Value(i4);
     SW.Send(Var0.Value());
@@ -166,27 +184,27 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::WriteStep
     SW.StartEntity("SYMMETRY_TOLERANCE");
   else if (aType == StepDimTol_GTTTotalRunoutTolerance)
     SW.StartEntity("TOTAL_RUNOUT_TOLERANCE");
-    
+
   SW.StartEntity("UNEQUALLY_DISPOSED_GEOMETRIC_TOLRANCE");
   SW.Send(ent->GetUnequallyDisposedGeometricTolerance()->Displacement());
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
-
-void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::Share
-  (const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol)& ent,
-   Interface_EntityIterator& iter) const
+void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::Share(
+  const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol)& ent,
+  Interface_EntityIterator&                                          iter) const
 {
   // Own fields of GeometricTolerance
-  iter.AddItem (ent->Magnitude());
-  iter.AddItem (ent->TolerancedShapeAspect().Value());
+  iter.AddItem(ent->Magnitude());
+  iter.AddItem(ent->TolerancedShapeAspect().Value());
   // Own fields of GeometricToleranceWithDatumReference
-  for (Standard_Integer i3=1; i3<=ent->GetGeometricToleranceWithDatumReference()->DatumSystemAP242()->Length(); i3++ ) {
-    StepDimTol_DatumSystemOrReference Var0 = ent->GetGeometricToleranceWithDatumReference()->DatumSystemAP242()->Value(i3);
-    iter.AddItem (Var0.Value());
+  for (Standard_Integer i3 = 1;
+       i3 <= ent->GetGeometricToleranceWithDatumReference()->DatumSystemAP242()->Length();
+       i3++)
+  {
+    StepDimTol_DatumSystemOrReference Var0 =
+      ent->GetGeometricToleranceWithDatumReference()->DatumSystemAP242()->Value(i3);
+    iter.AddItem(Var0.Value());
   }
 }

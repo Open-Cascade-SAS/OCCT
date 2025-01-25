@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(TCollection_HAsciiString)> Interface_Array1OfHAsciiString;
 
-
 #endif

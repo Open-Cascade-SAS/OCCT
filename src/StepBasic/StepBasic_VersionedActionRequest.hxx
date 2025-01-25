@@ -24,7 +24,6 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-
 class StepBasic_VersionedActionRequest;
 DEFINE_STANDARD_HANDLE(StepBasic_VersionedActionRequest, Standard_Transient)
 
@@ -33,67 +32,52 @@ class StepBasic_VersionedActionRequest : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepBasic_VersionedActionRequest();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aId, const Handle(TCollection_HAsciiString)& aVersion, const Handle(TCollection_HAsciiString)& aPurpose, const Standard_Boolean hasDescription, const Handle(TCollection_HAsciiString)& aDescription);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aId,
+                            const Handle(TCollection_HAsciiString)& aVersion,
+                            const Handle(TCollection_HAsciiString)& aPurpose,
+                            const Standard_Boolean                  hasDescription,
+                            const Handle(TCollection_HAsciiString)& aDescription);
+
   //! Returns field Id
   Standard_EXPORT Handle(TCollection_HAsciiString) Id() const;
-  
+
   //! Set field Id
-  Standard_EXPORT void SetId (const Handle(TCollection_HAsciiString)& Id);
-  
+  Standard_EXPORT void SetId(const Handle(TCollection_HAsciiString)& Id);
+
   //! Returns field Version
   Standard_EXPORT Handle(TCollection_HAsciiString) Version() const;
-  
+
   //! Set field Version
-  Standard_EXPORT void SetVersion (const Handle(TCollection_HAsciiString)& Version);
-  
+  Standard_EXPORT void SetVersion(const Handle(TCollection_HAsciiString)& Version);
+
   //! Returns field Purpose
   Standard_EXPORT Handle(TCollection_HAsciiString) Purpose() const;
-  
+
   //! Set field Purpose
-  Standard_EXPORT void SetPurpose (const Handle(TCollection_HAsciiString)& Purpose);
-  
+  Standard_EXPORT void SetPurpose(const Handle(TCollection_HAsciiString)& Purpose);
+
   //! Returns field Description
   Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
-  
+
   //! Set field Description
-  Standard_EXPORT void SetDescription (const Handle(TCollection_HAsciiString)& Description);
-  
+  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& Description);
+
   //! Returns True if optional field Description is defined
   Standard_EXPORT Standard_Boolean HasDescription() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_VersionedActionRequest,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_VersionedActionRequest, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TCollection_HAsciiString) theId;
   Handle(TCollection_HAsciiString) theVersion;
   Handle(TCollection_HAsciiString) thePurpose;
   Handle(TCollection_HAsciiString) theDescription;
-  Standard_Boolean defDescription;
-
-
+  Standard_Boolean                 defDescription;
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_VersionedActionRequest_HeaderFile

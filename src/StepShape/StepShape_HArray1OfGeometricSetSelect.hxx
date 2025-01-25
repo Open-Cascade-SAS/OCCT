@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY1(StepShape_HArray1OfGeometricSetSelect, StepShape_Array1OfGeometricSetSelect)
 
-
 #endif

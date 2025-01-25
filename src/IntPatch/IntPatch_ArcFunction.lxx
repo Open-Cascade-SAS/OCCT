@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline const gp_Pnt& IntPatch_ArcFunction::Valpoint (const Standard_Integer Index) const
+inline const gp_Pnt& IntPatch_ArcFunction::Valpoint(const Standard_Integer Index) const
 {
   return seqpt(Index);
 }
@@ -39,17 +39,17 @@ inline void IntPatch_ArcFunction::SetQuadric(const IntSurf_Quadric& Q)
 
 inline const IntSurf_Quadric& IntPatch_ArcFunction::Quadric() const
 {
-  return(myQuad);
+  return (myQuad);
 }
 
 inline const Handle(Adaptor2d_Curve2d)& IntPatch_ArcFunction::Arc() const
 {
-  return(myArc);
+  return (myArc);
 }
 
 inline const Handle(Adaptor3d_Surface)& IntPatch_ArcFunction::Surface() const
 {
-  return(mySurf);
+  return (mySurf);
 }
 
 inline const gp_Pnt& IntPatch_ArcFunction::LastComputedPoint() const

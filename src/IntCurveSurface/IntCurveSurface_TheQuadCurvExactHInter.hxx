@@ -25,36 +25,35 @@ class Adaptor3d_HSurfaceTool;
 class IntCurveSurface_TheHCurveTool;
 class IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter;
 
-class IntCurveSurface_TheQuadCurvExactHInter 
+class IntCurveSurface_TheQuadCurvExactHInter
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Provides the signed distance function : Q(w)
   //! and its first derivative dQ(w)/dw
-  Standard_EXPORT IntCurveSurface_TheQuadCurvExactHInter(const Handle(Adaptor3d_Surface)& S, const Handle(Adaptor3d_Curve)& C);
-  
+  Standard_EXPORT IntCurveSurface_TheQuadCurvExactHInter(const Handle(Adaptor3d_Surface)& S,
+                                                         const Handle(Adaptor3d_Curve)&   C);
+
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
+
   Standard_EXPORT Standard_Integer NbRoots() const;
-  
-  Standard_EXPORT Standard_Real Root (const Standard_Integer Index) const;
-  
+
+  Standard_EXPORT Standard_Real Root(const Standard_Integer Index) const;
+
   Standard_EXPORT Standard_Integer NbIntervals() const;
-  
+
   //! U1 and U2 are the parameters of
   //! a segment on the curve.
-  Standard_EXPORT void Intervals (const Standard_Integer Index, Standard_Real& U1, Standard_Real& U2) const;
+  Standard_EXPORT void Intervals(const Standard_Integer Index,
+                                 Standard_Real&         U1,
+                                 Standard_Real&         U2) const;
 
 private:
-
-  Standard_Integer nbpnts;
+  Standard_Integer       nbpnts;
   TColStd_SequenceOfReal pnts;
-  Standard_Integer nbintv;
+  Standard_Integer       nbintv;
   TColStd_SequenceOfReal intv;
-
 };
 
 #endif // _IntCurveSurface_TheQuadCurvExactHInter_HeaderFile

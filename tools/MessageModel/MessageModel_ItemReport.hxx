@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef MessageModel_ItemReport_H
 #define MessageModel_ItemReport_H
@@ -37,13 +37,16 @@ typedef QExplicitlySharedDataPointer<MessageModel_ItemReport> MessageModel_ItemR
 class MessageModel_ItemReport : public MessageModel_ItemBase
 {
 public:
-
   //! Creates an item wrapped by a shared pointer
   //! \param theRow the item row positition in the parent item
   //! \param theColumn the item column positition in the parent item
   //! \return the pointer to the created item
-  static MessageModel_ItemReportPtr CreateItem (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
-  { return MessageModel_ItemReportPtr (new MessageModel_ItemReport (theParent, theRow, theColumn)); }
+  static MessageModel_ItemReportPtr CreateItem(TreeModel_ItemBasePtr theParent,
+                                               const int             theRow,
+                                               const int             theColumn)
+  {
+    return MessageModel_ItemReportPtr(new MessageModel_ItemReport(theParent, theRow, theColumn));
+  }
 
   //! Destructor
   virtual ~MessageModel_ItemReport() Standard_OVERRIDE {};
@@ -52,7 +55,10 @@ public:
   const Handle(Message_Report)& GetReport() const { return myReport; }
 
   //! Returns alert of the report for the parameter row
-  Standard_Boolean GetChildAlerts (const int theRow, Message_ListOfAlert& theAlerts) const { return myChildAlerts.Find(theRow, theAlerts); }
+  Standard_Boolean GetChildAlerts(const int theRow, Message_ListOfAlert& theAlerts) const
+  {
+    return myChildAlerts.Find(theRow, theAlerts);
+  }
 
   //! Returns the report description or NULL
   const TCollection_AsciiString& GetDescription() const { return myDescription; }
@@ -66,23 +72,25 @@ public:
   //! Return data value for the role.
   //! \param theRole a value role
   //! \return the value
-  Standard_EXPORT virtual QVariant initValue (const int theRole) const Standard_OVERRIDE;
+  Standard_EXPORT virtual QVariant initValue(const int theRole) const Standard_OVERRIDE;
 
   //! \return number of children.
   Standard_EXPORT virtual int initRowCount() const Standard_OVERRIDE;
 
   //! Returns report of the tree model item. Iterates up by parents intil the report item is found.
   //! \return an item or NULL
-  Standard_EXPORT static MessageModel_ItemReportPtr FindReportItem (const TreeModel_ItemBasePtr& theItem);
+  Standard_EXPORT static MessageModel_ItemReportPtr FindReportItem(
+    const TreeModel_ItemBasePtr& theItem);
 
   //! Returns report of the item
-  static Handle(Message_Report) FindReport (const MessageModel_ItemBasePtr& thetItem);
+  static Handle(Message_Report) FindReport(const MessageModel_ItemBasePtr& thetItem);
 
-  //! Returns report cumulative metric as stop time of the last alert minus start time of the first alert
-  Standard_EXPORT static Standard_Real CumulativeMetric (const Handle(Message_Report)& theReport, const Message_MetricType theMetricType);
+  //! Returns report cumulative metric as stop time of the last alert minus start time of the first
+  //! alert
+  Standard_EXPORT static Standard_Real CumulativeMetric(const Handle(Message_Report)& theReport,
+                                                        const Message_MetricType theMetricType);
 
 protected:
-
   //! Initialize the current item.
   virtual void initItem() const Standard_OVERRIDE;
 
@@ -90,7 +98,7 @@ protected:
   //! \param theRow the child row position
   //! \param theColumn the child column position
   //! \return the created item
-  virtual TreeModel_ItemBasePtr createChild (int theRow, int theColumn) Standard_OVERRIDE;
+  virtual TreeModel_ItemBasePtr createChild(int theRow, int theColumn) Standard_OVERRIDE;
 
   //! Returns number of child shapes. Init item if it is not initialized
   //! \return integer value
@@ -101,16 +109,17 @@ protected:
   const Handle(Message_Report)& getReport() const;
 
 private:
-
   //! Constructor
-  MessageModel_ItemReport (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
-  : MessageModel_ItemBase (theParent, theRow, theColumn) {}
+  MessageModel_ItemReport(TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
+      : MessageModel_ItemBase(theParent, theRow, theColumn)
+  {
+  }
 
 private:
+  NCollection_DataMap<Standard_Integer, Message_ListOfAlert>
+    myChildAlerts; //!< container of child alerts
 
-  NCollection_DataMap<Standard_Integer, Message_ListOfAlert> myChildAlerts; //!< container of child alerts
-
-  Handle(Message_Report) myReport; //!< current report
+  Handle(Message_Report)  myReport;      //!< current report
   TCollection_AsciiString myDescription; //!< description
 };
 

@@ -27,48 +27,31 @@ class StepShape_PointRepresentation;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write tool for PointRepresentation
-class RWStepShape_RWPointRepresentation 
+class RWStepShape_RWPointRepresentation
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_HIDDEN RWStepShape_RWPointRepresentation();
-  
+
   //! Reads PointRepresentation
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepShape_PointRepresentation)& ent) const;
-  
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&       data,
+                                const Standard_Integer                       num,
+                                Handle(Interface_Check)&                     ach,
+                                const Handle(StepShape_PointRepresentation)& ent) const;
+
   //! Writes PointRepresentation
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepShape_PointRepresentation)& ent) const;
-  
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                         SW,
+                                 const Handle(StepShape_PointRepresentation)& ent) const;
+
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepShape_PointRepresentation)& ent, Interface_EntityIterator& iter) const;
-
-
-
+  Standard_HIDDEN void Share(const Handle(StepShape_PointRepresentation)& ent,
+                             Interface_EntityIterator&                    iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepShape_RWPointRepresentation_HeaderFile

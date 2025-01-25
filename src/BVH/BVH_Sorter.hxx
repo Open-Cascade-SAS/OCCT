@@ -19,39 +19,34 @@
 #include <BVH_Set.hxx>
 
 //! Tool object to sort abstract primitive set.
-template<class T, int N>
+template <class T, int N>
 class BVH_Sorter
 {
 public:
-
   //! Performs default initialization.
   BVH_Sorter()
-  : myIsParallel (Standard_False)
-  { }
+      : myIsParallel(Standard_False)
+  {
+  }
 
   //! Releases resources of BVH sorter.
-  virtual ~BVH_Sorter() { }
+  virtual ~BVH_Sorter() {}
 
   //! Sorts the set.
-  virtual void Perform (BVH_Set<T, N>* theSet) = 0;
+  virtual void Perform(BVH_Set<T, N>* theSet) = 0;
 
   //! Sorts the given (inclusive) range in the set.
-  virtual void Perform (BVH_Set<T, N>* theSet, const Standard_Integer theStart, const Standard_Integer theFinal) = 0;
+  virtual void Perform(BVH_Set<T, N>*         theSet,
+                       const Standard_Integer theStart,
+                       const Standard_Integer theFinal) = 0;
 
   //! Returns parallel flag.
-  inline Standard_Boolean IsParallel() const
-  {
-    return myIsParallel;
-  }
+  inline Standard_Boolean IsParallel() const { return myIsParallel; }
 
   //! Set parallel flag contolling possibility of parallel execution.
-  inline void SetParallel(const Standard_Boolean isParallel)
-  {
-    myIsParallel = isParallel;
-  }
+  inline void SetParallel(const Standard_Boolean isParallel) { myIsParallel = isParallel; }
 
 private:
-
   Standard_Boolean myIsParallel;
 };
 

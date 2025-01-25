@@ -1,7 +1,7 @@
-// Created on: 2011-10-11 
+// Created on: 2011-10-11
 // Created by: Roman KOZLOV
-// Copyright (c) 2011-2014 OPEN CASCADE SAS 
-// 
+// Copyright (c) 2011-2014 OPEN CASCADE SAS
+//
 // This file is part of Open CASCADE Technology software library.
 //
 // This library is free software; you can redistribute it and/or modify it under
@@ -15,8 +15,6 @@
 
 #include <IVtk_Interface.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IVtk_Interface,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(IVtk_Interface, Standard_Transient)
 
 // Handle implementation
-
-

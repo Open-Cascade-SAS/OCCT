@@ -29,42 +29,33 @@ class TopoDS_Edge;
 class gp_Pnt;
 class Geom2d_Line;
 
-
-
-class HLRTopoBRep_FaceIsoLiner 
+class HLRTopoBRep_FaceIsoLiner
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT static void Perform (const Standard_Integer FI, const TopoDS_Face& F, HLRTopoBRep_Data& DS, const Standard_Integer nbIsos);
-  
-  Standard_EXPORT static TopoDS_Vertex MakeVertex (const TopoDS_Edge& E, const gp_Pnt& P, const Standard_Real Par, const Standard_Real Tol, HLRTopoBRep_Data& DS);
-  
-  Standard_EXPORT static void MakeIsoLine (const TopoDS_Face& F, const Handle(Geom2d_Line)& Iso, TopoDS_Vertex& V1, TopoDS_Vertex& V2, const Standard_Real U1, const Standard_Real U2, const Standard_Real Tol, HLRTopoBRep_Data& DS);
+  Standard_EXPORT static void Perform(const Standard_Integer FI,
+                                      const TopoDS_Face&     F,
+                                      HLRTopoBRep_Data&      DS,
+                                      const Standard_Integer nbIsos);
 
+  Standard_EXPORT static TopoDS_Vertex MakeVertex(const TopoDS_Edge&  E,
+                                                  const gp_Pnt&       P,
+                                                  const Standard_Real Par,
+                                                  const Standard_Real Tol,
+                                                  HLRTopoBRep_Data&   DS);
 
-
+  Standard_EXPORT static void MakeIsoLine(const TopoDS_Face&         F,
+                                          const Handle(Geom2d_Line)& Iso,
+                                          TopoDS_Vertex&             V1,
+                                          TopoDS_Vertex&             V2,
+                                          const Standard_Real        U1,
+                                          const Standard_Real        U2,
+                                          const Standard_Real        Tol,
+                                          HLRTopoBRep_Data&          DS);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _HLRTopoBRep_FaceIsoLiner_HeaderFile

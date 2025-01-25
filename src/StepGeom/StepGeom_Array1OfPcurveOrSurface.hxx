@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<StepGeom_PcurveOrSurface> StepGeom_Array1OfPcurveOrSurface;
 
-
 #endif

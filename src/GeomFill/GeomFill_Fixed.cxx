@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <GeomFill_Fixed.hxx>
 #include <GeomFill_TrihedronLaw.hxx>
 #include <gp_Vec.hxx>
@@ -22,14 +21,12 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(GeomFill_Fixed,GeomFill_TrihedronLaw)
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_Fixed, GeomFill_TrihedronLaw)
 
-GeomFill_Fixed::GeomFill_Fixed(const gp_Vec& Tangent,
-			       const gp_Vec& Normal)
+GeomFill_Fixed::GeomFill_Fixed(const gp_Vec& Tangent, const gp_Vec& Normal)
 {
-  if (Tangent.IsParallel(Normal, 0.01) ) 
-    throw Standard_ConstructionError(
-      "GeomFill_Fixed : Two parallel vectors !");
+  if (Tangent.IsParallel(Normal, 0.01))
+    throw Standard_ConstructionError("GeomFill_Fixed : Two parallel vectors !");
   T = Tangent;
   T.Normalize();
   N = Normal;
@@ -40,86 +37,83 @@ GeomFill_Fixed::GeomFill_Fixed(const gp_Vec& Tangent,
 
 Handle(GeomFill_TrihedronLaw) GeomFill_Fixed::Copy() const
 {
- Handle(GeomFill_Fixed) copy = new (GeomFill_Fixed)(T, N);
- copy->SetCurve(myCurve);
- return copy;
-} 
-
- Standard_Boolean GeomFill_Fixed::D0(const Standard_Real, 
-						 gp_Vec& Tangent,
-						 gp_Vec& Normal,
-						 gp_Vec& BiNormal) 
-{
-  Tangent = T;
-  Normal = N;
-  BiNormal = B;
-
-  return Standard_True; 
+  Handle(GeomFill_Fixed) copy = new (GeomFill_Fixed)(T, N);
+  copy->SetCurve(myCurve);
+  return copy;
 }
 
- Standard_Boolean GeomFill_Fixed::D1(const Standard_Real,
-						 gp_Vec& Tangent,
-						 gp_Vec& DTangent,
-						 gp_Vec& Normal,
-						 gp_Vec& DNormal,
-						 gp_Vec& BiNormal,
-						 gp_Vec& DBiNormal) 
+Standard_Boolean GeomFill_Fixed::D0(const Standard_Real,
+                                    gp_Vec& Tangent,
+                                    gp_Vec& Normal,
+                                    gp_Vec& BiNormal)
 {
-  Tangent = T;
-  Normal = N;
+  Tangent  = T;
+  Normal   = N;
   BiNormal = B;
 
-  gp_Vec V0(0,0,0);
+  return Standard_True;
+}
+
+Standard_Boolean GeomFill_Fixed::D1(const Standard_Real,
+                                    gp_Vec& Tangent,
+                                    gp_Vec& DTangent,
+                                    gp_Vec& Normal,
+                                    gp_Vec& DNormal,
+                                    gp_Vec& BiNormal,
+                                    gp_Vec& DBiNormal)
+{
+  Tangent  = T;
+  Normal   = N;
+  BiNormal = B;
+
+  gp_Vec V0(0, 0, 0);
   DTangent = DNormal = DBiNormal = V0;
 
-  return Standard_True; 
+  return Standard_True;
 }
 
- Standard_Boolean GeomFill_Fixed::D2(const Standard_Real,
-						 gp_Vec& Tangent,
-						 gp_Vec& DTangent,
-						 gp_Vec& D2Tangent,
-						 gp_Vec& Normal,
-						 gp_Vec& DNormal,
-						 gp_Vec& D2Normal,
-						 gp_Vec& BiNormal,
-						 gp_Vec& DBiNormal,
-						 gp_Vec& D2BiNormal) 
+Standard_Boolean GeomFill_Fixed::D2(const Standard_Real,
+                                    gp_Vec& Tangent,
+                                    gp_Vec& DTangent,
+                                    gp_Vec& D2Tangent,
+                                    gp_Vec& Normal,
+                                    gp_Vec& DNormal,
+                                    gp_Vec& D2Normal,
+                                    gp_Vec& BiNormal,
+                                    gp_Vec& DBiNormal,
+                                    gp_Vec& D2BiNormal)
 {
-  Tangent = T;
-  Normal = N;
+  Tangent  = T;
+  Normal   = N;
   BiNormal = B;
 
-  gp_Vec V0(0,0,0);
+  gp_Vec V0(0, 0, 0);
   DTangent = D2Tangent = V0;
   DNormal = D2Normal = V0;
   DBiNormal = D2BiNormal = V0;
 
-  return Standard_True; 
+  return Standard_True;
 }
 
- Standard_Integer GeomFill_Fixed::NbIntervals(const GeomAbs_Shape) const
+Standard_Integer GeomFill_Fixed::NbIntervals(const GeomAbs_Shape) const
 {
   return 1;
 }
 
- void GeomFill_Fixed::Intervals(TColStd_Array1OfReal& theT,
-					    const GeomAbs_Shape) const
+void GeomFill_Fixed::Intervals(TColStd_Array1OfReal& theT, const GeomAbs_Shape) const
 {
-  theT(theT.Lower()) = - Precision::Infinite();
-  theT(theT.Upper()) =   Precision::Infinite();
+  theT(theT.Lower()) = -Precision::Infinite();
+  theT(theT.Upper()) = Precision::Infinite();
 }
 
- void GeomFill_Fixed::GetAverageLaw(gp_Vec& ATangent,
-				    gp_Vec& ANormal,
-				    gp_Vec& ABiNormal) 
+void GeomFill_Fixed::GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal, gp_Vec& ABiNormal)
 {
-   ATangent = T;
-   ANormal = N;
-   ABiNormal = B;
+  ATangent  = T;
+  ANormal   = N;
+  ABiNormal = B;
 }
 
- Standard_Boolean GeomFill_Fixed::IsConstant() const
+Standard_Boolean GeomFill_Fixed::IsConstant() const
 {
   return Standard_True;
 }

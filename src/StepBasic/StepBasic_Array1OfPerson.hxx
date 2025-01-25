@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(StepBasic_Person)> StepBasic_Array1OfPerson;
 
-
 #endif

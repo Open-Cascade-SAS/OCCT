@@ -25,28 +25,26 @@ class Standard_Persistent;
 class Storage_Schema;
 class Storage_BaseDriver;
 
-
 class Storage_CallBack;
 DEFINE_STANDARD_HANDLE(Storage_CallBack, Standard_Transient)
 
 class Storage_CallBack : public Standard_Transient
 {
 public:
-  
   Standard_EXPORT virtual Handle(Standard_Persistent) New() const = 0;
-  
-  Standard_EXPORT virtual void Add (const Handle(Standard_Persistent)& aPers, const Handle(Storage_Schema)& aSchema) const = 0;
-  
-  Standard_EXPORT virtual void Write (const Handle(Standard_Persistent)& aPers, 
-                                      const Handle(Storage_BaseDriver)& aDriver, 
-                                      const Handle(Storage_Schema)& aSchema) const = 0;
-  
-  Standard_EXPORT virtual void Read (const Handle(Standard_Persistent)& aPers, 
-                                     const Handle(Storage_BaseDriver)& aDriver,
-                                     const Handle(Storage_Schema)& aSchema) const = 0;
 
-  DEFINE_STANDARD_RTTIEXT(Storage_CallBack,Standard_Transient)
+  Standard_EXPORT virtual void Add(const Handle(Standard_Persistent)& aPers,
+                                   const Handle(Storage_Schema)&      aSchema) const = 0;
 
+  Standard_EXPORT virtual void Write(const Handle(Standard_Persistent)& aPers,
+                                     const Handle(Storage_BaseDriver)&  aDriver,
+                                     const Handle(Storage_Schema)&      aSchema) const = 0;
+
+  Standard_EXPORT virtual void Read(const Handle(Standard_Persistent)& aPers,
+                                    const Handle(Storage_BaseDriver)&  aDriver,
+                                    const Handle(Storage_Schema)&      aSchema) const = 0;
+
+  DEFINE_STANDARD_RTTIEXT(Storage_CallBack, Standard_Transient)
 };
 
 #endif // _Storage_CallBack_HeaderFile

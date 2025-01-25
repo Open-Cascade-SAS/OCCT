@@ -20,7 +20,6 @@
 #include <Adaptor2d_Curve2d.hxx>
 #include <Standard_DomainError.hxx>
 #include <gp_Pnt.hxx>
- 
 
 #define TheVertex Handle(Adaptor3d_HVertex)
 #define TheVertex_hxx <Adaptor3d_HVertex.hxx>
@@ -29,4 +28,3 @@
 #define IntStart_PathPoint IntPatch_ThePathPointOfTheSOnBounds
 #define IntStart_PathPoint_hxx <IntPatch_ThePathPointOfTheSOnBounds.hxx>
 #include "../IntStart/IntStart_PathPoint.gxx"
-

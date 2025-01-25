@@ -25,7 +25,6 @@ class Interface_EntityIterator;
 class Interface_Graph;
 class TCollection_AsciiString;
 
-
 class IFSelect_SelectIntersection;
 DEFINE_STANDARD_HANDLE(IFSelect_SelectIntersection, IFSelect_SelectCombine)
 
@@ -35,39 +34,21 @@ class IFSelect_SelectIntersection : public IFSelect_SelectCombine
 {
 
 public:
-
-  
   //! Creates an empty SelectIntersection
   Standard_EXPORT IFSelect_SelectIntersection();
-  
+
   //! Returns the list of selected Entities, which is the common part
   //! of results from all input selections. Uniqueness is guaranteed.
-  Standard_EXPORT Interface_EntityIterator RootResult (const Interface_Graph& G) const Standard_OVERRIDE;
-  
+  Standard_EXPORT Interface_EntityIterator
+    RootResult(const Interface_Graph& G) const Standard_OVERRIDE;
+
   //! Returns a text defining the criterium : "Intersection (AND)"
   Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectIntersection,IFSelect_SelectCombine)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectIntersection, IFSelect_SelectCombine)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_SelectIntersection_HeaderFile

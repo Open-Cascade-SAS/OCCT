@@ -23,7 +23,6 @@
 #include <StepElement_ElementOrder.hxx>
 class TCollection_HAsciiString;
 
-
 class StepElement_Curve3dElementDescriptor;
 DEFINE_STANDARD_HANDLE(StepElement_Curve3dElementDescriptor, StepElement_ElementDescriptor)
 
@@ -32,42 +31,27 @@ class StepElement_Curve3dElementDescriptor : public StepElement_ElementDescripto
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepElement_Curve3dElementDescriptor();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const StepElement_ElementOrder aElementDescriptor_TopologyOrder, const Handle(TCollection_HAsciiString)& aElementDescriptor_Description, const Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember)& aPurpose);
-  
+  Standard_EXPORT void Init(
+    const StepElement_ElementOrder          aElementDescriptor_TopologyOrder,
+    const Handle(TCollection_HAsciiString)& aElementDescriptor_Description,
+    const Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember)& aPurpose);
+
   //! Returns field Purpose
   Standard_EXPORT Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember) Purpose() const;
-  
+
   //! Set field Purpose
-  Standard_EXPORT void SetPurpose (const Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember)& Purpose);
+  Standard_EXPORT void SetPurpose(
+    const Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember)& Purpose);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepElement_Curve3dElementDescriptor,StepElement_ElementDescriptor)
+  DEFINE_STANDARD_RTTIEXT(StepElement_Curve3dElementDescriptor, StepElement_ElementDescriptor)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember) thePurpose;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepElement_Curve3dElementDescriptor_HeaderFile

@@ -15,34 +15,29 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : BRepFeat_MakeLinearForm
-//purpose  : 
+// function : BRepFeat_MakeLinearForm
+// purpose  :
 //=======================================================================
 
-inline BRepFeat_MakeLinearForm::BRepFeat_MakeLinearForm ()
-: myBnd(0.0),
-  myTol(0.0)
+inline BRepFeat_MakeLinearForm::BRepFeat_MakeLinearForm()
+    : myBnd(0.0),
+      myTol(0.0)
 {
 }
 
-
 //=======================================================================
-//function : BRepFeat_MakePrism
-//purpose  : 
+// function : BRepFeat_MakePrism
+// purpose  :
 //=======================================================================
 
-inline BRepFeat_MakeLinearForm::BRepFeat_MakeLinearForm (const TopoDS_Shape& Sbase,
-							 const TopoDS_Wire& W,
-							 const Handle(Geom_Plane)& P,
-							 const gp_Vec& Direc,
-							 const gp_Vec& Direc1,
-							 const Standard_Integer Fuse,
-							 const Standard_Boolean Modify)
-					       
+inline BRepFeat_MakeLinearForm::BRepFeat_MakeLinearForm(const TopoDS_Shape&       Sbase,
+                                                        const TopoDS_Wire&        W,
+                                                        const Handle(Geom_Plane)& P,
+                                                        const gp_Vec&             Direc,
+                                                        const gp_Vec&             Direc1,
+                                                        const Standard_Integer    Fuse,
+                                                        const Standard_Boolean    Modify)
+
 {
-  Init(Sbase, W, P, Direc, Direc1, Fuse,Modify);
+  Init(Sbase, W, P, Direc, Direc1, Fuse, Modify);
 }
-
-
-
-

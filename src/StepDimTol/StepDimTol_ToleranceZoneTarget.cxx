@@ -20,36 +20,45 @@
 #include <StepDimTol_GeneralDatumReference.hxx>
 #include <StepDimTol_GeometricTolerance.hxx>
 
-//=======================================================================
-//function : StepDimTol_ToleranceZoneTarget
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepDimTol_ToleranceZoneTarget::StepDimTol_ToleranceZoneTarget () {  }
+StepDimTol_ToleranceZoneTarget::StepDimTol_ToleranceZoneTarget() {}
 
-//=======================================================================
-//function : CaseNum
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer StepDimTol_ToleranceZoneTarget::CaseNum(const Handle(Standard_Transient)& ent) const
+Standard_Integer StepDimTol_ToleranceZoneTarget::CaseNum(
+  const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalSize))) return 2;
-  if (ent->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance))) return 3;
-  if (ent->IsKind(STANDARD_TYPE(StepDimTol_GeneralDatumReference))) return 4;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalSize)))
+    return 2;
+  if (ent->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance)))
+    return 3;
+  if (ent->IsKind(STANDARD_TYPE(StepDimTol_GeneralDatumReference)))
+    return 4;
   return 0;
 }
 
 Handle(StepShape_DimensionalLocation) StepDimTol_ToleranceZoneTarget::DimensionalLocation() const
-{  return GetCasted(StepShape_DimensionalLocation,Value());  }
+{
+  return GetCasted(StepShape_DimensionalLocation, Value());
+}
 
 Handle(StepShape_DimensionalSize) StepDimTol_ToleranceZoneTarget::DimensionalSize() const
-{  return GetCasted(StepShape_DimensionalSize,Value());  }
+{
+  return GetCasted(StepShape_DimensionalSize, Value());
+}
 
 Handle(StepDimTol_GeometricTolerance) StepDimTol_ToleranceZoneTarget::GeometricTolerance() const
-{  return GetCasted(StepDimTol_GeometricTolerance,Value());  }
+{
+  return GetCasted(StepDimTol_GeometricTolerance, Value());
+}
 
-Handle(StepDimTol_GeneralDatumReference) StepDimTol_ToleranceZoneTarget::GeneralDatumReference() const
-{  return GetCasted(StepDimTol_GeneralDatumReference,Value());  }
+Handle(StepDimTol_GeneralDatumReference) StepDimTol_ToleranceZoneTarget::GeneralDatumReference()
+  const
+{
+  return GetCasted(StepDimTol_GeneralDatumReference, Value());
+}

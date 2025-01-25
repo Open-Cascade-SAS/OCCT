@@ -17,12 +17,11 @@
 #ifndef _Vrml_SeparatorRenderCulling_HeaderFile
 #define _Vrml_SeparatorRenderCulling_HeaderFile
 
-
 enum Vrml_SeparatorRenderCulling
 {
-Vrml_OFF,
-Vrml_ON,
-Vrml_AUTO
+  Vrml_OFF,
+  Vrml_ON,
+  Vrml_AUTO
 };
 
 #endif // _Vrml_SeparatorRenderCulling_HeaderFile

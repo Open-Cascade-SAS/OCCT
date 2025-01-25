@@ -20,8 +20,8 @@
 #include <XmlMDF_ADriver.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Handle(Standard_Type),Handle(XmlMDF_ADriver)> XmlMDF_TypeADriverMap;
-typedef NCollection_DataMap<Handle(Standard_Type),Handle(XmlMDF_ADriver)>::Iterator XmlMDF_DataMapIteratorOfTypeADriverMap;
-
+typedef NCollection_DataMap<Handle(Standard_Type), Handle(XmlMDF_ADriver)> XmlMDF_TypeADriverMap;
+typedef NCollection_DataMap<Handle(Standard_Type), Handle(XmlMDF_ADriver)>::Iterator
+  XmlMDF_DataMapIteratorOfTypeADriverMap;
 
 #endif

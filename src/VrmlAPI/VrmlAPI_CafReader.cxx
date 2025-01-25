@@ -27,72 +27,84 @@ IMPLEMENT_STANDARD_RTTIEXT(VrmlAPI_CafReader, Standard_Transient)
 
 namespace
 {
-  //=======================================================================
-  // function : getVrmlErrorName
-  // purpose  :
-  //=======================================================================
-  static TCollection_AsciiString getVrmlErrorName(VrmlData_ErrorStatus theStatus)
-  {
-    switch (theStatus)
-    {
-      case VrmlData_StatusOK:              return "";
-      case VrmlData_EmptyData:             return "EmptyData";
-      case VrmlData_UnrecoverableError:    return "UnrecoverableError";
-      case VrmlData_GeneralError:          return "GeneralError";
-      case VrmlData_EndOfFile:             return "EndOfFile";
-      case VrmlData_NotVrmlFile:           return "NotVrmlFile";
-      case VrmlData_CannotOpenFile:        return "CannotOpenFile";
-      case VrmlData_VrmlFormatError:       return "VrmlFormatError";
-      case VrmlData_NumericInputError:     return "NumericInputError";
-      case VrmlData_IrrelevantNumber:      return "IrrelevantNumber";
-      case VrmlData_BooleanInputError:     return "BooleanInputError";
-      case VrmlData_StringInputError:      return "StringInputError";
-      case VrmlData_NodeNameUnknown:       return "NodeNameUnknown";
-      case VrmlData_NonPositiveSize:       return "NonPositiveSize";
-      case VrmlData_ReadUnknownNode:       return "ReadUnknownNode";
-      case VrmlData_NonSupportedFeature:   return "NonSupportedFeature";
-      case VrmlData_OutputStreamUndefined: return "OutputStreamUndefined";
-      case VrmlData_NotImplemented:        return "NotImplemented";
-    }
-    return "UNKNOWN";
-  }
+//=================================================================================================
 
-  //=======================================================================
-  // function : performMeshSubshape
-  // purpose  :
-  //=======================================================================
-  static void performMeshSubshape(RWMesh_NodeAttributeMap& theAttribMap,
-                                  const VrmlData_DataMapOfShapeAppearance& theShapeAppMap,
-                                  const TopoDS_Shape& theShape)
+static TCollection_AsciiString getVrmlErrorName(VrmlData_ErrorStatus theStatus)
+{
+  switch (theStatus)
   {
-    Handle(VrmlData_Appearance) anAppearance;
-    if (theShapeAppMap.Find(theShape.TShape(), anAppearance))
-    {
-      if (!anAppearance.IsNull()
-          && !anAppearance->Material().IsNull())
-      {
-        RWMesh_NodeAttributes aFaceAttribs;
-        theAttribMap.Find(theShape, aFaceAttribs);
-        aFaceAttribs.Style.SetColorSurf(anAppearance->Material()->DiffuseColor());
-        theAttribMap.Bind(theShape, aFaceAttribs);
-      }
-    }
-
-    for (TopoDS_Iterator aSubShapeIter(theShape, true, false); aSubShapeIter.More(); aSubShapeIter.Next())
-    {
-      performMeshSubshape(theAttribMap, theShapeAppMap, aSubShapeIter.Value());
-    }
+    case VrmlData_StatusOK:
+      return "";
+    case VrmlData_EmptyData:
+      return "EmptyData";
+    case VrmlData_UnrecoverableError:
+      return "UnrecoverableError";
+    case VrmlData_GeneralError:
+      return "GeneralError";
+    case VrmlData_EndOfFile:
+      return "EndOfFile";
+    case VrmlData_NotVrmlFile:
+      return "NotVrmlFile";
+    case VrmlData_CannotOpenFile:
+      return "CannotOpenFile";
+    case VrmlData_VrmlFormatError:
+      return "VrmlFormatError";
+    case VrmlData_NumericInputError:
+      return "NumericInputError";
+    case VrmlData_IrrelevantNumber:
+      return "IrrelevantNumber";
+    case VrmlData_BooleanInputError:
+      return "BooleanInputError";
+    case VrmlData_StringInputError:
+      return "StringInputError";
+    case VrmlData_NodeNameUnknown:
+      return "NodeNameUnknown";
+    case VrmlData_NonPositiveSize:
+      return "NonPositiveSize";
+    case VrmlData_ReadUnknownNode:
+      return "ReadUnknownNode";
+    case VrmlData_NonSupportedFeature:
+      return "NonSupportedFeature";
+    case VrmlData_OutputStreamUndefined:
+      return "OutputStreamUndefined";
+    case VrmlData_NotImplemented:
+      return "NotImplemented";
   }
+  return "UNKNOWN";
 }
 
-//=======================================================================
-// function : performMesh
-// purpose  :
-//=======================================================================
-bool VrmlAPI_CafReader::performMesh(std::istream& theStream,
+//=================================================================================================
+
+static void performMeshSubshape(RWMesh_NodeAttributeMap&                 theAttribMap,
+                                const VrmlData_DataMapOfShapeAppearance& theShapeAppMap,
+                                const TopoDS_Shape&                      theShape)
+{
+  Handle(VrmlData_Appearance) anAppearance;
+  if (theShapeAppMap.Find(theShape.TShape(), anAppearance))
+  {
+    if (!anAppearance.IsNull() && !anAppearance->Material().IsNull())
+    {
+      RWMesh_NodeAttributes aFaceAttribs;
+      theAttribMap.Find(theShape, aFaceAttribs);
+      aFaceAttribs.Style.SetColorSurf(anAppearance->Material()->DiffuseColor());
+      theAttribMap.Bind(theShape, aFaceAttribs);
+    }
+  }
+
+  for (TopoDS_Iterator aSubShapeIter(theShape, true, false); aSubShapeIter.More();
+       aSubShapeIter.Next())
+  {
+    performMeshSubshape(theAttribMap, theShapeAppMap, aSubShapeIter.Value());
+  }
+}
+} // namespace
+
+//=================================================================================================
+
+bool VrmlAPI_CafReader::performMesh(std::istream&                  theStream,
                                     const TCollection_AsciiString& theFile,
-                                    const Message_ProgressRange& theProgress,
-                                    const Standard_Boolean theToProbe)
+                                    const Message_ProgressRange&   theProgress,
+                                    const Standard_Boolean         theToProbe)
 {
   (void)theProgress;
   if (!theStream.good())
@@ -117,14 +129,13 @@ bool VrmlAPI_CafReader::performMesh(std::istream& theStream,
   aScene << theStream;
 
   VrmlData_DataMapOfShapeAppearance aShapeAppMap;
-  TopoDS_Shape aShape = aScene.GetShape(aShapeAppMap);
+  TopoDS_Shape                      aShape = aScene.GetShape(aShapeAppMap);
   if (!aShape.IsNull())
   {
     performMeshSubshape(myAttribMap, aShapeAppMap, aShape);
     myRootShapes.Append(aShape);
   }
-  if (aScene.Status() != VrmlData_StatusOK
-      || aShape.IsNull())
+  if (aScene.Status() != VrmlData_StatusOK || aShape.IsNull())
   {
     Message::SendFail() << "Error in VrmlAPI_CafReader: " << getVrmlErrorName(aScene.Status())
                         << "occurred at line " << aScene.GetLineError()

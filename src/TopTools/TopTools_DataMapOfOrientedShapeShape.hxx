@@ -20,8 +20,8 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TopoDS_Shape,TopoDS_Shape> TopTools_DataMapOfOrientedShapeShape;
-typedef NCollection_DataMap<TopoDS_Shape,TopoDS_Shape>::Iterator TopTools_DataMapIteratorOfDataMapOfOrientedShapeShape;
-
+typedef NCollection_DataMap<TopoDS_Shape, TopoDS_Shape> TopTools_DataMapOfOrientedShapeShape;
+typedef NCollection_DataMap<TopoDS_Shape, TopoDS_Shape>::Iterator
+  TopTools_DataMapIteratorOfDataMapOfOrientedShapeShape;
 
 #endif

@@ -29,7 +29,6 @@ class TopoDS_Edge;
 class TopoDS_Shape;
 class TopoDS_Face;
 
-
 class ShapeExtend_WireData;
 DEFINE_STANDARD_HANDLE(ShapeExtend_WireData, Standard_Transient)
 
@@ -61,16 +60,16 @@ class ShapeExtend_WireData : public Standard_Transient
 {
 
 public:
-
-
   //! Empty constructor, creates empty wire with no edges
   Standard_EXPORT ShapeExtend_WireData();
 
   //! Constructor initializing the data from TopoDS_Wire. Calls Init(wire,chained).
-  Standard_EXPORT ShapeExtend_WireData(const TopoDS_Wire& wire, const Standard_Boolean chained = Standard_True, const Standard_Boolean theManifoldMode = Standard_True);
+  Standard_EXPORT ShapeExtend_WireData(const TopoDS_Wire&     wire,
+                                       const Standard_Boolean chained         = Standard_True,
+                                       const Standard_Boolean theManifoldMode = Standard_True);
 
   //! Copies data from another WireData
-  Standard_EXPORT void Init (const Handle(ShapeExtend_WireData)& other);
+  Standard_EXPORT void Init(const Handle(ShapeExtend_WireData)& other);
 
   //! Loads an already existing wire
   //! If <chained> is True (default), edges are added in the
@@ -82,7 +81,9 @@ public:
   //! will be found (because of limitations of
   //! BRepTools_WireExplorer for disconnected wires and wires
   //! with seam edges).
-  Standard_EXPORT Standard_Boolean Init (const TopoDS_Wire& wire, const Standard_Boolean chained = Standard_True, const Standard_Boolean theManifoldMode = Standard_True);
+  Standard_EXPORT Standard_Boolean Init(const TopoDS_Wire&     wire,
+                                        const Standard_Boolean chained         = Standard_True,
+                                        const Standard_Boolean theManifoldMode = Standard_True);
 
   //! Clears data about Wire.
   Standard_EXPORT void Clear();
@@ -95,10 +96,10 @@ public:
   //! FORWARD and once as REVERSED
   //! Each sense has its own PCurve, the one for FORWARD
   //! must be set in first
-  Standard_EXPORT void ComputeSeams (const Standard_Boolean enforce = Standard_True);
+  Standard_EXPORT void ComputeSeams(const Standard_Boolean enforce = Standard_True);
 
   //! Does a circular permutation in order to set <num>th edge last
-  Standard_EXPORT void SetLast (const Standard_Integer num);
+  Standard_EXPORT void SetLast(const Standard_Integer num);
 
   //! When the wire contains at least one degenerated edge, sets it
   //! as last one
@@ -114,18 +115,19 @@ public:
   //! <num> = 1: Preprends at start
   //! else, Insert before <num>
   //! Remark : Null Edge is simply ignored
-  Standard_EXPORT void Add (const TopoDS_Edge& edge, const Standard_Integer atnum = 0);
+  Standard_EXPORT void Add(const TopoDS_Edge& edge, const Standard_Integer atnum = 0);
 
   //! Adds an entire wire, considered as a list of edges
   //! Remark : The wire is assumed to be ordered (TopoDS_Iterator
   //! is used)
-  Standard_EXPORT void Add (const TopoDS_Wire& wire, const Standard_Integer atnum = 0);
+  Standard_EXPORT void Add(const TopoDS_Wire& wire, const Standard_Integer atnum = 0);
 
   //! Adds a wire in the form of WireData
-  Standard_EXPORT void Add (const Handle(ShapeExtend_WireData)& wire, const Standard_Integer atnum = 0);
+  Standard_EXPORT void Add(const Handle(ShapeExtend_WireData)& wire,
+                           const Standard_Integer              atnum = 0);
 
   //! Adds an edge or a wire invoking corresponding method Add
-  Standard_EXPORT void Add (const TopoDS_Shape& shape, const Standard_Integer atnum = 0);
+  Standard_EXPORT void Add(const TopoDS_Shape& shape, const Standard_Integer atnum = 0);
 
   //! Adds an edge to start or end of <me>, according to <mode>
   //! 0: at end, as direct
@@ -133,7 +135,7 @@ public:
   //! 2: at start, as direct
   //! 3: at start, as reversed
   //! < 0: no adding
-  Standard_EXPORT void AddOriented (const TopoDS_Edge& edge, const Standard_Integer mode);
+  Standard_EXPORT void AddOriented(const TopoDS_Edge& edge, const Standard_Integer mode);
 
   //! Adds a wire to start or end of <me>, according to <mode>
   //! 0: at end, as direct
@@ -141,18 +143,18 @@ public:
   //! 2: at start, as direct
   //! 3: at start, as reversed
   //! < 0: no adding
-  Standard_EXPORT void AddOriented (const TopoDS_Wire& wire, const Standard_Integer mode);
+  Standard_EXPORT void AddOriented(const TopoDS_Wire& wire, const Standard_Integer mode);
 
   //! Adds an edge or a wire invoking corresponding method
   //! AddOriented
-  Standard_EXPORT void AddOriented (const TopoDS_Shape& shape, const Standard_Integer mode);
+  Standard_EXPORT void AddOriented(const TopoDS_Shape& shape, const Standard_Integer mode);
 
   //! Removes an Edge, given its rank. By default removes the last edge.
-  Standard_EXPORT void Remove (const Standard_Integer num = 0);
+  Standard_EXPORT void Remove(const Standard_Integer num = 0);
 
   //! Replaces an edge at the given
   //! rank number <num> with new one. Default is last edge (<num> = 0).
-  Standard_EXPORT void Set (const TopoDS_Edge& edge, const Standard_Integer num = 0);
+  Standard_EXPORT void Set(const TopoDS_Edge& edge, const Standard_Integer num = 0);
 
   //! Reverses the sense of the list and the orientation of each Edge
   //! This method should be called when either wire has no seam edges
@@ -164,7 +166,7 @@ public:
   //! (first pcurve corresponds to orientation FORWARD, and second to
   //! REVERSED; when edge is reversed, pcurves must be swapped)
   //! If face is NULL, no swapping is performed
-  Standard_EXPORT void Reverse (const TopoDS_Face& face);
+  Standard_EXPORT void Reverse(const TopoDS_Face& face);
 
   //! Returns the count of currently recorded edges
   Standard_EXPORT Standard_Integer NbEdges() const;
@@ -173,7 +175,7 @@ public:
   Standard_EXPORT Standard_Integer NbNonManifoldEdges() const;
 
   //! Returns <num>th nonmanifold Edge
-  Standard_EXPORT TopoDS_Edge NonmanifoldEdge (const Standard_Integer num) const;
+  Standard_EXPORT TopoDS_Edge NonmanifoldEdge(const Standard_Integer num) const;
 
   //! Returns sequence of non-manifold edges
   //! This sequence can be not empty if wire data set in manifold mode but
@@ -188,17 +190,17 @@ public:
   Standard_EXPORT Standard_Boolean& ManifoldMode();
 
   //! Returns <num>th Edge
-  Standard_EXPORT TopoDS_Edge Edge (const Standard_Integer num) const;
+  Standard_EXPORT TopoDS_Edge Edge(const Standard_Integer num) const;
 
   //! Returns the index of the edge
   //! If the edge is a seam the orientation is also checked
   //! Returns 0 if the edge is not found in the list
-  Standard_EXPORT Standard_Integer Index (const TopoDS_Edge& edge);
+  Standard_EXPORT Standard_Integer Index(const TopoDS_Edge& edge);
 
   //! Tells if an Edge is seam (see ComputeSeams)
   //! An edge is considered as seam if it presents twice in
   //! the edge list, once as FORWARD and once as REVERSED.
-  Standard_EXPORT Standard_Boolean IsSeam (const Standard_Integer num);
+  Standard_EXPORT Standard_Boolean IsSeam(const Standard_Integer num);
 
   //! Makes TopoDS_Wire using
   //! BRep_Builder (just creates the TopoDS_Wire object and adds
@@ -216,33 +218,16 @@ public:
   //! null shape is returned.
   Standard_EXPORT TopoDS_Wire WireAPIMake() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(ShapeExtend_WireData,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(ShapeExtend_WireData, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(TopTools_HSequenceOfShape) myEdges;
-  Handle(TopTools_HSequenceOfShape) myNonmanifoldEdges;
+  Handle(TopTools_HSequenceOfShape)  myEdges;
+  Handle(TopTools_HSequenceOfShape)  myNonmanifoldEdges;
   Handle(TColStd_HSequenceOfInteger) mySeams;
-  Standard_Integer mySeamF;
-  Standard_Integer mySeamR;
-  Standard_Boolean myManifoldMode;
-
-
+  Standard_Integer                   mySeamF;
+  Standard_Integer                   mySeamR;
+  Standard_Boolean                   myManifoldMode;
 };
-
-
-
-
-
-
 
 #endif // _ShapeExtend_WireData_HeaderFile

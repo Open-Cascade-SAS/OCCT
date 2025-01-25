@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowser_TreeLevelView.hxx>
 
@@ -36,35 +36,39 @@ const int LABEL_OR_ATTRIBUTECOLUMN_WIDTH = 160;
 // function : Constructor
 // purpose :
 // =======================================================================
-DFBrowser_TreeLevelView::DFBrowser_TreeLevelView (QWidget* theParent)
-: QObject (theParent)
+DFBrowser_TreeLevelView::DFBrowser_TreeLevelView(QWidget* theParent)
+    : QObject(theParent)
 {
-  myMainWindow = new QWidget (theParent);
-  QGridLayout* aLayout = new QGridLayout (myMainWindow);
-  aLayout->setContentsMargins (0, 0, 0, 0);
+  myMainWindow         = new QWidget(theParent);
+  QGridLayout* aLayout = new QGridLayout(myMainWindow);
+  aLayout->setContentsMargins(0, 0, 0, 0);
 
-  myTableView = new QTableView (myMainWindow);
-  myTableView->setModel (new DFBrowser_TreeLevelViewModel (myTableView));
-  myTableView->setColumnWidth (0, LABEL_OR_ATTRIBUTECOLUMN_WIDTH);
-  myTableView->setEditTriggers (QAbstractItemView::DoubleClicked);
-  myTableView->horizontalHeader()->setVisible (false);
+  myTableView = new QTableView(myMainWindow);
+  myTableView->setModel(new DFBrowser_TreeLevelViewModel(myTableView));
+  myTableView->setColumnWidth(0, LABEL_OR_ATTRIBUTECOLUMN_WIDTH);
+  myTableView->setEditTriggers(QAbstractItemView::DoubleClicked);
+  myTableView->horizontalHeader()->setVisible(false);
   QHeaderView* aVHeader = myTableView->verticalHeader();
-  aVHeader->setVisible (false);
-  aVHeader->setDefaultSectionSize (aVHeader->minimumSectionSize());
-  myTableView->horizontalHeader()->setStretchLastSection (true);
-  aLayout->addWidget (myTableView);
+  aVHeader->setVisible(false);
+  aVHeader->setDefaultSectionSize(aVHeader->minimumSectionSize());
+  myTableView->horizontalHeader()->setStretchLastSection(true);
+  aLayout->addWidget(myTableView);
 
-  QItemSelectionModel* aSelectionModel = new QItemSelectionModel (myTableView->model());
-  myTableView->setSelectionMode (QAbstractItemView::SingleSelection);
-  myTableView->setSelectionModel (aSelectionModel);
-  myTableView->setSelectionBehavior (QAbstractItemView::SelectRows);
-  connect (aSelectionModel, SIGNAL (selectionChanged (const QItemSelection&, const QItemSelection&)),
-           this, SLOT (onTableSelectionChanged (const QItemSelection&, const QItemSelection&)));
-  connect (myTableView, SIGNAL (doubleClicked (const QModelIndex&)),
-           this, SLOT (onTableDoubleClicked (const QModelIndex&)));
+  QItemSelectionModel* aSelectionModel = new QItemSelectionModel(myTableView->model());
+  myTableView->setSelectionMode(QAbstractItemView::SingleSelection);
+  myTableView->setSelectionModel(aSelectionModel);
+  myTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+  connect(aSelectionModel,
+          SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+          this,
+          SLOT(onTableSelectionChanged(const QItemSelection&, const QItemSelection&)));
+  connect(myTableView,
+          SIGNAL(doubleClicked(const QModelIndex&)),
+          this,
+          SLOT(onTableDoubleClicked(const QModelIndex&)));
 
-  ViewControl_Tools::SetWhiteBackground (myTableView);
-  myTableView->setGridStyle (Qt::NoPen);
+  ViewControl_Tools::SetWhiteBackground(myTableView);
+  myTableView->setGridStyle(Qt::NoPen);
 }
 
 // =======================================================================
@@ -80,13 +84,14 @@ void DFBrowser_TreeLevelView::ClearSelection()
 // function : ProcessItem
 // purpose :
 // =======================================================================
-bool DFBrowser_TreeLevelView::ProcessItem (const QModelIndex& theIndex)
+bool DFBrowser_TreeLevelView::ProcessItem(const QModelIndex& theIndex)
 {
-  bool aResult = false;
-  TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (theIndex);
-  if (anItemBase) {
+  bool                  aResult    = false;
+  TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex(theIndex);
+  if (anItemBase)
+  {
     // use this view for attribute/document/label items
-    DFBrowser_ItemPtr anItem = itemDynamicCast<DFBrowser_Item> (anItemBase);
+    DFBrowser_ItemPtr anItem = itemDynamicCast<DFBrowser_Item>(anItemBase);
     if (anItem)
       aResult = anItem && !anItem->HasAttribute();
     else
@@ -99,25 +104,28 @@ bool DFBrowser_TreeLevelView::ProcessItem (const QModelIndex& theIndex)
 // function : UpdateByTreeSelectionChanged
 // purpose :
 // =======================================================================
-void DFBrowser_TreeLevelView::UpdateByTreeSelectionChanged (const QItemSelection& theSelected,
-                                                            const QItemSelection&)
+void DFBrowser_TreeLevelView::UpdateByTreeSelectionChanged(const QItemSelection& theSelected,
+                                                           const QItemSelection&)
 {
   QModelIndexList aSelectedIndices = theSelected.indexes();
   QModelIndexList aFirstColumnSelectedIndices;
-  for (QModelIndexList::const_iterator aSelIt = aSelectedIndices.begin(); aSelIt != aSelectedIndices.end(); aSelIt++)
+  for (QModelIndexList::const_iterator aSelIt = aSelectedIndices.begin();
+       aSelIt != aSelectedIndices.end();
+       aSelIt++)
   {
     QModelIndex anIndex = *aSelIt;
     if (anIndex.column() == 0)
-      aFirstColumnSelectedIndices.append (anIndex);
+      aFirstColumnSelectedIndices.append(anIndex);
   }
 
   if (aFirstColumnSelectedIndices.size() != 1)
     return;
 
-  DFBrowser_TreeLevelViewModel* aModel = dynamic_cast<DFBrowser_TreeLevelViewModel*> (myTableView->model());
+  DFBrowser_TreeLevelViewModel* aModel =
+    dynamic_cast<DFBrowser_TreeLevelViewModel*>(myTableView->model());
   const QModelIndex& anIndex = aFirstColumnSelectedIndices.first();
   if (DFBrowser_TreeLevelView::ProcessItem(anIndex)) // to Init
-    aModel->Init (anIndex);
+    aModel->Init(anIndex);
   else
     aModel->Reset();
 }
@@ -126,18 +134,19 @@ void DFBrowser_TreeLevelView::UpdateByTreeSelectionChanged (const QItemSelection
 // function : onTableSelectionChanged
 // purpose :
 // =======================================================================
-void DFBrowser_TreeLevelView::onTableSelectionChanged (const QItemSelection& theSelected,
-                                                       const QItemSelection&)
+void DFBrowser_TreeLevelView::onTableSelectionChanged(const QItemSelection& theSelected,
+                                                      const QItemSelection&)
 {
   QModelIndexList aSelectedIndices = theSelected.indexes();
-  QModelIndex aSelectedIndex = TreeModel_ModelBase::SingleSelected (aSelectedIndices, 0);
+  QModelIndex     aSelectedIndex   = TreeModel_ModelBase::SingleSelected(aSelectedIndices, 0);
 
-  DFBrowser_TreeLevelViewModel* aTableModel = dynamic_cast<DFBrowser_TreeLevelViewModel*> (myTableView->model());
+  DFBrowser_TreeLevelViewModel* aTableModel =
+    dynamic_cast<DFBrowser_TreeLevelViewModel*>(myTableView->model());
   if (aTableModel && aTableModel->IsInitialized())
   {
-    const QModelIndex& aTreeViewIndex = aTableModel->GetTreeViewIndex (aSelectedIndex);
+    const QModelIndex& aTreeViewIndex = aTableModel->GetTreeViewIndex(aSelectedIndex);
     if (aTreeViewIndex.isValid())
-      emit indexSelected (aTreeViewIndex);
+      emit indexSelected(aTreeViewIndex);
   }
 }
 
@@ -145,13 +154,14 @@ void DFBrowser_TreeLevelView::onTableSelectionChanged (const QItemSelection& the
 // function : onTableDoubleClicked
 // purpose :
 // =======================================================================
-void DFBrowser_TreeLevelView::onTableDoubleClicked (const QModelIndex& theIndex)
+void DFBrowser_TreeLevelView::onTableDoubleClicked(const QModelIndex& theIndex)
 {
-  DFBrowser_TreeLevelViewModel* aTableModel = dynamic_cast<DFBrowser_TreeLevelViewModel*> (myTableView->model());
+  DFBrowser_TreeLevelViewModel* aTableModel =
+    dynamic_cast<DFBrowser_TreeLevelViewModel*>(myTableView->model());
   if (!aTableModel)
     return;
 
-  const QModelIndex& aTreeViewIndex = aTableModel->GetTreeViewIndex (theIndex);
+  const QModelIndex& aTreeViewIndex = aTableModel->GetTreeViewIndex(theIndex);
   if (aTreeViewIndex.isValid())
-    emit indexDoubleClicked (aTreeViewIndex);
+    emit indexDoubleClicked(aTreeViewIndex);
 }

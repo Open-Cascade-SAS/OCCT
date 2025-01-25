@@ -16,49 +16,41 @@
 #include <PCDM_DOMHeaderParser.hxx>
 
 //=======================================================================
-//function : SetStartElementName
-//purpose  : set the name of the element which would stop parsing when detected
+// function : SetStartElementName
+// purpose  : set the name of the element which would stop parsing when detected
 //=======================================================================
 
-void PCDM_DOMHeaderParser::SetStartElementName
-                        (const TCollection_AsciiString& aStartElementName)
+void PCDM_DOMHeaderParser::SetStartElementName(const TCollection_AsciiString& aStartElementName)
 {
-  myStartElementName = LDOMString (aStartElementName.ToCString());
+  myStartElementName = LDOMString(aStartElementName.ToCString());
 }
 
 //=======================================================================
-//function : SetEndElementName
-//purpose  : set the name of the element which would stop parsing when parsed
+// function : SetEndElementName
+// purpose  : set the name of the element which would stop parsing when parsed
 //=======================================================================
 
-void PCDM_DOMHeaderParser::SetEndElementName
-                        (const TCollection_AsciiString& anEndElementName)
+void PCDM_DOMHeaderParser::SetEndElementName(const TCollection_AsciiString& anEndElementName)
 {
-  myEndElementName = LDOMString (anEndElementName.ToCString());
+  myEndElementName = LDOMString(anEndElementName.ToCString());
 }
 
-//=======================================================================
-//function : PCDM_DOMHeaderParser()
-//purpose  : Constructor
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean PCDM_DOMHeaderParser::startElement ()
+Standard_Boolean PCDM_DOMHeaderParser::startElement()
 {
   if (myStartElementName == NULL)
     return Standard_False;
-  myElement = getCurrentElement ();
-  return (myElement.getTagName().equals (myStartElementName));
+  myElement = getCurrentElement();
+  return (myElement.getTagName().equals(myStartElementName));
 }
 
-//=======================================================================
-//function : endElement
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean PCDM_DOMHeaderParser::endElement ()
+Standard_Boolean PCDM_DOMHeaderParser::endElement()
 {
   if (myEndElementName == NULL)
     return Standard_False;
-  myElement = getCurrentElement ();
-  return (myElement.getTagName().equals (myEndElementName));
+  myElement = getCurrentElement();
+  return (myElement.getTagName().equals(myEndElementName));
 }

@@ -15,14 +15,13 @@
 #include <math_Vector.hxx>
 #include <StdFail_NotDone.hxx>
 
-inline Standard_Boolean math_GaussSetIntegration::IsDone() const 
+inline Standard_Boolean math_GaussSetIntegration::IsDone() const
 {
   return Done;
 }
 
- inline const math_Vector& math_GaussSetIntegration::Value() const 
+inline const math_Vector& math_GaussSetIntegration::Value() const
 {
   StdFail_NotDone_Raise_if(!Done, "Integration ");
   return Val;
 }
-

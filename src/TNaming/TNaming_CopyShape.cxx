@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TNaming_CopyShape.hxx>
 #include <TNaming_TranslateTool.hxx>
 #include <TopLoc_Datum3D.hxx>
@@ -21,155 +20,157 @@
 #include <TopoDS_Shape.hxx>
 
 //=======================================================================
-//function : CopyTool
-//purpose  : Tool to copy a set of shape(s), using the aMap
+// function : CopyTool
+// purpose  : Tool to copy a set of shape(s), using the aMap
 //=======================================================================
-void TNaming_CopyShape::CopyTool( const TopoDS_Shape& aShape,
-				 TColStd_IndexedDataMapOfTransientTransient&  aMap,
-				 TopoDS_Shape&       aResult)
+void TNaming_CopyShape::CopyTool(const TopoDS_Shape&                         aShape,
+                                 TColStd_IndexedDataMapOfTransientTransient& aMap,
+                                 TopoDS_Shape&                               aResult)
 {
 
   Handle(TNaming_TranslateTool) TrTool = new TNaming_TranslateTool();
-  TNaming_CopyShape::Translate (aShape, aMap, aResult, TrTool) ;
+  TNaming_CopyShape::Translate(aShape, aMap, aResult, TrTool);
 }
 
-//=======================================================================
-//function : Translate
-//purpose  : TNaming
-//=======================================================================
+//=================================================================================================
 
-void TNaming_CopyShape::Translate( const TopoDS_Shape& aShape,		         
-				  TColStd_IndexedDataMapOfTransientTransient&  aMap,
-				  TopoDS_Shape& aResult,
-				  const Handle(TNaming_TranslateTool)& TrTool)
+void TNaming_CopyShape::Translate(const TopoDS_Shape&                         aShape,
+                                  TColStd_IndexedDataMapOfTransientTransient& aMap,
+                                  TopoDS_Shape&                               aResult,
+                                  const Handle(TNaming_TranslateTool)&        TrTool)
 {
   aResult.Nullify();
 
-  if (aShape.IsNull()) return;
+  if (aShape.IsNull())
+    return;
 
-  if (aMap.Contains(aShape.TShape())) {
+  if (aMap.Contains(aShape.TShape()))
+  {
     // get the translated TShape
-    Handle(TopoDS_TShape) TS =
-       *((Handle(TopoDS_TShape)*) &aMap.FindFromKey(aShape.TShape()));
+    Handle(TopoDS_TShape) TS = *((Handle(TopoDS_TShape)*)&aMap.FindFromKey(aShape.TShape()));
     aResult.TShape(TS);
   }
-  else {
+  else
+  {
 
     // create if not translated and update
-    
-    switch (aShape.ShapeType()) {
-      
-    case TopAbs_VERTEX :
-      TrTool->MakeVertex(aResult);
-      TrTool->UpdateVertex(aShape,aResult,aMap);
-      break;
-      
-    case TopAbs_EDGE :
-      TrTool->MakeEdge(aResult);
-      TrTool->UpdateEdge(aShape,aResult,aMap);
-      break;
-      
-    case TopAbs_WIRE :
-      TrTool->MakeWire(aResult);
-      TrTool->UpdateShape(aShape,aResult);
-      break;
-      
-    case TopAbs_FACE :
-      TrTool->MakeFace(aResult);
-      TrTool->UpdateFace(aShape,aResult,aMap);
-      break;
-    
-    case TopAbs_SHELL :
-      TrTool->MakeShell(aResult);
-      TrTool->UpdateShape(aShape,aResult);
-      break;
-    
-    case TopAbs_SOLID :
-      TrTool->MakeSolid(aResult);
-      TrTool->UpdateShape(aShape,aResult);
-      break;
-      
-    case TopAbs_COMPSOLID :
-      TrTool->MakeCompSolid(aResult);
-      TrTool->UpdateShape(aShape,aResult);
-      break;
-      
-  case TopAbs_COMPOUND :
-      TrTool->MakeCompound(aResult);
-      TrTool->UpdateShape(aShape,aResult);
-      break;
 
-    default:
-      break;
+    switch (aShape.ShapeType())
+    {
+
+      case TopAbs_VERTEX:
+        TrTool->MakeVertex(aResult);
+        TrTool->UpdateVertex(aShape, aResult, aMap);
+        break;
+
+      case TopAbs_EDGE:
+        TrTool->MakeEdge(aResult);
+        TrTool->UpdateEdge(aShape, aResult, aMap);
+        break;
+
+      case TopAbs_WIRE:
+        TrTool->MakeWire(aResult);
+        TrTool->UpdateShape(aShape, aResult);
+        break;
+
+      case TopAbs_FACE:
+        TrTool->MakeFace(aResult);
+        TrTool->UpdateFace(aShape, aResult, aMap);
+        break;
+
+      case TopAbs_SHELL:
+        TrTool->MakeShell(aResult);
+        TrTool->UpdateShape(aShape, aResult);
+        break;
+
+      case TopAbs_SOLID:
+        TrTool->MakeSolid(aResult);
+        TrTool->UpdateShape(aShape, aResult);
+        break;
+
+      case TopAbs_COMPSOLID:
+        TrTool->MakeCompSolid(aResult);
+        TrTool->UpdateShape(aShape, aResult);
+        break;
+
+      case TopAbs_COMPOUND:
+        TrTool->MakeCompound(aResult);
+        TrTool->UpdateShape(aShape, aResult);
+        break;
+
+      default:
+        break;
     }
-  
+
     // bind and copy the sub-elements
-    aMap.Add(aShape.TShape(),aResult.TShape()); //TShapes
+    aMap.Add(aShape.TShape(), aResult.TShape()); // TShapes
     TopoDS_Shape S = aShape;
     S.Orientation(TopAbs_FORWARD);
-    S.Location(TopLoc_Location()); //Identity
+    S.Location(TopLoc_Location()); // Identity
     // copy current Shape
-    TopoDS_Iterator itr(S, Standard_False);
+    TopoDS_Iterator  itr(S, Standard_False);
     Standard_Boolean wasFree = aResult.Free();
     aResult.Free(Standard_True);
     // translate <sub-shapes>
-    for (;itr.More();itr.Next()) {
+    for (; itr.More(); itr.Next())
+    {
       TopoDS_Shape subShape;
       TNaming_CopyShape::Translate(itr.Value(), aMap, subShape, TrTool);
-      TrTool->Add(aResult, subShape);// add subshapes
+      TrTool->Add(aResult, subShape); // add subshapes
     }
 
     aResult.Free(wasFree);
   }
-  
+
   aResult.Orientation(aShape.Orientation());
   aResult.Location(TNaming_CopyShape::Translate(aShape.Location(), aMap), false);
-  TrTool->UpdateShape(aShape,aResult);
-// #ifdef OCCT_DEBUG
-//     if(fShar) {
-//       std::cout << "=== Shareable shape ===" << std::endl;
-//       std::cout << "aShape Type = " <<(aShape.TShape())->DynamicType() << std::endl;
-//       if(aShape.Orientation() == aResult.Orientation())
-// 	std::cout<<"\tSource and result shapes have the same Orientation"<< std::endl;
-//       if((aShape.Location().IsEqual(aResult.Location())))
-// 	std::cout <<"\tSource and result shapes have the same Locations" << std::endl;
-//       if((aShape.IsSame(aResult)))
-// 	 std::cout <<"\tShapes arew the same (i.e. the same TShape and the same Locations)" << std::endl;
-//     }	    
-// #endif
+  TrTool->UpdateShape(aShape, aResult);
+  // #ifdef OCCT_DEBUG
+  //     if(fShar) {
+  //       std::cout << "=== Shareable shape ===" << std::endl;
+  //       std::cout << "aShape Type = " <<(aShape.TShape())->DynamicType() << std::endl;
+  //       if(aShape.Orientation() == aResult.Orientation())
+  // 	std::cout<<"\tSource and result shapes have the same Orientation"<< std::endl;
+  //       if((aShape.Location().IsEqual(aResult.Location())))
+  // 	std::cout <<"\tSource and result shapes have the same Locations" << std::endl;
+  //       if((aShape.IsSame(aResult)))
+  // 	 std::cout <<"\tShapes arew the same (i.e. the same TShape and the same Locations)" <<
+  // std::endl;
+  //     }
+  // #endif
 }
 
 //=======================================================================
 // static TranslateDatum3D
 //=======================================================================
-static Handle(TopLoc_Datum3D) TranslateDatum3D(const Handle(TopLoc_Datum3D)& D,
-					       TColStd_IndexedDataMapOfTransientTransient&  aMap)
+static Handle(TopLoc_Datum3D) TranslateDatum3D(const Handle(TopLoc_Datum3D)&               D,
+                                               TColStd_IndexedDataMapOfTransientTransient& aMap)
 {
   Handle(TopLoc_Datum3D) TD;
-  if(aMap.Contains(D))
-       TD = Handle(TopLoc_Datum3D)::DownCast(aMap.FindFromKey(D));
-  else {
+  if (aMap.Contains(D))
+    TD = Handle(TopLoc_Datum3D)::DownCast(aMap.FindFromKey(D));
+  else
+  {
     TD = new TopLoc_Datum3D(D->Transformation());
     aMap.Add(D, TD);
   }
   return TD;
 }
+
 //=======================================================================
-//function : Translates
-//purpose  : Topological Location
+// function : Translates
+// purpose  : Topological Location
 //=======================================================================
 
-TopLoc_Location TNaming_CopyShape::Translate(const TopLoc_Location& L,
-					     TColStd_IndexedDataMapOfTransientTransient&  aMap)
+TopLoc_Location TNaming_CopyShape::Translate(const TopLoc_Location&                      L,
+                                             TColStd_IndexedDataMapOfTransientTransient& aMap)
 {
   TopLoc_Location result;
 
- if (!L.IsIdentity()) {
-   result = Translate(L.NextLocation(),aMap) * 
-     TopLoc_Location(TranslateDatum3D(L.FirstDatum(),aMap)).Powered(L.FirstPower());
-
- }
+  if (!L.IsIdentity())
+  {
+    result = Translate(L.NextLocation(), aMap)
+             * TopLoc_Location(TranslateDatum3D(L.FirstDatum(), aMap)).Powered(L.FirstPower());
+  }
   return result;
 }
-
-

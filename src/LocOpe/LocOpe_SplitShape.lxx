@@ -17,17 +17,18 @@
 #include <StdFail_NotDone.hxx>
 
 //=======================================================================
-//function : LocOpe_SplitShape
-//purpose  : 
+// function : LocOpe_SplitShape
+// purpose  :
 //=======================================================================
 
-inline LocOpe_SplitShape::LocOpe_SplitShape (): myDone(Standard_False)
-{}
-
+inline LocOpe_SplitShape::LocOpe_SplitShape()
+    : myDone(Standard_False)
+{
+}
 
 //=======================================================================
-//function : LocOpe_SplitShape
-//purpose  : 
+// function : LocOpe_SplitShape
+// purpose  :
 //=======================================================================
 
 inline LocOpe_SplitShape::LocOpe_SplitShape(const TopoDS_Shape& S)
@@ -35,15 +36,12 @@ inline LocOpe_SplitShape::LocOpe_SplitShape(const TopoDS_Shape& S)
   Init(S);
 }
 
-
 //=======================================================================
-//function : Shape
-//purpose  : 
+// function : Shape
+// purpose  :
 //=======================================================================
 
 inline const TopoDS_Shape& LocOpe_SplitShape::Shape() const
 {
   return myShape;
 }
-
-

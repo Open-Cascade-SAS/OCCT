@@ -30,10 +30,10 @@
 Standard_IMPORT Draw_Viewer dout;
 #endif
 
-
 Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n < 2) {
+  if (n < 2)
+  {
     di << "Use: " << a[0] << " shape [epsilon] [c[losed]] [x y z] [-skip] [-full] [-tri]\n";
     di << "Compute properties of the shape, exact geometry (curves, surfaces) or\n";
     di << "some discrete data (polygons, triangulations) can be used for calculations\n";
@@ -42,8 +42,10 @@ Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
     di << "The centroid coordinates will be put to DRAW variables x y z (if given)\n";
     di << "Shared entities will be take in account only one time in the skip mode\n";
     di << "All values are outputted with the full precision in the full mode.\n";
-    di << "Preferable source of geometry data are triangulations in case if it exists, if the -tri key is used.\n";
-    di << "If epsilon is given, exact geometry (curves, surfaces) are used for calculations independently of using key -tri\n\n";
+    di << "Preferable source of geometry data are triangulations in case if it exists, if the -tri "
+          "key is used.\n";
+    di << "If epsilon is given, exact geometry (curves, surfaces) are used for calculations "
+          "independently of using key -tri\n\n";
     return 1;
   }
 
@@ -54,84 +56,95 @@ Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
     --n;
   }
   Standard_Boolean isFullMode = Standard_False;
-  if (n >= 2 && strcmp(a[n-1], "-full") == 0)
+  if (n >= 2 && strcmp(a[n - 1], "-full") == 0)
   {
     isFullMode = Standard_True;
     --n;
   }
   Standard_Boolean SkipShared = Standard_False;
-  if (n >= 2 && strcmp(a[n-1], "-skip") == 0)
+  if (n >= 2 && strcmp(a[n - 1], "-skip") == 0)
   {
     SkipShared = Standard_True;
     --n;
   }
 
   TopoDS_Shape S = DBRep::Get(a[1]);
-  if (S.IsNull()) return 0;
+  if (S.IsNull())
+    return 0;
 
   GProp_GProps G;
 
   Standard_Boolean onlyClosed = Standard_False;
-  Standard_Real eps = 1.0;
-  Standard_Boolean witheps = Standard_False;
-  if((n > 2 && *a[2]=='c') || (n > 3 && *a[3]=='c')) onlyClosed = Standard_True;
-  if(n > 2 && *a[2]!='c' && n != 5) {eps = Draw::Atof (a[2]); witheps = Standard_True;}
-
-  if (witheps){
-    if (Abs(eps) < Precision::Angular()) return 2;
-    if (*a[0] == 'l')
-      BRepGProp::LinearProperties(S,G,SkipShared);
-    else if (*a[0] == 's')
-      eps = BRepGProp::SurfaceProperties(S,G,eps,SkipShared);
-    else 
-      eps = BRepGProp::VolumeProperties(S,G,eps,onlyClosed,SkipShared);
+  Standard_Real    eps        = 1.0;
+  Standard_Boolean witheps    = Standard_False;
+  if ((n > 2 && *a[2] == 'c') || (n > 3 && *a[3] == 'c'))
+    onlyClosed = Standard_True;
+  if (n > 2 && *a[2] != 'c' && n != 5)
+  {
+    eps     = Draw::Atof(a[2]);
+    witheps = Standard_True;
   }
-  else {
+
+  if (witheps)
+  {
+    if (Abs(eps) < Precision::Angular())
+      return 2;
+    if (*a[0] == 'l')
+      BRepGProp::LinearProperties(S, G, SkipShared);
+    else if (*a[0] == 's')
+      eps = BRepGProp::SurfaceProperties(S, G, eps, SkipShared);
+    else
+      eps = BRepGProp::VolumeProperties(S, G, eps, onlyClosed, SkipShared);
+  }
+  else
+  {
     if (*a[0] == 'l')
       BRepGProp::LinearProperties(S, G, SkipShared, UseTriangulation);
     else if (*a[0] == 's')
       BRepGProp::SurfaceProperties(S, G, SkipShared, UseTriangulation);
-    else 
-      BRepGProp::VolumeProperties(S,G,onlyClosed,SkipShared, UseTriangulation);
+    else
+      BRepGProp::VolumeProperties(S, G, onlyClosed, SkipShared, UseTriangulation);
   }
-  
+
   gp_Pnt P = G.CentreOfMass();
   gp_Mat I = G.MatrixOfInertia();
 
-  if (n >= 5) {
-    Standard_Integer shift =  n - 5;
-    Draw::Set(a[shift+2],P.X());
-    Draw::Set(a[shift+3],P.Y());
-    Draw::Set(a[shift+4],P.Z());
+  if (n >= 5)
+  {
+    Standard_Integer shift = n - 5;
+    Draw::Set(a[shift + 2], P.X());
+    Draw::Set(a[shift + 3], P.Y());
+    Draw::Set(a[shift + 4], P.Z());
   }
 
   GProp_PrincipalProps Pr = G.PrincipalProperties();
-  Standard_Real Ix,Iy,Iz;
-  Pr.Moments(Ix,Iy,Iz);
+  Standard_Real        Ix, Iy, Iz;
+  Pr.Moments(Ix, Iy, Iz);
 
   if (!isFullMode)
   {
     Standard_SStream aSStream1;
     aSStream1 << "\n\n";
     aSStream1 << "Mass : " << std::setw(15) << G.Mass() << "\n\n";
-    if(witheps && *a[0] != 'l') aSStream1 << "Relative error of mass computation : " <<  std::setw(15) << eps <<  "\n\n";
-  
+    if (witheps && *a[0] != 'l')
+      aSStream1 << "Relative error of mass computation : " << std::setw(15) << eps << "\n\n";
+
     aSStream1 << "Center of gravity : \n";
     aSStream1 << "X = " << std::setw(15) << P.X() << "\n";
     aSStream1 << "Y = " << std::setw(15) << P.Y() << "\n";
     aSStream1 << "Z = " << std::setw(15) << P.Z() << "\n";
     aSStream1 << "\n";
-  
+
     aSStream1 << "Matrix of Inertia : \n";
-    aSStream1 << std::setw(15) << I(1,1);
-    aSStream1 << " " << std::setw(15) << I(1,2);
-    aSStream1 << " " << std::setw(15) << I(1,3) << "\n";
-    aSStream1 << std::setw(15) << I(2,1);
-    aSStream1 << " " << std::setw(15) << I(2,2);
-    aSStream1 << " " << std::setw(15) << I(2,3) << "\n";
-    aSStream1 << std::setw(15) << I(3,1);
-    aSStream1 << " " << std::setw(15) << I(3,2);
-    aSStream1 << " " << std::setw(15) << I(3,3) << "\n";
+    aSStream1 << std::setw(15) << I(1, 1);
+    aSStream1 << " " << std::setw(15) << I(1, 2);
+    aSStream1 << " " << std::setw(15) << I(1, 3) << "\n";
+    aSStream1 << std::setw(15) << I(2, 1);
+    aSStream1 << " " << std::setw(15) << I(2, 2);
+    aSStream1 << " " << std::setw(15) << I(2, 3) << "\n";
+    aSStream1 << std::setw(15) << I(3, 1);
+    aSStream1 << " " << std::setw(15) << I(3, 2);
+    aSStream1 << " " << std::setw(15) << I(3, 3) << "\n";
     aSStream1 << "\n";
     aSStream1 << std::ends;
     di << aSStream1;
@@ -150,7 +163,7 @@ Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
     di << "\n\nMass : " << G.Mass() << "\n\n";
     if (witheps && *a[0] != 'l')
     {
-      di << "Relative error of mass computation : " << eps <<  "\n\n";
+      di << "Relative error of mass computation : " << eps << "\n\n";
     }
 
     di << "Center of gravity : \n";
@@ -159,9 +172,9 @@ Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
     di << "Z = " << P.Z() << "\n\n";
 
     di << "Matrix of Inertia :\n";
-    di << I(1,1) << "    " << I(1,2) << "    " << I(1,3) << "\n";
-    di << I(2,1) << "    " << I(2,2) << "    " << I(2,3) << "\n";
-    di << I(3,1) << "    " << I(3,2) << "    " << I(3,3) << "\n\n";
+    di << I(1, 1) << "    " << I(1, 2) << "    " << I(1, 3) << "\n";
+    di << I(2, 1) << "    " << I(2, 2) << "    " << I(2, 3) << "\n";
+    di << I(3, 1) << "    " << I(3, 2) << "    " << I(3, 3) << "\n\n";
 
     di << "Moments :\n";
     di << "IX = " << Ix << "\n";
@@ -169,20 +182,20 @@ Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
     di << "IZ = " << Iz << "\n\n";
   }
 
-  //if (n == 2) {  
-    gp_Ax2 axes(P,Pr.ThirdAxisOfInertia(),Pr.FirstAxisOfInertia());
-    
-    Handle(Draw_Axis3D) Dax = new Draw_Axis3D(axes,Draw_orange,30);
-    dout << Dax;
+  // if (n == 2) {
+  gp_Ax2 axes(P, Pr.ThirdAxisOfInertia(), Pr.FirstAxisOfInertia());
+
+  Handle(Draw_Axis3D) Dax = new Draw_Axis3D(axes, Draw_orange, 30);
+  dout << Dax;
   //}
 
   return 0;
 }
 
-
 Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n < 2) {
+  if (n < 2)
+  {
     di << "Use: " << a[0] << " shape epsilon closed span mode [x y z] [-skip]\n";
     di << "Compute properties of the shape\n";
     di << "The epsilon defines relative precision of computation\n";
@@ -196,46 +209,52 @@ Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char**
     return 1;
   }
 
-  if ( n > 2 && n < 6) {
+  if (n > 2 && n < 6)
+  {
     di << "Wrong arguments\n";
     return 1;
   }
 
   TopoDS_Shape S = DBRep::Get(a[1]);
-  if (S.IsNull()) return 0;
+  if (S.IsNull())
+    return 0;
 
-  GProp_GProps G;
+  GProp_GProps     G;
   Standard_Boolean SkipShared = Standard_False;
-  if (n >= 2 && strcmp(a[n-1], "-skip") == 0)
+  if (n >= 2 && strcmp(a[n - 1], "-skip") == 0)
   {
     SkipShared = Standard_True;
     --n;
   }
 
-  Standard_Boolean onlyClosed  = Standard_False;
-  Standard_Boolean isUseSpan   = Standard_False;
-  Standard_Boolean CGFlag = Standard_False;
-  Standard_Boolean IFlag = Standard_False;
-  Standard_Real    eps         = 1.e-3;
-//Standard_Real    aDefaultTol = 1.e-3;
+  Standard_Boolean onlyClosed = Standard_False;
+  Standard_Boolean isUseSpan  = Standard_False;
+  Standard_Boolean CGFlag     = Standard_False;
+  Standard_Boolean IFlag      = Standard_False;
+  Standard_Real    eps        = 1.e-3;
+  // Standard_Real    aDefaultTol = 1.e-3;
   Standard_Integer mode = 0;
 
-  eps = Draw::Atof(a[2]);
+  eps  = Draw::Atof(a[2]);
   mode = Draw::Atoi(a[3]);
-  if(mode > 0) onlyClosed = Standard_True;
+  if (mode > 0)
+    onlyClosed = Standard_True;
   mode = Draw::Atoi(a[4]);
-  if(mode > 0) isUseSpan = Standard_True;
+  if (mode > 0)
+    isUseSpan = Standard_True;
 
   mode = Draw::Atoi(a[5]);
-  if(mode == 1 || mode == 3) CGFlag = Standard_True;
-  if(mode == 2 || mode == 3) IFlag = Standard_True;
+  if (mode == 1 || mode == 3)
+    CGFlag = Standard_True;
+  if (mode == 2 || mode == 3)
+    IFlag = Standard_True;
 
-  //OSD_Chronometer aChrono;
+  // OSD_Chronometer aChrono;
 
-  //aChrono.Reset();
-  //aChrono.Start();
+  // aChrono.Reset();
+  // aChrono.Start();
   eps = BRepGProp::VolumePropertiesGK(S, G, eps, onlyClosed, isUseSpan, CGFlag, IFlag, SkipShared);
-  //aChrono.Stop();
+  // aChrono.Stop();
 
   Standard_SStream aSStream0;
   Standard_Integer anOutWidth = 24;
@@ -243,57 +262,63 @@ Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char**
   aSStream0.precision(15);
   aSStream0 << "\n\n";
   aSStream0 << "Mass : " << std::setw(anOutWidth) << G.Mass() << "\n\n";
-  aSStream0 << "Relative error of mass computation : " <<  std::setw(anOutWidth) << eps <<  "\n\n";
+  aSStream0 << "Relative error of mass computation : " << std::setw(anOutWidth) << eps << "\n\n";
   aSStream0 << std::ends;
   di << aSStream0;
 
-  if(CGFlag || IFlag) {
+  if (CGFlag || IFlag)
+  {
     Standard_SStream aSStream1;
-    gp_Pnt P = G.CentreOfMass();
-    if (n > 6) {
-      Draw::Set(a[6],P.X());
+    gp_Pnt           P = G.CentreOfMass();
+    if (n > 6)
+    {
+      Draw::Set(a[6], P.X());
     }
-    if (n > 7) {
-      Draw::Set(a[7],P.Y());
+    if (n > 7)
+    {
+      Draw::Set(a[7], P.Y());
     }
-    if (n > 8) {
-      Draw::Set(a[8],P.Z());
+    if (n > 8)
+    {
+      Draw::Set(a[8], P.Z());
     }
-  
+
     aSStream1.precision(15);
     aSStream1 << "Center of gravity : \n";
     aSStream1 << "X = " << std::setw(anOutWidth) << P.X() << "\n";
     aSStream1 << "Y = " << std::setw(anOutWidth) << P.Y() << "\n";
     aSStream1 << "Z = " << std::setw(anOutWidth) << P.Z() << "\n";
     aSStream1 << "\n";
- 
-    if(IFlag) {
+
+    if (IFlag)
+    {
       gp_Mat I = G.MatrixOfInertia();
 
       aSStream1 << "Matrix of Inertia : \n";
-      aSStream1 << std::setw(anOutWidth) << I(1,1);
-      aSStream1 << " " << std::setw(anOutWidth) << I(1,2);
-      aSStream1 << " " << std::setw(anOutWidth) << I(1,3) << "\n";
-      aSStream1 << std::setw(anOutWidth) << I(2,1);
-      aSStream1 << " " << std::setw(anOutWidth) << I(2,2);
-      aSStream1 << " " << std::setw(anOutWidth) << I(2,3) << "\n";
-      aSStream1 << std::setw(anOutWidth) << I(3,1);
-      aSStream1 << " " << std::setw(anOutWidth) << I(3,2);
-      aSStream1 << " " << std::setw(anOutWidth) << I(3,3) << "\n";
+      aSStream1 << std::setw(anOutWidth) << I(1, 1);
+      aSStream1 << " " << std::setw(anOutWidth) << I(1, 2);
+      aSStream1 << " " << std::setw(anOutWidth) << I(1, 3) << "\n";
+      aSStream1 << std::setw(anOutWidth) << I(2, 1);
+      aSStream1 << " " << std::setw(anOutWidth) << I(2, 2);
+      aSStream1 << " " << std::setw(anOutWidth) << I(2, 3) << "\n";
+      aSStream1 << std::setw(anOutWidth) << I(3, 1);
+      aSStream1 << " " << std::setw(anOutWidth) << I(3, 2);
+      aSStream1 << " " << std::setw(anOutWidth) << I(3, 3) << "\n";
       aSStream1 << "\n";
     }
     aSStream1 << std::ends;
     di << aSStream1;
   }
 
-  if(IFlag) {
+  if (IFlag)
+  {
 
     GProp_PrincipalProps Pr = G.PrincipalProperties();
 
-    Standard_Real Ix,Iy,Iz;
-    Pr.Moments(Ix,Iy,Iz);
+    Standard_Real Ix, Iy, Iz;
+    Pr.Moments(Ix, Iy, Iz);
     gp_Pnt P = G.CentreOfMass();
-  
+
     Standard_SStream aSStream2;
 
     aSStream2.precision(15);
@@ -306,41 +331,48 @@ Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char**
     aSStream2 << std::ends;
     di << aSStream2;
 
-    gp_Ax2 axes(P,Pr.ThirdAxisOfInertia(),Pr.FirstAxisOfInertia());
-    
-    Handle(Draw_Axis3D) Dax = new Draw_Axis3D(axes,Draw_orange,30);
+    gp_Ax2 axes(P, Pr.ThirdAxisOfInertia(), Pr.FirstAxisOfInertia());
+
+    Handle(Draw_Axis3D) Dax = new Draw_Axis3D(axes, Draw_orange, 30);
     dout << Dax;
   }
   return 0;
 }
 
+//=================================================================================================
 
-
-//=======================================================================
-//function : GPropCommands
-//purpose  : 
-//=======================================================================
-
-void  BRepTest::GPropCommands(Draw_Interpretor& theCommands)
+void BRepTest::GPropCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
-  if (done) return;
+  if (done)
+    return;
   done = Standard_True;
 
   DBRep::BasicCommands(theCommands);
 
   const char* g = "Global properties";
   theCommands.Add("lprops",
-    "lprops name [x y z] [-skip] [-full] [-tri]: compute linear properties",
-    __FILE__, props, g);
-  theCommands.Add("sprops", "sprops name [epsilon] [x y z] [-skip] [-full] [-tri]:\n"
-"  compute surfacic properties", __FILE__, props, g);
-  theCommands.Add("vprops", "vprops name [epsilon] [c[losed]] [x y z] [-skip] [-full] [-tri]:\n"
-"  compute volumic properties", __FILE__, props, g);
+                  "lprops name [x y z] [-skip] [-full] [-tri]: compute linear properties",
+                  __FILE__,
+                  props,
+                  g);
+  theCommands.Add("sprops",
+                  "sprops name [epsilon] [x y z] [-skip] [-full] [-tri]:\n"
+                  "  compute surfacic properties",
+                  __FILE__,
+                  props,
+                  g);
+  theCommands.Add("vprops",
+                  "vprops name [epsilon] [c[losed]] [x y z] [-skip] [-full] [-tri]:\n"
+                  "  compute volumic properties",
+                  __FILE__,
+                  props,
+                  g);
 
-  theCommands.Add("vpropsgk",
-		  "vpropsgk name epsilon closed span mode [x y z] [-skip] : compute volumic properties",
-		  __FILE__,
-		  vpropsgk,
-		  g);
+  theCommands.Add(
+    "vpropsgk",
+    "vpropsgk name epsilon closed span mode [x y z] [-skip] : compute volumic properties",
+    __FILE__,
+    vpropsgk,
+    g);
 }

@@ -16,11 +16,10 @@
 
 #include <AdvApp2Var_SysBase.hxx>
 
-
 static int init_STBAS(void)
 {
   int ICODE = 0;
-  //allocation tables are now local, so no global initialization is required
+  // allocation tables are now local, so no global initialization is required
 #if 0
   // Init du Tableau des allocs
   AdvApp2Var_SysBase::mainial_();
@@ -30,6 +29,7 @@ static int init_STBAS(void)
   //
   return 1;
 }
+
 //
 class STBASLibInit
 {
@@ -37,4 +37,3 @@ class STBASLibInit
 };
 
 int STBASLibInit::var_STBASLibINIT = init_STBAS();
- 

@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #include <inspector/DFBrowser_TreeLevelViewModel.hxx>
 
@@ -37,11 +37,11 @@
 // function : Init
 // purpose :
 // =======================================================================
-void DFBrowser_TreeLevelViewModel::Init (const QModelIndex& theTreeIndex)
+void DFBrowser_TreeLevelViewModel::Init(const QModelIndex& theTreeIndex)
 {
-  myIndex = theTreeIndex;
-  TreeModel_ItemBasePtr anItem  = TreeModel_ModelBase::GetItemByIndex (theTreeIndex);
-  myRowCount = anItem ? anItem->rowCount() : 0;
+  myIndex                      = theTreeIndex;
+  TreeModel_ItemBasePtr anItem = TreeModel_ModelBase::GetItemByIndex(theTreeIndex);
+  myRowCount                   = anItem ? anItem->rowCount() : 0;
   if (!anItem)
     return;
   EmitLayoutChanged();
@@ -51,25 +51,31 @@ void DFBrowser_TreeLevelViewModel::Init (const QModelIndex& theTreeIndex)
 // function : GetTreeViewIndex
 // purpose :
 // =======================================================================
-QModelIndex DFBrowser_TreeLevelViewModel::GetTreeViewIndex (const QModelIndex& theIndex) const
+QModelIndex DFBrowser_TreeLevelViewModel::GetTreeViewIndex(const QModelIndex& theIndex) const
 {
-  return myIndex.model()->index (theIndex.row(), 0, myIndex);
+  return myIndex.model()->index(theIndex.row(), 0, myIndex);
 }
 
 // =======================================================================
 // function : headerData
 // purpose :
 // =======================================================================
-QVariant DFBrowser_TreeLevelViewModel::headerData (int theSection, Qt::Orientation theOrientation, int theRole) const
+QVariant DFBrowser_TreeLevelViewModel::headerData(int             theSection,
+                                                  Qt::Orientation theOrientation,
+                                                  int             theRole) const
 {
-  return (theOrientation == Qt::Horizontal && theRole == Qt::DisplayRole && theSection == 1) ? QVariant (tr ("Name")) : QVariant();
+  return (theOrientation == Qt::Horizontal && theRole == Qt::DisplayRole && theSection == 1)
+           ? QVariant(tr("Name"))
+           : QVariant();
 }
 
 // =======================================================================
 // function : index
 // purpose :
 // =======================================================================
-QModelIndex DFBrowser_TreeLevelViewModel::index (int theRow, int theColumn, const QModelIndex& theParent) const
+QModelIndex DFBrowser_TreeLevelViewModel::index(int                theRow,
+                                                int                theColumn,
+                                                const QModelIndex& theParent) const
 {
   if (!hasIndex(theRow, theColumn, theParent))
     return QModelIndex();
@@ -80,41 +86,42 @@ QModelIndex DFBrowser_TreeLevelViewModel::index (int theRow, int theColumn, cons
 // function : data
 // purpose :
 // =======================================================================
-QVariant DFBrowser_TreeLevelViewModel::data (const QModelIndex& theIndex, int theRole) const
+QVariant DFBrowser_TreeLevelViewModel::data(const QModelIndex& theIndex, int theRole) const
 {
-  QModelIndex anIndex = myIndex.model()->index (theIndex.row(), 0, myIndex);
+  QModelIndex anIndex = myIndex.model()->index(theIndex.row(), 0, myIndex);
 
-  if ( !anIndex.isValid() )
-    return QVariant ("undefined");
+  if (!anIndex.isValid())
+    return QVariant("undefined");
 
-  QVariant aValue;
-  TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (anIndex);
+  QVariant              aValue;
+  TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex(anIndex);
   if (theIndex.column() == 0)
   {
-    DFBrowser_ItemBasePtr aDBrowserItem = itemDynamicCast<DFBrowser_ItemBase> (anItemBase);
+    DFBrowser_ItemBasePtr aDBrowserItem = itemDynamicCast<DFBrowser_ItemBase>(anItemBase);
     if (!aDBrowserItem)
       return QVariant();
 
-    bool aPrevValue = aDBrowserItem->SetUseAdditionalInfo (false);
-    aValue = anItemBase->data (anIndex, theRole);
-    aDBrowserItem->SetUseAdditionalInfo (aPrevValue);
+    bool aPrevValue = aDBrowserItem->SetUseAdditionalInfo(false);
+    aValue          = anItemBase->data(anIndex, theRole);
+    aDBrowserItem->SetUseAdditionalInfo(aPrevValue);
   }
-  else { // column = 1
+  else
+  { // column = 1
     if (theRole == Qt::DisplayRole || theRole == Qt::ToolTipRole)
     {
-      DFBrowser_ItemPtr anItem = itemDynamicCast<DFBrowser_Item> (anItemBase);
+      DFBrowser_ItemPtr anItem = itemDynamicCast<DFBrowser_Item>(anItemBase);
       if (anItem)
-        aValue = anItem->GetAttributeInfo (DFBrowser_ItemRole_AdditionalInfo);
+        aValue = anItem->GetAttributeInfo(DFBrowser_ItemRole_AdditionalInfo);
     }
   }
   if (theIndex.column() == 0 && theRole == Qt::FontRole) // method name is in italic
   {
     QFont aFont = qApp->font();
-    aFont.setItalic (true);
+    aFont.setItalic(true);
     return aFont;
   }
   if (theIndex.column() == 0 && theRole == Qt::ForegroundRole) // method name is light gray
-    return QColor (Qt::darkGray).darker(150);
+    return QColor(Qt::darkGray).darker(150);
 
   return aValue;
 }
@@ -123,7 +130,7 @@ QVariant DFBrowser_TreeLevelViewModel::data (const QModelIndex& theIndex, int th
 // function : flags
 // purpose :
 // =======================================================================
-Qt::ItemFlags DFBrowser_TreeLevelViewModel::flags (const QModelIndex& theIndex) const
+Qt::ItemFlags DFBrowser_TreeLevelViewModel::flags(const QModelIndex& theIndex) const
 {
   if (!theIndex.isValid())
     return Qt::NoItemFlags;

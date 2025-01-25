@@ -11,11 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepShape_Loop.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_Loop,StepShape_TopologicalRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_Loop, StepShape_TopologicalRepresentationItem)
 
-StepShape_Loop::StepShape_Loop ()  {}
-
+StepShape_Loop::StepShape_Loop() {}

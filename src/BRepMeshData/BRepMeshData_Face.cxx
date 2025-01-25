@@ -19,55 +19,41 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepMeshData_Face, IMeshData_Face)
 
-//=======================================================================
-// Function: Constructor
-// Purpose : 
-//=======================================================================
-BRepMeshData_Face::BRepMeshData_Face (
-  const TopoDS_Face&                       theFace,
-  const Handle (NCollection_IncAllocator)& theAllocator)
-  : IMeshData_Face (theFace),
-    myAllocator (theAllocator),
-    myDWires (256, myAllocator)
+//=================================================================================================
+
+BRepMeshData_Face::BRepMeshData_Face(const TopoDS_Face&                      theFace,
+                                     const Handle(NCollection_IncAllocator)& theAllocator)
+    : IMeshData_Face(theFace),
+      myAllocator(theAllocator),
+      myDWires(256, myAllocator)
 {
 }
 
-//=======================================================================
-// Function: Destructor
-// Purpose : 
-//=======================================================================
-BRepMeshData_Face::~BRepMeshData_Face ()
+//=================================================================================================
+
+BRepMeshData_Face::~BRepMeshData_Face() {}
+
+//=================================================================================================
+
+Standard_Integer BRepMeshData_Face::WiresNb() const
 {
+  return myDWires.Size();
 }
 
-//=======================================================================
-// Function: WiresNb
-// Purpose : 
-//=======================================================================
-Standard_Integer BRepMeshData_Face::WiresNb () const
+//=================================================================================================
+
+const IMeshData::IWireHandle& BRepMeshData_Face::AddWire(const TopoDS_Wire&     theWire,
+                                                         const Standard_Integer theEdgeNb)
 {
-  return myDWires.Size ();
+  IMeshData::IWireHandle aWire(new (myAllocator)
+                                 BRepMeshData_Wire(theWire, theEdgeNb, myAllocator));
+  myDWires.Append(aWire);
+  return GetWire(WiresNb() - 1);
 }
 
-//=======================================================================
-// Function: AddWire
-// Purpose : 
-//=======================================================================
-const IMeshData::IWireHandle& BRepMeshData_Face::AddWire (
-  const TopoDS_Wire&     theWire,
-  const Standard_Integer theEdgeNb)
-{
-  IMeshData::IWireHandle aWire (new (myAllocator) BRepMeshData_Wire (theWire, theEdgeNb, myAllocator));
-  myDWires.Append (aWire);
-  return GetWire (WiresNb () - 1);
-}
+//=================================================================================================
 
-//=======================================================================
-// Function: GetWire
-// Purpose : 
-//=======================================================================
-const IMeshData::IWireHandle& BRepMeshData_Face::GetWire (
-  const Standard_Integer theIndex) const
+const IMeshData::IWireHandle& BRepMeshData_Face::GetWire(const Standard_Integer theIndex) const
 {
-  return myDWires (theIndex);
+  return myDWires(theIndex);
 }

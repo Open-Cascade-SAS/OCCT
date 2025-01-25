@@ -13,67 +13,79 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <QABugs_PresentableObject.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(QABugs_PresentableObject,AIS_InteractiveObject)
+IMPLEMENT_STANDARD_RTTIEXT(QABugs_PresentableObject, AIS_InteractiveObject)
 
-QABugs_PresentableObject::QABugs_PresentableObject(const PrsMgr_TypeOfPresentation3d theTypeOfPresentation3d)
-     :AIS_InteractiveObject(theTypeOfPresentation3d)
+QABugs_PresentableObject::QABugs_PresentableObject(
+  const PrsMgr_TypeOfPresentation3d theTypeOfPresentation3d)
+    : AIS_InteractiveObject(theTypeOfPresentation3d)
 {
 }
 
-void QABugs_PresentableObject::Compute(const Handle(PrsMgr_PresentationManager)& ,
-				const Handle(Prs3d_Presentation)& thePrs,
-				const Standard_Integer theMode)
+void QABugs_PresentableObject::Compute(const Handle(PrsMgr_PresentationManager)&,
+                                       const Handle(Prs3d_Presentation)& thePrs,
+                                       const Standard_Integer            theMode)
 {
   const Handle(Graphic3d_Structure)& aStructure = thePrs;
-  Handle(Graphic3d_Group)     aGroup     = aStructure->NewGroup();
-  Handle(Prs3d_ShadingAspect) anAspect = myDrawer->ShadingAspect();
-  Graphic3d_MaterialAspect aMat = anAspect->Aspect()->FrontMaterial();
-  aMat.SetAmbientColor (Quantity_NOC_BLACK);
-  aMat.SetDiffuseColor (Quantity_NOC_BLACK);
+  Handle(Graphic3d_Group)            aGroup     = aStructure->NewGroup();
+  Handle(Prs3d_ShadingAspect)        anAspect   = myDrawer->ShadingAspect();
+  Graphic3d_MaterialAspect           aMat       = anAspect->Aspect()->FrontMaterial();
+  aMat.SetAmbientColor(Quantity_NOC_BLACK);
+  aMat.SetDiffuseColor(Quantity_NOC_BLACK);
   aMat.SetSpecularColor(Quantity_NOC_BLACK);
   aMat.SetEmissiveColor(Quantity_NOC_BLACK);
-  anAspect->SetMaterial (aMat);
-  aGroup->SetPrimitivesAspect (anAspect->Aspect());
+  anAspect->SetMaterial(aMat);
+  aGroup->SetPrimitivesAspect(anAspect->Aspect());
 
-  Handle(Graphic3d_ArrayOfTriangles) aPrims
-    = new Graphic3d_ArrayOfTriangles (6, 0,
-                                      theMode == 1,   // normals
-                                      Standard_True); // color per vertex
+  Handle(Graphic3d_ArrayOfTriangles) aPrims =
+    new Graphic3d_ArrayOfTriangles(6,
+                                   0,
+                                   theMode == 1,   // normals
+                                   Standard_True); // color per vertex
   switch (theMode)
   {
-    case 0:
-    {
-      aPrims->AddVertex (gp_Pnt (0.0,  0.0,  0.0), Quantity_Color (Quantity_NOC_RED));
-      aPrims->AddVertex (gp_Pnt (0.0,  5.0,  1.0), Quantity_Color (Quantity_NOC_BLUE1));
-      aPrims->AddVertex (gp_Pnt (5.0,  0.0,  1.0), Quantity_Color (Quantity_NOC_YELLOW));
+    case 0: {
+      aPrims->AddVertex(gp_Pnt(0.0, 0.0, 0.0), Quantity_Color(Quantity_NOC_RED));
+      aPrims->AddVertex(gp_Pnt(0.0, 5.0, 1.0), Quantity_Color(Quantity_NOC_BLUE1));
+      aPrims->AddVertex(gp_Pnt(5.0, 0.0, 1.0), Quantity_Color(Quantity_NOC_YELLOW));
 
-      aPrims->AddVertex (gp_Pnt (0.0,  5.0,  1.0), Quantity_Color (Quantity_NOC_BLUE1));
-      aPrims->AddVertex (gp_Pnt (5.0,  5.0, -1.0), Quantity_Color (Quantity_NOC_GREEN));
-      aPrims->AddVertex (gp_Pnt (5.0,  0.0,  1.0), Quantity_Color (Quantity_NOC_YELLOW));
+      aPrims->AddVertex(gp_Pnt(0.0, 5.0, 1.0), Quantity_Color(Quantity_NOC_BLUE1));
+      aPrims->AddVertex(gp_Pnt(5.0, 5.0, -1.0), Quantity_Color(Quantity_NOC_GREEN));
+      aPrims->AddVertex(gp_Pnt(5.0, 0.0, 1.0), Quantity_Color(Quantity_NOC_YELLOW));
       break;
     }
-    case 1:
-    {
-      aPrims->AddVertex (gp_Pnt ( 5.0, 0.0,  0.0), gp_Dir (0.0, 0.0,  1.0), Quantity_Color (Quantity_NOC_RED));
-      aPrims->AddVertex (gp_Pnt ( 5.0, 5.0,  1.0), gp_Dir (1.0, 1.0,  1.0), Quantity_Color (Quantity_NOC_BLUE1));
-      aPrims->AddVertex (gp_Pnt (10.0, 0.0,  1.0), gp_Dir (0.0, 1.0,  1.0), Quantity_Color (Quantity_NOC_YELLOW));
+    case 1: {
+      aPrims->AddVertex(gp_Pnt(5.0, 0.0, 0.0),
+                        gp_Dir(0.0, 0.0, 1.0),
+                        Quantity_Color(Quantity_NOC_RED));
+      aPrims->AddVertex(gp_Pnt(5.0, 5.0, 1.0),
+                        gp_Dir(1.0, 1.0, 1.0),
+                        Quantity_Color(Quantity_NOC_BLUE1));
+      aPrims->AddVertex(gp_Pnt(10.0, 0.0, 1.0),
+                        gp_Dir(0.0, 1.0, 1.0),
+                        Quantity_Color(Quantity_NOC_YELLOW));
 
-      aPrims->AddVertex (gp_Pnt ( 5.0, 5.0,  1.0), gp_Dir (1.0, 1.0,  1.0), Quantity_Color (Quantity_NOC_BLUE1));
-      aPrims->AddVertex (gp_Pnt (10.0, 5.0, -1.0), gp_Dir (0.0, 0.0, -1.0), Quantity_Color (Quantity_NOC_GREEN));
-      aPrims->AddVertex (gp_Pnt (10.0, 0.0,  1.0), gp_Dir (0.0, 1.0,  1.0), Quantity_Color (Quantity_NOC_YELLOW));
+      aPrims->AddVertex(gp_Pnt(5.0, 5.0, 1.0),
+                        gp_Dir(1.0, 1.0, 1.0),
+                        Quantity_Color(Quantity_NOC_BLUE1));
+      aPrims->AddVertex(gp_Pnt(10.0, 5.0, -1.0),
+                        gp_Dir(0.0, 0.0, -1.0),
+                        Quantity_Color(Quantity_NOC_GREEN));
+      aPrims->AddVertex(gp_Pnt(10.0, 0.0, 1.0),
+                        gp_Dir(0.0, 1.0, 1.0),
+                        Quantity_Color(Quantity_NOC_YELLOW));
     }
     break;
   }
 
-  aGroup->AddPrimitiveArray (aPrims);
+  aGroup->AddPrimitiveArray(aPrims);
 }
 
-void QABugs_PresentableObject::ComputeSelection(const Handle(SelectMgr_Selection)& ,
-					 const Standard_Integer ) {
+void QABugs_PresentableObject::ComputeSelection(const Handle(SelectMgr_Selection)&,
+                                                const Standard_Integer)
+{
 }

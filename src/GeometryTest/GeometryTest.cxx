@@ -22,7 +22,8 @@
 void GeometryTest::AllCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
-  if (done) return;
+  if (done)
+    return;
   done = Standard_True;
 
   GeomliteTest::AllCommands(theCommands);
@@ -37,10 +38,10 @@ void GeometryTest::AllCommands(Draw_Interpretor& theCommands)
   GeometryTest::PolyCommands(theCommands);
 
   // define the TCL variable Draw_GEOMETRY
-  //char* com = "set Draw_GEOMETRY 1";
-  //theCommands.Eval(com);
-  //char* com2 = "source $env(CASROOT)/src/DrawResources/CURVES.tcl";
-  //theCommands.Eval(com2);
-  //char* com3 = "source $env(CASROOT)/src/DrawResources/SURFACES.tcl";
-  //theCommands.Eval(com3);
+  // char* com = "set Draw_GEOMETRY 1";
+  // theCommands.Eval(com);
+  // char* com2 = "source $env(CASROOT)/src/DrawResources/CURVES.tcl";
+  // theCommands.Eval(com2);
+  // char* com3 = "source $env(CASROOT)/src/DrawResources/SURFACES.tcl";
+  // theCommands.Eval(com3);
 }

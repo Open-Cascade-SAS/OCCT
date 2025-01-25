@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <AppStd_Application.hxx>
 #include <DDataStd.hxx>
 #include <DDF.hxx>
@@ -24,20 +23,18 @@
 #include <Draw_Interpretor.hxx>
 #include <Draw_PluginMacro.hxx>
 
-//=======================================================================
-//function : AllComands
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void DPrsStd::AllCommands (Draw_Interpretor& theCommands)
+void DPrsStd::AllCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
-  if (done) return;
+  if (done)
+    return;
   done = Standard_True;
 
-  DPrsStd::AISPresentationCommands(theCommands); 
-  DPrsStd::AISViewerCommands(theCommands);  
-  //DPrsStd::BasicCommands(theCommands);  
+  DPrsStd::AISPresentationCommands(theCommands);
+  DPrsStd::AISViewerCommands(theCommands);
+  // DPrsStd::BasicCommands(theCommands);
 }
 
 //==============================================================================
@@ -46,12 +43,13 @@ void DPrsStd::AllCommands (Draw_Interpretor& theCommands)
 void DPrsStd::Factory(Draw_Interpretor& theDI)
 {
   static Standard_Boolean DPrsStdFactoryDone = Standard_False;
-  if (DPrsStdFactoryDone) return;
+  if (DPrsStdFactoryDone)
+    return;
   DPrsStdFactoryDone = Standard_True;
 
   DDF::AllCommands(theDI);
   DNaming::AllCommands(theDI);
-  DDataStd::AllCommands(theDI);  
+  DDataStd::AllCommands(theDI);
   DPrsStd::AllCommands(theDI);
   DDocStd::AllCommands(theDI);
 #ifdef OCCT_DEBUG

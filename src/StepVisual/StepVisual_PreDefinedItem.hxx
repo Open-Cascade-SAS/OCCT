@@ -23,48 +23,27 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-
 class StepVisual_PreDefinedItem;
 DEFINE_STANDARD_HANDLE(StepVisual_PreDefinedItem, Standard_Transient)
-
 
 class StepVisual_PreDefinedItem : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a PreDefinedItem
   Standard_EXPORT StepVisual_PreDefinedItem();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName);
-  
-  Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName);
+
+  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_PreDefinedItem,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PreDefinedItem, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TCollection_HAsciiString) name;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_PreDefinedItem_HeaderFile

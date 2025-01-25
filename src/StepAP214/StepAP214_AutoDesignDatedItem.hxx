@@ -28,54 +28,33 @@ class StepBasic_ApprovalPersonOrganization;
 class StepAP214_AutoDesignDateAndPersonAssignment;
 class StepBasic_ProductDefinitionEffectivity;
 
-
-
-class StepAP214_AutoDesignDatedItem  : public StepData_SelectType
+class StepAP214_AutoDesignDatedItem : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a AutoDesignDatedItem SelectType
   Standard_EXPORT StepAP214_AutoDesignDatedItem();
-  
+
   //! Recognizes a AutoDesignDatedItem Kind Entity that is :
   //! 1 -> ApprovalPersonOrganization
   //! 2 -> AutoDesignDateAndPersonAssignment
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a ApprovalPersonOrganization (Null if another type)
   Standard_EXPORT Handle(StepBasic_ApprovalPersonOrganization) ApprovalPersonOrganization() const;
-  
+
   //! returns Value as a AutoDesignDateAndPersonAssignment (Null if another type)
-  Standard_EXPORT Handle(StepAP214_AutoDesignDateAndPersonAssignment) AutoDesignDateAndPersonAssignment() const;
-  
+  Standard_EXPORT Handle(StepAP214_AutoDesignDateAndPersonAssignment)
+    AutoDesignDateAndPersonAssignment() const;
+
   //! returns Value as a ProductDefinitionEffectivity
-  Standard_EXPORT Handle(StepBasic_ProductDefinitionEffectivity) ProductDefinitionEffectivity() const;
-
-
-
+  Standard_EXPORT Handle(StepBasic_ProductDefinitionEffectivity) ProductDefinitionEffectivity()
+    const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepAP214_AutoDesignDatedItem_HeaderFile

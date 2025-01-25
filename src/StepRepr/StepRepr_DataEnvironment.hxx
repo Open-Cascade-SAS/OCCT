@@ -22,7 +22,6 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-
 class StepRepr_DataEnvironment;
 DEFINE_STANDARD_HANDLE(StepRepr_DataEnvironment, Standard_Transient)
 
@@ -31,56 +30,41 @@ class StepRepr_DataEnvironment : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepRepr_DataEnvironment();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepRepr_HArray1OfPropertyDefinitionRepresentation)& aElements);
-  
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&                           aName,
+    const Handle(TCollection_HAsciiString)&                           aDescription,
+    const Handle(StepRepr_HArray1OfPropertyDefinitionRepresentation)& aElements);
+
   //! Returns field Name
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
-  
+
   //! Set field Name
-  Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& Name);
-  
+  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& Name);
+
   //! Returns field Description
   Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
-  
+
   //! Set field Description
-  Standard_EXPORT void SetDescription (const Handle(TCollection_HAsciiString)& Description);
-  
+  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& Description);
+
   //! Returns field Elements
   Standard_EXPORT Handle(StepRepr_HArray1OfPropertyDefinitionRepresentation) Elements() const;
-  
+
   //! Set field Elements
-  Standard_EXPORT void SetElements (const Handle(StepRepr_HArray1OfPropertyDefinitionRepresentation)& Elements);
+  Standard_EXPORT void SetElements(
+    const Handle(StepRepr_HArray1OfPropertyDefinitionRepresentation)& Elements);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepRepr_DataEnvironment,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_DataEnvironment, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(TCollection_HAsciiString) theName;
-  Handle(TCollection_HAsciiString) theDescription;
+  Handle(TCollection_HAsciiString)                           theName;
+  Handle(TCollection_HAsciiString)                           theDescription;
   Handle(StepRepr_HArray1OfPropertyDefinitionRepresentation) theElements;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepRepr_DataEnvironment_HeaderFile

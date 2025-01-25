@@ -12,18 +12,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Persistent.hxx>
 #include <Standard_Type.hxx>
 #include <Storage_BaseDriver.hxx>
 #include <Storage_DefaultCallBack.hxx>
 #include <Storage_Schema.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Storage_DefaultCallBack,Storage_CallBack)
+IMPLEMENT_STANDARD_RTTIEXT(Storage_DefaultCallBack, Storage_CallBack)
 
-Storage_DefaultCallBack::Storage_DefaultCallBack()
-{
-}
+Storage_DefaultCallBack::Storage_DefaultCallBack() {}
 
 Handle(Standard_Persistent) Storage_DefaultCallBack::New() const
 {
@@ -32,7 +29,8 @@ Handle(Standard_Persistent) Storage_DefaultCallBack::New() const
   return res;
 }
 
-void Storage_DefaultCallBack::Add(const Handle(Standard_Persistent)&, const Handle(Storage_Schema)&) const
+void Storage_DefaultCallBack::Add(const Handle(Standard_Persistent)&,
+                                  const Handle(Storage_Schema)&) const
 {
 }
 

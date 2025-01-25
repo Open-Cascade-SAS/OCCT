@@ -20,7 +20,6 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-typedef NCollection_IndexedMap<TopoDS_Shape,TopTools_ShapeMapHasher> TopTools_IndexedMapOfShape;
-
+typedef NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> TopTools_IndexedMapOfShape;
 
 #endif

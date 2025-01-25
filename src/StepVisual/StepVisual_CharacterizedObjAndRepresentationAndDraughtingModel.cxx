@@ -15,10 +15,12 @@
 
 #include <StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel, StepVisual_DraughtingModel)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel,
+                           StepVisual_DraughtingModel)
 
-//=======================================================================
-//function : StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel
-//purpose  : 
-//=======================================================================
-StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel::StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel()    {  }
+//=================================================================================================
+
+StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel::
+  StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel()
+{
+}

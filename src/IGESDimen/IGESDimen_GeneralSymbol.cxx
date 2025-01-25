@@ -23,61 +23,60 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_GeneralSymbol,IGESData_IGESEntity)
+IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_GeneralSymbol, IGESData_IGESEntity)
 
-IGESDimen_GeneralSymbol::IGESDimen_GeneralSymbol ()    {  }
+IGESDimen_GeneralSymbol::IGESDimen_GeneralSymbol() {}
 
-    void  IGESDimen_GeneralSymbol::Init 
-  (const Handle(IGESDimen_GeneralNote)& aNote,
-   const Handle(IGESData_HArray1OfIGESEntity)& allGeoms,
-   const Handle(IGESDimen_HArray1OfLeaderArrow)& allLeaders)
+void IGESDimen_GeneralSymbol::Init(const Handle(IGESDimen_GeneralNote)&          aNote,
+                                   const Handle(IGESData_HArray1OfIGESEntity)&   allGeoms,
+                                   const Handle(IGESDimen_HArray1OfLeaderArrow)& allLeaders)
 {
-  if (!allGeoms.IsNull() &&  allGeoms->Lower() != 1)
+  if (!allGeoms.IsNull() && allGeoms->Lower() != 1)
     throw Standard_DimensionMismatch("IGESDimen_GeneralSymbol : Init");
   if (!allLeaders.IsNull())
-    if (allLeaders->Lower() != 1) throw Standard_DimensionMismatch("$");
+    if (allLeaders->Lower() != 1)
+      throw Standard_DimensionMismatch("$");
   theNote    = aNote;
   theGeoms   = allGeoms;
   theLeaders = allLeaders;
-  InitTypeAndForm(228,FormNumber());
-//  FormNumber precises the Nature of the Symbol, cf G.14 (0-3 or > 5000)
+  InitTypeAndForm(228, FormNumber());
+  //  FormNumber precises the Nature of the Symbol, cf G.14 (0-3 or > 5000)
 }
 
-    void  IGESDimen_GeneralSymbol::SetFormNumber (const Standard_Integer form)
+void IGESDimen_GeneralSymbol::SetFormNumber(const Standard_Integer form)
 {
-  if ((form < 0 || form > 3) && form < 5000) throw Standard_OutOfRange("IGESDimen_GeneralSymbol : SetFormNumber");
-  InitTypeAndForm(228,form);
+  if ((form < 0 || form > 3) && form < 5000)
+    throw Standard_OutOfRange("IGESDimen_GeneralSymbol : SetFormNumber");
+  InitTypeAndForm(228, form);
 }
 
-
-    Standard_Boolean  IGESDimen_GeneralSymbol::HasNote () const
+Standard_Boolean IGESDimen_GeneralSymbol::HasNote() const
 {
   return (!theNote.IsNull());
 }
 
-    Handle(IGESDimen_GeneralNote)  IGESDimen_GeneralSymbol::Note () const
+Handle(IGESDimen_GeneralNote) IGESDimen_GeneralSymbol::Note() const
 {
   return theNote;
 }
 
-    Standard_Integer  IGESDimen_GeneralSymbol::NbGeomEntities () const
+Standard_Integer IGESDimen_GeneralSymbol::NbGeomEntities() const
 {
   return theGeoms->Length();
 }
 
-    Handle(IGESData_IGESEntity)  IGESDimen_GeneralSymbol::GeomEntity
-  (const Standard_Integer Index) const
+Handle(IGESData_IGESEntity) IGESDimen_GeneralSymbol::GeomEntity(const Standard_Integer Index) const
 {
   return theGeoms->Value(Index);
 }
 
-    Standard_Integer  IGESDimen_GeneralSymbol::NbLeaders () const
+Standard_Integer IGESDimen_GeneralSymbol::NbLeaders() const
 {
   return (theLeaders.IsNull() ? 0 : theLeaders->Length());
 }
 
-    Handle(IGESDimen_LeaderArrow)  IGESDimen_GeneralSymbol::LeaderArrow
-  (const Standard_Integer Index) const
+Handle(IGESDimen_LeaderArrow) IGESDimen_GeneralSymbol::LeaderArrow(
+  const Standard_Integer Index) const
 {
   return theLeaders->Value(Index);
 }

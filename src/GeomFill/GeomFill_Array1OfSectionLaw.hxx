@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(GeomFill_SectionLaw)> GeomFill_Array1OfSectionLaw;
 
-
 #endif

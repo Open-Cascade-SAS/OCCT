@@ -24,8 +24,8 @@
 struct RWGltf_GltfAccessor
 {
   static const int INVALID_ID = -1;
-public:
 
+public:
   int                         Id;            //!< identifier
   int64_t                     ByteOffset;    //!< byte offset
   int64_t                     Count;         //!< size
@@ -37,14 +37,15 @@ public:
 
   //! Empty constructor.
   RWGltf_GltfAccessor()
-  : Id (INVALID_ID),
-    ByteOffset (0),
-    Count (0),
-    ByteStride (0),
-    Type (RWGltf_GltfAccessorLayout_UNKNOWN),
-    ComponentType (RWGltf_GltfAccessorCompType_UNKNOWN),
-    IsCompressed (false) {}
-
+      : Id(INVALID_ID),
+        ByteOffset(0),
+        Count(0),
+        ByteStride(0),
+        Type(RWGltf_GltfAccessorLayout_UNKNOWN),
+        ComponentType(RWGltf_GltfAccessorCompType_UNKNOWN),
+        IsCompressed(false)
+  {
+  }
 };
 
 #endif // _RWGltf_GltfAccessor_HeaderFile

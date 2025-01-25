@@ -23,7 +23,6 @@
 #include <IGESData_IGESEntity.hxx>
 class IGESGeom_Line;
 
-
 class IGESGeom_SurfaceOfRevolution;
 DEFINE_STANDARD_HANDLE(IGESGeom_SurfaceOfRevolution, IGESData_IGESEntity)
 
@@ -37,54 +36,38 @@ class IGESGeom_SurfaceOfRevolution : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESGeom_SurfaceOfRevolution();
-  
+
   //! This method is used to set the fields of the class Line
   //! - anAxis      : Axis of revolution
   //! - aGeneratrix : The curve which is revolved about the axis
   //! - aStartAngle : Start angle of the surface of revolution
   //! - anEndAngle  : End angle of the surface of revolution
-  Standard_EXPORT void Init (const Handle(IGESGeom_Line)& anAxis, const Handle(IGESData_IGESEntity)& aGeneratrix, const Standard_Real aStartAngle, const Standard_Real anEndAngle);
-  
+  Standard_EXPORT void Init(const Handle(IGESGeom_Line)&       anAxis,
+                            const Handle(IGESData_IGESEntity)& aGeneratrix,
+                            const Standard_Real                aStartAngle,
+                            const Standard_Real                anEndAngle);
+
   //! returns the axis of revolution
   Standard_EXPORT Handle(IGESGeom_Line) AxisOfRevolution() const;
-  
+
   //! returns the curve which is revolved about the axis
   Standard_EXPORT Handle(IGESData_IGESEntity) Generatrix() const;
-  
+
   //! returns start angle of revolution
   Standard_EXPORT Standard_Real StartAngle() const;
-  
+
   //! returns end angle of revolution
   Standard_EXPORT Standard_Real EndAngle() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESGeom_SurfaceOfRevolution,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_SurfaceOfRevolution, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
-  Handle(IGESGeom_Line) theLine;
+  Handle(IGESGeom_Line)       theLine;
   Handle(IGESData_IGESEntity) theGeneratrix;
-  Standard_Real theStartAngle;
-  Standard_Real theEndAngle;
-
-
+  Standard_Real               theStartAngle;
+  Standard_Real               theEndAngle;
 };
-
-
-
-
-
-
 
 #endif // _IGESGeom_SurfaceOfRevolution_HeaderFile

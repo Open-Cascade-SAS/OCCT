@@ -19,27 +19,22 @@
 #include <StepBasic_VersionedActionRequest.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_VersionedActionRequest,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_VersionedActionRequest, Standard_Transient)
 
-//=======================================================================
-//function : StepBasic_VersionedActionRequest
-//purpose  : 
-//=======================================================================
-StepBasic_VersionedActionRequest::StepBasic_VersionedActionRequest ()
+//=================================================================================================
+
+StepBasic_VersionedActionRequest::StepBasic_VersionedActionRequest()
 {
   defDescription = Standard_False;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_VersionedActionRequest::Init (const Handle(TCollection_HAsciiString) &aId,
-                                             const Handle(TCollection_HAsciiString) &aVersion,
-                                             const Handle(TCollection_HAsciiString) &aPurpose,
-                                             const Standard_Boolean hasDescription,
-                                             const Handle(TCollection_HAsciiString) &aDescription)
+void StepBasic_VersionedActionRequest::Init(const Handle(TCollection_HAsciiString)& aId,
+                                            const Handle(TCollection_HAsciiString)& aVersion,
+                                            const Handle(TCollection_HAsciiString)& aPurpose,
+                                            const Standard_Boolean                  hasDescription,
+                                            const Handle(TCollection_HAsciiString)& aDescription)
 {
 
   theId = aId;
@@ -49,98 +44,74 @@ void StepBasic_VersionedActionRequest::Init (const Handle(TCollection_HAsciiStri
   thePurpose = aPurpose;
 
   defDescription = hasDescription;
-  if (defDescription) {
+  if (defDescription)
+  {
     theDescription = aDescription;
   }
-  else theDescription.Nullify();
+  else
+    theDescription.Nullify();
 }
 
-//=======================================================================
-//function : Id
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_VersionedActionRequest::Id () const
+Handle(TCollection_HAsciiString) StepBasic_VersionedActionRequest::Id() const
 {
   return theId;
 }
 
-//=======================================================================
-//function : SetId
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_VersionedActionRequest::SetId (const Handle(TCollection_HAsciiString) &aId)
+void StepBasic_VersionedActionRequest::SetId(const Handle(TCollection_HAsciiString)& aId)
 {
   theId = aId;
 }
 
-//=======================================================================
-//function : Version
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_VersionedActionRequest::Version () const
+Handle(TCollection_HAsciiString) StepBasic_VersionedActionRequest::Version() const
 {
   return theVersion;
 }
 
-//=======================================================================
-//function : SetVersion
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_VersionedActionRequest::SetVersion (const Handle(TCollection_HAsciiString) &aVersion)
+void StepBasic_VersionedActionRequest::SetVersion(const Handle(TCollection_HAsciiString)& aVersion)
 {
   theVersion = aVersion;
 }
 
-//=======================================================================
-//function : Purpose
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_VersionedActionRequest::Purpose () const
+Handle(TCollection_HAsciiString) StepBasic_VersionedActionRequest::Purpose() const
 {
   return thePurpose;
 }
 
-//=======================================================================
-//function : SetPurpose
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_VersionedActionRequest::SetPurpose (const Handle(TCollection_HAsciiString) &aPurpose)
+void StepBasic_VersionedActionRequest::SetPurpose(const Handle(TCollection_HAsciiString)& aPurpose)
 {
   thePurpose = aPurpose;
 }
 
-//=======================================================================
-//function : Description
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_VersionedActionRequest::Description () const
+Handle(TCollection_HAsciiString) StepBasic_VersionedActionRequest::Description() const
 {
   return theDescription;
 }
 
-//=======================================================================
-//function : SetDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_VersionedActionRequest::SetDescription (const Handle(TCollection_HAsciiString) &aDescription)
+void StepBasic_VersionedActionRequest::SetDescription(
+  const Handle(TCollection_HAsciiString)& aDescription)
 {
   theDescription = aDescription;
 }
 
-//=======================================================================
-//function : HasDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean StepBasic_VersionedActionRequest::HasDescription () const
+Standard_Boolean StepBasic_VersionedActionRequest::HasDescription() const
 {
   return defDescription;
 }

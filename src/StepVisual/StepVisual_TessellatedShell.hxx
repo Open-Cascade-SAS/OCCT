@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -30,34 +30,36 @@ DEFINE_STANDARD_HANDLE(StepVisual_TessellatedShell, StepVisual_TessellatedItem)
 class StepVisual_TessellatedShell : public StepVisual_TessellatedItem
 {
 
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepVisual_TessellatedShell();
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
                             const Handle(StepVisual_HArray1OfTessellatedStructuredItem)& theItems,
-                            const Standard_Boolean theHasTopologicalLink,
+                            const Standard_Boolean                    theHasTopologicalLink,
                             const Handle(StepShape_ConnectedFaceSet)& theTopologicalLink);
 
   //! Returns field Items
   Standard_EXPORT Handle(StepVisual_HArray1OfTessellatedStructuredItem) Items() const;
 
   //! Sets field Items
-  Standard_EXPORT void SetItems (const Handle(StepVisual_HArray1OfTessellatedStructuredItem)& theItems);
+  Standard_EXPORT void SetItems(
+    const Handle(StepVisual_HArray1OfTessellatedStructuredItem)& theItems);
 
   //! Returns number of Items
   Standard_EXPORT Standard_Integer NbItems() const;
 
   //! Returns value of Items by its num
-  Standard_EXPORT Handle(StepVisual_TessellatedStructuredItem) ItemsValue(const Standard_Integer theNum) const;
+  Standard_EXPORT Handle(StepVisual_TessellatedStructuredItem) ItemsValue(
+    const Standard_Integer theNum) const;
 
   //! Returns field TopologicalLink
   Standard_EXPORT Handle(StepShape_ConnectedFaceSet) TopologicalLink() const;
 
   //! Sets field TopologicalLink
-  Standard_EXPORT void SetTopologicalLink (const Handle(StepShape_ConnectedFaceSet)& theTopologicalLink);
+  Standard_EXPORT void SetTopologicalLink(
+    const Handle(StepShape_ConnectedFaceSet)& theTopologicalLink);
 
   //! Returns True if optional field TopologicalLink is defined
   Standard_EXPORT Standard_Boolean HasTopologicalLink() const;
@@ -65,11 +67,9 @@ public :
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedShell, StepVisual_TessellatedItem)
 
 private:
-
   Handle(StepVisual_HArray1OfTessellatedStructuredItem) myItems;
-  Handle(StepShape_ConnectedFaceSet) myTopologicalLink; //!< optional
+  Handle(StepShape_ConnectedFaceSet)                    myTopologicalLink; //!< optional
   Standard_Boolean myHasTopologicalLink; //!< flag "is TopologicalLink defined"
-
 };
 
 #endif // _StepVisual_TessellatedShell_HeaderFile_

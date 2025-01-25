@@ -25,43 +25,30 @@
 #include <StepData_FieldList.hxx>
 class StepData_Field;
 
-
 //! Describes a list of fields, in a general way
 //! This basic class is for a null size list
 //! Subclasses are for 1, N (fixed) or Dynamic sizes
-class StepData_FieldListN  : public StepData_FieldList
+class StepData_FieldListN : public StepData_FieldList
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates a FieldListN of <nb> Fields
   Standard_EXPORT StepData_FieldListN(const Standard_Integer nb);
-  
+
   //! Returns the count of fields. Here, returns starting <nb>
   Standard_EXPORT virtual Standard_Integer NbFields() const Standard_OVERRIDE;
-  
+
   //! Returns the field n0 <num> between 1 and NbFields (read only)
-  Standard_EXPORT virtual const StepData_Field& Field (const Standard_Integer num) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual const StepData_Field& Field(const Standard_Integer num) const
+    Standard_OVERRIDE;
+
   //! Returns the field n0 <num> between 1 and NbFields, in order to
   //! modify its content
-  Standard_EXPORT virtual StepData_Field& CField (const Standard_Integer num) Standard_OVERRIDE;
+  Standard_EXPORT virtual StepData_Field& CField(const Standard_Integer num) Standard_OVERRIDE;
 
 private:
-
-
-
   StepData_Array1OfField thefields;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepData_FieldListN_HeaderFile

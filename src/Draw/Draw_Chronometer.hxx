@@ -27,28 +27,25 @@ class Draw_Chronometer : public Draw_Drawable3D
 {
   DEFINE_STANDARD_RTTIEXT(Draw_Chronometer, Draw_Drawable3D)
 public:
-
   Standard_EXPORT Draw_Chronometer();
 
   //! Return timer.
   OSD_Timer& Timer() { return myTimer; }
 
   //! Does nothing,
-  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
 
   //! For variable copy.
   Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
-  
+
   //! For variable dump.
-  Standard_EXPORT virtual void Dump (Standard_OStream& S) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
+
   //! For variable whatis command.
-  Standard_EXPORT virtual void Whatis (Draw_Interpretor& I) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
 
 private:
-
   OSD_Timer myTimer;
-
 };
 
 #endif // _Draw_Chronometer_HeaderFile

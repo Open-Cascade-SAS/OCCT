@@ -26,47 +26,57 @@ class TCollection_ExtendedString;
 class CDM_MetaData;
 class CDM_Document;
 
-
 class CDF_FWOSDriver;
 DEFINE_STANDARD_HANDLE(CDF_FWOSDriver, CDF_MetaDataDriver)
-
 
 class CDF_FWOSDriver : public CDF_MetaDataDriver
 {
 
 public:
-
   //! Initializes the MetaDatadriver connected to specified look-up table.
   //! Note that the created driver will keep reference to the table,
   //! thus it must have life time longer than this object.
   Standard_EXPORT CDF_FWOSDriver(CDM_MetaDataLookUpTable& theLookUpTable);
-  
+
   //! indicate whether a file exists corresponding to the folder and the name
-  Standard_EXPORT Standard_Boolean Find (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aVersion) Standard_OVERRIDE;
-  
-  Standard_EXPORT Standard_Boolean HasReadPermission (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aVersion) Standard_OVERRIDE;
-  
-  Standard_EXPORT Standard_Boolean FindFolder (const TCollection_ExtendedString& aFolder) Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Boolean Find(const TCollection_ExtendedString& aFolder,
+                                        const TCollection_ExtendedString& aName,
+                                        const TCollection_ExtendedString& aVersion)
+    Standard_OVERRIDE;
+
+  Standard_EXPORT Standard_Boolean HasReadPermission(const TCollection_ExtendedString& aFolder,
+                                                     const TCollection_ExtendedString& aName,
+                                                     const TCollection_ExtendedString& aVersion)
+    Standard_OVERRIDE;
+
+  Standard_EXPORT Standard_Boolean FindFolder(const TCollection_ExtendedString& aFolder)
+    Standard_OVERRIDE;
+
   Standard_EXPORT TCollection_ExtendedString DefaultFolder() Standard_OVERRIDE;
-  
-  Standard_EXPORT TCollection_ExtendedString BuildFileName (const Handle(CDM_Document)& aDocument) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual TCollection_ExtendedString SetName (const Handle(CDM_Document)& aDocument, const TCollection_ExtendedString& aName) Standard_OVERRIDE;
 
+  Standard_EXPORT TCollection_ExtendedString BuildFileName(const Handle(CDM_Document)& aDocument)
+    Standard_OVERRIDE;
 
+  Standard_EXPORT virtual TCollection_ExtendedString SetName(
+    const Handle(CDM_Document)&       aDocument,
+    const TCollection_ExtendedString& aName) Standard_OVERRIDE;
 
-
-  DEFINE_STANDARD_RTTIEXT(CDF_FWOSDriver,CDF_MetaDataDriver)
+  DEFINE_STANDARD_RTTIEXT(CDF_FWOSDriver, CDF_MetaDataDriver)
 
 private:
+  Standard_EXPORT Handle(CDM_MetaData) MetaData(const TCollection_ExtendedString& aFolder,
+                                                const TCollection_ExtendedString& aName,
+                                                const TCollection_ExtendedString& aVersion)
+    Standard_OVERRIDE;
 
-  Standard_EXPORT Handle(CDM_MetaData) MetaData (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aVersion) Standard_OVERRIDE;
-  
-  Standard_EXPORT Handle(CDM_MetaData) CreateMetaData (const Handle(CDM_Document)& aDocument, const TCollection_ExtendedString& aFileName) Standard_OVERRIDE;
-  
-  Standard_EXPORT static TCollection_ExtendedString Concatenate (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName);
-  
+  Standard_EXPORT Handle(CDM_MetaData) CreateMetaData(const Handle(CDM_Document)&       aDocument,
+                                                      const TCollection_ExtendedString& aFileName)
+    Standard_OVERRIDE;
+
+  Standard_EXPORT static TCollection_ExtendedString Concatenate(
+    const TCollection_ExtendedString& aFolder,
+    const TCollection_ExtendedString& aName);
+
 private:
   CDM_MetaDataLookUpTable* myLookUpTable;
 };

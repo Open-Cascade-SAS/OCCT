@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Geom2d_CartesianPoint.hxx>
 #include <Geom2d_Point.hxx>
 #include <Geom2dToIGES_Geom2dPoint.hxx>
@@ -25,39 +24,37 @@
 // Geom2dToIGES_Geom2dPoint
 //=============================================================================
 Geom2dToIGES_Geom2dPoint::Geom2dToIGES_Geom2dPoint()
-:Geom2dToIGES_Geom2dEntity()
+    : Geom2dToIGES_Geom2dEntity()
 {
 }
-
 
 //=============================================================================
 // Geom2dToIGES_Geom2dPoint
 //=============================================================================
 
-Geom2dToIGES_Geom2dPoint::Geom2dToIGES_Geom2dPoint
-(const Geom2dToIGES_Geom2dEntity& G2dE)
-:Geom2dToIGES_Geom2dEntity(G2dE)
+Geom2dToIGES_Geom2dPoint::Geom2dToIGES_Geom2dPoint(const Geom2dToIGES_Geom2dEntity& G2dE)
+    : Geom2dToIGES_Geom2dEntity(G2dE)
 {
 }
-
 
 //=============================================================================
 // Transfer de Point2d de Geom2d vers IGES
 // Tranfer2dPoint
 //=============================================================================
 
-Handle(IGESGeom_Point) Geom2dToIGES_Geom2dPoint::Transfer2dPoint( const Handle(Geom2d_Point)& P)
+Handle(IGESGeom_Point) Geom2dToIGES_Geom2dPoint::Transfer2dPoint(const Handle(Geom2d_Point)& P)
 {
 
   Handle(IGESGeom_Point) Piges = new IGESGeom_Point;
-  if (P.IsNull()) {
+  if (P.IsNull())
+  {
     return Piges;
   }
 
-  Standard_Real X,Y;
-  P->Coord (X,Y);
+  Standard_Real X, Y;
+  P->Coord(X, Y);
   Handle(IGESBasic_SubfigureDef) voidsubdef;
-  Piges-> Init(gp_XYZ(X,Y,0.), voidsubdef);
+  Piges->Init(gp_XYZ(X, Y, 0.), voidsubdef);
   return Piges;
 }
 
@@ -66,18 +63,19 @@ Handle(IGESGeom_Point) Geom2dToIGES_Geom2dPoint::Transfer2dPoint( const Handle(G
 // Tranfer2dPoint
 //=============================================================================
 
-Handle(IGESGeom_Point) Geom2dToIGES_Geom2dPoint::Transfer2dPoint
-( const Handle(Geom2d_CartesianPoint)& P)
+Handle(IGESGeom_Point) Geom2dToIGES_Geom2dPoint::Transfer2dPoint(
+  const Handle(Geom2d_CartesianPoint)& P)
 {
 
   Handle(IGESGeom_Point) Piges = new IGESGeom_Point;
-  if (P.IsNull()) {
+  if (P.IsNull())
+  {
     return Piges;
   }
 
-  Standard_Real X,Y;
-  P->Coord (X,Y);
+  Standard_Real X, Y;
+  P->Coord(X, Y);
   Handle(IGESBasic_SubfigureDef) voidsubdef;
-  Piges-> Init(gp_XYZ(X,Y,0.), voidsubdef);
+  Piges->Init(gp_XYZ(X, Y, 0.), voidsubdef);
   return Piges;
 }

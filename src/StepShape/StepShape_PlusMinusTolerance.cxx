@@ -11,30 +11,38 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepShape_PlusMinusTolerance.hxx>
 #include <StepShape_ToleranceMethodDefinition.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_PlusMinusTolerance,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_PlusMinusTolerance, Standard_Transient)
 
-StepShape_PlusMinusTolerance::StepShape_PlusMinusTolerance  ()    {  }
+StepShape_PlusMinusTolerance::StepShape_PlusMinusTolerance() {}
 
-void  StepShape_PlusMinusTolerance::Init
-  (const StepShape_ToleranceMethodDefinition& range,
-   const StepShape_DimensionalCharacteristic& toleranced_dimension)
+void StepShape_PlusMinusTolerance::Init(
+  const StepShape_ToleranceMethodDefinition& range,
+  const StepShape_DimensionalCharacteristic& toleranced_dimension)
 {
-  theRange = range;
+  theRange               = range;
   theTolerancedDimension = toleranced_dimension;
 }
 
-StepShape_ToleranceMethodDefinition  StepShape_PlusMinusTolerance::Range () const
-{  return theRange;  }
+StepShape_ToleranceMethodDefinition StepShape_PlusMinusTolerance::Range() const
+{
+  return theRange;
+}
 
-void  StepShape_PlusMinusTolerance::SetRange (const StepShape_ToleranceMethodDefinition& range)
-{  theRange = range;  }
+void StepShape_PlusMinusTolerance::SetRange(const StepShape_ToleranceMethodDefinition& range)
+{
+  theRange = range;
+}
 
-StepShape_DimensionalCharacteristic  StepShape_PlusMinusTolerance::TolerancedDimension () const
-{  return theTolerancedDimension;  }
+StepShape_DimensionalCharacteristic StepShape_PlusMinusTolerance::TolerancedDimension() const
+{
+  return theTolerancedDimension;
+}
 
-void  StepShape_PlusMinusTolerance::SetTolerancedDimension (const StepShape_DimensionalCharacteristic& toleranced_dimension)
-{  theTolerancedDimension = toleranced_dimension;  }
+void StepShape_PlusMinusTolerance::SetTolerancedDimension(
+  const StepShape_DimensionalCharacteristic& toleranced_dimension)
+{
+  theTolerancedDimension = toleranced_dimension;
+}

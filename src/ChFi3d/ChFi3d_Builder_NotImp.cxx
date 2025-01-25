@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Blend_CurvPointFuncInv.hxx>
 #include <Blend_FuncInv.hxx>
 #include <BRepBlend_Line.hxx>
@@ -25,223 +24,197 @@
 #include <ChFiDS_SurfData.hxx>
 #include <TopOpeBRepBuild_HBuilder.hxx>
 
-//=======================================================================
-//function : SimulSurf
-//purpose  : 
-//=======================================================================
-void  ChFi3d_Builder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
-				const Handle(ChFiDS_ElSpine)&      , 
-				const Handle(ChFiDS_Spine)&         , 
-				const Standard_Integer              ,
-				const Handle(BRepAdaptor_Surface)& ,
-				const Handle(Adaptor3d_TopolTool)&    ,
-				const Handle(BRepAdaptor_Curve2d)& ,
-				const Handle(BRepAdaptor_Surface)& ,
-				const Handle(BRepAdaptor_Curve2d)& ,
-				Standard_Boolean&                   ,
-				const Handle(BRepAdaptor_Surface)& ,
-				const Handle(Adaptor3d_TopolTool)&    ,
-				const TopAbs_Orientation            ,
-				const Standard_Real                 ,
-				const Standard_Real                 ,
-				Standard_Real&                      ,
-				Standard_Real&                      ,
-				const Standard_Boolean              ,
-				const Standard_Boolean              ,
-				const Standard_Boolean              ,
-				const Standard_Boolean              ,
-				const Standard_Boolean              ,
-				const Standard_Boolean              ,
-				const math_Vector&                  )
+//=================================================================================================
+
+void ChFi3d_Builder::SimulSurf(Handle(ChFiDS_SurfData)&,
+                               const Handle(ChFiDS_ElSpine)&,
+                               const Handle(ChFiDS_Spine)&,
+                               const Standard_Integer,
+                               const Handle(BRepAdaptor_Surface)&,
+                               const Handle(Adaptor3d_TopolTool)&,
+                               const Handle(BRepAdaptor_Curve2d)&,
+                               const Handle(BRepAdaptor_Surface)&,
+                               const Handle(BRepAdaptor_Curve2d)&,
+                               Standard_Boolean&,
+                               const Handle(BRepAdaptor_Surface)&,
+                               const Handle(Adaptor3d_TopolTool)&,
+                               const TopAbs_Orientation,
+                               const Standard_Real,
+                               const Standard_Real,
+                               Standard_Real&,
+                               Standard_Real&,
+                               const Standard_Boolean,
+                               const Standard_Boolean,
+                               const Standard_Boolean,
+                               const Standard_Boolean,
+                               const Standard_Boolean,
+                               const Standard_Boolean,
+                               const math_Vector&)
 {
   throw Standard_Failure("SimulSurf Not Implemented");
 }
 
-//=======================================================================
-//function : SimulSurf
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void  ChFi3d_Builder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
-				const Handle(ChFiDS_ElSpine)&      , 
-				const Handle(ChFiDS_Spine)&         , 
-				const Standard_Integer              ,
-				const Handle(BRepAdaptor_Surface)& ,
-				const Handle(Adaptor3d_TopolTool)&    ,
-				const TopAbs_Orientation            ,
-				const Handle(BRepAdaptor_Surface)& ,
-				const Handle(Adaptor3d_TopolTool)&    ,
-				const Handle(BRepAdaptor_Curve2d)& ,
-				const Handle(BRepAdaptor_Surface)& ,
-				const Handle(BRepAdaptor_Curve2d)& ,
-				Standard_Boolean&                   ,
-				const Standard_Real                 ,
-				const Standard_Real                 ,
-				Standard_Real&                      ,
-				Standard_Real&                      ,
-				const Standard_Boolean              ,
-				const Standard_Boolean              ,
-				const Standard_Boolean              ,
-				const Standard_Boolean              ,
-				const Standard_Boolean              ,
-				const Standard_Boolean              ,
-				const math_Vector&                  )
+void ChFi3d_Builder::SimulSurf(Handle(ChFiDS_SurfData)&,
+                               const Handle(ChFiDS_ElSpine)&,
+                               const Handle(ChFiDS_Spine)&,
+                               const Standard_Integer,
+                               const Handle(BRepAdaptor_Surface)&,
+                               const Handle(Adaptor3d_TopolTool)&,
+                               const TopAbs_Orientation,
+                               const Handle(BRepAdaptor_Surface)&,
+                               const Handle(Adaptor3d_TopolTool)&,
+                               const Handle(BRepAdaptor_Curve2d)&,
+                               const Handle(BRepAdaptor_Surface)&,
+                               const Handle(BRepAdaptor_Curve2d)&,
+                               Standard_Boolean&,
+                               const Standard_Real,
+                               const Standard_Real,
+                               Standard_Real&,
+                               Standard_Real&,
+                               const Standard_Boolean,
+                               const Standard_Boolean,
+                               const Standard_Boolean,
+                               const Standard_Boolean,
+                               const Standard_Boolean,
+                               const Standard_Boolean,
+                               const math_Vector&)
 {
   throw Standard_Failure("SimulSurf Not Implemented");
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : SimulSurf
-//purpose  : 
-//=======================================================================
-
-void  ChFi3d_Builder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
-				const Handle(ChFiDS_ElSpine)&      ,
-				const Handle(ChFiDS_Spine)&         ,
-				const Standard_Integer              ,
-				const Handle(BRepAdaptor_Surface)& ,
-				const Handle(Adaptor3d_TopolTool)&    ,
-				const Handle(BRepAdaptor_Curve2d)& ,
-				const Handle(BRepAdaptor_Surface)& ,
-				const Handle(BRepAdaptor_Curve2d)& ,
-				Standard_Boolean&                   ,
-				const TopAbs_Orientation            ,
-				const Handle(BRepAdaptor_Surface)& ,
-				const Handle(Adaptor3d_TopolTool)&    ,
-				const Handle(BRepAdaptor_Curve2d)& ,
-				const Handle(BRepAdaptor_Surface)& ,
-				const Handle(BRepAdaptor_Curve2d)& ,
-				Standard_Boolean&                   ,
-				const TopAbs_Orientation            ,
-				const Standard_Real                 ,
-				const Standard_Real                 ,
-				Standard_Real&                      ,
-				Standard_Real&                      ,
-				const Standard_Boolean              ,
-				const Standard_Boolean              ,
-				const Standard_Boolean              ,
-				const Standard_Boolean              ,
-				const Standard_Boolean              ,
-				const Standard_Boolean              ,
-				const Standard_Boolean              ,
-				const math_Vector&                  )
+void ChFi3d_Builder::SimulSurf(Handle(ChFiDS_SurfData)&,
+                               const Handle(ChFiDS_ElSpine)&,
+                               const Handle(ChFiDS_Spine)&,
+                               const Standard_Integer,
+                               const Handle(BRepAdaptor_Surface)&,
+                               const Handle(Adaptor3d_TopolTool)&,
+                               const Handle(BRepAdaptor_Curve2d)&,
+                               const Handle(BRepAdaptor_Surface)&,
+                               const Handle(BRepAdaptor_Curve2d)&,
+                               Standard_Boolean&,
+                               const TopAbs_Orientation,
+                               const Handle(BRepAdaptor_Surface)&,
+                               const Handle(Adaptor3d_TopolTool)&,
+                               const Handle(BRepAdaptor_Curve2d)&,
+                               const Handle(BRepAdaptor_Surface)&,
+                               const Handle(BRepAdaptor_Curve2d)&,
+                               Standard_Boolean&,
+                               const TopAbs_Orientation,
+                               const Standard_Real,
+                               const Standard_Real,
+                               Standard_Real&,
+                               Standard_Real&,
+                               const Standard_Boolean,
+                               const Standard_Boolean,
+                               const Standard_Boolean,
+                               const Standard_Boolean,
+                               const Standard_Boolean,
+                               const Standard_Boolean,
+                               const Standard_Boolean,
+                               const math_Vector&)
 {
   throw Standard_Failure("SimulSurf Not Implemented");
 }
 
+//=================================================================================================
 
-
-//=======================================================================
-//function : PerformSurf
-//purpose  : 
-//=======================================================================
-
-void  ChFi3d_Builder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
-				  const Handle(ChFiDS_ElSpine)&      , 
-				  const Handle(ChFiDS_Spine)&         , 
-				  const Standard_Integer              ,
-				  const Handle(BRepAdaptor_Surface)& ,
-				  const Handle(Adaptor3d_TopolTool)&    ,
-				  const Handle(BRepAdaptor_Curve2d)& ,
-				  const Handle(BRepAdaptor_Surface)& ,
-				  const Handle(BRepAdaptor_Curve2d)& ,
-				  Standard_Boolean&                   ,
-				  const Handle(BRepAdaptor_Surface)& ,
-				  const Handle(Adaptor3d_TopolTool)&    ,
-				  const TopAbs_Orientation            ,
-				  const Standard_Real                 ,
-				  const Standard_Real                 ,
-				  const Standard_Real                 ,
-				  Standard_Real&                      ,
-				  Standard_Real&                      ,
-				  const Standard_Boolean              ,
-				  const Standard_Boolean              ,
-				  const Standard_Boolean              ,
-				  const Standard_Boolean              ,
-				  const Standard_Boolean              ,
-				  const Standard_Boolean              ,
-				  const math_Vector&                  )
+void ChFi3d_Builder::PerformSurf(ChFiDS_SequenceOfSurfData&,
+                                 const Handle(ChFiDS_ElSpine)&,
+                                 const Handle(ChFiDS_Spine)&,
+                                 const Standard_Integer,
+                                 const Handle(BRepAdaptor_Surface)&,
+                                 const Handle(Adaptor3d_TopolTool)&,
+                                 const Handle(BRepAdaptor_Curve2d)&,
+                                 const Handle(BRepAdaptor_Surface)&,
+                                 const Handle(BRepAdaptor_Curve2d)&,
+                                 Standard_Boolean&,
+                                 const Handle(BRepAdaptor_Surface)&,
+                                 const Handle(Adaptor3d_TopolTool)&,
+                                 const TopAbs_Orientation,
+                                 const Standard_Real,
+                                 const Standard_Real,
+                                 const Standard_Real,
+                                 Standard_Real&,
+                                 Standard_Real&,
+                                 const Standard_Boolean,
+                                 const Standard_Boolean,
+                                 const Standard_Boolean,
+                                 const Standard_Boolean,
+                                 const Standard_Boolean,
+                                 const Standard_Boolean,
+                                 const math_Vector&)
 {
   throw Standard_Failure("PerformSurf Not Implemented");
 }
 
-//=======================================================================
-//function : PerformSurf
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void  ChFi3d_Builder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
-				  const Handle(ChFiDS_ElSpine)&      , 
-				  const Handle(ChFiDS_Spine)&         , 
-				  const Standard_Integer              ,
-				  const Handle(BRepAdaptor_Surface)& ,
-				  const Handle(Adaptor3d_TopolTool)&    ,
-				  const TopAbs_Orientation            ,
-				  const Handle(BRepAdaptor_Surface)& ,
-				  const Handle(Adaptor3d_TopolTool)&    ,
-				  const Handle(BRepAdaptor_Curve2d)& ,
-				  const Handle(BRepAdaptor_Surface)& ,
-				  const Handle(BRepAdaptor_Curve2d)& ,
-				  Standard_Boolean&                   ,
-				  const Standard_Real                 ,
-				  const Standard_Real                 ,
-				  const Standard_Real                 ,
-				  Standard_Real&                      ,
-				  Standard_Real&                      ,
-				  const Standard_Boolean              ,
-				  const Standard_Boolean              ,
-				  const Standard_Boolean              ,
-				  const Standard_Boolean              ,
-				  const Standard_Boolean              ,
-				  const Standard_Boolean              ,
-				  const math_Vector&                  )
+void ChFi3d_Builder::PerformSurf(ChFiDS_SequenceOfSurfData&,
+                                 const Handle(ChFiDS_ElSpine)&,
+                                 const Handle(ChFiDS_Spine)&,
+                                 const Standard_Integer,
+                                 const Handle(BRepAdaptor_Surface)&,
+                                 const Handle(Adaptor3d_TopolTool)&,
+                                 const TopAbs_Orientation,
+                                 const Handle(BRepAdaptor_Surface)&,
+                                 const Handle(Adaptor3d_TopolTool)&,
+                                 const Handle(BRepAdaptor_Curve2d)&,
+                                 const Handle(BRepAdaptor_Surface)&,
+                                 const Handle(BRepAdaptor_Curve2d)&,
+                                 Standard_Boolean&,
+                                 const Standard_Real,
+                                 const Standard_Real,
+                                 const Standard_Real,
+                                 Standard_Real&,
+                                 Standard_Real&,
+                                 const Standard_Boolean,
+                                 const Standard_Boolean,
+                                 const Standard_Boolean,
+                                 const Standard_Boolean,
+                                 const Standard_Boolean,
+                                 const Standard_Boolean,
+                                 const math_Vector&)
 {
   throw Standard_Failure("PerformSurf Not Implemented");
-
 }
 
+//=================================================================================================
 
-
-
-
-//=======================================================================
-//function : PerformSurf
-//purpose  : 
-//=======================================================================
-
-void  ChFi3d_Builder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
-				  const Handle(ChFiDS_ElSpine)&      ,
-				  const Handle(ChFiDS_Spine)&         ,
-				  const Standard_Integer              ,
-				  const Handle(BRepAdaptor_Surface)& ,
-				  const Handle(Adaptor3d_TopolTool)&    ,
-				  const Handle(BRepAdaptor_Curve2d)& ,
-				  const Handle(BRepAdaptor_Surface)& ,
-				  const Handle(BRepAdaptor_Curve2d)& ,
-				  Standard_Boolean&                   ,
-				  const TopAbs_Orientation            ,
-				  const Handle(BRepAdaptor_Surface)& ,
-				  const Handle(Adaptor3d_TopolTool)&    ,
-				  const Handle(BRepAdaptor_Curve2d)& ,
-				  const Handle(BRepAdaptor_Surface)& ,
-				  const Handle(BRepAdaptor_Curve2d)& ,
-				  Standard_Boolean&                   ,
-				  const TopAbs_Orientation            ,
-				  const Standard_Real                 ,
-				  const Standard_Real                 ,
-				  const Standard_Real                 ,
-				  Standard_Real&                      ,
-				  Standard_Real&                      ,
-				  const Standard_Boolean              ,
-				  const Standard_Boolean              ,
-				  const Standard_Boolean              ,
-				  const Standard_Boolean              ,
-				  const Standard_Boolean              ,
-				  const Standard_Boolean              ,
-				  const Standard_Boolean              ,
-				  const math_Vector&                  )
+void ChFi3d_Builder::PerformSurf(ChFiDS_SequenceOfSurfData&,
+                                 const Handle(ChFiDS_ElSpine)&,
+                                 const Handle(ChFiDS_Spine)&,
+                                 const Standard_Integer,
+                                 const Handle(BRepAdaptor_Surface)&,
+                                 const Handle(Adaptor3d_TopolTool)&,
+                                 const Handle(BRepAdaptor_Curve2d)&,
+                                 const Handle(BRepAdaptor_Surface)&,
+                                 const Handle(BRepAdaptor_Curve2d)&,
+                                 Standard_Boolean&,
+                                 const TopAbs_Orientation,
+                                 const Handle(BRepAdaptor_Surface)&,
+                                 const Handle(Adaptor3d_TopolTool)&,
+                                 const Handle(BRepAdaptor_Curve2d)&,
+                                 const Handle(BRepAdaptor_Surface)&,
+                                 const Handle(BRepAdaptor_Curve2d)&,
+                                 Standard_Boolean&,
+                                 const TopAbs_Orientation,
+                                 const Standard_Real,
+                                 const Standard_Real,
+                                 const Standard_Real,
+                                 Standard_Real&,
+                                 Standard_Real&,
+                                 const Standard_Boolean,
+                                 const Standard_Boolean,
+                                 const Standard_Boolean,
+                                 const Standard_Boolean,
+                                 const Standard_Boolean,
+                                 const Standard_Boolean,
+                                 const Standard_Boolean,
+                                 const math_Vector&)
 {
   throw Standard_Failure("PerformSurf Not Implemented");
-
 }

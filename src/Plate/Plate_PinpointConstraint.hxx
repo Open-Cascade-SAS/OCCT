@@ -24,53 +24,35 @@
 #include <gp_XYZ.hxx>
 #include <gp_XY.hxx>
 
-
 //! define a constraint on the Plate
-class Plate_PinpointConstraint 
+class Plate_PinpointConstraint
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Plate_PinpointConstraint();
-  
-  Standard_EXPORT Plate_PinpointConstraint(const gp_XY& point2d, const gp_XYZ& ImposedValue, const Standard_Integer iu = 0, const Standard_Integer iv = 0);
-  
-    const gp_XY& Pnt2d() const;
-  
-    const Standard_Integer& Idu() const;
-  
-    const Standard_Integer& Idv() const;
-  
-    const gp_XYZ& Value() const;
 
+  Standard_EXPORT Plate_PinpointConstraint(const gp_XY&           point2d,
+                                           const gp_XYZ&          ImposedValue,
+                                           const Standard_Integer iu = 0,
+                                           const Standard_Integer iv = 0);
 
+  const gp_XY& Pnt2d() const;
 
+  const Standard_Integer& Idu() const;
+
+  const Standard_Integer& Idv() const;
+
+  const gp_XYZ& Value() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-  gp_XYZ value;
-  gp_XY pnt2d;
+  gp_XYZ           value;
+  gp_XY            pnt2d;
   Standard_Integer idu;
   Standard_Integer idv;
-
-
 };
 
-
 #include <Plate_PinpointConstraint.lxx>
-
-
-
-
 
 #endif // _Plate_PinpointConstraint_HeaderFile

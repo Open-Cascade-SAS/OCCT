@@ -14,41 +14,36 @@
 
 #include <IntSurf_PntOn2S.hxx>
 
-inline Standard_Integer IntSurf_LineOn2S::NbPoints() const {
+inline Standard_Integer IntSurf_LineOn2S::NbPoints() const
+{
 
   return mySeq.Length();
 }
 
-
-inline void IntSurf_LineOn2S::Reverse () {
+inline void IntSurf_LineOn2S::Reverse()
+{
   mySeq.Reverse();
 }
 
-
-inline const IntSurf_PntOn2S& IntSurf_LineOn2S::
-  Value(const Standard_Integer Index) const
+inline const IntSurf_PntOn2S& IntSurf_LineOn2S::Value(const Standard_Integer Index) const
 {
   return mySeq(Index);
 }
 
-
-inline void IntSurf_LineOn2S::Value(const Standard_Integer Index,
-				    const IntSurf_PntOn2S& P)
+inline void IntSurf_LineOn2S::Value(const Standard_Integer Index, const IntSurf_PntOn2S& P)
 {
   mySeq(Index) = P;
 }
 
-inline void IntSurf_LineOn2S::SetPoint(const Standard_Integer Index,
-                                       const gp_Pnt& thePnt)
+inline void IntSurf_LineOn2S::SetPoint(const Standard_Integer Index, const gp_Pnt& thePnt)
 {
-  mySeq(Index).SetValue (thePnt);
+  mySeq(Index).SetValue(thePnt);
 }
 
-inline void IntSurf_LineOn2S::Clear ()
+inline void IntSurf_LineOn2S::Clear()
 {
   mySeq.Clear();
   myBuv1.SetWhole();
   myBuv2.SetWhole();
   myBxyz.SetWhole();
 }
-

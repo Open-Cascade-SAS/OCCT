@@ -18,28 +18,30 @@
 #include <StepDimTol_DatumSystem.hxx>
 #include <StepDimTol_DatumReference.hxx>
 
-//=======================================================================
-//function : StepDimTol_DatumSystemOrReference
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepDimTol_DatumSystemOrReference::StepDimTol_DatumSystemOrReference () {  }
+StepDimTol_DatumSystemOrReference::StepDimTol_DatumSystemOrReference() {}
 
-//=======================================================================
-//function : CaseNum
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer StepDimTol_DatumSystemOrReference::CaseNum(const Handle(Standard_Transient)& ent) const
+Standard_Integer StepDimTol_DatumSystemOrReference::CaseNum(
+  const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepDimTol_DatumSystem))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepDimTol_DatumReference))) return 2;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepDimTol_DatumSystem)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepDimTol_DatumReference)))
+    return 2;
   return 0;
 }
 
 Handle(StepDimTol_DatumSystem) StepDimTol_DatumSystemOrReference::DatumSystem() const
-{  return GetCasted(StepDimTol_DatumSystem,Value());  }
+{
+  return GetCasted(StepDimTol_DatumSystem, Value());
+}
 
 Handle(StepDimTol_DatumReference) StepDimTol_DatumSystemOrReference::DatumReference() const
-{  return GetCasted(StepDimTol_DatumReference,Value());  }
+{
+  return GetCasted(StepDimTol_DatumReference, Value());
+}

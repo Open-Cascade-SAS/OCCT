@@ -38,27 +38,27 @@ class Transfer_ActorOfTransientProcess : public Transfer_ActorOfProcessForTransi
 public:
   using ParameterMap = std::unordered_map<std::string, std::string>;
   // Flags defining operations to be performed on shapes. Since there is no std::optional in C++11,
-  // we use a pair. The first element is the flags, the second element is a boolean value that indicates
-  // whether the flags were set.
+  // we use a pair. The first element is the flags, the second element is a boolean value that
+  // indicates whether the flags were set.
   using ProcessingFlags = std::pair<ShapeProcess::OperationsFlags, bool>;
 
 public:
   Standard_EXPORT Transfer_ActorOfTransientProcess();
-  
-  Standard_EXPORT virtual Handle(Transfer_Binder) Transferring
-                         (const Handle(Standard_Transient)& start,
-                          const Handle(Transfer_ProcessForTransient)& TP,
-                          const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Handle(Transfer_Binder) Transfer
-                         (const Handle(Standard_Transient)& start,
-                          const Handle(Transfer_TransientProcess)& TP,
-                          const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
-  Standard_EXPORT virtual Handle(Standard_Transient) TransferTransient
-                         (const Handle(Standard_Transient)& start,
-                          const Handle(Transfer_TransientProcess)& TP,
-                          const Message_ProgressRange& theProgress = Message_ProgressRange());
+
+  Standard_EXPORT virtual Handle(Transfer_Binder) Transferring(
+    const Handle(Standard_Transient)&           start,
+    const Handle(Transfer_ProcessForTransient)& TP,
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual Handle(Transfer_Binder) Transfer(
+    const Handle(Standard_Transient)&        start,
+    const Handle(Transfer_TransientProcess)& TP,
+    const Message_ProgressRange&             theProgress = Message_ProgressRange());
+
+  Standard_EXPORT virtual Handle(Standard_Transient) TransferTransient(
+    const Handle(Standard_Transient)&        start,
+    const Handle(Transfer_TransientProcess)& TP,
+    const Message_ProgressRange&             theProgress = Message_ProgressRange());
 
   //! Sets parameters for shape processing.
   //! @param theParameters the parameters for shape processing.
@@ -76,7 +76,7 @@ public:
   //! @param theParameters the parameters for shape processing.
   //! @param theAdditionalParameters the additional parameters for shape processing.
   Standard_EXPORT void SetShapeFixParameters(const DE_ShapeFixParameters& theParameters,
-                                             const ParameterMap&          theAdditionalParameters = {});
+                                             const ParameterMap& theAdditionalParameters = {});
 
   //! Returns parameters for shape processing that was set by SetParameters() method.
   //! @return the parameters for shape processing. Empty map if no parameters were set.
@@ -87,11 +87,12 @@ public:
   Standard_EXPORT void SetProcessingFlags(const ShapeProcess::OperationsFlags& theFlags);
 
   //! Returns flags defining operations to be performed on shapes.
-  //! @return Pair: the flags defining operations to be performed on shapes and a boolean value that indicates
+  //! @return Pair: the flags defining operations to be performed on shapes and a boolean value that
+  //! indicates
   //!         whether the flags were set.
   inline const ProcessingFlags& GetProcessingFlags() const { return myShapeProcFlags; }
 
-  DEFINE_STANDARD_RTTIEXT(Transfer_ActorOfTransientProcess,Transfer_ActorOfProcessForTransient)
+  DEFINE_STANDARD_RTTIEXT(Transfer_ActorOfTransientProcess, Transfer_ActorOfProcessForTransient)
 
 private:
   ParameterMap    myShapeProcParams; //!< Parameters for shape processing.

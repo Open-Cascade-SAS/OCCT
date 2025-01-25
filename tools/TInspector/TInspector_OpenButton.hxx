@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef TInspectorEXE_OpenButton_H
 #define TInspectorEXE_OpenButton_H
@@ -27,36 +27,38 @@
 class QPushButton;
 
 //! \class TInspector_OpenButton
-//! Class that contains push button and the button processing. It obtains a file name from the default or current
-//! directory and gives the name into TInspector communicator
-//! Object name of the button is the name of the plugin to get the default directory, or the current directory is used.
+//! Class that contains push button and the button processing. It obtains a file name from the
+//! default or current directory and gives the name into TInspector communicator Object name of the
+//! button is the name of the plugin to get the default directory, or the current directory is used.
 class TInspector_OpenButton : public QObject
 {
   Q_OBJECT
 
 public:
-
   //! Constructor
-  Standard_EXPORT TInspector_OpenButton (QObject* theParent);
+  Standard_EXPORT TInspector_OpenButton(QObject* theParent);
 
   //! Destructor
   virtual ~TInspector_OpenButton() {}
 
-  //! Returns the start button, if this is the first call, it creates the button and connect it to the slot
+  //! Returns the start button, if this is the first call, it creates the button and connect it to
+  //! the slot
   Standard_EXPORT QPushButton* StartButton();
 
   //! Sets the default directory of plugin.
-  void SetPluginRecentlyOpenedFiles (const TCollection_AsciiString& thePluginName,
-                                     const QStringList& theRecentlyOpenedFiles)
-  { myRecentlyOpenedFiles[thePluginName] = theRecentlyOpenedFiles; }
+  void SetPluginRecentlyOpenedFiles(const TCollection_AsciiString& thePluginName,
+                                    const QStringList&             theRecentlyOpenedFiles)
+  {
+    myRecentlyOpenedFiles[thePluginName] = theRecentlyOpenedFiles;
+  }
 
 private slots:
 
-  //! Processes the button click, open default/current directory to select open file, calls OpenFile of communicator
+  //! Processes the button click, open default/current directory to select open file, calls OpenFile
+  //! of communicator
   void onStartButtonClicked();
 
 private:
-
   QPushButton* myStartButton; //!< processed button
   //!< plugins recently opened files
   QMap<TCollection_AsciiString, QStringList> myRecentlyOpenedFiles;

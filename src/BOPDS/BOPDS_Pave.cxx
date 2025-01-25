@@ -12,15 +12,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPDS_Pave.hxx>
 
 #include <stdio.h>
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-  void BOPDS_Pave::Dump()const
+
+//=================================================================================================
+
+void BOPDS_Pave::Dump() const
 {
-  printf(" { %-d %-7.3lf}",  myIndex, myParameter);
+  printf(" { %-d %-7.3lf}", myIndex, myParameter);
 }

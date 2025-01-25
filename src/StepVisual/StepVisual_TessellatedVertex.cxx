@@ -1,4 +1,4 @@
-// Created on : Thu Mar 24 18:30:12 2022 
+// Created on : Thu Mar 24 18:30:12 2022
 // Created by: snn
 // Generator: Express (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 // Copyright (c) Open CASCADE 2022
@@ -18,27 +18,22 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedVertex, StepVisual_TessellatedStructuredItem)
 
-//=======================================================================
-//function : StepVisual_TessellatedVertex
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepVisual_TessellatedVertex::StepVisual_TessellatedVertex ()
+StepVisual_TessellatedVertex::StepVisual_TessellatedVertex()
 {
-  myPointIndex = 0;
+  myPointIndex         = 0;
   myHasTopologicalLink = Standard_False;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedVertex::Init (const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                                         const Handle(StepVisual_CoordinatesList)& theCoordinates,
-                                         const Standard_Boolean theHasTopologicalLink,
-                                         const Handle(StepShape_VertexPoint)& theTopologicalLink,
-                                         const Standard_Integer thePointIndex)
+void StepVisual_TessellatedVertex::Init(
+  const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
+  const Handle(StepVisual_CoordinatesList)& theCoordinates,
+  const Standard_Boolean                    theHasTopologicalLink,
+  const Handle(StepShape_VertexPoint)&      theTopologicalLink,
+  const Standard_Integer                    thePointIndex)
 {
   StepVisual_TessellatedStructuredItem::Init(theRepresentationItem_Name);
 
@@ -57,70 +52,51 @@ void StepVisual_TessellatedVertex::Init (const Handle(TCollection_HAsciiString)&
   myPointIndex = thePointIndex;
 }
 
-//=======================================================================
-//function : Coordinates
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepVisual_CoordinatesList) StepVisual_TessellatedVertex::Coordinates () const
+Handle(StepVisual_CoordinatesList) StepVisual_TessellatedVertex::Coordinates() const
 {
   return myCoordinates;
 }
 
-//=======================================================================
-//function : SetCoordinates
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedVertex::SetCoordinates(const Handle(StepVisual_CoordinatesList)& theCoordinates)
+void StepVisual_TessellatedVertex::SetCoordinates(
+  const Handle(StepVisual_CoordinatesList)& theCoordinates)
 {
   myCoordinates = theCoordinates;
 }
 
-//=======================================================================
-//function : TopologicalLink
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepShape_VertexPoint) StepVisual_TessellatedVertex::TopologicalLink () const
+Handle(StepShape_VertexPoint) StepVisual_TessellatedVertex::TopologicalLink() const
 {
   return myTopologicalLink;
 }
 
-//=======================================================================
-//function : SetTopologicalLink
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepVisual_TessellatedVertex::SetTopologicalLink(const Handle(StepShape_VertexPoint)& theTopologicalLink)
+void StepVisual_TessellatedVertex::SetTopologicalLink(
+  const Handle(StepShape_VertexPoint)& theTopologicalLink)
 {
   myTopologicalLink = theTopologicalLink;
 }
 
-//=======================================================================
-//function : HasTopologicalLink
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean StepVisual_TessellatedVertex::HasTopologicalLink () const
+Standard_Boolean StepVisual_TessellatedVertex::HasTopologicalLink() const
 {
   return myHasTopologicalLink;
 }
 
-//=======================================================================
-//function : PointIndex
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Integer StepVisual_TessellatedVertex::PointIndex () const
+Standard_Integer StepVisual_TessellatedVertex::PointIndex() const
 {
   return myPointIndex;
 }
 
-//=======================================================================
-//function : SetPointIndex
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void StepVisual_TessellatedVertex::SetPointIndex(const Standard_Integer thePointIndex)
 {

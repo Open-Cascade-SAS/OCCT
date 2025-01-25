@@ -27,10 +27,9 @@
 //! - has an orientation for the underlying vertex, in
 //! terms of its geometry (as opposed to orientation in
 //! relation to other shapes).
-class TopoDS_Vertex  : public TopoDS_Shape
+class TopoDS_Vertex : public TopoDS_Shape
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Undefined Vertex.
@@ -39,14 +38,14 @@ public:
 
 namespace std
 {
-  template <>
-  struct hash<TopoDS_Vertex>
+template <>
+struct hash<TopoDS_Vertex>
+{
+  size_t operator()(const TopoDS_Vertex& theShape) const
   {
-    size_t operator()(const TopoDS_Vertex& theShape) const
-    {
-      return std::hash<TopoDS_Shape>{}(theShape);
-    }
-  };
-}
+    return std::hash<TopoDS_Shape>{}(theShape);
+  }
+};
+} // namespace std
 
 #endif // _TopoDS_Vertex_HeaderFile

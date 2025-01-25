@@ -26,32 +26,31 @@ class Prs3d_IsoAspect : public Prs3d_LineAspect
 {
   DEFINE_STANDARD_RTTIEXT(Prs3d_IsoAspect, Prs3d_LineAspect)
 public:
-
   //! Constructs a framework to define display attributes of isoparameters.
   //! These include:
   //! -   the color attribute aColor
   //! -   the type of line aType
   //! -   the width value aWidth
   //! -   aNumber, the number of isoparameters to be   displayed.
-  Prs3d_IsoAspect (const Quantity_Color& theColor,
-                   const Aspect_TypeOfLine theType,
-                   const Standard_Real theWidth,
-                   const Standard_Integer theNumber)
-  : Prs3d_LineAspect (theColor, theType, theWidth),
-    myNumber (theNumber) {}   
+  Prs3d_IsoAspect(const Quantity_Color&   theColor,
+                  const Aspect_TypeOfLine theType,
+                  const Standard_Real     theWidth,
+                  const Standard_Integer  theNumber)
+      : Prs3d_LineAspect(theColor, theType, theWidth),
+        myNumber(theNumber)
+  {
+  }
 
   //! defines the number of U or V isoparametric curves
   //! to be drawn for a single face.
   //! Default value: 10
-  void SetNumber (const Standard_Integer theNumber) { myNumber = theNumber; }
+  void SetNumber(const Standard_Integer theNumber) { myNumber = theNumber; }
 
   //! returns the number of U or V isoparametric curves drawn for a single face.
   Standard_Integer Number() const { return myNumber; }
 
 protected:
-
   Standard_Integer myNumber;
-
 };
 
 DEFINE_STANDARD_HANDLE(Prs3d_IsoAspect, Prs3d_LineAspect)

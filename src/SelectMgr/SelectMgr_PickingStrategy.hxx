@@ -14,11 +14,14 @@
 #ifndef _SelectMgr_PickingStrategy_HeaderFile
 #define _SelectMgr_PickingStrategy_HeaderFile
 
-//! Enumeration defines picking strategy - which entities detected by picking line will be accepted, considering selection filters.
+//! Enumeration defines picking strategy - which entities detected by picking line will be accepted,
+//! considering selection filters.
 enum SelectMgr_PickingStrategy
 {
-  SelectMgr_PickingStrategy_FirstAcceptable, //!< the first detected entity passing selection filter is accepted (e.g. any)
-  SelectMgr_PickingStrategy_OnlyTopmost      //!< only topmost detected entity passing selection filter is accepted
+  SelectMgr_PickingStrategy_FirstAcceptable, //!< the first detected entity passing selection filter
+                                             //!< is accepted (e.g. any)
+  SelectMgr_PickingStrategy_OnlyTopmost //!< only topmost detected entity passing selection filter
+                                        //!< is accepted
 };
 
 #endif // _SelectMgr_PickingStrategy_HeaderFile

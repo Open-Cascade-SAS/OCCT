@@ -11,7 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamReader.hxx>
@@ -46,255 +45,302 @@
 #include <Interface_Macros.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_ReadWriteModule,IGESData_ReadWriteModule)
+IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_ReadWriteModule, IGESData_ReadWriteModule)
 
 //  Each Module is attached to a Protocol : it must interpret Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
-IGESDraw_ReadWriteModule::IGESDraw_ReadWriteModule ()    {  }
+IGESDraw_ReadWriteModule::IGESDraw_ReadWriteModule() {}
 
-
-    Standard_Integer  IGESDraw_ReadWriteModule::CaseIGES
-  (const Standard_Integer typenum, const Standard_Integer formnum) const 
+Standard_Integer IGESDraw_ReadWriteModule::CaseIGES(const Standard_Integer typenum,
+                                                    const Standard_Integer formnum) const
 {
-  switch (typenum) {
-    case 132 : return  2;
-    case 320 : return  7;
-    case 402 :
-      switch (formnum) {
-        case  3 : return 13;
-        case  4 : return 14;
-        case  5 : return  5;
-        case 16 : return  9;
-        case 19 : return 11;
-	default : break;
+  switch (typenum)
+  {
+    case 132:
+      return 2;
+    case 320:
+      return 7;
+    case 402:
+      switch (formnum)
+      {
+        case 3:
+          return 13;
+        case 4:
+          return 14;
+        case 5:
+          return 5;
+        case 16:
+          return 9;
+        case 19:
+          return 11;
+        default:
+          break;
       }
       break;
-    case 404 : return formnum+3;  // 0->3  1->4
-    case 410 :
-      if      (formnum == 0) return 12;
-      else if (formnum == 1) return  8;
+    case 404:
+      return formnum + 3; // 0->3  1->4
+    case 410:
+      if (formnum == 0)
+        return 12;
+      else if (formnum == 1)
+        return 8;
       break;
-    case 412 : return 10;
-    case 414 : return  1;
-    case 420 : return  6;
-    default : break;
+    case 412:
+      return 10;
+    case 414:
+      return 1;
+    case 420:
+      return 6;
+    default:
+      break;
   }
   return 0;
 }
 
-
-    void  IGESDraw_ReadWriteModule::ReadOwnParams
-  (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent,
-   const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const 
+void IGESDraw_ReadWriteModule::ReadOwnParams(const Standard_Integer                 CN,
+                                             const Handle(IGESData_IGESEntity)&     ent,
+                                             const Handle(IGESData_IGESReaderData)& IR,
+                                             IGESData_ParamReader&                  PR) const
 {
-  switch (CN) {
-    case  1 : {
-      DeclareAndCast(IGESDraw_CircArraySubfigure,anent,ent);
-      if (anent.IsNull()) return;
+  switch (CN)
+  {
+    case 1: {
+      DeclareAndCast(IGESDraw_CircArraySubfigure, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolCircArraySubfigure tool;
-      tool.ReadOwnParams(anent,IR,PR);
+      tool.ReadOwnParams(anent, IR, PR);
     }
-      break;
-    case  2 : {
-      DeclareAndCast(IGESDraw_ConnectPoint,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 2: {
+      DeclareAndCast(IGESDraw_ConnectPoint, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolConnectPoint tool;
-      tool.ReadOwnParams(anent,IR,PR);
+      tool.ReadOwnParams(anent, IR, PR);
     }
-      break;
-    case  3 : {
-      DeclareAndCast(IGESDraw_Drawing,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 3: {
+      DeclareAndCast(IGESDraw_Drawing, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolDrawing tool;
-      tool.ReadOwnParams(anent,IR,PR);
+      tool.ReadOwnParams(anent, IR, PR);
     }
-      break;
-    case  4 : {
-      DeclareAndCast(IGESDraw_DrawingWithRotation,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 4: {
+      DeclareAndCast(IGESDraw_DrawingWithRotation, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolDrawingWithRotation tool;
-      tool.ReadOwnParams(anent,IR,PR);
+      tool.ReadOwnParams(anent, IR, PR);
     }
-      break;
-    case  5 : {
-      DeclareAndCast(IGESDraw_LabelDisplay,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 5: {
+      DeclareAndCast(IGESDraw_LabelDisplay, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolLabelDisplay tool;
-      tool.ReadOwnParams(anent,IR,PR);
+      tool.ReadOwnParams(anent, IR, PR);
     }
-      break;
-    case  6 : {
-      DeclareAndCast(IGESDraw_NetworkSubfigure,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 6: {
+      DeclareAndCast(IGESDraw_NetworkSubfigure, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolNetworkSubfigure tool;
-      tool.ReadOwnParams(anent,IR,PR);
+      tool.ReadOwnParams(anent, IR, PR);
     }
-      break;
-    case  7 : {
-      DeclareAndCast(IGESDraw_NetworkSubfigureDef,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 7: {
+      DeclareAndCast(IGESDraw_NetworkSubfigureDef, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolNetworkSubfigureDef tool;
-      tool.ReadOwnParams(anent,IR,PR);
+      tool.ReadOwnParams(anent, IR, PR);
     }
-      break;
-    case  8 : {
-      DeclareAndCast(IGESDraw_PerspectiveView,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 8: {
+      DeclareAndCast(IGESDraw_PerspectiveView, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolPerspectiveView tool;
-      tool.ReadOwnParams(anent,IR,PR);
+      tool.ReadOwnParams(anent, IR, PR);
     }
-      break;
-    case  9 : {
-      DeclareAndCast(IGESDraw_Planar,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 9: {
+      DeclareAndCast(IGESDraw_Planar, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolPlanar tool;
-      tool.ReadOwnParams(anent,IR,PR);
+      tool.ReadOwnParams(anent, IR, PR);
     }
-      break;
-    case 10 : {
-      DeclareAndCast(IGESDraw_RectArraySubfigure,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 10: {
+      DeclareAndCast(IGESDraw_RectArraySubfigure, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolRectArraySubfigure tool;
-      tool.ReadOwnParams(anent,IR,PR);
+      tool.ReadOwnParams(anent, IR, PR);
     }
-      break;
-    case 11 : {
-      DeclareAndCast(IGESDraw_SegmentedViewsVisible,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 11: {
+      DeclareAndCast(IGESDraw_SegmentedViewsVisible, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolSegmentedViewsVisible tool;
-      tool.ReadOwnParams(anent,IR,PR);
+      tool.ReadOwnParams(anent, IR, PR);
     }
-      break;
-    case 12 : {
-      DeclareAndCast(IGESDraw_View,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 12: {
+      DeclareAndCast(IGESDraw_View, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolView tool;
-      tool.ReadOwnParams(anent,IR,PR);
+      tool.ReadOwnParams(anent, IR, PR);
     }
-      break;
-    case 13 : {
-      DeclareAndCast(IGESDraw_ViewsVisible,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 13: {
+      DeclareAndCast(IGESDraw_ViewsVisible, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolViewsVisible tool;
-      tool.ReadOwnParams(anent,IR,PR);
+      tool.ReadOwnParams(anent, IR, PR);
     }
-      break;
-    case 14 : {
-      DeclareAndCast(IGESDraw_ViewsVisibleWithAttr,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 14: {
+      DeclareAndCast(IGESDraw_ViewsVisibleWithAttr, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolViewsVisibleWithAttr tool;
-      tool.ReadOwnParams(anent,IR,PR);
+      tool.ReadOwnParams(anent, IR, PR);
     }
+    break;
+    default:
       break;
-    default : break;
   }
 }
 
-
-    void  IGESDraw_ReadWriteModule::WriteOwnParams
-  (const Standard_Integer CN,  const Handle(IGESData_IGESEntity)& ent,
-   IGESData_IGESWriter& IW) const
+void IGESDraw_ReadWriteModule::WriteOwnParams(const Standard_Integer             CN,
+                                              const Handle(IGESData_IGESEntity)& ent,
+                                              IGESData_IGESWriter&               IW) const
 {
-  switch (CN) {
-    case  1 : {
-      DeclareAndCast(IGESDraw_CircArraySubfigure,anent,ent);
-      if (anent.IsNull()) return;
+  switch (CN)
+  {
+    case 1: {
+      DeclareAndCast(IGESDraw_CircArraySubfigure, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolCircArraySubfigure tool;
-      tool.WriteOwnParams(anent,IW);
+      tool.WriteOwnParams(anent, IW);
     }
-      break;
-    case  2 : {
-      DeclareAndCast(IGESDraw_ConnectPoint,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 2: {
+      DeclareAndCast(IGESDraw_ConnectPoint, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolConnectPoint tool;
-      tool.WriteOwnParams(anent,IW);
+      tool.WriteOwnParams(anent, IW);
     }
-      break;
-    case  3 : {
-      DeclareAndCast(IGESDraw_Drawing,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 3: {
+      DeclareAndCast(IGESDraw_Drawing, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolDrawing tool;
-      tool.WriteOwnParams(anent,IW);
+      tool.WriteOwnParams(anent, IW);
     }
-      break;
-    case  4 : {
-      DeclareAndCast(IGESDraw_DrawingWithRotation,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 4: {
+      DeclareAndCast(IGESDraw_DrawingWithRotation, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolDrawingWithRotation tool;
-      tool.WriteOwnParams(anent,IW);
+      tool.WriteOwnParams(anent, IW);
     }
-      break;
-    case  5 : {
-      DeclareAndCast(IGESDraw_LabelDisplay,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 5: {
+      DeclareAndCast(IGESDraw_LabelDisplay, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolLabelDisplay tool;
-      tool.WriteOwnParams(anent,IW);
+      tool.WriteOwnParams(anent, IW);
     }
-      break;
-    case  6 : {
-      DeclareAndCast(IGESDraw_NetworkSubfigure,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 6: {
+      DeclareAndCast(IGESDraw_NetworkSubfigure, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolNetworkSubfigure tool;
-      tool.WriteOwnParams(anent,IW);
+      tool.WriteOwnParams(anent, IW);
     }
-      break;
-    case  7 : {
-      DeclareAndCast(IGESDraw_NetworkSubfigureDef,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 7: {
+      DeclareAndCast(IGESDraw_NetworkSubfigureDef, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolNetworkSubfigureDef tool;
-      tool.WriteOwnParams(anent,IW);
+      tool.WriteOwnParams(anent, IW);
     }
-      break;
-    case  8 : {
-      DeclareAndCast(IGESDraw_PerspectiveView,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 8: {
+      DeclareAndCast(IGESDraw_PerspectiveView, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolPerspectiveView tool;
-      tool.WriteOwnParams(anent,IW);
+      tool.WriteOwnParams(anent, IW);
     }
-      break;
-    case  9 : {
-      DeclareAndCast(IGESDraw_Planar,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 9: {
+      DeclareAndCast(IGESDraw_Planar, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolPlanar tool;
-      tool.WriteOwnParams(anent,IW);
+      tool.WriteOwnParams(anent, IW);
     }
-      break;
-    case 10 : {
-      DeclareAndCast(IGESDraw_RectArraySubfigure,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 10: {
+      DeclareAndCast(IGESDraw_RectArraySubfigure, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolRectArraySubfigure tool;
-      tool.WriteOwnParams(anent,IW);
+      tool.WriteOwnParams(anent, IW);
     }
-      break;
-    case 11 : {
-      DeclareAndCast(IGESDraw_SegmentedViewsVisible,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 11: {
+      DeclareAndCast(IGESDraw_SegmentedViewsVisible, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolSegmentedViewsVisible tool;
-      tool.WriteOwnParams(anent,IW);
+      tool.WriteOwnParams(anent, IW);
     }
-      break;
-    case 12 : {
-      DeclareAndCast(IGESDraw_View,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 12: {
+      DeclareAndCast(IGESDraw_View, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolView tool;
-      tool.WriteOwnParams(anent,IW);
+      tool.WriteOwnParams(anent, IW);
     }
-      break;
-    case 13 : {
-      DeclareAndCast(IGESDraw_ViewsVisible,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 13: {
+      DeclareAndCast(IGESDraw_ViewsVisible, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolViewsVisible tool;
-      tool.WriteOwnParams(anent,IW);
+      tool.WriteOwnParams(anent, IW);
     }
-      break;
-    case 14 : {
-      DeclareAndCast(IGESDraw_ViewsVisibleWithAttr,anent,ent);
-      if (anent.IsNull()) return;
+    break;
+    case 14: {
+      DeclareAndCast(IGESDraw_ViewsVisibleWithAttr, anent, ent);
+      if (anent.IsNull())
+        return;
       IGESDraw_ToolViewsVisibleWithAttr tool;
-      tool.WriteOwnParams(anent,IW);
+      tool.WriteOwnParams(anent, IW);
     }
+    break;
+    default:
       break;
-    default : break;
   }
 }

@@ -35,64 +35,54 @@ class IGESData_IGESDumper;
 
 //! Tool to work on a WitnessLine. Called by various Modules
 //! (ReadWriteModule, GeneralModule, SpecificModule)
-class IGESDimen_ToolWitnessLine 
+class IGESDimen_ToolWitnessLine
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a ToolWitnessLine, ready to work
   Standard_EXPORT IGESDimen_ToolWitnessLine();
-  
+
   //! Reads own parameters from file. <PR> gives access to them,
   //! <IR> detains parameter types and values
-  Standard_EXPORT void ReadOwnParams (const Handle(IGESDimen_WitnessLine)& ent, const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const;
-  
+  Standard_EXPORT void ReadOwnParams(const Handle(IGESDimen_WitnessLine)&   ent,
+                                     const Handle(IGESData_IGESReaderData)& IR,
+                                     IGESData_ParamReader&                  PR) const;
+
   //! Writes own parameters to IGESWriter
-  Standard_EXPORT void WriteOwnParams (const Handle(IGESDimen_WitnessLine)& ent, IGESData_IGESWriter& IW) const;
-  
+  Standard_EXPORT void WriteOwnParams(const Handle(IGESDimen_WitnessLine)& ent,
+                                      IGESData_IGESWriter&                 IW) const;
+
   //! Lists the Entities shared by a WitnessLine <ent>, from
   //! its specific (own) parameters
-  Standard_EXPORT void OwnShared (const Handle(IGESDimen_WitnessLine)& ent, Interface_EntityIterator& iter) const;
-  
+  Standard_EXPORT void OwnShared(const Handle(IGESDimen_WitnessLine)& ent,
+                                 Interface_EntityIterator&            iter) const;
+
   //! Sets automatic unambiguous Correction on a WitnessLine
   //! (LineFont forced to Rank = 1, DataType forced to 1)
-  Standard_EXPORT Standard_Boolean OwnCorrect (const Handle(IGESDimen_WitnessLine)& ent) const;
-  
+  Standard_EXPORT Standard_Boolean OwnCorrect(const Handle(IGESDimen_WitnessLine)& ent) const;
+
   //! Returns specific DirChecker
-  Standard_EXPORT IGESData_DirChecker DirChecker (const Handle(IGESDimen_WitnessLine)& ent) const;
-  
+  Standard_EXPORT IGESData_DirChecker DirChecker(const Handle(IGESDimen_WitnessLine)& ent) const;
+
   //! Performs Specific Semantic Check
-  Standard_EXPORT void OwnCheck (const Handle(IGESDimen_WitnessLine)& ent, const Interface_ShareTool& shares, Handle(Interface_Check)& ach) const;
-  
+  Standard_EXPORT void OwnCheck(const Handle(IGESDimen_WitnessLine)& ent,
+                                const Interface_ShareTool&           shares,
+                                Handle(Interface_Check)&             ach) const;
+
   //! Copies Specific Parameters
-  Standard_EXPORT void OwnCopy (const Handle(IGESDimen_WitnessLine)& entfrom, const Handle(IGESDimen_WitnessLine)& entto, Interface_CopyTool& TC) const;
-  
+  Standard_EXPORT void OwnCopy(const Handle(IGESDimen_WitnessLine)& entfrom,
+                               const Handle(IGESDimen_WitnessLine)& entto,
+                               Interface_CopyTool&                  TC) const;
+
   //! Dump of Specific Parameters
-  Standard_EXPORT void OwnDump (const Handle(IGESDimen_WitnessLine)& ent, const IGESData_IGESDumper& dumper, Standard_OStream& S, const Standard_Integer own) const;
-
-
-
+  Standard_EXPORT void OwnDump(const Handle(IGESDimen_WitnessLine)& ent,
+                               const IGESData_IGESDumper&           dumper,
+                               Standard_OStream&                    S,
+                               const Standard_Integer               own) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESDimen_ToolWitnessLine_HeaderFile

@@ -12,13 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <math_FunctionWithDerivative.hxx>
 
-//=======================================================================
-//function : ~math_FunctionWithDerivative
-//purpose  : Destructor
-//=======================================================================
-math_FunctionWithDerivative::~math_FunctionWithDerivative()
-{
-}
+//=================================================================================================
+
+math_FunctionWithDerivative::~math_FunctionWithDerivative() {}

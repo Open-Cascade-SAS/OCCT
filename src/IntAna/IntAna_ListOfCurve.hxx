@@ -20,8 +20,7 @@
 #include <IntAna_Curve.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<IntAna_Curve> IntAna_ListOfCurve;
+typedef NCollection_List<IntAna_Curve>           IntAna_ListOfCurve;
 typedef NCollection_List<IntAna_Curve>::Iterator IntAna_ListIteratorOfListOfCurve;
-
 
 #endif

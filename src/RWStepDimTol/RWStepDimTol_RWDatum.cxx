@@ -22,47 +22,51 @@
 #include <StepDimTol_Datum.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
 
-//=======================================================================
-//function : RWStepDimTol_RWDatum
-//purpose  : 
-//=======================================================================
-RWStepDimTol_RWDatum::RWStepDimTol_RWDatum ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
+RWStepDimTol_RWDatum::RWStepDimTol_RWDatum() {}
 
-void RWStepDimTol_RWDatum::ReadStep (const Handle(StepData_StepReaderData)& data,
-                                     const Standard_Integer num,
-                                     Handle(Interface_Check)& ach,
-                                     const Handle(StepDimTol_Datum) &ent) const
+//=================================================================================================
+
+void RWStepDimTol_RWDatum::ReadStep(const Handle(StepData_StepReaderData)& data,
+                                    const Standard_Integer                 num,
+                                    Handle(Interface_Check)&               ach,
+                                    const Handle(StepDimTol_Datum)&        ent) const
 {
   // Check number of parameters
-  if ( ! data->CheckNbParams(num,5,ach,"datum") ) return;
+  if (!data->CheckNbParams(num, 5, ach, "datum"))
+    return;
 
   // Inherited fields of ShapeAspect
 
   Handle(TCollection_HAsciiString) aShapeAspect_Name;
-  data->ReadString (num, 1, "shape_aspect.name", ach, aShapeAspect_Name);
+  data->ReadString(num, 1, "shape_aspect.name", ach, aShapeAspect_Name);
 
   Handle(TCollection_HAsciiString) aShapeAspect_Description;
-  if ( data->IsParamDefined (num,2) ) {
-    data->ReadString (num, 2, "shape_aspect.description", ach, aShapeAspect_Description);
+  if (data->IsParamDefined(num, 2))
+  {
+    data->ReadString(num, 2, "shape_aspect.description", ach, aShapeAspect_Description);
   }
 
   Handle(StepRepr_ProductDefinitionShape) aShapeAspect_OfShape;
-  data->ReadEntity (num, 3, "shape_aspect.of_shape", ach, STANDARD_TYPE(StepRepr_ProductDefinitionShape), aShapeAspect_OfShape);
+  data->ReadEntity(num,
+                   3,
+                   "shape_aspect.of_shape",
+                   ach,
+                   STANDARD_TYPE(StepRepr_ProductDefinitionShape),
+                   aShapeAspect_OfShape);
 
   StepData_Logical aShapeAspect_ProductDefinitional;
-  data->ReadLogical (num, 4, "shape_aspect.product_definitional", ach, aShapeAspect_ProductDefinitional);
+  data->ReadLogical(num,
+                    4,
+                    "shape_aspect.product_definitional",
+                    ach,
+                    aShapeAspect_ProductDefinitional);
 
   // Own fields of Datum
 
   Handle(TCollection_HAsciiString) aIdentification;
-  data->ReadString (num, 5, "identification", ach, aIdentification);
+  data->ReadString(num, 5, "identification", ach, aIdentification);
 
   // Initialize entity
   ent->Init(aShapeAspect_Name,
@@ -72,42 +76,36 @@ void RWStepDimTol_RWDatum::ReadStep (const Handle(StepData_StepReaderData)& data
             aIdentification);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepDimTol_RWDatum::WriteStep (StepData_StepWriter& SW,
-                                      const Handle(StepDimTol_Datum) &ent) const
+void RWStepDimTol_RWDatum::WriteStep(StepData_StepWriter&            SW,
+                                     const Handle(StepDimTol_Datum)& ent) const
 {
 
   // Inherited fields of ShapeAspect
 
-  SW.Send (ent->StepRepr_ShapeAspect::Name());
+  SW.Send(ent->StepRepr_ShapeAspect::Name());
 
-  SW.Send (ent->StepRepr_ShapeAspect::Description());
+  SW.Send(ent->StepRepr_ShapeAspect::Description());
 
-  SW.Send (ent->StepRepr_ShapeAspect::OfShape());
+  SW.Send(ent->StepRepr_ShapeAspect::OfShape());
 
-  SW.SendLogical (ent->StepRepr_ShapeAspect::ProductDefinitional());
+  SW.SendLogical(ent->StepRepr_ShapeAspect::ProductDefinitional());
 
   // Own fields of Datum
 
-  SW.Send (ent->Identification());
+  SW.Send(ent->Identification());
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepDimTol_RWDatum::Share (const Handle(StepDimTol_Datum) &ent,
-                                  Interface_EntityIterator& iter) const
+void RWStepDimTol_RWDatum::Share(const Handle(StepDimTol_Datum)& ent,
+                                 Interface_EntityIterator&       iter) const
 {
 
   // Inherited fields of ShapeAspect
 
-  iter.AddItem (ent->StepRepr_ShapeAspect::OfShape());
+  iter.AddItem(ent->StepRepr_ShapeAspect::OfShape());
 
   // Own fields of Datum
 }

@@ -25,7 +25,6 @@
 class TopoDS_Wire;
 class GeomFill_LocationGuide;
 
-
 class BRepFill_ACRLaw;
 DEFINE_STANDARD_HANDLE(BRepFill_ACRLaw, BRepFill_LocationLaw)
 
@@ -36,32 +35,14 @@ class BRepFill_ACRLaw : public BRepFill_LocationLaw
 {
 
 public:
+  Standard_EXPORT BRepFill_ACRLaw(const TopoDS_Wire&                    Path,
+                                  const Handle(GeomFill_LocationGuide)& Law);
 
-  
-  Standard_EXPORT BRepFill_ACRLaw(const TopoDS_Wire& Path, const Handle(GeomFill_LocationGuide)& Law);
-
-
-
-
-  DEFINE_STANDARD_RTTIEXT(BRepFill_ACRLaw,BRepFill_LocationLaw)
+  DEFINE_STANDARD_RTTIEXT(BRepFill_ACRLaw, BRepFill_LocationLaw)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TColStd_HArray1OfReal) OrigParam;
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepFill_ACRLaw_HeaderFile

@@ -27,7 +27,6 @@ class Interface_Graph;
 class Standard_Transient;
 class TCollection_AsciiString;
 
-
 class IFSelect_SelectExplore;
 DEFINE_STANDARD_HANDLE(IFSelect_SelectExplore, IFSelect_SelectDeduct)
 
@@ -52,18 +51,17 @@ class IFSelect_SelectExplore : public IFSelect_SelectDeduct
 {
 
 public:
-
-  
   //! Returns the required exploring level
   Standard_EXPORT Standard_Integer Level() const;
-  
+
   //! Returns the list of selected entities. Works by calling the
   //! method Explore on each input entity : it can be rejected,
   //! taken for output, or to explore. If the maximum level has not
   //! yet been attained, or if no max level is specified, entities
   //! to be explored are themselves used as if they were input
-  Standard_EXPORT Interface_EntityIterator RootResult (const Interface_Graph& G) const Standard_OVERRIDE;
-  
+  Standard_EXPORT Interface_EntityIterator
+    RootResult(const Interface_Graph& G) const Standard_OVERRIDE;
+
   //! Analyses and, if required, Explores an entity, as follows :
   //! The explored list starts as empty, it has to be filled by this
   //! method.
@@ -75,41 +73,27 @@ public:
   //! of this list is considered :
   //! If maximum level is attained, it is taken for result
   //! Else (or no max), each of its entity will be itself explored
-  Standard_EXPORT virtual Standard_Boolean Explore (const Standard_Integer level, const Handle(Standard_Transient)& ent, const Interface_Graph& G, Interface_EntityIterator& explored) const = 0;
-  
+  Standard_EXPORT virtual Standard_Boolean Explore(const Standard_Integer            level,
+                                                   const Handle(Standard_Transient)& ent,
+                                                   const Interface_Graph&            G,
+                                                   Interface_EntityIterator& explored) const = 0;
+
   //! Returns a text saying "(Recursive)" or "(Level nn)" plus
   //! specific criterium returned by ExploreLabel (see below)
   Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
-  
+
   //! Returns a text defining the way of exploration
   Standard_EXPORT virtual TCollection_AsciiString ExploreLabel() const = 0;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectExplore,IFSelect_SelectDeduct)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectExplore, IFSelect_SelectDeduct)
 
 protected:
-
-  
   //! Initializes a SelectExplore : the level must be specified on
   //! starting. 0 means all levels, 1 means level one only, etc...
   Standard_EXPORT IFSelect_SelectExplore(const Standard_Integer level);
 
-
-
 private:
-
-
   Standard_Integer thelevel;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_SelectExplore_HeaderFile

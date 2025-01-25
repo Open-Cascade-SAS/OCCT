@@ -24,48 +24,30 @@
 #include <Standard_Real.hxx>
 class TCollection_HAsciiString;
 
-
 class StepVisual_PlanarBox;
 DEFINE_STANDARD_HANDLE(StepVisual_PlanarBox, StepVisual_PlanarExtent)
-
 
 class StepVisual_PlanarBox : public StepVisual_PlanarExtent
 {
 
 public:
-
-  
   //! Returns a PlanarBox
   Standard_EXPORT StepVisual_PlanarBox();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Real aSizeInX, const Standard_Real aSizeInY, const StepGeom_Axis2Placement& aPlacement);
-  
-  Standard_EXPORT void SetPlacement (const StepGeom_Axis2Placement& aPlacement);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Standard_Real                     aSizeInX,
+                            const Standard_Real                     aSizeInY,
+                            const StepGeom_Axis2Placement&          aPlacement);
+
+  Standard_EXPORT void SetPlacement(const StepGeom_Axis2Placement& aPlacement);
+
   Standard_EXPORT StepGeom_Axis2Placement Placement() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_PlanarBox,StepVisual_PlanarExtent)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PlanarBox, StepVisual_PlanarExtent)
 
 protected:
-
-
-
-
 private:
-
-
   StepGeom_Axis2Placement placement;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_PlanarBox_HeaderFile

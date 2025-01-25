@@ -23,48 +23,28 @@
 #include <Standard_Transient.hxx>
 class StepVisual_CurveStyle;
 
-
 class StepVisual_SurfaceStyleSilhouette;
 DEFINE_STANDARD_HANDLE(StepVisual_SurfaceStyleSilhouette, Standard_Transient)
-
 
 class StepVisual_SurfaceStyleSilhouette : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a SurfaceStyleSilhouette
   Standard_EXPORT StepVisual_SurfaceStyleSilhouette();
-  
-  Standard_EXPORT void Init (const Handle(StepVisual_CurveStyle)& aStyleOfSilhouette);
-  
-  Standard_EXPORT void SetStyleOfSilhouette (const Handle(StepVisual_CurveStyle)& aStyleOfSilhouette);
-  
+
+  Standard_EXPORT void Init(const Handle(StepVisual_CurveStyle)& aStyleOfSilhouette);
+
+  Standard_EXPORT void SetStyleOfSilhouette(
+    const Handle(StepVisual_CurveStyle)& aStyleOfSilhouette);
+
   Standard_EXPORT Handle(StepVisual_CurveStyle) StyleOfSilhouette() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleSilhouette,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleSilhouette, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepVisual_CurveStyle) styleOfSilhouette;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_SurfaceStyleSilhouette_HeaderFile

@@ -20,8 +20,7 @@
 #include <TopTools_MapOfShape.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<TopTools_MapOfShape> TNaming_ListOfMapOfShape;
+typedef NCollection_List<TopTools_MapOfShape>           TNaming_ListOfMapOfShape;
 typedef NCollection_List<TopTools_MapOfShape>::Iterator TNaming_ListIteratorOfListOfMapOfShape;
-
 
 #endif

@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -27,12 +27,10 @@ DEFINE_STANDARD_HANDLE(StepKinematics_HomokineticPair, StepKinematics_UniversalP
 //! Representation of STEP entity HomokineticPair
 class StepKinematics_HomokineticPair : public StepKinematics_UniversalPair
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_HomokineticPair();
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_HomokineticPair, StepKinematics_UniversalPair)
-
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_HomokineticPair, StepKinematics_UniversalPair)
 };
 #endif // _StepKinematics_HomokineticPair_HeaderFile_

@@ -24,33 +24,29 @@
 
 class StepDimTol_RunoutZoneOrientation;
 DEFINE_STANDARD_HANDLE(StepDimTol_RunoutZoneOrientation, Standard_Transient)
+
 //! Added for Dimensional Tolerances
 class StepDimTol_RunoutZoneOrientation : public Standard_Transient
 {
 
 public:
-  
   Standard_EXPORT StepDimTol_RunoutZoneOrientation();
-  
+
   //! Init all field own and inherited
-  Standard_EXPORT void Init (const Handle(StepBasic_PlaneAngleMeasureWithUnit)& theAngle);
+  Standard_EXPORT void Init(const Handle(StepBasic_PlaneAngleMeasureWithUnit)& theAngle);
 
   //! Returns field Angle
-  inline Handle(StepBasic_PlaneAngleMeasureWithUnit) Angle()
-  {
-    return myAngle;
-  }
-  
+  inline Handle(StepBasic_PlaneAngleMeasureWithUnit) Angle() { return myAngle; }
+
   //! Set field Angle
-  inline void SetAngle(const Handle(StepBasic_PlaneAngleMeasureWithUnit) &theAngle)
+  inline void SetAngle(const Handle(StepBasic_PlaneAngleMeasureWithUnit)& theAngle)
   {
     myAngle = theAngle;
   }
-  
-  DEFINE_STANDARD_RTTIEXT(StepDimTol_RunoutZoneOrientation,Standard_Transient)
-  
+
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_RunoutZoneOrientation, Standard_Transient)
+
 private:
   Handle(StepBasic_PlaneAngleMeasureWithUnit) myAngle;
-
 };
 #endif // _StepDimTol_RunoutZoneOrientation_HeaderFile

@@ -24,7 +24,6 @@ class StepBasic_MeasureWithUnit;
 class TCollection_HAsciiString;
 class StepBasic_ProductDefinition;
 
-
 class StepRepr_QuantifiedAssemblyComponentUsage;
 DEFINE_STANDARD_HANDLE(StepRepr_QuantifiedAssemblyComponentUsage, StepRepr_AssemblyComponentUsage)
 
@@ -33,45 +32,49 @@ class StepRepr_QuantifiedAssemblyComponentUsage : public StepRepr_AssemblyCompon
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepRepr_QuantifiedAssemblyComponentUsage();
-  
-  //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Id, const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Name, const Standard_Boolean hasProductDefinitionRelationship_Description, const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Description, const Handle(StepBasic_ProductDefinition)& aProductDefinitionRelationship_RelatingProductDefinition, const Handle(StepBasic_ProductDefinition)& aProductDefinitionRelationship_RelatedProductDefinition, const Standard_Boolean hasAssemblyComponentUsage_ReferenceDesignator, const Handle(TCollection_HAsciiString)& aAssemblyComponentUsage_ReferenceDesignator, const Handle(StepBasic_MeasureWithUnit)& aQuantity);
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Id, const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Name, const Standard_Boolean hasProductDefinitionRelationship_Description, const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Description, const StepBasic_ProductDefinitionOrReference& aProductDefinitionRelationship_RelatingProductDefinition, const StepBasic_ProductDefinitionOrReference& aProductDefinitionRelationship_RelatedProductDefinition, const Standard_Boolean hasAssemblyComponentUsage_ReferenceDesignator, const Handle(TCollection_HAsciiString)& aAssemblyComponentUsage_ReferenceDesignator, const Handle(StepBasic_MeasureWithUnit)& aQuantity);
-  
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Id,
+    const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Name,
+    const Standard_Boolean                  hasProductDefinitionRelationship_Description,
+    const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Description,
+    const Handle(StepBasic_ProductDefinition)&
+      aProductDefinitionRelationship_RelatingProductDefinition,
+    const Handle(StepBasic_ProductDefinition)&
+                                            aProductDefinitionRelationship_RelatedProductDefinition,
+    const Standard_Boolean                  hasAssemblyComponentUsage_ReferenceDesignator,
+    const Handle(TCollection_HAsciiString)& aAssemblyComponentUsage_ReferenceDesignator,
+    const Handle(StepBasic_MeasureWithUnit)& aQuantity);
+
+  //! Initialize all fields (own and inherited)
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Id,
+    const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Name,
+    const Standard_Boolean                  hasProductDefinitionRelationship_Description,
+    const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Description,
+    const StepBasic_ProductDefinitionOrReference&
+      aProductDefinitionRelationship_RelatingProductDefinition,
+    const StepBasic_ProductDefinitionOrReference&
+                                            aProductDefinitionRelationship_RelatedProductDefinition,
+    const Standard_Boolean                  hasAssemblyComponentUsage_ReferenceDesignator,
+    const Handle(TCollection_HAsciiString)& aAssemblyComponentUsage_ReferenceDesignator,
+    const Handle(StepBasic_MeasureWithUnit)& aQuantity);
+
   //! Returns field Quantity
   Standard_EXPORT Handle(StepBasic_MeasureWithUnit) Quantity() const;
-  
+
   //! Set field Quantity
-  Standard_EXPORT void SetQuantity (const Handle(StepBasic_MeasureWithUnit)& Quantity);
+  Standard_EXPORT void SetQuantity(const Handle(StepBasic_MeasureWithUnit)& Quantity);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepRepr_QuantifiedAssemblyComponentUsage,StepRepr_AssemblyComponentUsage)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_QuantifiedAssemblyComponentUsage,
+                          StepRepr_AssemblyComponentUsage)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_MeasureWithUnit) theQuantity;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepRepr_QuantifiedAssemblyComponentUsage_HeaderFile

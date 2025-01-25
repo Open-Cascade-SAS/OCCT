@@ -17,60 +17,63 @@
 
 static Standard_Real UnitsMethods_CascadeLengthUnit = 1.;
 
-//=======================================================================
-//function : GetCasCadeLengthUnit
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Real UnitsMethods::GetCasCadeLengthUnit(const UnitsMethods_LengthUnit theBaseUnit)
 {
-  return UnitsMethods_CascadeLengthUnit * GetLengthUnitScale(UnitsMethods_LengthUnit_Millimeter, theBaseUnit);
+  return UnitsMethods_CascadeLengthUnit
+         * GetLengthUnitScale(UnitsMethods_LengthUnit_Millimeter, theBaseUnit);
 }
 
-//=======================================================================
-//function : SetCasCadeLengthUnit
-//purpose  :
-//=======================================================================
-void UnitsMethods::SetCasCadeLengthUnit(const Standard_Real theUnitValue,
+//=================================================================================================
+
+void UnitsMethods::SetCasCadeLengthUnit(const Standard_Real           theUnitValue,
                                         const UnitsMethods_LengthUnit theBaseUnit)
 {
-  UnitsMethods_CascadeLengthUnit = theUnitValue * GetLengthUnitScale(theBaseUnit, UnitsMethods_LengthUnit_Millimeter);
+  UnitsMethods_CascadeLengthUnit =
+    theUnitValue * GetLengthUnitScale(theBaseUnit, UnitsMethods_LengthUnit_Millimeter);
 }
 
-//=======================================================================
-//function : SetCasCadeLengthUnit
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 void UnitsMethods::SetCasCadeLengthUnit(const Standard_Integer theUnit)
 {
   UnitsMethods_CascadeLengthUnit = GetLengthFactorValue(theUnit);
 }
 
-//=======================================================================
-//function : GetLengthFactorValue
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Real UnitsMethods::GetLengthFactorValue(const Standard_Integer theUnit)
 {
   switch (theUnit)
   {
-    case  1: return 25.4; // inch
-    case  2: return 1.; // millimeter
-    case  4: return 304.8; // foot
-    case  5: return 1609344.; // mile
-    case  6: return 1000.; // meter
-    case  7: return 1000000.; // kilometer
-    case  8: return 0.0254; // mil (0.001 inch)
-    case  9: return 0.001; // micron
-    case 10: return 10.; // centimeter
-    case 11: return 0.0000254; // microinch
-    default: return 1.;
+    case 1:
+      return 25.4; // inch
+    case 2:
+      return 1.; // millimeter
+    case 4:
+      return 304.8; // foot
+    case 5:
+      return 1609344.; // mile
+    case 6:
+      return 1000.; // meter
+    case 7:
+      return 1000000.; // kilometer
+    case 8:
+      return 0.0254; // mil (0.001 inch)
+    case 9:
+      return 0.001; // micron
+    case 10:
+      return 10.; // centimeter
+    case 11:
+      return 0.0000254; // microinch
+    default:
+      return 1.;
   }
 }
 
-//=======================================================================
-//function : GetLengthUnitScale
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Real UnitsMethods::GetLengthUnitScale(const UnitsMethods_LengthUnit theFromUnit,
                                                const UnitsMethods_LengthUnit theToUnit)
 {
@@ -79,15 +82,15 @@ Standard_Real UnitsMethods::GetLengthUnitScale(const UnitsMethods_LengthUnit the
   return aVal1 / aVal2;
 }
 
-//=======================================================================
-//function : GetLengthUnitByScale
-//purpose  :
-//=======================================================================
-UnitsMethods_LengthUnit UnitsMethods::GetLengthUnitByFactorValue(const Standard_Real theFactorValue,
-                                                                 const UnitsMethods_LengthUnit theBaseUnit)
+//=================================================================================================
+
+UnitsMethods_LengthUnit UnitsMethods::GetLengthUnitByFactorValue(
+  const Standard_Real           theFactorValue,
+  const UnitsMethods_LengthUnit theBaseUnit)
 {
   const Standard_Real aPreci = 1.e-6;
-  const Standard_Real aValue = theFactorValue * GetLengthUnitScale(theBaseUnit, UnitsMethods_LengthUnit_Millimeter);
+  const Standard_Real aValue =
+    theFactorValue * GetLengthUnitScale(theBaseUnit, UnitsMethods_LengthUnit_Millimeter);
   if (Abs(1. - aValue) < aPreci)
   {
     return UnitsMethods_LengthUnit_Millimeter;
@@ -131,44 +134,49 @@ UnitsMethods_LengthUnit UnitsMethods::GetLengthUnitByFactorValue(const Standard_
   return UnitsMethods_LengthUnit_Undefined;
 }
 
-//=======================================================================
-//function : DumpLengthUnit
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_CString UnitsMethods::DumpLengthUnit(const UnitsMethods_LengthUnit theUnit)
 {
   switch (theUnit)
   {
-    case UnitsMethods_LengthUnit_Millimeter: return "mm";
-    case UnitsMethods_LengthUnit_Meter:      return "m";
-    case UnitsMethods_LengthUnit_Centimeter: return "cm";
-    case UnitsMethods_LengthUnit_Kilometer:  return "km";
-    case UnitsMethods_LengthUnit_Micron:     return "micron";
-    case UnitsMethods_LengthUnit_Inch:       return "in";
-    case UnitsMethods_LengthUnit_Mil:        return "min";
-    case UnitsMethods_LengthUnit_Microinch:  return "nin";
-    case UnitsMethods_LengthUnit_Foot:       return "ft";
-    case UnitsMethods_LengthUnit_Mile:       return "stat.mile";
-    default: return "UNDEFINED";
+    case UnitsMethods_LengthUnit_Millimeter:
+      return "mm";
+    case UnitsMethods_LengthUnit_Meter:
+      return "m";
+    case UnitsMethods_LengthUnit_Centimeter:
+      return "cm";
+    case UnitsMethods_LengthUnit_Kilometer:
+      return "km";
+    case UnitsMethods_LengthUnit_Micron:
+      return "micron";
+    case UnitsMethods_LengthUnit_Inch:
+      return "in";
+    case UnitsMethods_LengthUnit_Mil:
+      return "min";
+    case UnitsMethods_LengthUnit_Microinch:
+      return "nin";
+    case UnitsMethods_LengthUnit_Foot:
+      return "ft";
+    case UnitsMethods_LengthUnit_Mile:
+      return "stat.mile";
+    default:
+      return "UNDEFINED";
   }
 }
 
-//=======================================================================
-//function : DumpLengthUnit
-//purpose  :
-//=======================================================================
-Standard_CString UnitsMethods::DumpLengthUnit(const Standard_Real theScaleFactor,
+//=================================================================================================
+
+Standard_CString UnitsMethods::DumpLengthUnit(const Standard_Real           theScaleFactor,
                                               const UnitsMethods_LengthUnit theBaseUnit)
 {
   const UnitsMethods_LengthUnit aUnit = GetLengthUnitByFactorValue(theScaleFactor, theBaseUnit);
   return DumpLengthUnit(aUnit);
 }
 
-//=======================================================================
-//function : LengthUnitFromString
-//purpose  :
-//=======================================================================
-UnitsMethods_LengthUnit UnitsMethods::LengthUnitFromString(Standard_CString theStr,
+//=================================================================================================
+
+UnitsMethods_LengthUnit UnitsMethods::LengthUnitFromString(Standard_CString       theStr,
                                                            const Standard_Boolean theCaseSensitive)
 {
   TCollection_AsciiString aStr(theStr);

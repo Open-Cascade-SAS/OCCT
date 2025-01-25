@@ -15,17 +15,16 @@
 
 //      	----------------------
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Oct 10 1997	Creation
 
 #include <TDF_DeltaOnRemoval.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDF_DeltaOnRemoval,TDF_AttributeDelta)
+IMPLEMENT_STANDARD_RTTIEXT(TDF_DeltaOnRemoval, TDF_AttributeDelta)
 
-//=======================================================================
-//function : TDF_DeltaOnRemoval
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 TDF_DeltaOnRemoval::TDF_DeltaOnRemoval(const Handle(TDF_Attribute)& anAtt)
-: TDF_AttributeDelta(anAtt)
-{}
+    : TDF_AttributeDelta(anAtt)
+{
+}

@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<gp_Pnt> TColgp_SequenceOfPnt;
 
-
 #endif

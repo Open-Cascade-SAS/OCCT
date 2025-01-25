@@ -27,51 +27,28 @@ class Standard_Transient;
 class StepVisual_PresentationRepresentation;
 class StepVisual_PresentationSet;
 
-
-
-class StepVisual_PresentationRepresentationSelect  : public StepData_SelectType
+class StepVisual_PresentationRepresentationSelect : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns a PresentationRepresentationSelect SelectType
   Standard_EXPORT StepVisual_PresentationRepresentationSelect();
-  
+
   //! Recognizes a PresentationRepresentationSelect Kind Entity that is :
   //! 1 -> PresentationRepresentation
   //! 2 -> PresentationSet
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a PresentationRepresentation (Null if another type)
   Standard_EXPORT Handle(StepVisual_PresentationRepresentation) PresentationRepresentation() const;
-  
+
   //! returns Value as a PresentationSet (Null if another type)
   Standard_EXPORT Handle(StepVisual_PresentationSet) PresentationSet() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_PresentationRepresentationSelect_HeaderFile

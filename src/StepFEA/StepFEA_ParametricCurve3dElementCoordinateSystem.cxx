@@ -19,45 +19,38 @@
 #include <StepFEA_ParametricCurve3dElementCoordinateSystem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepFEA_ParametricCurve3dElementCoordinateSystem,StepFEA_FeaRepresentationItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_ParametricCurve3dElementCoordinateSystem,
+                           StepFEA_FeaRepresentationItem)
 
-//=======================================================================
-//function : StepFEA_ParametricCurve3dElementCoordinateSystem
-//purpose  : 
-//=======================================================================
-StepFEA_ParametricCurve3dElementCoordinateSystem::StepFEA_ParametricCurve3dElementCoordinateSystem ()
+//=================================================================================================
+
+StepFEA_ParametricCurve3dElementCoordinateSystem::StepFEA_ParametricCurve3dElementCoordinateSystem()
 {
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_ParametricCurve3dElementCoordinateSystem::Init (const Handle(TCollection_HAsciiString) &aRepresentationItem_Name,
-                                                             const Handle(StepFEA_ParametricCurve3dElementCoordinateDirection) &aDirection)
+void StepFEA_ParametricCurve3dElementCoordinateSystem::Init(
+  const Handle(TCollection_HAsciiString)&                            aRepresentationItem_Name,
+  const Handle(StepFEA_ParametricCurve3dElementCoordinateDirection)& aDirection)
 {
   StepFEA_FeaRepresentationItem::Init(aRepresentationItem_Name);
 
   theDirection = aDirection;
 }
 
-//=======================================================================
-//function : Direction
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepFEA_ParametricCurve3dElementCoordinateDirection) StepFEA_ParametricCurve3dElementCoordinateSystem::Direction () const
+Handle(StepFEA_ParametricCurve3dElementCoordinateDirection)
+  StepFEA_ParametricCurve3dElementCoordinateSystem::Direction() const
 {
   return theDirection;
 }
 
-//=======================================================================
-//function : SetDirection
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepFEA_ParametricCurve3dElementCoordinateSystem::SetDirection (const Handle(StepFEA_ParametricCurve3dElementCoordinateDirection) &aDirection)
+void StepFEA_ParametricCurve3dElementCoordinateSystem::SetDirection(
+  const Handle(StepFEA_ParametricCurve3dElementCoordinateDirection)& aDirection)
 {
   theDirection = aDirection;
 }

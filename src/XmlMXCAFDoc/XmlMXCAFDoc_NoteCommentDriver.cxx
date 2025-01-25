@@ -22,31 +22,27 @@
 IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_NoteCommentDriver, XmlMXCAFDoc_NoteDriver)
 IMPLEMENT_DOMSTRING(Comment, "comment")
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-XmlMXCAFDoc_NoteCommentDriver::XmlMXCAFDoc_NoteCommentDriver(const Handle(Message_Messenger)& theMsgDriver)
-  : XmlMXCAFDoc_NoteDriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_NoteComment)->Name())
+//=================================================================================================
+
+XmlMXCAFDoc_NoteCommentDriver::XmlMXCAFDoc_NoteCommentDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : XmlMXCAFDoc_NoteDriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_NoteComment)->Name())
 {
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 Handle(TDF_Attribute) XmlMXCAFDoc_NoteCommentDriver::NewEmpty() const
 {
   return new XCAFDoc_NoteComment();
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-Standard_Boolean XmlMXCAFDoc_NoteCommentDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                      const Handle(TDF_Attribute)& theTarget,
-                                                      XmlObjMgt_RRelocationTable&  theRelocTable) const
+//=================================================================================================
+
+Standard_Boolean XmlMXCAFDoc_NoteCommentDriver::Paste(
+  const XmlObjMgt_Persistent&  theSource,
+  const Handle(TDF_Attribute)& theTarget,
+  XmlObjMgt_RRelocationTable&  theRelocTable) const
 {
   XmlMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable);
 
@@ -65,10 +61,8 @@ Standard_Boolean XmlMXCAFDoc_NoteCommentDriver::Paste(const XmlObjMgt_Persistent
   return Standard_True;
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void XmlMXCAFDoc_NoteCommentDriver::Paste(const Handle(TDF_Attribute)& theSource,
                                           XmlObjMgt_Persistent&        theTarget,
                                           XmlObjMgt_SRelocationTable&  theRelocTable) const
@@ -82,13 +76,11 @@ void XmlMXCAFDoc_NoteCommentDriver::Paste(const Handle(TDF_Attribute)& theSource
   theTarget.Element().setAttribute(::Comment(), aComment);
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-XmlMXCAFDoc_NoteCommentDriver::XmlMXCAFDoc_NoteCommentDriver(const Handle(Message_Messenger)& theMsgDriver,
-                                                             Standard_CString                 theName)
-  : XmlMXCAFDoc_NoteDriver(theMsgDriver, theName)
-{
+//=================================================================================================
 
+XmlMXCAFDoc_NoteCommentDriver::XmlMXCAFDoc_NoteCommentDriver(
+  const Handle(Message_Messenger)& theMsgDriver,
+  Standard_CString                 theName)
+    : XmlMXCAFDoc_NoteDriver(theMsgDriver, theName)
+{
 }

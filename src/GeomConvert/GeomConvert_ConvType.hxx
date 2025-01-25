@@ -13,6 +13,7 @@
 
 #ifndef _GeomConvert_ConvType_HeaderFile
 #define _GeomConvert_ConvType_HeaderFile
+
 enum GeomConvert_ConvType
 {
   GeomConvert_Target,

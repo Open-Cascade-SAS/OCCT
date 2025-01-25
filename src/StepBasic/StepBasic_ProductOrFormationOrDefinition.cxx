@@ -21,54 +21,45 @@
 #include <StepBasic_ProductDefinitionFormation.hxx>
 #include <StepBasic_ProductOrFormationOrDefinition.hxx>
 
-//=======================================================================
-//function : StepBasic_ProductOrFormationOrDefinition
-//purpose  : 
-//=======================================================================
-StepBasic_ProductOrFormationOrDefinition::StepBasic_ProductOrFormationOrDefinition ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : CaseNum
-//purpose  : 
-//=======================================================================
+StepBasic_ProductOrFormationOrDefinition::StepBasic_ProductOrFormationOrDefinition() {}
 
-Standard_Integer StepBasic_ProductOrFormationOrDefinition::CaseNum (const Handle(Standard_Transient)& ent) const
+//=================================================================================================
+
+Standard_Integer StepBasic_ProductOrFormationOrDefinition::CaseNum(
+  const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepBasic_Product))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionFormation))) return 2;
-  if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition))) return 3;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_Product)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionFormation)))
+    return 2;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition)))
+    return 3;
   return 0;
 }
 
-//=======================================================================
-//function : Product
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_Product) StepBasic_ProductOrFormationOrDefinition::Product () const
+Handle(StepBasic_Product) StepBasic_ProductOrFormationOrDefinition::Product() const
 {
   return Handle(StepBasic_Product)::DownCast(Value());
 }
 
-//=======================================================================
-//function : ProductDefinitionFormation
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_ProductDefinitionFormation) StepBasic_ProductOrFormationOrDefinition::ProductDefinitionFormation () const
+Handle(StepBasic_ProductDefinitionFormation) StepBasic_ProductOrFormationOrDefinition::
+  ProductDefinitionFormation() const
 {
   return Handle(StepBasic_ProductDefinitionFormation)::DownCast(Value());
 }
 
-//=======================================================================
-//function : ProductDefinition
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepBasic_ProductDefinition) StepBasic_ProductOrFormationOrDefinition::ProductDefinition () const
+Handle(StepBasic_ProductDefinition) StepBasic_ProductOrFormationOrDefinition::ProductDefinition()
+  const
 {
   return Handle(StepBasic_ProductDefinition)::DownCast(Value());
 }

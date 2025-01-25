@@ -18,82 +18,65 @@
 #include <StepBasic_IdentificationRole.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_IdentificationRole,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_IdentificationRole, Standard_Transient)
 
-//=======================================================================
-//function : StepBasic_IdentificationRole
-//purpose  : 
-//=======================================================================
-StepBasic_IdentificationRole::StepBasic_IdentificationRole ()
+//=================================================================================================
+
+StepBasic_IdentificationRole::StepBasic_IdentificationRole()
 {
   defDescription = Standard_False;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_IdentificationRole::Init (const Handle(TCollection_HAsciiString) &aName,
-                                         const Standard_Boolean hasDescription,
-                                         const Handle(TCollection_HAsciiString) &aDescription)
+void StepBasic_IdentificationRole::Init(const Handle(TCollection_HAsciiString)& aName,
+                                        const Standard_Boolean                  hasDescription,
+                                        const Handle(TCollection_HAsciiString)& aDescription)
 {
 
   theName = aName;
 
   defDescription = hasDescription;
-  if (defDescription) {
+  if (defDescription)
+  {
     theDescription = aDescription;
   }
-  else theDescription.Nullify();
+  else
+    theDescription.Nullify();
 }
 
-//=======================================================================
-//function : Name
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_IdentificationRole::Name () const
+Handle(TCollection_HAsciiString) StepBasic_IdentificationRole::Name() const
 {
   return theName;
 }
 
-//=======================================================================
-//function : SetName
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_IdentificationRole::SetName (const Handle(TCollection_HAsciiString) &aName)
+void StepBasic_IdentificationRole::SetName(const Handle(TCollection_HAsciiString)& aName)
 {
   theName = aName;
 }
 
-//=======================================================================
-//function : Description
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_IdentificationRole::Description () const
+Handle(TCollection_HAsciiString) StepBasic_IdentificationRole::Description() const
 {
   return theDescription;
 }
 
-//=======================================================================
-//function : SetDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_IdentificationRole::SetDescription (const Handle(TCollection_HAsciiString) &aDescription)
+void StepBasic_IdentificationRole::SetDescription(
+  const Handle(TCollection_HAsciiString)& aDescription)
 {
   theDescription = aDescription;
 }
 
-//=======================================================================
-//function : HasDescription
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean StepBasic_IdentificationRole::HasDescription () const
+Standard_Boolean StepBasic_IdentificationRole::HasDescription() const
 {
   return defDescription;
 }

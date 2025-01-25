@@ -40,33 +40,33 @@ class HLRAlgo_Coincidence
 public:
   DEFINE_STANDARD_ALLOC
 
-  HLRAlgo_Coincidence() :
-    myFE(0),
-    myParam(0.),
-    myStBef(TopAbs_IN),
-    myStAft(TopAbs_IN)
+  HLRAlgo_Coincidence()
+      : myFE(0),
+        myParam(0.),
+        myStBef(TopAbs_IN),
+        myStAft(TopAbs_IN)
   {
   }
 
-  void Set2D (const Standard_Integer FE, const Standard_Real Param)
+  void Set2D(const Standard_Integer FE, const Standard_Real Param)
   {
     myFE    = FE;
     myParam = Param;
   }
 
-  void SetState3D (const TopAbs_State stbef, const TopAbs_State staft)
+  void SetState3D(const TopAbs_State stbef, const TopAbs_State staft)
   {
     myStBef = stbef;
     myStAft = staft;
   }
 
-  void Value2D (Standard_Integer& FE, Standard_Real& Param) const
+  void Value2D(Standard_Integer& FE, Standard_Real& Param) const
   {
     FE    = myFE;
     Param = myParam;
   }
 
-  void State3D (TopAbs_State& stbef, TopAbs_State& staft) const
+  void State3D(TopAbs_State& stbef, TopAbs_State& staft) const
   {
     stbef = myStBef;
     staft = myStAft;
@@ -74,9 +74,9 @@ public:
 
 private:
   Standard_Integer myFE;
-  Standard_Real myParam;
-  TopAbs_State myStBef;
-  TopAbs_State myStAft;
+  Standard_Real    myParam;
+  TopAbs_State     myStBef;
+  TopAbs_State     myStAft;
 };
 
 #endif // _HLRAlgo_Coincidence_HeaderFile

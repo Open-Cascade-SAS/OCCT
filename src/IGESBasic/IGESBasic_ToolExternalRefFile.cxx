@@ -30,44 +30,43 @@
 #include <Interface_ShareTool.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESBasic_ToolExternalRefFile::IGESBasic_ToolExternalRefFile ()    {  }
+IGESBasic_ToolExternalRefFile::IGESBasic_ToolExternalRefFile() {}
 
-
-void  IGESBasic_ToolExternalRefFile::ReadOwnParams
-  (const Handle(IGESBasic_ExternalRefFile)& ent,
-   const Handle(IGESData_IGESReaderData)& /* IR */, IGESData_ParamReader& PR) const
+void IGESBasic_ToolExternalRefFile::ReadOwnParams(const Handle(IGESBasic_ExternalRefFile)& ent,
+                                                  const Handle(IGESData_IGESReaderData)& /* IR */,
+                                                  IGESData_ParamReader& PR) const
 {
-  //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
   Handle(TCollection_HAsciiString) tempExtRefFileIdentifier;
-  PR.ReadText(PR.Current(), "External Reference File Identifier",
-	      tempExtRefFileIdentifier); //szv#4:S4163:12Mar99 `st=` not needed
+  PR.ReadText(PR.Current(),
+              "External Reference File Identifier",
+              tempExtRefFileIdentifier); // szv#4:S4163:12Mar99 `st=` not needed
 
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
+  DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempExtRefFileIdentifier);
 }
 
-void  IGESBasic_ToolExternalRefFile::WriteOwnParams
-  (const Handle(IGESBasic_ExternalRefFile)& ent, IGESData_IGESWriter& IW) const
+void IGESBasic_ToolExternalRefFile::WriteOwnParams(const Handle(IGESBasic_ExternalRefFile)& ent,
+                                                   IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->FileId());
 }
 
-void  IGESBasic_ToolExternalRefFile::OwnShared
-  (const Handle(IGESBasic_ExternalRefFile)& /* ent */, Interface_EntityIterator& /* iter */) const
+void IGESBasic_ToolExternalRefFile::OwnShared(const Handle(IGESBasic_ExternalRefFile)& /* ent */,
+                                              Interface_EntityIterator& /* iter */) const
 {
 }
 
-void  IGESBasic_ToolExternalRefFile::OwnCopy
-  (const Handle(IGESBasic_ExternalRefFile)& another,
-   const Handle(IGESBasic_ExternalRefFile)& ent, Interface_CopyTool& /* TC */) const
+void IGESBasic_ToolExternalRefFile::OwnCopy(const Handle(IGESBasic_ExternalRefFile)& another,
+                                            const Handle(IGESBasic_ExternalRefFile)& ent,
+                                            Interface_CopyTool& /* TC */) const
 {
-  Handle(TCollection_HAsciiString) tempFileId =
-    new TCollection_HAsciiString(another->FileId());
+  Handle(TCollection_HAsciiString) tempFileId = new TCollection_HAsciiString(another->FileId());
   ent->Init(tempFileId);
 }
 
-IGESData_DirChecker  IGESBasic_ToolExternalRefFile::DirChecker
-  (const Handle(IGESBasic_ExternalRefFile)& /* ent */ ) const
+IGESData_DirChecker IGESBasic_ToolExternalRefFile::DirChecker(
+  const Handle(IGESBasic_ExternalRefFile)& /* ent */) const
 {
   IGESData_DirChecker DC(416, 1);
   DC.Structure(IGESData_DefVoid);
@@ -80,18 +79,19 @@ IGESData_DirChecker  IGESBasic_ToolExternalRefFile::DirChecker
   return DC;
 }
 
-void  IGESBasic_ToolExternalRefFile::OwnCheck
-  (const Handle(IGESBasic_ExternalRefFile)& /* ent */,
-   const Interface_ShareTool& , Handle(Interface_Check)& /* ach */) const
+void IGESBasic_ToolExternalRefFile::OwnCheck(const Handle(IGESBasic_ExternalRefFile)& /* ent */,
+                                             const Interface_ShareTool&,
+                                             Handle(Interface_Check)& /* ach */) const
 {
 }
 
-void  IGESBasic_ToolExternalRefFile::OwnDump
-  (const Handle(IGESBasic_ExternalRefFile)& ent, const IGESData_IGESDumper& /* dumper */,
-   Standard_OStream& S, const Standard_Integer /* level */) const
+void IGESBasic_ToolExternalRefFile::OwnDump(const Handle(IGESBasic_ExternalRefFile)& ent,
+                                            const IGESData_IGESDumper& /* dumper */,
+                                            Standard_OStream& S,
+                                            const Standard_Integer /* level */) const
 {
   S << "IGESBasic_ExternalRefFile\n"
     << "External Reference File Identifier : ";
-  IGESData_DumpString(S,ent->FileId());
+  IGESData_DumpString(S, ent->FileId());
   S << std::endl;
 }

@@ -14,12 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Expr.hxx>
 #include <Expr_UnknownIterator.hxx>
 #include <Standard_NoMoreObject.hxx>
 
-Expr_UnknownIterator::Expr_UnknownIterator (const Handle(Expr_GeneralExpression)& exp)
+Expr_UnknownIterator::Expr_UnknownIterator(const Handle(Expr_GeneralExpression)& exp)
 {
   Perform(exp);
   myCurrent = 1;
@@ -27,14 +26,17 @@ Expr_UnknownIterator::Expr_UnknownIterator (const Handle(Expr_GeneralExpression)
 
 void Expr_UnknownIterator::Perform(const Handle(Expr_GeneralExpression)& exp)
 {
-  if (exp->IsKind(STANDARD_TYPE(Expr_NamedUnknown))) {
+  if (exp->IsKind(STANDARD_TYPE(Expr_NamedUnknown)))
+  {
     Handle(Expr_NamedUnknown) varexp = Handle(Expr_NamedUnknown)::DownCast(exp);
-    if (!myMap.Contains(varexp)) {
+    if (!myMap.Contains(varexp))
+    {
       myMap.Add(varexp);
     }
   }
   Standard_Integer nbsub = exp->NbSubExpressions();
-  for (Standard_Integer i = 1; i <= nbsub ; i++) {
+  for (Standard_Integer i = 1; i <= nbsub; i++)
+  {
     Perform(exp->SubExpression(i));
   }
 }
@@ -44,16 +46,16 @@ Standard_Boolean Expr_UnknownIterator::More() const
   return (myCurrent <= myMap.Extent());
 }
 
-void Expr_UnknownIterator::Next ()
+void Expr_UnknownIterator::Next()
 {
-  if (!More()) {
+  if (!More())
+  {
     throw Standard_NoMoreObject();
   }
   myCurrent++;
 }
 
-Handle(Expr_NamedUnknown) Expr_UnknownIterator::Value () const
+Handle(Expr_NamedUnknown) Expr_UnknownIterator::Value() const
 {
   return myMap(myCurrent);
 }
-

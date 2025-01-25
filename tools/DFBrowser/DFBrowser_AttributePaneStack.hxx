@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowser_AttributePaneStack_H
 #define DFBrowser_AttributePaneStack_H
@@ -42,27 +42,26 @@ class QWidget;
 class DFBrowser_AttributePaneStack : public QObject
 {
 public:
-
   //! Constructor
-  Standard_EXPORT DFBrowser_AttributePaneStack (QObject* theParent);
+  Standard_EXPORT DFBrowser_AttributePaneStack(QObject* theParent);
 
   //! Destructor
   virtual ~DFBrowser_AttributePaneStack() {}
 
   //! Creates a stacked widget
   //! \param theParent a parent widget
-  Standard_EXPORT virtual void CreateWidget (QWidget* theParent);
+  Standard_EXPORT virtual void CreateWidget(QWidget* theParent);
 
   //! \return the stacked widget
   QWidget* GetWidget() const { return myAttributesStack; }
 
   //! Fills stack with the information
   //! \param theAttributeTypes a map of attribute type name to information pane
-  void SetModule (DFBrowser_Module* theModule) { myModule = theModule; }
+  void SetModule(DFBrowser_Module* theModule) { myModule = theModule; }
 
   //! Sets the current widget in the stacked control either attribute pane or search view
   //! \param theMode an active mode
-  Standard_EXPORT void SetPaneMode (const DFBrowser_AttributePaneType& theMode);
+  Standard_EXPORT void SetPaneMode(const DFBrowser_AttributePaneType& theMode);
 
   //! \return an attribute pane, which corresponds the current widget of the stacked widget control
   DFBrowserPane_AttributePaneAPI* GetCurrentPane() const { return myCurrentPane; }
@@ -78,18 +77,18 @@ public:
 
   //! Sets an active widget of attribute pane if the pane mode is item view mode.
   //! Gets selection models of this pane and set the models into pane selector
-  Standard_EXPORT void SetCurrentItem (const QModelIndex& theIndex);
+  Standard_EXPORT void SetCurrentItem(const QModelIndex& theIndex);
 
 protected:
-
-  DFBrowserPane_AttributePaneAPI* myCurrentPane; //!< active pane if mode is item view mode
+  DFBrowserPane_AttributePaneAPI*      myCurrentPane;  //!< active pane if mode is item view mode
   DFBrowserPane_AttributePaneSelector* myPaneSelector; //!< pane selector filled by the active pane
-  QStackedWidget* myAttributesStack; //!< container of already created panes
-  DFBrowser_Module* myModule; //!< the current module
+  QStackedWidget*                      myAttributesStack; //!< container of already created panes
+  DFBrowser_Module*                    myModule;          //!< the current module
   DFBrowser_TreeLevelView* myTreeLevelView; //!< view of objects from one level of tree view
-  DFBrowser_SearchView* mySearchView; //!< view of search control
-  QWidget* myEmptyWidget; //!< an empty widget when nothing is selected in tree view
-  DFBrowser_AttributePaneType myPaneMode; //!< the current pane mode, either item view or search view
+  DFBrowser_SearchView*    mySearchView;    //!< view of search control
+  QWidget*                 myEmptyWidget; //!< an empty widget when nothing is selected in tree view
+  DFBrowser_AttributePaneType
+    myPaneMode; //!< the current pane mode, either item view or search view
 };
 
 #endif

@@ -22,41 +22,20 @@
 
 #include <StepRepr_MappedItem.hxx>
 
-
 class StepVisual_CameraImage;
 DEFINE_STANDARD_HANDLE(StepVisual_CameraImage, StepRepr_MappedItem)
-
 
 class StepVisual_CameraImage : public StepRepr_MappedItem
 {
 
 public:
-
-  
   //! Returns a CameraImage
   Standard_EXPORT StepVisual_CameraImage();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepVisual_CameraImage,StepRepr_MappedItem)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_CameraImage, StepRepr_MappedItem)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepVisual_CameraImage_HeaderFile

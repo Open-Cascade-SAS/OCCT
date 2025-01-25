@@ -18,43 +18,41 @@
 #include <StepDimTol_GeometricToleranceTarget.hxx>
 #include <StepRepr_ShapeAspect.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithDefinedUnit,StepDimTol_GeometricTolerance)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithDefinedUnit,
+                           StepDimTol_GeometricTolerance)
 
-//=======================================================================
-//function : StepDimTol_GeometricToleranceWithDefinedUnit
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepDimTol_GeometricToleranceWithDefinedUnit::StepDimTol_GeometricToleranceWithDefinedUnit ()
+StepDimTol_GeometricToleranceWithDefinedUnit::StepDimTol_GeometricToleranceWithDefinedUnit() {}
+
+//=================================================================================================
+
+void StepDimTol_GeometricToleranceWithDefinedUnit::Init(
+  const Handle(TCollection_HAsciiString)&        theName,
+  const Handle(TCollection_HAsciiString)&        theDescription,
+  const Handle(StepBasic_MeasureWithUnit)&       theMagnitude,
+  const Handle(StepRepr_ShapeAspect)&            theTolerancedShapeAspect,
+  const Handle(StepBasic_LengthMeasureWithUnit)& theUnitSize)
 {
-}
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void StepDimTol_GeometricToleranceWithDefinedUnit::Init (const Handle(TCollection_HAsciiString) &theName,
-                                                         const Handle(TCollection_HAsciiString) &theDescription,
-                                                         const Handle(StepBasic_MeasureWithUnit) &theMagnitude,
-                                                         const Handle(StepRepr_ShapeAspect) &theTolerancedShapeAspect,
-                                                         const Handle(StepBasic_LengthMeasureWithUnit) &theUnitSize)
-{
-  StepDimTol_GeometricTolerance::Init(theName, theDescription, theMagnitude, theTolerancedShapeAspect);
+  StepDimTol_GeometricTolerance::Init(theName,
+                                      theDescription,
+                                      theMagnitude,
+                                      theTolerancedShapeAspect);
   myUnitSize = theUnitSize;
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepDimTol_GeometricToleranceWithDefinedUnit::Init (const Handle(TCollection_HAsciiString) &theName,
-                                                         const Handle(TCollection_HAsciiString) &theDescription,
-                                                         const Handle(StepBasic_MeasureWithUnit) &theMagnitude,
-                                                         const StepDimTol_GeometricToleranceTarget &theTolerancedShapeAspect,
-                                                         const Handle(StepBasic_LengthMeasureWithUnit) &theUnitSize)
+void StepDimTol_GeometricToleranceWithDefinedUnit::Init(
+  const Handle(TCollection_HAsciiString)&        theName,
+  const Handle(TCollection_HAsciiString)&        theDescription,
+  const Handle(StepBasic_MeasureWithUnit)&       theMagnitude,
+  const StepDimTol_GeometricToleranceTarget&     theTolerancedShapeAspect,
+  const Handle(StepBasic_LengthMeasureWithUnit)& theUnitSize)
 {
-  StepDimTol_GeometricTolerance::Init(theName, theDescription, theMagnitude, theTolerancedShapeAspect);
+  StepDimTol_GeometricTolerance::Init(theName,
+                                      theDescription,
+                                      theMagnitude,
+                                      theTolerancedShapeAspect);
   myUnitSize = theUnitSize;
 }

@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<gp_Dir2d> TColgp_Array1OfDir2d;
 
-
 #endif

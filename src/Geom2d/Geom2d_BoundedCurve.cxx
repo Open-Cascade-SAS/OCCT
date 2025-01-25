@@ -14,20 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Geom2d_BoundedCurve.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Geom2d_BoundedCurve,Geom2d_Curve)
+IMPLEMENT_STANDARD_RTTIEXT(Geom2d_BoundedCurve, Geom2d_Curve)
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void Geom2d_BoundedCurve::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+//=================================================================================================
+
+void Geom2d_BoundedCurve::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom2d_Curve)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Geom2d_Curve)
 }

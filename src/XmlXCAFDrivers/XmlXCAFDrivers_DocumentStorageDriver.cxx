@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -22,29 +21,24 @@
 #include <XmlMXCAFDoc.hxx>
 #include <XmlXCAFDrivers_DocumentStorageDriver.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XmlXCAFDrivers_DocumentStorageDriver,XmlDrivers_DocumentStorageDriver)
+IMPLEMENT_STANDARD_RTTIEXT(XmlXCAFDrivers_DocumentStorageDriver, XmlDrivers_DocumentStorageDriver)
 
-//=======================================================================
-//function : XmlXCAFDrivers_DocumentStorageDriver
-//purpose  : 
-//=======================================================================
-XmlXCAFDrivers_DocumentStorageDriver::XmlXCAFDrivers_DocumentStorageDriver
-                                (const TCollection_ExtendedString& theCopyright)
-     : XmlDrivers_DocumentStorageDriver (theCopyright)
+//=================================================================================================
+
+XmlXCAFDrivers_DocumentStorageDriver::XmlXCAFDrivers_DocumentStorageDriver(
+  const TCollection_ExtendedString& theCopyright)
+    : XmlDrivers_DocumentStorageDriver(theCopyright)
 {
-  AddNamespace ("xcaf","http://www.opencascade.org/OCAF/XML/XCAF");
+  AddNamespace("xcaf", "http://www.opencascade.org/OCAF/XML/XCAF");
 }
 
-//=======================================================================
-//function : AttributeDrivers
-//purpose  : 
-//=======================================================================
-Handle(XmlMDF_ADriverTable)
-        XmlXCAFDrivers_DocumentStorageDriver::AttributeDrivers
-                        (const Handle(Message_Messenger)& theMsgDrv) 
+//=================================================================================================
+
+Handle(XmlMDF_ADriverTable) XmlXCAFDrivers_DocumentStorageDriver::AttributeDrivers(
+  const Handle(Message_Messenger)& theMsgDrv)
 {
   // Standard drivers
-  Handle(XmlMDF_ADriverTable) aTable = XmlDrivers::AttributeDrivers (theMsgDrv);
+  Handle(XmlMDF_ADriverTable) aTable = XmlDrivers::AttributeDrivers(theMsgDrv);
 
   // Native drivers
   XmlMXCAFDoc::AddDrivers(aTable, theMsgDrv);

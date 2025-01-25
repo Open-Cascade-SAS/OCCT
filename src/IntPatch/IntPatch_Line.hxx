@@ -25,7 +25,6 @@
 #include <IntSurf_Situation.hxx>
 #include <Standard_Transient.hxx>
 
-
 class IntPatch_Line;
 DEFINE_STANDARD_HANDLE(IntPatch_Line, Standard_Transient)
 
@@ -40,20 +39,21 @@ class IntPatch_Line : public Standard_Transient
 {
 
 public:
-
-  
   //! To set the values returned by IsUIsoS1,....
   //! The default values are False.
-    void SetValue (const Standard_Boolean Uiso1, const Standard_Boolean Viso1, const Standard_Boolean Uiso2, const Standard_Boolean Viso2);
-  
+  void SetValue(const Standard_Boolean Uiso1,
+                const Standard_Boolean Viso1,
+                const Standard_Boolean Uiso2,
+                const Standard_Boolean Viso2);
+
   //! Returns the type of geometry 3d (Line, Circle, Parabola,
   //! Hyperbola, Ellipse, Analytic, Walking, Restriction)
-    IntPatch_IType ArcType() const;
-  
+  IntPatch_IType ArcType() const;
+
   //! Returns TRUE if the intersection is a line of tangency
   //! between the 2 patches.
-    Standard_Boolean IsTangent() const;
-  
+  Standard_Boolean IsTangent() const;
+
   //! Returns the type of the transition of the line
   //! for the first surface. The transition is "constant"
   //! along the line.
@@ -73,85 +73,74 @@ public:
   //!
   //! If one of the transition is TOUCH or UNDECIDED, the other
   //! one has got the same value.
-    IntSurf_TypeTrans TransitionOnS1() const;
-  
+  IntSurf_TypeTrans TransitionOnS1() const;
+
   //! Returns the type of the transition of the line
   //! for the second surface. The transition is "constant"
   //! along the line.
-    IntSurf_TypeTrans TransitionOnS2() const;
-  
+  IntSurf_TypeTrans TransitionOnS2() const;
+
   //! Returns the situation (INSIDE/OUTSIDE/UNKNOWN) of
   //! the first patch compared to the second one, when
   //! TransitionOnS1 or TransitionOnS2 returns TOUCH.
   //! Otherwise, an exception is raised.
-    IntSurf_Situation SituationS1() const;
-  
+  IntSurf_Situation SituationS1() const;
+
   //! Returns the situation (INSIDE/OUTSIDE/UNKNOWN) of
   //! the second patch compared to the first one, when
   //! TransitionOnS1 or TransitionOnS2 returns TOUCH.
   //! Otherwise, an exception is raised.
-    IntSurf_Situation SituationS2() const;
-  
+  IntSurf_Situation SituationS2() const;
+
   //! Returns TRUE if the intersection is a U isoparametric curve
   //! on the first patch.
-    Standard_Boolean IsUIsoOnS1() const;
-  
+  Standard_Boolean IsUIsoOnS1() const;
+
   //! Returns TRUE if the intersection is a V isoparametric curve
   //! on the first patch.
-    Standard_Boolean IsVIsoOnS1() const;
-  
+  Standard_Boolean IsVIsoOnS1() const;
+
   //! Returns TRUE if the intersection is a U isoparametric curve
   //! on the second patch.
-    Standard_Boolean IsUIsoOnS2() const;
-  
+  Standard_Boolean IsUIsoOnS2() const;
+
   //! Returns TRUE if the intersection is a V isoparametric curve
   //! on the second patch.
-    Standard_Boolean IsVIsoOnS2() const;
+  Standard_Boolean IsVIsoOnS2() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IntPatch_Line,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(IntPatch_Line, Standard_Transient)
 
 protected:
-
-  
   //! To initialize the fields, when the transitions
   //! are In or Out.
-  Standard_EXPORT IntPatch_Line(const Standard_Boolean Tang, const IntSurf_TypeTrans Trans1, const IntSurf_TypeTrans Trans2);
-  
+  Standard_EXPORT IntPatch_Line(const Standard_Boolean  Tang,
+                                const IntSurf_TypeTrans Trans1,
+                                const IntSurf_TypeTrans Trans2);
+
   //! To initialize the fields, when the transitions
   //! are Touch.
-  Standard_EXPORT IntPatch_Line(const Standard_Boolean Tang, const IntSurf_Situation Situ1, const IntSurf_Situation Situ2);
-  
+  Standard_EXPORT IntPatch_Line(const Standard_Boolean  Tang,
+                                const IntSurf_Situation Situ1,
+                                const IntSurf_Situation Situ2);
+
   //! To initialize the fields, when the transitions
   //! are Undecided.
   Standard_EXPORT IntPatch_Line(const Standard_Boolean Tang);
 
   IntPatch_IType typ;
 
-
 private:
-
-
-  Standard_Boolean tg;
+  Standard_Boolean  tg;
   IntSurf_TypeTrans tS1;
   IntSurf_TypeTrans tS2;
   IntSurf_Situation sit1;
   IntSurf_Situation sit2;
-  Standard_Boolean uS1;
-  Standard_Boolean vS1;
-  Standard_Boolean uS2;
-  Standard_Boolean vS2;
-
-
+  Standard_Boolean  uS1;
+  Standard_Boolean  vS1;
+  Standard_Boolean  uS2;
+  Standard_Boolean  vS2;
 };
 
-
 #include <IntPatch_Line.lxx>
-
-
-
-
 
 #endif // _IntPatch_Line_HeaderFile

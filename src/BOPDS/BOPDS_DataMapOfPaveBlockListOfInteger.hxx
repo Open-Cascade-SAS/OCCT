@@ -18,7 +18,9 @@
 #include <NCollection_DataMap.hxx>
 #include <TColStd_ListOfInteger.hxx>
 
-typedef NCollection_DataMap<Handle(BOPDS_PaveBlock), TColStd_ListOfInteger> BOPDS_DataMapOfPaveBlockListOfInteger; 
-typedef BOPDS_DataMapOfPaveBlockListOfInteger::Iterator BOPDS_DataMapIteratorOfDataMapOfPaveBlockListOfInteger; 
+typedef NCollection_DataMap<Handle(BOPDS_PaveBlock), TColStd_ListOfInteger>
+  BOPDS_DataMapOfPaveBlockListOfInteger;
+typedef BOPDS_DataMapOfPaveBlockListOfInteger::Iterator
+  BOPDS_DataMapIteratorOfDataMapOfPaveBlockListOfInteger;
 
 #endif

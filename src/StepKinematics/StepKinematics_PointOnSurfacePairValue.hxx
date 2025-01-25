@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -30,32 +30,32 @@ DEFINE_STANDARD_HANDLE(StepKinematics_PointOnSurfacePairValue, StepKinematics_Pa
 //! Representation of STEP entity PointOnSurfacePairValue
 class StepKinematics_PointOnSurfacePairValue : public StepKinematics_PairValue
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_PointOnSurfacePairValue();
 
   //! Initialize all fields (own and inherited)
- Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                           const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                           const Handle(StepGeom_PointOnSurface)& theActualPointOnSurface,
-                           const StepKinematics_SpatialRotation& theInputOrientation);
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
+                            const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
+                            const Handle(StepGeom_PointOnSurface)&      theActualPointOnSurface,
+                            const StepKinematics_SpatialRotation&       theInputOrientation);
 
   //! Returns field ActualPointOnSurface
   Standard_EXPORT Handle(StepGeom_PointOnSurface) ActualPointOnSurface() const;
   //! Sets field ActualPointOnSurface
-  Standard_EXPORT void SetActualPointOnSurface (const Handle(StepGeom_PointOnSurface)& theActualPointOnSurface);
+  Standard_EXPORT void SetActualPointOnSurface(
+    const Handle(StepGeom_PointOnSurface)& theActualPointOnSurface);
 
   //! Returns field InputOrientation
   Standard_EXPORT StepKinematics_SpatialRotation InputOrientation() const;
   //! Sets field InputOrientation
-  Standard_EXPORT void SetInputOrientation (const StepKinematics_SpatialRotation& theInputOrientation);
+  Standard_EXPORT void SetInputOrientation(
+    const StepKinematics_SpatialRotation& theInputOrientation);
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_PointOnSurfacePairValue, StepKinematics_PairValue)
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_PointOnSurfacePairValue, StepKinematics_PairValue)
 
 private:
   Handle(StepGeom_PointOnSurface) myActualPointOnSurface;
-  StepKinematics_SpatialRotation myInputOrientation;
-
+  StepKinematics_SpatialRotation  myInputOrientation;
 };
 #endif // _StepKinematics_PointOnSurfacePairValue_HeaderFile_

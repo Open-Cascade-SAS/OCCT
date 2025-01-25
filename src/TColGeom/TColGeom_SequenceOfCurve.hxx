@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(Geom_Curve)> TColGeom_SequenceOfCurve;
 
-
 #endif

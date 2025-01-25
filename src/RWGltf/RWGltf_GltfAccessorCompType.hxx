@@ -18,7 +18,7 @@
 //! Low-level glTF enumeration defining Accessor component type.
 enum RWGltf_GltfAccessorCompType
 {
-  RWGltf_GltfAccessorCompType_UNKNOWN, //!< unknown or invalid type
+  RWGltf_GltfAccessorCompType_UNKNOWN,        //!< unknown or invalid type
   RWGltf_GltfAccessorCompType_Int8    = 5120, //!< GL_BYTE
   RWGltf_GltfAccessorCompType_UInt8   = 5121, //!< GL_UNSIGNED_BYTE
   RWGltf_GltfAccessorCompType_Int16   = 5122, //!< GL_SHORT

@@ -13,37 +13,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <ShapeCustom_RestrictionParameters.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(ShapeCustom_RestrictionParameters,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(ShapeCustom_RestrictionParameters, Standard_Transient)
 
-//=======================================================================
-//function : ShapeCustom_RestrictionParameters
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 ShapeCustom_RestrictionParameters::ShapeCustom_RestrictionParameters()
 {
-  myGMaxSeg = 10000;
+  myGMaxSeg    = 10000;
   myGMaxDegree = 15;
-  
-  myConvPlane         = Standard_False;
-  //myConvElementarySurf = Standard_False;
-  //conversion of elementary surfaces are off by default
-  myConvConicalSurf = Standard_False;
-  myConvSphericalSurf = Standard_False;
-  myConvCylindricalSurf = Standard_False;
-  myConvToroidalSurf = Standard_False;
-  
-  myConvBezierSurf    = Standard_False;
-  myConvRevolSurf     = Standard_True;
-  myConvExtrSurf      = Standard_True;
-  myConvOffsetSurf    = Standard_True;
-  mySegmentSurfaceMode= Standard_True;
-  myConvCurve3d       = Standard_True;
-  myConvOffsetCurv3d  = Standard_True;
-  myConvCurve2d       = Standard_True;
-  myConvOffsetCurv2d  = Standard_True;
-}
 
+  myConvPlane = Standard_False;
+  // myConvElementarySurf = Standard_False;
+  // conversion of elementary surfaces are off by default
+  myConvConicalSurf     = Standard_False;
+  myConvSphericalSurf   = Standard_False;
+  myConvCylindricalSurf = Standard_False;
+  myConvToroidalSurf    = Standard_False;
+
+  myConvBezierSurf     = Standard_False;
+  myConvRevolSurf      = Standard_True;
+  myConvExtrSurf       = Standard_True;
+  myConvOffsetSurf     = Standard_True;
+  mySegmentSurfaceMode = Standard_True;
+  myConvCurve3d        = Standard_True;
+  myConvOffsetCurv3d   = Standard_True;
+  myConvCurve2d        = Standard_True;
+  myConvOffsetCurv2d   = Standard_True;
+}

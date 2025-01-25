@@ -12,153 +12,159 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <math_BissecNewton.hxx>
 #include <math_FunctionWithDerivative.hxx>
 #include <StdFail_NotDone.hxx>
 
-//=======================================================================
-//function : math_BissecNewton
-//purpose  : Constructor
-//=======================================================================
+//=================================================================================================
+
 math_BissecNewton::math_BissecNewton(const Standard_Real theXTolerance)
-: TheStatus(math_NotBracketed),
-  XTol     (theXTolerance),
-  x        (0.0),
-  dx       (0.0),
-  f        (0.0),
-  df       (0.0),
-  Done     (Standard_False)
+    : TheStatus(math_NotBracketed),
+      XTol(theXTolerance),
+      x(0.0),
+      dx(0.0),
+      f(0.0),
+      df(0.0),
+      Done(Standard_False)
 {
 }
 
-//=======================================================================
-//function : ~math_BissecNewton
-//purpose  : Destructor
-//=======================================================================
-math_BissecNewton::~math_BissecNewton()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+math_BissecNewton::~math_BissecNewton() {}
+
+//=================================================================================================
+
 void math_BissecNewton::Perform(math_FunctionWithDerivative& F,
-                                const Standard_Real    Bound1,
-                                const Standard_Real    Bound2,
-                                const Standard_Integer NbIterations)
+                                const Standard_Real          Bound1,
+                                const Standard_Real          Bound2,
+                                const Standard_Integer       NbIterations)
 {
   Standard_Boolean GOOD;
   Standard_Integer j;
-  Standard_Real dxold, fh, fl;
-  Standard_Real temp, xh, xl;
-  
+  Standard_Real    dxold, fh, fl;
+  Standard_Real    temp, xh, xl;
+
   GOOD = F.Values(Bound1, fl, df);
-  if(!GOOD) {
-    Done = Standard_False;
+  if (!GOOD)
+  {
+    Done      = Standard_False;
     TheStatus = math_FunctionError;
     return;
   }
   GOOD = F.Values(Bound2, fh, df);
-  if(!GOOD) {
-    Done = Standard_False;
+  if (!GOOD)
+  {
+    Done      = Standard_False;
     TheStatus = math_FunctionError;
     return;
   }
-//  Modified by Sergey KHROMOV - Wed Jan 22 12:06:45 2003 Begin
+  //  Modified by Sergey KHROMOV - Wed Jan 22 12:06:45 2003 Begin
   constexpr Standard_Real aFTol = RealEpsilon();
 
-//   if(fl * fh >= 0.0) {
-  if(fl * fh > aFTol*aFTol) {
-    Done = Standard_False;
+  //   if(fl * fh >= 0.0) {
+  if (fl * fh > aFTol * aFTol)
+  {
+    Done      = Standard_False;
     TheStatus = math_NotBracketed;
     return;
   }
-//   if(fl < 0.0) {
-  if(fl < -aFTol || (fl < aFTol && fh < -aFTol)) {
+  //   if(fl < 0.0) {
+  if (fl < -aFTol || (fl < aFTol && fh < -aFTol))
+  {
     xl = Bound1;
     xh = Bound2;
   }
-  else {
+  else
+  {
     xl = Bound2;
     xh = Bound1;
   }
-//  Modified by Sergey KHROMOV - Wed Jan 22 12:06:49 2003 End
-  x = 0.5 * (Bound1 + Bound2);
+  //  Modified by Sergey KHROMOV - Wed Jan 22 12:06:49 2003 End
+  x     = 0.5 * (Bound1 + Bound2);
   dxold = fabs(Bound2 - Bound1);
-  dx = dxold;
-  GOOD = F.Values(x, f, df);
-  if(!GOOD) {
-    Done = Standard_False;
+  dx    = dxold;
+  GOOD  = F.Values(x, f, df);
+  if (!GOOD)
+  {
+    Done      = Standard_False;
     TheStatus = math_FunctionError;
     return;
   }
-  for(j = 1; j <= NbIterations; j++) {
-    if((((x - xh) * df - f) * ((x - xl) * df - f) >= 0.0)
-       || (fabs(2.0 * f) > fabs(dxold * df))) {
+  for (j = 1; j <= NbIterations; j++)
+  {
+    if ((((x - xh) * df - f) * ((x - xl) * df - f) >= 0.0) || (fabs(2.0 * f) > fabs(dxold * df)))
+    {
       dxold = dx;
-      dx = 0.5 * (xh - xl);
-      x = xl + dx;
-      if(Abs(dx) < XTol) {
-	TheStatus = math_OK;
-	Done = Standard_True;
-	return;
+      dx    = 0.5 * (xh - xl);
+      x     = xl + dx;
+      if (Abs(dx) < XTol)
+      {
+        TheStatus = math_OK;
+        Done      = Standard_True;
+        return;
       }
     }
-    else {
+    else
+    {
       dxold = dx;
-      dx = f / df;
-      temp = x;
+      dx    = f / df;
+      temp  = x;
       x -= dx;
-      if(temp == x) {
-	TheStatus = math_OK;
-	Done = Standard_True;
-	return;
+      if (temp == x)
+      {
+        TheStatus = math_OK;
+        Done      = Standard_True;
+        return;
       }
     }
-    if(IsSolutionReached(F)) {
+    if (IsSolutionReached(F))
+    {
       TheStatus = math_OK;
-      Done = Standard_True;
+      Done      = Standard_True;
       return;
     }
     GOOD = F.Values(x, f, df);
-    if(!GOOD) {
-      Done = Standard_False;
+    if (!GOOD)
+    {
+      Done      = Standard_False;
       TheStatus = math_FunctionError;
       return;
     }
-    if(f < 0.0) {
+    if (f < 0.0)
+    {
       xl = x;
     }
-    else if(f > 0.0) {
+    else if (f > 0.0)
+    {
       xh = x;
     }
-    else {
+    else
+    {
       TheStatus = math_OK;
-      Done = Standard_True;
+      Done      = Standard_True;
       return;
     }
   }
   TheStatus = math_TooManyIterations;
-  Done = Standard_False;
+  Done      = Standard_False;
   return;
 }
 
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-void math_BissecNewton::Dump(Standard_OStream& o) const {
-  
+//=================================================================================================
+
+void math_BissecNewton::Dump(Standard_OStream& o) const
+{
+
   o << "math_BissecNewton ";
-  if(Done) {
+  if (Done)
+  {
     o << " Status = Done \n";
     o << " The Root  is: " << x << std::endl;
     o << " The value at this Root is: " << f << std::endl;
   }
-  else {
+  else
+  {
     o << " Status = not Done \n";
   }
 }
-

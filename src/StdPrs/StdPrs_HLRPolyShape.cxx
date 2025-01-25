@@ -38,21 +38,19 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StdPrs_HLRPolyShape, StdPrs_HLRShapeI)
 
-//=======================================================================
-//function : Add
-//purpose  :
-//=======================================================================
-void StdPrs_HLRPolyShape::ComputeHLR (const Handle(Prs3d_Presentation)& aPresentation,
-                                      const TopoDS_Shape& aShape,
-                                      const Handle(Prs3d_Drawer)& aDrawer,
-                                      const Handle(Graphic3d_Camera)& theProjector) const
+//=================================================================================================
+
+void StdPrs_HLRPolyShape::ComputeHLR(const Handle(Prs3d_Presentation)& aPresentation,
+                                     const TopoDS_Shape&               aShape,
+                                     const Handle(Prs3d_Drawer)&       aDrawer,
+                                     const Handle(Graphic3d_Camera)&   theProjector) const
 {
-  gp_Dir aBackDir = -theProjector->Direction();
-  gp_Dir aXpers   = theProjector->Up().Crossed (aBackDir);
-  gp_Ax3 anAx3 (theProjector->Center(), aBackDir, aXpers);
+  gp_Dir  aBackDir = -theProjector->Direction();
+  gp_Dir  aXpers   = theProjector->Up().Crossed(aBackDir);
+  gp_Ax3  anAx3(theProjector->Center(), aBackDir, aXpers);
   gp_Trsf aTrsf;
-  aTrsf.SetTransformation (anAx3);
-  const HLRAlgo_Projector aProj (aTrsf, !theProjector->IsOrthographic(), theProjector->Scale());
+  aTrsf.SetTransformation(anAx3);
+  const HLRAlgo_Projector aProj(aTrsf, !theProjector->IsOrthographic(), theProjector->Scale());
 
   Handle(Graphic3d_Group) aGroup = aPresentation->CurrentGroup();
 
@@ -60,57 +58,71 @@ void StdPrs_HLRPolyShape::ComputeHLR (const Handle(Prs3d_Presentation)& aPresent
 
   // find vertices not under ancestors.
   TopAbs_ShapeEnum E = aShape.ShapeType();
-  if (E == TopAbs_COMPOUND) {
+  if (E == TopAbs_COMPOUND)
+  {
     // it is necessary to present isolated vertexes instead of hiding them.
-    for (ex.Init(aShape, TopAbs_VERTEX, TopAbs_EDGE); ex.More(); ex.Next()) {
+    for (ex.Init(aShape, TopAbs_VERTEX, TopAbs_EDGE); ex.More(); ex.Next())
+    {
       StdPrs_WFShape::Add(aPresentation, ex.Current(), aDrawer);
     }
   }
 
   if (aDrawer->IsAutoTriangulation())
   {
-    StdPrs_ToolTriangulatedShape::Tessellate (aShape, aDrawer);
+    StdPrs_ToolTriangulatedShape::Tessellate(aShape, aDrawer);
   }
-  
+
   Handle(HLRBRep_PolyAlgo) hider = new HLRBRep_PolyAlgo(aShape);
-  hider->Projector (aProj);
+  hider->Projector(aProj);
   hider->Update();
-  Standard_Real sta,end,dx,dy,dz;
-  Standard_ShortReal tolsta, tolend;
-  HLRAlgo_EdgeStatus status;
+  Standard_Real        sta, end, dx, dy, dz;
+  Standard_ShortReal   tolsta, tolend;
+  HLRAlgo_EdgeStatus   status;
   HLRAlgo_EdgeIterator It;
-  Standard_Boolean reg1,regn,outl, intl;
-  Standard_Address Coordinates;
-  TopoDS_Shape S;
+  Standard_Boolean     reg1, regn, outl, intl;
+  Standard_Address     Coordinates;
+  TopoDS_Shape         S;
 
   HLRBRep_ListOfBPoint BiPntVis, BiPntHid;
-  
+
   for (hider->InitHide(); hider->MoreHide(); hider->NextHide())
   {
     Coordinates = &hider->Hide(status, S, reg1, regn, outl, intl);
-    
+
     dx = PntX2 - PntX1;
     dy = PntY2 - PntY1;
     dz = PntZ2 - PntZ1;
-    
+
     for (It.InitVisible(status); It.MoreVisible(); It.NextVisible())
     {
-      It.Visible(sta,tolsta,end,tolend);
-      BiPntVis.Append
-        (HLRBRep_BiPoint
-           (PntX1 + sta * dx,PntY1 + sta * dy,PntZ1 + sta * dz,
-            PntX1 + end * dx,PntY1 + end * dy,PntZ1 + end * dz,
-            S,reg1,regn,outl,intl));
+      It.Visible(sta, tolsta, end, tolend);
+      BiPntVis.Append(HLRBRep_BiPoint(PntX1 + sta * dx,
+                                      PntY1 + sta * dy,
+                                      PntZ1 + sta * dz,
+                                      PntX1 + end * dx,
+                                      PntY1 + end * dy,
+                                      PntZ1 + end * dz,
+                                      S,
+                                      reg1,
+                                      regn,
+                                      outl,
+                                      intl));
     }
-    
+
     for (It.InitHidden(status); It.MoreHidden(); It.NextHidden())
     {
-      It.Hidden(sta,tolsta,end,tolend);
-      BiPntHid.Append
-        (HLRBRep_BiPoint
-           (PntX1 + sta * dx,PntY1 + sta * dy,PntZ1 + sta * dz,
-            PntX1 + end * dx,PntY1 + end * dy,PntZ1 + end * dz,
-            S,reg1,regn,outl,intl));	
+      It.Hidden(sta, tolsta, end, tolend);
+      BiPntHid.Append(HLRBRep_BiPoint(PntX1 + sta * dx,
+                                      PntY1 + sta * dy,
+                                      PntZ1 + sta * dz,
+                                      PntX1 + end * dx,
+                                      PntY1 + end * dy,
+                                      PntZ1 + end * dz,
+                                      S,
+                                      reg1,
+                                      regn,
+                                      outl,
+                                      intl));
     }
   }
 
@@ -118,59 +130,61 @@ void StdPrs_HLRPolyShape::ComputeHLR (const Handle(Prs3d_Presentation)& aPresent
   if (aDrawer->DrawHiddenLine())
   {
     Standard_Integer aNbHiddenSegments = 0;
-    for (HLRBRep_ListIteratorOfListOfBPoint aBPntHidIter (BiPntHid); aBPntHidIter.More(); aBPntHidIter.Next())
+    for (HLRBRep_ListIteratorOfListOfBPoint aBPntHidIter(BiPntHid); aBPntHidIter.More();
+         aBPntHidIter.Next())
     {
       const HLRBRep_BiPoint& aBPnt = aBPntHidIter.Value();
-      if (!aBPnt.RgNLine()
-        || aBPnt.OutLine())
+      if (!aBPnt.RgNLine() || aBPnt.OutLine())
       {
         ++aNbHiddenSegments;
       }
     }
     if (aNbHiddenSegments > 0)
     {
-      Handle(Graphic3d_ArrayOfSegments) aHiddenArray = new Graphic3d_ArrayOfSegments (aNbHiddenSegments * 2);
-      for (HLRBRep_ListIteratorOfListOfBPoint aBPntHidIter (BiPntHid); aBPntHidIter.More(); aBPntHidIter.Next())
+      Handle(Graphic3d_ArrayOfSegments) aHiddenArray =
+        new Graphic3d_ArrayOfSegments(aNbHiddenSegments * 2);
+      for (HLRBRep_ListIteratorOfListOfBPoint aBPntHidIter(BiPntHid); aBPntHidIter.More();
+           aBPntHidIter.Next())
       {
         const HLRBRep_BiPoint& aBPnt = aBPntHidIter.Value();
-        if (!aBPnt.RgNLine()
-          || aBPnt.OutLine())
+        if (!aBPnt.RgNLine() || aBPnt.OutLine())
         {
-          aHiddenArray->AddVertex (aBPnt.P1());
-          aHiddenArray->AddVertex (aBPnt.P2());
+          aHiddenArray->AddVertex(aBPnt.P1());
+          aHiddenArray->AddVertex(aBPnt.P2());
         }
       }
 
-      aGroup->SetPrimitivesAspect (aDrawer->HiddenLineAspect()->Aspect());
-      aGroup->AddPrimitiveArray (aHiddenArray);
+      aGroup->SetPrimitivesAspect(aDrawer->HiddenLineAspect()->Aspect());
+      aGroup->AddPrimitiveArray(aHiddenArray);
     }
   }
   {
     Standard_Integer aNbSeenSegments = 0;
-    for (HLRBRep_ListIteratorOfListOfBPoint aBPntVisIter (BiPntVis); aBPntVisIter.More(); aBPntVisIter.Next())
+    for (HLRBRep_ListIteratorOfListOfBPoint aBPntVisIter(BiPntVis); aBPntVisIter.More();
+         aBPntVisIter.Next())
     {
       const HLRBRep_BiPoint& aBPnt = aBPntVisIter.Value();
-      if (!aBPnt.RgNLine()
-        || aBPnt.OutLine())
+      if (!aBPnt.RgNLine() || aBPnt.OutLine())
       {
         ++aNbSeenSegments;
       }
     }
     if (aNbSeenSegments > 0)
     {
-      Handle(Graphic3d_ArrayOfSegments) aSeenArray = new Graphic3d_ArrayOfSegments (aNbSeenSegments * 2);
-      for (HLRBRep_ListIteratorOfListOfBPoint aBPntVisIter (BiPntVis); aBPntVisIter.More(); aBPntVisIter.Next())
+      Handle(Graphic3d_ArrayOfSegments) aSeenArray =
+        new Graphic3d_ArrayOfSegments(aNbSeenSegments * 2);
+      for (HLRBRep_ListIteratorOfListOfBPoint aBPntVisIter(BiPntVis); aBPntVisIter.More();
+           aBPntVisIter.Next())
       {
         const HLRBRep_BiPoint& aBPnt = aBPntVisIter.Value();
-        if (!aBPnt.RgNLine()
-          || aBPnt.OutLine())
+        if (!aBPnt.RgNLine() || aBPnt.OutLine())
         {
-          aSeenArray->AddVertex (aBPnt.P1());
-          aSeenArray->AddVertex (aBPnt.P2());
+          aSeenArray->AddVertex(aBPnt.P1());
+          aSeenArray->AddVertex(aBPnt.P2());
         }
       }
-      aGroup->SetPrimitivesAspect (aDrawer->SeenLineAspect()->Aspect());
-      aGroup->AddPrimitiveArray (aSeenArray);
+      aGroup->SetPrimitivesAspect(aDrawer->SeenLineAspect()->Aspect());
+      aGroup->AddPrimitiveArray(aSeenArray);
     }
   }
-}   
+}

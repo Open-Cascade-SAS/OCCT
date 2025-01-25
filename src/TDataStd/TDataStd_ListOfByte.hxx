@@ -19,8 +19,7 @@
 
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<Standard_Byte> TDataStd_ListOfByte;
+typedef NCollection_List<Standard_Byte>           TDataStd_ListOfByte;
 typedef NCollection_List<Standard_Byte>::Iterator TDataStd_ListIteratorOfListOfByte;
-
 
 #endif

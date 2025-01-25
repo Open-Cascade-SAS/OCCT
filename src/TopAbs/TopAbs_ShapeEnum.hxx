@@ -44,15 +44,15 @@
 //! - VERTEX: A zero-dimensional shape corresponding to a point in geometry.
 enum TopAbs_ShapeEnum
 {
-TopAbs_COMPOUND,
-TopAbs_COMPSOLID,
-TopAbs_SOLID,
-TopAbs_SHELL,
-TopAbs_FACE,
-TopAbs_WIRE,
-TopAbs_EDGE,
-TopAbs_VERTEX,
-TopAbs_SHAPE
+  TopAbs_COMPOUND,
+  TopAbs_COMPSOLID,
+  TopAbs_SOLID,
+  TopAbs_SHELL,
+  TopAbs_FACE,
+  TopAbs_WIRE,
+  TopAbs_EDGE,
+  TopAbs_VERTEX,
+  TopAbs_SHAPE
 };
 
 #endif // _TopAbs_ShapeEnum_HeaderFile

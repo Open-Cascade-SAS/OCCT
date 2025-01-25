@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<gp_XY> TColgp_Array1OfXY;
 
-
 #endif

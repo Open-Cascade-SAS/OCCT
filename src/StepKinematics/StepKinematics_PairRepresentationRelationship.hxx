@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -24,36 +24,41 @@
 #include <StepRepr_RepresentationOrRepresentationReference.hxx>
 #include <StepRepr_RepresentationRelationshipWithTransformation.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_PairRepresentationRelationship, StepGeom_GeometricRepresentationItem)
+DEFINE_STANDARD_HANDLE(StepKinematics_PairRepresentationRelationship,
+                       StepGeom_GeometricRepresentationItem)
 
 //! Representation of STEP entity PairRepresentationRelationship
 class StepKinematics_PairRepresentationRelationship : public StepGeom_GeometricRepresentationItem
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_PairRepresentationRelationship();
 
   //! Initialize all fields (own and inherited)
- Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                           const Handle(TCollection_HAsciiString)& theRepresentationRelationship_Name,
-                           const Standard_Boolean hasRepresentationRelationship_Description,
-                           const Handle(TCollection_HAsciiString)& theRepresentationRelationship_Description,
-                           const StepRepr_RepresentationOrRepresentationReference& theRepresentationRelationship_Rep1,
-                           const StepRepr_RepresentationOrRepresentationReference& theRepresentationRelationship_Rep2,
-                           const StepRepr_Transformation& theRepresentationRelationshipWithTransformation_TransformationOperator);
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
+    const Handle(TCollection_HAsciiString)& theRepresentationRelationship_Name,
+    const Standard_Boolean                  hasRepresentationRelationship_Description,
+    const Handle(TCollection_HAsciiString)& theRepresentationRelationship_Description,
+    const StepRepr_RepresentationOrRepresentationReference& theRepresentationRelationship_Rep1,
+    const StepRepr_RepresentationOrRepresentationReference& theRepresentationRelationship_Rep2,
+    const StepRepr_Transformation&
+      theRepresentationRelationshipWithTransformation_TransformationOperator);
 
   //! Returns data for supertype RepresentationRelationshipWithTransformation
-  Standard_EXPORT Handle(StepRepr_RepresentationRelationshipWithTransformation) RepresentationRelationshipWithTransformation() const;
+  Standard_EXPORT Handle(StepRepr_RepresentationRelationshipWithTransformation)
+    RepresentationRelationshipWithTransformation() const;
   //! Sets data for supertype RepresentationRelationshipWithTransformation
-  Standard_EXPORT void SetRepresentationRelationshipWithTransformation (const Handle(StepRepr_RepresentationRelationshipWithTransformation)& theRepresentationRelationshipWithTransformation);
+  Standard_EXPORT void SetRepresentationRelationshipWithTransformation(
+    const Handle(StepRepr_RepresentationRelationshipWithTransformation)&
+      theRepresentationRelationshipWithTransformation);
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_PairRepresentationRelationship, StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_PairRepresentationRelationship,
+                          StepGeom_GeometricRepresentationItem)
 
 private:
-// clang-format off
+  // clang-format off
   Handle(StepRepr_RepresentationRelationshipWithTransformation) myRepresentationRelationshipWithTransformation; //!< supertype
-// clang-format on
-
+  // clang-format on
 };
 #endif // _StepKinematics_PairRepresentationRelationship_HeaderFile_

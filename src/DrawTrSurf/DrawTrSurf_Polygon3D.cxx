@@ -24,29 +24,25 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Polygon3D, Draw_Drawable3D)
 
-//=======================================================================
-//function : DrawTrSurf_Polygon3D
-//purpose  :
-//=======================================================================
-DrawTrSurf_Polygon3D::DrawTrSurf_Polygon3D (const Handle(Poly_Polygon3D)& P)
-: myPolygon3D(P),
-  myNodes(Standard_False)
+//=================================================================================================
+
+DrawTrSurf_Polygon3D::DrawTrSurf_Polygon3D(const Handle(Poly_Polygon3D)& P)
+    : myPolygon3D(P),
+      myNodes(Standard_False)
 {
   //
 }
 
-//=======================================================================
-//function : DrawOn
-//purpose  :
-//=======================================================================
-void DrawTrSurf_Polygon3D::DrawOn(Draw_Display& dis) const 
+//=================================================================================================
+
+void DrawTrSurf_Polygon3D::DrawOn(Draw_Display& dis) const
 {
   dis.SetColor(Draw_jaune);
 
   const TColgp_Array1OfPnt& Points = myPolygon3D->Nodes();
-  for (Standard_Integer i = Points.Lower(); i <= Points.Upper()-1; i++)
+  for (Standard_Integer i = Points.Lower(); i <= Points.Upper() - 1; i++)
   {
-    dis.Draw(Points(i), Points(i+1));
+    dis.Draw(Points(i), Points(i + 1));
   }
 
   if (myNodes)
@@ -58,61 +54,51 @@ void DrawTrSurf_Polygon3D::DrawOn(Draw_Display& dis) const
   }
 }
 
-//=======================================================================
-//function : Copy
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Handle(Draw_Drawable3D) DrawTrSurf_Polygon3D::Copy() const
 {
   return new DrawTrSurf_Polygon3D(myPolygon3D);
 }
 
-//=======================================================================
-//function : Dump
-//purpose  :
-//=======================================================================
-void DrawTrSurf_Polygon3D::Dump (Standard_OStream& S) const
+//=================================================================================================
+
+void DrawTrSurf_Polygon3D::Dump(Standard_OStream& S) const
 {
   Poly::Dump(myPolygon3D, S);
 }
 
-//=======================================================================
-//function : Save
-//purpose  :
-//=======================================================================
-void DrawTrSurf_Polygon3D::Save (Standard_OStream& theStream) const
+//=================================================================================================
+
+void DrawTrSurf_Polygon3D::Save(Standard_OStream& theStream) const
 {
 #if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
   std::ios::fmtflags aFlags = theStream.flags();
-  theStream.setf (std::ios::scientific,std::ios::floatfield);
-  theStream.precision (15);
+  theStream.setf(std::ios::scientific, std::ios::floatfield);
+  theStream.precision(15);
 #else
-  long aForm = theStream.setf (std::ios::scientific);
-  std::streamsize aPrec = theStream.precision (15);
+  long            aForm = theStream.setf(std::ios::scientific);
+  std::streamsize aPrec = theStream.precision(15);
 #endif
-  Poly::Write (myPolygon3D, theStream);
+  Poly::Write(myPolygon3D, theStream);
 #if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
-  theStream.setf (aFlags);
+  theStream.setf(aFlags);
 #else
-  theStream.setf (aForm);
-  theStream.precision (aPrec);
+  theStream.setf(aForm);
+  theStream.precision(aPrec);
 #endif
 }
 
-//=======================================================================
-//function : Restore
-//purpose  :
-//=======================================================================
-Handle(Draw_Drawable3D) DrawTrSurf_Polygon3D::Restore (Standard_IStream& theStream)
+//=================================================================================================
+
+Handle(Draw_Drawable3D) DrawTrSurf_Polygon3D::Restore(Standard_IStream& theStream)
 {
-  return new DrawTrSurf_Polygon3D (Poly::ReadPolygon3D (theStream));
+  return new DrawTrSurf_Polygon3D(Poly::ReadPolygon3D(theStream));
 }
 
-//=======================================================================
-//function : Whatis
-//purpose  :
-//=======================================================================
-void DrawTrSurf_Polygon3D::Whatis (Draw_Interpretor& I) const
+//=================================================================================================
+
+void DrawTrSurf_Polygon3D::Whatis(Draw_Interpretor& I) const
 {
   I << "polygon3D";
 }

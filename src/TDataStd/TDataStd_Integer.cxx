@@ -24,126 +24,114 @@
 #include <TDF_Reference.hxx>
 #include <TDF_RelocationTable.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDataStd_Integer,TDF_Attribute)
+IMPLEMENT_STANDARD_RTTIEXT(TDataStd_Integer, TDF_Attribute)
 
-//=======================================================================
-//function : GetID
-//purpose  : 
-//=======================================================================
-const Standard_GUID& TDataStd_Integer::GetID() 
-{ 
-  static Standard_GUID TDataStd_IntegerID ("2a96b606-ec8b-11d0-bee7-080009dc3333");
-  return TDataStd_IntegerID; 
+//=================================================================================================
+
+const Standard_GUID& TDataStd_Integer::GetID()
+{
+  static Standard_GUID TDataStd_IntegerID("2a96b606-ec8b-11d0-bee7-080009dc3333");
+  return TDataStd_IntegerID;
 }
 
 //=======================================================================
-//function : SetAttr
-//purpose  : Implements Set functionality
+// function : SetAttr
+// purpose  : Implements Set functionality
 //=======================================================================
-static Handle(TDataStd_Integer) SetAttr(const TDF_Label&     label,
-                                        const Standard_Integer  V,
-                                        const Standard_GUID& theGuid)
+static Handle(TDataStd_Integer) SetAttr(const TDF_Label&       label,
+                                        const Standard_Integer V,
+                                        const Standard_GUID&   theGuid)
 {
   Handle(TDataStd_Integer) A;
-  if (!label.FindAttribute(theGuid, A)) {
-    A = new TDataStd_Integer ();
+  if (!label.FindAttribute(theGuid, A))
+  {
+    A = new TDataStd_Integer();
     A->SetID(theGuid);
     label.AddAttribute(A);
   }
-  A->Set (V); 
+  A->Set(V);
   return A;
 }
 
-//=======================================================================
-//function : Set
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TDataStd_Integer) TDataStd_Integer::Set (const TDF_Label&        L,
-                                                const Standard_Integer  V) 
+Handle(TDataStd_Integer) TDataStd_Integer::Set(const TDF_Label& L, const Standard_Integer V)
 
 {
   return SetAttr(L, V, GetID());
 }
 
 //=======================================================================
-//function : Set
-//purpose  : Set user defined attribute
+// function : Set
+// purpose  : Set user defined attribute
 //=======================================================================
 
-Handle(TDataStd_Integer) TDataStd_Integer::Set (const TDF_Label&    L,
-                                                const Standard_GUID& theGuid,
-                                                const Standard_Integer V) 
+Handle(TDataStd_Integer) TDataStd_Integer::Set(const TDF_Label&       L,
+                                               const Standard_GUID&   theGuid,
+                                               const Standard_Integer V)
 {
   return SetAttr(L, V, theGuid);
 }
-//=======================================================================
-//function : TDataStd_Integer
-//purpose  : Empty Constructor
-//=======================================================================
-
-TDataStd_Integer::TDataStd_Integer ()
-     : myValue (-1), myID(GetID())
- { }
-
 
 //=======================================================================
-//function : Set
-//purpose  : 
+// function : TDataStd_Integer
+// purpose  : Empty Constructor
 //=======================================================================
 
-void TDataStd_Integer::Set(const Standard_Integer v) 
+TDataStd_Integer::TDataStd_Integer()
+    : myValue(-1),
+      myID(GetID())
+{
+}
+
+//=================================================================================================
+
+void TDataStd_Integer::Set(const Standard_Integer v)
 {
   // OCC2932 correction
-  if(myValue == v) return;
+  if (myValue == v)
+    return;
 
   Backup();
   myValue = v;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Get
-//purpose  : 
-//=======================================================================
+Standard_Integer TDataStd_Integer::Get() const
+{
+  return myValue;
+}
 
-Standard_Integer TDataStd_Integer::Get () const { return myValue; }
-
-
-//=======================================================================
-//function : IsCaptured
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean TDataStd_Integer::IsCaptured() const
 {
   Handle(TDF_Reference) R;
-  return (Label().FindAttribute(TDF_Reference::GetID(),R));
+  return (Label().FindAttribute(TDF_Reference::GetID(), R));
 }
 
-//=======================================================================
-//function : ID
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-const Standard_GUID& TDataStd_Integer::ID () const { return myID; }
+const Standard_GUID& TDataStd_Integer::ID() const
+{
+  return myID;
+}
 
-//=======================================================================
-//function : SetID
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
-void TDataStd_Integer::SetID( const Standard_GUID&  theGuid)
-{  
-  if(myID == theGuid) return;
+void TDataStd_Integer::SetID(const Standard_GUID& theGuid)
+{
+  if (myID == theGuid)
+    return;
 
   Backup();
   myID = theGuid;
 }
 
 //=======================================================================
-//function : SetID
-//purpose  : sets default ID
+// function : SetID
+// purpose  : sets default ID
 //=======================================================================
 void TDataStd_Integer::SetID()
 {
@@ -151,68 +139,54 @@ void TDataStd_Integer::SetID()
   myID = GetID();
 }
 
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TDF_Attribute) TDataStd_Integer::NewEmpty () const
+Handle(TDF_Attribute) TDataStd_Integer::NewEmpty() const
 {
   return new TDataStd_Integer();
 }
 
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TDataStd_Integer::Restore(const Handle(TDF_Attribute)& With) 
+void TDataStd_Integer::Restore(const Handle(TDF_Attribute)& With)
 {
-  Handle(TDataStd_Integer) anInt = Handle(TDataStd_Integer)::DownCast (With);
-  myValue = anInt->Get();
-  myID = anInt->ID();
+  Handle(TDataStd_Integer) anInt = Handle(TDataStd_Integer)::DownCast(With);
+  myValue                        = anInt->Get();
+  myID                           = anInt->ID();
 }
 
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TDataStd_Integer::Paste (const Handle(TDF_Attribute)& Into,
-                              const Handle(TDF_RelocationTable)& /*RT*/) const
+void TDataStd_Integer::Paste(const Handle(TDF_Attribute)& Into,
+                             const Handle(TDF_RelocationTable)& /*RT*/) const
 {
-  Handle(TDataStd_Integer) anInt = Handle(TDataStd_Integer)::DownCast (Into);
+  Handle(TDataStd_Integer) anInt = Handle(TDataStd_Integer)::DownCast(Into);
   anInt->Set(myValue);
   anInt->SetID(myID);
 }
 
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_OStream& TDataStd_Integer::Dump (Standard_OStream& anOS) const
-{  
-  anOS << "Integer:: "<< this <<" : ";
-  anOS << myValue; 
+Standard_OStream& TDataStd_Integer::Dump(Standard_OStream& anOS) const
+{
+  anOS << "Integer:: " << this << " : ";
+  anOS << myValue;
   Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid;
-//
-  anOS <<"\nAttribute fields: ";
+  //
+  anOS << "\nAttribute fields: ";
   TDF_Attribute::Dump(anOS);
   return anOS;
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void TDataStd_Integer::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+//=================================================================================================
+
+void TDataStd_Integer::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDF_Attribute)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValue)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myValue)
 }

@@ -11,34 +11,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepVisual_OverRidingStyledItem.hxx>
 #include <StepVisual_StyledItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_OverRidingStyledItem,StepVisual_StyledItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_OverRidingStyledItem, StepVisual_StyledItem)
 
-StepVisual_OverRidingStyledItem::StepVisual_OverRidingStyledItem ()  {}
+StepVisual_OverRidingStyledItem::StepVisual_OverRidingStyledItem() {}
 
 void StepVisual_OverRidingStyledItem::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles,
-	const Handle(Standard_Transient)& aItem,
-	const Handle(StepVisual_StyledItem)& aOverRiddenStyle)
+  const Handle(TCollection_HAsciiString)&                        aName,
+  const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles,
+  const Handle(Standard_Transient)&                              aItem,
+  const Handle(StepVisual_StyledItem)&                           aOverRiddenStyle)
 {
-	// --- classe own fields ---
-	overRiddenStyle = aOverRiddenStyle;
-	// --- classe inherited fields ---
-	StepVisual_StyledItem::Init(aName, aStyles, aItem);
+  // --- classe own fields ---
+  overRiddenStyle = aOverRiddenStyle;
+  // --- classe inherited fields ---
+  StepVisual_StyledItem::Init(aName, aStyles, aItem);
 }
 
-
-void StepVisual_OverRidingStyledItem::SetOverRiddenStyle(const Handle(StepVisual_StyledItem)& aOverRiddenStyle)
+void StepVisual_OverRidingStyledItem::SetOverRiddenStyle(
+  const Handle(StepVisual_StyledItem)& aOverRiddenStyle)
 {
-	overRiddenStyle = aOverRiddenStyle;
+  overRiddenStyle = aOverRiddenStyle;
 }
 
 Handle(StepVisual_StyledItem) StepVisual_OverRidingStyledItem::OverRiddenStyle() const
 {
-	return overRiddenStyle;
+  return overRiddenStyle;
 }

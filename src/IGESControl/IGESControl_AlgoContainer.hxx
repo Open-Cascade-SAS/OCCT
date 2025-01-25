@@ -21,41 +21,20 @@
 
 #include <IGESToBRep_AlgoContainer.hxx>
 
-
 class IGESControl_AlgoContainer;
 DEFINE_STANDARD_HANDLE(IGESControl_AlgoContainer, IGESToBRep_AlgoContainer)
-
 
 class IGESControl_AlgoContainer : public IGESToBRep_AlgoContainer
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT IGESControl_AlgoContainer();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESControl_AlgoContainer,IGESToBRep_AlgoContainer)
+  DEFINE_STANDARD_RTTIEXT(IGESControl_AlgoContainer, IGESToBRep_AlgoContainer)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESControl_AlgoContainer_HeaderFile

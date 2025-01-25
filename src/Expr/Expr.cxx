@@ -22,7 +22,8 @@
 
 Handle(Expr_GeneralExpression) Expr::CopyShare(const Handle(Expr_GeneralExpression)& exp)
 {
-  if (exp->IsShareable()) {
+  if (exp->IsShareable())
+  {
     return exp;
   }
   return exp->Copy();
@@ -31,9 +32,11 @@ Handle(Expr_GeneralExpression) Expr::CopyShare(const Handle(Expr_GeneralExpressi
 Standard_Integer Expr::NbOfFreeVariables(const Handle(Expr_GeneralRelation)& rel)
 {
   Standard_Integer nbvar = 0;
-  Expr_RUIterator rit(rel);
-  while (rit.More()) {
-    if (!rit.Value()->IsAssigned()) {
+  Expr_RUIterator  rit(rel);
+  while (rit.More())
+  {
+    if (!rit.Value()->IsAssigned())
+    {
       nbvar++;
     }
     rit.Next();
@@ -43,10 +46,12 @@ Standard_Integer Expr::NbOfFreeVariables(const Handle(Expr_GeneralRelation)& rel
 
 Standard_Integer Expr::NbOfFreeVariables(const Handle(Expr_GeneralExpression)& exp)
 {
-  Standard_Integer nbvar = 0;
+  Standard_Integer     nbvar = 0;
   Expr_UnknownIterator uit(exp);
-  while (uit.More()) {
-    if (!uit.Value()->IsAssigned()) {
+  while (uit.More())
+  {
+    if (!uit.Value()->IsAssigned())
+    {
       nbvar++;
     }
     uit.Next();
@@ -56,5 +61,5 @@ Standard_Integer Expr::NbOfFreeVariables(const Handle(Expr_GeneralExpression)& e
 
 Standard_Real Expr::Sign(const Standard_Real val)
 {
-  return ::Sign(1.0,val);
+  return ::Sign(1.0, val);
 }

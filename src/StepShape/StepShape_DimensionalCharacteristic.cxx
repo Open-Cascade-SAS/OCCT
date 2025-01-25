@@ -20,43 +20,35 @@
 #include <StepShape_DimensionalLocation.hxx>
 #include <StepShape_DimensionalSize.hxx>
 
-//=======================================================================
-//function : StepShape_DimensionalCharacteristic
-//purpose  : 
-//=======================================================================
-StepShape_DimensionalCharacteristic::StepShape_DimensionalCharacteristic ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : CaseNum
-//purpose  : 
-//=======================================================================
+StepShape_DimensionalCharacteristic::StepShape_DimensionalCharacteristic() {}
 
-Standard_Integer StepShape_DimensionalCharacteristic::CaseNum (const Handle(Standard_Transient)& ent) const
+//=================================================================================================
+
+Standard_Integer StepShape_DimensionalCharacteristic::CaseNum(
+  const Handle(Standard_Transient)& ent) const
 {
-  if (ent.IsNull()) return 0;
-  if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation))) return 1;
-  if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalSize))) return 2;
+  if (ent.IsNull())
+    return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation)))
+    return 1;
+  if (ent->IsKind(STANDARD_TYPE(StepShape_DimensionalSize)))
+    return 2;
   return 0;
 }
 
-//=======================================================================
-//function : DimensionalLocation
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepShape_DimensionalLocation) StepShape_DimensionalCharacteristic::DimensionalLocation () const
+Handle(StepShape_DimensionalLocation) StepShape_DimensionalCharacteristic::DimensionalLocation()
+  const
 {
   return Handle(StepShape_DimensionalLocation)::DownCast(Value());
 }
 
-//=======================================================================
-//function : DimensionalSize
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepShape_DimensionalSize) StepShape_DimensionalCharacteristic::DimensionalSize () const
+Handle(StepShape_DimensionalSize) StepShape_DimensionalCharacteristic::DimensionalSize() const
 {
   return Handle(StepShape_DimensionalSize)::DownCast(Value());
 }

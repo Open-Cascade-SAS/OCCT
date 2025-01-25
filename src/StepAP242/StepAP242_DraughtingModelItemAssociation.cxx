@@ -15,6 +15,7 @@
 
 #include <StepAP242_DraughtingModelItemAssociation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepAP242_DraughtingModelItemAssociation,StepAP242_ItemIdentifiedRepresentationUsage)
+IMPLEMENT_STANDARD_RTTIEXT(StepAP242_DraughtingModelItemAssociation,
+                           StepAP242_ItemIdentifiedRepresentationUsage)
 
-StepAP242_DraughtingModelItemAssociation::StepAP242_DraughtingModelItemAssociation ()    {  }
+StepAP242_DraughtingModelItemAssociation::StepAP242_DraughtingModelItemAssociation() {}

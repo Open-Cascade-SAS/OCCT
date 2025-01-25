@@ -23,7 +23,6 @@
 class TCollection_HAsciiString;
 class StepBasic_Document;
 
-
 class StepBasic_DocumentRepresentationType;
 DEFINE_STANDARD_HANDLE(StepBasic_DocumentRepresentationType, Standard_Transient)
 
@@ -32,49 +31,32 @@ class StepBasic_DocumentRepresentationType : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor
   Standard_EXPORT StepBasic_DocumentRepresentationType();
-  
+
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_Document)& aRepresentedDocument);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Handle(StepBasic_Document)&       aRepresentedDocument);
+
   //! Returns field Name
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
-  
+
   //! Set field Name
-  Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& Name);
-  
+  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& Name);
+
   //! Returns field RepresentedDocument
   Standard_EXPORT Handle(StepBasic_Document) RepresentedDocument() const;
-  
+
   //! Set field RepresentedDocument
-  Standard_EXPORT void SetRepresentedDocument (const Handle(StepBasic_Document)& RepresentedDocument);
+  Standard_EXPORT void SetRepresentedDocument(
+    const Handle(StepBasic_Document)& RepresentedDocument);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_DocumentRepresentationType,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DocumentRepresentationType, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TCollection_HAsciiString) theName;
-  Handle(StepBasic_Document) theRepresentedDocument;
-
-
+  Handle(StepBasic_Document)       theRepresentedDocument;
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_DocumentRepresentationType_HeaderFile

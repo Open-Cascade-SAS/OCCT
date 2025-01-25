@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef ViewControl_TreeView_H
 #define ViewControl_TreeView_H
@@ -31,7 +31,10 @@ class ViewControl_TreeView : public QTreeView
 {
 public:
   //! Constructor
-  ViewControl_TreeView (QWidget* theParent) : QTreeView (theParent) {}
+  ViewControl_TreeView(QWidget* theParent)
+      : QTreeView(theParent)
+  {
+  }
 
   //! Destructor
   virtual ~ViewControl_TreeView() {}
@@ -39,10 +42,13 @@ public:
   //! Sets default size of control, that is used by the first control show
   //! \param theDefaultWidth the width value
   //! \param theDefaultHeight the height value
-  void SetPredefinedSize (const QSize& theSize) { myDefaultSize = theSize;}
+  void SetPredefinedSize(const QSize& theSize) { myDefaultSize = theSize; }
 
   //! Returns predefined size if both values are positive, otherwise parent size hint
-  virtual QSize sizeHint() const Standard_OVERRIDE { return myDefaultSize.isValid() ? myDefaultSize : QTreeView::sizeHint(); }
+  virtual QSize sizeHint() const Standard_OVERRIDE
+  {
+    return myDefaultSize.isValid() ? myDefaultSize : QTreeView::sizeHint();
+  }
 
 private:
   QSize myDefaultSize; //!< default size, empty size if it should not be used

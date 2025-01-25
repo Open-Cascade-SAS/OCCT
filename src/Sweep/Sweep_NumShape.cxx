@@ -14,79 +14,67 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Sweep_NumShape.hxx>
 
-//=======================================================================
-//function : Sweep_NumShape
-//purpose  : 
-//=======================================================================
-Sweep_NumShape::Sweep_NumShape():
-       myType(TopAbs_SHAPE),
-       myIndex(0),
-       myClosed(Standard_False),
-       myBegInf(Standard_False),
-       myEndInf(Standard_False)
+//=================================================================================================
+
+Sweep_NumShape::Sweep_NumShape()
+    : myType(TopAbs_SHAPE),
+      myIndex(0),
+      myClosed(Standard_False),
+      myBegInf(Standard_False),
+      myEndInf(Standard_False)
 
 {
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Sweep_NumShape
-//purpose  : 
-//=======================================================================
-
-Sweep_NumShape::Sweep_NumShape(const Standard_Integer Index, 
-			       const TopAbs_ShapeEnum Type,
-			       const Standard_Boolean Closed,
-			       const Standard_Boolean BegInf,
-			       const Standard_Boolean EndInf):
-       myType(Type),
-       myIndex(Index),
-       myClosed(Closed),
-       myBegInf(BegInf),
-       myEndInf(EndInf)
+Sweep_NumShape::Sweep_NumShape(const Standard_Integer Index,
+                               const TopAbs_ShapeEnum Type,
+                               const Standard_Boolean Closed,
+                               const Standard_Boolean BegInf,
+                               const Standard_Boolean EndInf)
+    : myType(Type),
+      myIndex(Index),
+      myClosed(Closed),
+      myBegInf(BegInf),
+      myEndInf(EndInf)
 {
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void Sweep_NumShape::Init(const Standard_Integer Index, 
-			  const TopAbs_ShapeEnum Type,
-			  const Standard_Boolean Closed,
-			  const Standard_Boolean BegInf,
-			  const Standard_Boolean EndInf)
+void Sweep_NumShape::Init(const Standard_Integer Index,
+                          const TopAbs_ShapeEnum Type,
+                          const Standard_Boolean Closed,
+                          const Standard_Boolean BegInf,
+                          const Standard_Boolean EndInf)
 {
-  myIndex = Index;
-  myType = Type;
+  myIndex  = Index;
+  myType   = Type;
   myClosed = Closed;
   myBegInf = BegInf;
   myEndInf = EndInf;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Orientation
-//purpose  : 
-//=======================================================================
-
-TopAbs_Orientation Sweep_NumShape::Orientation () const
+TopAbs_Orientation Sweep_NumShape::Orientation() const
 {
-  if (myType==TopAbs_EDGE){
+  if (myType == TopAbs_EDGE)
+  {
     return TopAbs_FORWARD;
   }
-  else{
-    if(myIndex == 2){
+  else
+  {
+    if (myIndex == 2)
+    {
       return TopAbs_FORWARD;
     }
-    else{
+    else
+    {
       return TopAbs_REVERSED;
     }
   }
 }
-

@@ -21,7 +21,7 @@
 
 //      Declaration of Sequence class managed by Handle
 
-#define NCOLLECTION_HSEQUENCE(HClassName,Type)                                 \
-DEFINE_HSEQUENCE(HClassName,NCollection_Sequence<Type >)
+#define NCOLLECTION_HSEQUENCE(HClassName, Type)                                                    \
+  DEFINE_HSEQUENCE(HClassName, NCollection_Sequence<Type>)
 
 #endif

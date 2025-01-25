@@ -15,28 +15,28 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : const
-//purpose  : 
+// function : const
+// purpose  :
 //=======================================================================
 
-inline const Handle(Geom_Surface)& GeomFill_Pipe::Surface() const 
+inline const Handle(Geom_Surface)& GeomFill_Pipe::Surface() const
 {
   return mySurface;
 }
 
 //=======================================================================
-//function : ExchangeUV
-//purpose  : 
+// function : ExchangeUV
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean GeomFill_Pipe::ExchangeUV() const 
+inline Standard_Boolean GeomFill_Pipe::ExchangeUV() const
 {
   return myExchUV;
 }
 
 //=======================================================================
-//function : GenerateParticularCase
-//purpose  : 
+// function : GenerateParticularCase
+// purpose  :
 //=======================================================================
 
 inline void GeomFill_Pipe::GenerateParticularCase(const Standard_Boolean B)
@@ -44,10 +44,9 @@ inline void GeomFill_Pipe::GenerateParticularCase(const Standard_Boolean B)
   myKPart = B;
 }
 
-
 //=======================================================================
-//function : GenerateParticularCase
-//purpose  : 
+// function : GenerateParticularCase
+// purpose  :
 //=======================================================================
 
 inline Standard_Boolean GeomFill_Pipe::GenerateParticularCase() const
@@ -56,8 +55,8 @@ inline Standard_Boolean GeomFill_Pipe::GenerateParticularCase() const
 }
 
 //=======================================================================
-//function :  ErrorOnSurf
-//purpose  : 
+// function :  ErrorOnSurf
+// purpose  :
 //=======================================================================
 inline Standard_Real GeomFill_Pipe::ErrorOnSurf() const
 {
@@ -65,8 +64,8 @@ inline Standard_Real GeomFill_Pipe::ErrorOnSurf() const
 }
 
 //=======================================================================
-//function :  IsDone
-//purpose  : 
+// function :  IsDone
+// purpose  :
 //=======================================================================
 inline Standard_Boolean GeomFill_Pipe::IsDone() const
 {

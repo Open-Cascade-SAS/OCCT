@@ -14,53 +14,45 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <TopOpeBRepDS.hxx>
 #include <TopOpeBRepDS_ShapeShapeInterference.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_ShapeShapeInterference,TopOpeBRepDS_Interference)
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_ShapeShapeInterference, TopOpeBRepDS_Interference)
 
-//=======================================================================
-//function : TopOpeBRepDS_ShapeShapeInterference
-//purpose  : 
-//=======================================================================
-TopOpeBRepDS_ShapeShapeInterference::TopOpeBRepDS_ShapeShapeInterference
-  (const TopOpeBRepDS_Transition& T,
-   const TopOpeBRepDS_Kind        ST, 
-   const Standard_Integer         S, 
-   const TopOpeBRepDS_Kind        GT, 
-   const Standard_Integer         G, 
-   const Standard_Boolean         GBound, 
-   const TopOpeBRepDS_Config      C) :
-   TopOpeBRepDS_Interference(T,ST,S,GT,G),
-   myGBound(GBound),
-   myC(C)
+//=================================================================================================
+
+TopOpeBRepDS_ShapeShapeInterference::TopOpeBRepDS_ShapeShapeInterference(
+  const TopOpeBRepDS_Transition& T,
+  const TopOpeBRepDS_Kind        ST,
+  const Standard_Integer         S,
+  const TopOpeBRepDS_Kind        GT,
+  const Standard_Integer         G,
+  const Standard_Boolean         GBound,
+  const TopOpeBRepDS_Config      C)
+    : TopOpeBRepDS_Interference(T, ST, S, GT, G),
+      myGBound(GBound),
+      myC(C)
 {
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Config
-//purpose  : 
-//=======================================================================
+TopOpeBRepDS_Config TopOpeBRepDS_ShapeShapeInterference::Config() const
+{
+  return myC;
+}
 
-TopOpeBRepDS_Config TopOpeBRepDS_ShapeShapeInterference::Config()const 
-{ return myC; }
+//=================================================================================================
 
+Standard_Boolean TopOpeBRepDS_ShapeShapeInterference::GBound() const
+{
+  return myGBound;
+}
 
-//=======================================================================
-//function : GBound
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean TopOpeBRepDS_ShapeShapeInterference::GBound()const 
-{ return myGBound; }
-
-//=======================================================================
-//function : SetGBound
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TopOpeBRepDS_ShapeShapeInterference::SetGBound(const Standard_Boolean b)
-{ myGBound = b; }
+{
+  myGBound = b;
+}

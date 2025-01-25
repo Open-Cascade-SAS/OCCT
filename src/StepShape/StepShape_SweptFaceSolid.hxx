@@ -24,48 +24,28 @@
 class StepShape_FaceSurface;
 class TCollection_HAsciiString;
 
-
 class StepShape_SweptFaceSolid;
 DEFINE_STANDARD_HANDLE(StepShape_SweptFaceSolid, StepShape_SolidModel)
-
 
 class StepShape_SweptFaceSolid : public StepShape_SolidModel
 {
 
 public:
-
-  
   //! Returns a SweptFaceSolid
   Standard_EXPORT StepShape_SweptFaceSolid();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_FaceSurface)& aSweptArea);
-  
-  Standard_EXPORT virtual void SetSweptFace (const Handle(StepShape_FaceSurface)& aSweptArea);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Handle(StepShape_FaceSurface)&    aSweptArea);
+
+  Standard_EXPORT virtual void SetSweptFace(const Handle(StepShape_FaceSurface)& aSweptArea);
+
   Standard_EXPORT virtual Handle(StepShape_FaceSurface) SweptFace() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_SweptFaceSolid,StepShape_SolidModel)
+  DEFINE_STANDARD_RTTIEXT(StepShape_SweptFaceSolid, StepShape_SolidModel)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepShape_FaceSurface) sweptArea;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepShape_SweptFaceSolid_HeaderFile

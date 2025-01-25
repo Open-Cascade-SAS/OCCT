@@ -23,48 +23,28 @@
 #include <Standard_Transient.hxx>
 class StepBasic_DimensionalExponents;
 
-
 class StepBasic_NamedUnit;
 DEFINE_STANDARD_HANDLE(StepBasic_NamedUnit, Standard_Transient)
-
 
 class StepBasic_NamedUnit : public Standard_Transient
 {
 
 public:
-
-  
   //! Returns a NamedUnit
   Standard_EXPORT StepBasic_NamedUnit();
-  
-  Standard_EXPORT void Init (const Handle(StepBasic_DimensionalExponents)& aDimensions);
-  
-  Standard_EXPORT virtual void SetDimensions (const Handle(StepBasic_DimensionalExponents)& aDimensions);
-  
+
+  Standard_EXPORT void Init(const Handle(StepBasic_DimensionalExponents)& aDimensions);
+
+  Standard_EXPORT virtual void SetDimensions(
+    const Handle(StepBasic_DimensionalExponents)& aDimensions);
+
   Standard_EXPORT virtual Handle(StepBasic_DimensionalExponents) Dimensions() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepBasic_NamedUnit,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_NamedUnit, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepBasic_DimensionalExponents) dimensions;
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepBasic_NamedUnit_HeaderFile

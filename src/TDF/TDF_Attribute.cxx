@@ -15,7 +15,7 @@
 
 //      	------------------
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	Feb  7 1997	Creation
 
 #include <Standard_DomainError.hxx>
@@ -40,95 +40,74 @@
 #include <TDF_LabelNode.hxx>
 #include <TDF_Tool.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDF_Attribute,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(TDF_Attribute, Standard_Transient)
 
 #define TDF_DATA_COMMIT_OPTIMIZED
 
 //=======================================================================
-//function : TDF_Attribute
-//purpose  : Initializes fields.
+// function : TDF_Attribute
+// purpose  : Initializes fields.
 //=======================================================================
 
-TDF_Attribute::TDF_Attribute() :
-myLabelNode(NULL),
-myTransaction(0),
-mySavedTransaction(0),
-myFlags(1)
+TDF_Attribute::TDF_Attribute()
+    : myLabelNode(NULL),
+      myTransaction(0),
+      mySavedTransaction(0),
+      myFlags(1)
 
-{}
-
-
-//=======================================================================
-//function : Label
-//purpose  : 
-//=======================================================================
-
-const TDF_Label TDF_Attribute::Label() const
-{ return TDF_Label(myLabelNode); }
-
-
-//=======================================================================
-//function : Find
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean TDF_Attribute::FindAttribute (const Standard_GUID& anID,
-					       Handle(TDF_Attribute)& anAttribute) const
 {
-  return Label().FindAttribute(anID,anAttribute);
 }
 
-//=======================================================================
-//function : IsAttribute
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean TDF_Attribute::IsAttribute (const Standard_GUID& anID) const
+const TDF_Label TDF_Attribute::Label() const
+{
+  return TDF_Label(myLabelNode);
+}
+
+//=================================================================================================
+
+Standard_Boolean TDF_Attribute::FindAttribute(const Standard_GUID&   anID,
+                                              Handle(TDF_Attribute)& anAttribute) const
+{
+  return Label().FindAttribute(anID, anAttribute);
+}
+
+//=================================================================================================
+
+Standard_Boolean TDF_Attribute::IsAttribute(const Standard_GUID& anID) const
 {
   return Label().IsAttribute(anID);
 }
 
-//=======================================================================
-//function : AddAttribute
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TDF_Attribute::AddAttribute (const Handle(TDF_Attribute)& otherAttribute)  const
-{ Label().AddAttribute (otherAttribute); }
+void TDF_Attribute::AddAttribute(const Handle(TDF_Attribute)& otherAttribute) const
+{
+  Label().AddAttribute(otherAttribute);
+}
 
+//=================================================================================================
 
+Standard_Boolean TDF_Attribute::ForgetAttribute(const Standard_GUID& anID) const
+{
+  return Label().ForgetAttribute(anID);
+}
 
-//=======================================================================
-//function : ForgetAttribute
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean  TDF_Attribute::ForgetAttribute (const Standard_GUID& anID) const
-{ return Label().ForgetAttribute (anID); }
+void TDF_Attribute::ForgetAllAttributes(const Standard_Boolean clearChildren) const
+{
+  Label().ForgetAllAttributes(clearChildren);
+}
 
+//=================================================================================================
 
-
-//=======================================================================
-//function : ForgetAllAttributes
-//purpose  : 
-//=======================================================================
-
-void TDF_Attribute::ForgetAllAttributes (const Standard_Boolean clearChildren) const
-{ Label().ForgetAllAttributes (clearChildren); }
-
-
-
-
-//=======================================================================
-//function : Forget
-//purpose  : 
-//=======================================================================
-
-void TDF_Attribute::Forget (const Standard_Integer aTransaction)
+void TDF_Attribute::Forget(const Standard_Integer aTransaction)
 {
   mySavedTransaction = myTransaction;
-  myTransaction = aTransaction;
-  myFlags = (myFlags | TDF_AttributeForgottenMsk);
+  myTransaction      = aTransaction;
+  myFlags            = (myFlags | TDF_AttributeForgottenMsk);
 #ifdef TDF_DATA_COMMIT_OPTIMIZED
   if (myLabelNode)
     myLabelNode->AttributesModified(Standard_True);
@@ -136,121 +115,93 @@ void TDF_Attribute::Forget (const Standard_Integer aTransaction)
   Validate(Standard_False);
 }
 
-
-//=======================================================================
-//function : Resume
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TDF_Attribute::Resume()
 {
-  myTransaction = mySavedTransaction;
+  myTransaction      = mySavedTransaction;
   mySavedTransaction = -1; // To say "just resumed"!
-  myFlags = (myFlags & ~TDF_AttributeForgottenMsk);
+  myFlags            = (myFlags & ~TDF_AttributeForgottenMsk);
   Validate(Standard_True);
 }
 
-
-//=======================================================================
-//function : UntilTransaction
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer TDF_Attribute::UntilTransaction() const
 {
-  if      (IsForgotten())   return myTransaction;
-  else if (IsBackuped())  return myNext->myTransaction - 1;
-  else if (IsValid())     return myLabelNode->Data()->Transaction();
+  if (IsForgotten())
+    return myTransaction;
+  else if (IsBackuped())
+    return myNext->myTransaction - 1;
+  else if (IsValid())
+    return myLabelNode->Data()->Transaction();
   throw Standard_DomainError("The attribute structure is wrong.");
 }
 
+//=================================================================================================
+
+void TDF_Attribute::AfterAddition() {}
+
+//=================================================================================================
+
+void TDF_Attribute::BeforeRemoval() {}
+
+//=================================================================================================
+
+void TDF_Attribute::BeforeForget() {}
+
+//=================================================================================================
+
+void TDF_Attribute::AfterResume() {}
 
 //=======================================================================
-//function : AfterAddition
-//purpose  : 
+// function : BeforeUndo
+// purpose  : Before application of a TDF_Delta.
 //=======================================================================
 
-void TDF_Attribute::AfterAddition() 
-{}
-
-
-//=======================================================================
-//function : BeforeRemoval
-//purpose  : 
-//=======================================================================
-
-void TDF_Attribute::BeforeRemoval() 
-{}
+Standard_Boolean TDF_Attribute::BeforeUndo(const Handle(TDF_AttributeDelta)& /*anAttDelta*/,
+                                           const Standard_Boolean /*forceIt*/)
+{
+  return Standard_True;
+}
 
 //=======================================================================
-//function : BeforeForget
-//purpose  : 
+// function : AfterUndo
+// purpose  : After application of a TDF_Delta.
 //=======================================================================
 
-void TDF_Attribute::BeforeForget() 
-{}
+Standard_Boolean TDF_Attribute::AfterUndo(const Handle(TDF_AttributeDelta)& /*anAttDelta*/,
+                                          const Standard_Boolean /*forceIt*/)
+{
+  return Standard_True;
+}
 
+//=================================================================================================
 
-//=======================================================================
-//function : AfterResume
-//purpose  : 
-//=======================================================================
+Standard_Boolean TDF_Attribute::AfterRetrieval(const Standard_Boolean /*forceIt*/)
+{
+  return Standard_True;
+}
 
-void TDF_Attribute::AfterResume() 
-{}
-
-
-//=======================================================================
-//function : BeforeUndo
-//purpose  : Before application of a TDF_Delta.
-//=======================================================================
-
-Standard_Boolean TDF_Attribute::BeforeUndo
-(const Handle(TDF_AttributeDelta)& /*anAttDelta*/,
- const Standard_Boolean /*forceIt*/)
-{ return Standard_True; }
-
-
-//=======================================================================
-//function : AfterUndo
-//purpose  : After application of a TDF_Delta.
-//=======================================================================
-
-Standard_Boolean TDF_Attribute::AfterUndo
-(const Handle(TDF_AttributeDelta)& /*anAttDelta*/,
- const Standard_Boolean /*forceIt*/)
-{ return Standard_True; }
-
-
-//=======================================================================
-//function : AfterRetrieval
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean TDF_Attribute::AfterRetrieval
-(const Standard_Boolean /*forceIt*/)
-{ return Standard_True; }
-
-//=======================================================================
-//function : BeforeCommitTransaction
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TDF_Attribute::BeforeCommitTransaction() {}
 
 //=======================================================================
-//function : Backup
-//purpose  : Backups the attribute.
+// function : Backup
+// purpose  : Backups the attribute.
 //=======================================================================
 
 void TDF_Attribute::Backup()
 {
   // The attribute must be valid and attached to a label.
-  if (IsValid() && (myLabelNode != NULL)) {
+  if (IsValid() && (myLabelNode != NULL))
+  {
     Handle(TDF_Data) aData = myLabelNode->Data();
 
     // check that modification is allowed
-    if ( !aData->IsModificationAllowed() ) {
+    if (!aData->IsModificationAllowed())
+    {
       TCollection_AsciiString aMess;
       aMess = "Attribute \"";
       aMess += DynamicType()->Name();
@@ -258,42 +209,38 @@ void TDF_Attribute::Backup()
       throw Standard_ImmutableObject(aMess.ToCString());
     }
 
-    const Standard_Integer currentTransaction =
-      aData->Transaction();
-    if (myTransaction < currentTransaction) {//"!=" is less secure.
+    const Standard_Integer currentTransaction = aData->Transaction();
+    if (myTransaction < currentTransaction)
+    { //"!=" is less secure.
       Handle(TDF_Attribute) backup = BackupCopy();
 #ifdef TDF_DATA_COMMIT_OPTIMIZED
       myLabelNode->AttributesModified(Standard_True);
 #endif
-      backup->myLabelNode          = myLabelNode;
-      backup->myNext               = this; // Back reference;
-      backup->myBackup             = myBackup;
-      backup->myTransaction        = myTransaction;
+      backup->myLabelNode   = myLabelNode;
+      backup->myNext        = this; // Back reference;
+      backup->myBackup      = myBackup;
+      backup->myTransaction = myTransaction;
       backup->Backup(Standard_True);
 
-      myBackup        = backup;
-      myTransaction   = currentTransaction;
+      myBackup      = backup;
+      myTransaction = currentTransaction;
     }
   }
 }
 
-
 //=======================================================================
-//function : BackupCopy
-//purpose  : Standard implementation of BackupCopy.
+// function : BackupCopy
+// purpose  : Standard implementation of BackupCopy.
 //=======================================================================
 
 Handle(TDF_Attribute) TDF_Attribute::BackupCopy() const
 {
-  Handle(TDF_Attribute) copy = NewEmpty(); copy->Restore(this);
+  Handle(TDF_Attribute) copy = NewEmpty();
+  copy->Restore(this);
   return copy;
 }
 
-
-//=======================================================================
-//function : RemoveBackup
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TDF_Attribute::RemoveBackup()
 {
@@ -305,128 +252,128 @@ void TDF_Attribute::RemoveBackup()
   myBackup->myLabelNode = NULL; // Absolutely necessary!
   myBackup->myNext.Nullify();   // Absolutely necessary!
   myBackup = myBackup->myBackup;
-  if (!myBackup.IsNull()) myBackup->myNext = this; // New back reference.
+  if (!myBackup.IsNull())
+    myBackup->myNext = this; // New back reference.
 }
 
 //=======================================================================
-//function : References
-//purpose  : Adds the referenced attributes or labels.
+// function : References
+// purpose  : Adds the referenced attributes or labels.
 //=======================================================================
 
-void TDF_Attribute::References(const Handle(TDF_DataSet)& /*aDataSet*/) const
-{}
-
+void TDF_Attribute::References(const Handle(TDF_DataSet)& /*aDataSet*/) const {}
 
 //=======================================================================
-//function : DeltaOnAddition
-//purpose  : Creates such a delta.
+// function : DeltaOnAddition
+// purpose  : Creates such a delta.
 //=======================================================================
 
 Handle(TDF_DeltaOnAddition) TDF_Attribute::DeltaOnAddition() const
-{ return new TDF_DeltaOnAddition(this); }
-
+{
+  return new TDF_DeltaOnAddition(this);
+}
 
 //=======================================================================
-//function : DeltaOnForget
-//purpose  : Creates such a delta.
+// function : DeltaOnForget
+// purpose  : Creates such a delta.
 //=======================================================================
 
 Handle(TDF_DeltaOnForget) TDF_Attribute::DeltaOnForget() const
-{ return new TDF_DeltaOnForget(this); }
-
+{
+  return new TDF_DeltaOnForget(this);
+}
 
 //=======================================================================
-//function : DeltaOnResume
-//purpose  : Creates such a delta.
+// function : DeltaOnResume
+// purpose  : Creates such a delta.
 //=======================================================================
 
 Handle(TDF_DeltaOnResume) TDF_Attribute::DeltaOnResume() const
-{ return new TDF_DeltaOnResume(this); }
-
-
-//=======================================================================
-//function : DeltaOnModification
-//purpose  : Creates such a delta.
-//=======================================================================
-
-Handle(TDF_DeltaOnModification) TDF_Attribute::DeltaOnModification
-(const Handle(TDF_Attribute)& anOldAttribute) const
-{ return new TDF_DefaultDeltaOnModification(anOldAttribute); }
-
+{
+  return new TDF_DeltaOnResume(this);
+}
 
 //=======================================================================
-//function : DeltaOnModification
-//purpose  : Applies such a delta.
+// function : DeltaOnModification
+// purpose  : Creates such a delta.
 //=======================================================================
 
-void TDF_Attribute::DeltaOnModification
-(const Handle(TDF_DeltaOnModification)& aDelta)
+Handle(TDF_DeltaOnModification) TDF_Attribute::DeltaOnModification(
+  const Handle(TDF_Attribute)& anOldAttribute) const
+{
+  return new TDF_DefaultDeltaOnModification(anOldAttribute);
+}
+
+//=======================================================================
+// function : DeltaOnModification
+// purpose  : Applies such a delta.
+//=======================================================================
+
+void TDF_Attribute::DeltaOnModification(const Handle(TDF_DeltaOnModification)& aDelta)
 {
   Backup();
   Restore(aDelta->Attribute());
 }
 
-
 //=======================================================================
-//function : DeltaOnRemoval
-//purpose  : Creates such a delta.
+// function : DeltaOnRemoval
+// purpose  : Creates such a delta.
 //=======================================================================
 
 Handle(TDF_DeltaOnRemoval) TDF_Attribute::DeltaOnRemoval() const
-{ return new TDF_DefaultDeltaOnRemoval(this); } // myBackup
-
+{
+  return new TDF_DefaultDeltaOnRemoval(this);
+} // myBackup
 
 //=======================================================================
-//function : Dump
-//purpose  : This method is equivalent to operator <<
+// function : Dump
+// purpose  : This method is equivalent to operator <<
 //=======================================================================
 
 Standard_OStream& TDF_Attribute::Dump(Standard_OStream& anOS) const
 {
-  anOS<<"\t"<<DynamicType()->Name()<<"\tTrans. "<<myTransaction<<";";
-  if (IsValid())     anOS<<" Valid";
-  if (IsBackuped())  anOS<<" Backuped";
-  if (IsForgotten()) anOS<<" Forgotten";
-  char toto[45];
+  anOS << "\t" << DynamicType()->Name() << "\tTrans. " << myTransaction << ";";
+  if (IsValid())
+    anOS << " Valid";
+  if (IsBackuped())
+    anOS << " Backuped";
+  if (IsForgotten())
+    anOS << " Forgotten";
+  char                toto[45];
   Standard_PCharacter pStr;
   //
-  pStr=toto;
+  pStr = toto;
   ID().ToCString(pStr);
-  anOS<<";\tID = "<<toto<<std::endl;
+  anOS << ";\tID = " << toto << std::endl;
   return anOS;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function :ExtendedDump
-//purpose  : 
-//=======================================================================
-
-void TDF_Attribute::ExtendedDump
-(Standard_OStream& anOS,
- const TDF_IDFilter& /*aFilter*/,
- TDF_AttributeIndexedMap& /*aMap*/) const
-{ Dump(anOS); }
-
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void TDF_Attribute::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+void TDF_Attribute::ExtendedDump(Standard_OStream& anOS,
+                                 const TDF_IDFilter& /*aFilter*/,
+                                 TDF_AttributeIndexedMap& /*aMap*/) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  Dump(anOS);
+}
+
+//=================================================================================================
+
+void TDF_Attribute::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
   TCollection_AsciiString aLabel;
-  TDF_Tool::Entry (Label(), aLabel);
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aLabel)
+  TDF_Tool::Entry(Label(), aLabel);
+  OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aLabel)
 
-  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, ID())
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Transaction())
+  OCCT_DUMP_FIELD_VALUE_GUID(theOStream, ID())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, Transaction())
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsValid())
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsNew())
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsBackuped())
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsForgotten())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, IsValid())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, IsNew())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, IsBackuped())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, IsForgotten())
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFlags)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myFlags)
 }

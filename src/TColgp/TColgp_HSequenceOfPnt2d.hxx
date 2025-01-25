@@ -23,5 +23,4 @@
 
 DEFINE_HSEQUENCE(TColgp_HSequenceOfPnt2d, TColgp_SequenceOfPnt2d)
 
-
 #endif

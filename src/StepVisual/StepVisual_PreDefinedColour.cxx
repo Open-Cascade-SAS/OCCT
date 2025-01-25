@@ -11,24 +11,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepVisual_PreDefinedColour.hxx>
 #include <StepVisual_PreDefinedItem.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PreDefinedColour,StepVisual_Colour)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PreDefinedColour, StepVisual_Colour)
 
-StepVisual_PreDefinedColour::StepVisual_PreDefinedColour ()  
+StepVisual_PreDefinedColour::StepVisual_PreDefinedColour()
 {
   myItem = new StepVisual_PreDefinedItem;
 }
 
-void StepVisual_PreDefinedColour::SetPreDefinedItem (const Handle(StepVisual_PreDefinedItem) &item)  
+void StepVisual_PreDefinedColour::SetPreDefinedItem(const Handle(StepVisual_PreDefinedItem)& item)
 {
   myItem = item;
 }
 
-const Handle(StepVisual_PreDefinedItem) &StepVisual_PreDefinedColour::GetPreDefinedItem () const 
+const Handle(StepVisual_PreDefinedItem)& StepVisual_PreDefinedColour::GetPreDefinedItem() const
 {
   return myItem;
 }

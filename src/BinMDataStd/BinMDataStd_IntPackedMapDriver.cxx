@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMDataStd.hxx>
 #include <BinMDataStd_IntPackedMapDriver.hxx>
 #include <BinMDF_ADriver.hxx>
@@ -28,22 +27,17 @@
 #include <TDF_Attribute.hxx>
 #include <TDocStd_FormatVersion.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_IntPackedMapDriver,BinMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_IntPackedMapDriver, BinMDF_ADriver)
 
-//=======================================================================
-//function : BinMDataStd_IntPackedMapDriver
-//purpose  :
-//=======================================================================
-BinMDataStd_IntPackedMapDriver::BinMDataStd_IntPackedMapDriver
-                         (const Handle(Message_Messenger)& theMessageDriver)
-     : BinMDF_ADriver (theMessageDriver, STANDARD_TYPE(TDataStd_IntPackedMap)->Name())
+//=================================================================================================
+
+BinMDataStd_IntPackedMapDriver::BinMDataStd_IntPackedMapDriver(
+  const Handle(Message_Messenger)& theMessageDriver)
+    : BinMDF_ADriver(theMessageDriver, STANDARD_TYPE(TDataStd_IntPackedMap)->Name())
 {
 }
 
-//=======================================================================
-//function : NewEmpty
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
 Handle(TDF_Attribute) BinMDataStd_IntPackedMapDriver::NewEmpty() const
 {
@@ -51,44 +45,52 @@ Handle(TDF_Attribute) BinMDataStd_IntPackedMapDriver::NewEmpty() const
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : persistent -> transient (retrieve)
+// function : Paste
+// purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMDataStd_IntPackedMapDriver::Paste
-                         (const BinObjMgt_Persistent&  Source,
-                          const Handle(TDF_Attribute)& Target,
-                          BinObjMgt_RRelocationTable&  RelocTable) const
+Standard_Boolean BinMDataStd_IntPackedMapDriver::Paste(const BinObjMgt_Persistent&  Source,
+                                                       const Handle(TDF_Attribute)& Target,
+                                                       BinObjMgt_RRelocationTable& RelocTable) const
 {
   Handle(TDataStd_IntPackedMap) aTagAtt = Handle(TDataStd_IntPackedMap)::DownCast(Target);
-  if(aTagAtt.IsNull()) {
-    myMessageDriver->Send ("IntPackedMapDriver:: The target attribute is Null.", Message_Fail);
+  if (aTagAtt.IsNull())
+  {
+    myMessageDriver->Send("IntPackedMapDriver:: The target attribute is Null.", Message_Fail);
     return Standard_False;
   }
 
   Standard_Integer aSize = 0;
-  if (! (Source >> aSize)) {
-    myMessageDriver->Send ("Cannot retrieve size for IntPackedMap attribute.", Message_Fail);
+  if (!(Source >> aSize))
+  {
+    myMessageDriver->Send("Cannot retrieve size for IntPackedMap attribute.", Message_Fail);
     return Standard_False;
   }
-  if(aSize) {
-    Handle(TColStd_HPackedMapOfInteger) aHMap = new TColStd_HPackedMapOfInteger ();
-    Standard_Integer aKey;
-    for(Standard_Integer i = 0; i< aSize; i++) {
+  if (aSize)
+  {
+    Handle(TColStd_HPackedMapOfInteger) aHMap = new TColStd_HPackedMapOfInteger();
+    Standard_Integer                    aKey;
+    for (Standard_Integer i = 0; i < aSize; i++)
+    {
       Standard_Boolean ok = Source >> aKey;
-      if (!ok) {
-	myMessageDriver->Send ("Cannot retrieve integer member for IntPackedMap attribute.", Message_Fail);
-	return Standard_False;
+      if (!ok)
+      {
+        myMessageDriver->Send("Cannot retrieve integer member for IntPackedMap attribute.",
+                              Message_Fail);
+        return Standard_False;
       }
-      if(!aHMap->ChangeMap().Add( aKey )) return Standard_False;
+      if (!aHMap->ChangeMap().Add(aKey))
+        return Standard_False;
     }
     aTagAtt->ChangeMap(aHMap);
   }
 
   Standard_Boolean aDelta(Standard_False);
-  if(RelocTable.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_3) {
+  if (RelocTable.GetHeaderData()->StorageVersion().IntegerValue()
+      >= TDocStd_FormatVersion_VERSION_3)
+  {
     Standard_Byte aDeltaValue;
-    if (! (Source >> aDeltaValue))
+    if (!(Source >> aDeltaValue))
       return Standard_False;
     else
       aDelta = (aDeltaValue != 0);
@@ -98,25 +100,26 @@ Standard_Boolean BinMDataStd_IntPackedMapDriver::Paste
 }
 
 //=======================================================================
-//function : Paste
-//purpose  : transient -> persistent (store)
+// function : Paste
+// purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDataStd_IntPackedMapDriver::Paste
-                         (const Handle(TDF_Attribute)& Source,
-                          BinObjMgt_Persistent&        Target,
-                          BinObjMgt_SRelocationTable&  /*RelocTable*/) const
+void BinMDataStd_IntPackedMapDriver::Paste(const Handle(TDF_Attribute)& Source,
+                                           BinObjMgt_Persistent&        Target,
+                                           BinObjMgt_SRelocationTable& /*RelocTable*/) const
 {
   Handle(TDataStd_IntPackedMap) anAtt = Handle(TDataStd_IntPackedMap)::DownCast(Source);
-  if (anAtt.IsNull()) {
-    myMessageDriver->Send ("IntPackedMapDriver:: The source attribute is Null.", Message_Fail);
+  if (anAtt.IsNull())
+  {
+    myMessageDriver->Send("IntPackedMapDriver:: The source attribute is Null.", Message_Fail);
     return;
   }
   Standard_Integer aSize = (anAtt->IsEmpty()) ? 0 : anAtt->Extent();
   Target << aSize;
-  if(aSize) {
+  if (aSize)
+  {
     TColStd_MapIteratorOfPackedMapOfInteger anIt(anAtt->GetMap());
-    for(;anIt.More();anIt.Next())
+    for (; anIt.More(); anIt.Next())
       Target << anIt.Key();
   }
   Target << (Standard_Byte)(anAtt->GetDelta() ? 1 : 0);

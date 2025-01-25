@@ -12,7 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRepLib.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <BRep_Tool.hxx>
@@ -21,109 +20,93 @@
 #include <IntTools_ShrunkRange.hxx>
 #include <Precision.hxx>
 
-//=======================================================================
-//function : 
-//purpose  : 
-//=======================================================================
-  IntTools_ShrunkRange::IntTools_ShrunkRange ()
+//=================================================================================================
+
+IntTools_ShrunkRange::IntTools_ShrunkRange()
 {
-  myT1=-99;
-  myT2=myT1;
-  myTS1=myT1;
-  myTS2=myT1;
-  myIsDone=Standard_False;
-  myIsSplittable=Standard_False;
-  myLength = 0.0;
+  myT1           = -99;
+  myT2           = myT1;
+  myTS1          = myT1;
+  myTS2          = myT1;
+  myIsDone       = Standard_False;
+  myIsSplittable = Standard_False;
+  myLength       = 0.0;
 }
-//=======================================================================
-//function : ~
-//purpose  : 
-//=======================================================================
-IntTools_ShrunkRange::~IntTools_ShrunkRange () 
-{
-}
-//=======================================================================
-//function : SetData
-//purpose  : 
-//=======================================================================
-void IntTools_ShrunkRange::SetData(const TopoDS_Edge& aE,
-                                   const Standard_Real aT1,
-                                   const Standard_Real aT2,
+
+//=================================================================================================
+
+IntTools_ShrunkRange::~IntTools_ShrunkRange() {}
+
+//=================================================================================================
+
+void IntTools_ShrunkRange::SetData(const TopoDS_Edge&   aE,
+                                   const Standard_Real  aT1,
+                                   const Standard_Real  aT2,
                                    const TopoDS_Vertex& aV1,
                                    const TopoDS_Vertex& aV2)
 {
-  myEdge=aE;
-  myV1=aV1;
-  myV2=aV2;
-  myT1=aT1;
-  myT2=aT2;
-  myIsDone=Standard_False;
-  myIsSplittable=Standard_False;
-  myLength = 0.0;
+  myEdge         = aE;
+  myV1           = aV1;
+  myV2           = aV2;
+  myT1           = aT1;
+  myT2           = aT2;
+  myIsDone       = Standard_False;
+  myIsSplittable = Standard_False;
+  myLength       = 0.0;
 }
-//=======================================================================
-//function : SetContext
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
 void IntTools_ShrunkRange::SetContext(const Handle(IntTools_Context)& aCtx)
 {
-  myCtx=aCtx;
+  myCtx = aCtx;
 }
-//=======================================================================
-//function : Context
-//purpose  : 
-//=======================================================================
-const Handle(IntTools_Context)& IntTools_ShrunkRange::Context()const
+
+//=================================================================================================
+
+const Handle(IntTools_Context)& IntTools_ShrunkRange::Context() const
 {
   return myCtx;
 }
-//=======================================================================
-//function : Edge
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
 const TopoDS_Edge& IntTools_ShrunkRange::Edge() const
 {
   return myEdge;
 }
-//=======================================================================
-//function : ShrunkRange
-//purpose  : 
-//=======================================================================
-void IntTools_ShrunkRange::ShrunkRange(Standard_Real& aT1,
-                                       Standard_Real& aT2) const
+
+//=================================================================================================
+
+void IntTools_ShrunkRange::ShrunkRange(Standard_Real& aT1, Standard_Real& aT2) const
 {
-  aT1=myTS1;
-  aT2=myTS2;
+  aT1 = myTS1;
+  aT2 = myTS2;
 }
-//=======================================================================
-//function : BndBox
-//purpose  : 
-//=======================================================================
+
+//=================================================================================================
+
 const Bnd_Box& IntTools_ShrunkRange::BndBox() const
 {
   return myBndBox;
 }
-//=======================================================================
-//function : SetShrunkRange
-//purpose  : 
-//=======================================================================
-void IntTools_ShrunkRange::SetShrunkRange(const Standard_Real aT1,
-                                          const Standard_Real aT2) 
+
+//=================================================================================================
+
+void IntTools_ShrunkRange::SetShrunkRange(const Standard_Real aT1, const Standard_Real aT2)
 {
-  myTS1=aT1;
-  myTS2=aT2;
+  myTS1 = aT1;
+  myTS2 = aT2;
   //
   BRepAdaptor_Curve aBAC(myEdge);
   BndLib_Add3dCurve::Add(aBAC, aT1, aT2, 0., myBndBox);
 }
 
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void IntTools_ShrunkRange::Perform()
 {
-  myIsDone = Standard_False;
+  myIsDone       = Standard_False;
   myIsSplittable = Standard_False;
   //
   // default tolerance - Precision::Confusion()
@@ -131,22 +114,25 @@ void IntTools_ShrunkRange::Perform()
   // default parametric tolerance - Precision::PConfusion()
   Standard_Real aPDTol = Precision::PConfusion();
   //
-  if (myT2 - myT1 < aPDTol) {
+  if (myT2 - myT1 < aPDTol)
+  {
     return;
   }
   //
-  gp_Pnt aP1 = BRep_Tool::Pnt(myV1);
-  gp_Pnt aP2 = BRep_Tool::Pnt(myV2);
+  gp_Pnt        aP1 = BRep_Tool::Pnt(myV1);
+  gp_Pnt        aP2 = BRep_Tool::Pnt(myV2);
   Standard_Real aTolE, aTolV1, aTolV2;
-  aTolE = BRep_Tool::Tolerance(myEdge);
+  aTolE  = BRep_Tool::Tolerance(myEdge);
   aTolV1 = BRep_Tool::Tolerance(myV1);
   aTolV2 = BRep_Tool::Tolerance(myV2);
   //
-  if (aTolV1 < aTolE) {
+  if (aTolV1 < aTolE)
+  {
     aTolV1 = aTolE;
   }
   //
-  if (aTolV2 < aTolE) {
+  if (aTolV2 < aTolE)
+  {
     aTolV2 = aTolE;
   }
   //
@@ -158,12 +144,13 @@ void IntTools_ShrunkRange::Perform()
   // compute the shrunk range - part of the edge not covered
   // by the tolerance spheres of its vertices
   BRepAdaptor_Curve aBAC(myEdge);
-  if (!BRepLib::FindValidRange(aBAC, aTolE, myT1, aP1, aTolV1,
-                               myT2, aP2, aTolV2, myTS1, myTS2)) {
+  if (!BRepLib::FindValidRange(aBAC, aTolE, myT1, aP1, aTolV1, myT2, aP2, aTolV2, myTS1, myTS2))
+  {
     // no valid range
     return;
   }
-  if ((myTS2 - myTS1) < aPDTol) {
+  if ((myTS2 - myTS1) < aPDTol)
+  {
     // micro edge
     return;
   }
@@ -173,14 +160,16 @@ void IntTools_ShrunkRange::Perform()
   // parametric tolerance for the edge
   // to be used in AbscissaPoint computations
   Standard_Real aPTolE = aBAC.Resolution(aTolE);
-  // for the edges with big tolerance use 
+  // for the edges with big tolerance use
   // min parametric tolerance - 1% of its range
   Standard_Real aPTolEMin = (myT2 - myT1) / 100.;
-  if (aPTolE > aPTolEMin) {
+  if (aPTolE > aPTolEMin)
+  {
     aPTolE = aPTolEMin;
   }
   myLength = GCPnts_AbscissaPoint::Length(aBAC, myTS1, myTS2, aPTolE);
-  if (myLength < aDTol) {
+  if (myLength < aDTol)
+  {
     // micro edge
     return;
   }
@@ -192,7 +181,8 @@ void IntTools_ShrunkRange::Perform()
   // for the edge to have possibility to be split at least once:
   // 2*TolE - minimal diameter of tolerance sphere of splitting vertex
   // 2*Precision::Confusion() - minimal length of the new edges
-  if (myLength > (2 * aTolE + 2 * aDTol)) {
+  if (myLength > (2 * aTolE + 2 * aDTol))
+  {
     myIsSplittable = Standard_True;
   }
   //

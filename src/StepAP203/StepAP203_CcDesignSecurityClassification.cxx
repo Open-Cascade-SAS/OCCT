@@ -19,45 +19,37 @@
 #include <StepAP203_CcDesignSecurityClassification.hxx>
 #include <StepBasic_SecurityClassification.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignSecurityClassification,StepBasic_SecurityClassificationAssignment)
+IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignSecurityClassification,
+                           StepBasic_SecurityClassificationAssignment)
 
-//=======================================================================
-//function : StepAP203_CcDesignSecurityClassification
-//purpose  : 
-//=======================================================================
-StepAP203_CcDesignSecurityClassification::StepAP203_CcDesignSecurityClassification ()
+//=================================================================================================
+
+StepAP203_CcDesignSecurityClassification::StepAP203_CcDesignSecurityClassification() {}
+
+//=================================================================================================
+
+void StepAP203_CcDesignSecurityClassification::Init(
+  const Handle(StepBasic_SecurityClassification)&
+    aSecurityClassificationAssignment_AssignedSecurityClassification,
+  const Handle(StepAP203_HArray1OfClassifiedItem)& aItems)
 {
-}
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void StepAP203_CcDesignSecurityClassification::Init (const Handle(StepBasic_SecurityClassification) &aSecurityClassificationAssignment_AssignedSecurityClassification,
-                                                     const Handle(StepAP203_HArray1OfClassifiedItem) &aItems)
-{
-  StepBasic_SecurityClassificationAssignment::Init(aSecurityClassificationAssignment_AssignedSecurityClassification);
+  StepBasic_SecurityClassificationAssignment::Init(
+    aSecurityClassificationAssignment_AssignedSecurityClassification);
 
   theItems = aItems;
 }
 
-//=======================================================================
-//function : Items
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepAP203_HArray1OfClassifiedItem) StepAP203_CcDesignSecurityClassification::Items () const
+Handle(StepAP203_HArray1OfClassifiedItem) StepAP203_CcDesignSecurityClassification::Items() const
 {
   return theItems;
 }
 
-//=======================================================================
-//function : SetItems
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepAP203_CcDesignSecurityClassification::SetItems (const Handle(StepAP203_HArray1OfClassifiedItem) &aItems)
+void StepAP203_CcDesignSecurityClassification::SetItems(
+  const Handle(StepAP203_HArray1OfClassifiedItem)& aItems)
 {
   theItems = aItems;
 }

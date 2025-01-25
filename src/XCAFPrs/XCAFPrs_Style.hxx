@@ -23,10 +23,9 @@
 #include <Standard_HashUtils.hxx>
 
 //! Represents a set of styling settings applicable to a (sub)shape
-class XCAFPrs_Style 
+class XCAFPrs_Style
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor - colors are unset, visibility is TRUE.
@@ -35,17 +34,14 @@ public:
   //! Return TRUE if style is empty - does not override any properties.
   Standard_Boolean IsEmpty() const
   {
-    return !myHasColorSurf
-        && !myHasColorCurv
-        &&  myMaterial.IsNull()
-        &&  myIsVisible;
+    return !myHasColorSurf && !myHasColorCurv && myMaterial.IsNull() && myIsVisible;
   }
 
   //! Return material.
   const Handle(XCAFDoc_VisMaterial)& Material() const { return myMaterial; }
 
   //! Set material.
-  void SetMaterial (const Handle(XCAFDoc_VisMaterial)& theMaterial) { myMaterial = theMaterial; }
+  void SetMaterial(const Handle(XCAFDoc_VisMaterial)& theMaterial) { myMaterial = theMaterial; }
 
   //! Return TRUE if surface color has been defined.
   Standard_Boolean IsSetColorSurf() const { return myHasColorSurf; }
@@ -54,17 +50,17 @@ public:
   const Quantity_Color& GetColorSurf() const { return myColorSurf.GetRGB(); }
 
   //! Set surface color.
-  void SetColorSurf (const Quantity_Color& theColor) { SetColorSurf  (Quantity_ColorRGBA (theColor)); }
+  void SetColorSurf(const Quantity_Color& theColor) { SetColorSurf(Quantity_ColorRGBA(theColor)); }
 
   //! Return surface color.
   const Quantity_ColorRGBA& GetColorSurfRGBA() const { return myColorSurf; }
 
   //! Set surface color.
-  Standard_EXPORT void SetColorSurf  (const Quantity_ColorRGBA& theColor);
+  Standard_EXPORT void SetColorSurf(const Quantity_ColorRGBA& theColor);
 
   //! Manage surface color setting
   Standard_EXPORT void UnSetColorSurf();
-  
+
   //! Return TRUE if curve color has been defined.
   Standard_Boolean IsSetColorCurv() const { return myHasColorCurv; }
 
@@ -72,13 +68,13 @@ public:
   const Quantity_Color& GetColorCurv() const { return myColorCurv; }
 
   //! Set curve color.
-  Standard_EXPORT void SetColorCurv (const Quantity_Color& col);
-  
+  Standard_EXPORT void SetColorCurv(const Quantity_Color& col);
+
   //! Manage curve color setting
   Standard_EXPORT void UnSetColorCurv();
 
   //! Assign visibility.
-  void SetVisibility (const Standard_Boolean theVisibility) { myIsVisible = theVisibility; }
+  void SetVisibility(const Standard_Boolean theVisibility) { myIsVisible = theVisibility; }
 
   //! Manage visibility.
   Standard_Boolean IsVisible() const { return myIsVisible; }
@@ -91,13 +87,12 @@ public:
     {
       return THE_NULL_TEXTURE;
     }
-    else if (myMaterial->HasPbrMaterial()
-         && !myMaterial->PbrMaterial().BaseColorTexture.IsNull())
+    else if (myMaterial->HasPbrMaterial() && !myMaterial->PbrMaterial().BaseColorTexture.IsNull())
     {
       return myMaterial->PbrMaterial().BaseColorTexture;
     }
     else if (myMaterial->HasCommonMaterial()
-         && !myMaterial->CommonMaterial().DiffuseTexture.IsNull())
+             && !myMaterial->CommonMaterial().DiffuseTexture.IsNull())
     {
       return myMaterial->CommonMaterial().DiffuseTexture;
     }
@@ -106,7 +101,7 @@ public:
 
   //! Returns True if styles are the same
   //! Methods for using Style as key in maps
-  Standard_Boolean IsEqual (const XCAFPrs_Style& theOther) const
+  Standard_Boolean IsEqual(const XCAFPrs_Style& theOther) const
   {
     if (myIsVisible != theOther.myIsVisible)
     {
@@ -117,64 +112,58 @@ public:
       return true;
     }
 
-    return myHasColorSurf == theOther.myHasColorSurf
-        && myHasColorCurv == theOther.myHasColorCurv
-        && myMaterial == theOther.myMaterial
-        && (!myHasColorSurf || myColorSurf == theOther.myColorSurf)
-        && (!myHasColorCurv || myColorCurv == theOther.myColorCurv);
+    return myHasColorSurf == theOther.myHasColorSurf && myHasColorCurv == theOther.myHasColorCurv
+           && myMaterial == theOther.myMaterial
+           && (!myHasColorSurf || myColorSurf == theOther.myColorSurf)
+           && (!myHasColorCurv || myColorCurv == theOther.myColorCurv);
   }
 
   //! Returns True if styles are the same.
-  Standard_Boolean operator== (const XCAFPrs_Style& theOther) const
-  {
-    return IsEqual (theOther);
-  }
+  Standard_Boolean operator==(const XCAFPrs_Style& theOther) const { return IsEqual(theOther); }
 
-  template<class T>
+  template <class T>
   friend struct std::hash;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 protected:
-
   Handle(XCAFDoc_VisMaterial) myMaterial;
-  Quantity_ColorRGBA myColorSurf;
-  Quantity_Color     myColorCurv;
-  Standard_Boolean   myHasColorSurf;
-  Standard_Boolean   myHasColorCurv;
-  Standard_Boolean   myIsVisible;
-
+  Quantity_ColorRGBA          myColorSurf;
+  Quantity_Color              myColorCurv;
+  Standard_Boolean            myHasColorSurf;
+  Standard_Boolean            myHasColorCurv;
+  Standard_Boolean            myIsVisible;
 };
 
 namespace std
 {
-  template <>
-  struct hash<XCAFPrs_Style>
+template <>
+struct hash<XCAFPrs_Style>
+{
+  size_t operator()(const XCAFPrs_Style& theStyle) const
   {
-    size_t operator()(const XCAFPrs_Style& theStyle) const
+    if (!theStyle.myIsVisible)
     {
-      if (!theStyle.myIsVisible)
-      {
-        return 1;
-      }
-      size_t aCombination[3];
-      int aCount = 0;
-      if (theStyle.myHasColorSurf)
-      {
-        aCombination[aCount++] = std::hash<Quantity_ColorRGBA>{}(theStyle.myColorSurf);
-      }
-      if (theStyle.myHasColorCurv)
-      {
-        aCombination[aCount++] = std::hash<Quantity_Color>{}(theStyle.myColorCurv);
-      }
-      if (!theStyle.myMaterial.IsNull())
-      {
-        aCombination[aCount++] = std::hash<Handle(XCAFDoc_VisMaterial)>{}(theStyle.myMaterial);
-      }
-      return aCount > 0 ? opencascade::hashBytes(aCombination, sizeof(size_t) * aCount) : 0;
+      return 1;
     }
-  };
-}
+    size_t aCombination[3];
+    int    aCount = 0;
+    if (theStyle.myHasColorSurf)
+    {
+      aCombination[aCount++] = std::hash<Quantity_ColorRGBA>{}(theStyle.myColorSurf);
+    }
+    if (theStyle.myHasColorCurv)
+    {
+      aCombination[aCount++] = std::hash<Quantity_Color>{}(theStyle.myColorCurv);
+    }
+    if (!theStyle.myMaterial.IsNull())
+    {
+      aCombination[aCount++] = std::hash<Handle(XCAFDoc_VisMaterial)>{}(theStyle.myMaterial);
+    }
+    return aCount > 0 ? opencascade::hashBytes(aCombination, sizeof(size_t) * aCount) : 0;
+  }
+};
+} // namespace std
 
 #endif // _XCAFPrs_Style_HeaderFile

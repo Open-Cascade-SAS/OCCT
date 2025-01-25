@@ -23,32 +23,44 @@
 
 //      Declaration of Array2 class managed by Handle
 
-#define DEFINE_HARRAY2(HClassName, _Array2Type_)                               \
-class HClassName : public _Array2Type_, public Standard_Transient {                  \
- public:                                                                       \
-   DEFINE_STANDARD_ALLOC                                                       \
-   DEFINE_NCOLLECTION_ALLOC                                                    \
-   HClassName  (const Standard_Integer theRowLow,                              \
-                const Standard_Integer theRowUpp,                              \
-                const Standard_Integer theColLow,                              \
-                const Standard_Integer theColUpp) :                            \
-     _Array2Type_ (theRowLow, theRowUpp, theColLow, theColUpp) {}              \
-   HClassName  (const Standard_Integer theRowLow,                              \
-                const Standard_Integer theRowUpp,                              \
-                const Standard_Integer theColLow,                              \
-                const Standard_Integer theColUpp,                              \
-                const _Array2Type_::value_type& theValue) :                    \
-     _Array2Type_ (theRowLow, theRowUpp, theColLow, theColUpp)                 \
-   { Init (theValue); }                                                        \
-   HClassName  (const _Array2Type_& theOther) : _Array2Type_(theOther) {}      \
-   const _Array2Type_& Array2 () const { return *this; }                       \
-   _Array2Type_& ChangeArray2 ()       { return *this; }                       \
-   DEFINE_STANDARD_RTTI_INLINE(HClassName,Standard_Transient)                              \
-};                                                                             \
-DEFINE_STANDARD_HANDLE (HClassName, Standard_Transient)
+#define DEFINE_HARRAY2(HClassName, _Array2Type_)                                                   \
+  class HClassName : public _Array2Type_, public Standard_Transient                                \
+  {                                                                                                \
+  public:                                                                                          \
+    DEFINE_STANDARD_ALLOC                                                                          \
+    DEFINE_NCOLLECTION_ALLOC                                                                       \
+    HClassName(const Standard_Integer theRowLow,                                                   \
+               const Standard_Integer theRowUpp,                                                   \
+               const Standard_Integer theColLow,                                                   \
+               const Standard_Integer theColUpp)                                                   \
+        : _Array2Type_(theRowLow, theRowUpp, theColLow, theColUpp)                                 \
+    {                                                                                              \
+    }                                                                                              \
+    HClassName(const Standard_Integer          theRowLow,                                          \
+               const Standard_Integer          theRowUpp,                                          \
+               const Standard_Integer          theColLow,                                          \
+               const Standard_Integer          theColUpp,                                          \
+               const _Array2Type_::value_type& theValue)                                           \
+        : _Array2Type_(theRowLow, theRowUpp, theColLow, theColUpp)                                 \
+    {                                                                                              \
+      Init(theValue);                                                                              \
+    }                                                                                              \
+    HClassName(const _Array2Type_& theOther)                                                       \
+        : _Array2Type_(theOther)                                                                   \
+    {                                                                                              \
+    }                                                                                              \
+    const _Array2Type_& Array2() const                                                             \
+    {                                                                                              \
+      return *this;                                                                                \
+    }                                                                                              \
+    _Array2Type_& ChangeArray2()                                                                   \
+    {                                                                                              \
+      return *this;                                                                                \
+    }                                                                                              \
+    DEFINE_STANDARD_RTTI_INLINE(HClassName, Standard_Transient)                                    \
+  };                                                                                               \
+  DEFINE_STANDARD_HANDLE(HClassName, Standard_Transient)
 
-#define IMPLEMENT_HARRAY2(HClassName)                                          
-
-
+#define IMPLEMENT_HARRAY2(HClassName)
 
 #endif

@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : NbAssemblies
-//purpose  : 
+// function : NbAssemblies
+// purpose  :
 //=======================================================================
 
 inline Standard_Integer STEPSelections_AssemblyExplorer::NbAssemblies() const
@@ -25,11 +25,12 @@ inline Standard_Integer STEPSelections_AssemblyExplorer::NbAssemblies() const
 }
 
 //=======================================================================
-//function : Root
-//purpose  : 
+// function : Root
+// purpose  :
 //=======================================================================
 
-inline Handle(STEPSelections_AssemblyComponent) STEPSelections_AssemblyExplorer::Root(const Standard_Integer rank) const
+inline Handle(STEPSelections_AssemblyComponent) STEPSelections_AssemblyExplorer::Root(
+  const Standard_Integer rank) const
 {
   return myRoots.Value(rank);
 }

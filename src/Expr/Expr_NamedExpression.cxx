@@ -14,59 +14,47 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Expr_NamedExpression.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Expr_NamedExpression,Expr_GeneralExpression)
+IMPLEMENT_STANDARD_RTTIEXT(Expr_NamedExpression, Expr_GeneralExpression)
 
-//=======================================================================
-//function : GetName
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 const TCollection_AsciiString& Expr_NamedExpression::GetName() const
 {
   return myName;
 }
 
-//=======================================================================
-//function : SetName
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void Expr_NamedExpression::SetName(const TCollection_AsciiString& name)
 {
   myName = name;
 }
 
-//=======================================================================
-//function : IsShareable
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean Expr_NamedExpression::IsShareable () const
+Standard_Boolean Expr_NamedExpression::IsShareable() const
 {
   return Standard_True;
 }
 
-//=======================================================================
-//function : IsIdentical
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean Expr_NamedExpression::IsIdentical
-                        (const Handle(Expr_GeneralExpression)& theOther) const
+Standard_Boolean Expr_NamedExpression::IsIdentical(
+  const Handle(Expr_GeneralExpression)& theOther) const
 {
   Standard_Boolean aResult(Standard_False);
-  if (theOther->IsKind(STANDARD_TYPE(Expr_NamedExpression))) {
-//  Handle(Expr_NamedExpression) me = this;
-//  Handle(Expr_NamedExpression) NEOther = Handle(Expr_NamedExpression)::DownCast(Other);
-//  return  (me == NEOther);
+  if (theOther->IsKind(STANDARD_TYPE(Expr_NamedExpression)))
+  {
+    //  Handle(Expr_NamedExpression) me = this;
+    //  Handle(Expr_NamedExpression) NEOther = Handle(Expr_NamedExpression)::DownCast(Other);
+    //  return  (me == NEOther);
 
-//AGV 22.03.12: Comparison should be based on names rather than Handles
-    const Expr_NamedExpression* pOther =
-      static_cast<const Expr_NamedExpression*>(theOther.get());
+    // AGV 22.03.12: Comparison should be based on names rather than Handles
+    const Expr_NamedExpression* pOther = static_cast<const Expr_NamedExpression*>(theOther.get());
     if (pOther == this || pOther->GetName().IsEqual(myName))
       aResult = Standard_True;
   }

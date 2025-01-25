@@ -17,7 +17,6 @@
 #ifndef _FairCurve_AnalysisCode_HeaderFile
 #define _FairCurve_AnalysisCode_HeaderFile
 
-
 //! To deal with different results in the computation of curvatures.
 //! -   FairCurve_OK describes the case where computation is successfully
 //! completed
@@ -33,10 +32,10 @@
 //! change (increase or reduce) the slope value by increasing or decreasing it.
 enum FairCurve_AnalysisCode
 {
-FairCurve_OK,
-FairCurve_NotConverged,
-FairCurve_InfiniteSliding,
-FairCurve_NullHeight
+  FairCurve_OK,
+  FairCurve_NotConverged,
+  FairCurve_InfiniteSliding,
+  FairCurve_NullHeight
 };
 
 #endif // _FairCurve_AnalysisCode_HeaderFile

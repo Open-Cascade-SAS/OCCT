@@ -15,31 +15,28 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : LocOpe_BuildShape
-//purpose  : 
+// function : LocOpe_BuildShape
+// purpose  :
 //=======================================================================
 
-inline LocOpe_BuildShape::LocOpe_BuildShape ()
-{}
-
+inline LocOpe_BuildShape::LocOpe_BuildShape() {}
 
 //=======================================================================
-//function : LocOpe_BuildShape
-//purpose  : 
+// function : LocOpe_BuildShape
+// purpose  :
 //=======================================================================
 
-inline LocOpe_BuildShape::LocOpe_BuildShape (const TopTools_ListOfShape& L)
+inline LocOpe_BuildShape::LocOpe_BuildShape(const TopTools_ListOfShape& L)
 {
   Perform(L);
 }
 
-
 //=======================================================================
-//function : Shape
-//purpose  : 
+// function : Shape
+// purpose  :
 //=======================================================================
 
-inline const TopoDS_Shape& LocOpe_BuildShape::Shape () const
+inline const TopoDS_Shape& LocOpe_BuildShape::Shape() const
 {
   return myRes;
 }

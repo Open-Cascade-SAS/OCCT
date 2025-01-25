@@ -26,7 +26,6 @@ class XCAFDoc_ShapeTool;
 class XCAFDoc_AssemblyIterator
 {
 public:
-
   //! Constructs iterator starting from assembly roots.
   //! \param[in]       theDoc   - document to iterate.
   //! \param [in, opt] theLevel - max level of hierarchy to reach (INT_MAX is for no limit).
@@ -51,18 +50,17 @@ public:
   Standard_EXPORT XCAFDoc_AssemblyItemId Current() const;
 
 private:
-
   struct AuxAssemblyItem
   {
-    TDF_Label myLabel;
+    TDF_Label              myLabel;
     XCAFDoc_AssemblyItemId myItem;
   };
 
-  void createItem(const TDF_Label& theLabel, const TColStd_ListOfAsciiString& theParentPath, 
-                  AuxAssemblyItem& theAuxItem) const;
+  void createItem(const TDF_Label&                 theLabel,
+                  const TColStd_ListOfAsciiString& theParentPath,
+                  AuxAssemblyItem&                 theAuxItem) const;
 
 private:
-
   Handle(XCAFDoc_ShapeTool)             myShapeTool; //!< Document shape tool.
   NCollection_Sequence<AuxAssemblyItem> myFringe;    //!< Items pending for iteration.
   Standard_Integer                      myMaxLevel;  //!< Limit on max depth of iteration.

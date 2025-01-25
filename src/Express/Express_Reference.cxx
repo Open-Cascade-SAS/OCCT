@@ -17,33 +17,22 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Express_Reference, Express_Item)
 
-//=======================================================================
-// function : Express_Reference
-// purpose  :
-//=======================================================================
+//=================================================================================================
 
-Express_Reference::Express_Reference (const Standard_CString theName,
-                                      const Handle(TColStd_HSequenceOfHAsciiString)& theTypes)
-: Express_Item (theName)
+Express_Reference::Express_Reference(const Standard_CString                         theName,
+                                     const Handle(TColStd_HSequenceOfHAsciiString)& theTypes)
+    : Express_Item(theName)
 {
   myTypes = theTypes;
 }
 
-//=======================================================================
-// function : GenerateClass
-// purpose  : dummy method
-//=======================================================================
+//=================================================================================================
 
 Standard_Boolean Express_Reference::GenerateClass() const
 {
   return Standard_False;
 }
 
-//=======================================================================
-// function : PropagateUse
-// purpose  : dummy method
-//=======================================================================
+//=================================================================================================
 
-void Express_Reference::PropagateUse() const
-{
-}
+void Express_Reference::PropagateUse() const {}

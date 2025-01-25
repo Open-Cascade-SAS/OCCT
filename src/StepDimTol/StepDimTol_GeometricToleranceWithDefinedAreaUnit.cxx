@@ -15,34 +15,32 @@
 
 #include <StepDimTol_GeometricToleranceWithDefinedAreaUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithDefinedAreaUnit,StepDimTol_GeometricToleranceWithDefinedUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithDefinedAreaUnit,
+                           StepDimTol_GeometricToleranceWithDefinedUnit)
 
-//=======================================================================
-//function : StepDimTol_GeometricToleranceWithDefinedAreaUnit
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepDimTol_GeometricToleranceWithDefinedAreaUnit::StepDimTol_GeometricToleranceWithDefinedAreaUnit ()
+StepDimTol_GeometricToleranceWithDefinedAreaUnit::StepDimTol_GeometricToleranceWithDefinedAreaUnit()
 {
 }
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepDimTol_GeometricToleranceWithDefinedAreaUnit::
-  Init (const Handle(TCollection_HAsciiString) &theName,
-        const Handle(TCollection_HAsciiString) &theDescription,
-        const Handle(StepBasic_MeasureWithUnit) &theMagnitude,
-        const StepDimTol_GeometricToleranceTarget &theTolerancedShapeAspect,
-        const Handle(StepBasic_LengthMeasureWithUnit) &theUnitSize,
-        const StepDimTol_AreaUnitType theUnitType,
-        const Standard_Boolean theHasSecondUnitSize,
-        const Handle(StepBasic_LengthMeasureWithUnit) &theSecondUnitSize)
+void StepDimTol_GeometricToleranceWithDefinedAreaUnit::Init(
+  const Handle(TCollection_HAsciiString)&        theName,
+  const Handle(TCollection_HAsciiString)&        theDescription,
+  const Handle(StepBasic_MeasureWithUnit)&       theMagnitude,
+  const StepDimTol_GeometricToleranceTarget&     theTolerancedShapeAspect,
+  const Handle(StepBasic_LengthMeasureWithUnit)& theUnitSize,
+  const StepDimTol_AreaUnitType                  theUnitType,
+  const Standard_Boolean                         theHasSecondUnitSize,
+  const Handle(StepBasic_LengthMeasureWithUnit)& theSecondUnitSize)
 {
-  StepDimTol_GeometricToleranceWithDefinedUnit::
-  Init(theName, theDescription, theMagnitude, theTolerancedShapeAspect, theUnitSize);
+  StepDimTol_GeometricToleranceWithDefinedUnit::Init(theName,
+                                                     theDescription,
+                                                     theMagnitude,
+                                                     theTolerancedShapeAspect,
+                                                     theUnitSize);
   myAreaType = theUnitType;
   if (theHasSecondUnitSize)
     mySecondUnitSize = theSecondUnitSize;

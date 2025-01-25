@@ -26,15 +26,14 @@ class OpenGl_PointSprite : public OpenGl_Texture
 {
   DEFINE_STANDARD_RTTIEXT(OpenGl_PointSprite, OpenGl_Texture)
 public:
-
   //! Create uninitialized resource.
-  Standard_EXPORT OpenGl_PointSprite (const TCollection_AsciiString& theResourceId);
+  Standard_EXPORT OpenGl_PointSprite(const TCollection_AsciiString& theResourceId);
 
   //! Destroy object.
   Standard_EXPORT virtual ~OpenGl_PointSprite();
 
   //! Destroy object - will release GPU memory if any.
-  Standard_EXPORT virtual void Release (OpenGl_Context* theCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) Standard_OVERRIDE;
 
   //! Returns TRUE for point sprite texture.
   virtual bool IsPointSprite() const Standard_OVERRIDE { return true; }
@@ -42,30 +41,24 @@ public:
   //! @return true if current object was initialized
   virtual bool IsValid() const Standard_OVERRIDE
   {
-    return myBitmapList != 0
-        || myTextureId != NO_TEXTURE;
+    return myBitmapList != 0 || myTextureId != NO_TEXTURE;
   }
 
   //! @return true if this is display list bitmap
-  inline Standard_Boolean IsDisplayList() const
-  {
-    return myBitmapList != 0;
-  }
+  inline Standard_Boolean IsDisplayList() const { return myBitmapList != 0; }
 
   //! Draw sprite using glBitmap.
   //! Please call glRasterPos3fv() before to setup sprite position.
-  Standard_EXPORT void DrawBitmap (const Handle(OpenGl_Context)& theCtx) const;
+  Standard_EXPORT void DrawBitmap(const Handle(OpenGl_Context)& theCtx) const;
 
   //! Initialize point sprite as display list
-  Standard_EXPORT void SetDisplayList (const Handle(OpenGl_Context)& theCtx,
-                                       const GLuint                  theBitmapList);
+  Standard_EXPORT void SetDisplayList(const Handle(OpenGl_Context)& theCtx,
+                                      const GLuint                  theBitmapList);
 
 protected:
-
-// clang-format off
+  // clang-format off
   GLuint myBitmapList; //!< if of display list to draw sprite using glBitmap (for backward compatibility)
-// clang-format on
-
+  // clang-format on
 };
 
 #endif // _OpenGl_PointSprite_H__

@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(Geom2d_Geometry)> TColGeom2d_SequenceOfGeometry;
 
-
 #endif

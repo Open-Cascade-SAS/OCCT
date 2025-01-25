@@ -23,63 +23,45 @@
 #include <Standard_Integer.hxx>
 #include <XmlObjMgt_DOMString.hxx>
 
-
 //! root for XML-persistence
-class XmlObjMgt_Persistent 
+class XmlObjMgt_Persistent
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! empty constructor
   Standard_EXPORT XmlObjMgt_Persistent();
-  
+
   //! constructor
   Standard_EXPORT XmlObjMgt_Persistent(const XmlObjMgt_Element& theElement);
-  
+
   //! constructor from sub-element of Element referenced by theRef
-  Standard_EXPORT XmlObjMgt_Persistent(const XmlObjMgt_Element& theElement, const XmlObjMgt_DOMString& theRef);
-  
+  Standard_EXPORT XmlObjMgt_Persistent(const XmlObjMgt_Element&   theElement,
+                                       const XmlObjMgt_DOMString& theRef);
+
   //! myElement := <theType id="theID"/>
-  Standard_EXPORT void CreateElement (XmlObjMgt_Element& theParent, const XmlObjMgt_DOMString& theType, const Standard_Integer theID);
-  
-  Standard_EXPORT void SetId (const Standard_Integer theId);
-  
+  Standard_EXPORT void CreateElement(XmlObjMgt_Element&         theParent,
+                                     const XmlObjMgt_DOMString& theType,
+                                     const Standard_Integer     theID);
+
+  Standard_EXPORT void SetId(const Standard_Integer theId);
+
   //! return myElement
-    const XmlObjMgt_Element& Element() const;
-inline operator const XmlObjMgt_Element&() const;
-  
+  const XmlObjMgt_Element& Element() const;
+  inline                   operator const XmlObjMgt_Element&() const;
+
   //! return myElement
-    XmlObjMgt_Element& Element();
-inline operator XmlObjMgt_Element&();
-  
-    Standard_Integer Id() const;
+  XmlObjMgt_Element& Element();
+  inline             operator XmlObjMgt_Element&();
 
-
-
+  Standard_Integer Id() const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   XmlObjMgt_Element myElement;
-  Standard_Integer myID;
-
-
+  Standard_Integer  myID;
 };
 
-
 #include <XmlObjMgt_Persistent.lxx>
-
-
-
-
 
 #endif // _XmlObjMgt_Persistent_HeaderFile

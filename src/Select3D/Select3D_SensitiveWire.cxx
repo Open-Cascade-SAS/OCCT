@@ -20,33 +20,29 @@
 
 #include <Select3D_SensitiveSegment.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveWire, Select3D_SensitiveSet)
 
-IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveWire,Select3D_SensitiveSet)
+//=================================================================================================
 
-//=====================================================
-// Function : Select3D_SensitiveWire
-// Purpose  :
-//=====================================================
-Select3D_SensitiveWire::Select3D_SensitiveWire (const Handle(SelectMgr_EntityOwner)& theOwnerId)
-: Select3D_SensitiveSet (theOwnerId),
-  myCenter (0.0, 0.0, 0.0)
-{}
+Select3D_SensitiveWire::Select3D_SensitiveWire(const Handle(SelectMgr_EntityOwner)& theOwnerId)
+    : Select3D_SensitiveSet(theOwnerId),
+      myCenter(0.0, 0.0, 0.0)
+{
+}
 
-//=====================================================
-// Function : Add
-// Purpose  :
-//=====================================================
-void Select3D_SensitiveWire::Add (const Handle(Select3D_SensitiveEntity)& theSensitive)
+//=================================================================================================
+
+void Select3D_SensitiveWire::Add(const Handle(Select3D_SensitiveEntity)& theSensitive)
 {
   if (!theSensitive.IsNull())
-    myEntities.Append (theSensitive);
+    myEntities.Append(theSensitive);
 
   Select3D_BndBox3d aBndBox = theSensitive->BoundingBox();
-  myBndBox.Combine (aBndBox);
+  myBndBox.Combine(aBndBox);
   myCenter.ChangeCoord() += theSensitive->CenterOfGeometry().XYZ();
   if (myEntities.Length() != 1)
-    myCenter.ChangeCoord().Divide (2.0);
-  myEntityIndexes.Append (myEntities.Length() - 1);
+    myCenter.ChangeCoord().Divide(2.0);
+  myEntityIndexes.Append(myEntities.Length() - 1);
 }
 
 //=======================================================================
@@ -71,10 +67,10 @@ Standard_Integer Select3D_SensitiveWire::Size() const
 // function : Box
 // purpose  : Returns bounding box of sensitive entity with index theIdx
 //=======================================================================
-Select3D_BndBox3d Select3D_SensitiveWire::Box (const Standard_Integer theIdx) const
+Select3D_BndBox3d Select3D_SensitiveWire::Box(const Standard_Integer theIdx) const
 {
-  const Standard_Integer aSensitiveIdx = myEntityIndexes.Value (theIdx);
-  return myEntities.Value (aSensitiveIdx)->BoundingBox();
+  const Standard_Integer aSensitiveIdx = myEntityIndexes.Value(theIdx);
+  return myEntities.Value(aSensitiveIdx)->BoundingBox();
 }
 
 //=======================================================================
@@ -82,12 +78,12 @@ Select3D_BndBox3d Select3D_SensitiveWire::Box (const Standard_Integer theIdx) co
 // purpose  : Returns geometry center of sensitive entity with index
 //            theIdx in the vector along the given axis theAxis
 //=======================================================================
-Standard_Real Select3D_SensitiveWire::Center (const Standard_Integer theIdx,
-                                              const Standard_Integer theAxis) const
+Standard_Real Select3D_SensitiveWire::Center(const Standard_Integer theIdx,
+                                             const Standard_Integer theAxis) const
 {
-  const Standard_Integer aSensitiveIdx = myEntityIndexes.Value (theIdx);
-  const gp_Pnt& aCenter = myEntities.Value (aSensitiveIdx)->CenterOfGeometry();
-  Standard_Real aCenterCoord = 0.0;
+  const Standard_Integer aSensitiveIdx = myEntityIndexes.Value(theIdx);
+  const gp_Pnt&          aCenter       = myEntities.Value(aSensitiveIdx)->CenterOfGeometry();
+  Standard_Real          aCenterCoord  = 0.0;
   aCenterCoord = theAxis == 0 ? aCenter.X() : (theAxis == 1 ? aCenter.Y() : aCenter.Z());
 
   return aCenterCoord;
@@ -97,13 +93,12 @@ Standard_Real Select3D_SensitiveWire::Center (const Standard_Integer theIdx,
 // function : Swap
 // purpose  : Swaps items with indexes theIdx1 and theIdx2 in the vector
 //=======================================================================
-void Select3D_SensitiveWire::Swap (const Standard_Integer theIdx1,
-                                   const Standard_Integer theIdx2)
+void Select3D_SensitiveWire::Swap(const Standard_Integer theIdx1, const Standard_Integer theIdx2)
 {
-  const Standard_Integer aSensitiveIdx1 = myEntityIndexes.Value (theIdx1);
-  const Standard_Integer aSensitiveIdx2 = myEntityIndexes.Value (theIdx2);
-  myEntityIndexes.ChangeValue (theIdx1) = aSensitiveIdx2;
-  myEntityIndexes.ChangeValue (theIdx2) = aSensitiveIdx1;
+  const Standard_Integer aSensitiveIdx1 = myEntityIndexes.Value(theIdx1);
+  const Standard_Integer aSensitiveIdx2 = myEntityIndexes.Value(theIdx2);
+  myEntityIndexes.ChangeValue(theIdx1)  = aSensitiveIdx2;
+  myEntityIndexes.ChangeValue(theIdx2)  = aSensitiveIdx1;
 }
 
 // =======================================================================
@@ -111,26 +106,28 @@ void Select3D_SensitiveWire::Swap (const Standard_Integer theIdx1,
 // purpose  : Checks whether the entity with index theIdx overlaps the
 //            current selecting volume
 // =======================================================================
-Standard_Boolean Select3D_SensitiveWire::overlapsElement (SelectBasics_PickResult& thePickResult,
-                                                          SelectBasics_SelectingVolumeManager& theMgr,
-                                                          Standard_Integer theElemIdx,
-                                                          Standard_Boolean )
+Standard_Boolean Select3D_SensitiveWire::overlapsElement(
+  SelectBasics_PickResult&             thePickResult,
+  SelectBasics_SelectingVolumeManager& theMgr,
+  Standard_Integer                     theElemIdx,
+  Standard_Boolean)
 {
-  const Standard_Integer aSensitiveIdx = myEntityIndexes.Value (theElemIdx);
-  const Handle(Select3D_SensitiveEntity)& aSeg = myEntities.Value (aSensitiveIdx);
-  return aSeg->Matches (theMgr, thePickResult);
+  const Standard_Integer                  aSensitiveIdx = myEntityIndexes.Value(theElemIdx);
+  const Handle(Select3D_SensitiveEntity)& aSeg          = myEntities.Value(aSensitiveIdx);
+  return aSeg->Matches(theMgr, thePickResult);
 }
 
 // =======================================================================
 // function : elementIsInside
 // purpose  :
 // =======================================================================
-Standard_Boolean Select3D_SensitiveWire::elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
-                                                          Standard_Integer theElemIdx,
-                                                          Standard_Boolean )
+Standard_Boolean Select3D_SensitiveWire::elementIsInside(
+  SelectBasics_SelectingVolumeManager& theMgr,
+  Standard_Integer                     theElemIdx,
+  Standard_Boolean)
 {
   SelectBasics_PickResult aMatchResult;
-  return myEntities.Value (myEntityIndexes.Value (theElemIdx))->Matches (theMgr, aMatchResult);
+  return myEntities.Value(myEntityIndexes.Value(theElemIdx))->Matches(theMgr, aMatchResult);
 }
 
 // =======================================================================
@@ -138,63 +135,56 @@ Standard_Boolean Select3D_SensitiveWire::elementIsInside (SelectBasics_Selecting
 // purpose  : Calculates distance from the 3d projection of used-picked
 //            screen point to center of the geometry
 // =======================================================================
-Standard_Real Select3D_SensitiveWire::distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr)
+Standard_Real Select3D_SensitiveWire::distanceToCOG(SelectBasics_SelectingVolumeManager& theMgr)
 {
-  return theMgr.DistToGeometryCenter (myCenter);
+  return theMgr.DistToGeometryCenter(myCenter);
 }
 
-//=======================================================================
-//function : GetConnected
-//purpose  :
-//=======================================================================
+//=================================================================================================
 
 Handle(Select3D_SensitiveEntity) Select3D_SensitiveWire::GetConnected()
 {
-  Handle(Select3D_SensitiveWire) aNewEntity = new Select3D_SensitiveWire (myOwnerId);
+  Handle(Select3D_SensitiveWire) aNewEntity = new Select3D_SensitiveWire(myOwnerId);
   for (Standard_Integer anEntityIdx = 0; anEntityIdx < myEntities.Length(); anEntityIdx++)
-    aNewEntity->Add (myEntities(anEntityIdx)->GetConnected());
+    aNewEntity->Add(myEntities(anEntityIdx)->GetConnected());
 
   return aNewEntity;
 }
 
 //=======================================================================
-//function : GetEdges
-//purpose  : returns the sensitive edges stored in this wire
+// function : GetEdges
+// purpose  : returns the sensitive edges stored in this wire
 //=======================================================================
 const NCollection_Vector<Handle(Select3D_SensitiveEntity)>& Select3D_SensitiveWire::GetEdges()
 {
   return myEntities;
 }
 
-//=============================================================================
-// Function : GetLastDetected
-// Purpose  :
-//=============================================================================
+//=================================================================================================
+
 Handle(Select3D_SensitiveEntity) Select3D_SensitiveWire::GetLastDetected() const
 {
   Handle(Select3D_SensitiveEntity) aRes;
 
   if (myDetectedIdx >= 0 && myDetectedIdx < myEntities.Length())
   {
-    const Standard_Integer aSensitiveIdx = myEntityIndexes.Value (myDetectedIdx);
-    aRes = myEntities.Value (aSensitiveIdx);
+    const Standard_Integer aSensitiveIdx = myEntityIndexes.Value(myDetectedIdx);
+    aRes                                 = myEntities.Value(aSensitiveIdx);
   }
 
   return aRes;
 }
 
-//=======================================================================
-//function : Set
-//purpose  :
-//=======================================================================
-void Select3D_SensitiveWire::Set (const Handle(SelectMgr_EntityOwner)& theOwnerId)
+//=================================================================================================
+
+void Select3D_SensitiveWire::Set(const Handle(SelectMgr_EntityOwner)& theOwnerId)
 {
-  Select3D_SensitiveEntity::Set (theOwnerId);
+  Select3D_SensitiveEntity::Set(theOwnerId);
 
   // Set TheOwnerId for each element of sensitive wire
   for (Standard_Integer anEntityIdx = 0; anEntityIdx < myEntities.Length(); ++anEntityIdx)
   {
-    myEntities.Value (anEntityIdx)->Set (theOwnerId);
+    myEntities.Value(anEntityIdx)->Set(theOwnerId);
   }
 }
 
@@ -210,7 +200,7 @@ Select3D_BndBox3d Select3D_SensitiveWire::BoundingBox()
 
   for (Standard_Integer aSensitiveIdx = 0; aSensitiveIdx < myEntities.Length(); ++aSensitiveIdx)
   {
-    myBndBox.Combine (myEntities.Value (aSensitiveIdx)->BoundingBox());
+    myBndBox.Combine(myEntities.Value(aSensitiveIdx)->BoundingBox());
   }
 
   return myBndBox;
@@ -230,15 +220,17 @@ gp_Pnt Select3D_SensitiveWire::CenterOfGeometry() const
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void Select3D_SensitiveWire::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Select3D_SensitiveWire::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Select3D_SensitiveSet)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Select3D_SensitiveSet)
 
-  for (NCollection_Vector<Handle(Select3D_SensitiveEntity)>::Iterator anIterator (myEntities); anIterator.More(); anIterator.Next())
+  for (NCollection_Vector<Handle(Select3D_SensitiveEntity)>::Iterator anIterator(myEntities);
+       anIterator.More();
+       anIterator.Next())
   {
     const Handle(Select3D_SensitiveEntity)& anEntity = anIterator.Value();
-    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, anEntity.get())
+    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, anEntity.get())
   }
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBndBox)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myBndBox)
 }

@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<StepVisual_TextOrCharacter> StepVisual_Array1OfTextOrCharacter;
 
-
 #endif

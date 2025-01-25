@@ -21,8 +21,8 @@
 #include <MAT_Arc.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,Handle(MAT_Arc)> MAT_DataMapOfIntegerArc;
-typedef NCollection_DataMap<Standard_Integer,Handle(MAT_Arc)>::Iterator MAT_DataMapIteratorOfDataMapOfIntegerArc;
-
+typedef NCollection_DataMap<Standard_Integer, Handle(MAT_Arc)> MAT_DataMapOfIntegerArc;
+typedef NCollection_DataMap<Standard_Integer, Handle(MAT_Arc)>::Iterator
+  MAT_DataMapIteratorOfDataMapOfIntegerArc;
 
 #endif

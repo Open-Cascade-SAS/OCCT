@@ -14,25 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <gp_Pnt.hxx>
 #include <TopOpeBRepBuild_GTopo.hxx>
 #include <TopOpeBRepBuild_HBuilder.hxx>
 #include <TopOpeBRepDS_BuildTool.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 
-//=======================================================================
-//function : BuildVertices
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void TopOpeBRepBuild_Builder::BuildVertices(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
 {
   Standard_Integer iP, n = HDS->NbPoints();
-  
+
   myNewVertices = new TopTools_HArray1OfShape(0, n);
 
-  for (iP = 1; iP <= n; iP++) {
-    const TopOpeBRepDS_Point& aTBSPoint=HDS->Point(iP);
+  for (iP = 1; iP <= n; iP++)
+  {
+    const TopOpeBRepDS_Point& aTBSPoint = HDS->Point(iP);
     myBuildTool.MakeVertex(ChangeNewVertex(iP), aTBSPoint);
   }
 }

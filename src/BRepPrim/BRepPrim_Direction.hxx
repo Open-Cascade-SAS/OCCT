@@ -17,15 +17,14 @@
 #ifndef _BRepPrim_Direction_HeaderFile
 #define _BRepPrim_Direction_HeaderFile
 
-
 enum BRepPrim_Direction
 {
-BRepPrim_XMin,
-BRepPrim_XMax,
-BRepPrim_YMin,
-BRepPrim_YMax,
-BRepPrim_ZMin,
-BRepPrim_ZMax
+  BRepPrim_XMin,
+  BRepPrim_XMax,
+  BRepPrim_YMin,
+  BRepPrim_YMax,
+  BRepPrim_ZMin,
+  BRepPrim_ZMax
 };
 
 #endif // _BRepPrim_Direction_HeaderFile

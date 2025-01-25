@@ -16,83 +16,88 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-//function : 
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
-  inline BOPAlgo_WireEdgeSet::BOPAlgo_WireEdgeSet()
+inline BOPAlgo_WireEdgeSet::BOPAlgo_WireEdgeSet() {}
+
+//=======================================================================
+// function :
+// purpose  :
+//=======================================================================
+inline BOPAlgo_WireEdgeSet::BOPAlgo_WireEdgeSet(
+  const Handle(NCollection_BaseAllocator)& theAllocator)
+    : myStartShapes(theAllocator),
+      myShapes(theAllocator)
 {
 }
+
 //=======================================================================
-//function : 
-//purpose  : 
+// function : ~
+// purpose  :
 //=======================================================================
-  inline BOPAlgo_WireEdgeSet::BOPAlgo_WireEdgeSet(const Handle(NCollection_BaseAllocator)& theAllocator)
-:
-  myStartShapes(theAllocator),
-  myShapes(theAllocator)
-{
-}
+inline BOPAlgo_WireEdgeSet::~BOPAlgo_WireEdgeSet() {}
+
 //=======================================================================
-//function : ~
-//purpose  : 
+// function : Clear
+// purpose  :
 //=======================================================================
-  inline BOPAlgo_WireEdgeSet::~BOPAlgo_WireEdgeSet()
-{
-}
-//=======================================================================
-//function : Clear
-//purpose  : 
-//=======================================================================
-  inline void BOPAlgo_WireEdgeSet::Clear()
+inline void BOPAlgo_WireEdgeSet::Clear()
 {
   myStartShapes.Clear();
   myShapes.Clear();
 }
+
 //=======================================================================
-//function : SetFace
-//purpose  : 
+// function : SetFace
+// purpose  :
 //=======================================================================
-  inline void BOPAlgo_WireEdgeSet::SetFace(const TopoDS_Face& aF)
+inline void BOPAlgo_WireEdgeSet::SetFace(const TopoDS_Face& aF)
 {
-  myFace=aF;
+  myFace = aF;
 }
+
 //=======================================================================
-//function : Face
-//purpose  : 
+// function : Face
+// purpose  :
 //=======================================================================
-  inline const TopoDS_Face& BOPAlgo_WireEdgeSet::Face()const 
+inline const TopoDS_Face& BOPAlgo_WireEdgeSet::Face() const
 {
   return myFace;
 }
+
 //=======================================================================
-//function : AddStartElement
-//purpose  : 
+// function : AddStartElement
+// purpose  :
 //=======================================================================
-  inline void BOPAlgo_WireEdgeSet::AddStartElement(const TopoDS_Shape& aE)
+inline void BOPAlgo_WireEdgeSet::AddStartElement(const TopoDS_Shape& aE)
 {
   myStartShapes.Append(aE);
 }
+
 //=======================================================================
-//function : StartElements
-//purpose  : 
+// function : StartElements
+// purpose  :
 //=======================================================================
-  inline const TopTools_ListOfShape& BOPAlgo_WireEdgeSet::StartElements()const
+inline const TopTools_ListOfShape& BOPAlgo_WireEdgeSet::StartElements() const
 {
   return myStartShapes;
 }
+
 //=======================================================================
-//function : AddShape
-//purpose  : 
+// function : AddShape
+// purpose  :
 //=======================================================================
-  inline void BOPAlgo_WireEdgeSet::AddShape(const TopoDS_Shape& aW)
+inline void BOPAlgo_WireEdgeSet::AddShape(const TopoDS_Shape& aW)
 {
   myShapes.Append(aW);
 }
+
 //=======================================================================
-//function : Shapes
-//purpose  : 
+// function : Shapes
+// purpose  :
 //=======================================================================
-  inline const TopTools_ListOfShape& BOPAlgo_WireEdgeSet::Shapes()const
+inline const TopTools_ListOfShape& BOPAlgo_WireEdgeSet::Shapes() const
 {
   return myShapes;
 }

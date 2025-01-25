@@ -15,88 +15,93 @@
 #include <BOPDS_Tools.hxx>
 
 //=======================================================================
-//function : 
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
 inline BOPDS_ShapeInfo::BOPDS_ShapeInfo()
-:
-  
-  myType(TopAbs_SHAPE),
-  myReference(-1),
-  myFlag(-1)
+    :
+
+      myType(TopAbs_SHAPE),
+      myReference(-1),
+      myFlag(-1)
 {
 }
+
 //=======================================================================
-//function : 
-//purpose  : 
+// function :
+// purpose  :
 //=======================================================================
-inline BOPDS_ShapeInfo::BOPDS_ShapeInfo
-  (const Handle(NCollection_BaseAllocator)& theAllocator)
-:
-  myType(TopAbs_SHAPE),
-  mySubShapes(theAllocator),
-  myReference(-1),
-  myFlag(-1)
+inline BOPDS_ShapeInfo::BOPDS_ShapeInfo(const Handle(NCollection_BaseAllocator)& theAllocator)
+    : myType(TopAbs_SHAPE),
+      mySubShapes(theAllocator),
+      myReference(-1),
+      myFlag(-1)
 {
 }
+
 //=======================================================================
-//function : ~
-//purpose  : 
+// function : ~
+// purpose  :
 //=======================================================================
-inline BOPDS_ShapeInfo::~BOPDS_ShapeInfo()
-{
-}
+inline BOPDS_ShapeInfo::~BOPDS_ShapeInfo() {}
+
 //=======================================================================
-//function : SetShape
-//purpose  : 
+// function : SetShape
+// purpose  :
 //=======================================================================
 inline void BOPDS_ShapeInfo::SetShape(const TopoDS_Shape& theS)
 {
-  myShape=theS;
+  myShape = theS;
 }
+
 //=======================================================================
-//function : Shape
-//purpose  : 
+// function : Shape
+// purpose  :
 //=======================================================================
-inline const TopoDS_Shape& BOPDS_ShapeInfo::Shape()const
+inline const TopoDS_Shape& BOPDS_ShapeInfo::Shape() const
 {
   return myShape;
 }
+
 //=======================================================================
-//function : SetShapeType
-//purpose  : 
+// function : SetShapeType
+// purpose  :
 //=======================================================================
 inline void BOPDS_ShapeInfo::SetShapeType(const TopAbs_ShapeEnum theType)
 {
-  myType=theType;
+  myType = theType;
 }
+
 //=======================================================================
-//function : ShapeType
-//purpose  : 
+// function : ShapeType
+// purpose  :
 //=======================================================================
-inline TopAbs_ShapeEnum BOPDS_ShapeInfo::ShapeType()const
+inline TopAbs_ShapeEnum BOPDS_ShapeInfo::ShapeType() const
 {
   return myType;
 }
+
 //=======================================================================
-//function : SetBox
-//purpose  : 
+// function : SetBox
+// purpose  :
 //=======================================================================
 inline void BOPDS_ShapeInfo::SetBox(const Bnd_Box& theBox)
 {
-  myBox=theBox;
+  myBox = theBox;
 }
+
 //=======================================================================
-//function : Box
-//purpose  : 
+// function : Box
+// purpose  :
 //=======================================================================
-inline const Bnd_Box& BOPDS_ShapeInfo::Box()const
+inline const Bnd_Box& BOPDS_ShapeInfo::Box() const
 {
   return myBox;
 }
+
 //=======================================================================
-//function : ChangeBox
-//purpose  : 
+// function : ChangeBox
+// purpose  :
 //=======================================================================
 inline Bnd_Box& BOPDS_ShapeInfo::ChangeBox()
 {
@@ -104,101 +109,110 @@ inline Bnd_Box& BOPDS_ShapeInfo::ChangeBox()
 }
 
 //=======================================================================
-//function : SubShapes
-//purpose  : 
+// function : SubShapes
+// purpose  :
 //=======================================================================
-inline const TColStd_ListOfInteger& BOPDS_ShapeInfo::SubShapes()const
+inline const TColStd_ListOfInteger& BOPDS_ShapeInfo::SubShapes() const
 {
   return mySubShapes;
 }
+
 //=======================================================================
-//function : ChangeSubShapes
-//purpose  : 
+// function : ChangeSubShapes
+// purpose  :
 //=======================================================================
 inline TColStd_ListOfInteger& BOPDS_ShapeInfo::ChangeSubShapes()
 {
   return mySubShapes;
 }
+
 //=======================================================================
-//function : HasSubShape
-//purpose  : 
+// function : HasSubShape
+// purpose  :
 //=======================================================================
-inline Standard_Boolean BOPDS_ShapeInfo::HasSubShape
-  (const Standard_Integer theI)const
+inline Standard_Boolean BOPDS_ShapeInfo::HasSubShape(const Standard_Integer theI) const
 {
-  return mySubShapes.Contains (theI);
+  return mySubShapes.Contains(theI);
 }
+
 //=======================================================================
-//function : HasReference
-//purpose  : 
+// function : HasReference
+// purpose  :
 //=======================================================================
-inline Standard_Boolean BOPDS_ShapeInfo::HasReference()const
+inline Standard_Boolean BOPDS_ShapeInfo::HasReference() const
 {
-  return (myReference>=0);
+  return (myReference >= 0);
 }
+
 //=======================================================================
-//function : SetReference
-//purpose  : 
+// function : SetReference
+// purpose  :
 //=======================================================================
 inline void BOPDS_ShapeInfo::SetReference(const Standard_Integer theI)
 {
-  myReference=theI;
+  myReference = theI;
 }
+
 //=======================================================================
-//function : Reference
-//purpose  : 
+// function : Reference
+// purpose  :
 //=======================================================================
-inline Standard_Integer BOPDS_ShapeInfo::Reference()const
+inline Standard_Integer BOPDS_ShapeInfo::Reference() const
 {
   return myReference;
 }
+
 //=======================================================================
-//function : HasBRep
-//purpose  : 
+// function : HasBRep
+// purpose  :
 //=======================================================================
-inline Standard_Boolean BOPDS_ShapeInfo::HasBRep()const
+inline Standard_Boolean BOPDS_ShapeInfo::HasBRep() const
 {
   return (BOPDS_Tools::HasBRep(myType));
 }
+
 //=======================================================================
-//function : IsInterfering
-//purpose  : 
+// function : IsInterfering
+// purpose  :
 //=======================================================================
-inline Standard_Boolean BOPDS_ShapeInfo::IsInterfering()const
+inline Standard_Boolean BOPDS_ShapeInfo::IsInterfering() const
 {
-  return (HasBRep() || myType==TopAbs_SOLID);
+  return (HasBRep() || myType == TopAbs_SOLID);
 }
+
 //=======================================================================
-//function : HasFlag
-//purpose  : 
+// function : HasFlag
+// purpose  :
 //=======================================================================
-inline Standard_Boolean BOPDS_ShapeInfo::HasFlag()const
+inline Standard_Boolean BOPDS_ShapeInfo::HasFlag() const
 {
-  return (myFlag>=0);
+  return (myFlag >= 0);
 }
+
 //=======================================================================
-//function : HasFlag
-//purpose  : 
+// function : HasFlag
+// purpose  :
 //=======================================================================
-inline Standard_Boolean BOPDS_ShapeInfo::HasFlag
-  (Standard_Integer& theFlag)const
+inline Standard_Boolean BOPDS_ShapeInfo::HasFlag(Standard_Integer& theFlag) const
 {
-  theFlag=myFlag;
-  return (myFlag>=0);
+  theFlag = myFlag;
+  return (myFlag >= 0);
 }
+
 //=======================================================================
-//function : SetFlag
-//purpose  : 
+// function : SetFlag
+// purpose  :
 //=======================================================================
 inline void BOPDS_ShapeInfo::SetFlag(const Standard_Integer theFlag)
 {
-  myFlag=theFlag;
+  myFlag = theFlag;
 }
+
 //=======================================================================
-//function : Flag
-//purpose  : 
+// function : Flag
+// purpose  :
 //=======================================================================
-inline Standard_Integer BOPDS_ShapeInfo::Flag()const
+inline Standard_Integer BOPDS_ShapeInfo::Flag() const
 {
   return myFlag;
 }

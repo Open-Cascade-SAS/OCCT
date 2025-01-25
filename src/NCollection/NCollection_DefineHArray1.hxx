@@ -23,30 +23,49 @@
 
 //      Declaration of Array1 class managed by Handle
 
-#define DEFINE_HARRAY1(HClassName, _Array1Type_)                               \
-class HClassName : public _Array1Type_, public Standard_Transient {            \
- public:                                                                       \
-   DEFINE_STANDARD_ALLOC                                                       \
-   DEFINE_NCOLLECTION_ALLOC                                                    \
-   HClassName () : _Array1Type_ () {}                                          \
-   HClassName (const Standard_Integer theLower,                                \
-               const Standard_Integer theUpper) :                              \
-     _Array1Type_ (theLower,theUpper)  {}                                      \
-   HClassName (const Standard_Integer theLower,                                \
-               const Standard_Integer theUpper,                                \
-               const _Array1Type_::value_type& theValue) :                     \
-     _Array1Type_ (theLower,theUpper)  { Init (theValue); }                    \
-   explicit HClassName (const typename _Array1Type_::value_type& theBegin,     \
-               const Standard_Integer theLower,                                \
-               const Standard_Integer theUpper,                                \
-               const bool) :                                                   \
-     _Array1Type_ (theBegin,theLower,theUpper)  {}                             \
-   HClassName  (const _Array1Type_& theOther) : _Array1Type_(theOther) {}      \
-   const _Array1Type_& Array1 () const { return *this; }                       \
-   _Array1Type_& ChangeArray1 ()       { return *this; }                       \
-   DEFINE_STANDARD_RTTI_INLINE(HClassName,Standard_Transient)                  \
-};                                                                             \
-DEFINE_STANDARD_HANDLE (HClassName, Standard_Transient)
+#define DEFINE_HARRAY1(HClassName, _Array1Type_)                                                   \
+  class HClassName : public _Array1Type_, public Standard_Transient                                \
+  {                                                                                                \
+  public:                                                                                          \
+    DEFINE_STANDARD_ALLOC                                                                          \
+    DEFINE_NCOLLECTION_ALLOC                                                                       \
+    HClassName()                                                                                   \
+        : _Array1Type_()                                                                           \
+    {                                                                                              \
+    }                                                                                              \
+    HClassName(const Standard_Integer theLower, const Standard_Integer theUpper)                   \
+        : _Array1Type_(theLower, theUpper)                                                         \
+    {                                                                                              \
+    }                                                                                              \
+    HClassName(const Standard_Integer          theLower,                                           \
+               const Standard_Integer          theUpper,                                           \
+               const _Array1Type_::value_type& theValue)                                           \
+        : _Array1Type_(theLower, theUpper)                                                         \
+    {                                                                                              \
+      Init(theValue);                                                                              \
+    }                                                                                              \
+    explicit HClassName(const typename _Array1Type_::value_type& theBegin,                         \
+                        const Standard_Integer                   theLower,                         \
+                        const Standard_Integer                   theUpper,                         \
+                        const bool)                                                                \
+        : _Array1Type_(theBegin, theLower, theUpper)                                               \
+    {                                                                                              \
+    }                                                                                              \
+    HClassName(const _Array1Type_& theOther)                                                       \
+        : _Array1Type_(theOther)                                                                   \
+    {                                                                                              \
+    }                                                                                              \
+    const _Array1Type_& Array1() const                                                             \
+    {                                                                                              \
+      return *this;                                                                                \
+    }                                                                                              \
+    _Array1Type_& ChangeArray1()                                                                   \
+    {                                                                                              \
+      return *this;                                                                                \
+    }                                                                                              \
+    DEFINE_STANDARD_RTTI_INLINE(HClassName, Standard_Transient)                                    \
+  };                                                                                               \
+  DEFINE_STANDARD_HANDLE(HClassName, Standard_Transient)
 
 #define IMPLEMENT_HARRAY1(HClassName)
 

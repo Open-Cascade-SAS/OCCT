@@ -20,8 +20,7 @@
 #include <HLRTopoBRep_VData.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<HLRTopoBRep_VData> HLRTopoBRep_ListOfVData;
+typedef NCollection_List<HLRTopoBRep_VData>           HLRTopoBRep_ListOfVData;
 typedef NCollection_List<HLRTopoBRep_VData>::Iterator HLRTopoBRep_ListIteratorOfListOfVData;
-
 
 #endif

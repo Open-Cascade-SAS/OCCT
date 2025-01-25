@@ -23,60 +23,55 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-//=======================================================================
-//function : RWStepBasic_RWContractAssignment
-//purpose  : 
-//=======================================================================
-RWStepBasic_RWContractAssignment::RWStepBasic_RWContractAssignment ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  : 
-//=======================================================================
+RWStepBasic_RWContractAssignment::RWStepBasic_RWContractAssignment() {}
 
-void RWStepBasic_RWContractAssignment::ReadStep (const Handle(StepData_StepReaderData)& data,
-                                                 const Standard_Integer num,
-                                                 Handle(Interface_Check)& ach,
-                                                 const Handle(StepBasic_ContractAssignment) &ent) const
+//=================================================================================================
+
+void RWStepBasic_RWContractAssignment::ReadStep(
+  const Handle(StepData_StepReaderData)&      data,
+  const Standard_Integer                      num,
+  Handle(Interface_Check)&                    ach,
+  const Handle(StepBasic_ContractAssignment)& ent) const
 {
   // Check number of parameters
-  if ( ! data->CheckNbParams(num,1,ach,"contract_assignment") ) return;
+  if (!data->CheckNbParams(num, 1, ach, "contract_assignment"))
+    return;
 
   // Own fields of ContractAssignment
 
   Handle(StepBasic_Contract) aAssignedContract;
-  data->ReadEntity (num, 1, "assigned_contract", ach, STANDARD_TYPE(StepBasic_Contract), aAssignedContract);
+  data->ReadEntity(num,
+                   1,
+                   "assigned_contract",
+                   ach,
+                   STANDARD_TYPE(StepBasic_Contract),
+                   aAssignedContract);
 
   // Initialize entity
   ent->Init(aAssignedContract);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepBasic_RWContractAssignment::WriteStep (StepData_StepWriter& SW,
-                                                  const Handle(StepBasic_ContractAssignment) &ent) const
+void RWStepBasic_RWContractAssignment::WriteStep(
+  StepData_StepWriter&                        SW,
+  const Handle(StepBasic_ContractAssignment)& ent) const
 {
 
   // Own fields of ContractAssignment
 
-  SW.Send (ent->AssignedContract());
+  SW.Send(ent->AssignedContract());
 }
 
-//=======================================================================
-//function : Share
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void RWStepBasic_RWContractAssignment::Share (const Handle(StepBasic_ContractAssignment) &ent,
-                                              Interface_EntityIterator& iter) const
+void RWStepBasic_RWContractAssignment::Share(const Handle(StepBasic_ContractAssignment)& ent,
+                                             Interface_EntityIterator&                   iter) const
 {
 
   // Own fields of ContractAssignment
 
-  iter.AddItem (ent->AssignedContract());
+  iter.AddItem(ent->AssignedContract());
 }

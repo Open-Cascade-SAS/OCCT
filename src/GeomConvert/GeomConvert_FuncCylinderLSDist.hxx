@@ -23,20 +23,17 @@
 #include <math_Vector.hxx>
 #include <gp_Dir.hxx>
 
-//! Function for search of cylinder canonic parameters: coordinates of center local coordinate system, 
-//! direction of axis and radius from set of points
-//! by least square method.
-//! 
+//! Function for search of cylinder canonic parameters: coordinates of center local coordinate
+//! system, direction of axis and radius from set of points by least square method.
+//!
 //! The class inherits math_MultipleVarFunctionWithGradient and thus is intended
 //! for use in math_BFGS algorithm.
 //!
 //! Parametrisation:
-//! Cylinder is defined by its axis and radius. Axis is defined by 3 cartesian coordinates at location x0, y0, z0 
-//! and direction, which is constant and set by user: 
-//! dir.x, dir.y, dir.z
-//! The criteria is:
-//! F(x0, y0, z0, theta, phi, R) = Sum[|(P(i) - Loc)^dir|^2 - R^2]^2 => min
-//! P(i) is i-th sample point, Loc, dir - axis location and direction, R - radius
+//! Cylinder is defined by its axis and radius. Axis is defined by 3 cartesian coordinates at
+//! location x0, y0, z0 and direction, which is constant and set by user: dir.x, dir.y, dir.z The
+//! criteria is: F(x0, y0, z0, theta, phi, R) = Sum[|(P(i) - Loc)^dir|^2 - R^2]^2 => min P(i) is
+//! i-th sample point, Loc, dir - axis location and direction, R - radius
 //!
 //! The square vector product |(P(i) - Loc)^dir|^2 is:
 //!
@@ -45,7 +42,7 @@
 //! [(x - x0)*dir.y - (y - y0)*dir.x]^2
 //!
 //! First derivative of square vector product are:
-//! Dx0 =  2*[(z - z0)*dir.x - (x - x0)*dir.z]*dir.z 
+//! Dx0 =  2*[(z - z0)*dir.x - (x - x0)*dir.z]*dir.z
 //!       -2*[(x - x0)*dir.y - (y - y0)*dir.x]*dir.y
 //! Dy0 = -2*[(y - y0)*dir.z - (z - z0)*dir.y]*dir.z
 //!       +2*[(x - x0)*dir.y - (y - y0)*dir.x]*dir.x
@@ -60,41 +57,34 @@
 class GeomConvert_FuncCylinderLSDist : public math_MultipleVarFunctionWithGradient
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Constructor.
   Standard_EXPORT GeomConvert_FuncCylinderLSDist() {};
-  
+
   Standard_EXPORT GeomConvert_FuncCylinderLSDist(const Handle(TColgp_HArray1OfXYZ)& thePoints,
-                                                   const gp_Dir& theDir);
+                                                 const gp_Dir&                      theDir);
 
-  void SetPoints(const Handle(TColgp_HArray1OfXYZ)& thePoints)
-  {
-    myPoints = thePoints;
-  }
+  void SetPoints(const Handle(TColgp_HArray1OfXYZ)& thePoints) { myPoints = thePoints; }
 
-  void SetDir(const gp_Dir& theDir)
-  {
-    myDir = theDir;
-  }
+  void SetDir(const gp_Dir& theDir) { myDir = theDir; }
 
   //! Number of variables.
   Standard_EXPORT Standard_Integer NbVariables() const Standard_OVERRIDE;
 
   //! Value.
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X,Standard_Real& F) Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, Standard_Real& F) Standard_OVERRIDE;
 
   //! Gradient.
-  Standard_EXPORT Standard_Boolean Gradient(const math_Vector& X,math_Vector& G) Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean Gradient(const math_Vector& X, math_Vector& G) Standard_OVERRIDE;
 
   //! Value and gradient.
-  Standard_EXPORT Standard_Boolean Values(const math_Vector& X,Standard_Real& F,math_Vector& G) Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean Values(const math_Vector& X,
+                                          Standard_Real&     F,
+                                          math_Vector&       G) Standard_OVERRIDE;
 
 private:
-
   Handle(TColgp_HArray1OfXYZ) myPoints;
-  gp_Dir myDir;
-  
+  gp_Dir                      myDir;
 };
 #endif // _GeomConvert_FuncCylinderLSDist_HeaderFile

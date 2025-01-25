@@ -21,7 +21,7 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-typedef NCollection_IndexedDataMap<TopoDS_Shape,Standard_Address,TopTools_ShapeMapHasher> TopTools_IndexedDataMapOfShapeAddress;
-
+typedef NCollection_IndexedDataMap<TopoDS_Shape, Standard_Address, TopTools_ShapeMapHasher>
+  TopTools_IndexedDataMapOfShapeAddress;
 
 #endif

@@ -31,17 +31,15 @@ class GeomFill_SectionLaw;
 class Geom_Surface;
 class Geom2d_Curve;
 
-
 //! Geometrical Sweep Algorithm
-class GeomFill_Sweep 
+class GeomFill_Sweep
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT GeomFill_Sweep(const Handle(GeomFill_LocationLaw)& Location, const Standard_Boolean WithKpart = Standard_True);
-  
+  Standard_EXPORT GeomFill_Sweep(const Handle(GeomFill_LocationLaw)& Location,
+                                 const Standard_Boolean              WithKpart = Standard_True);
+
   //! Set parametric information
   //! [<First>, <Last>] Sets the parametric bound of the
   //! sweeping surface to build.
@@ -55,8 +53,11 @@ public:
   //!
   //! By default w = v, and First and Last are given by
   //! First and Last parameter stored in LocationLaw.
-  Standard_EXPORT void SetDomain (const Standard_Real First, const Standard_Real Last, const Standard_Real SectionFirst, const Standard_Real SectionLast);
-  
+  Standard_EXPORT void SetDomain(const Standard_Real First,
+                                 const Standard_Real Last,
+                                 const Standard_Real SectionFirst,
+                                 const Standard_Real SectionLast);
+
   //! Set Approximation Tolerance
   //! Tol3d : Tolerance to surface approximation
   //! Tol2d : Tolerance used to perform curve approximation
@@ -67,25 +68,28 @@ public:
   //! TolAngular : Tolerance (in radian) to control the angle
   //! between tangents on the section law and
   //! tangent of iso-v on approximated surface
-  Standard_EXPORT void SetTolerance (const Standard_Real Tol3d, const Standard_Real BoundTol = 1.0, const Standard_Real Tol2d = 1.0e-5, const Standard_Real TolAngular = 1.0);
-  
+  Standard_EXPORT void SetTolerance(const Standard_Real Tol3d,
+                                    const Standard_Real BoundTol   = 1.0,
+                                    const Standard_Real Tol2d      = 1.0e-5,
+                                    const Standard_Real TolAngular = 1.0);
+
   //! Set the flag that indicates attempt to approximate
   //! a C1-continuous surface if a swept surface proved
   //! to be C0.
-  Standard_EXPORT void SetForceApproxC1 (const Standard_Boolean ForceApproxC1);
-  
+  Standard_EXPORT void SetForceApproxC1(const Standard_Boolean ForceApproxC1);
+
   //! returns true if sections are U-Iso
   //! This can be produce in some cases when <WithKpart> is True.
   Standard_EXPORT Standard_Boolean ExchangeUV() const;
-  
+
   //! returns true if Parametrisation sens in U is inverse of
   //! parametrisation sens of section (or of path if ExchangeUV)
   Standard_EXPORT Standard_Boolean UReversed() const;
-  
+
   //! returns true if Parametrisation sens in V is inverse of
   //! parametrisation sens of path (or of section if ExchangeUV)
   Standard_EXPORT Standard_Boolean VReversed() const;
-  
+
   //! Build the Sweeep  Surface
   //! ApproxStyle defines Approximation Strategy
   //! - GeomFill_Section : The composed Function : Location X Section
@@ -101,77 +105,72 @@ public:
   //! the surface
   //!
   //! raise If Domain are infinite or Profile not set.
-  Standard_EXPORT void Build (const Handle(GeomFill_SectionLaw)& Section, const GeomFill_ApproxStyle Methode = GeomFill_Location, const GeomAbs_Shape Continuity = GeomAbs_C2, const Standard_Integer Degmax = 10, const Standard_Integer Segmax = 30);
-  
+  Standard_EXPORT void Build(const Handle(GeomFill_SectionLaw)& Section,
+                             const GeomFill_ApproxStyle         Methode    = GeomFill_Location,
+                             const GeomAbs_Shape                Continuity = GeomAbs_C2,
+                             const Standard_Integer             Degmax     = 10,
+                             const Standard_Integer             Segmax     = 30);
+
   //! Tells if the Surface is Buildt.
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
+
   //! Gets the Approximation  error.
   Standard_EXPORT Standard_Real ErrorOnSurface() const;
-  
+
   //! Gets the Approximation  error.
-  Standard_EXPORT void ErrorOnRestriction (const Standard_Boolean IsFirst, Standard_Real& UError, Standard_Real& VError) const;
-  
+  Standard_EXPORT void ErrorOnRestriction(const Standard_Boolean IsFirst,
+                                          Standard_Real&         UError,
+                                          Standard_Real&         VError) const;
+
   //! Gets the Approximation error.
-  Standard_EXPORT void ErrorOnTrace (const Standard_Integer IndexOfTrace, Standard_Real& UError, Standard_Real& VError) const;
-  
+  Standard_EXPORT void ErrorOnTrace(const Standard_Integer IndexOfTrace,
+                                    Standard_Real&         UError,
+                                    Standard_Real&         VError) const;
+
   Standard_EXPORT Handle(Geom_Surface) Surface() const;
-  
-  Standard_EXPORT Handle(Geom2d_Curve) Restriction (const Standard_Boolean IsFirst) const;
-  
+
+  Standard_EXPORT Handle(Geom2d_Curve) Restriction(const Standard_Boolean IsFirst) const;
+
   Standard_EXPORT Standard_Integer NumberOfTrace() const;
-  
-  Standard_EXPORT Handle(Geom2d_Curve) Trace (const Standard_Integer IndexOfTrace) const;
 
-
-
+  Standard_EXPORT Handle(Geom2d_Curve) Trace(const Standard_Integer IndexOfTrace) const;
 
 protected:
-
-
-
-
-
 private:
+  Standard_EXPORT Standard_Boolean Build2d(const GeomAbs_Shape    Continuity,
+                                           const Standard_Integer Degmax,
+                                           const Standard_Integer Segmax);
 
-  
-  Standard_EXPORT Standard_Boolean Build2d (const GeomAbs_Shape Continuity, const Standard_Integer Degmax, const Standard_Integer Segmax);
-  
-  Standard_EXPORT Standard_Boolean BuildAll (const GeomAbs_Shape Continuity, const Standard_Integer Degmax, const Standard_Integer Segmax);
-  
-  Standard_EXPORT Standard_Boolean BuildProduct (const GeomAbs_Shape Continuity, const Standard_Integer Degmax, const Standard_Integer Segmax);
-  
+  Standard_EXPORT Standard_Boolean BuildAll(const GeomAbs_Shape    Continuity,
+                                            const Standard_Integer Degmax,
+                                            const Standard_Integer Segmax);
+
+  Standard_EXPORT Standard_Boolean BuildProduct(const GeomAbs_Shape    Continuity,
+                                                const Standard_Integer Degmax,
+                                                const Standard_Integer Segmax);
+
   Standard_EXPORT Standard_Boolean BuildKPart();
 
-
-  Standard_Real First;
-  Standard_Real Last;
-  Standard_Real SFirst;
-  Standard_Real SLast;
-  Standard_Real Tol3d;
-  Standard_Real BoundTol;
-  Standard_Real Tol2d;
-  Standard_Real TolAngular;
-  Standard_Real SError;
-  Standard_Boolean myForceApproxC1;
-  Handle(GeomFill_LocationLaw) myLoc;
-  Handle(GeomFill_SectionLaw) mySec;
-  Handle(Geom_Surface) mySurface;
+  Standard_Real                     First;
+  Standard_Real                     Last;
+  Standard_Real                     SFirst;
+  Standard_Real                     SLast;
+  Standard_Real                     Tol3d;
+  Standard_Real                     BoundTol;
+  Standard_Real                     Tol2d;
+  Standard_Real                     TolAngular;
+  Standard_Real                     SError;
+  Standard_Boolean                  myForceApproxC1;
+  Handle(GeomFill_LocationLaw)      myLoc;
+  Handle(GeomFill_SectionLaw)       mySec;
+  Handle(Geom_Surface)              mySurface;
   Handle(TColGeom2d_HArray1OfCurve) myCurve2d;
-  Handle(TColStd_HArray2OfReal) CError;
-  Standard_Boolean done;
-  Standard_Boolean myExchUV;
-  Standard_Boolean isUReversed;
-  Standard_Boolean isVReversed;
-  Standard_Boolean myKPart;
-
-
+  Handle(TColStd_HArray2OfReal)     CError;
+  Standard_Boolean                  done;
+  Standard_Boolean                  myExchUV;
+  Standard_Boolean                  isUReversed;
+  Standard_Boolean                  isVReversed;
+  Standard_Boolean                  myKPart;
 };
-
-
-
-
-
-
 
 #endif // _GeomFill_Sweep_HeaderFile

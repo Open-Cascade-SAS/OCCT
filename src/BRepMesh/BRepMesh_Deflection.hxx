@@ -26,33 +26,29 @@ struct IMeshTools_Parameters;
 class BRepMesh_Deflection : public Standard_Transient
 {
 public:
-
-  //! Returns absolute deflection for theShape with respect to the 
+  //! Returns absolute deflection for theShape with respect to the
   //! relative deflection and theMaxShapeSize.
   //! @param theShape shape for that the deflection should be computed.
   //! @param theRelativeDeflection relative deflection.
   //! @param theMaxShapeSize maximum size of the whole shape.
   //! @return absolute deflection for the shape.
-  Standard_EXPORT static Standard_Real ComputeAbsoluteDeflection (
+  Standard_EXPORT static Standard_Real ComputeAbsoluteDeflection(
     const TopoDS_Shape& theShape,
     const Standard_Real theRelativeDeflection,
     const Standard_Real theMaxShapeSize);
 
   //! Computes and updates deflection of the given discrete edge.
-  Standard_EXPORT static void ComputeDeflection (
-    const IMeshData::IEdgeHandle& theDEdge,
-    const Standard_Real           theMaxShapeSize,
-    const IMeshTools_Parameters&  theParameters);
+  Standard_EXPORT static void ComputeDeflection(const IMeshData::IEdgeHandle& theDEdge,
+                                                const Standard_Real           theMaxShapeSize,
+                                                const IMeshTools_Parameters&  theParameters);
 
   //! Computes and updates deflection of the given discrete wire.
-  Standard_EXPORT static void ComputeDeflection (
-    const IMeshData::IWireHandle& theDWire,
-    const IMeshTools_Parameters&  theParameters);
+  Standard_EXPORT static void ComputeDeflection(const IMeshData::IWireHandle& theDWire,
+                                                const IMeshTools_Parameters&  theParameters);
 
   //! Computes and updates deflection of the given discrete face.
-  Standard_EXPORT static void ComputeDeflection (
-    const IMeshData::IFaceHandle& theDFace,
-    const IMeshTools_Parameters&  theParameters);
+  Standard_EXPORT static void ComputeDeflection(const IMeshData::IFaceHandle& theDFace,
+                                                const IMeshTools_Parameters&  theParameters);
 
   //! Checks if the deflection of current polygonal representation
   //! is consistent with the required deflection.
@@ -62,11 +58,10 @@ public:
   //! to be consistent the current and required deflections should be approximately the same.
   //! If not allowed, the current deflection should be less than required.
   //! @param[in] theRatio  The ratio for comparison of the deflections (value from 0 to 1).
-  Standard_EXPORT static Standard_Boolean IsConsistent (
-    const Standard_Real theCurrent,
-    const Standard_Real theRequired,
-    const Standard_Boolean theAllowDecrease,
-    const Standard_Real theRatio = 0.1);
+  Standard_EXPORT static Standard_Boolean IsConsistent(const Standard_Real    theCurrent,
+                                                       const Standard_Real    theRequired,
+                                                       const Standard_Boolean theAllowDecrease,
+                                                       const Standard_Real    theRatio = 0.1);
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_Deflection, Standard_Transient)
 };

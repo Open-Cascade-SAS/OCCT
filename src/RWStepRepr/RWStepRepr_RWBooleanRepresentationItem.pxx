@@ -24,22 +24,20 @@ class Interface_Check;
 class StepRepr_BooleanRepresentationItem;
 class StepData_StepWriter;
 
-
 //! Read & Write Module for BooleanRepresentationItem
-class RWStepRepr_RWBooleanRepresentationItem 
+class RWStepRepr_RWBooleanRepresentationItem
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   Standard_HIDDEN RWStepRepr_RWBooleanRepresentationItem();
-  
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& theData,
-                                 const Standard_Integer theNum,
-                                 Handle(Interface_Check)& theAch,
+
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&            theData,
+                                const Standard_Integer                            theNum,
+                                Handle(Interface_Check)&                          theAch,
+                                const Handle(StepRepr_BooleanRepresentationItem)& theEnt) const;
+
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                              theSW,
                                  const Handle(StepRepr_BooleanRepresentationItem)& theEnt) const;
-  
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& theSW,
-                                  const Handle(StepRepr_BooleanRepresentationItem)& theEnt) const;
 };
 #endif // _RWStepRepr_RWBooleanRepresentationItem_HeaderFile

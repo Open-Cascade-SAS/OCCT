@@ -29,10 +29,9 @@
 class Standard_Condition
 {
 public:
-
   //! Default constructor.
   //! @param theIsSet Initial flag state
-  Standard_EXPORT Standard_Condition (bool theIsSet);
+  Standard_EXPORT Standard_Condition(bool theIsSet);
 
   //! Destructor.
   Standard_EXPORT ~Standard_Condition();
@@ -49,7 +48,7 @@ public:
   //! Wait for signal requested time.
   //! @param theTimeMilliseconds wait limit in milliseconds
   //! @return true if get event
-  Standard_EXPORT bool Wait (int theTimeMilliseconds);
+  Standard_EXPORT bool Wait(int theTimeMilliseconds);
 
   //! Do not wait for signal - just test it state.
   //! @return true if get event
@@ -67,20 +66,18 @@ public:
 
 private:
   //! This method should not be called (prohibited).
-  Standard_Condition (const Standard_Condition& theCopy);
+  Standard_Condition(const Standard_Condition& theCopy);
   //! This method should not be called (prohibited).
-  Standard_Condition& operator= (const Standard_Condition& theCopy);
+  Standard_Condition& operator=(const Standard_Condition& theCopy);
 
 private:
-
 #ifdef _WIN32
-  void*           myEvent;
+  void* myEvent;
 #else
   pthread_mutex_t myMutex;
   pthread_cond_t  myCond;
   bool            myFlag;
 #endif
-
 };
 
 #endif // _Standard_Condition_HeaderFile

@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMXCAFDoc_CentroidDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <Message_Messenger.hxx>
@@ -21,52 +20,48 @@
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_Centroid.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_CentroidDriver,BinMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_CentroidDriver, BinMDF_ADriver)
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-BinMXCAFDoc_CentroidDriver::BinMXCAFDoc_CentroidDriver(const Handle(Message_Messenger)& theMsgDriver)
-     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_Centroid)->Name()) {
+//=================================================================================================
+
+BinMXCAFDoc_CentroidDriver::BinMXCAFDoc_CentroidDriver(
+  const Handle(Message_Messenger)& theMsgDriver)
+    : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_Centroid)->Name())
+{
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-Handle(TDF_Attribute) BinMXCAFDoc_CentroidDriver::NewEmpty() const {
+//=================================================================================================
+
+Handle(TDF_Attribute) BinMXCAFDoc_CentroidDriver::NewEmpty() const
+{
   return new XCAFDoc_Centroid();
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
-Standard_Boolean BinMXCAFDoc_CentroidDriver::Paste(const BinObjMgt_Persistent& theSource,
-						   const Handle(TDF_Attribute)& theTarget,
-						   BinObjMgt_RRelocationTable& /*theRelocTable*/) const
+//=================================================================================================
+
+Standard_Boolean BinMXCAFDoc_CentroidDriver::Paste(
+  const BinObjMgt_Persistent&  theSource,
+  const Handle(TDF_Attribute)& theTarget,
+  BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
   Handle(XCAFDoc_Centroid) anAtt = Handle(XCAFDoc_Centroid)::DownCast(theTarget);
-  Standard_Real x, y, z;
-  Standard_Boolean isOk = theSource >> x >> y >> z;
-  if(isOk) {
+  Standard_Real            x, y, z;
+  Standard_Boolean         isOk = theSource >> x >> y >> z;
+  if (isOk)
+  {
     gp_Pnt aPnt(x, y, z);
     anAtt->Set(aPnt);
   }
   return isOk;
 }
 
-//=======================================================================
-//function :
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 void BinMXCAFDoc_CentroidDriver::Paste(const Handle(TDF_Attribute)& theSource,
-				       BinObjMgt_Persistent& theTarget,
-				       BinObjMgt_SRelocationTable& /*theRelocTable*/) const
+                                       BinObjMgt_Persistent&        theTarget,
+                                       BinObjMgt_SRelocationTable& /*theRelocTable*/) const
 {
   Handle(XCAFDoc_Centroid) anAtt = Handle(XCAFDoc_Centroid)::DownCast(theSource);
-  gp_Pnt aPnt = anAtt->Get();
+  gp_Pnt                   aPnt  = anAtt->Get();
   theTarget << aPnt.X() << aPnt.Y() << aPnt.Z();
 }
-

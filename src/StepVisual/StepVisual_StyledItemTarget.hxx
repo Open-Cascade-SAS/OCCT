@@ -29,33 +29,33 @@ class StepRepr_MappedItem;
 class StepRepr_Representation;
 class StepShape_TopologicalRepresentationItem;
 
-class StepVisual_StyledItemTarget  : public StepData_SelectType
+class StepVisual_StyledItemTarget : public StepData_SelectType
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-  
+
   //! Returns a StyledItemTarget select type
   Standard_EXPORT StepVisual_StyledItemTarget();
-  
+
   //! Recognizes a StyledItemTarget Kind Entity that is :
   //! 1 -> GeometricRepresentationItem
   //! 2 -> MappedItem
   //! 3 -> Representation
   //! 4 -> TopologicalRepresentationItem
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent)  const;
-  
+  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+
   //! returns Value as a GeometricRepresentationItem (Null if another type)
-  Standard_EXPORT Handle(StepGeom_GeometricRepresentationItem) GeometricRepresentationItem()  const;
-  
+  Standard_EXPORT Handle(StepGeom_GeometricRepresentationItem) GeometricRepresentationItem() const;
+
   //! returns Value as a MappedItem (Null if another type)
-  Standard_EXPORT Handle(StepRepr_MappedItem) MappedItem()  const;
-  
+  Standard_EXPORT Handle(StepRepr_MappedItem) MappedItem() const;
+
   //! returns Value as a Representation (Null if another type)
-  Standard_EXPORT Handle(StepRepr_Representation) Representation()  const;
-  
+  Standard_EXPORT Handle(StepRepr_Representation) Representation() const;
+
   //! returns Value as a TopologicalRepresentationItem (Null if another type)
-  Standard_EXPORT Handle(StepShape_TopologicalRepresentationItem) TopologicalRepresentationItem()  const;
+  Standard_EXPORT Handle(StepShape_TopologicalRepresentationItem) TopologicalRepresentationItem()
+    const;
 };
 #endif // _StepVisual_StyledItemTarget_HeaderFile

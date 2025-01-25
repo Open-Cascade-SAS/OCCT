@@ -28,7 +28,7 @@
 #include <MeshVS_ElementalColorPrsBuilder.hxx>
 #include <MeshVS_Mesh.hxx>
 #include <MeshVS_MeshEntityOwner.hxx>
-#include <MeshVS_MeshPrsBuilder.hxx> 
+#include <MeshVS_MeshPrsBuilder.hxx>
 #include <MeshVS_NodalColorPrsBuilder.hxx>
 #include <MeshVS_TextPrsBuilder.hxx>
 #include <MeshVS_VectorPrsBuilder.hxx>
@@ -47,51 +47,51 @@
 #include <XSDRAWSTL_DataSource3D.hxx>
 #include <XSDRAWSTL_DrawableMesh.hxx>
 
-extern Standard_Boolean VDisplayAISObject(const TCollection_AsciiString& theName,
+extern Standard_Boolean VDisplayAISObject(const TCollection_AsciiString&       theName,
                                           const Handle(AIS_InteractiveObject)& theAISObj,
                                           Standard_Boolean theReplaceIfExists = Standard_True);
 
-//=============================================================================
-//function : writestl
-//purpose  :
-//=============================================================================
-static Standard_Integer writestl
-(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+//=================================================================================================
+
+static Standard_Integer writestl(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 3 || argc > 4) {
-    di << "Use: " << argv[0]
-    << " shape file [ascii/binary (0/1) : 1 by default]\n";
-  } else {
-    TopoDS_Shape aShape = DBRep::Get(argv[1]);
+  if (argc < 3 || argc > 4)
+  {
+    di << "Use: " << argv[0] << " shape file [ascii/binary (0/1) : 1 by default]\n";
+  }
+  else
+  {
+    TopoDS_Shape     aShape      = DBRep::Get(argv[1]);
     Standard_Boolean isASCIIMode = Standard_False;
-    if (argc == 4) {
+    if (argc == 4)
+    {
       isASCIIMode = (Draw::Atoi(argv[3]) == 0);
     }
     StlAPI_Writer aWriter;
-    aWriter.ASCIIMode() = isASCIIMode;
-    Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (di);
-    Standard_Boolean isOK = aWriter.Write (aShape, argv[2], aProgress->Start());
+    aWriter.ASCIIMode()                      = isASCIIMode;
+    Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di);
+    Standard_Boolean               isOK      = aWriter.Write(aShape, argv[2], aProgress->Start());
     if (!isOK)
-       di << "** Error **: Mesh writing has been failed.\n";
+      di << "** Error **: Mesh writing has been failed.\n";
   }
   return 0;
 }
 
 //=============================================================================
-//function : readstl
-//purpose  : Reads stl file
+// function : readstl
+// purpose  : Reads stl file
 //=============================================================================
 static Standard_Integer readstl(Draw_Interpretor& theDI,
-                                Standard_Integer theArgc,
-                                const char** theArgv)
+                                Standard_Integer  theArgc,
+                                const char**      theArgv)
 {
   TCollection_AsciiString aShapeName, aFilePath;
-  bool toCreateCompOfTris = false;
-  bool anIsMulti = false;
-  double aMergeAngle = M_PI / 2.0;
+  bool                    toCreateCompOfTris = false;
+  bool                    anIsMulti          = false;
+  double                  aMergeAngle        = M_PI / 2.0;
   for (Standard_Integer anArgIter = 1; anArgIter < theArgc; ++anArgIter)
   {
-    TCollection_AsciiString anArg (theArgv[anArgIter]);
+    TCollection_AsciiString anArg(theArgv[anArgIter]);
     anArg.LowerCase();
     if (aShapeName.IsEmpty())
     {
@@ -104,8 +104,7 @@ static Standard_Integer readstl(Draw_Interpretor& theDI,
     else if (anArg == "-brep")
     {
       toCreateCompOfTris = true;
-      if (anArgIter + 1 < theArgc
-       && Draw::ParseOnOff (theArgv[anArgIter + 1], toCreateCompOfTris))
+      if (anArgIter + 1 < theArgc && Draw::ParseOnOff(theArgv[anArgIter + 1], toCreateCompOfTris))
       {
         ++anArgIter;
       }
@@ -113,26 +112,22 @@ static Standard_Integer readstl(Draw_Interpretor& theDI,
     else if (anArg == "-multi")
     {
       anIsMulti = true;
-      if (anArgIter + 1 < theArgc
-       && Draw::ParseOnOff (theArgv[anArgIter + 1], anIsMulti))
+      if (anArgIter + 1 < theArgc && Draw::ParseOnOff(theArgv[anArgIter + 1], anIsMulti))
       {
         ++anArgIter;
       }
     }
-    else if (anArg == "-mergeangle"
-          || anArg == "-smoothangle"
-          || anArg == "-nomergeangle"
-          || anArg == "-nosmoothangle")
+    else if (anArg == "-mergeangle" || anArg == "-smoothangle" || anArg == "-nomergeangle"
+             || anArg == "-nosmoothangle")
     {
-      if (anArg.StartsWith ("-no"))
+      if (anArg.StartsWith("-no"))
       {
         aMergeAngle = M_PI / 2.0;
       }
       else
       {
         aMergeAngle = M_PI / 4.0;
-        if (anArgIter + 1 < theArgc
-         && Draw::ParseReal (theArgv[anArgIter + 1], aMergeAngle))
+        if (anArgIter + 1 < theArgc && Draw::ParseReal(theArgv[anArgIter + 1], aMergeAngle))
         {
           if (aMergeAngle < 0.0 || aMergeAngle > 90.0)
           {
@@ -160,31 +155,31 @@ static Standard_Integer readstl(Draw_Interpretor& theDI,
   TopoDS_Shape aShape;
   if (!toCreateCompOfTris)
   {
-    Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI,1);
-    if(anIsMulti)
+    Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(theDI, 1);
+    if (anIsMulti)
     {
       NCollection_Sequence<Handle(Poly_Triangulation)> aTriangList;
       // Read STL file to the triangulation list.
-      RWStl::ReadFile(aFilePath.ToCString(),aMergeAngle,aTriangList,aProgress->Start());
+      RWStl::ReadFile(aFilePath.ToCString(), aMergeAngle, aTriangList, aProgress->Start());
       BRep_Builder aB;
-      TopoDS_Face aFace;
+      TopoDS_Face  aFace;
       if (aTriangList.Size() == 1)
       {
-        aB.MakeFace (aFace);
-        aB.UpdateFace (aFace,aTriangList.First());
+        aB.MakeFace(aFace);
+        aB.UpdateFace(aFace, aTriangList.First());
         aShape = aFace;
       }
       else
       {
         TopoDS_Compound aCmp;
-        aB.MakeCompound (aCmp);
-      
-        NCollection_Sequence<Handle(Poly_Triangulation)>::Iterator anIt (aTriangList);
+        aB.MakeCompound(aCmp);
+
+        NCollection_Sequence<Handle(Poly_Triangulation)>::Iterator anIt(aTriangList);
         for (; anIt.More(); anIt.Next())
-        { 
-          aB.MakeFace (aFace);
-          aB.UpdateFace (aFace,anIt.Value());
-          aB.Add (aCmp,aFace);
+        {
+          aB.MakeFace(aFace);
+          aB.UpdateFace(aFace, anIt.Value());
+          aB.Add(aCmp, aFace);
         }
         aShape = aCmp;
       }
@@ -192,32 +187,30 @@ static Standard_Integer readstl(Draw_Interpretor& theDI,
     else
     {
       // Read STL file to the triangulation.
-      Handle(Poly_Triangulation) aTriangulation = RWStl::ReadFile (aFilePath.ToCString(),aMergeAngle,aProgress->Start());
+      Handle(Poly_Triangulation) aTriangulation =
+        RWStl::ReadFile(aFilePath.ToCString(), aMergeAngle, aProgress->Start());
 
-      TopoDS_Face aFace;
+      TopoDS_Face  aFace;
       BRep_Builder aB;
-      aB.MakeFace (aFace);
-      aB.UpdateFace (aFace,aTriangulation);
+      aB.MakeFace(aFace);
+      aB.UpdateFace(aFace, aTriangulation);
       aShape = aFace;
     }
   }
   else
   {
-    Standard_DISABLE_DEPRECATION_WARNINGS
-    StlAPI::Read(aShape, aFilePath.ToCString());
+    Standard_DISABLE_DEPRECATION_WARNINGS StlAPI::Read(aShape, aFilePath.ToCString());
     Standard_ENABLE_DEPRECATION_WARNINGS
   }
-  DBRep::Set (aShapeName.ToCString(), aShape);
+  DBRep::Set(aShapeName.ToCString(), aShape);
   return 0;
 }
 
-//=======================================================================
-//function : createmesh
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer createmesh(Draw_Interpretor& theDI,
-                                   Standard_Integer theNbArgs,
-                                   const char** theArgVec)
+                                   Standard_Integer  theNbArgs,
+                                   const char**      theArgVec)
 {
   if (theNbArgs < 3)
   {
@@ -234,9 +227,9 @@ static Standard_Integer createmesh(Draw_Interpretor& theDI,
   }
 
   // Progress indicator
-  OSD_Path aFile(theArgVec[2]);
+  OSD_Path                       aFile(theArgVec[2]);
   Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(theDI, 1);
-  Handle(Poly_Triangulation) aSTLMesh = RWStl::ReadFile(aFile, aProgress->Start());
+  Handle(Poly_Triangulation)     aSTLMesh  = RWStl::ReadFile(aFile, aProgress->Start());
 
   theDI << "Reading OK...\n";
   Handle(XSDRAWSTL_DataSource) aDS = new XSDRAWSTL_DataSource(aSTLMesh);
@@ -251,7 +244,7 @@ static Standard_Integer createmesh(Draw_Interpretor& theDI,
 
   // Hide all nodes by default
   Handle(TColStd_HPackedMapOfInteger) aNodes = new TColStd_HPackedMapOfInteger();
-  const Standard_Integer aLen = aSTLMesh->NbNodes();
+  const Standard_Integer              aLen   = aSTLMesh->NbNodes();
   for (Standard_Integer anIndex = 1; anIndex <= aLen; anIndex++)
     aNodes->ChangeMap().Add(anIndex);
   aMesh->SetHiddenNodes(aNodes);
@@ -268,13 +261,11 @@ static Standard_Integer createmesh(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : create3d
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer create3d(Draw_Interpretor& theDI,
-                                 Standard_Integer theNbArgs,
-                                 const char** theArgVec)
+                                 Standard_Integer  theNbArgs,
+                                 const char**      theArgVec)
 {
   if (theNbArgs < 2)
   {
@@ -302,7 +293,7 @@ static Standard_Integer create3d(Draw_Interpretor& theDI,
 
   // Hide all nodes by default
   Handle(TColStd_HPackedMapOfInteger) aNodes = new TColStd_HPackedMapOfInteger();
-  Standard_Integer aLen = aDS->GetAllNodes().Extent();
+  Standard_Integer                    aLen   = aDS->GetAllNodes().Extent();
   for (Standard_Integer anIndex = 1; anIndex <= aLen; anIndex++)
     aNodes->ChangeMap().Add(anIndex);
   aMesh->SetHiddenNodes(aNodes);
@@ -319,12 +310,9 @@ static Standard_Integer create3d(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : getMesh
-//purpose  :
-//=======================================================================
-Handle(MeshVS_Mesh) getMesh(const char* theName,
-                            Draw_Interpretor& theDI)
+//=================================================================================================
+
+Handle(MeshVS_Mesh) getMesh(const char* theName, Draw_Interpretor& theDI)
 {
   Handle(XSDRAWSTL_DrawableMesh) aDrawMesh =
     Handle(XSDRAWSTL_DrawableMesh)::DownCast(Draw::Get(theName));
@@ -347,14 +335,12 @@ Handle(MeshVS_Mesh) getMesh(const char* theName,
   }
 }
 
-//=======================================================================
-//function : setcolor
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer setcolor(Draw_Interpretor& theDI,
-                                 Standard_Integer theNbArgs,
-                                 const char** theArgVec,
-                                 Standard_Integer theParam)
+                                 Standard_Integer  theNbArgs,
+                                 const char**      theArgVec,
+                                 Standard_Integer  theParam)
 {
   if (theNbArgs < 5)
     theDI << "Wrong number of parameters\n";
@@ -363,9 +349,9 @@ static Standard_Integer setcolor(Draw_Interpretor& theDI,
     Handle(MeshVS_Mesh) aMesh = getMesh(theArgVec[1], theDI);
     if (!aMesh.IsNull())
     {
-      Standard_Real aRed = Draw::Atof(theArgVec[2]);
+      Standard_Real aRed   = Draw::Atof(theArgVec[2]);
       Standard_Real aGreen = Draw::Atof(theArgVec[3]);
-      Standard_Real aBlue = Draw::Atof(theArgVec[4]);
+      Standard_Real aBlue  = Draw::Atof(theArgVec[4]);
       aMesh->GetDrawer()->SetColor((MeshVS_DrawerAttribute)theParam,
                                    Quantity_Color(aRed, aGreen, aBlue, Quantity_TOC_RGB));
 
@@ -380,35 +366,29 @@ static Standard_Integer setcolor(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : meshcolor
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer meshcolor(Draw_Interpretor& theInterp,
-                                  Standard_Integer theNbArgs,
-                                  const char** theArgVec)
+                                  Standard_Integer  theNbArgs,
+                                  const char**      theArgVec)
 {
   return setcolor(theInterp, theNbArgs, theArgVec, MeshVS_DA_InteriorColor);
 }
 
-//=======================================================================
-//function : linecolor
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer linecolor(Draw_Interpretor& theInterp,
-                                  Standard_Integer theNbArgs,
-                                  const char** theArgVec)
+                                  Standard_Integer  theNbArgs,
+                                  const char**      theArgVec)
 {
   return setcolor(theInterp, theNbArgs, theArgVec, MeshVS_DA_EdgeColor);
 }
 
-//=======================================================================
-//function : meshmat
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer meshmat(Draw_Interpretor& theDI,
-                                Standard_Integer theNbArgs,
-                                const char** theArgVec)
+                                Standard_Integer  theNbArgs,
+                                const char**      theArgVec)
 {
   if (theNbArgs < 3)
     theDI << "Wrong number of parameters\n";
@@ -441,13 +421,11 @@ static Standard_Integer meshmat(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : shrink
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer shrink(Draw_Interpretor& theDI,
-                               Standard_Integer theNbArgs,
-                               const char** theArgVec)
+                               Standard_Integer  theNbArgs,
+                               const char**      theArgVec)
 {
   if (theNbArgs < 3)
     theDI << "Wrong number of parameters\n";
@@ -470,13 +448,11 @@ static Standard_Integer shrink(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : closed
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer closed(Draw_Interpretor& theDI,
-                               Standard_Integer theArgc,
-                               const char** theArgv)
+                               Standard_Integer  theArgc,
+                               const char**      theArgv)
 {
   if (theArgc < 3)
   {
@@ -504,13 +480,11 @@ static Standard_Integer closed(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : mdisplay
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer mdisplay(Draw_Interpretor& theDI,
-                                 Standard_Integer theNbArgs,
-                                 const char** theArgVec)
+                                 Standard_Integer  theNbArgs,
+                                 const char**      theArgVec)
 {
   if (theNbArgs < 2)
     theDI << "Wrong number of parameters\n";
@@ -532,13 +506,11 @@ static Standard_Integer mdisplay(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : merase
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer merase(Draw_Interpretor& theDI,
-                               Standard_Integer theNbArgs,
-                               const char** theArgVec)
+                               Standard_Integer  theNbArgs,
+                               const char**      theArgVec)
 {
   if (theNbArgs < 2)
     theDI << "Wrong number of parameters\n";
@@ -562,13 +534,11 @@ static Standard_Integer merase(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : hidesel
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer hidesel(Draw_Interpretor& theDI,
-                                Standard_Integer theNbArgs,
-                                const char** theArgVec)
+                                Standard_Integer  theNbArgs,
+                                const char**      theArgVec)
 {
   if (theNbArgs < 2)
   {
@@ -578,7 +548,7 @@ static Standard_Integer hidesel(Draw_Interpretor& theDI,
   }
 
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  Handle(MeshVS_Mesh) aMesh = getMesh(theArgVec[1], theDI);
+  Handle(MeshVS_Mesh)            aMesh    = getMesh(theArgVec[1], theDI);
   if (aMesh.IsNull())
   {
     theDI << "The mesh is invalid\n";
@@ -624,13 +594,11 @@ static Standard_Integer hidesel(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : showonly
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer showonly(Draw_Interpretor& theDI,
-                                 Standard_Integer theNbArgs,
-                                 const char** theArgVec)
+                                 Standard_Integer  theNbArgs,
+                                 const char**      theArgVec)
 {
   if (theNbArgs < 2)
   {
@@ -640,7 +608,7 @@ static Standard_Integer showonly(Draw_Interpretor& theDI,
   }
 
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  Handle(MeshVS_Mesh) aMesh = getMesh(theArgVec[1], theDI);
+  Handle(MeshVS_Mesh)            aMesh    = getMesh(theArgVec[1], theDI);
   if (aMesh.IsNull())
   {
     theDI << "The mesh is invalid\n";
@@ -679,13 +647,11 @@ static Standard_Integer showonly(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : showonly
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer showall(Draw_Interpretor& theDI,
-                                Standard_Integer theNbArgs,
-                                const char** theArgVec)
+                                Standard_Integer  theNbArgs,
+                                const char**      theArgVec)
 {
   if (theNbArgs < 2)
   {
@@ -695,7 +661,7 @@ static Standard_Integer showall(Draw_Interpretor& theDI,
   }
 
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  Handle(MeshVS_Mesh) aMesh = getMesh(theArgVec[1], theDI);
+  Handle(MeshVS_Mesh)            aMesh    = getMesh(theArgVec[1], theDI);
   if (aMesh.IsNull())
   {
     theDI << "The mesh is invalid\n";
@@ -714,31 +680,29 @@ static Standard_Integer showall(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : meshcolors
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer meshcolors(Draw_Interpretor& theDI,
-                                   Standard_Integer theNbArgs,
-                                   const char** theArgVec)
+                                   Standard_Integer  theNbArgs,
+                                   const char**      theArgVec)
 {
   try
   {
     OCC_CATCH_SIGNALS
-      if (theNbArgs < 4)
-      {
-        theDI << "Wrong number of parameters\n";
-        theDI << "Use : meshcolors <mesh name> <mode> <isreflect>\n";
-        theDI << "mode : {elem1|elem2|nodal|nodaltex|none}\n";
-        theDI << "       elem1 - different color for each element\n";
-        theDI << "       elem2 - one color for one side\n";
-        theDI << "       nodal - different color for each node\n";
-        theDI << "       nodaltex - different color for each node with texture interpolation\n";
-        theDI << "       none  - clear\n";
-        theDI << "isreflect : {0|1} \n";
+    if (theNbArgs < 4)
+    {
+      theDI << "Wrong number of parameters\n";
+      theDI << "Use : meshcolors <mesh name> <mode> <isreflect>\n";
+      theDI << "mode : {elem1|elem2|nodal|nodaltex|none}\n";
+      theDI << "       elem1 - different color for each element\n";
+      theDI << "       elem2 - one color for one side\n";
+      theDI << "       nodal - different color for each node\n";
+      theDI << "       nodaltex - different color for each node with texture interpolation\n";
+      theDI << "       none  - clear\n";
+      theDI << "isreflect : {0|1} \n";
 
-        return 0;
-      }
+      return 0;
+    }
 
     Handle(MeshVS_Mesh) aMesh = getMesh(theArgVec[1], theDI);
 
@@ -756,12 +720,13 @@ static Standard_Integer meshcolors(Draw_Interpretor& theDI,
     if (!aMesh.IsNull())
     {
       TCollection_AsciiString aMode = TCollection_AsciiString(theArgVec[2]);
-      Quantity_Color aColor1(Quantity_NOC_BLUE1);
-      Quantity_Color aColor2(Quantity_NOC_RED1);
-      if (aMode.IsEqual("elem1") || aMode.IsEqual("elem2") || aMode.IsEqual("nodal") || aMode.IsEqual("nodaltex") || aMode.IsEqual("none"))
+      Quantity_Color          aColor1(Quantity_NOC_BLUE1);
+      Quantity_Color          aColor2(Quantity_NOC_RED1);
+      if (aMode.IsEqual("elem1") || aMode.IsEqual("elem2") || aMode.IsEqual("nodal")
+          || aMode.IsEqual("nodaltex") || aMode.IsEqual("none"))
       {
         Handle(MeshVS_PrsBuilder) aTempBuilder;
-        Standard_Integer aReflection = Draw::Atoi(theArgVec[3]);
+        Standard_Integer          aReflection = Draw::Atoi(theArgVec[3]);
 
         for (Standard_Integer aCount = 0; aCount < aMesh->GetBuildersCount(); aCount++)
         {
@@ -777,41 +742,42 @@ static Standard_Integer meshcolors(Draw_Interpretor& theDI,
         if (aMode.IsEqual("elem1") || aMode.IsEqual("elem2"))
         {
           Handle(MeshVS_ElementalColorPrsBuilder) aBuilder = new MeshVS_ElementalColorPrsBuilder(
-            aMesh, MeshVS_DMF_ElementalColorDataPrs | MeshVS_DMF_OCCMask);
+            aMesh,
+            MeshVS_DMF_ElementalColorDataPrs | MeshVS_DMF_OCCMask);
           // Color
-          const TColStd_PackedMapOfInteger& anAllElements = aMesh->GetDataSource()->GetAllElements();
+          const TColStd_PackedMapOfInteger& anAllElements =
+            aMesh->GetDataSource()->GetAllElements();
 
           if (aMode.IsEqual("elem1"))
-            for (TColStd_PackedMapOfInteger::Iterator anIter(anAllElements);
-                 anIter.More(); anIter.Next())
-          {
-            Quantity_Color aColor((Quantity_NameOfColor)(anIter.Key() % Quantity_NOC_WHITE));
-            aBuilder->SetColor1(anIter.Key(), aColor);
-          }
+            for (TColStd_PackedMapOfInteger::Iterator anIter(anAllElements); anIter.More();
+                 anIter.Next())
+            {
+              Quantity_Color aColor((Quantity_NameOfColor)(anIter.Key() % Quantity_NOC_WHITE));
+              aBuilder->SetColor1(anIter.Key(), aColor);
+            }
           else
-            for (TColStd_PackedMapOfInteger::Iterator anIter(anAllElements);
-                 anIter.More(); anIter.Next())
-          {
-            aBuilder->SetColor2(anIter.Key(), aColor1, aColor2);
-          }
+            for (TColStd_PackedMapOfInteger::Iterator anIter(anAllElements); anIter.More();
+                 anIter.Next())
+            {
+              aBuilder->SetColor2(anIter.Key(), aColor1, aColor2);
+            }
 
           aMesh->AddBuilder(aBuilder, Standard_True);
         }
 
         if (aMode.IsEqual("nodal"))
         {
-          Handle(MeshVS_NodalColorPrsBuilder) aBuilder = new MeshVS_NodalColorPrsBuilder(
-            aMesh, MeshVS_DMF_NodalColorDataPrs | MeshVS_DMF_OCCMask);
+          Handle(MeshVS_NodalColorPrsBuilder) aBuilder =
+            new MeshVS_NodalColorPrsBuilder(aMesh,
+                                            MeshVS_DMF_NodalColorDataPrs | MeshVS_DMF_OCCMask);
           aMesh->AddBuilder(aBuilder, Standard_True);
 
           // Color
-          const TColStd_PackedMapOfInteger& anAllNodes =
-            aMesh->GetDataSource()->GetAllNodes();
-          for (TColStd_PackedMapOfInteger::Iterator anIter(anAllNodes);
-               anIter.More(); anIter.Next())
+          const TColStd_PackedMapOfInteger& anAllNodes = aMesh->GetDataSource()->GetAllNodes();
+          for (TColStd_PackedMapOfInteger::Iterator anIter(anAllNodes); anIter.More();
+               anIter.Next())
           {
-            Quantity_Color aColor((Quantity_NameOfColor)(
-              anIter.Key() % Quantity_NOC_WHITE));
+            Quantity_Color aColor((Quantity_NameOfColor)(anIter.Key() % Quantity_NOC_WHITE));
             aBuilder->SetColor(anIter.Key(), aColor);
           }
           aMesh->AddBuilder(aBuilder, Standard_True);
@@ -820,8 +786,9 @@ static Standard_Integer meshcolors(Draw_Interpretor& theDI,
         if (aMode.IsEqual("nodaltex"))
         {
           // assign nodal builder to the mesh
-          Handle(MeshVS_NodalColorPrsBuilder) aBuilder = new MeshVS_NodalColorPrsBuilder(
-            aMesh, MeshVS_DMF_NodalColorDataPrs | MeshVS_DMF_OCCMask);
+          Handle(MeshVS_NodalColorPrsBuilder) aBuilder =
+            new MeshVS_NodalColorPrsBuilder(aMesh,
+                                            MeshVS_DMF_NodalColorDataPrs | MeshVS_DMF_OCCMask);
           aMesh->AddBuilder(aBuilder, Standard_True);
           aBuilder->UseTexture(Standard_True);
 
@@ -834,7 +801,7 @@ static Standard_Integer meshcolors(Draw_Interpretor& theDI,
           // prepare scale map for mesh - it will be assigned to mesh as texture coordinates
           // make mesh color interpolated from minimum X coord to maximum X coord
           Handle(MeshVS_DataSource) aDataSource = aMesh->GetDataSource();
-          Standard_Real aMinX, aMinY, aMinZ, aMaxX, aMaxY, aMaxZ;
+          Standard_Real             aMinX, aMinY, aMinZ, aMaxX, aMaxY, aMaxZ;
 
           // get bounding box for calculations
           aDataSource->GetBoundingBox().Get(aMinX, aMinY, aMinZ, aMaxX, aMaxY, aMaxZ);
@@ -842,24 +809,23 @@ static Standard_Integer meshcolors(Draw_Interpretor& theDI,
 
           // assign color scale map values (0..1) to nodes
           TColStd_DataMapOfIntegerReal aScaleMap;
-          TColStd_Array1OfReal aCoords(1, 3);
-          Standard_Integer     aNbNodes;
-          MeshVS_EntityType    aType;
+          TColStd_Array1OfReal         aCoords(1, 3);
+          Standard_Integer             aNbNodes;
+          MeshVS_EntityType            aType;
 
           // iterate nodes
-          const TColStd_PackedMapOfInteger& anAllNodes =
-            aMesh->GetDataSource()->GetAllNodes();
-          for (TColStd_PackedMapOfInteger::Iterator anIter(anAllNodes);
-               anIter.More(); anIter.Next())
+          const TColStd_PackedMapOfInteger& anAllNodes = aMesh->GetDataSource()->GetAllNodes();
+          for (TColStd_PackedMapOfInteger::Iterator anIter(anAllNodes); anIter.More();
+               anIter.Next())
           {
-            //get node coordinates to aCoord variable
+            // get node coordinates to aCoord variable
             aDataSource->GetGeom(anIter.Key(), Standard_False, aCoords, aNbNodes, aType);
 
             Standard_Real aScaleValue;
             try
             {
               OCC_CATCH_SIGNALS
-                aScaleValue = (aCoords.Value(1) - (Standard_Real)aMinX) / aDelta;
+              aScaleValue = (aCoords.Value(1) - (Standard_Real)aMinX) / aDelta;
             }
             catch (Standard_Failure const&)
             {
@@ -869,7 +835,7 @@ static Standard_Integer meshcolors(Draw_Interpretor& theDI,
             aScaleMap.Bind(anIter.Key(), aScaleValue);
           }
 
-          //set color map for builder and a color for invalid scale value
+          // set color map for builder and a color for invalid scale value
           aBuilder->SetColorMap(aColorMap);
           aBuilder->SetInvalidColor(Quantity_NOC_BLACK);
           aBuilder->SetTextureCoords(aScaleMap);
@@ -895,18 +861,17 @@ static Standard_Integer meshcolors(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : meshvectors
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer meshvectors(Draw_Interpretor& theDI,
-                                    Standard_Integer theNbArgs,
-                                    const char** theArgVec)
+                                    Standard_Integer  theNbArgs,
+                                    const char**      theArgVec)
 {
   if (theNbArgs < 3)
   {
     theDI << "Wrong number of parameters\n";
-    theDI << "Use : meshvectors <mesh name> < -mode {elem|nodal|none} > [-maxlen len] [-color name] [-arrowpart ratio] [-issimple {1|0}]\n";
+    theDI << "Use : meshvectors <mesh name> < -mode {elem|nodal|none} > [-maxlen len] [-color "
+             "name] [-arrowpart ratio] [-issimple {1|0}]\n";
     theDI << "Supported mode values:\n";
     theDI << "       elem  - vector per element\n";
     theDI << "       nodal - vector per node\n";
@@ -995,27 +960,35 @@ static Standard_Integer meshvectors(Draw_Interpretor& theDI,
                                                                            MeshVS_BP_Vector,
                                                                            isSimplePrs);
 
-    Standard_Boolean anIsElement = aMode.IsEqual("elem");
-    const TColStd_PackedMapOfInteger& anAllIDs = anIsElement ? aMesh->GetDataSource()->GetAllElements() :
-      aMesh->GetDataSource()->GetAllNodes();
+    Standard_Boolean                  anIsElement = aMode.IsEqual("elem");
+    const TColStd_PackedMapOfInteger& anAllIDs    = anIsElement
+                                                      ? aMesh->GetDataSource()->GetAllElements()
+                                                      : aMesh->GetDataSource()->GetAllNodes();
 
-    Standard_Integer aNbNodes;
+    Standard_Integer  aNbNodes;
     MeshVS_EntityType aEntType;
 
     TColStd_Array1OfReal aCoords(1, 3);
     aCoords.Init(0.);
-    for (TColStd_PackedMapOfInteger::Iterator anIter(anAllIDs);
-         anIter.More(); anIter.Next())
+    for (TColStd_PackedMapOfInteger::Iterator anIter(anAllIDs); anIter.More(); anIter.Next())
     {
       Standard_Boolean IsValidData = Standard_False;
       if (anIsElement)
       {
         aMesh->GetDataSource()->GetGeomType(anIter.Key(), anIsElement, aEntType);
         if (aEntType == MeshVS_ET_Face)
-          IsValidData = aMesh->GetDataSource()->GetNormal(anIter.Key(), 3, aCoords.ChangeValue(1), aCoords.ChangeValue(2), aCoords.ChangeValue(3));
+          IsValidData = aMesh->GetDataSource()->GetNormal(anIter.Key(),
+                                                          3,
+                                                          aCoords.ChangeValue(1),
+                                                          aCoords.ChangeValue(2),
+                                                          aCoords.ChangeValue(3));
       }
       else
-        IsValidData = aMesh->GetDataSource()->GetGeom(anIter.Key(), Standard_False, aCoords, aNbNodes, aEntType);
+        IsValidData = aMesh->GetDataSource()->GetGeom(anIter.Key(),
+                                                      Standard_False,
+                                                      aCoords,
+                                                      aNbNodes,
+                                                      aEntType);
 
       gp_Vec aNorm;
       if (IsValidData)
@@ -1023,7 +996,7 @@ static Standard_Integer meshvectors(Draw_Interpretor& theDI,
         aNorm = gp_Vec(aCoords.Value(1), aCoords.Value(2), aCoords.Value(3));
         if (aNorm.Magnitude() < gp::Resolution())
         {
-          aNorm = gp_Vec(0, 0, 1); //method GetGeom(...) returns coordinates of nodes
+          aNorm = gp_Vec(0, 0, 1); // method GetGeom(...) returns coordinates of nodes
         }
       }
       else
@@ -1042,13 +1015,11 @@ static Standard_Integer meshvectors(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : meshtext
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer meshtext(Draw_Interpretor& theDI,
-                                 Standard_Integer theNbArgs,
-                                 const char** theArgVec)
+                                 Standard_Integer  theNbArgs,
+                                 const char**      theArgVec)
 {
   if (theNbArgs < 2)
   {
@@ -1074,26 +1045,25 @@ static Standard_Integer meshtext(Draw_Interpretor& theDI,
 
   // Prepare triangle labels
   MeshVS_DataMapOfIntegerAsciiString aLabels;
-  Standard_Integer aLen = aMesh->GetDataSource()->GetAllElements().Extent();
+  Standard_Integer                   aLen = aMesh->GetDataSource()->GetAllElements().Extent();
   for (Standard_Integer anIndex = 1; anIndex <= aLen; anIndex++)
   {
     aLabels.Bind(anIndex, TCollection_AsciiString(anIndex));
   }
 
-  Handle(MeshVS_TextPrsBuilder) aTextBuilder = new MeshVS_TextPrsBuilder(aMesh.operator->(), 20., Quantity_NOC_YELLOW);
+  Handle(MeshVS_TextPrsBuilder) aTextBuilder =
+    new MeshVS_TextPrsBuilder(aMesh.operator->(), 20., Quantity_NOC_YELLOW);
   aTextBuilder->SetTexts(Standard_True, aLabels);
   aMesh->AddBuilder(aTextBuilder);
 
   return 0;
 }
 
-//=======================================================================
-//function : meshdeform
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer meshdeform(Draw_Interpretor& theDI,
-                                   Standard_Integer theNbArgs,
-                                   const char** theArgVec)
+                                   Standard_Integer  theNbArgs,
+                                   const char**      theArgVec)
 {
   if (theNbArgs < 3)
   {
@@ -1151,11 +1121,10 @@ static Standard_Integer meshdeform(Draw_Interpretor& theDI,
 
   const TColStd_PackedMapOfInteger& anAllIDs = aMesh->GetDataSource()->GetAllNodes();
 
-  Standard_Integer aNbNodes;
+  Standard_Integer  aNbNodes;
   MeshVS_EntityType aEntType;
 
-  for (TColStd_PackedMapOfInteger::Iterator anIter(anAllIDs);
-       anIter.More(); anIter.Next())
+  for (TColStd_PackedMapOfInteger::Iterator anIter(anAllIDs); anIter.More(); anIter.Next())
   {
     TColStd_Array1OfReal aCoords(1, 3);
     aMesh->GetDataSource()->GetGeom(anIter.Key(), Standard_False, aCoords, aNbNodes, aEntType);
@@ -1177,23 +1146,21 @@ static Standard_Integer meshdeform(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : mesh_edge_width
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer mesh_edge_width(Draw_Interpretor& theDI,
-                                        Standard_Integer theNbArgs,
-                                        const char** theArgVec)
+                                        Standard_Integer  theNbArgs,
+                                        const char**      theArgVec)
 {
   try
   {
     OCC_CATCH_SIGNALS
-      if (theNbArgs < 3)
-      {
-        theDI << "Wrong number of parameters\n";
-        theDI << "Use : mesh_edge_width <mesh name> <width>\n";
-        return 0;
-      }
+    if (theNbArgs < 3)
+    {
+      theDI << "Wrong number of parameters\n";
+      theDI << "Use : mesh_edge_width <mesh name> <width>\n";
+      return 0;
+    }
 
     Handle(MeshVS_Mesh) aMesh = getMesh(theArgVec[1], theDI);
     if (aMesh.IsNull())
@@ -1236,13 +1203,11 @@ static Standard_Integer mesh_edge_width(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=======================================================================
-//function : meshinfo
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 static Standard_Integer meshinfo(Draw_Interpretor& theDI,
-                                 Standard_Integer theNbArgs,
-                                 const char** theArgVec)
+                                 Standard_Integer  theNbArgs,
+                                 const char**      theArgVec)
 {
   if (theNbArgs != 2)
   {
@@ -1257,11 +1222,12 @@ static Standard_Integer meshinfo(Draw_Interpretor& theDI,
     return 0;
   }
 
-  Handle(XSDRAWSTL_DataSource) stlMeshSource = Handle(XSDRAWSTL_DataSource)::DownCast(aMesh->GetDataSource());
+  Handle(XSDRAWSTL_DataSource) stlMeshSource =
+    Handle(XSDRAWSTL_DataSource)::DownCast(aMesh->GetDataSource());
   if (!stlMeshSource.IsNull())
   {
     const TColStd_PackedMapOfInteger& nodes = stlMeshSource->GetAllNodes();
-    const TColStd_PackedMapOfInteger& tris = stlMeshSource->GetAllElements();
+    const TColStd_PackedMapOfInteger& tris  = stlMeshSource->GetAllElements();
 
     theDI << "Nb nodes = " << nodes.Extent() << "\n";
     theDI << "Nb triangles = " << tris.Extent() << "\n";
@@ -1270,10 +1236,8 @@ static Standard_Integer meshinfo(Draw_Interpretor& theDI,
   return 0;
 }
 
-//=============================================================================
-//function : Factory
-//purpose  :
-//=============================================================================
+//=================================================================================================
+
 void XSDRAWSTL::Factory(Draw_Interpretor& theDI)
 {
   static Standard_Boolean aIsActivated = Standard_False;
@@ -1283,17 +1247,25 @@ void XSDRAWSTL::Factory(Draw_Interpretor& theDI)
   }
   aIsActivated = Standard_True;
 
-  const char* aGroup = "XSTEP-STL/VRML";  // Step transfer file commands
+  const char* aGroup = "XSTEP-STL/VRML"; // Step transfer file commands
 
-  theDI.Add("writestl", "shape file [ascii/binary (0/1) : 1 by default] [InParallel (0/1) : 0 by default]", __FILE__, writestl, aGroup);
-  theDI.Add("readstl",
-            "readstl shape file [-brep] [-mergeAngle Angle] [-multi]"
-            "\n\t\t: Reads STL file and creates a new shape with specified name."
-            "\n\t\t: When -brep is specified, creates a Compound of per-triangle Faces."
-            "\n\t\t: Single triangulation-only Face is created otherwise (default)."
-            "\n\t\t: -mergeAngle specifies maximum angle in degrees between triangles to merge equal nodes; disabled by default."
-            "\n\t\t: -multi creates a face per solid in multi-domain files; ignored when -brep is set.",
-            __FILE__, readstl, aGroup);
+  theDI.Add("writestl",
+            "shape file [ascii/binary (0/1) : 1 by default] [InParallel (0/1) : 0 by default]",
+            __FILE__,
+            writestl,
+            aGroup);
+  theDI.Add(
+    "readstl",
+    "readstl shape file [-brep] [-mergeAngle Angle] [-multi]"
+    "\n\t\t: Reads STL file and creates a new shape with specified name."
+    "\n\t\t: When -brep is specified, creates a Compound of per-triangle Faces."
+    "\n\t\t: Single triangulation-only Face is created otherwise (default)."
+    "\n\t\t: -mergeAngle specifies maximum angle in degrees between triangles to merge equal "
+    "nodes; disabled by default."
+    "\n\t\t: -multi creates a face per solid in multi-domain files; ignored when -brep is set.",
+    __FILE__,
+    readstl,
+    aGroup);
 
   theDI.Add("meshfromstl", "creates MeshVS_Mesh from STL file", __FILE__, createmesh, aGroup);
   theDI.Add("mesh3delem", "creates 3d element mesh to test", __FILE__, create3d, aGroup);
@@ -1301,7 +1273,12 @@ void XSDRAWSTL::Factory(Draw_Interpretor& theDI)
   theDI.Add("meshlinkcolor", "change MeshVS_Mesh line color", __FILE__, linecolor, aGroup);
   theDI.Add("meshmat", "change MeshVS_Mesh material and transparency", __FILE__, meshmat, aGroup);
   theDI.Add("meshshrcoef", "change MeshVS_Mesh shrink coeff", __FILE__, shrink, aGroup);
-  theDI.Add("meshclosed", "meshclosed meshname (0/1) \nChange MeshVS_Mesh drawing mode. 0 - not closed object, 1 - closed object", __FILE__, closed, aGroup);
+  theDI.Add("meshclosed",
+            "meshclosed meshname (0/1) \nChange MeshVS_Mesh drawing mode. 0 - not closed object, 1 "
+            "- closed object",
+            __FILE__,
+            closed,
+            aGroup);
   theDI.Add("meshshow", "display MeshVS_Mesh object", __FILE__, mdisplay, aGroup);
   theDI.Add("meshhide", "erase MeshVS_Mesh object", __FILE__, merase, aGroup);
   theDI.Add("meshhidesel", "hide selected entities", __FILE__, hidesel, aGroup);

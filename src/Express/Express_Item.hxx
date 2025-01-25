@@ -29,15 +29,15 @@ class TCollection_HAsciiString;
 //! and CXX files.
 class Express_Item : public Standard_Transient
 {
-  
+
 public:
   enum GenMode
   {
-    GM_NoGen,       // Item in existed list - no need to generate
-    GM_GenByUser,   // Item in new list - need to generate
-    GM_GenByAlgo,   // Item isn't in any list but is used by needed item
-    GM_Undefined,   // Item isn't in any list
-    GM_Generated    // Item has been generated
+    GM_NoGen,     // Item in existed list - no need to generate
+    GM_GenByUser, // Item in new list - need to generate
+    GM_GenByAlgo, // Item isn't in any list but is used by needed item
+    GM_Undefined, // Item isn't in any list
+    GM_Generated  // Item has been generated
   };
 
   //! Returns item name
@@ -60,13 +60,13 @@ public:
   Standard_EXPORT static TCollection_AsciiString& GetUnknownPackageName();
 
   //! Sets package name
-  Standard_EXPORT void SetPackageName (const TCollection_AsciiString& thePack);
+  Standard_EXPORT void SetPackageName(const TCollection_AsciiString& thePack);
 
   //! Returns item generation mode
   Standard_EXPORT GenMode GetGenMode() const;
 
   //! Change generation mode for item
-  Standard_EXPORT void SetGenMode (const GenMode theGenMode);
+  Standard_EXPORT void SetGenMode(const GenMode theGenMode);
 
   //! Reset loop flag
   Standard_EXPORT void ResetLoopFlag();
@@ -88,34 +88,35 @@ public:
   Standard_EXPORT Standard_Boolean Use();
 
   //! Mark Item as visited in PropagateUse flow and defined the package name if not set.
-  Standard_EXPORT void Use2 (const TCollection_AsciiString& theRefName, const TCollection_AsciiString& theRefPack);
+  Standard_EXPORT void Use2(const TCollection_AsciiString& theRefName,
+                            const TCollection_AsciiString& theRefPack);
 
   //! Set category for item
-  Standard_EXPORT void SetCategory (const Handle(TCollection_HAsciiString)& theCateg);
+  Standard_EXPORT void SetCategory(const Handle(TCollection_HAsciiString)& theCateg);
 
   //! Get item category
   Standard_EXPORT const TCollection_AsciiString& Category() const;
 
   //! Set short name for item
-  Standard_EXPORT void SetShortName (const Handle(TCollection_HAsciiString)& theShName);
+  Standard_EXPORT void SetShortName(const Handle(TCollection_HAsciiString)& theShName);
 
   //! Get item short name
   Standard_EXPORT Handle(TCollection_HAsciiString) ShortName() const;
 
   //! Set flag for presence of method Check in the class
-  Standard_EXPORT void SetCheckFlag (const Standard_Boolean theCheckFlag);
+  Standard_EXPORT void SetCheckFlag(const Standard_Boolean theCheckFlag);
 
   //! Get flag resposible for  presence of method Check in the class
   Standard_EXPORT Standard_Boolean CheckFlag() const;
 
   //! Set flag for presence of method FillShared in the class
-  Standard_EXPORT void SetFillSharedFlag (const Standard_Boolean theFillSharedFlag);
+  Standard_EXPORT void SetFillSharedFlag(const Standard_Boolean theFillSharedFlag);
 
   //! Get flag resposible for  presence of method FillShared in the class
   Standard_EXPORT Standard_Boolean FillSharedFlag() const;
 
   //! Set start entity index
-  Standard_EXPORT static void SetIndex (const Standard_Integer theIndex);
+  Standard_EXPORT static void SetIndex(const Standard_Integer theIndex);
 
   //! Get current entity index
   Standard_EXPORT static Standard_Integer Index();
@@ -123,28 +124,26 @@ public:
   DEFINE_STANDARD_RTTIEXT(Express_Item, Standard_Transient)
 
 protected:
+  //! Creates object and initializes fields PackageName and
+  //! CreateFlag by 0
+  Standard_EXPORT Express_Item(const Standard_CString theName);
 
   //! Creates object and initializes fields PackageName and
   //! CreateFlag by 0
-  Standard_EXPORT Express_Item (const Standard_CString theName);
-
-  //! Creates object and initializes fields PackageName and
-  //! CreateFlag by 0
-  Standard_EXPORT Express_Item (const Handle(TCollection_HAsciiString)& theName);
+  Standard_EXPORT Express_Item(const Handle(TCollection_HAsciiString)& theName);
 
 private:
-
   Handle(TCollection_HAsciiString) myName;
   Handle(TCollection_HAsciiString) myPack;
   // "Generate" mark. If is TRUE a class will be generated for the item
   GenMode myGenMode;
   // Flag to avoid looping
-  Standard_Boolean myLoopFlag;
+  Standard_Boolean                 myLoopFlag;
   Handle(TCollection_HAsciiString) myShortName;
   Handle(TCollection_HAsciiString) myCategory;
-  Standard_Boolean myhasCheck;
-  Standard_Boolean myhasFillShared;
-  static Standard_Integer myIndex;
+  Standard_Boolean                 myhasCheck;
+  Standard_Boolean                 myhasFillShared;
+  static Standard_Integer          myIndex;
 };
 
 #endif // _Express_Item_HeaderFile

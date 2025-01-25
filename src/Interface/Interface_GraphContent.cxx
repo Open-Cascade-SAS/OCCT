@@ -11,67 +11,72 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Interface_Graph.hxx>
 #include <Interface_GraphContent.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Standard_Transient.hxx>
 
-Interface_GraphContent::Interface_GraphContent ()    {  }
+Interface_GraphContent::Interface_GraphContent() {}
 
-    Interface_GraphContent::Interface_GraphContent
-  (const Interface_Graph& agraph)
-      {  GetFromGraph(agraph);  }
-
-    Interface_GraphContent::Interface_GraphContent
-  (const Interface_Graph& agraph, const Standard_Integer stat)
-      {  GetFromGraph(agraph,stat);  }
-
-    Interface_GraphContent::Interface_GraphContent
-  (const Interface_Graph& agraph, const Handle(Standard_Transient)& ent)
+Interface_GraphContent::Interface_GraphContent(const Interface_Graph& agraph)
 {
-  Interface_EntityIterator list =  agraph.Shareds(ent);
-  Standard_Integer nb = list.NbEntities();
-  if (nb == 0) return;                             // Liste redefinie a VIDE
-  for( ; list.More(); list.Next()) {
+  GetFromGraph(agraph);
+}
+
+Interface_GraphContent::Interface_GraphContent(const Interface_Graph& agraph,
+                                               const Standard_Integer stat)
+{
+  GetFromGraph(agraph, stat);
+}
+
+Interface_GraphContent::Interface_GraphContent(const Interface_Graph&            agraph,
+                                               const Handle(Standard_Transient)& ent)
+{
+  Interface_EntityIterator list = agraph.Shareds(ent);
+  Standard_Integer         nb   = list.NbEntities();
+  if (nb == 0)
+    return; // Liste redefinie a VIDE
+  for (; list.More(); list.Next())
+  {
     const Handle(Standard_Transient)& curent = list.Value();
-    if (agraph.IsPresent(agraph.EntityNumber(curent))) 
-      GetOneItem (curent);
+    if (agraph.IsPresent(agraph.EntityNumber(curent)))
+      GetOneItem(curent);
   }
 }
 
-
-    void  Interface_GraphContent::GetFromGraph (const Interface_Graph& agraph)
+void Interface_GraphContent::GetFromGraph(const Interface_Graph& agraph)
 {
   Standard_Integer nb = agraph.Size();
-  for (Standard_Integer i = 1; i <= nb; i ++) {
-    if (agraph.IsPresent(i)) GetOneItem (agraph.Entity(i));
+  for (Standard_Integer i = 1; i <= nb; i++)
+  {
+    if (agraph.IsPresent(i))
+      GetOneItem(agraph.Entity(i));
   }
 }
 
-    void  Interface_GraphContent::GetFromGraph
-  (const Interface_Graph& agraph, const Standard_Integer stat)
+void Interface_GraphContent::GetFromGraph(const Interface_Graph& agraph,
+                                          const Standard_Integer stat)
 {
   Standard_Integer nb = agraph.Size();
-  for (Standard_Integer i = 1; i <= nb; i ++) {
+  for (Standard_Integer i = 1; i <= nb; i++)
+  {
     if (agraph.IsPresent(i) && agraph.Status(i) == stat)
-      GetOneItem (agraph.Entity(i));
+      GetOneItem(agraph.Entity(i));
   }
 }
 
-    Interface_EntityIterator Interface_GraphContent::Result ()
+Interface_EntityIterator Interface_GraphContent::Result()
 {
-  Interface_EntityIterator iter;    // On transvase ...
-  for (Begin(); More(); Next()) iter.GetOneItem(Value());
+  Interface_EntityIterator iter; // On transvase ...
+  for (Begin(); More(); Next())
+    iter.GetOneItem(Value());
   return iter;
 }
 
-
-    void Interface_GraphContent::Begin ()
+void Interface_GraphContent::Begin()
 {
   Evaluate();
   Interface_EntityIterator::Start();
 }
 
-    void Interface_GraphContent::Evaluate ()
-{  }    // par defaut, Evaluate ne fait rien
+void Interface_GraphContent::Evaluate() {} // par defaut, Evaluate ne fait rien

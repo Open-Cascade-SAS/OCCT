@@ -30,7 +30,10 @@ class TopoDS_TCompSolid : public TopoDS_TShape
 {
 public:
   //! Creates an empty TCompSolid.
-  TopoDS_TCompSolid() : TopoDS_TShape() {}
+  TopoDS_TCompSolid()
+      : TopoDS_TShape()
+  {
+  }
 
   //! returns COMPSOLID
   Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;

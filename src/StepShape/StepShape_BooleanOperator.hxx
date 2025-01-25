@@ -17,12 +17,11 @@
 #ifndef _StepShape_BooleanOperator_HeaderFile
 #define _StepShape_BooleanOperator_HeaderFile
 
-
 enum StepShape_BooleanOperator
 {
-StepShape_boDifference,
-StepShape_boIntersection,
-StepShape_boUnion
+  StepShape_boDifference,
+  StepShape_boIntersection,
+  StepShape_boUnion
 };
 
 #endif // _StepShape_BooleanOperator_HeaderFile

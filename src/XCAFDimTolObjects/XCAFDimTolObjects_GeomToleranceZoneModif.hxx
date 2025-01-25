@@ -19,10 +19,10 @@
 //! Defines types of zone
 enum XCAFDimTolObjects_GeomToleranceZoneModif
 {
-XCAFDimTolObjects_GeomToleranceZoneModif_None,
-XCAFDimTolObjects_GeomToleranceZoneModif_Projected,
-XCAFDimTolObjects_GeomToleranceZoneModif_Runout,
-XCAFDimTolObjects_GeomToleranceZoneModif_NonUniform
+  XCAFDimTolObjects_GeomToleranceZoneModif_None,
+  XCAFDimTolObjects_GeomToleranceZoneModif_Projected,
+  XCAFDimTolObjects_GeomToleranceZoneModif_Runout,
+  XCAFDimTolObjects_GeomToleranceZoneModif_NonUniform
 };
 
 #endif // _XCAFDimTolObjects_GeomToleranceZoneModif_HeaderFile

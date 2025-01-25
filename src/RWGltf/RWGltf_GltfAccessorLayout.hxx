@@ -32,33 +32,33 @@ enum RWGltf_GltfAccessorLayout
 };
 
 //! Parse GltfAccessorLayout from string.
-inline RWGltf_GltfAccessorLayout RWGltf_GltfParseAccessorType (const char* theType)
+inline RWGltf_GltfAccessorLayout RWGltf_GltfParseAccessorType(const char* theType)
 {
-  if (IsEqual ("SCALAR", theType))
+  if (IsEqual("SCALAR", theType))
   {
     return RWGltf_GltfAccessorLayout_Scalar;
   }
-  else if (IsEqual ("VEC2", theType))
+  else if (IsEqual("VEC2", theType))
   {
     return RWGltf_GltfAccessorLayout_Vec2;
   }
-  else if (IsEqual ("VEC3", theType))
+  else if (IsEqual("VEC3", theType))
   {
     return RWGltf_GltfAccessorLayout_Vec3;
   }
-  else if (IsEqual ("VEC4", theType))
+  else if (IsEqual("VEC4", theType))
   {
     return RWGltf_GltfAccessorLayout_Vec4;
   }
-  else if (IsEqual ("MAT2", theType))
+  else if (IsEqual("MAT2", theType))
   {
     return RWGltf_GltfAccessorLayout_Mat2;
   }
-  else if (IsEqual ("MAT3", theType))
+  else if (IsEqual("MAT3", theType))
   {
     return RWGltf_GltfAccessorLayout_Mat3;
   }
-  else if (IsEqual ("MAT4", theType))
+  else if (IsEqual("MAT4", theType))
   {
     return RWGltf_GltfAccessorLayout_Mat4;
   }

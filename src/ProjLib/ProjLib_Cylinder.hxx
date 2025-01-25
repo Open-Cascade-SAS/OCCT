@@ -28,64 +28,42 @@ class gp_Elips;
 class gp_Parab;
 class gp_Hypr;
 
-
 //! Projects elementary curves on a cylinder.
-class ProjLib_Cylinder  : public ProjLib_Projector
+class ProjLib_Cylinder : public ProjLib_Projector
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Undefined projection.
   Standard_EXPORT ProjLib_Cylinder();
-  
+
   //! Projection on the cylinder <Cyl>.
   Standard_EXPORT ProjLib_Cylinder(const gp_Cylinder& Cyl);
-  
+
   //! Projection of the line <L> on the cylinder <Cyl>.
   Standard_EXPORT ProjLib_Cylinder(const gp_Cylinder& Cyl, const gp_Lin& L);
-  
+
   //! Projection of the circle <C> on the cylinder <Cyl>.
   Standard_EXPORT ProjLib_Cylinder(const gp_Cylinder& Cyl, const gp_Circ& C);
-  
+
   //! Projection of the ellipse <E> on the cylinder <Cyl>.
   Standard_EXPORT ProjLib_Cylinder(const gp_Cylinder& Cyl, const gp_Elips& E);
-  
-  Standard_EXPORT void Init (const gp_Cylinder& Cyl);
-  
-  Standard_EXPORT virtual void Project (const gp_Lin& L) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Project (const gp_Circ& C) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Project (const gp_Elips& E) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Project (const gp_Parab& P) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Project (const gp_Hypr& H) Standard_OVERRIDE;
 
+  Standard_EXPORT void Init(const gp_Cylinder& Cyl);
 
+  Standard_EXPORT virtual void Project(const gp_Lin& L) Standard_OVERRIDE;
 
+  Standard_EXPORT virtual void Project(const gp_Circ& C) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void Project(const gp_Elips& E) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void Project(const gp_Parab& P) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void Project(const gp_Hypr& H) Standard_OVERRIDE;
 
 protected:
-
-
-
-
-
 private:
-
-
-
   gp_Cylinder myCylinder;
-
-
 };
-
-
-
-
-
-
 
 #endif // _ProjLib_Cylinder_HeaderFile

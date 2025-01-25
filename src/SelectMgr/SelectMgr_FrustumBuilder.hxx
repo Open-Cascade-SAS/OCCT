@@ -33,44 +33,42 @@ public:
   const Handle(Graphic3d_Camera)& Camera() const { return myCamera; }
 
   //! Stores current camera
-  Standard_EXPORT void SetCamera (const Handle(Graphic3d_Camera)& theCamera);
+  Standard_EXPORT void SetCamera(const Handle(Graphic3d_Camera)& theCamera);
 
   //! Stores current window width and height
-  Standard_EXPORT void SetWindowSize (const Standard_Integer theWidth,
-                                      const Standard_Integer theHeight);
+  Standard_EXPORT void SetWindowSize(const Standard_Integer theWidth,
+                                     const Standard_Integer theHeight);
 
   //! Stores current viewport coordinates
-  Standard_EXPORT void SetViewport (const Standard_Real theX,
-                                    const Standard_Real theY,
-                                    const Standard_Real theWidth,
-                                    const Standard_Real theHeight);
+  Standard_EXPORT void SetViewport(const Standard_Real theX,
+                                   const Standard_Real theY,
+                                   const Standard_Real theWidth,
+                                   const Standard_Real theHeight);
 
   Standard_EXPORT void InvalidateViewport();
 
-  Standard_EXPORT void WindowSize (Standard_Integer& theWidth,
-                                   Standard_Integer& theHeight) const;
+  Standard_EXPORT void WindowSize(Standard_Integer& theWidth, Standard_Integer& theHeight) const;
 
   //! Calculates signed distance between plane with equation
   //! theEq and point thePnt
-  Standard_EXPORT Standard_Real SignedPlanePntDist (const SelectMgr_Vec3& theEq,
-                                                    const SelectMgr_Vec3& thePnt) const;
+  Standard_EXPORT Standard_Real SignedPlanePntDist(const SelectMgr_Vec3& theEq,
+                                                   const SelectMgr_Vec3& thePnt) const;
 
   //! Projects 2d screen point onto view frustum plane:
   //! theZ = 0 - near plane,
   //! theZ = 1 - far plane
-  Standard_EXPORT gp_Pnt ProjectPntOnViewPlane (const Standard_Real& theX,
-                                                const Standard_Real& theY,
-                                                const Standard_Real& theZ) const;
+  Standard_EXPORT gp_Pnt ProjectPntOnViewPlane(const Standard_Real& theX,
+                                               const Standard_Real& theY,
+                                               const Standard_Real& theZ) const;
 
-  DEFINE_STANDARD_RTTIEXT(SelectMgr_FrustumBuilder,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_FrustumBuilder, Standard_Transient)
 
 private:
-
-  Handle(Graphic3d_Camera)          myCamera;
-  Standard_Integer                  myWidth;
-  Standard_Integer                  myHeight;
-  NCollection_Vec4<Standard_Real>   myViewport;
-  Standard_Boolean                  myIsViewportSet;
+  Handle(Graphic3d_Camera)        myCamera;
+  Standard_Integer                myWidth;
+  Standard_Integer                myHeight;
+  NCollection_Vec4<Standard_Real> myViewport;
+  Standard_Boolean                myIsViewportSet;
 };
 
 DEFINE_STANDARD_HANDLE(SelectMgr_FrustumBuilder, Standard_Transient)

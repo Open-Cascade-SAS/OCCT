@@ -40,4 +40,3 @@
 #define Extrema_FuncExtPC Extrema_PCFOfEPCOfELPCOfLocateExtPC2d
 #define Extrema_FuncExtPC_hxx <Extrema_PCFOfEPCOfELPCOfLocateExtPC2d.hxx>
 #include "../Extrema/Extrema_FuncExtPC.gxx"
-

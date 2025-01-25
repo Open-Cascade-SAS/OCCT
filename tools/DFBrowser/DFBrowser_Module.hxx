@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef DFBrowser_Module_H
 #define DFBrowser_Module_H
@@ -44,13 +44,12 @@ class QItemSelectionModel;
 //! - container of attribute panes into attribute name
 //! - acceptable attribute pane creators
 //! - external AIS interactive context
-//! It has general attribute pane creator, if the application is XDE, it uses XDE attribute pane creator.
-//! It fills container of created attribute pane.
+//! It has general attribute pane creator, if the application is XDE, it uses XDE attribute pane
+//! creator. It fills container of created attribute pane.
 class DFBrowser_Module : public QObject
 {
   Q_OBJECT
 public:
-
   //! Constructor
   Standard_EXPORT DFBrowser_Module();
 
@@ -58,15 +57,15 @@ public:
   virtual ~DFBrowser_Module() {}
 
   //! Creates tree model for OCAF application
-  Standard_EXPORT void CreateViewModel (void* theParent);
+  Standard_EXPORT void CreateViewModel(void* theParent);
 
   //! Fills tree model by the application and register pane creator
   //! \param theApplication a current application
-  Standard_EXPORT void SetApplication (const Handle(TDocStd_Application)& theApplication);
+  Standard_EXPORT void SetApplication(const Handle(TDocStd_Application)& theApplication);
 
   //! Fills viewer by the context
   //! \param theContext a current context where presentations should be visualized
-  Standard_EXPORT void SetExternalContext (const Handle(Standard_Transient)& theContext);
+  Standard_EXPORT void SetExternalContext(const Handle(Standard_Transient)& theContext);
 
   //! Returns external context or NULL
   const Handle(AIS_InteractiveContext)& GetExternalContext() const { return myExternalContext; }
@@ -76,7 +75,9 @@ public:
 
   //! Sets selection model of tree view
   void SetOCAFViewSelectionModel(QItemSelectionModel* theSelectionModel)
-  { myOCAFViewSelectionModel = theSelectionModel; }
+  {
+    myOCAFViewSelectionModel = theSelectionModel;
+  }
 
   //! Returns selection model of tree view
   QItemSelectionModel* GetOCAFViewSelectionModel() const { return myOCAFViewSelectionModel; }
@@ -94,59 +95,66 @@ public:
   //! Returns attribute placed on the parameter index in the OCAF tree view or NULL
   //! \param theIndex an index in OCAF tree view.
   //! \return an attribute
-  Standard_EXPORT Handle(TDF_Attribute) FindAttribute (const QModelIndex& theIndex);
+  Standard_EXPORT Handle(TDF_Attribute) FindAttribute(const QModelIndex& theIndex);
 
   //! Appends creator of a pane by attribute type
   //! \param thePaneCreator
-  void RegisterPaneCreator (DFBrowserPane_AttributePaneCreatorAPI* thePaneCreator)
-  { myPaneCreators.append (thePaneCreator); }
+  void RegisterPaneCreator(DFBrowserPane_AttributePaneCreatorAPI* thePaneCreator)
+  {
+    myPaneCreators.append(thePaneCreator);
+  }
 
   //! Returns an attribute pane for the attribute: create a new if it is not exist in
   //! internal map and the module processes this kind of attribute
   //! \param theAttributeGUID an attribute key
   //! \return attribute pane
-  Standard_EXPORT DFBrowserPane_AttributePaneAPI* GetAttributePane (Handle(TDF_Attribute) theAttribute);
+  Standard_EXPORT DFBrowserPane_AttributePaneAPI* GetAttributePane(
+    Handle(TDF_Attribute) theAttribute);
 
   //! Returns an attribute pane for the attribute GUID: create a new if it is not exist in
   //! internal map and the module processes this kind of attribute
   //! \param theAttributeGUID an attribute key
   //! \return attribute pane
-  Standard_EXPORT DFBrowserPane_AttributePaneAPI* GetAttributePane (Standard_CString theAttributeName);
+  Standard_EXPORT DFBrowserPane_AttributePaneAPI* GetAttributePane(
+    Standard_CString theAttributeName);
 
   //! Finds the attribute pane according to the give attribute and returns its information
   //! \param theAttribute a source attribute
   //! \param theModule to provide a map of attribute id to attribute pane
   //! \param theRole an attribute role in the tree view, includes: text, icon, color roles
   //! \param theColumnId a column index
-  Standard_EXPORT static QVariant GetAttributeInfo (Handle(TDF_Attribute) theAttribute, DFBrowser_Module* theModule,
-                                                    int theRole, int theColumnId);
+  Standard_EXPORT static QVariant GetAttributeInfo(Handle(TDF_Attribute) theAttribute,
+                                                   DFBrowser_Module*     theModule,
+                                                   int                   theRole,
+                                                   int                   theColumnId);
 
   //! Returns information for the given attribute type name
   //! \param theAttributeName a current attribute type name
   //! \param theModule a current module
-  //! \param theRole a role of information, used by tree model (e.g. DisplayRole, icon, background and so on)
-  //! \param theColumnId a tree model column
-  //! \return value, interpreted by tree model depending on the role
-  Standard_EXPORT static QVariant GetAttributeInfo (Standard_CString theAttributeName, DFBrowser_Module* theModule,
-                                                    int theRole, int theColumnId);
+  //! \param theRole a role of information, used by tree model (e.g. DisplayRole, icon, background
+  //! and so on) \param theColumnId a tree model column \return value, interpreted by tree model
+  //! depending on the role
+  Standard_EXPORT static QVariant GetAttributeInfo(Standard_CString  theAttributeName,
+                                                   DFBrowser_Module* theModule,
+                                                   int               theRole,
+                                                   int               theColumnId);
 signals:
 
   //! Emits signal about updating tree model
   void beforeUpdateTreeModel();
 
 protected:
-
   //! Tries to create attribute pane for the attribute name using registered attribute pane creators
   //! \param theAttributeName a source attribute
   //! \return attribute pane or NULL
-  DFBrowserPane_AttributePaneAPI* CreateAttributePane (Standard_CString theAttributeName);
+  DFBrowserPane_AttributePaneAPI* CreateAttributePane(Standard_CString theAttributeName);
 
 private:
-
-  DFBrowser_TreeModel* myOCAFViewModel; //!< the tree view abstract model
+  DFBrowser_TreeModel* myOCAFViewModel;          //!< the tree view abstract model
   QItemSelectionModel* myOCAFViewSelectionModel; //!< selection model over OCAF tree view
-  QMap<TCollection_AsciiString, DFBrowserPane_AttributePaneAPI*> myAttributeTypes; //!< container of created panes
-  QList<DFBrowserPane_AttributePaneCreatorAPI*> myPaneCreators; //!< pane creators
+  QMap<TCollection_AsciiString, DFBrowserPane_AttributePaneAPI*>
+                                                myAttributeTypes; //!< container of created panes
+  QList<DFBrowserPane_AttributePaneCreatorAPI*> myPaneCreators;   //!< pane creators
   Handle(AIS_InteractiveContext) myExternalContext; //!< context that comes in initialize parameters
 };
 

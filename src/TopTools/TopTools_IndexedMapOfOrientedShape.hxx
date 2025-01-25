@@ -22,5 +22,4 @@
 
 typedef NCollection_IndexedMap<TopoDS_Shape> TopTools_IndexedMapOfOrientedShape;
 
-
 #endif

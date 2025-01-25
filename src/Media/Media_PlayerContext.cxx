@@ -33,34 +33,32 @@
 #include <OSD.hxx>
 
 #ifdef HAVE_FFMPEG
-#include <Standard_WarningsDisable.hxx>
+  #include <Standard_WarningsDisable.hxx>
 extern "C"
 {
   #include <libavcodec/avcodec.h>
   #include <libavformat/avformat.h>
   #include <libavutil/imgutils.h>
 };
-#include <Standard_WarningsRestore.hxx>
+  #include <Standard_WarningsRestore.hxx>
 #endif
 
 IMPLEMENT_STANDARD_RTTIEXT(Media_PlayerContext, Standard_Transient)
 
-//================================================================
-// Function : Media_PlayerContext
-// Purpose  :
-//================================================================
-Media_PlayerContext::Media_PlayerContext (Media_IFrameQueue* theFrameQueue)
-: myFrameQueue (theFrameQueue),
-  myThread (doThreadWrapper),
-  myWakeEvent (false),
-  myNextEvent (false),
-  myDuration  (0.0),
-  myToForceRgb(true),
-  myToShutDown(false),
-  mySeekTo    (0.0),
-  myPlayEvent (Media_PlayerEvent_NONE)
+//=================================================================================================
+
+Media_PlayerContext::Media_PlayerContext(Media_IFrameQueue* theFrameQueue)
+    : myFrameQueue(theFrameQueue),
+      myThread(doThreadWrapper),
+      myWakeEvent(false),
+      myNextEvent(false),
+      myDuration(0.0),
+      myToForceRgb(true),
+      myToShutDown(false),
+      mySeekTo(0.0),
+      myPlayEvent(Media_PlayerEvent_NONE)
 {
-  myThread.Run (this);
+  myThread.Run(this);
 
 #if defined(_WIN32) && !defined(OCCT_UWP)
   // Adjust system timer
@@ -69,21 +67,19 @@ Media_PlayerContext::Media_PlayerContext (Media_IFrameQueue* theFrameQueue)
   // We force best available precision to make Sleep() more adequate
   // This affect whole system while running application!
   TIMECAPS aTimeCaps = {0, 0};
-  if (timeGetDevCaps (&aTimeCaps, sizeof(aTimeCaps)) == TIMERR_NOERROR)
+  if (timeGetDevCaps(&aTimeCaps, sizeof(aTimeCaps)) == TIMERR_NOERROR)
   {
-    timeBeginPeriod (aTimeCaps.wPeriodMin);
+    timeBeginPeriod(aTimeCaps.wPeriodMin);
   }
   else
   {
-    timeBeginPeriod (1);
+    timeBeginPeriod(1);
   }
 #endif
 }
 
-//================================================================
-// Function : ~Media_PlayerContext
-// Purpose  :
-//================================================================
+//=================================================================================================
+
 Media_PlayerContext::~Media_PlayerContext()
 {
   myToShutDown = Standard_True;
@@ -93,27 +89,25 @@ Media_PlayerContext::~Media_PlayerContext()
 #if defined(_WIN32) && !defined(OCCT_UWP)
   // restore timer adjustments
   TIMECAPS aTimeCaps = {0, 0};
-  if (timeGetDevCaps (&aTimeCaps, sizeof(aTimeCaps)) == TIMERR_NOERROR)
+  if (timeGetDevCaps(&aTimeCaps, sizeof(aTimeCaps)) == TIMERR_NOERROR)
   {
-    timeEndPeriod (aTimeCaps.wPeriodMin);
+    timeEndPeriod(aTimeCaps.wPeriodMin);
   }
   else
   {
-    timeEndPeriod (1);
+    timeEndPeriod(1);
   }
 #endif
 }
 
-//================================================================
-// Function : DumpFirstFrame
-// Purpose  :
-//================================================================
-Handle(Media_Frame) Media_PlayerContext::DumpFirstFrame (const TCollection_AsciiString& theSrcVideo,
-                                                         TCollection_AsciiString& theMediaInfo)
+//=================================================================================================
+
+Handle(Media_Frame) Media_PlayerContext::DumpFirstFrame(const TCollection_AsciiString& theSrcVideo,
+                                                        TCollection_AsciiString&       theMediaInfo)
 {
   theMediaInfo.Clear();
   Handle(Media_FormatContext) aFormatCtx = new Media_FormatContext();
-  if (!aFormatCtx->OpenInput (theSrcVideo))
+  if (!aFormatCtx->OpenInput(theSrcVideo))
   {
     return Handle(Media_Frame)();
   }
@@ -122,24 +116,24 @@ Handle(Media_Frame) Media_PlayerContext::DumpFirstFrame (const TCollection_Ascii
 #ifdef HAVE_FFMPEG
   for (unsigned int aStreamId = 0; aStreamId < aFormatCtx->NbSteams(); ++aStreamId)
   {
-    const AVStream& aStream = aFormatCtx->Stream (aStreamId);
+    const AVStream&   aStream    = aFormatCtx->Stream(aStreamId);
     const AVMediaType aCodecType = aStream.codecpar->codec_type;
     if (aCodecType == AVMEDIA_TYPE_VIDEO)
     {
       aVideoCtx = new Media_CodecContext();
-      if (!aVideoCtx->Init (aStream, aFormatCtx->PtsStartBase(), 1))
+      if (!aVideoCtx->Init(aStream, aFormatCtx->PtsStartBase(), 1))
       {
         return Handle(Media_Frame)();
       }
 
-      theMediaInfo = aFormatCtx->StreamInfo (aStreamId, aVideoCtx->Context());
+      theMediaInfo = aFormatCtx->StreamInfo(aStreamId, aVideoCtx->Context());
       break;
     }
   }
 #endif
   if (aVideoCtx.IsNull())
   {
-    Message::SendFail (TCollection_AsciiString ("FFmpeg: no video stream in '") + theSrcVideo + "'");
+    Message::SendFail(TCollection_AsciiString("FFmpeg: no video stream in '") + theSrcVideo + "'");
     return Handle(Media_Frame)();
   }
 
@@ -147,49 +141,46 @@ Handle(Media_Frame) Media_PlayerContext::DumpFirstFrame (const TCollection_Ascii
   Handle(Media_Frame)  aFrame  = new Media_Frame();
   for (;;)
   {
-    if (!aFormatCtx->ReadPacket (aPacket))
+    if (!aFormatCtx->ReadPacket(aPacket))
     {
-      Message::SendFail (TCollection_AsciiString ("FFmpeg: unable to read from '") + theSrcVideo + "'");
+      Message::SendFail(TCollection_AsciiString("FFmpeg: unable to read from '") + theSrcVideo
+                        + "'");
       return Handle(Media_Frame)();
     }
-    if (!aVideoCtx->CanProcessPacket (aPacket))
+    if (!aVideoCtx->CanProcessPacket(aPacket))
     {
       continue;
     }
 
-    if (aVideoCtx->SendPacket (aPacket)
-     && aVideoCtx->ReceiveFrame (aFrame))
+    if (aVideoCtx->SendPacket(aPacket) && aVideoCtx->ReceiveFrame(aFrame))
     {
       break;
     }
   }
-  if (aFrame->IsEmpty()
-   || aFrame->SizeX() < 1
-   || aFrame->SizeY() < 1)
+  if (aFrame->IsEmpty() || aFrame->SizeX() < 1 || aFrame->SizeY() < 1)
   {
-    Message::SendFail (TCollection_AsciiString ("FFmpeg: unable to decode first video frame from '") + theSrcVideo + "'");
+    Message::SendFail(TCollection_AsciiString("FFmpeg: unable to decode first video frame from '")
+                      + theSrcVideo + "'");
     return Handle(Media_Frame)();
   }
   return aFrame;
 }
 
-//================================================================
-// Function : DumpFirstFrame
-// Purpose  :
-//================================================================
-bool Media_PlayerContext::DumpFirstFrame (const TCollection_AsciiString& theSrcVideo,
-                                          const TCollection_AsciiString& theOutImage,
-                                          TCollection_AsciiString& theMediaInfo,
-                                          int theMaxSize)
+//=================================================================================================
+
+bool Media_PlayerContext::DumpFirstFrame(const TCollection_AsciiString& theSrcVideo,
+                                         const TCollection_AsciiString& theOutImage,
+                                         TCollection_AsciiString&       theMediaInfo,
+                                         int                            theMaxSize)
 {
-  Handle(Media_Frame) aFrame = DumpFirstFrame (theSrcVideo, theMediaInfo);
+  Handle(Media_Frame) aFrame = DumpFirstFrame(theSrcVideo, theMediaInfo);
   if (aFrame.IsNull())
   {
     return false;
   }
 
-  Handle(Image_AlienPixMap) aPixMap = new Image_AlienPixMap();
-  int aResSizeX = aFrame->SizeX(), aResSizeY = aFrame->SizeY();
+  Handle(Image_AlienPixMap) aPixMap   = new Image_AlienPixMap();
+  int                       aResSizeX = aFrame->SizeX(), aResSizeY = aFrame->SizeY();
   if (theMaxSize > 0)
   {
     if (aResSizeX > aResSizeY)
@@ -203,39 +194,38 @@ bool Media_PlayerContext::DumpFirstFrame (const TCollection_AsciiString& theSrcV
       aResSizeX = int((double(aFrame->SizeX()) / double(aFrame->SizeY())) * double(aResSizeY));
     }
   }
-  if (!aPixMap->InitZero (Image_Format_RGB, aResSizeX, aResSizeY))
+  if (!aPixMap->InitZero(Image_Format_RGB, aResSizeX, aResSizeY))
   {
-    Message::SendFail ("FFmpeg: Failed allocation of RGB frame (out of memory)");
+    Message::SendFail("FFmpeg: Failed allocation of RGB frame (out of memory)");
     return false;
   }
 
-  //Image_Format aFormat = aFrame->FormatFFmpeg2Occt (aFrame->Format());
-  //if (aFormat == Image_Format_UNKNOWN || theMaxSize > 0)
+  // Image_Format aFormat = aFrame->FormatFFmpeg2Occt (aFrame->Format());
+  // if (aFormat == Image_Format_UNKNOWN || theMaxSize > 0)
   {
     Handle(Media_Frame) anRgbFrame = new Media_Frame();
-    anRgbFrame->InitWrapper (aPixMap);
+    anRgbFrame->InitWrapper(aPixMap);
 
     Media_Scaler aScaler;
-    if (!aScaler.Convert (aFrame, anRgbFrame))
+    if (!aScaler.Convert(aFrame, anRgbFrame))
     {
-      Message::SendFail (TCollection_AsciiString ("FFmpeg: unable to convert frame into RGB '") + theSrcVideo + "'");
+      Message::SendFail(TCollection_AsciiString("FFmpeg: unable to convert frame into RGB '")
+                        + theSrcVideo + "'");
       return false;
     }
   }
 
-  aPixMap->SetTopDown (true);
-  return aPixMap->Save (theOutImage);
+  aPixMap->SetTopDown(true);
+  return aPixMap->Save(theOutImage);
 }
 
-//================================================================
-// Function : SetInput
-// Purpose  :
-//================================================================
-void Media_PlayerContext::SetInput (const TCollection_AsciiString& theInputPath,
-                                    Standard_Boolean theToWait)
+//=================================================================================================
+
+void Media_PlayerContext::SetInput(const TCollection_AsciiString& theInputPath,
+                                   Standard_Boolean               theToWait)
 {
   {
-    Standard_Mutex::Sentry aLock (myMutex);
+    Standard_Mutex::Sentry aLock(myMutex);
     if (theToWait)
     {
       myNextEvent.Reset();
@@ -250,73 +240,63 @@ void Media_PlayerContext::SetInput (const TCollection_AsciiString& theInputPath,
   }
 }
 
-//================================================================
-// Function : PlaybackState
-// Purpose  :
-//================================================================
-void Media_PlayerContext::PlaybackState (Standard_Boolean& theIsPaused,
-                                         Standard_Real& theProgress,
-                                         Standard_Real& theDuration)
+//=================================================================================================
+
+void Media_PlayerContext::PlaybackState(Standard_Boolean& theIsPaused,
+                                        Standard_Real&    theProgress,
+                                        Standard_Real&    theDuration)
 {
-  Standard_Mutex::Sentry aLock (myMutex);
+  Standard_Mutex::Sentry aLock(myMutex);
   theIsPaused = !myTimer.IsStarted();
-  theProgress =  myTimer.ElapsedTime();
-  theDuration =  myDuration;
+  theProgress = myTimer.ElapsedTime();
+  theDuration = myDuration;
 }
 
-//================================================================
-// Function : pushPlayEvent
-// Purpose  :
-//================================================================
-void Media_PlayerContext::PlayPause (Standard_Boolean& theIsPaused,
-                                     Standard_Real& theProgress,
-                                     Standard_Real& theDuration)
+//=================================================================================================
+
+void Media_PlayerContext::PlayPause(Standard_Boolean& theIsPaused,
+                                    Standard_Real&    theProgress,
+                                    Standard_Real&    theDuration)
 {
-  Standard_Mutex::Sentry aLock (myMutex);
+  Standard_Mutex::Sentry aLock(myMutex);
   theProgress = myTimer.ElapsedTime();
   theDuration = myDuration;
   if (myTimer.IsStarted())
   {
-    pushPlayEvent (Media_PlayerEvent_PAUSE);
+    pushPlayEvent(Media_PlayerEvent_PAUSE);
     theIsPaused = true;
   }
   else
   {
-    pushPlayEvent (Media_PlayerEvent_RESUME);
+    pushPlayEvent(Media_PlayerEvent_RESUME);
     theIsPaused = false;
   }
 }
 
-//================================================================
-// Function : Seek
-// Purpose  :
-//================================================================
-void Media_PlayerContext::Seek (Standard_Real thePosSec)
+//=================================================================================================
+
+void Media_PlayerContext::Seek(Standard_Real thePosSec)
 {
-  Standard_Mutex::Sentry aLock (myMutex);
+  Standard_Mutex::Sentry aLock(myMutex);
   mySeekTo = thePosSec;
-  pushPlayEvent (Media_PlayerEvent_SEEK);
+  pushPlayEvent(Media_PlayerEvent_SEEK);
 }
 
-//================================================================
-// Function : pushPlayEvent
-// Purpose  :
-//================================================================
-void Media_PlayerContext::pushPlayEvent (Media_PlayerEvent thePlayEvent)
+//=================================================================================================
+
+void Media_PlayerContext::pushPlayEvent(Media_PlayerEvent thePlayEvent)
 {
-  Standard_Mutex::Sentry aLock (myMutex);
+  Standard_Mutex::Sentry aLock(myMutex);
   myPlayEvent = thePlayEvent;
   myWakeEvent.Set();
 }
 
-//================================================================
-// Function : popPlayEvent
-// Purpose  :
-//================================================================
-bool Media_PlayerContext::popPlayEvent (Media_PlayerEvent& thePlayEvent,
-                                        const Handle(Media_FormatContext)& theFormatCtx,
-                                        const Handle(Media_CodecContext)& theVideoCtx,
-                                        const Handle(Media_Frame)& theFrame)
+//=================================================================================================
+
+bool Media_PlayerContext::popPlayEvent(Media_PlayerEvent&                 thePlayEvent,
+                                       const Handle(Media_FormatContext)& theFormatCtx,
+                                       const Handle(Media_CodecContext)&  theVideoCtx,
+                                       const Handle(Media_Frame)&         theFrame)
 {
   if (myPlayEvent == Media_PlayerEvent_NONE)
   {
@@ -324,7 +304,7 @@ bool Media_PlayerContext::popPlayEvent (Media_PlayerEvent& thePlayEvent,
     return false;
   }
 
-  Standard_Mutex::Sentry aLock (myMutex);
+  Standard_Mutex::Sentry aLock(myMutex);
   thePlayEvent = myPlayEvent;
   if (thePlayEvent == Media_PlayerEvent_PAUSE)
   {
@@ -336,19 +316,18 @@ bool Media_PlayerContext::popPlayEvent (Media_PlayerEvent& thePlayEvent,
   }
   else if (thePlayEvent == Media_PlayerEvent_SEEK)
   {
-    if (!theFormatCtx.IsNull()
-     && !theVideoCtx.IsNull())
+    if (!theFormatCtx.IsNull() && !theVideoCtx.IsNull())
     {
-      if (!theFormatCtx->SeekStream (theVideoCtx->StreamIndex(), mySeekTo, false))
+      if (!theFormatCtx->SeekStream(theVideoCtx->StreamIndex(), mySeekTo, false))
       {
-        theFormatCtx->Seek (mySeekTo, false);
+        theFormatCtx->Seek(mySeekTo, false);
       }
       theVideoCtx->Flush();
       if (!theFrame.IsNull())
       {
         theFrame->Unref();
       }
-      myTimer.Seek (mySeekTo);
+      myTimer.Seek(mySeekTo);
     }
   }
 
@@ -357,51 +336,46 @@ bool Media_PlayerContext::popPlayEvent (Media_PlayerEvent& thePlayEvent,
 }
 
 //! Returns nearest (greater or equal) aligned number.
-static int getAligned (size_t theNumber,
-                       size_t theAlignment = 32)
+static int getAligned(size_t theNumber, size_t theAlignment = 32)
 {
   return int(theNumber + theAlignment - 1 - (theNumber - 1) % theAlignment);
 }
 
-//================================================================
-// Function : receiveFrame
-// Purpose  :
-//================================================================
-bool Media_PlayerContext::receiveFrame (const Handle(Media_Frame)& theFrame,
-                                        const Handle(Media_CodecContext)& theVideoCtx)
+//=================================================================================================
+
+bool Media_PlayerContext::receiveFrame(const Handle(Media_Frame)&        theFrame,
+                                       const Handle(Media_CodecContext)& theVideoCtx)
 {
   if (myFrameTmp.IsNull())
   {
     myFrameTmp = new Media_Frame();
   }
-  if (!theVideoCtx->ReceiveFrame (myFrameTmp))
+  if (!theVideoCtx->ReceiveFrame(myFrameTmp))
   {
     return false;
   }
 
-  theFrame->SetPts (myFrameTmp->Pts());
-  theFrame->SetPixelAspectRatio (myFrameTmp->PixelAspectRatio());
+  theFrame->SetPts(myFrameTmp->Pts());
+  theFrame->SetPixelAspectRatio(myFrameTmp->PixelAspectRatio());
 
-  Image_Format anOcctFmt = Media_Frame::FormatFFmpeg2Occt (myFrameTmp->Format());
+  Image_Format anOcctFmt = Media_Frame::FormatFFmpeg2Occt(myFrameTmp->Format());
   if (anOcctFmt != Image_Format_UNKNOWN)
   {
-    Media_Frame::Swap (theFrame, myFrameTmp);
+    Media_Frame::Swap(theFrame, myFrameTmp);
     return true;
   }
 #ifdef HAVE_FFMPEG
   else if (!myToForceRgb
-        && (myFrameTmp->Format() == AV_PIX_FMT_YUV420P
-         || myFrameTmp->Format() == AV_PIX_FMT_YUVJ420P))
+           && (myFrameTmp->Format() == AV_PIX_FMT_YUV420P
+               || myFrameTmp->Format() == AV_PIX_FMT_YUVJ420P))
   {
-    Media_Frame::Swap (theFrame, myFrameTmp);
+    Media_Frame::Swap(theFrame, myFrameTmp);
     return true;
   }
 #endif
 
   theFrame->Unref();
-  if (myFrameTmp->IsEmpty()
-   || myFrameTmp->Size().x() < 1
-   || myFrameTmp->Size().y() < 1)
+  if (myFrameTmp->IsEmpty() || myFrameTmp->Size().x() < 1 || myFrameTmp->Size().y() < 1)
   {
     theFrame->Unref();
     return false;
@@ -409,7 +383,7 @@ bool Media_PlayerContext::receiveFrame (const Handle(Media_Frame)& theFrame,
 
   const Graphic3d_Vec2i aSize   = myFrameTmp->Size();
   const Graphic3d_Vec2i aSizeUV = myFrameTmp->Size() / 2;
-  AVFrame* aFrame = theFrame->ChangeFrame();
+  AVFrame*              aFrame  = theFrame->ChangeFrame();
   if (myToForceRgb)
   {
     if (myBufferPools[0].IsNull())
@@ -417,31 +391,31 @@ bool Media_PlayerContext::receiveFrame (const Handle(Media_Frame)& theFrame,
       myBufferPools[0] = new Media_BufferPool();
     }
 
-    const int aLineSize = getAligned (aSize.x() * 3);
+    const int aLineSize = getAligned(aSize.x() * 3);
     const int aBufSize  = aLineSize * aSize.y();
-    if (!myBufferPools[0]->Init (aBufSize))
+    if (!myBufferPools[0]->Init(aBufSize))
     {
-      Message::SendFail ("FFmpeg: unable to allocate RGB24 frame buffer");
+      Message::SendFail("FFmpeg: unable to allocate RGB24 frame buffer");
       return false;
     }
 
-  #ifdef HAVE_FFMPEG
+#ifdef HAVE_FFMPEG
     aFrame->buf[0] = myBufferPools[0]->GetBuffer();
     if (aFrame->buf[0] == NULL)
     {
       theFrame->Unref();
-      Message::SendFail ("FFmpeg: unable to allocate RGB24 frame buffer");
+      Message::SendFail("FFmpeg: unable to allocate RGB24 frame buffer");
       return false;
     }
 
-    aFrame->format = AV_PIX_FMT_RGB24;
-    aFrame->width  = aSize.x();
-    aFrame->height = aSize.y();
+    aFrame->format      = AV_PIX_FMT_RGB24;
+    aFrame->width       = aSize.x();
+    aFrame->height      = aSize.y();
     aFrame->linesize[0] = aLineSize;
-    aFrame->data[0] = aFrame->buf[0]->data;
-  #else
-    (void )aFrame;
-  #endif
+    aFrame->data[0]     = aFrame->buf[0]->data;
+#else
+    (void)aFrame;
+#endif
   }
   else
   {
@@ -453,48 +427,45 @@ bool Media_PlayerContext::receiveFrame (const Handle(Media_Frame)& theFrame,
       }
     }
 
-    const int aLineSize   = getAligned (aSize.x());
-    const int aLineSizeUV = getAligned (aSizeUV.x());
-    const int aBufSize    = aLineSize   * aSize.y();
+    const int aLineSize   = getAligned(aSize.x());
+    const int aLineSizeUV = getAligned(aSizeUV.x());
+    const int aBufSize    = aLineSize * aSize.y();
     const int aBufSizeUV  = aLineSizeUV * aSizeUV.y();
-    if (!myBufferPools[0]->Init (aBufSize)
-     || !myBufferPools[1]->Init (aBufSizeUV)
-     || !myBufferPools[2]->Init (aBufSizeUV))
+    if (!myBufferPools[0]->Init(aBufSize) || !myBufferPools[1]->Init(aBufSizeUV)
+        || !myBufferPools[2]->Init(aBufSizeUV))
     {
-      Message::SendFail ("FFmpeg: unable to allocate YUV420P frame buffers");
+      Message::SendFail("FFmpeg: unable to allocate YUV420P frame buffers");
       return false;
     }
 
-  #ifdef HAVE_FFMPEG
+#ifdef HAVE_FFMPEG
     aFrame->buf[0] = myBufferPools[0]->GetBuffer();
     aFrame->buf[1] = myBufferPools[1]->GetBuffer();
     aFrame->buf[2] = myBufferPools[2]->GetBuffer();
-    if (aFrame->buf[0] == NULL
-     || aFrame->buf[1] == NULL
-     || aFrame->buf[2] == NULL)
+    if (aFrame->buf[0] == NULL || aFrame->buf[1] == NULL || aFrame->buf[2] == NULL)
     {
       theFrame->Unref();
-      Message::SendFail ("FFmpeg: unable to allocate YUV420P frame buffers");
+      Message::SendFail("FFmpeg: unable to allocate YUV420P frame buffers");
       return false;
     }
 
-    aFrame->format = AV_PIX_FMT_YUV420P;
-    aFrame->width  = aSize.x();
-    aFrame->height = aSize.y();
+    aFrame->format      = AV_PIX_FMT_YUV420P;
+    aFrame->width       = aSize.x();
+    aFrame->height      = aSize.y();
     aFrame->linesize[0] = aLineSize;
     aFrame->linesize[1] = aLineSizeUV;
     aFrame->linesize[2] = aLineSizeUV;
-    aFrame->data[0] = aFrame->buf[0]->data;
-    aFrame->data[1] = aFrame->buf[1]->data;
-    aFrame->data[2] = aFrame->buf[2]->data;
-  #endif
+    aFrame->data[0]     = aFrame->buf[0]->data;
+    aFrame->data[1]     = aFrame->buf[1]->data;
+    aFrame->data[2]     = aFrame->buf[2]->data;
+#endif
   }
 
   if (myScaler.IsNull())
   {
     myScaler = new Media_Scaler();
   }
-  if (!myScaler->Convert (myFrameTmp, theFrame))
+  if (!myScaler->Convert(myFrameTmp, theFrame))
   {
     return false;
   }
@@ -502,19 +473,17 @@ bool Media_PlayerContext::receiveFrame (const Handle(Media_Frame)& theFrame,
   return true;
 }
 
-//================================================================
-// Function : doThreadLoop
-// Purpose  :
-//================================================================
+//=================================================================================================
+
 void Media_PlayerContext::doThreadLoop()
 {
   // always set OCCT signal handler to catch signals if any;
   // this is safe (for thread local handler) since the thread
   // is owned by this class
-  OSD::SetThreadLocalSignal (OSD_SignalMode_Set, false);
+  OSD::SetThreadLocalSignal(OSD_SignalMode_Set, false);
 
   Handle(Media_Frame) aFrame;
-  bool wasSeeked = false;
+  bool                wasSeeked = false;
   for (;;)
   {
     myWakeEvent.Wait();
@@ -526,8 +495,8 @@ void Media_PlayerContext::doThreadLoop()
 
     TCollection_AsciiString anInput;
     {
-      Standard_Mutex::Sentry aLock (myMutex);
-      std::swap (anInput, myInputPath);
+      Standard_Mutex::Sentry aLock(myMutex);
+      std::swap(anInput, myInputPath);
       if (myPlayEvent == Media_PlayerEvent_NEXT)
       {
         myPlayEvent = Media_PlayerEvent_NONE;
@@ -540,21 +509,21 @@ void Media_PlayerContext::doThreadLoop()
     }
 
     Handle(Media_FormatContext) aFormatCtx = new Media_FormatContext();
-    if (!aFormatCtx->OpenInput (anInput))
+    if (!aFormatCtx->OpenInput(anInput))
     {
       continue;
     }
 
     Handle(Media_CodecContext) aVideoCtx;
-  #ifdef HAVE_FFMPEG
+#ifdef HAVE_FFMPEG
     for (unsigned int aStreamId = 0; aStreamId < aFormatCtx->NbSteams(); ++aStreamId)
     {
-      const AVStream& aStream = aFormatCtx->Stream (aStreamId);
+      const AVStream&   aStream    = aFormatCtx->Stream(aStreamId);
       const AVMediaType aCodecType = aStream.codecpar->codec_type;
       if (aCodecType == AVMEDIA_TYPE_VIDEO)
       {
         aVideoCtx = new Media_CodecContext();
-        if (!aVideoCtx->Init (aStream, aFormatCtx->PtsStartBase(), 1))
+        if (!aVideoCtx->Init(aStream, aFormatCtx->PtsStartBase(), 1))
         {
           aVideoCtx.Nullify();
         }
@@ -564,17 +533,17 @@ void Media_PlayerContext::doThreadLoop()
         }
       }
     }
-  #endif
+#endif
     if (aVideoCtx.IsNull())
     {
-      Message::SendFail (TCollection_AsciiString ("FFmpeg: no video stream in '") + anInput + "'");
+      Message::SendFail(TCollection_AsciiString("FFmpeg: no video stream in '") + anInput + "'");
       continue;
     }
 
-    Handle(Media_Packet) aPacket = new Media_Packet();
-    Media_PlayerEvent aPlayEvent = Media_PlayerEvent_NONE;
+    Handle(Media_Packet) aPacket    = new Media_Packet();
+    Media_PlayerEvent    aPlayEvent = Media_PlayerEvent_NONE;
     {
-      Standard_Mutex::Sentry aLock (myMutex);
+      Standard_Mutex::Sentry aLock(myMutex);
       myTimer.Stop();
       myTimer.Start();
       myDuration = aFormatCtx->Duration();
@@ -590,12 +559,12 @@ void Media_PlayerContext::doThreadLoop()
       {
         return;
       }
-      else if (!aFormatCtx->ReadPacket (aPacket))
+      else if (!aFormatCtx->ReadPacket(aPacket))
       {
         break;
       }
 
-      popPlayEvent (aPlayEvent, aFormatCtx, aVideoCtx, aFrame);
+      popPlayEvent(aPlayEvent, aFormatCtx, aVideoCtx, aFrame);
       if (aPlayEvent == Media_PlayerEvent_NEXT)
       {
         break;
@@ -606,10 +575,10 @@ void Media_PlayerContext::doThreadLoop()
       }
 
       bool isAccepted = false;
-      if (aVideoCtx->CanProcessPacket (aPacket))
+      if (aVideoCtx->CanProcessPacket(aPacket))
       {
         isAccepted = true;
-        aVideoCtx->SendPacket (aPacket);
+        aVideoCtx->SendPacket(aPacket);
       }
       aPacket->Unref();
       if (!isAccepted)
@@ -622,7 +591,7 @@ void Media_PlayerContext::doThreadLoop()
         {
           return;
         }
-        else if (popPlayEvent (aPlayEvent, aFormatCtx, aVideoCtx, aFrame))
+        else if (popPlayEvent(aPlayEvent, aFormatCtx, aVideoCtx, aFrame))
         {
           if (aPlayEvent == Media_PlayerEvent_NEXT)
           {
@@ -639,29 +608,26 @@ void Media_PlayerContext::doThreadLoop()
           aFrame = myFrameQueue->LockFrame();
           if (aFrame.IsNull())
           {
-            OSD::MilliSecSleep (1);
+            OSD::MilliSecSleep(1);
             continue;
           }
           aFrame->Unref();
         }
-        if (aFrame->IsEmpty()
-        && !receiveFrame (aFrame, aVideoCtx))
+        if (aFrame->IsEmpty() && !receiveFrame(aFrame, aVideoCtx))
         {
           break;
         }
 
         const double aTime = myTimer.ElapsedTime() - anUploadDelaySec;
-        if (wasSeeked
-         || (aFrame->Pts() <= aTime
-          && myTimer.IsStarted()))
+        if (wasSeeked || (aFrame->Pts() <= aTime && myTimer.IsStarted()))
         {
           wasSeeked = false;
-          myFrameQueue->ReleaseFrame (aFrame);
+          myFrameQueue->ReleaseFrame(aFrame);
           aFrame.Nullify();
           break;
         }
 
-        OSD::MilliSecSleep (1);
+        OSD::MilliSecSleep(1);
       }
       if (aPlayEvent == Media_PlayerEvent_NEXT)
       {

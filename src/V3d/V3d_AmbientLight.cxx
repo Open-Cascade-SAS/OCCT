@@ -23,8 +23,8 @@ IMPLEMENT_STANDARD_RTTIEXT(V3d_AmbientLight, Graphic3d_CLight)
 // function : V3d_AmbientLight
 // purpose  :
 // =======================================================================
-V3d_AmbientLight::V3d_AmbientLight (const Quantity_Color& theColor)
-: Graphic3d_CLight (Graphic3d_TypeOfLightSource_Ambient)
+V3d_AmbientLight::V3d_AmbientLight(const Quantity_Color& theColor)
+    : Graphic3d_CLight(Graphic3d_TypeOfLightSource_Ambient)
 {
-  SetColor (theColor);
+  SetColor(theColor);
 }

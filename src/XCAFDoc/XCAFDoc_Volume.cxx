@@ -22,109 +22,83 @@
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 
-IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_Volume,TDataStd_Real,"xcaf","Volume")
+IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_Volume, TDataStd_Real, "xcaf", "Volume")
 
-//=======================================================================
-//function : Constructor
-//purpose  : 
-//=======================================================================
-XCAFDoc_Volume::XCAFDoc_Volume()
+//=================================================================================================
+
+XCAFDoc_Volume::XCAFDoc_Volume() {}
+
+//=================================================================================================
+
+const Standard_GUID& XCAFDoc_Volume::GetID()
 {
-}
-
-//=======================================================================
-//function : GetID
-//purpose  : 
-//=======================================================================
-
-const Standard_GUID& XCAFDoc_Volume::GetID() 
-{
-  static Standard_GUID VolumeID ("efd212f1-6dfd-11d4-b9c8-0060b0ee281b");
+  static Standard_GUID VolumeID("efd212f1-6dfd-11d4-b9c8-0060b0ee281b");
   return VolumeID;
 }
 
-//=======================================================================
-//function : ID
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 const Standard_GUID& XCAFDoc_Volume::ID() const
 {
   return GetID();
 }
 
-//=======================================================================
-//function : Set
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(XCAFDoc_Volume) XCAFDoc_Volume::Set (const TDF_Label& L,const Standard_Real V) 
+Handle(XCAFDoc_Volume) XCAFDoc_Volume::Set(const TDF_Label& L, const Standard_Real V)
 {
   Handle(XCAFDoc_Volume) A;
-  if (!L.FindAttribute(XCAFDoc_Volume::GetID(), A)) {
+  if (!L.FindAttribute(XCAFDoc_Volume::GetID(), A))
+  {
     A = new XCAFDoc_Volume;
     L.AddAttribute(A);
   }
-  A->Set(V); 
+  A->Set(V);
   return A;
 }
 
-//=======================================================================
-//function : Set
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void XCAFDoc_Volume::Set (const Standard_Real V) 
+void XCAFDoc_Volume::Set(const Standard_Real V)
 {
   TDataStd_Real::Set(V);
 }
 
-//=======================================================================
-//function : Get
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Standard_Real XCAFDoc_Volume::Get() const
 {
   return TDataStd_Real::Get();
 }
 
-//=======================================================================
-//function : Get
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean XCAFDoc_Volume::Get(const TDF_Label& label,Standard_Real& vol) 
+Standard_Boolean XCAFDoc_Volume::Get(const TDF_Label& label, Standard_Real& vol)
 {
   Handle(XCAFDoc_Volume) aVolume;
   if (!label.FindAttribute(XCAFDoc_Volume::GetID(), aVolume))
     return Standard_False;
-  
+
   vol = aVolume->Get();
   return Standard_True;
 }
 
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_OStream& XCAFDoc_Volume::Dump (Standard_OStream& anOS) const
-{  
-  anOS << "Volume "; 
+Standard_OStream& XCAFDoc_Volume::Dump(Standard_OStream& anOS) const
+{
+  anOS << "Volume ";
   anOS << Get();
   return anOS;
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void XCAFDoc_Volume::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+//=================================================================================================
+
+void XCAFDoc_Volume::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDF_Attribute)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValue)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myValue)
 }

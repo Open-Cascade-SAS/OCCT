@@ -20,7 +20,7 @@
 #include <StepAP214_AutoDesignPresentedItemSelect.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<StepAP214_AutoDesignPresentedItemSelect> StepAP214_Array1OfAutoDesignPresentedItemSelect;
-
+typedef NCollection_Array1<StepAP214_AutoDesignPresentedItemSelect>
+  StepAP214_Array1OfAutoDesignPresentedItemSelect;
 
 #endif

@@ -1,4 +1,4 @@
-// Created on : Fri May 08 19:02:07 2020 
+// Created on : Fri May 08 19:02:07 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -24,35 +24,37 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepKinematics_KinematicJoint.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_LinearFlexibleAndPinionPair, StepKinematics_LowOrderKinematicPairWithMotionCoupling)
+DEFINE_STANDARD_HANDLE(StepKinematics_LinearFlexibleAndPinionPair,
+                       StepKinematics_LowOrderKinematicPairWithMotionCoupling)
 
 //! Representation of STEP entity LinearFlexibleAndPinionPair
-class StepKinematics_LinearFlexibleAndPinionPair : public StepKinematics_LowOrderKinematicPairWithMotionCoupling
+class StepKinematics_LinearFlexibleAndPinionPair
+    : public StepKinematics_LowOrderKinematicPairWithMotionCoupling
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_LinearFlexibleAndPinionPair();
 
   //! Initialize all fields (own and inherited)
- Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                           const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Name,
-                           const Standard_Boolean hasItemDefinedTransformation_Description,
-                           const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Description,
-                           const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem1,
-                           const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem2,
-                           const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-                           const Standard_Real thePinionRadius);
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
+    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
+    const Standard_Boolean                       hasItemDefinedTransformation_Description,
+    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
+    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
+    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
+    const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
+    const Standard_Real                          thePinionRadius);
 
   //! Returns field PinionRadius
   Standard_EXPORT Standard_Real PinionRadius() const;
   //! Sets field PinionRadius
-  Standard_EXPORT void SetPinionRadius (const Standard_Real thePinionRadius);
+  Standard_EXPORT void SetPinionRadius(const Standard_Real thePinionRadius);
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_LinearFlexibleAndPinionPair, StepKinematics_LowOrderKinematicPairWithMotionCoupling)
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_LinearFlexibleAndPinionPair,
+                          StepKinematics_LowOrderKinematicPairWithMotionCoupling)
 
 private:
   Standard_Real myPinionRadius;
-
 };
 #endif // _StepKinematics_LinearFlexibleAndPinionPair_HeaderFile_

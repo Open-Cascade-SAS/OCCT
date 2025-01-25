@@ -22,32 +22,16 @@
 
 #include <Draw_Interpretor.hxx>
 
-
 //! Contains commands to work with GDTs
-class XDEDRAW_GDTs 
+class XDEDRAW_GDTs
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT static void InitCommands (Draw_Interpretor& theCommands);
-
-
-
+  Standard_EXPORT static void InitCommands(Draw_Interpretor& theCommands);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
 
 #endif // _XDEDRAW_GDTs_HeaderFile

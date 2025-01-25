@@ -38,61 +38,54 @@
 #endif
 
 //! Energy Criterium to minimize in MinimalVariationCurve.
-class FairCurve_EnergyOfMVC  : public FairCurve_Energy
+class FairCurve_EnergyOfMVC : public FairCurve_Energy
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Angles correspond to the Ox axis
-  Standard_EXPORT FairCurve_EnergyOfMVC(const Standard_Integer BSplOrder, const Handle(TColStd_HArray1OfReal)& FlatKnots, const Handle(TColgp_HArray1OfPnt2d)& Poles, const Standard_Integer ContrOrder1, const Standard_Integer ContrOrder2, const FairCurve_BattenLaw& Law, const Standard_Real PhysicalRatio, const Standard_Real LengthSliding, const Standard_Boolean FreeSliding = Standard_True, const Standard_Real Angle1 = 0, const Standard_Real Angle2 = 0, const Standard_Real Curvature1 = 0, const Standard_Real Curvature2 = 0);
-  
+  Standard_EXPORT FairCurve_EnergyOfMVC(const Standard_Integer               BSplOrder,
+                                        const Handle(TColStd_HArray1OfReal)& FlatKnots,
+                                        const Handle(TColgp_HArray1OfPnt2d)& Poles,
+                                        const Standard_Integer               ContrOrder1,
+                                        const Standard_Integer               ContrOrder2,
+                                        const FairCurve_BattenLaw&           Law,
+                                        const Standard_Real                  PhysicalRatio,
+                                        const Standard_Real                  LengthSliding,
+                                        const Standard_Boolean FreeSliding = Standard_True,
+                                        const Standard_Real    Angle1      = 0,
+                                        const Standard_Real    Angle2      = 0,
+                                        const Standard_Real    Curvature1  = 0,
+                                        const Standard_Real    Curvature2  = 0);
+
   //! return  the  lengthSliding = P1P2 + Sliding
-    Standard_Real LengthSliding() const;
-  
+  Standard_Real LengthSliding() const;
+
   //! return  the status
-    FairCurve_AnalysisCode Status() const;
-  
+  FairCurve_AnalysisCode Status() const;
+
   //! compute the variables <X> which correspond with the field <MyPoles>
-  Standard_EXPORT virtual Standard_Boolean Variable (math_Vector& X) const Standard_OVERRIDE;
-
-
-
+  Standard_EXPORT virtual Standard_Boolean Variable(math_Vector& X) const Standard_OVERRIDE;
 
 protected:
-
-  
   //! compute the poles which correspond with the variable X
-  Standard_EXPORT virtual void ComputePoles (const math_Vector& X) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void ComputePoles(const math_Vector& X) Standard_OVERRIDE;
+
   //! compute the energy in intermediate format
-  Standard_EXPORT virtual Standard_Boolean Compute (const Standard_Integer DerivativeOrder, math_Vector& Result) Standard_OVERRIDE;
-
-
-
+  Standard_EXPORT virtual Standard_Boolean Compute(const Standard_Integer DerivativeOrder,
+                                                   math_Vector&           Result) Standard_OVERRIDE;
 
 private:
-
-
-
-  Standard_Real MyLengthSliding;
-  Standard_Real OriginalSliding;
-  FairCurve_BattenLaw MyBattenLaw;
-  Standard_Real MyPhysicalRatio;
+  Standard_Real                   MyLengthSliding;
+  Standard_Real                   OriginalSliding;
+  FairCurve_BattenLaw             MyBattenLaw;
+  Standard_Real                   MyPhysicalRatio;
   FairCurve_DistributionOfTension MyTension;
   FairCurve_DistributionOfSagging MySagging;
-  FairCurve_DistributionOfJerk MyJerk;
-  FairCurve_AnalysisCode MyStatus;
-
-
+  FairCurve_DistributionOfJerk    MyJerk;
+  FairCurve_AnalysisCode          MyStatus;
 };
 
-
 #include <FairCurve_EnergyOfMVC.lxx>
-
-
-
-
 
 #endif // _FairCurve_EnergyOfMVC_HeaderFile

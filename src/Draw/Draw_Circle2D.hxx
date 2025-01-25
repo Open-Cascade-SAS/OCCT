@@ -25,46 +25,28 @@
 #include <Draw_Drawable2D.hxx>
 class Draw_Display;
 
-
 class Draw_Circle2D;
 DEFINE_STANDARD_HANDLE(Draw_Circle2D, Draw_Drawable2D)
-
 
 class Draw_Circle2D : public Draw_Drawable2D
 {
 
 public:
+  Standard_EXPORT Draw_Circle2D(const gp_Circ2d&    C,
+                                const Standard_Real A1,
+                                const Standard_Real A2,
+                                const Draw_Color&   col);
 
-  
-  Standard_EXPORT Draw_Circle2D(const gp_Circ2d& C, const Standard_Real A1, const Standard_Real A2, const Draw_Color& col);
-  
-  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Draw_Circle2D,Draw_Drawable2D)
+  DEFINE_STANDARD_RTTIEXT(Draw_Circle2D, Draw_Drawable2D)
 
 protected:
-
-
-
-
 private:
-
-
-  gp_Circ2d myCirc;
+  gp_Circ2d     myCirc;
   Standard_Real myA1;
   Standard_Real myA2;
-  Draw_Color myColor;
-
-
+  Draw_Color    myColor;
 };
-
-
-
-
-
-
 
 #endif // _Draw_Circle2D_HeaderFile

@@ -18,8 +18,14 @@
 #define TopOpeBRepDS_repvg_HeaderFile
 
 #include <TopOpeBRepDS_define.hxx>
-Standard_EXPORT void FDS_repvg
-(const TopOpeBRepDS_DataStructure& BDS,const Standard_Integer EIX,const TopOpeBRepDS_Kind GT,TopOpeBRepDS_ListOfInterference& LI,TopOpeBRepDS_ListOfInterference& reducedLI);
-Standard_EXPORT void FDS_repvg2
-(const TopOpeBRepDS_DataStructure& BDS,const Standard_Integer EIX,const TopOpeBRepDS_Kind GT,TopOpeBRepDS_ListOfInterference& LI,TopOpeBRepDS_ListOfInterference& reducedLI);
+Standard_EXPORT void FDS_repvg(const TopOpeBRepDS_DataStructure& BDS,
+                               const Standard_Integer            EIX,
+                               const TopOpeBRepDS_Kind           GT,
+                               TopOpeBRepDS_ListOfInterference&  LI,
+                               TopOpeBRepDS_ListOfInterference&  reducedLI);
+Standard_EXPORT void FDS_repvg2(const TopOpeBRepDS_DataStructure& BDS,
+                                const Standard_Integer            EIX,
+                                const TopOpeBRepDS_Kind           GT,
+                                TopOpeBRepDS_ListOfInterference&  LI,
+                                TopOpeBRepDS_ListOfInterference&  reducedLI);
 #endif

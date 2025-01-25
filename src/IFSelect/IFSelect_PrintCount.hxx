@@ -17,7 +17,6 @@
 #ifndef _IFSelect_PrintCount_HeaderFile
 #define _IFSelect_PrintCount_HeaderFile
 
-
 //! Lets you choose the manner in which you want to analyze an
 //! IGES or STEP file. Your analysis can be either message-oriented or
 //! entity-oriented. The specific values are as follows:
@@ -47,15 +46,15 @@
 //! and type of the resulting shape).
 enum IFSelect_PrintCount
 {
-IFSelect_ItemsByEntity,
-IFSelect_CountByItem,
-IFSelect_ShortByItem,
-IFSelect_ListByItem,
-IFSelect_EntitiesByItem,
-IFSelect_CountSummary,
-IFSelect_GeneralInfo,
-IFSelect_Mapping,
-IFSelect_ResultCount
+  IFSelect_ItemsByEntity,
+  IFSelect_CountByItem,
+  IFSelect_ShortByItem,
+  IFSelect_ListByItem,
+  IFSelect_EntitiesByItem,
+  IFSelect_CountSummary,
+  IFSelect_GeneralInfo,
+  IFSelect_Mapping,
+  IFSelect_ResultCount
 };
 
 #endif // _IFSelect_PrintCount_HeaderFile

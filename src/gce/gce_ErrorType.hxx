@@ -37,20 +37,20 @@
 //! incorrect (applies to the equation of a geometric object).
 enum gce_ErrorType
 {
-gce_Done,
-gce_ConfusedPoints,
-gce_NegativeRadius,
-gce_ColinearPoints,
-gce_IntersectionError,
-gce_NullAxis,
-gce_NullAngle,
-gce_NullRadius,
-gce_InvertAxis,
-gce_BadAngle,
-gce_InvertRadius,
-gce_NullFocusLength,
-gce_NullVector,
-gce_BadEquation
+  gce_Done,
+  gce_ConfusedPoints,
+  gce_NegativeRadius,
+  gce_ColinearPoints,
+  gce_IntersectionError,
+  gce_NullAxis,
+  gce_NullAngle,
+  gce_NullRadius,
+  gce_InvertAxis,
+  gce_BadAngle,
+  gce_InvertRadius,
+  gce_NullFocusLength,
+  gce_NullVector,
+  gce_BadEquation
 };
 
 #endif // _gce_ErrorType_HeaderFile

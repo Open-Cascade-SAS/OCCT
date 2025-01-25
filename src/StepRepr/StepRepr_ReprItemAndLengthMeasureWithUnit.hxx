@@ -22,24 +22,23 @@
 #include <StepRepr_ReprItemAndMeasureWithUnit.hxx>
 class StepBasic_LengthMeasureWithUnit;
 
-
 class StepRepr_ReprItemAndLengthMeasureWithUnit;
-DEFINE_STANDARD_HANDLE(StepRepr_ReprItemAndLengthMeasureWithUnit, StepRepr_ReprItemAndMeasureWithUnit)
-
+DEFINE_STANDARD_HANDLE(StepRepr_ReprItemAndLengthMeasureWithUnit,
+                       StepRepr_ReprItemAndMeasureWithUnit)
 
 class StepRepr_ReprItemAndLengthMeasureWithUnit : public StepRepr_ReprItemAndMeasureWithUnit
 {
 
 public:
-
-  
   Standard_EXPORT StepRepr_ReprItemAndLengthMeasureWithUnit();
-  
-  Standard_EXPORT void SetLengthMeasureWithUnit (const Handle(StepBasic_LengthMeasureWithUnit)& aLMWU);
-  
+
+  Standard_EXPORT void SetLengthMeasureWithUnit(
+    const Handle(StepBasic_LengthMeasureWithUnit)& aLMWU);
+
   Standard_EXPORT Handle(StepBasic_LengthMeasureWithUnit) GetLengthMeasureWithUnit() const;
 
-  DEFINE_STANDARD_RTTIEXT(StepRepr_ReprItemAndLengthMeasureWithUnit,StepRepr_ReprItemAndMeasureWithUnit)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ReprItemAndLengthMeasureWithUnit,
+                          StepRepr_ReprItemAndMeasureWithUnit)
 
 private:
   Handle(StepBasic_LengthMeasureWithUnit) myLengthMeasureWithUnit;

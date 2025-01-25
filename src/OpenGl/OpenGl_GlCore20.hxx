@@ -25,13 +25,9 @@ private:
   typedef OpenGl_GlCore15 theBaseClass_t;
 
 public: //! @name OpenGL 2.0 additives to 1.5
-
-  using theBaseClass_t::glBlendEquationSeparate;
-  using theBaseClass_t::glStencilOpSeparate;
-  using theBaseClass_t::glStencilFuncSeparate;
-  using theBaseClass_t::glStencilMaskSeparate;
   using theBaseClass_t::glAttachShader;
   using theBaseClass_t::glBindAttribLocation;
+  using theBaseClass_t::glBlendEquationSeparate;
   using theBaseClass_t::glCompileShader;
   using theBaseClass_t::glCreateProgram;
   using theBaseClass_t::glCreateShader;
@@ -44,14 +40,14 @@ public: //! @name OpenGL 2.0 additives to 1.5
   using theBaseClass_t::glGetActiveUniform;
   using theBaseClass_t::glGetAttachedShaders;
   using theBaseClass_t::glGetAttribLocation;
-  using theBaseClass_t::glGetProgramiv;
   using theBaseClass_t::glGetProgramInfoLog;
-  using theBaseClass_t::glGetShaderiv;
+  using theBaseClass_t::glGetProgramiv;
   using theBaseClass_t::glGetShaderInfoLog;
+  using theBaseClass_t::glGetShaderiv;
   using theBaseClass_t::glGetShaderSource;
-  using theBaseClass_t::glGetUniformLocation;
   using theBaseClass_t::glGetUniformfv;
   using theBaseClass_t::glGetUniformiv;
+  using theBaseClass_t::glGetUniformLocation;
   using theBaseClass_t::glGetVertexAttribfv;
   using theBaseClass_t::glGetVertexAttribiv;
   using theBaseClass_t::glGetVertexAttribPointerv;
@@ -59,26 +55,29 @@ public: //! @name OpenGL 2.0 additives to 1.5
   using theBaseClass_t::glIsShader;
   using theBaseClass_t::glLinkProgram;
   using theBaseClass_t::glShaderSource;
-  using theBaseClass_t::glUseProgram;
+  using theBaseClass_t::glStencilFuncSeparate;
+  using theBaseClass_t::glStencilMaskSeparate;
+  using theBaseClass_t::glStencilOpSeparate;
   using theBaseClass_t::glUniform1f;
-  using theBaseClass_t::glUniform2f;
-  using theBaseClass_t::glUniform3f;
-  using theBaseClass_t::glUniform4f;
-  using theBaseClass_t::glUniform1i;
-  using theBaseClass_t::glUniform2i;
-  using theBaseClass_t::glUniform3i;
-  using theBaseClass_t::glUniform4i;
   using theBaseClass_t::glUniform1fv;
-  using theBaseClass_t::glUniform2fv;
-  using theBaseClass_t::glUniform3fv;
-  using theBaseClass_t::glUniform4fv;
+  using theBaseClass_t::glUniform1i;
   using theBaseClass_t::glUniform1iv;
+  using theBaseClass_t::glUniform2f;
+  using theBaseClass_t::glUniform2fv;
+  using theBaseClass_t::glUniform2i;
   using theBaseClass_t::glUniform2iv;
+  using theBaseClass_t::glUniform3f;
+  using theBaseClass_t::glUniform3fv;
+  using theBaseClass_t::glUniform3i;
   using theBaseClass_t::glUniform3iv;
+  using theBaseClass_t::glUniform4f;
+  using theBaseClass_t::glUniform4fv;
+  using theBaseClass_t::glUniform4i;
   using theBaseClass_t::glUniform4iv;
   using theBaseClass_t::glUniformMatrix2fv;
   using theBaseClass_t::glUniformMatrix3fv;
   using theBaseClass_t::glUniformMatrix4fv;
+  using theBaseClass_t::glUseProgram;
   using theBaseClass_t::glValidateProgram;
   using theBaseClass_t::glVertexAttrib1f;
   using theBaseClass_t::glVertexAttrib1fv;
@@ -95,20 +94,19 @@ public: //! @name OpenGL 2.0 additives to 1.5
   using theBaseClass_t::glGetVertexAttribdv;
   using theBaseClass_t::glVertexAttrib1d;
   using theBaseClass_t::glVertexAttrib1dv;
-  using theBaseClass_t::glVertexAttrib2d;
-  using theBaseClass_t::glVertexAttrib2dv;
-  using theBaseClass_t::glVertexAttrib3d;
-  using theBaseClass_t::glVertexAttrib3dv;
-  using theBaseClass_t::glVertexAttrib4d;
-  using theBaseClass_t::glVertexAttrib4dv;
   using theBaseClass_t::glVertexAttrib1s;
   using theBaseClass_t::glVertexAttrib1sv;
+  using theBaseClass_t::glVertexAttrib2d;
+  using theBaseClass_t::glVertexAttrib2dv;
   using theBaseClass_t::glVertexAttrib2s;
   using theBaseClass_t::glVertexAttrib2sv;
+  using theBaseClass_t::glVertexAttrib3d;
+  using theBaseClass_t::glVertexAttrib3dv;
   using theBaseClass_t::glVertexAttrib3s;
   using theBaseClass_t::glVertexAttrib3sv;
-  using theBaseClass_t::glVertexAttrib4s;
-  using theBaseClass_t::glVertexAttrib4sv;
+  using theBaseClass_t::glVertexAttrib4bv;
+  using theBaseClass_t::glVertexAttrib4d;
+  using theBaseClass_t::glVertexAttrib4dv;
   using theBaseClass_t::glVertexAttrib4iv;
   using theBaseClass_t::glVertexAttrib4Nbv;
   using theBaseClass_t::glVertexAttrib4Niv;
@@ -117,12 +115,12 @@ public: //! @name OpenGL 2.0 additives to 1.5
   using theBaseClass_t::glVertexAttrib4Nubv;
   using theBaseClass_t::glVertexAttrib4Nuiv;
   using theBaseClass_t::glVertexAttrib4Nusv;
-  using theBaseClass_t::glVertexAttrib4bv;
+  using theBaseClass_t::glVertexAttrib4s;
+  using theBaseClass_t::glVertexAttrib4sv;
   using theBaseClass_t::glVertexAttrib4ubv;
   using theBaseClass_t::glVertexAttrib4uiv;
   using theBaseClass_t::glVertexAttrib4usv;
 #endif
-
 };
 
 #endif // _OpenGl_GlCore20_Header

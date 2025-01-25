@@ -32,11 +32,11 @@ inline void Bnd_Sphere::SetValid(const Standard_Boolean isValid)
 }
 
 inline const gp_XYZ& Bnd_Sphere::Center() const
-{ 
-  return myCenter; 
+{
+  return myCenter;
 }
 
 inline Standard_Real Bnd_Sphere::Radius() const
-{ 
-  return myRadius; 
+{
+  return myRadius;
 }

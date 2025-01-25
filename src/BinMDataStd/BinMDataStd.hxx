@@ -27,35 +27,40 @@ class BinMDF_ADriverTable;
 class Message_Messenger;
 
 //! Storage and Retrieval drivers for modelling attributes.
-class BinMDataStd 
+class BinMDataStd
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Adds the attribute drivers to <theDriverTable>.
-  Standard_EXPORT static void AddDrivers (const Handle(BinMDF_ADriverTable)& theDriverTable, const Handle(Message_Messenger)& aMsgDrv);
+  Standard_EXPORT static void AddDrivers(const Handle(BinMDF_ADriverTable)& theDriverTable,
+                                         const Handle(Message_Messenger)&   aMsgDrv);
 
-template<class T>
-static void SetAttributeID(const BinObjMgt_Persistent& theSource, const Handle(T)& anAtt, const Standard_Integer aDocFormatVersion)
-{
-  Standard_Boolean ok = Standard_True;
-  if(aDocFormatVersion >= TDocStd_FormatVersion_VERSION_10) { // process user defined guid
-    const Standard_Integer& aPos = theSource.Position();
-    Standard_GUID aGuid;
-    ok = theSource >> aGuid;
-    if (!ok) {
-      theSource.SetPosition(aPos);
-      anAtt->SetID(T::GetID());
-      ok = Standard_True;
-    } else {
-      anAtt->SetID(aGuid);
+  template <class T>
+  static void SetAttributeID(const BinObjMgt_Persistent& theSource,
+                             const Handle(T)&            anAtt,
+                             const Standard_Integer      aDocFormatVersion)
+  {
+    Standard_Boolean ok = Standard_True;
+    if (aDocFormatVersion >= TDocStd_FormatVersion_VERSION_10)
+    { // process user defined guid
+      const Standard_Integer& aPos = theSource.Position();
+      Standard_GUID           aGuid;
+      ok = theSource >> aGuid;
+      if (!ok)
+      {
+        theSource.SetPosition(aPos);
+        anAtt->SetID(T::GetID());
+        ok = Standard_True;
+      }
+      else
+      {
+        anAtt->SetID(aGuid);
+      }
     }
-  } else
-    anAtt->SetID(T::GetID());
-}
-
+    else
+      anAtt->SetID(T::GetID());
+  }
 };
 
 #endif // _BinMDataStd_HeaderFile

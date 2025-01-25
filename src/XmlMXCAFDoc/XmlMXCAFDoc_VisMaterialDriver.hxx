@@ -27,23 +27,22 @@ class XmlMXCAFDoc_VisMaterialDriver : public XmlMDF_ADriver
 {
   DEFINE_STANDARD_RTTIEXT(XmlMXCAFDoc_VisMaterialDriver, XmlMDF_ADriver)
 public:
-
   //! Main constructor.
-  Standard_EXPORT XmlMXCAFDoc_VisMaterialDriver (const Handle(Message_Messenger)& theMessageDriver);
+  Standard_EXPORT XmlMXCAFDoc_VisMaterialDriver(const Handle(Message_Messenger)& theMessageDriver);
 
   //! Create new instance of XCAFDoc_VisMaterial.
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
   //! Paste attribute from persistence into document.
-  Standard_EXPORT Standard_Boolean Paste (const XmlObjMgt_Persistent&  theSource,
-                                          const Handle(TDF_Attribute)& theTarget,
-                                          XmlObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT Standard_Boolean
+    Paste(const XmlObjMgt_Persistent&  theSource,
+          const Handle(TDF_Attribute)& theTarget,
+          XmlObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE;
 
   //! Paste attribute from document into persistence.
-  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& theSource,
-                              XmlObjMgt_Persistent& theTarget,
-                              XmlObjMgt_SRelocationTable& theRelocTable) const Standard_OVERRIDE;
-
+  Standard_EXPORT void Paste(const Handle(TDF_Attribute)& theSource,
+                             XmlObjMgt_Persistent&        theTarget,
+                             XmlObjMgt_SRelocationTable&  theRelocTable) const Standard_OVERRIDE;
 };
 
 #endif // _XmlMXCAFDoc_VisMaterialDriver_HeaderFile

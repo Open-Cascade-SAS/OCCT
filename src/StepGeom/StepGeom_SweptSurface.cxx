@@ -11,32 +11,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_SweptSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SweptSurface,StepGeom_Surface)
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SweptSurface, StepGeom_Surface)
 
-StepGeom_SweptSurface::StepGeom_SweptSurface ()  {}
+StepGeom_SweptSurface::StepGeom_SweptSurface() {}
 
-void StepGeom_SweptSurface::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_Curve)& aSweptCurve)
+void StepGeom_SweptSurface::Init(const Handle(TCollection_HAsciiString)& aName,
+                                 const Handle(StepGeom_Curve)&           aSweptCurve)
 {
-	// --- classe own fields ---
-	sweptCurve = aSweptCurve;
-	// --- classe inherited fields ---
-	StepRepr_RepresentationItem::Init(aName);
+  // --- classe own fields ---
+  sweptCurve = aSweptCurve;
+  // --- classe inherited fields ---
+  StepRepr_RepresentationItem::Init(aName);
 }
-
 
 void StepGeom_SweptSurface::SetSweptCurve(const Handle(StepGeom_Curve)& aSweptCurve)
 {
-	sweptCurve = aSweptCurve;
+  sweptCurve = aSweptCurve;
 }
 
 Handle(StepGeom_Curve) StepGeom_SweptSurface::SweptCurve() const
 {
-	return sweptCurve;
+  return sweptCurve;
 }

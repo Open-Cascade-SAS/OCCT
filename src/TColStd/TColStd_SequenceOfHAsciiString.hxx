@@ -20,5 +20,4 @@
 
 typedef NCollection_Sequence<Handle(TCollection_HAsciiString)> TColStd_SequenceOfHAsciiString;
 
-
 #endif

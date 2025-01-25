@@ -19,5 +19,4 @@
 
 DEFINE_HSEQUENCE(StepFEA_HSequenceOfElementRepresentation, StepFEA_SequenceOfElementRepresentation)
 
-
 #endif

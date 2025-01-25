@@ -19,45 +19,33 @@
 #include <StepAP203_CcDesignApproval.hxx>
 #include <StepBasic_Approval.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignApproval,StepBasic_ApprovalAssignment)
+IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignApproval, StepBasic_ApprovalAssignment)
 
-//=======================================================================
-//function : StepAP203_CcDesignApproval
-//purpose  : 
-//=======================================================================
-StepAP203_CcDesignApproval::StepAP203_CcDesignApproval ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepAP203_CcDesignApproval::StepAP203_CcDesignApproval() {}
 
-void StepAP203_CcDesignApproval::Init (const Handle(StepBasic_Approval) &aApprovalAssignment_AssignedApproval,
-                                       const Handle(StepAP203_HArray1OfApprovedItem) &aItems)
+//=================================================================================================
+
+void StepAP203_CcDesignApproval::Init(
+  const Handle(StepBasic_Approval)&              aApprovalAssignment_AssignedApproval,
+  const Handle(StepAP203_HArray1OfApprovedItem)& aItems)
 {
   StepBasic_ApprovalAssignment::Init(aApprovalAssignment_AssignedApproval);
 
   theItems = aItems;
 }
 
-//=======================================================================
-//function : Items
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepAP203_HArray1OfApprovedItem) StepAP203_CcDesignApproval::Items () const
+Handle(StepAP203_HArray1OfApprovedItem) StepAP203_CcDesignApproval::Items() const
 {
   return theItems;
 }
 
-//=======================================================================
-//function : SetItems
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepAP203_CcDesignApproval::SetItems (const Handle(StepAP203_HArray1OfApprovedItem) &aItems)
+void StepAP203_CcDesignApproval::SetItems(const Handle(StepAP203_HArray1OfApprovedItem)& aItems)
 {
   theItems = aItems;
 }

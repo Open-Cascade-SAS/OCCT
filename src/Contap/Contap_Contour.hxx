@@ -28,95 +28,90 @@ class gp_Vec;
 class gp_Pnt;
 class Adaptor3d_TopolTool;
 
-class Contap_Contour 
+class Contap_Contour
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT Contap_Contour();
-  
+
   Standard_EXPORT Contap_Contour(const gp_Vec& Direction);
-  
+
   Standard_EXPORT Contap_Contour(const gp_Vec& Direction, const Standard_Real Angle);
-  
+
   Standard_EXPORT Contap_Contour(const gp_Pnt& Eye);
-  
+
   //! Creates the contour in a given direction.
-  Standard_EXPORT Contap_Contour(const Handle(Adaptor3d_Surface)& Surf, const Handle(Adaptor3d_TopolTool)& Domain, const gp_Vec& Direction);
-  
+  Standard_EXPORT Contap_Contour(const Handle(Adaptor3d_Surface)&   Surf,
+                                 const Handle(Adaptor3d_TopolTool)& Domain,
+                                 const gp_Vec&                      Direction);
+
   //! Creates the contour in a given direction.
-  Standard_EXPORT Contap_Contour(const Handle(Adaptor3d_Surface)& Surf, const Handle(Adaptor3d_TopolTool)& Domain, const gp_Vec& Direction, const Standard_Real Angle);
-  
+  Standard_EXPORT Contap_Contour(const Handle(Adaptor3d_Surface)&   Surf,
+                                 const Handle(Adaptor3d_TopolTool)& Domain,
+                                 const gp_Vec&                      Direction,
+                                 const Standard_Real                Angle);
+
   //! Creates the contour for a perspective view.
-  Standard_EXPORT Contap_Contour(const Handle(Adaptor3d_Surface)& Surf, const Handle(Adaptor3d_TopolTool)& Domain, const gp_Pnt& Eye);
-  
+  Standard_EXPORT Contap_Contour(const Handle(Adaptor3d_Surface)&   Surf,
+                                 const Handle(Adaptor3d_TopolTool)& Domain,
+                                 const gp_Pnt&                      Eye);
+
   //! Creates the contour in a given direction.
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_Surface)& Surf, const Handle(Adaptor3d_TopolTool)& Domain);
-  
+  Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Surf,
+                               const Handle(Adaptor3d_TopolTool)& Domain);
+
   //! Creates the contour in a given direction.
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_Surface)& Surf, const Handle(Adaptor3d_TopolTool)& Domain, const gp_Vec& Direction);
-  
+  Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Surf,
+                               const Handle(Adaptor3d_TopolTool)& Domain,
+                               const gp_Vec&                      Direction);
+
   //! Creates the contour in a given direction.
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_Surface)& Surf, const Handle(Adaptor3d_TopolTool)& Domain, const gp_Vec& Direction, const Standard_Real Angle);
-  
+  Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Surf,
+                               const Handle(Adaptor3d_TopolTool)& Domain,
+                               const gp_Vec&                      Direction,
+                               const Standard_Real                Angle);
+
   //! Creates the contour for a perspective view.
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_Surface)& Surf, const Handle(Adaptor3d_TopolTool)& Domain, const gp_Pnt& Eye);
-  
-  Standard_EXPORT void Init (const gp_Vec& Direction);
-  
-  Standard_EXPORT void Init (const gp_Vec& Direction, const Standard_Real Angle);
-  
-  Standard_EXPORT void Init (const gp_Pnt& Eye);
-  
-    Standard_Boolean IsDone() const;
-  
+  Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)&   Surf,
+                               const Handle(Adaptor3d_TopolTool)& Domain,
+                               const gp_Pnt&                      Eye);
+
+  Standard_EXPORT void Init(const gp_Vec& Direction);
+
+  Standard_EXPORT void Init(const gp_Vec& Direction, const Standard_Real Angle);
+
+  Standard_EXPORT void Init(const gp_Pnt& Eye);
+
+  Standard_Boolean IsDone() const;
+
   //! Returns true if the is no line.
-    Standard_Boolean IsEmpty() const;
-  
-    Standard_Integer NbLines() const;
-  
-    const Contap_Line& Line (const Standard_Integer Index) const;
-  
+  Standard_Boolean IsEmpty() const;
+
+  Standard_Integer NbLines() const;
+
+  const Contap_Line& Line(const Standard_Integer Index) const;
+
   //! Returns    a     reference   on     the   internal
   //! SurfaceFunction.  This is used to compute tangents
   //! on the lines.
-    Contap_SurfFunction& SurfaceFunction();
-
-
-
+  Contap_SurfFunction& SurfaceFunction();
 
 protected:
-
-
-
-
-
 private:
+  Standard_EXPORT void Perform(const Handle(Adaptor3d_TopolTool)& Domain);
 
-  
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_TopolTool)& Domain);
-  
-  Standard_EXPORT void PerformAna (const Handle(Adaptor3d_TopolTool)& Domain);
+  Standard_EXPORT void PerformAna(const Handle(Adaptor3d_TopolTool)& Domain);
 
-
-  Standard_Boolean done;
+  Standard_Boolean         done;
   Contap_TheSequenceOfLine slin;
-  Contap_TheSearch solrst;
-  Contap_TheSearchInside solins;
-  Contap_SurfFunction mySFunc;
-  Contap_ArcFunction myAFunc;
-  Standard_Boolean modeset;
-
-
+  Contap_TheSearch         solrst;
+  Contap_TheSearchInside   solins;
+  Contap_SurfFunction      mySFunc;
+  Contap_ArcFunction       myAFunc;
+  Standard_Boolean         modeset;
 };
 
-
 #include <Contap_Contour.lxx>
-
-
-
-
 
 #endif // _Contap_Contour_HeaderFile

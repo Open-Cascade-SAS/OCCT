@@ -16,12 +16,10 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RealRepresentationItem, StepRepr_RepresentationItem)
 
-StepRepr_RealRepresentationItem::StepRepr_RealRepresentationItem()
-{
-}
+StepRepr_RealRepresentationItem::StepRepr_RealRepresentationItem() {}
 
 void StepRepr_RealRepresentationItem::Init(const Handle(TCollection_HAsciiString)& theName,
-                                              const Standard_Real theValue)
+                                           const Standard_Real                     theValue)
 {
   value = theValue;
   StepRepr_RepresentationItem::Init(theName);

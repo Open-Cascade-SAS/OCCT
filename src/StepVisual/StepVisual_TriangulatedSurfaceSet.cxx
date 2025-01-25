@@ -15,37 +15,30 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TriangulatedSurfaceSet, StepVisual_TessellatedSurfaceSet)
 
-//=======================================================================
-//function : StepVisual_TriangulatedSurfaceSet
-//purpose  :
-//=======================================================================
-StepVisual_TriangulatedSurfaceSet::StepVisual_TriangulatedSurfaceSet()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepVisual_TriangulatedSurfaceSet::Init(const Handle(TCollection_HAsciiString)& theRepresentationItemName,
-                                             const Handle(StepVisual_CoordinatesList)& theTessellatedSurfaceSetCoordinates,
-                                             const Standard_Integer theTessellatedSurfaceSetPnmax,
-                                             const Handle(TColStd_HArray2OfReal)& theTessellatedSurfaceSetNormals,
-                                             const Handle(TColStd_HArray1OfInteger)& thePnindex,
-                                             const Handle(TColStd_HArray2OfInteger)& theTriangles)
+StepVisual_TriangulatedSurfaceSet::StepVisual_TriangulatedSurfaceSet() {}
+
+//=================================================================================================
+
+void StepVisual_TriangulatedSurfaceSet::Init(
+  const Handle(TCollection_HAsciiString)&   theRepresentationItemName,
+  const Handle(StepVisual_CoordinatesList)& theTessellatedSurfaceSetCoordinates,
+  const Standard_Integer                    theTessellatedSurfaceSetPnmax,
+  const Handle(TColStd_HArray2OfReal)&      theTessellatedSurfaceSetNormals,
+  const Handle(TColStd_HArray1OfInteger)&   thePnindex,
+  const Handle(TColStd_HArray2OfInteger)&   theTriangles)
 {
   StepVisual_TessellatedSurfaceSet::Init(theRepresentationItemName,
                                          theTessellatedSurfaceSetCoordinates,
                                          theTessellatedSurfaceSetPnmax,
                                          theTessellatedSurfaceSetNormals);
-  myPnindex = thePnindex;
+  myPnindex   = thePnindex;
   myTriangles = theTriangles;
 }
 
-//=======================================================================
-//function : NbPnindex
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer StepVisual_TriangulatedSurfaceSet::NbPnindex() const
 {
   if (myPnindex.IsNull())
@@ -55,19 +48,16 @@ Standard_Integer StepVisual_TriangulatedSurfaceSet::NbPnindex() const
   return myPnindex->Length();
 }
 
-//=======================================================================
-//function : PnindexValue
-//purpose  :
-//=======================================================================
-Standard_Integer StepVisual_TriangulatedSurfaceSet::PnindexValue(const Standard_Integer theNum) const
+//=================================================================================================
+
+Standard_Integer StepVisual_TriangulatedSurfaceSet::PnindexValue(
+  const Standard_Integer theNum) const
 {
   return myPnindex->Value(theNum);
 }
 
-//=======================================================================
-//function : NbTriangles
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer StepVisual_TriangulatedSurfaceSet::NbTriangles() const
 {
   if (myTriangles.IsNull())

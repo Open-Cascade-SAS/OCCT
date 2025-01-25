@@ -19,7 +19,8 @@
 //! Define virtual key as integer number to allow extensions.
 typedef unsigned int Aspect_VKey;
 
-//! Enumeration defining virtual keys irrelevant to current keyboard layout for simplified hot-keys management logic.
+//! Enumeration defining virtual keys irrelevant to current keyboard layout for simplified hot-keys
+//! management logic.
 enum Aspect_VKeyBasic
 {
   Aspect_VKey_UNKNOWN = 0,
@@ -81,9 +82,9 @@ enum Aspect_VKeyBasic
   Aspect_VKey_Down,
   Aspect_VKey_Left,
   Aspect_VKey_Right,
-  Aspect_VKey_Plus,         //!< '+'
-  Aspect_VKey_Minus,        //!< '-'
-  Aspect_VKey_Equal,        //!< '=+'
+  Aspect_VKey_Plus,  //!< '+'
+  Aspect_VKey_Minus, //!< '-'
+  Aspect_VKey_Equal, //!< '=+'
   Aspect_VKey_PageUp,
   Aspect_VKey_PageDown,
   Aspect_VKey_Home,
@@ -160,53 +161,60 @@ enum Aspect_VKeyBasic
   Aspect_VKey_Menu,
   Aspect_VKey_Meta,
 
-  // virtual navigation keys, @sa Aspect_VKey_NavigationKeysLower and Aspect_VKey_NavigationKeysUpper below
-  Aspect_VKey_NavInteract,         //!< interact
-  Aspect_VKey_NavForward,          //!< go forward
-  Aspect_VKey_NavBackward,         //!< go backward
-  Aspect_VKey_NavSlideLeft,        //!< sidewalk, left
-  Aspect_VKey_NavSlideRight,       //!< sidewalk, right
-  Aspect_VKey_NavSlideUp,          //!< lift up
-  Aspect_VKey_NavSlideDown,        //!< fall down
-  Aspect_VKey_NavRollCCW,          //!< bank left  (roll counter-clockwise)
-  Aspect_VKey_NavRollCW,           //!< bank right (roll clockwise)
-  Aspect_VKey_NavLookLeft,         //!< look left  (yaw counter-clockwise)
-  Aspect_VKey_NavLookRight,        //!< look right (yaw clockwise)
-  Aspect_VKey_NavLookUp,           //!< look up    (pitch clockwise)
-  Aspect_VKey_NavLookDown,         //!< look down  (pitch counter-clockwise)
-  Aspect_VKey_NavCrouch,           //!< crouch walking
-  Aspect_VKey_NavJump,             //!< jump
-  Aspect_VKey_NavThrustForward,    //!< increase continuous velocity in forward  direction
-  Aspect_VKey_NavThrustBackward,   //!< increase continuous velocity in reversed direction
-  Aspect_VKey_NavThrustStop,       //!< reset continuous velocity
-  Aspect_VKey_NavSpeedIncrease,    //!< increase navigation speed
-  Aspect_VKey_NavSpeedDecrease,    //!< decrease navigation speed
+  // virtual navigation keys, @sa Aspect_VKey_NavigationKeysLower and
+  // Aspect_VKey_NavigationKeysUpper below
+  Aspect_VKey_NavInteract,       //!< interact
+  Aspect_VKey_NavForward,        //!< go forward
+  Aspect_VKey_NavBackward,       //!< go backward
+  Aspect_VKey_NavSlideLeft,      //!< sidewalk, left
+  Aspect_VKey_NavSlideRight,     //!< sidewalk, right
+  Aspect_VKey_NavSlideUp,        //!< lift up
+  Aspect_VKey_NavSlideDown,      //!< fall down
+  Aspect_VKey_NavRollCCW,        //!< bank left  (roll counter-clockwise)
+  Aspect_VKey_NavRollCW,         //!< bank right (roll clockwise)
+  Aspect_VKey_NavLookLeft,       //!< look left  (yaw counter-clockwise)
+  Aspect_VKey_NavLookRight,      //!< look right (yaw clockwise)
+  Aspect_VKey_NavLookUp,         //!< look up    (pitch clockwise)
+  Aspect_VKey_NavLookDown,       //!< look down  (pitch counter-clockwise)
+  Aspect_VKey_NavCrouch,         //!< crouch walking
+  Aspect_VKey_NavJump,           //!< jump
+  Aspect_VKey_NavThrustForward,  //!< increase continuous velocity in forward  direction
+  Aspect_VKey_NavThrustBackward, //!< increase continuous velocity in reversed direction
+  Aspect_VKey_NavThrustStop,     //!< reset continuous velocity
+  Aspect_VKey_NavSpeedIncrease,  //!< increase navigation speed
+  Aspect_VKey_NavSpeedDecrease,  //!< decrease navigation speed
 };
 
 //! Auxiliary ranges.
 enum
 {
-  Aspect_VKey_Lower = 0,
+  Aspect_VKey_Lower               = 0,
   Aspect_VKey_ModifiersLower      = Aspect_VKey_Shift,
   Aspect_VKey_ModifiersUpper      = Aspect_VKey_Meta,
   Aspect_VKey_NavigationKeysLower = Aspect_VKey_NavInteract,
   Aspect_VKey_NavigationKeysUpper = Aspect_VKey_NavSpeedDecrease,
-  Aspect_VKey_Upper = Aspect_VKey_NavSpeedDecrease,
-  Aspect_VKey_NB  = Aspect_VKey_Upper - Aspect_VKey_Lower + 1,
-  Aspect_VKey_MAX = 255
+  Aspect_VKey_Upper               = Aspect_VKey_NavSpeedDecrease,
+  Aspect_VKey_NB                  = Aspect_VKey_Upper - Aspect_VKey_Lower + 1,
+  Aspect_VKey_MAX                 = 255
 };
 
 //! Return modifier flags for specified modifier key.
-inline Aspect_VKeyFlags Aspect_VKey2Modifier (Aspect_VKey theKey)
+inline Aspect_VKeyFlags Aspect_VKey2Modifier(Aspect_VKey theKey)
 {
   switch (theKey)
   {
-    case Aspect_VKey_Shift:   return Aspect_VKeyFlags_SHIFT;
-    case Aspect_VKey_Control: return Aspect_VKeyFlags_CTRL;
-    case Aspect_VKey_Alt:     return Aspect_VKeyFlags_ALT;
-    case Aspect_VKey_Menu:    return Aspect_VKeyFlags_MENU;
-    case Aspect_VKey_Meta:    return Aspect_VKeyFlags_META;
-    default:                  return 0;
+    case Aspect_VKey_Shift:
+      return Aspect_VKeyFlags_SHIFT;
+    case Aspect_VKey_Control:
+      return Aspect_VKeyFlags_CTRL;
+    case Aspect_VKey_Alt:
+      return Aspect_VKeyFlags_ALT;
+    case Aspect_VKey_Menu:
+      return Aspect_VKeyFlags_MENU;
+    case Aspect_VKey_Meta:
+      return Aspect_VKeyFlags_META;
+    default:
+      return 0;
   }
 }
 

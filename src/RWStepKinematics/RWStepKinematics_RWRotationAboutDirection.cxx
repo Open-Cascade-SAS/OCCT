@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:14 2020 
+// Created on : Sat May 02 12:41:14 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -24,74 +24,72 @@
 #include <StepGeom_Direction.hxx>
 #include <Standard_Real.hxx>
 
-//=======================================================================
-//function : RWStepKinematics_RWRotationAboutDirection
-//purpose  :
-//=======================================================================
+//=================================================================================================
+
 RWStepKinematics_RWRotationAboutDirection::RWStepKinematics_RWRotationAboutDirection() {}
 
+//=================================================================================================
 
-//=======================================================================
-//function : ReadStep
-//purpose  :
-//=======================================================================
-void RWStepKinematics_RWRotationAboutDirection::ReadStep (const Handle(StepData_StepReaderData)& theData,
-                                                          const Standard_Integer theNum,
-                                                          Handle(Interface_Check)& theArch,
-                                                          const Handle(StepKinematics_RotationAboutDirection)& theEnt) const
+void RWStepKinematics_RWRotationAboutDirection::ReadStep(
+  const Handle(StepData_StepReaderData)&               theData,
+  const Standard_Integer                               theNum,
+  Handle(Interface_Check)&                             theArch,
+  const Handle(StepKinematics_RotationAboutDirection)& theEnt) const
 {
   // Check number of parameters
-  if ( ! theData->CheckNbParams(theNum,3,theArch,"rotation_about_direction") ) return;
+  if (!theData->CheckNbParams(theNum, 3, theArch, "rotation_about_direction"))
+    return;
 
   // Inherited fields of RepresentationItem
 
   Handle(TCollection_HAsciiString) aRepresentationItem_Name;
-  theData->ReadString (theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
+  theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Own fields of RotationAboutDirection
 
   Handle(StepGeom_Direction) aDirectionOfAxis;
-  theData->ReadEntity (theNum, 2, "direction_of_axis", theArch, STANDARD_TYPE(StepGeom_Direction), aDirectionOfAxis);
+  theData->ReadEntity(theNum,
+                      2,
+                      "direction_of_axis",
+                      theArch,
+                      STANDARD_TYPE(StepGeom_Direction),
+                      aDirectionOfAxis);
 
   Standard_Real aRotationAngle;
-  theData->ReadReal (theNum, 3, "rotation_angle", theArch, aRotationAngle);
+  theData->ReadReal(theNum, 3, "rotation_angle", theArch, aRotationAngle);
 
   // Initialize entity
-  theEnt->Init(aRepresentationItem_Name,
-            aDirectionOfAxis,
-            aRotationAngle);
+  theEnt->Init(aRepresentationItem_Name, aDirectionOfAxis, aRotationAngle);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  :
-//=======================================================================
-void RWStepKinematics_RWRotationAboutDirection::WriteStep (StepData_StepWriter& theSW,
-                                                           const Handle(StepKinematics_RotationAboutDirection)& theEnt) const
+//=================================================================================================
+
+void RWStepKinematics_RWRotationAboutDirection::WriteStep(
+  StepData_StepWriter&                                 theSW,
+  const Handle(StepKinematics_RotationAboutDirection)& theEnt) const
 {
 
   // Own fields of RepresentationItem
 
-  theSW.Send (theEnt->Name());
+  theSW.Send(theEnt->Name());
 
   // Own fields of RotationAboutDirection
 
-  theSW.Send (theEnt->DirectionOfAxis());
+  theSW.Send(theEnt->DirectionOfAxis());
 
-  theSW.Send (theEnt->RotationAngle());
+  theSW.Send(theEnt->RotationAngle());
 }
 
-//=======================================================================
-//function : Share
-//purpose  :
-//=======================================================================
-void RWStepKinematics_RWRotationAboutDirection::Share (const Handle(StepKinematics_RotationAboutDirection)& theEnt,
-                                                       Interface_EntityIterator& iter) const
+//=================================================================================================
+
+void RWStepKinematics_RWRotationAboutDirection::Share(
+  const Handle(StepKinematics_RotationAboutDirection)& theEnt,
+  Interface_EntityIterator&                            iter) const
 {
 
   // Inherited fields of RepresentationItem
 
   // Own fields of RotationAboutDirection
 
-  iter.AddItem (theEnt->DirectionOfAxis());
+  iter.AddItem(theEnt->DirectionOfAxis());
 }

@@ -26,7 +26,6 @@
 class TDF_Label;
 class TDF_RelocationTable;
 
-
 class XCAFDoc_LengthUnit;
 DEFINE_STANDARD_HANDLE(XCAFDoc_LengthUnit, TDF_Attribute)
 
@@ -35,7 +34,6 @@ class XCAFDoc_LengthUnit : public TDF_Attribute
 {
 
 public:
-
   //! Returns the GUID of the attribute.
   Standard_EXPORT static const Standard_GUID& GetID();
 
@@ -43,31 +41,31 @@ public:
   //! @param theUnitName - name of the unit: mm, m, cm, km, micron, in, min, nin, ft, stat.mile
   //! @param theUnitValue - length scale factor to meter
   //! The LengthUnit attribute is returned.
-  Standard_EXPORT static Handle(XCAFDoc_LengthUnit) Set(const TDF_Label& theLabel,
-                                                         const TCollection_AsciiString& theUnitName,
-                                                         const Standard_Real theUnitValue);
+  Standard_EXPORT static Handle(XCAFDoc_LengthUnit) Set(const TDF_Label&               theLabel,
+                                                        const TCollection_AsciiString& theUnitName,
+                                                        const Standard_Real theUnitValue);
 
   //! Finds or creates a LengthUnit attribute
   //! @param theUnitValue - length scale factor to meter
   //! The LengthUnit attribute is returned.
-  Standard_EXPORT static Handle(XCAFDoc_LengthUnit) Set(const TDF_Label& theLabel,
-                                                         const Standard_Real theUnitValue);
+  Standard_EXPORT static Handle(XCAFDoc_LengthUnit) Set(const TDF_Label&    theLabel,
+                                                        const Standard_Real theUnitValue);
 
   //! Finds, or creates, a LengthUnit attribute with explicit user defined GUID
   //! @param theUnitName - name of the unit: mm, m, cm, km, micron, in, min, nin, ft, stat.mile
   //! @param theUnitValue - length scale factor to meter
   //! The LengthUnit attribute is returned
-  Standard_EXPORT static Handle(XCAFDoc_LengthUnit) Set(const TDF_Label& theLabel,
-                                                         const Standard_GUID& theGUID,
-                                                         const TCollection_AsciiString& theUnitName,
-                                                         const Standard_Real theUnitValue);
+  Standard_EXPORT static Handle(XCAFDoc_LengthUnit) Set(const TDF_Label&               theLabel,
+                                                        const Standard_GUID&           theGUID,
+                                                        const TCollection_AsciiString& theUnitName,
+                                                        const Standard_Real theUnitValue);
 
   //! Creates a LengthUnit attribute
   //! @param theUnitName - name of the unit: mm, m, cm, km, micron, in, min, nin, ft, stat.mile
   //! @param theUnitValue - length scale factor to meter
   Standard_EXPORT void Set(const TCollection_AsciiString& theUnitName,
-                           const Standard_Real theUnitValue);
-  
+                           const Standard_Real            theUnitValue);
+
   //! Length unit description (could be arbitrary text)
   const TCollection_AsciiString& GetUnitName() const { return myUnitName; }
 
@@ -82,19 +80,20 @@ public:
 
   Standard_EXPORT virtual void Restore(const Handle(TDF_Attribute)& theWith) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)& theInto, const Handle(TDF_RelocationTable)& theRT) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)&       theInto,
+                                     const Handle(TDF_RelocationTable)& theRT) const
+    Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
-
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_LengthUnit, TDF_Attribute)
 
 private:
-
-  Standard_Real myUnitScaleValue;
+  Standard_Real           myUnitScaleValue;
   TCollection_AsciiString myUnitName;
 };
 

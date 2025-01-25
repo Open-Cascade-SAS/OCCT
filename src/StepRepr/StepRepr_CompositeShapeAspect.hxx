@@ -21,7 +21,6 @@
 
 #include <StepRepr_ShapeAspect.hxx>
 
-
 class StepRepr_CompositeShapeAspect;
 DEFINE_STANDARD_HANDLE(StepRepr_CompositeShapeAspect, StepRepr_ShapeAspect)
 
@@ -30,31 +29,12 @@ class StepRepr_CompositeShapeAspect : public StepRepr_ShapeAspect
 {
 
 public:
-
-  
   Standard_EXPORT StepRepr_CompositeShapeAspect();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepRepr_CompositeShapeAspect,StepRepr_ShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_CompositeShapeAspect, StepRepr_ShapeAspect)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepRepr_CompositeShapeAspect_HeaderFile

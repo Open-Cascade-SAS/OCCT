@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef View_PresentationType_H
 #define View_PresentationType_H
@@ -19,7 +19,7 @@
 //! Type of displayed presentation in View displayed in AIS_InteractiveContext
 enum View_PresentationType
 {
-  View_PresentationType_Main, //!< general presentation, mostly used
+  View_PresentationType_Main,      //!< general presentation, mostly used
   View_PresentationType_Additional //!< additional presentation
 };
 

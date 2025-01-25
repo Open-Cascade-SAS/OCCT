@@ -47,42 +47,48 @@
 //  Items from <arr> are considered as compatible with items from <seq>
 //    (no DownCast required for Handles)
 
-
-#define SeqToArrayFrom(seq,arr,typarr,lowind) \
-if (!seq.IsNull()) {\
-    Standard_Integer numseq, lenseq = seq->Length();\
-    if (lenseq > 0) {\
-      arr = new typarr (lowind,lenseq+1-lowind);\
-      for (numseq = 1; numseq <= lenseq; numseq ++)\
-	arr->SetValue (numseq+1-lowind, seq->Value(numseq));\
-    }\
+#define SeqToArrayFrom(seq, arr, typarr, lowind)                                                   \
+  if (!seq.IsNull())                                                                               \
+  {                                                                                                \
+    Standard_Integer numseq, lenseq = seq->Length();                                               \
+    if (lenseq > 0)                                                                                \
+    {                                                                                              \
+      arr = new typarr(lowind, lenseq + 1 - lowind);                                               \
+      for (numseq = 1; numseq <= lenseq; numseq++)                                                 \
+        arr->SetValue(numseq + 1 - lowind, seq->Value(numseq));                                    \
+    }                                                                                              \
   }
 
-#define SeqToArray(seq,arr,typarr) \
-  if (!seq.IsNull()) {\
-    Standard_Integer numseq, lenseq = seq->Length();\
-    if (lenseq > 0) {\
-      arr = new typarr (1,lenseq);\
-      for (numseq = 1; numseq <= lenseq; numseq ++)\
-	arr->SetValue (numseq, seq->Value(numseq));\
-    }\
+#define SeqToArray(seq, arr, typarr)                                                               \
+  if (!seq.IsNull())                                                                               \
+  {                                                                                                \
+    Standard_Integer numseq, lenseq = seq->Length();                                               \
+    if (lenseq > 0)                                                                                \
+    {                                                                                              \
+      arr = new typarr(1, lenseq);                                                                 \
+      for (numseq = 1; numseq <= lenseq; numseq++)                                                 \
+        arr->SetValue(numseq, seq->Value(numseq));                                                 \
+    }                                                                                              \
   }
 
-#define SeqToArrayCast(seq,arr,typarr,typent) \
-  if (!seq.IsNull()) {\
-    Standard_Integer numseq, lenseq = seq->Length();\
-    if (lenseq > 0) {\
-      arr = new typarr (1,lenseq);\
-      for (numseq = 1; numseq <= lenseq; numseq ++)\
-	arr->SetValue (numseq, Handle(typent)::DownCast(seq->Value(numseq)));\
-    }\
+#define SeqToArrayCast(seq, arr, typarr, typent)                                                   \
+  if (!seq.IsNull())                                                                               \
+  {                                                                                                \
+    Standard_Integer numseq, lenseq = seq->Length();                                               \
+    if (lenseq > 0)                                                                                \
+    {                                                                                              \
+      arr = new typarr(1, lenseq);                                                                 \
+      for (numseq = 1; numseq <= lenseq; numseq++)                                                 \
+        arr->SetValue(numseq, Handle(typent)::DownCast(seq->Value(numseq)));                       \
+    }                                                                                              \
   }
 
-#define ArrayToSeq (arr,seq)\
-  {\
-    Standard_Integer nument, numlow = arr->Lower() , numup = arr->Upper();\
-    for (nument = numlow; nument <= numup; nument ++)\
-      seq->Append(arr->Value(nument));\
+#define ArrayToSeq                                                                                 \
+  (arr, seq)                                                                                       \
+  {                                                                                                \
+    Standard_Integer nument, numlow = arr->Lower(), numup = arr->Upper();                          \
+    for (nument = numlow; nument <= numup; nument++)                                               \
+      seq->Append(arr->Value(nument));                                                             \
   }
 
 #endif

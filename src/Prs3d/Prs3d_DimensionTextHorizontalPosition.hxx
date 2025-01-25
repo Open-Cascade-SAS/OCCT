@@ -25,10 +25,10 @@
 //! the dimension space, otherwise the value label is placed at center.
 enum Prs3d_DimensionTextHorizontalPosition
 {
-Prs3d_DTHP_Left,
-Prs3d_DTHP_Right,
-Prs3d_DTHP_Center,
-Prs3d_DTHP_Fit
+  Prs3d_DTHP_Left,
+  Prs3d_DTHP_Right,
+  Prs3d_DTHP_Center,
+  Prs3d_DTHP_Fit
 };
 
 #endif // _Prs3d_DimensionTextHorizontalPosition_HeaderFile

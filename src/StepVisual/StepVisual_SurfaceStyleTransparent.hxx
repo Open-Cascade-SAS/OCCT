@@ -27,23 +27,21 @@ DEFINE_STANDARD_HANDLE(StepVisual_SurfaceStyleTransparent, Standard_Transient)
 //! Representation of STEP entity SurfaceStyleTransparent
 class StepVisual_SurfaceStyleTransparent : public Standard_Transient
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepVisual_SurfaceStyleTransparent();
 
   //! Initialize all fields (own and inherited)
- Standard_EXPORT void Init(const Standard_Real theTransparency);
+  Standard_EXPORT void Init(const Standard_Real theTransparency);
 
   //! Returns field Transparency
   Standard_EXPORT Standard_Real Transparency() const;
   //! Sets field Transparency
-  Standard_EXPORT void SetTransparency (const Standard_Real theTransparency);
+  Standard_EXPORT void SetTransparency(const Standard_Real theTransparency);
 
-DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleTransparent, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleTransparent, Standard_Transient)
 
 private:
   Standard_Real myTransparency;
-
 };
 #endif // _StepVisual_SurfaceStyleTransparent_HeaderFile_

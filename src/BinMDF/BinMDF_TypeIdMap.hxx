@@ -20,8 +20,8 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_DoubleMap.hxx>
 
-typedef NCollection_DoubleMap<Handle(Standard_Type),Standard_Integer> BinMDF_TypeIdMap;
-typedef NCollection_DoubleMap<Handle(Standard_Type),Standard_Integer>::Iterator BinMDF_DoubleMapIteratorOfTypeIdMap;
-
+typedef NCollection_DoubleMap<Handle(Standard_Type), Standard_Integer> BinMDF_TypeIdMap;
+typedef NCollection_DoubleMap<Handle(Standard_Type), Standard_Integer>::Iterator
+  BinMDF_DoubleMapIteratorOfTypeIdMap;
 
 #endif

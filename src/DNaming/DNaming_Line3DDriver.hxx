@@ -1,5 +1,5 @@
 // Created on: 2010-02-26
-// Created by: Sergey ZARITCHNY <sergey.zaritchny@opencascade.com> 
+// Created by: Sergey ZARITCHNY <sergey.zaritchny@opencascade.com>
 // Copyright (c) 2010-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
@@ -26,7 +26,6 @@ class TFunction_Logbook;
 class TDF_Label;
 class TopoDS_Wire;
 
-
 class DNaming_Line3DDriver;
 DEFINE_STANDARD_HANDLE(DNaming_Line3DDriver, TFunction_Driver)
 
@@ -35,55 +34,40 @@ class DNaming_Line3DDriver : public TFunction_Driver
 {
 
 public:
-
-  
   //! Constructor
   //! validation
   //! ==========
   Standard_EXPORT DNaming_Line3DDriver();
-  
+
   //! Validates labels of a function in <log>.
   //! In regeneration mode this method must be called (by the
   //! solver) even if the function is not executed, to build
   //! the valid label scope.
   //! execution of function
   //! ======================
-  Standard_EXPORT virtual void Validate (Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void Validate(Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
+
   //! Analyse in <log> if the loaded function must be executed
   //! (i.e.arguments are modified) or not.
   //! If the Function label itself is modified, the function must
   //! be executed.
-  Standard_EXPORT virtual Standard_Boolean MustExecute (const Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual Standard_Boolean MustExecute(
+    const Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
+
   //! Execute the function and push in <log> the impacted
   //! labels (see method SetImpacted).
-  Standard_EXPORT virtual Standard_Integer Execute (Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer Execute(Handle(TFunction_Logbook)& theLog) const
+    Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(DNaming_Line3DDriver,TFunction_Driver)
+  DEFINE_STANDARD_RTTIEXT(DNaming_Line3DDriver, TFunction_Driver)
 
 protected:
-
-
-
-
 private:
-
-  
   //! Loads a Line3D in a data framework
-  Standard_EXPORT void LoadNamingDS (const TDF_Label& theResultLabel, const TopoDS_Wire& theWire, const TopTools_Array1OfShape& theVertexes, const Standard_Boolean isClosed = Standard_False) const;
-
-
-
+  Standard_EXPORT void LoadNamingDS(const TDF_Label&              theResultLabel,
+                                    const TopoDS_Wire&            theWire,
+                                    const TopTools_Array1OfShape& theVertexes,
+                                    const Standard_Boolean        isClosed = Standard_False) const;
 };
-
-
-
-
-
-
 
 #endif // _DNaming_Line3DDriver_HeaderFile

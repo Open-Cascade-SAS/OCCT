@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(StepGeom_BoundaryCurve)> StepGeom_Array1OfBoundaryCurve;
 
-
 #endif

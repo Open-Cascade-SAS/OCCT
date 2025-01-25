@@ -27,7 +27,6 @@ class Standard_Transient;
 class Interface_InterfaceModel;
 class TCollection_AsciiString;
 
-
 class IGESSelect_SelectName;
 DEFINE_STANDARD_HANDLE(IGESSelect_SelectName, IFSelect_SelectExtract)
 
@@ -40,48 +39,32 @@ class IGESSelect_SelectName : public IFSelect_SelectExtract
 {
 
 public:
-
-  
   //! Creates an empty SelectName : every entity is considered
   //! good (no filter active)
   Standard_EXPORT IGESSelect_SelectName();
-  
+
   //! Returns True if Name of Entity complies with Name Filter
-  Standard_EXPORT Standard_Boolean Sort (const Standard_Integer rank, const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
-  
+  Standard_EXPORT Standard_Boolean
+    Sort(const Standard_Integer                  rank,
+         const Handle(Standard_Transient)&       ent,
+         const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+
   //! Sets a Name as a criterium : IGES Entities which have this name
   //! are kept (without regular expression, there should be at most
   //! one). <name> can be regarded as a Text Parameter
-  Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& name);
-  
+  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& name);
+
   //! Returns the Name used as Filter
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
-  
+
   //! Returns the Selection criterium : "IGES Entity, Name : <name>"
   Standard_EXPORT TCollection_AsciiString ExtractLabel() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectName,IFSelect_SelectExtract)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectName, IFSelect_SelectExtract)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(TCollection_HAsciiString) thename;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESSelect_SelectName_HeaderFile

@@ -26,72 +26,57 @@
 class IntPolyh_Edge
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Constructor
-  IntPolyh_Edge() :
-    myPoint1(-1), myPoint2(-1), myTriangle1(-1), myTriangle2(-1)
-  {}
+  IntPolyh_Edge()
+      : myPoint1(-1),
+        myPoint2(-1),
+        myTriangle1(-1),
+        myTriangle2(-1)
+  {
+  }
+
   //! Constructor
   IntPolyh_Edge(const Standard_Integer thePoint1,
                 const Standard_Integer thePoint2,
                 const Standard_Integer theTriangle1,
                 const Standard_Integer theTriangle2)
-  :
-    myPoint1(thePoint1),
-    myPoint2(thePoint2),
-    myTriangle1(theTriangle1),
-    myTriangle2(theTriangle2)
-  {}
+      : myPoint1(thePoint1),
+        myPoint2(thePoint2),
+        myTriangle1(theTriangle1),
+        myTriangle2(theTriangle2)
+  {
+  }
 
   //! Returns the first point
-  Standard_Integer FirstPoint() const
-  {
-    return myPoint1;
-  }
+  Standard_Integer FirstPoint() const { return myPoint1; }
+
   //! Returns the second point
-  Standard_Integer SecondPoint() const
-  {
-    return myPoint2;
-  }
+  Standard_Integer SecondPoint() const { return myPoint2; }
+
   //! Returns the first triangle
-  Standard_Integer FirstTriangle() const
-  {
-    return myTriangle1;
-  }
+  Standard_Integer FirstTriangle() const { return myTriangle1; }
+
   //! Returns the second triangle
-  Standard_Integer SecondTriangle() const
-  {
-    return myTriangle2;
-  }
+  Standard_Integer SecondTriangle() const { return myTriangle2; }
+
   //! Sets the first point
-  void SetFirstPoint (const Standard_Integer thePoint)
-  {
-    myPoint1 = thePoint;
-  }
+  void SetFirstPoint(const Standard_Integer thePoint) { myPoint1 = thePoint; }
+
   //! Sets the second point
-  void SetSecondPoint (const Standard_Integer thePoint)
-  {
-    myPoint2 = thePoint;
-  }
+  void SetSecondPoint(const Standard_Integer thePoint) { myPoint2 = thePoint; }
+
   //! Sets the first triangle
-  void SetFirstTriangle (const Standard_Integer theTriangle)
-  {
-    myTriangle1 = theTriangle;
-  }
+  void SetFirstTriangle(const Standard_Integer theTriangle) { myTriangle1 = theTriangle; }
+
   //! Sets the second triangle
-  void SetSecondTriangle (const Standard_Integer theTriangle)
-  {
-    myTriangle2 = theTriangle;
-  }
-  
-  Standard_EXPORT void Dump (const Standard_Integer v) const;
+  void SetSecondTriangle(const Standard_Integer theTriangle) { myTriangle2 = theTriangle; }
+
+  Standard_EXPORT void Dump(const Standard_Integer v) const;
 
 protected:
-
 private:
-
   Standard_Integer myPoint1;
   Standard_Integer myPoint2;
   Standard_Integer myTriangle1;

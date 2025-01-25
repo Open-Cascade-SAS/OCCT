@@ -24,100 +24,94 @@
 #include <Poly_Triangulation.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 
-//=======================================================================
-//function : Distance
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Boolean BRepExtrema_Poly::Distance (const TopoDS_Shape& S1, const TopoDS_Shape& S2,
-                                             gp_Pnt& P1, gp_Pnt& P2, Standard_Real& dist)
+Standard_Boolean BRepExtrema_Poly::Distance(const TopoDS_Shape& S1,
+                                            const TopoDS_Shape& S2,
+                                            gp_Pnt&             P1,
+                                            gp_Pnt&             P2,
+                                            Standard_Real&      dist)
 {
   dist = Precision::Infinite();
 
-  TopLoc_Location L;
+  TopLoc_Location            L;
   Handle(Poly_Triangulation) Tr;
-  TopExp_Explorer exFace;
+  TopExp_Explorer            exFace;
 
   Standard_Integer nbn1 = 0;
-  for (exFace.Init(S1, TopAbs_FACE);
-       exFace.More(); 
-       exFace.Next())
+  for (exFace.Init(S1, TopAbs_FACE); exFace.More(); exFace.Next())
   {
     const TopoDS_Face& F = TopoDS::Face(exFace.Current());
-    Tr = BRep_Tool::Triangulation(F,L);
+    Tr                   = BRep_Tool::Triangulation(F, L);
     if (!Tr.IsNull())
       nbn1 += Tr->NbNodes();
   }
-  if (nbn1 == 0) return Standard_False;
+  if (nbn1 == 0)
+    return Standard_False;
 
   Standard_Integer nbn2 = 0;
-  for (exFace.Init(S2, TopAbs_FACE);
-       exFace.More(); 
-       exFace.Next())
+  for (exFace.Init(S2, TopAbs_FACE); exFace.More(); exFace.Next())
   {
     const TopoDS_Face& F = TopoDS::Face(exFace.Current());
-    Tr = BRep_Tool::Triangulation(F,L);
+    Tr                   = BRep_Tool::Triangulation(F, L);
     if (!Tr.IsNull())
       nbn2 += Tr->NbNodes();
   }
-  if (nbn2 == 0) return Standard_False;
+  if (nbn2 == 0)
+    return Standard_False;
 
-  Standard_Integer i,n;
+  Standard_Integer i, n;
 
-  TColgp_Array1OfPnt TP1(1,nbn1);
+  TColgp_Array1OfPnt TP1(1, nbn1);
   nbn1 = 0;
-  
-  for (exFace.Init(S1, TopAbs_FACE);
-       exFace.More(); 
-       exFace.Next())
+
+  for (exFace.Init(S1, TopAbs_FACE); exFace.More(); exFace.Next())
   {
     const TopoDS_Face& F = TopoDS::Face(exFace.Current());
-    Tr = BRep_Tool::Triangulation(F,L);
+    Tr                   = BRep_Tool::Triangulation(F, L);
     if (!Tr.IsNull())
     {
       const gp_Trsf aTrsf = L;
-      n = Tr->NbNodes();
+      n                   = Tr->NbNodes();
       for (i = 1; i <= n; i++)
       {
-        nbn1++; 
-        TP1.SetValue (nbn1, Tr->Node (i).Transformed (aTrsf));
-      }
-    }
-  }
-  
-  TColgp_Array1OfPnt TP2(1,nbn2);
-  nbn2 = 0;
-  
-  for (exFace.Init(S2, TopAbs_FACE);
-       exFace.More(); 
-       exFace.Next())
-  {
-    const TopoDS_Face& F = TopoDS::Face(exFace.Current());
-    Tr = BRep_Tool::Triangulation(F,L);
-    if (!Tr.IsNull())
-    {
-      const gp_Trsf aTrsf = L;
-      n = Tr->NbNodes();
-      for (i = 1; i <= n; i++)
-      {
-        nbn2++; 
-        TP2.SetValue (nbn2, Tr->Node (i).Transformed (aTrsf));
+        nbn1++;
+        TP1.SetValue(nbn1, Tr->Node(i).Transformed(aTrsf));
       }
     }
   }
 
-  Standard_Integer i1,i2;
+  TColgp_Array1OfPnt TP2(1, nbn2);
+  nbn2 = 0;
+
+  for (exFace.Init(S2, TopAbs_FACE); exFace.More(); exFace.Next())
+  {
+    const TopoDS_Face& F = TopoDS::Face(exFace.Current());
+    Tr                   = BRep_Tool::Triangulation(F, L);
+    if (!Tr.IsNull())
+    {
+      const gp_Trsf aTrsf = L;
+      n                   = Tr->NbNodes();
+      for (i = 1; i <= n; i++)
+      {
+        nbn2++;
+        TP2.SetValue(nbn2, Tr->Node(i).Transformed(aTrsf));
+      }
+    }
+  }
+
+  Standard_Integer i1, i2;
   for (i1 = 1; i1 <= nbn1; i1++)
   {
     const gp_Pnt& PP1 = TP1(i1);
     for (i2 = 1; i2 <= nbn2; i2++)
     {
-      const gp_Pnt& PP2 = TP2(i2);
+      const gp_Pnt&       PP2  = TP2(i2);
       const Standard_Real dCur = PP1.Distance(PP2);
       if (dist > dCur)
       {
-        P1 = PP1;
-        P2 = PP2;
+        P1   = PP1;
+        P2   = PP2;
         dist = dCur;
       }
     }

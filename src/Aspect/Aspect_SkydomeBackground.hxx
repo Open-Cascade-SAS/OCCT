@@ -26,7 +26,6 @@
 class Aspect_SkydomeBackground
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
   //! Creates a window skydome background.
@@ -35,17 +34,19 @@ public:
   Standard_EXPORT Aspect_SkydomeBackground();
 
   //! Creates a window skydome background with given parameters.
-  //! @param[in] theSunDirection direction to the sun (moon). Sun direction with negative Y component
+  //! @param[in] theSunDirection direction to the sun (moon). Sun direction with negative Y
+  //! component
   //!                            represents moon with (-X, -Y, -Z) direction.
   //! @param[in] theCloudiness   cloud intensity, 0.0 means no clouds at all and 1.0 - high clody.
-  //! @param[in] theTime         time parameter of simulation. Might be tweaked to slightly change appearance.
+  //! @param[in] theTime         time parameter of simulation. Might be tweaked to slightly change
+  //! appearance.
   //! @param[in] theFogginess    fog intensity, 0.0 means no fog and 1.0 - high fogginess
   //! @param[in] theSize         size of cubemap side in pixels.
-  Standard_EXPORT Aspect_SkydomeBackground (const gp_Dir& theSunDirection,
-                                            Standard_ShortReal theCloudiness,
-                                            Standard_ShortReal theTime,
-                                            Standard_ShortReal theFogginess,
-                                            Standard_Integer   theSize);
+  Standard_EXPORT Aspect_SkydomeBackground(const gp_Dir&      theSunDirection,
+                                           Standard_ShortReal theCloudiness,
+                                           Standard_ShortReal theTime,
+                                           Standard_ShortReal theFogginess,
+                                           Standard_Integer   theSize);
 
   //! Destructor.
   Standard_EXPORT ~Aspect_SkydomeBackground();
@@ -56,7 +57,7 @@ public:
 
   //! Get cloud intensity. By default this value is 0.2
   //! 0.0 means no clouds at all and 1.0 - high clody.
-  Standard_ShortReal Cloudiness()  const { return myCloudiness; }
+  Standard_ShortReal Cloudiness() const { return myCloudiness; }
 
   //! Get time of cloud simulation. By default this value is 0.0
   //! This value might be tweaked to slightly change appearance of clouds.
@@ -71,34 +72,32 @@ public:
 
   //! Set sun direction. By default this value is (0, 1, 0)
   //! Sun direction with negative Y component represents moon with (-X, -Y, -Z) direction.
-  void SetSunDirection (const gp_Dir& theSunDirection) { mySunDirection = theSunDirection; }
+  void SetSunDirection(const gp_Dir& theSunDirection) { mySunDirection = theSunDirection; }
 
   //! Set cloud intensity. By default this value is 0.2
   //! 0.0 means no clouds at all and 1.0 - high clody.
-  Standard_EXPORT void SetCloudiness (Standard_ShortReal theCloudiness);
+  Standard_EXPORT void SetCloudiness(Standard_ShortReal theCloudiness);
 
   //! Set time of cloud simulation. By default this value is 0.0
   //! This value might be tweaked to slightly change appearance of clouds.
-  void SetTimeParameter (Standard_ShortReal theTime) { myTime = theTime; }
+  void SetTimeParameter(Standard_ShortReal theTime) { myTime = theTime; }
 
   //! Set fog intensity. By default this value is 0.0
   //! 0.0 means no fog and 1.0 - high fogginess
-  Standard_EXPORT void SetFogginess (Standard_ShortReal theFogginess);
+  Standard_EXPORT void SetFogginess(Standard_ShortReal theFogginess);
 
   //! Set size of cubemap. By default this value is 512
-  Standard_EXPORT void SetSize (Standard_Integer theSize);
+  Standard_EXPORT void SetSize(Standard_Integer theSize);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 private:
-
-  gp_Dir mySunDirection;           //!< Sun (moon) light direction.
-  Standard_ShortReal myCloudiness; //!< Cloud intensity.
-  Standard_ShortReal myTime;       //!< Simulation time parameter.
-  Standard_ShortReal myFogginess;  //!< Fog intensity
-  Standard_Integer   mySize;       //!< Size of cubemap in pixels
-
+  gp_Dir             mySunDirection; //!< Sun (moon) light direction.
+  Standard_ShortReal myCloudiness;   //!< Cloud intensity.
+  Standard_ShortReal myTime;         //!< Simulation time parameter.
+  Standard_ShortReal myFogginess;    //!< Fog intensity
+  Standard_Integer   mySize;         //!< Size of cubemap in pixels
 };
 
 #endif // _Aspect_SkydomeBackground_Header

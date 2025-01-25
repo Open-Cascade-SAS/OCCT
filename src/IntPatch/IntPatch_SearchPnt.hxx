@@ -21,5 +21,4 @@
 
 typedef Intf_InterferencePolygon2d IntPatch_SearchPnt;
 
-
 #endif // _IntPatch_SearchPnt_HeaderFile

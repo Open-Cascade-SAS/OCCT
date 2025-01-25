@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -29,35 +29,35 @@ DEFINE_STANDARD_HANDLE(StepKinematics_KinematicPair, StepGeom_GeometricRepresent
 //! Representation of STEP entity KinematicPair
 class StepKinematics_KinematicPair : public StepGeom_GeometricRepresentationItem
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_KinematicPair();
 
   //! Initialize all fields (own and inherited)
- Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                           const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Name,
-                           const Standard_Boolean hasItemDefinedTransformation_Description,
-                           const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Description,
-                           const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem1,
-                           const Handle(StepRepr_RepresentationItem)& theItemDefinedTransformation_TransformItem2,
-                           const Handle(StepKinematics_KinematicJoint)& theJoint);
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
+    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
+    const Standard_Boolean                       hasItemDefinedTransformation_Description,
+    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
+    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
+    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
+    const Handle(StepKinematics_KinematicJoint)& theJoint);
 
   //! Returns data for supertype ItemDefinedTransformation
   Standard_EXPORT Handle(StepRepr_ItemDefinedTransformation) ItemDefinedTransformation() const;
   //! Sets data for supertype ItemDefinedTransformation
-  Standard_EXPORT void SetItemDefinedTransformation (const Handle(StepRepr_ItemDefinedTransformation)& theItemDefinedTransformation);
+  Standard_EXPORT void SetItemDefinedTransformation(
+    const Handle(StepRepr_ItemDefinedTransformation)& theItemDefinedTransformation);
 
   //! Returns field Joint
   Standard_EXPORT Handle(StepKinematics_KinematicJoint) Joint() const;
   //! Sets field Joint
-  Standard_EXPORT void SetJoint (const Handle(StepKinematics_KinematicJoint)& theJoint);
+  Standard_EXPORT void SetJoint(const Handle(StepKinematics_KinematicJoint)& theJoint);
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_KinematicPair, StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_KinematicPair, StepGeom_GeometricRepresentationItem)
 
 private:
   Handle(StepRepr_ItemDefinedTransformation) myItemDefinedTransformation; //!< supertype
-  Handle(StepKinematics_KinematicJoint) myJoint;
-
+  Handle(StepKinematics_KinematicJoint)      myJoint;
 };
 #endif // _StepKinematics_KinematicPair_HeaderFile_

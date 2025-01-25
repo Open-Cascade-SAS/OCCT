@@ -17,12 +17,12 @@
 
 #include <StepRepr_StructuralResponsePropertyDefinitionRepresentation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepRepr_StructuralResponsePropertyDefinitionRepresentation,StepRepr_PropertyDefinitionRepresentation)
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_StructuralResponsePropertyDefinitionRepresentation,
+                           StepRepr_PropertyDefinitionRepresentation)
 
-//=======================================================================
-//function : StepRepr_StructuralResponsePropertyDefinitionRepresentation
-//purpose  : 
-//=======================================================================
-StepRepr_StructuralResponsePropertyDefinitionRepresentation::StepRepr_StructuralResponsePropertyDefinitionRepresentation ()
+//=================================================================================================
+
+StepRepr_StructuralResponsePropertyDefinitionRepresentation::
+  StepRepr_StructuralResponsePropertyDefinitionRepresentation()
 {
 }

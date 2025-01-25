@@ -25,17 +25,20 @@ class OpenGl_TextureSet : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(OpenGl_TextureSet, Standard_Transient)
 public:
-
   //! Texture slot - combination of Texture and binding Unit.
   struct TextureSlot
   {
     Handle(OpenGl_Texture) Texture;
     Graphic3d_TextureUnit  Unit;
 
-    operator const Handle(OpenGl_Texture)& () const { return Texture; }
-    operator       Handle(OpenGl_Texture)& ()       { return Texture; }
+    operator const Handle(OpenGl_Texture) & () const { return Texture; }
 
-    TextureSlot() : Unit (Graphic3d_TextureUnit_0) {}
+    operator Handle(OpenGl_Texture) & () { return Texture; }
+
+    TextureSlot()
+        : Unit(Graphic3d_TextureUnit_0)
+    {
+    }
   };
 
   //! Class for iterating texture set.
@@ -46,35 +49,53 @@ public:
     Iterator() {}
 
     //! Constructor.
-    Iterator (const Handle(OpenGl_TextureSet)& theSet)
+    Iterator(const Handle(OpenGl_TextureSet)& theSet)
     {
       if (!theSet.IsNull())
       {
-        NCollection_Array1<TextureSlot>::Iterator::Init (theSet->myTextures);
+        NCollection_Array1<TextureSlot>::Iterator::Init(theSet->myTextures);
       }
     }
 
     //! Access texture.
-    const Handle(OpenGl_Texture)& Value() const { return NCollection_Array1<TextureSlot>::Iterator::Value().Texture; }
-    Handle(OpenGl_Texture)& ChangeValue()       { return NCollection_Array1<TextureSlot>::Iterator::ChangeValue().Texture; }
+    const Handle(OpenGl_Texture)& Value() const
+    {
+      return NCollection_Array1<TextureSlot>::Iterator::Value().Texture;
+    }
+
+    Handle(OpenGl_Texture)& ChangeValue()
+    {
+      return NCollection_Array1<TextureSlot>::Iterator::ChangeValue().Texture;
+    }
 
     //! Access texture unit.
-    Graphic3d_TextureUnit  Unit() const { return NCollection_Array1<TextureSlot>::Iterator::Value().Unit; }
-    Graphic3d_TextureUnit& ChangeUnit() { return NCollection_Array1<TextureSlot>::Iterator::ChangeValue().Unit; }
+    Graphic3d_TextureUnit Unit() const
+    {
+      return NCollection_Array1<TextureSlot>::Iterator::Value().Unit;
+    }
+
+    Graphic3d_TextureUnit& ChangeUnit()
+    {
+      return NCollection_Array1<TextureSlot>::Iterator::ChangeValue().Unit;
+    }
   };
 
 public:
-
   //! Empty constructor.
-  OpenGl_TextureSet() : myTextureSetBits (Graphic3d_TextureSetBits_NONE) {}
+  OpenGl_TextureSet()
+      : myTextureSetBits(Graphic3d_TextureSetBits_NONE)
+  {
+  }
 
   //! Constructor.
-  OpenGl_TextureSet (Standard_Integer theNbTextures)
-  : myTextures (0, theNbTextures - 1),
-    myTextureSetBits (Graphic3d_TextureSetBits_NONE) {}
+  OpenGl_TextureSet(Standard_Integer theNbTextures)
+      : myTextures(0, theNbTextures - 1),
+        myTextureSetBits(Graphic3d_TextureSetBits_NONE)
+  {
+  }
 
   //! Constructor for a single texture.
-  Standard_EXPORT OpenGl_TextureSet (const Handle(OpenGl_Texture)& theTexture);
+  Standard_EXPORT OpenGl_TextureSet(const Handle(OpenGl_Texture)& theTexture);
 
   //! Return texture units declared within the program, @sa Graphic3d_TextureSetBits.
   Standard_Integer TextureSetBits() const { return myTextureSetBits; }
@@ -116,10 +137,16 @@ public:
   Graphic3d_TextureUnit& ChangeLastUnit() { return myTextures.ChangeLast().Unit; }
 
   //! Return the texture at specified position within [0, Size()) range.
-  const Handle(OpenGl_Texture)& Value (Standard_Integer theIndex) const { return myTextures.Value (theIndex).Texture; }
+  const Handle(OpenGl_Texture)& Value(Standard_Integer theIndex) const
+  {
+    return myTextures.Value(theIndex).Texture;
+  }
 
   //! Return the texture at specified position within [0, Size()) range.
-  Handle(OpenGl_Texture)& ChangeValue (Standard_Integer theIndex) { return myTextures.ChangeValue (theIndex).Texture; }
+  Handle(OpenGl_Texture)& ChangeValue(Standard_Integer theIndex)
+  {
+    return myTextures.ChangeValue(theIndex).Texture;
+  }
 
   //! Return TRUE if texture color modulation has been enabled for the first texture
   //! or if texture is not set at all.
@@ -134,15 +161,13 @@ public:
   //! Nullify all handles.
   void InitZero()
   {
-    myTextures.Init (TextureSlot());
+    myTextures.Init(TextureSlot());
     myTextureSetBits = Graphic3d_TextureSetBits_NONE;
   }
 
 protected:
-
   NCollection_Array1<TextureSlot> myTextures;
-  Standard_Integer myTextureSetBits;
-
+  Standard_Integer                myTextureSetBits;
 };
 
 #endif //_OpenGl_TextureSet_Header

@@ -27,48 +27,33 @@ class StepShape_ConnectedFaceShapeRepresentation;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
-
 //! Read & Write tool for ConnectedFaceShapeRepresentation
-class RWStepShape_RWConnectedFaceShapeRepresentation 
+class RWStepShape_RWConnectedFaceShapeRepresentation
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor
   Standard_HIDDEN RWStepShape_RWConnectedFaceShapeRepresentation();
-  
+
   //! Reads ConnectedFaceShapeRepresentation
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepShape_ConnectedFaceShapeRepresentation)& ent) const;
-  
+  Standard_HIDDEN void ReadStep(
+    const Handle(StepData_StepReaderData)&                    data,
+    const Standard_Integer                                    num,
+    Handle(Interface_Check)&                                  ach,
+    const Handle(StepShape_ConnectedFaceShapeRepresentation)& ent) const;
+
   //! Writes ConnectedFaceShapeRepresentation
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepShape_ConnectedFaceShapeRepresentation)& ent) const;
-  
+  Standard_HIDDEN void WriteStep(
+    StepData_StepWriter&                                      SW,
+    const Handle(StepShape_ConnectedFaceShapeRepresentation)& ent) const;
+
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share (const Handle(StepShape_ConnectedFaceShapeRepresentation)& ent, Interface_EntityIterator& iter) const;
-
-
-
+  Standard_HIDDEN void Share(const Handle(StepShape_ConnectedFaceShapeRepresentation)& ent,
+                             Interface_EntityIterator&                                 iter) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepShape_RWConnectedFaceShapeRepresentation_HeaderFile

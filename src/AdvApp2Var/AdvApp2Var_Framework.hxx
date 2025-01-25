@@ -31,51 +31,66 @@
 class AdvApp2Var_Iso;
 class AdvApp2Var_Node;
 
-
-
-class AdvApp2Var_Framework 
+class AdvApp2Var_Framework
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT AdvApp2Var_Framework();
-  
-  Standard_EXPORT AdvApp2Var_Framework(const AdvApp2Var_SequenceOfNode& Frame, const AdvApp2Var_SequenceOfStrip& UFrontier, const AdvApp2Var_SequenceOfStrip& VFrontier);
+
+  Standard_EXPORT AdvApp2Var_Framework(const AdvApp2Var_SequenceOfNode&  Frame,
+                                       const AdvApp2Var_SequenceOfStrip& UFrontier,
+                                       const AdvApp2Var_SequenceOfStrip& VFrontier);
 
   //! search the Index of the first Iso not approximated,
   //! if all Isos are approximated NULL is returned.
-  Standard_EXPORT Handle(AdvApp2Var_Iso) FirstNotApprox (Standard_Integer& IndexIso, Standard_Integer& IndexStrip) const;
-  
-  Standard_EXPORT Standard_Integer FirstNode (const GeomAbs_IsoType Type, const Standard_Integer IndexIso, const Standard_Integer IndexStrip) const;
-  
-  Standard_EXPORT Standard_Integer LastNode (const GeomAbs_IsoType Type, const Standard_Integer IndexIso, const Standard_Integer IndexStrip) const;
-  
-  Standard_EXPORT void ChangeIso (const Standard_Integer IndexIso, const Standard_Integer IndexStrip, const Handle(AdvApp2Var_Iso)& anIso);
-  
-  const Handle(AdvApp2Var_Node)& Node (const Standard_Integer IndexNode) const { return myNodeConstraints.Value(IndexNode); }
-  
-  Standard_EXPORT const Handle(AdvApp2Var_Node)& Node (const Standard_Real U, const Standard_Real V) const;
-  
-  Standard_EXPORT const AdvApp2Var_Iso& IsoU (const Standard_Real U, const Standard_Real V0, const Standard_Real V1) const;
-  
-  Standard_EXPORT const AdvApp2Var_Iso& IsoV (const Standard_Real U0, const Standard_Real U1, const Standard_Real V) const;
-  
-  Standard_EXPORT void UpdateInU (const Standard_Real CuttingValue);
-  
-  Standard_EXPORT void UpdateInV (const Standard_Real CuttingValue);
-  
-  Standard_EXPORT const Handle(TColStd_HArray1OfReal)& UEquation (const Standard_Integer IndexIso, const Standard_Integer IndexStrip) const;
-  
-  Standard_EXPORT const Handle(TColStd_HArray1OfReal)& VEquation (const Standard_Integer IndexIso, const Standard_Integer IndexStrip) const;
+  Standard_EXPORT Handle(AdvApp2Var_Iso) FirstNotApprox(Standard_Integer& IndexIso,
+                                                        Standard_Integer& IndexStrip) const;
+
+  Standard_EXPORT Standard_Integer FirstNode(const GeomAbs_IsoType  Type,
+                                             const Standard_Integer IndexIso,
+                                             const Standard_Integer IndexStrip) const;
+
+  Standard_EXPORT Standard_Integer LastNode(const GeomAbs_IsoType  Type,
+                                            const Standard_Integer IndexIso,
+                                            const Standard_Integer IndexStrip) const;
+
+  Standard_EXPORT void ChangeIso(const Standard_Integer        IndexIso,
+                                 const Standard_Integer        IndexStrip,
+                                 const Handle(AdvApp2Var_Iso)& anIso);
+
+  const Handle(AdvApp2Var_Node)& Node(const Standard_Integer IndexNode) const
+  {
+    return myNodeConstraints.Value(IndexNode);
+  }
+
+  Standard_EXPORT const Handle(AdvApp2Var_Node)& Node(const Standard_Real U,
+                                                      const Standard_Real V) const;
+
+  Standard_EXPORT const AdvApp2Var_Iso& IsoU(const Standard_Real U,
+                                             const Standard_Real V0,
+                                             const Standard_Real V1) const;
+
+  Standard_EXPORT const AdvApp2Var_Iso& IsoV(const Standard_Real U0,
+                                             const Standard_Real U1,
+                                             const Standard_Real V) const;
+
+  Standard_EXPORT void UpdateInU(const Standard_Real CuttingValue);
+
+  Standard_EXPORT void UpdateInV(const Standard_Real CuttingValue);
+
+  Standard_EXPORT const Handle(TColStd_HArray1OfReal)& UEquation(
+    const Standard_Integer IndexIso,
+    const Standard_Integer IndexStrip) const;
+
+  Standard_EXPORT const Handle(TColStd_HArray1OfReal)& VEquation(
+    const Standard_Integer IndexIso,
+    const Standard_Integer IndexStrip) const;
 
 private:
-
-  AdvApp2Var_SequenceOfNode myNodeConstraints;
+  AdvApp2Var_SequenceOfNode  myNodeConstraints;
   AdvApp2Var_SequenceOfStrip myUConstraints;
   AdvApp2Var_SequenceOfStrip myVConstraints;
-
 };
 
 #endif // _AdvApp2Var_Framework_HeaderFile

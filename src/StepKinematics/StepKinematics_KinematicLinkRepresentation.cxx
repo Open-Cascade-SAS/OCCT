@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -18,22 +18,17 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicLinkRepresentation, StepRepr_Representation)
 
-//=======================================================================
-//function : StepKinematics_KinematicLinkRepresentation
-//purpose  :
-//=======================================================================
-StepKinematics_KinematicLinkRepresentation::StepKinematics_KinematicLinkRepresentation ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void StepKinematics_KinematicLinkRepresentation::Init (const Handle(TCollection_HAsciiString)& theRepresentation_Name,
-                                                       const Handle(StepRepr_HArray1OfRepresentationItem)& theRepresentation_Items,
-                                                       const Handle(StepRepr_RepresentationContext)& theRepresentation_ContextOfItems,
-                                                       const Handle(StepKinematics_KinematicLink)& theRepresentedLink)
+StepKinematics_KinematicLinkRepresentation::StepKinematics_KinematicLinkRepresentation() {}
+
+//=================================================================================================
+
+void StepKinematics_KinematicLinkRepresentation::Init(
+  const Handle(TCollection_HAsciiString)&             theRepresentation_Name,
+  const Handle(StepRepr_HArray1OfRepresentationItem)& theRepresentation_Items,
+  const Handle(StepRepr_RepresentationContext)&       theRepresentation_ContextOfItems,
+  const Handle(StepKinematics_KinematicLink)&         theRepresentedLink)
 {
   StepRepr_Representation::Init(theRepresentation_Name,
                                 theRepresentation_Items,
@@ -42,20 +37,18 @@ void StepKinematics_KinematicLinkRepresentation::Init (const Handle(TCollection_
   myRepresentedLink = theRepresentedLink;
 }
 
-//=======================================================================
-//function : RepresentedLink
-//purpose  :
-//=======================================================================
-Handle(StepKinematics_KinematicLink) StepKinematics_KinematicLinkRepresentation::RepresentedLink () const
+//=================================================================================================
+
+Handle(StepKinematics_KinematicLink) StepKinematics_KinematicLinkRepresentation::RepresentedLink()
+  const
 {
   return myRepresentedLink;
 }
 
-//=======================================================================
-//function : SetRepresentedLink
-//purpose  :
-//=======================================================================
-void StepKinematics_KinematicLinkRepresentation::SetRepresentedLink (const Handle(StepKinematics_KinematicLink)& theRepresentedLink)
+//=================================================================================================
+
+void StepKinematics_KinematicLinkRepresentation::SetRepresentedLink(
+  const Handle(StepKinematics_KinematicLink)& theRepresentedLink)
 {
   myRepresentedLink = theRepresentedLink;
 }

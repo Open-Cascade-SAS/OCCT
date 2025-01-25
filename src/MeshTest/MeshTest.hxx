@@ -23,42 +23,20 @@
 
 #include <Draw_Interpretor.hxx>
 
-
 //! Provides methods for testing the mesh algorithms.
-class MeshTest 
+class MeshTest
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Defines meshing commands
-  Standard_EXPORT static void Commands (Draw_Interpretor& DI);
-  
+  Standard_EXPORT static void Commands(Draw_Interpretor& DI);
+
   //! Defines plugin commands
-  Standard_EXPORT static void PluginCommands (Draw_Interpretor& DI);
-
-
-
+  Standard_EXPORT static void PluginCommands(Draw_Interpretor& DI);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _MeshTest_HeaderFile

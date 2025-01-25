@@ -19,27 +19,21 @@
 #include <StepShape_AngularLocation.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_AngularLocation,StepShape_DimensionalLocation)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_AngularLocation, StepShape_DimensionalLocation)
 
-//=======================================================================
-//function : StepShape_AngularLocation
-//purpose  : 
-//=======================================================================
-StepShape_AngularLocation::StepShape_AngularLocation ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+StepShape_AngularLocation::StepShape_AngularLocation() {}
 
-void StepShape_AngularLocation::Init (const Handle(TCollection_HAsciiString) &aShapeAspectRelationship_Name,
-                                      const Standard_Boolean hasShapeAspectRelationship_Description,
-                                      const Handle(TCollection_HAsciiString) &aShapeAspectRelationship_Description,
-                                      const Handle(StepRepr_ShapeAspect) &aShapeAspectRelationship_RelatingShapeAspect,
-                                      const Handle(StepRepr_ShapeAspect) &aShapeAspectRelationship_RelatedShapeAspect,
-                                      const StepShape_AngleRelator aAngleSelection)
+//=================================================================================================
+
+void StepShape_AngularLocation::Init(
+  const Handle(TCollection_HAsciiString)& aShapeAspectRelationship_Name,
+  const Standard_Boolean                  hasShapeAspectRelationship_Description,
+  const Handle(TCollection_HAsciiString)& aShapeAspectRelationship_Description,
+  const Handle(StepRepr_ShapeAspect)&     aShapeAspectRelationship_RelatingShapeAspect,
+  const Handle(StepRepr_ShapeAspect)&     aShapeAspectRelationship_RelatedShapeAspect,
+  const StepShape_AngleRelator            aAngleSelection)
 {
   StepShape_DimensionalLocation::Init(aShapeAspectRelationship_Name,
                                       hasShapeAspectRelationship_Description,
@@ -50,22 +44,16 @@ void StepShape_AngularLocation::Init (const Handle(TCollection_HAsciiString) &aS
   theAngleSelection = aAngleSelection;
 }
 
-//=======================================================================
-//function : AngleSelection
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepShape_AngleRelator StepShape_AngularLocation::AngleSelection () const
+StepShape_AngleRelator StepShape_AngularLocation::AngleSelection() const
 {
   return theAngleSelection;
 }
 
-//=======================================================================
-//function : SetAngleSelection
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepShape_AngularLocation::SetAngleSelection (const StepShape_AngleRelator aAngleSelection)
+void StepShape_AngularLocation::SetAngleSelection(const StepShape_AngleRelator aAngleSelection)
 {
   theAngleSelection = aAngleSelection;
 }

@@ -19,7 +19,7 @@
 //! Mode to make definite kind of transformations with AIS_Manipulator object.
 enum AIS_ManipulatorMode
 {
-  AIS_MM_None = 0,
+  AIS_MM_None        = 0,
   AIS_MM_Translation = 1,
   AIS_MM_Rotation,
   AIS_MM_Scaling,

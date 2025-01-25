@@ -11,7 +11,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement. 
+// commercial license or contractual agreement.
 
 #ifndef TreeModel_VisibilityState_H
 #define TreeModel_VisibilityState_H
@@ -30,7 +30,10 @@ class TreeModel_VisibilityState
 {
 public:
   //! Constructor
-  TreeModel_VisibilityState (TreeModel_ModelBase* theModel) : myModel (theModel) {}
+  TreeModel_VisibilityState(TreeModel_ModelBase* theModel)
+      : myModel(theModel)
+  {
+  }
 
   //! Destructor
   ~TreeModel_VisibilityState() {}
@@ -38,26 +41,28 @@ public:
   //! Returns true if visibility of the item can be changed
   //! \param theIndex tree model index
   //! \return boolean value
-  virtual bool CanBeVisible (const QModelIndex& theIndex) const = 0;
+  virtual bool CanBeVisible(const QModelIndex& theIndex) const = 0;
 
   //! Sets visibility state
   //! \param theIndex tree model index
   //! \param theState visibility state
   //! \param toEmitDataChanged boolean flag whether emit of the model should be done immediately
   //! \return true if state is changed
-  virtual bool SetVisible (const QModelIndex& theIndex, const bool theState, const bool toEmitDataChanged = true) = 0;
+  virtual bool SetVisible(const QModelIndex& theIndex,
+                          const bool         theState,
+                          const bool         toEmitDataChanged = true) = 0;
 
   //! Returns visibility state value
   //! \param theIndex tree model index
   //! \return boolean value
-  virtual bool IsVisible (const QModelIndex& theIndex) const = 0;
+  virtual bool IsVisible(const QModelIndex& theIndex) const = 0;
 
 protected:
   //! Processes the mouse clicked on the index.
   //! It changes the item visibility if model allows to change it.
   //! \theIndex tree model index
   //! \return true if click is processed
-  Standard_EXPORT bool processClicked (const QModelIndex& theIndex);
+  Standard_EXPORT bool processClicked(const QModelIndex& theIndex);
 
 protected:
   //! tree view model

@@ -20,11 +20,9 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf2d.hxx>
 #include <gp_Ax2d.hxx>
- 
 
 #define RealType Standard_ShortReal
 #define RealType_hxx <Standard_ShortReal.hxx>
 #define Bnd_B2x Bnd_B2f
 #define Bnd_B2x_hxx <Bnd_B2f.hxx>
 #include "../Bnd/Bnd_B2x.gxx"
-

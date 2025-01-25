@@ -18,12 +18,8 @@
 #include <Standard_Type.hxx>
 #include <StepBasic_ThermodynamicTemperatureUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ThermodynamicTemperatureUnit,StepBasic_NamedUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ThermodynamicTemperatureUnit, StepBasic_NamedUnit)
 
-//=======================================================================
-//function : StepBasic_ThermodynamicTemperatureUnit
-//purpose  : 
-//=======================================================================
-StepBasic_ThermodynamicTemperatureUnit::StepBasic_ThermodynamicTemperatureUnit ()
-{
-}
+//=================================================================================================
+
+StepBasic_ThermodynamicTemperatureUnit::StepBasic_ThermodynamicTemperatureUnit() {}

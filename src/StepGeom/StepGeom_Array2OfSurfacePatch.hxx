@@ -22,5 +22,4 @@
 
 typedef NCollection_Array2<Handle(StepGeom_SurfacePatch)> StepGeom_Array2OfSurfacePatch;
 
-
 #endif

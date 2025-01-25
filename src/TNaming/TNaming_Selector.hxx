@@ -27,7 +27,6 @@
 class TopoDS_Shape;
 class TNaming_NamedShape;
 
-
 //! This class provides a single API for selection of shapes.
 //! This involves both identification and selection of
 //! shapes in the data framework.
@@ -61,13 +60,11 @@ class TNaming_NamedShape;
 //! value    of the selected    Named  Shape  use the
 //! TNaming_Tool::GetShape    method,    as  for  any
 //! NamedShape attribute.
-class TNaming_Selector 
+class TNaming_Selector
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! To know if a shape is already identified (not selected)
   //! =======================================================
   //!
@@ -79,13 +76,16 @@ public:
   //! containing the first appearance of selection and
   //! not any other shape. In other words, selection
   //! must be the only shape stored in NS.
-  Standard_EXPORT static Standard_Boolean IsIdentified (const TDF_Label& access, const TopoDS_Shape& selection, Handle(TNaming_NamedShape)& NS, const Standard_Boolean Geometry = Standard_False);
-  
+  Standard_EXPORT static Standard_Boolean IsIdentified(
+    const TDF_Label&            access,
+    const TopoDS_Shape&         selection,
+    Handle(TNaming_NamedShape)& NS,
+    const Standard_Boolean      Geometry = Standard_False);
+
   //! Create a selector on this label
   //! to select a shape.
   //! ==================
   Standard_EXPORT TNaming_Selector(const TDF_Label& aLabel);
-  
 
   //! Creates a topological naming on the label
   //! aLabel given as an argument at construction time.
@@ -96,8 +96,11 @@ public:
   //! first appearance of Selection.
   //! This syntax is more robust than the previous
   //! syntax for this method.
-  Standard_EXPORT Standard_Boolean Select (const TopoDS_Shape& Selection, const TopoDS_Shape& Context, const Standard_Boolean Geometry = Standard_False, const Standard_Boolean KeepOrientatation = Standard_False) const;
-  
+  Standard_EXPORT Standard_Boolean
+    Select(const TopoDS_Shape&    Selection,
+           const TopoDS_Shape&    Context,
+           const Standard_Boolean Geometry          = Standard_False,
+           const Standard_Boolean KeepOrientatation = Standard_False) const;
 
   //! Creates a topological naming on the label
   //! aLabel given as an argument at construction time.
@@ -105,46 +108,29 @@ public:
   //! identified in the named shape returned in NamedShape.
   //! If Geometry is true, NamedShape contains the
   //! first appearance of Selection.
-  Standard_EXPORT Standard_Boolean Select (const TopoDS_Shape& Selection, const Standard_Boolean Geometry = Standard_False, const Standard_Boolean KeepOrientatation = Standard_False) const;
-  
+  Standard_EXPORT Standard_Boolean
+    Select(const TopoDS_Shape&    Selection,
+           const Standard_Boolean Geometry          = Standard_False,
+           const Standard_Boolean KeepOrientatation = Standard_False) const;
 
   //! Updates the topological naming on the label
   //! aLabel given as an argument at construction time.
   //! The underlying shape returned in the method
   //! NamedShape is updated.
   //! To read this shape, use the method TNaming_Tool::GetShape
-  Standard_EXPORT Standard_Boolean Solve (TDF_LabelMap& Valid) const;
-  
+  Standard_EXPORT Standard_Boolean Solve(TDF_LabelMap& Valid) const;
+
   //! Returns the attribute list args.
   //! This list contains the named shape on which the topological naming was built.
-  Standard_EXPORT void Arguments (TDF_AttributeMap& args) const;
-  
+  Standard_EXPORT void Arguments(TDF_AttributeMap& args) const;
+
   //! Returns the NamedShape build or under construction,
   //! which contains the topological naming..
   Standard_EXPORT Handle(TNaming_NamedShape) NamedShape() const;
 
-
-
-
 protected:
-
-
-
-
-
 private:
-
-
-
   TDF_Label myLabel;
-
-
 };
-
-
-
-
-
-
 
 #endif // _TNaming_Selector_HeaderFile

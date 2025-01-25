@@ -38,130 +38,121 @@ class AppDef_BSpParLeastSquareOfMyBSplGradientOfBSplineCompute;
 class AppParCurves_MultiBSpCurve;
 class math_Matrix;
 
-
-
-class AppDef_BSpParFunctionOfMyBSplGradientOfBSplineCompute  : public math_MultipleVarFunctionWithGradient
+class AppDef_BSpParFunctionOfMyBSplGradientOfBSplineCompute
+    : public math_MultipleVarFunctionWithGradient
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! initializes the fields of the function. The approximating
   //! curve has <NbPol> control points.
-  Standard_EXPORT AppDef_BSpParFunctionOfMyBSplGradientOfBSplineCompute(const AppDef_MultiLine& SSP, const Standard_Integer FirstPoint, const Standard_Integer LastPoint, const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints, const math_Vector& Parameters, const TColStd_Array1OfReal& Knots, const TColStd_Array1OfInteger& Mults, const Standard_Integer NbPol);
-  
+  Standard_EXPORT AppDef_BSpParFunctionOfMyBSplGradientOfBSplineCompute(
+    const AppDef_MultiLine&                               SSP,
+    const Standard_Integer                                FirstPoint,
+    const Standard_Integer                                LastPoint,
+    const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+    const math_Vector&                                    Parameters,
+    const TColStd_Array1OfReal&                           Knots,
+    const TColStd_Array1OfInteger&                        Mults,
+    const Standard_Integer                                NbPol);
+
   //! returns the number of variables of the function. It
   //! corresponds to the number of MultiPoints.
   Standard_EXPORT Standard_Integer NbVariables() const;
-  
+
   //! this method computes the new approximation of the
   //! MultiLine
   //! SSP and calculates F = sum (||Pui - Bi*Pi||2) for each
   //! point of the MultiLine.
-  Standard_EXPORT Standard_Boolean Value (const math_Vector& X, Standard_Real& F);
-  
+  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, Standard_Real& F);
+
   //! returns the gradient G of the sum above for the
   //! parameters Xi.
-  Standard_EXPORT Standard_Boolean Gradient (const math_Vector& X, math_Vector& G);
-  
+  Standard_EXPORT Standard_Boolean Gradient(const math_Vector& X, math_Vector& G);
+
   //! returns the value F=sum(||Pui - Bi*Pi||)2.
   //! returns the value G = grad(F) for the parameters Xi.
-  Standard_EXPORT Standard_Boolean Values (const math_Vector& X, Standard_Real& F, math_Vector& G);
-  
+  Standard_EXPORT Standard_Boolean Values(const math_Vector& X, Standard_Real& F, math_Vector& G);
+
   //! returns the new parameters of the MultiLine.
   Standard_EXPORT const math_Vector& NewParameters() const;
-  
+
   //! returns the MultiBSpCurve approximating the set after
   //! computing the value F or Grad(F).
   Standard_EXPORT AppParCurves_MultiBSpCurve CurveValue();
-  
+
   //! returns the distance between the MultiPoint of range
   //! IPoint and the curve CurveIndex.
-  Standard_EXPORT Standard_Real Error (const Standard_Integer IPoint, const Standard_Integer CurveIndex);
-  
+  Standard_EXPORT Standard_Real Error(const Standard_Integer IPoint,
+                                      const Standard_Integer CurveIndex);
+
   //! returns the maximum distance between the points
   //! and the MultiBSpCurve.
   Standard_EXPORT Standard_Real MaxError3d() const;
-  
+
   //! returns the maximum distance between the points
   //! and the MultiBSpCurve.
   Standard_EXPORT Standard_Real MaxError2d() const;
-  
+
   //! returns the function matrix used to approximate the
   //! multiline.
   Standard_EXPORT const math_Matrix& FunctionMatrix() const;
-  
+
   //! returns the derivative function matrix used to approximate the
   //! multiline.
   Standard_EXPORT const math_Matrix& DerivativeFunctionMatrix() const;
-  
+
   //! Returns the indexes of the first non null values of
   //! A and DA.
   //! The values are non null from Index(ieme point) +1
   //! to Index(ieme point) + degree +1.
   Standard_EXPORT const math_IntegerVector& Index() const;
-  
-  Standard_EXPORT AppParCurves_Constraint FirstConstraint (const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints, const Standard_Integer FirstPoint) const;
-  
-  Standard_EXPORT AppParCurves_Constraint LastConstraint (const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints, const Standard_Integer LastPoint) const;
-  
-  Standard_EXPORT void SetFirstLambda (const Standard_Real l1);
-  
-  Standard_EXPORT void SetLastLambda (const Standard_Real l2);
 
+  Standard_EXPORT AppParCurves_Constraint
+    FirstConstraint(const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+                    const Standard_Integer                                FirstPoint) const;
 
+  Standard_EXPORT AppParCurves_Constraint
+    LastConstraint(const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+                   const Standard_Integer                                LastPoint) const;
 
+  Standard_EXPORT void SetFirstLambda(const Standard_Real l1);
+
+  Standard_EXPORT void SetLastLambda(const Standard_Real l2);
 
 protected:
-
-  
   //! this method is used each time Value or Gradient is
   //! needed.
-  Standard_EXPORT void Perform (const math_Vector& X);
-
-
-
+  Standard_EXPORT void Perform(const math_Vector& X);
 
 private:
-
-
-
-  Standard_Boolean Done;
-  AppDef_MultiLine MyMultiLine;
-  AppParCurves_MultiBSpCurve MyMultiBSpCurve;
-  Standard_Integer nbpoles;
-  math_Vector myParameters;
-  Standard_Real FVal;
-  math_Vector ValGrad_F;
-  math_Matrix MyF;
-  math_Matrix PTLX;
-  math_Matrix PTLY;
-  math_Matrix PTLZ;
-  math_Matrix A;
-  math_Matrix DA;
+  Standard_Boolean                                         Done;
+  AppDef_MultiLine                                         MyMultiLine;
+  AppParCurves_MultiBSpCurve                               MyMultiBSpCurve;
+  Standard_Integer                                         nbpoles;
+  math_Vector                                              myParameters;
+  Standard_Real                                            FVal;
+  math_Vector                                              ValGrad_F;
+  math_Matrix                                              MyF;
+  math_Matrix                                              PTLX;
+  math_Matrix                                              PTLY;
+  math_Matrix                                              PTLZ;
+  math_Matrix                                              A;
+  math_Matrix                                              DA;
   AppDef_BSpParLeastSquareOfMyBSplGradientOfBSplineCompute MyLeastSquare;
-  Standard_Boolean Contraintes;
-  Standard_Integer NbP;
-  Standard_Integer NbCu;
-  Standard_Integer Adeb;
-  Standard_Integer Afin;
-  Handle(TColStd_HArray1OfInteger) tabdim;
-  Standard_Real ERR3d;
-  Standard_Real ERR2d;
-  Standard_Integer FirstP;
-  Standard_Integer LastP;
-  Handle(AppParCurves_HArray1OfConstraintCouple) myConstraints;
-  Standard_Real mylambda1;
-  Standard_Real mylambda2;
-
-
+  Standard_Boolean                                         Contraintes;
+  Standard_Integer                                         NbP;
+  Standard_Integer                                         NbCu;
+  Standard_Integer                                         Adeb;
+  Standard_Integer                                         Afin;
+  Handle(TColStd_HArray1OfInteger)                         tabdim;
+  Standard_Real                                            ERR3d;
+  Standard_Real                                            ERR2d;
+  Standard_Integer                                         FirstP;
+  Standard_Integer                                         LastP;
+  Handle(AppParCurves_HArray1OfConstraintCouple)           myConstraints;
+  Standard_Real                                            mylambda1;
+  Standard_Real                                            mylambda2;
 };
-
-
-
-
-
-
 
 #endif // _AppDef_BSpParFunctionOfMyBSplGradientOfBSplineCompute_HeaderFile

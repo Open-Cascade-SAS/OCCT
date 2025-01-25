@@ -23,5 +23,4 @@ class SelectMgr_EntityOwner;
 
 typedef NCollection_Sequence<Handle(SelectMgr_EntityOwner)> SelectMgr_SequenceOfOwner;
 
-
 #endif

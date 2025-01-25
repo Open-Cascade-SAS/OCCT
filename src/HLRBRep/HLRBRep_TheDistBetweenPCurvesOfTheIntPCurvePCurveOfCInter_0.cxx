@@ -18,13 +18,12 @@
 
 #include <HLRBRep_CurveTool.hxx>
 #include <math_Matrix.hxx>
- 
 
 #define TheCurve Standard_Address
 #define TheCurve_hxx <Standard_Address.hxx>
 #define TheCurveTool HLRBRep_CurveTool
 #define TheCurveTool_hxx <HLRBRep_CurveTool.hxx>
 #define IntCurve_DistBetweenPCurvesGen HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter
-#define IntCurve_DistBetweenPCurvesGen_hxx <HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter.hxx>
+#define IntCurve_DistBetweenPCurvesGen_hxx                                                         \
+  <HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter.hxx>
 #include "../IntCurve/IntCurve_DistBetweenPCurvesGen.gxx"
-

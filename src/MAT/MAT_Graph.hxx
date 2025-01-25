@@ -30,7 +30,6 @@ class MAT_Arc;
 class MAT_BasicElt;
 class MAT_Node;
 
-
 class MAT_Graph;
 DEFINE_STANDARD_HANDLE(MAT_Graph, Standard_Transient)
 
@@ -40,11 +39,9 @@ class MAT_Graph : public Standard_Transient
 {
 
 public:
-
-  
   //! Empty constructor.
   Standard_EXPORT MAT_Graph();
-  
+
   //! Construct <me> from the result of the method
   //! <CreateMat> of the class <MAT> from <MAT>.
   //!
@@ -52,29 +49,32 @@ public:
   //! <TheRoots>     : Set of the bisectors.
   //! <NbBasicElts>  : Number of Basic Elements.
   //! <NbArcs>       : Number of Arcs = Number of Bisectors.
-  Standard_EXPORT void Perform (const Standard_Boolean SemiInfinite, const Handle(MAT_ListOfBisector)& TheRoots, const Standard_Integer NbBasicElts, const Standard_Integer NbArcs);
-  
+  Standard_EXPORT void Perform(const Standard_Boolean            SemiInfinite,
+                               const Handle(MAT_ListOfBisector)& TheRoots,
+                               const Standard_Integer            NbBasicElts,
+                               const Standard_Integer            NbArcs);
+
   //! Return the Arc of index <Index> in <theArcs>.
-  Standard_EXPORT Handle(MAT_Arc) Arc (const Standard_Integer Index) const;
-  
+  Standard_EXPORT Handle(MAT_Arc) Arc(const Standard_Integer Index) const;
+
   //! Return the BasicElt of index <Index> in <theBasicElts>.
-  Standard_EXPORT Handle(MAT_BasicElt) BasicElt (const Standard_Integer Index) const;
-  
+  Standard_EXPORT Handle(MAT_BasicElt) BasicElt(const Standard_Integer Index) const;
+
   //! Return the Node of index <Index> in <theNodes>.
-  Standard_EXPORT Handle(MAT_Node) Node (const Standard_Integer Index) const;
-  
+  Standard_EXPORT Handle(MAT_Node) Node(const Standard_Integer Index) const;
+
   //! Return the number of arcs of <me>.
   Standard_EXPORT Standard_Integer NumberOfArcs() const;
-  
+
   //! Return the number of nodes of <me>.
   Standard_EXPORT Standard_Integer NumberOfNodes() const;
-  
+
   //! Return the number of basic elements of <me>.
   Standard_EXPORT Standard_Integer NumberOfBasicElts() const;
-  
+
   //! Return the number of infinites nodes of <me>.
   Standard_EXPORT Standard_Integer NumberOfInfiniteNodes() const;
-  
+
   //! Merge two BasicElts.  The End of the BasicElt Elt1
   //! of  IndexElt1 becomes The End of the BasicElt Elt2
   //! of  IndexElt2.   Elt2 is replaced in  the  arcs  by
@@ -91,52 +91,42 @@ public:
   //! In this case there is a fusion of this arcs, <MergeArc2>
   //! is true and <GeomIndexArc3> and  <GeomIndexArc4>  are the
   //! Geometric  Index of this  arcs.
-  Standard_EXPORT void FusionOfBasicElts (const Standard_Integer IndexElt1, const Standard_Integer IndexElt2, Standard_Boolean& MergeArc1, Standard_Integer& GeomIndexArc1, Standard_Integer& GeomIndexArc2, Standard_Boolean& MergeArc2, Standard_Integer& GeomIndexArc3, Standard_Integer& GeomIndexArc4);
-  
+  Standard_EXPORT void FusionOfBasicElts(const Standard_Integer IndexElt1,
+                                         const Standard_Integer IndexElt2,
+                                         Standard_Boolean&      MergeArc1,
+                                         Standard_Integer&      GeomIndexArc1,
+                                         Standard_Integer&      GeomIndexArc2,
+                                         Standard_Boolean&      MergeArc2,
+                                         Standard_Integer&      GeomIndexArc3,
+                                         Standard_Integer&      GeomIndexArc4);
+
   Standard_EXPORT void CompactArcs();
-  
+
   Standard_EXPORT void CompactNodes();
-  
-  Standard_EXPORT void ChangeBasicElts (const MAT_DataMapOfIntegerBasicElt& NewMap);
-  
-  Standard_EXPORT Handle(MAT_BasicElt) ChangeBasicElt (const Standard_Integer Index);
 
+  Standard_EXPORT void ChangeBasicElts(const MAT_DataMapOfIntegerBasicElt& NewMap);
 
+  Standard_EXPORT Handle(MAT_BasicElt) ChangeBasicElt(const Standard_Integer Index);
 
-
-  DEFINE_STANDARD_RTTIEXT(MAT_Graph,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(MAT_Graph, Standard_Transient)
 
 protected:
-
-
-
-
 private:
-
-  
   //! Merge two Arcs.  the second node of <Arc2> becomes
   //! the  first node  of <Arc1>.  Update  of the  first
   //! node and the neighbours of <Arc1>.
   //! <Arc2> is eliminated.
-  Standard_EXPORT void FusionOfArcs (const Handle(MAT_Arc)& Arc1, const Handle(MAT_Arc)& Arc2);
-  
-  Standard_EXPORT void UpDateNodes (Standard_Integer& Index);
+  Standard_EXPORT void FusionOfArcs(const Handle(MAT_Arc)& Arc1, const Handle(MAT_Arc)& Arc2);
 
-  MAT_DataMapOfIntegerArc theArcs;
+  Standard_EXPORT void UpDateNodes(Standard_Integer& Index);
+
+  MAT_DataMapOfIntegerArc      theArcs;
   MAT_DataMapOfIntegerBasicElt theBasicElts;
-  MAT_DataMapOfIntegerNode theNodes;
-  Standard_Integer numberOfArcs;
-  Standard_Integer numberOfNodes;
-  Standard_Integer numberOfBasicElts;
-  Standard_Integer numberOfInfiniteNodes;
-
-
+  MAT_DataMapOfIntegerNode     theNodes;
+  Standard_Integer             numberOfArcs;
+  Standard_Integer             numberOfNodes;
+  Standard_Integer             numberOfBasicElts;
+  Standard_Integer             numberOfInfiniteNodes;
 };
-
-
-
-
-
-
 
 #endif // _MAT_Graph_HeaderFile

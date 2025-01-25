@@ -31,4 +31,3 @@ typedef enum
 } MeshVS_EntityType;
 
 #endif
-

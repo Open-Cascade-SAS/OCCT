@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<ShapeFix_WireSegment> ShapeFix_SequenceOfWireSegment;
 
-
 #endif

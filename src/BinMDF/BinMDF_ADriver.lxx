@@ -16,11 +16,11 @@
 #include <TDF_Attribute.hxx>
 
 //=======================================================================
-//function : TypeName
-//purpose  : 
+// function : TypeName
+// purpose  :
 //=======================================================================
 
-inline const TCollection_AsciiString& BinMDF_ADriver::TypeName () const
+inline const TCollection_AsciiString& BinMDF_ADriver::TypeName() const
 {
   if (myTypeName.Length() == 0)
     (TCollection_AsciiString&)myTypeName += SourceType()->Name();

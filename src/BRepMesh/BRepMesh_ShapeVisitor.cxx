@@ -30,90 +30,78 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_ShapeVisitor, IMeshTools_ShapeVisitor)
 
-//=======================================================================
-// Function: Constructor
-// Purpose : 
-//=======================================================================
-BRepMesh_ShapeVisitor::BRepMesh_ShapeVisitor (const Handle (IMeshData_Model)& theModel)
-: myModel (theModel),
-  myDEdgeMap(1, new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE))
+//=================================================================================================
+
+BRepMesh_ShapeVisitor::BRepMesh_ShapeVisitor(const Handle(IMeshData_Model)& theModel)
+    : myModel(theModel),
+      myDEdgeMap(1, new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE))
 {
 }
 
-//=======================================================================
-// Function: Destructor
-// Purpose : 
-//=======================================================================
-BRepMesh_ShapeVisitor::~BRepMesh_ShapeVisitor ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-// Function: Visit (edge)
-// Purpose : 
-//=======================================================================
+BRepMesh_ShapeVisitor::~BRepMesh_ShapeVisitor() {}
+
+//=================================================================================================
+
 void BRepMesh_ShapeVisitor::Visit(const TopoDS_Edge& theEdge)
 {
-  if (!myDEdgeMap.IsBound (theEdge))
+  if (!myDEdgeMap.IsBound(theEdge))
   {
-    myModel->AddEdge (theEdge);
-    myDEdgeMap.Bind  (theEdge, myModel->EdgesNb () - 1);
+    myModel->AddEdge(theEdge);
+    myDEdgeMap.Bind(theEdge, myModel->EdgesNb() - 1);
   }
 }
 
-//=======================================================================
-// Function: Visit (face)
-// Purpose : 
-//=======================================================================
-void BRepMesh_ShapeVisitor::Visit (const TopoDS_Face& theFace)
+//=================================================================================================
+
+void BRepMesh_ShapeVisitor::Visit(const TopoDS_Face& theFace)
 {
   BRepTools::Update(theFace);
-  const IMeshData::IFaceHandle& aDFace = myModel->AddFace (theFace);
+  const IMeshData::IFaceHandle& aDFace = myModel->AddFace(theFace);
 
-  // Outer wire should always be the first in the model. 
-  TopoDS_Wire aOuterWire = ShapeAnalysis::OuterWire (theFace);
-  if (!addWire (aOuterWire, aDFace))
+  // Outer wire should always be the first in the model.
+  TopoDS_Wire aOuterWire = ShapeAnalysis::OuterWire(theFace);
+  if (!addWire(aOuterWire, aDFace))
   {
-    aDFace->SetStatus (IMeshData_Failure);
+    aDFace->SetStatus(IMeshData_Failure);
     return;
   }
-  
-  TopExp_Explorer aWireIt (theFace, TopAbs_WIRE);
-  for (; aWireIt.More (); aWireIt.Next ())
+
+  TopExp_Explorer aWireIt(theFace, TopAbs_WIRE);
+  for (; aWireIt.More(); aWireIt.Next())
   {
-    const TopoDS_Wire& aWire = TopoDS::Wire (aWireIt.Current ());
+    const TopoDS_Wire& aWire = TopoDS::Wire(aWireIt.Current());
     if (aWire.IsSame(aOuterWire))
     {
       continue;
     }
 
-    if (!addWire (aWire, aDFace))
+    if (!addWire(aWire, aDFace))
     {
       // If there is a failure on internal wire, just skip it.
       // The most significant is an outer wire.
-      aDFace->SetStatus (IMeshData_UnorientedWire);
+      aDFace->SetStatus(IMeshData_UnorientedWire);
     }
   }
 }
 
-//=======================================================================
-// Function: addWire
-// Purpose : 
-//=======================================================================
-Standard_Boolean BRepMesh_ShapeVisitor::addWire (
-  const TopoDS_Wire&            theWire,
-  const IMeshData::IFaceHandle& theDFace)
+//=================================================================================================
+
+Standard_Boolean BRepMesh_ShapeVisitor::addWire(const TopoDS_Wire&            theWire,
+                                                const IMeshData::IFaceHandle& theDFace)
 {
   if (theWire.IsNull())
   {
     return Standard_False;
   }
 
-  Handle(ShapeExtend_WireData) aWireData = new ShapeExtend_WireData(theWire, Standard_True, Standard_False);
-  ShapeAnalysis_Wire aWireTool (aWireData, theDFace->GetFace (), Precision::Confusion ());
+  Handle(ShapeExtend_WireData) aWireData =
+    new ShapeExtend_WireData(theWire, Standard_True, Standard_False);
+  ShapeAnalysis_Wire aWireTool(aWireData, theDFace->GetFace(), Precision::Confusion());
 
   ShapeAnalysis_WireOrder aOrderTool;
-  aWireTool.CheckOrder (aOrderTool, Standard_True, Standard_False);
+  aWireTool.CheckOrder(aOrderTool, Standard_True, Standard_False);
   if (aWireTool.LastCheckStatus(ShapeExtend_FAIL))
   {
     return Standard_False;
@@ -124,23 +112,23 @@ Standard_Boolean BRepMesh_ShapeVisitor::addWire (
     theDFace->SetStatus(IMeshData_UnorientedWire);
   }
 
-  const Standard_Integer aEdgesNb = aOrderTool.NbEdges ();
+  const Standard_Integer aEdgesNb = aOrderTool.NbEdges();
   if (aEdgesNb != aWireData->NbEdges())
   {
     return Standard_False;
   }
 
-  const IMeshData::IWireHandle& aDWire = theDFace->AddWire (theWire, aEdgesNb);
+  const IMeshData::IWireHandle& aDWire = theDFace->AddWire(theWire, aEdgesNb);
   for (Standard_Integer i = 1; i <= aEdgesNb; ++i)
   {
-    const Standard_Integer aEdgeIndex = aOrderTool.Ordered (i);
-    const TopoDS_Edge& aEdge = aWireData->Edge (aEdgeIndex);
+    const Standard_Integer aEdgeIndex = aOrderTool.Ordered(i);
+    const TopoDS_Edge&     aEdge      = aWireData->Edge(aEdgeIndex);
     if (aEdge.Orientation() != TopAbs_EXTERNAL)
     {
-      const IMeshData::IEdgeHandle& aDEdge = myModel->GetEdge (myDEdgeMap.Find (aEdge));
+      const IMeshData::IEdgeHandle& aDEdge = myModel->GetEdge(myDEdgeMap.Find(aEdge));
 
-      aDEdge->AddPCurve (theDFace.get(), aEdge.Orientation());
-      aDWire->AddEdge   (aDEdge.get(),   aEdge.Orientation());
+      aDEdge->AddPCurve(theDFace.get(), aEdge.Orientation());
+      aDWire->AddEdge(aDEdge.get(), aEdge.Orientation());
     }
   }
 

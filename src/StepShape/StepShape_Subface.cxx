@@ -18,47 +18,33 @@
 #include <StepShape_Subface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_Subface,StepShape_Face)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_Subface, StepShape_Face)
 
-//=======================================================================
-//function : StepShape_Subface
-//purpose  : 
-//=======================================================================
-StepShape_Subface::StepShape_Subface ()
+//=================================================================================================
+
+StepShape_Subface::StepShape_Subface() {}
+
+//=================================================================================================
+
+void StepShape_Subface::Init(const Handle(TCollection_HAsciiString)&     aRepresentationItem_Name,
+                             const Handle(StepShape_HArray1OfFaceBound)& aFace_Bounds,
+                             const Handle(StepShape_Face)&               aParentFace)
 {
-}
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void StepShape_Subface::Init (const Handle(TCollection_HAsciiString) &aRepresentationItem_Name,
-                              const Handle(StepShape_HArray1OfFaceBound) &aFace_Bounds,
-                              const Handle(StepShape_Face) &aParentFace)
-{
-  StepShape_Face::Init(aRepresentationItem_Name,
-                       aFace_Bounds);
+  StepShape_Face::Init(aRepresentationItem_Name, aFace_Bounds);
 
   theParentFace = aParentFace;
 }
 
-//=======================================================================
-//function : ParentFace
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(StepShape_Face) StepShape_Subface::ParentFace () const
+Handle(StepShape_Face) StepShape_Subface::ParentFace() const
 {
   return theParentFace;
 }
 
-//=======================================================================
-//function : SetParentFace
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepShape_Subface::SetParentFace (const Handle(StepShape_Face) &aParentFace)
+void StepShape_Subface::SetParentFace(const Handle(StepShape_Face)& aParentFace)
 {
   theParentFace = aParentFace;
 }

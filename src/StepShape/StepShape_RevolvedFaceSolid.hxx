@@ -25,55 +25,38 @@ class StepGeom_Axis1Placement;
 class TCollection_HAsciiString;
 class StepShape_FaceSurface;
 
-
 class StepShape_RevolvedFaceSolid;
 DEFINE_STANDARD_HANDLE(StepShape_RevolvedFaceSolid, StepShape_SweptFaceSolid)
-
 
 class StepShape_RevolvedFaceSolid : public StepShape_SweptFaceSolid
 {
 
 public:
-
-  
   //! Returns a RevolvedFaceSolid
   Standard_EXPORT StepShape_RevolvedFaceSolid();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_FaceSurface)& aSweptArea);
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_FaceSurface)& aSweptArea, const Handle(StepGeom_Axis1Placement)& aAxis, const Standard_Real aAngle);
-  
-  Standard_EXPORT void SetAxis (const Handle(StepGeom_Axis1Placement)& aAxis);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Handle(StepShape_FaceSurface)&    aSweptArea);
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Handle(StepShape_FaceSurface)&    aSweptArea,
+                            const Handle(StepGeom_Axis1Placement)&  aAxis,
+                            const Standard_Real                     aAngle);
+
+  Standard_EXPORT void SetAxis(const Handle(StepGeom_Axis1Placement)& aAxis);
+
   Standard_EXPORT Handle(StepGeom_Axis1Placement) Axis() const;
-  
-  Standard_EXPORT void SetAngle (const Standard_Real aAngle);
-  
+
+  Standard_EXPORT void SetAngle(const Standard_Real aAngle);
+
   Standard_EXPORT Standard_Real Angle() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_RevolvedFaceSolid,StepShape_SweptFaceSolid)
+  DEFINE_STANDARD_RTTIEXT(StepShape_RevolvedFaceSolid, StepShape_SweptFaceSolid)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepGeom_Axis1Placement) axis;
-  Standard_Real angle;
-
-
+  Standard_Real                   angle;
 };
-
-
-
-
-
-
 
 #endif // _StepShape_RevolvedFaceSolid_HeaderFile

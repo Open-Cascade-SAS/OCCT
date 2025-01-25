@@ -25,14 +25,14 @@
 
 static Handle(GeomTools_UndefinedTypeHandler) theActiveHandler = new GeomTools_UndefinedTypeHandler;
 
-void  GeomTools::Dump(const Handle(Geom_Surface)& S, Standard_OStream& OS)
+void GeomTools::Dump(const Handle(Geom_Surface)& S, Standard_OStream& OS)
 {
-  GeomTools_SurfaceSet::PrintSurface(S,OS);
+  GeomTools_SurfaceSet::PrintSurface(S, OS);
 }
 
-void  GeomTools::Write(const Handle(Geom_Surface)& S, Standard_OStream& OS)
+void GeomTools::Write(const Handle(Geom_Surface)& S, Standard_OStream& OS)
 {
-  GeomTools_SurfaceSet::PrintSurface(S,OS,Standard_True);
+  GeomTools_SurfaceSet::PrintSurface(S, OS, Standard_True);
 }
 
 void GeomTools::Read(Handle(Geom_Surface)& S, Standard_IStream& IS)
@@ -40,14 +40,14 @@ void GeomTools::Read(Handle(Geom_Surface)& S, Standard_IStream& IS)
   S = GeomTools_SurfaceSet::ReadSurface(IS);
 }
 
-void  GeomTools::Dump(const Handle(Geom_Curve)& C, Standard_OStream& OS)
+void GeomTools::Dump(const Handle(Geom_Curve)& C, Standard_OStream& OS)
 {
-  GeomTools_CurveSet::PrintCurve(C,OS);
+  GeomTools_CurveSet::PrintCurve(C, OS);
 }
 
-void  GeomTools::Write(const Handle(Geom_Curve)& C, Standard_OStream& OS)
+void GeomTools::Write(const Handle(Geom_Curve)& C, Standard_OStream& OS)
 {
-  GeomTools_CurveSet::PrintCurve(C,OS,Standard_True);
+  GeomTools_CurveSet::PrintCurve(C, OS, Standard_True);
 }
 
 void GeomTools::Read(Handle(Geom_Curve)& C, Standard_IStream& IS)
@@ -55,46 +55,37 @@ void GeomTools::Read(Handle(Geom_Curve)& C, Standard_IStream& IS)
   C = GeomTools_CurveSet::ReadCurve(IS);
 }
 
-void  GeomTools::Dump(const Handle(Geom2d_Curve)& C, Standard_OStream& OS)
+void GeomTools::Dump(const Handle(Geom2d_Curve)& C, Standard_OStream& OS)
 {
-  GeomTools_Curve2dSet::PrintCurve2d(C,OS);
+  GeomTools_Curve2dSet::PrintCurve2d(C, OS);
 }
 
-void  GeomTools::Write(const Handle(Geom2d_Curve)& C, Standard_OStream& OS)
+void GeomTools::Write(const Handle(Geom2d_Curve)& C, Standard_OStream& OS)
 {
-  GeomTools_Curve2dSet::PrintCurve2d(C,OS,Standard_True);
+  GeomTools_Curve2dSet::PrintCurve2d(C, OS, Standard_True);
 }
 
-void  GeomTools::Read(Handle(Geom2d_Curve)& C, Standard_IStream& IS)
+void GeomTools::Read(Handle(Geom2d_Curve)& C, Standard_IStream& IS)
 {
   C = GeomTools_Curve2dSet::ReadCurve2d(IS);
 }
 
-//=======================================================================
-//function : SetUndefinedTypeHandler
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void GeomTools::SetUndefinedTypeHandler(const Handle(GeomTools_UndefinedTypeHandler)& aHandler)
 {
-  if(!aHandler.IsNull())
+  if (!aHandler.IsNull())
     theActiveHandler = aHandler;
 }
 
-//=======================================================================
-//function : GetUndefinedTypeHandler
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(GeomTools_UndefinedTypeHandler) GeomTools::GetUndefinedTypeHandler()
 {
   return theActiveHandler;
 }
 
-//=======================================================================
-//function : GetReal
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void GeomTools::GetReal(Standard_IStream& IS, Standard_Real& theValue)
 {

@@ -27,19 +27,19 @@
 // function : Draw
 // purpose  :
 // =======================================================================
-Handle(Graphic3d_Text) Prs3d_Text::Draw (const Handle(Graphic3d_Group)& theGroup,
-                                         const Handle(Prs3d_TextAspect)& theAspect,
-                                         const TCollection_ExtendedString& theText,
-                                         const gp_Pnt& theAttachmentPoint)
+Handle(Graphic3d_Text) Prs3d_Text::Draw(const Handle(Graphic3d_Group)&    theGroup,
+                                        const Handle(Prs3d_TextAspect)&   theAspect,
+                                        const TCollection_ExtendedString& theText,
+                                        const gp_Pnt&                     theAttachmentPoint)
 {
-  theGroup->SetPrimitivesAspect (theAspect->Aspect());
+  theGroup->SetPrimitivesAspect(theAspect->Aspect());
 
-  Handle(Graphic3d_Text) aText = new Graphic3d_Text ((Standard_ShortReal)theAspect->Height());
-  aText->SetText (theText.ToExtString());
-  aText->SetPosition (theAttachmentPoint);
-  aText->SetHorizontalAlignment (theAspect->HorizontalJustification());
-  aText->SetVerticalAlignment (theAspect->VerticalJustification());
-  theGroup->AddText (aText);
+  Handle(Graphic3d_Text) aText = new Graphic3d_Text((Standard_ShortReal)theAspect->Height());
+  aText->SetText(theText.ToExtString());
+  aText->SetPosition(theAttachmentPoint);
+  aText->SetHorizontalAlignment(theAspect->HorizontalJustification());
+  aText->SetVerticalAlignment(theAspect->VerticalJustification());
+  theGroup->AddText(aText);
   return aText;
 }
 
@@ -47,20 +47,20 @@ Handle(Graphic3d_Text) Prs3d_Text::Draw (const Handle(Graphic3d_Group)& theGroup
 // function : Draw
 // purpose  :
 // =======================================================================
-Handle(Graphic3d_Text) Prs3d_Text::Draw (const Handle(Graphic3d_Group)&    theGroup,
-                                         const Handle(Prs3d_TextAspect)&   theAspect,
-                                         const TCollection_ExtendedString& theText,
-                                         const gp_Ax2&                     theOrientation,
-                                         const Standard_Boolean            theHasOwnAnchor)
+Handle(Graphic3d_Text) Prs3d_Text::Draw(const Handle(Graphic3d_Group)&    theGroup,
+                                        const Handle(Prs3d_TextAspect)&   theAspect,
+                                        const TCollection_ExtendedString& theText,
+                                        const gp_Ax2&                     theOrientation,
+                                        const Standard_Boolean            theHasOwnAnchor)
 {
-  theGroup->SetPrimitivesAspect (theAspect->Aspect());
+  theGroup->SetPrimitivesAspect(theAspect->Aspect());
 
-  Handle(Graphic3d_Text) aText = new Graphic3d_Text ((Standard_ShortReal)theAspect->Height());
-  aText->SetText (theText.ToExtString());
-  aText->SetOrientation (theOrientation);
-  aText->SetOwnAnchorPoint (theHasOwnAnchor);
-  aText->SetHorizontalAlignment (theAspect->HorizontalJustification());
-  aText->SetVerticalAlignment (theAspect->VerticalJustification());
-  theGroup->AddText (aText);
+  Handle(Graphic3d_Text) aText = new Graphic3d_Text((Standard_ShortReal)theAspect->Height());
+  aText->SetText(theText.ToExtString());
+  aText->SetOrientation(theOrientation);
+  aText->SetOwnAnchorPoint(theHasOwnAnchor);
+  aText->SetHorizontalAlignment(theAspect->HorizontalJustification());
+  aText->SetVerticalAlignment(theAspect->VerticalJustification());
+  theGroup->AddText(aText);
   return aText;
 }

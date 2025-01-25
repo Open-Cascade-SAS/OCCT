@@ -23,20 +23,21 @@
 class StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect;
 class TCollection_HAsciiString;
 
-DEFINE_STANDARD_HANDLE(StepVisual_CameraModelD3MultiClippingUnion, StepGeom_GeometricRepresentationItem)
+DEFINE_STANDARD_HANDLE(StepVisual_CameraModelD3MultiClippingUnion,
+                       StepGeom_GeometricRepresentationItem)
 
 class StepVisual_CameraModelD3MultiClippingUnion : public StepGeom_GeometricRepresentationItem
 {
 public:
-
-  
   //! Returns a StepVisual_CameraModelD3MultiClippingUnion
   Standard_EXPORT StepVisual_CameraModelD3MultiClippingUnion();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theName,
-                             const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect)& theShapeClipping);
-  
-  void SetShapeClipping(const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect)& theShapeClipping)
+
+  Standard_EXPORT void Init(
+    const Handle(TCollection_HAsciiString)&                                  theName,
+    const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect)& theShapeClipping);
+
+  void SetShapeClipping(
+    const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect)& theShapeClipping)
   {
     myShapeClipping = theShapeClipping;
   }
@@ -45,10 +46,10 @@ public:
   {
     return myShapeClipping;
   }
-  DEFINE_STANDARD_RTTIEXT(StepVisual_CameraModelD3MultiClippingUnion, StepGeom_GeometricRepresentationItem)
-  
-private:
+  DEFINE_STANDARD_RTTIEXT(StepVisual_CameraModelD3MultiClippingUnion,
+                          StepGeom_GeometricRepresentationItem)
 
-Handle(StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect) myShapeClipping;
+private:
+  Handle(StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect) myShapeClipping;
 };
 #endif // _StepVisual_CameraModelD3MultiClippingUnion_HeaderFile

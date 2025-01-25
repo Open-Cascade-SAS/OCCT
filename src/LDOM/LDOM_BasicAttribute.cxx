@@ -17,46 +17,43 @@
 #include <LDOM_MemManager.hxx>
 #include <LDOM_Attr.hxx>
 
-//=======================================================================
-//function : LDOM_BasicAttribute
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-LDOM_BasicAttribute::LDOM_BasicAttribute (const LDOM_Attr& anAttr)
-     : LDOM_BasicNode   (anAttr.Origin()),
-       myName           (anAttr.getName().GetString()),
-       myValue          (anAttr.getValue()) {}
-
-//=======================================================================
-//function : Create
-//purpose  : construction in the Document's data pool
-//=======================================================================
-
-LDOM_BasicAttribute& LDOM_BasicAttribute::Create
-                                        (const LDOMBasicString&         theName,
-                                         const Handle(LDOM_MemManager)& theDoc,
-                                         Standard_Integer&              theHash)
+LDOM_BasicAttribute::LDOM_BasicAttribute(const LDOM_Attr& anAttr)
+    : LDOM_BasicNode(anAttr.Origin()),
+      myName(anAttr.getName().GetString()),
+      myValue(anAttr.getValue())
 {
-  void * aMem = theDoc -> Allocate (sizeof(LDOM_BasicAttribute));
-  LDOM_BasicAttribute * aNewAtt = new (aMem) LDOM_BasicAttribute;
-
-  const char * aString = theName.GetString();
-  aNewAtt -> myName =
-    theDoc -> HashedAllocate (aString, (Standard_Integer)strlen(aString), theHash);
-
-  aNewAtt -> myNodeType = LDOM_Node::ATTRIBUTE_NODE;
-  return * aNewAtt;
 }
 
 //=======================================================================
-//function : operator =
-//purpose  : Assignment to NULL
+// function : Create
+// purpose  : construction in the Document's data pool
 //=======================================================================
 
-LDOM_BasicAttribute& LDOM_BasicAttribute::operator= (const LDOM_NullPtr * aNull)
+LDOM_BasicAttribute& LDOM_BasicAttribute::Create(const LDOMBasicString&         theName,
+                                                 const Handle(LDOM_MemManager)& theDoc,
+                                                 Standard_Integer&              theHash)
 {
-  myName = NULL;
+  void*                aMem    = theDoc->Allocate(sizeof(LDOM_BasicAttribute));
+  LDOM_BasicAttribute* aNewAtt = new (aMem) LDOM_BasicAttribute;
+
+  const char* aString = theName.GetString();
+  aNewAtt->myName     = theDoc->HashedAllocate(aString, (Standard_Integer)strlen(aString), theHash);
+
+  aNewAtt->myNodeType = LDOM_Node::ATTRIBUTE_NODE;
+  return *aNewAtt;
+}
+
+//=======================================================================
+// function : operator =
+// purpose  : Assignment to NULL
+//=======================================================================
+
+LDOM_BasicAttribute& LDOM_BasicAttribute::operator=(const LDOM_NullPtr* aNull)
+{
+  myName  = NULL;
   myValue = aNull;
-  LDOM_BasicNode::operator= (aNull);
-  return * this;
+  LDOM_BasicNode::operator=(aNull);
+  return *this;
 }

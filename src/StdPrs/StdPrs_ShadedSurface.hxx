@@ -27,40 +27,21 @@ class Adaptor3d_Surface;
 //! a maximal chordial deviation.
 //! The number of isoparametric curves to be drawn and their color are
 //! controlled by the furnished Drawer.
-class StdPrs_ShadedSurface  : public Prs3d_Root
+class StdPrs_ShadedSurface : public Prs3d_Root
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   //! Adds the surface aSurface to the presentation object aPresentation.
   //! The surface's display attributes are set in the attribute manager aDrawer.
   //! The surface object from Adaptor3d provides data
   //! from a Geom surface in order to use the surface in an algorithm.
-  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Adaptor3d_Surface& aSurface, const Handle(Prs3d_Drawer)& aDrawer);
-
-
-
+  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
+                                  const Adaptor3d_Surface&          aSurface,
+                                  const Handle(Prs3d_Drawer)&       aDrawer);
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StdPrs_ShadedSurface_HeaderFile

@@ -27,7 +27,6 @@ class Standard_GUID;
 class TDF_Data;
 class TDF_RelocationTable;
 
-
 class TDocStd_Owner;
 DEFINE_STANDARD_HANDLE(TDocStd_Owner, TDF_Attribute)
 
@@ -39,63 +38,48 @@ class TDocStd_Owner : public TDF_Attribute
 {
 
 public:
-
-  
   //! class methods
   //! =============
   Standard_EXPORT static const Standard_GUID& GetID();
-  
-  Standard_EXPORT static void SetDocument (const Handle(TDF_Data)& indata, const Handle(TDocStd_Document)& doc);
 
-  Standard_EXPORT static void SetDocument (const Handle(TDF_Data)& indata, TDocStd_Document* doc);
+  Standard_EXPORT static void SetDocument(const Handle(TDF_Data)&         indata,
+                                          const Handle(TDocStd_Document)& doc);
+
+  Standard_EXPORT static void SetDocument(const Handle(TDF_Data)& indata, TDocStd_Document* doc);
 
   //! Owner methods
   //! ===============
-  Standard_EXPORT static Handle(TDocStd_Document) GetDocument (const Handle(TDF_Data)& ofdata);
-  
-  Standard_EXPORT TDocStd_Owner();
-  
-  Standard_EXPORT void SetDocument (const Handle(TDocStd_Document)& document);
+  Standard_EXPORT static Handle(TDocStd_Document) GetDocument(const Handle(TDF_Data)& ofdata);
 
-  Standard_EXPORT void SetDocument (TDocStd_Document* document);
+  Standard_EXPORT TDocStd_Owner();
+
+  Standard_EXPORT void SetDocument(const Handle(TDocStd_Document)& document);
+
+  Standard_EXPORT void SetDocument(TDocStd_Document* document);
 
   Standard_EXPORT Handle(TDocStd_Document) GetDocument() const;
-  
+
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Restore (const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
-  
+
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
+
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& Into, const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_OStream& Dump (Standard_OStream& anOS) const Standard_OVERRIDE;
+
+  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
+                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
+                                Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(TDocStd_Owner,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDocStd_Owner, TDF_Attribute)
 
 protected:
-
-
-
-
 private:
-
   //! It keeps pointer to the document to avoid handles cyclic dependency
   TDocStd_Document* myDocument;
-
-
 };
-
-
-
-
-
-
 
 #endif // _TDocStd_Owner_HeaderFile

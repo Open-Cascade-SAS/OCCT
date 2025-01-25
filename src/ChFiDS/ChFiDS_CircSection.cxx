@@ -14,73 +14,48 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <ChFiDS_CircSection.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Lin.hxx>
 
-//=======================================================================
-//function : ChFiDS_CircSection
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 ChFiDS_CircSection::ChFiDS_CircSection()
-: myF (0.0),
-  myL (0.0)
+    : myF(0.0),
+      myL(0.0)
 {
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Set
-//purpose  : 
-//=======================================================================
-
-void ChFiDS_CircSection::Set(const gp_Circ&      C,
-			     const Standard_Real F,
-			     const Standard_Real L)
+void ChFiDS_CircSection::Set(const gp_Circ& C, const Standard_Real F, const Standard_Real L)
 {
   myCirc = C;
   myF    = F;
   myL    = L;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Set
-//purpose  : 
-//=======================================================================
-
-void ChFiDS_CircSection::Set(const gp_Lin&      C,
-			     const Standard_Real F,
-			     const Standard_Real L)
+void ChFiDS_CircSection::Set(const gp_Lin& C, const Standard_Real F, const Standard_Real L)
 {
-  myLin  = C;
-  myF    = F;
-  myL    = L;
+  myLin = C;
+  myF   = F;
+  myL   = L;
 }
 
-//=======================================================================
-//function : Get
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void ChFiDS_CircSection::Get(gp_Circ&       C,
-			     Standard_Real& F,
-			     Standard_Real& L) const 
+void ChFiDS_CircSection::Get(gp_Circ& C, Standard_Real& F, Standard_Real& L) const
 {
   C = myCirc;
   F = myF;
   L = myL;
 }
 
-//=======================================================================
-//function : Get
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void ChFiDS_CircSection::Get(gp_Lin&        C,
-			     Standard_Real& F,
-			     Standard_Real& L) const 
+void ChFiDS_CircSection::Get(gp_Lin& C, Standard_Real& F, Standard_Real& L) const
 {
   C = myLin;
   F = myF;

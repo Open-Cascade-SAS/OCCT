@@ -27,11 +27,9 @@ class Graphic3d_BvhCStructureSet : public BVH_PrimitiveSet3d
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_BvhCStructureSet, BVH_PrimitiveSet3d)
 protected:
-
   using BVH_PrimitiveSet3d::Box;
 
 public:
-
   //! Creates an empty primitive set for BVH clipping.
   Standard_EXPORT Graphic3d_BvhCStructureSet();
 
@@ -39,39 +37,42 @@ public:
   Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
 
   //! Returns AABB of the structure.
-  Standard_EXPORT virtual Graphic3d_BndBox3d Box (const Standard_Integer theIdx) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Graphic3d_BndBox3d Box(const Standard_Integer theIdx) const
+    Standard_OVERRIDE;
 
   //! Calculates center of the AABB along given axis.
-  Standard_EXPORT virtual Standard_Real Center (const Standard_Integer theIdx,
-                                                const Standard_Integer theAxis) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Real Center(const Standard_Integer theIdx,
+                                               const Standard_Integer theAxis) const
+    Standard_OVERRIDE;
 
   //! Swaps structures with the given indices.
-  Standard_EXPORT virtual void Swap (const Standard_Integer theIdx1,
-                                     const Standard_Integer theIdx2) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Swap(const Standard_Integer theIdx1,
+                                    const Standard_Integer theIdx2) Standard_OVERRIDE;
 
   //! Adds structure to the set.
   //! @return true if structure added, otherwise returns false (structure already in the set).
-  Standard_EXPORT Standard_Boolean Add (const Graphic3d_CStructure* theStruct);
+  Standard_EXPORT Standard_Boolean Add(const Graphic3d_CStructure* theStruct);
 
   //! Removes the given structure from the set.
   //! @return true if structure removed, otherwise returns false (structure is not in the set).
-  Standard_EXPORT Standard_Boolean Remove (const Graphic3d_CStructure* theStruct);
+  Standard_EXPORT Standard_Boolean Remove(const Graphic3d_CStructure* theStruct);
 
   //! Cleans the whole primitive set.
   Standard_EXPORT void Clear();
 
   //! Returns the structure corresponding to the given ID.
-  Standard_EXPORT const Graphic3d_CStructure* GetStructureById (Standard_Integer theId);
+  Standard_EXPORT const Graphic3d_CStructure* GetStructureById(Standard_Integer theId);
 
   //! Access directly a collection of structures.
-  const NCollection_IndexedMap<const Graphic3d_CStructure*>& Structures() const { return myStructs; }
+  const NCollection_IndexedMap<const Graphic3d_CStructure*>& Structures() const
+  {
+    return myStructs;
+  }
 
 private:
-
-// clang-format off
+  // clang-format off
   NCollection_IndexedMap<const Graphic3d_CStructure*> myStructs;    //!< Indexed map of structures.
-// clang-format on
-
+  // clang-format on
 };
 
 #endif // _Graphic3d_BvhCStructureSet_HeaderFile

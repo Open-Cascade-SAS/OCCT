@@ -21,8 +21,8 @@
 #include <Adaptor2d_Curve2d.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,Handle(Adaptor2d_Curve2d)> ChFiKPart_RstMap;
-typedef NCollection_DataMap<Standard_Integer,Handle(Adaptor2d_Curve2d)>::Iterator ChFiKPart_DataMapIteratorOfRstMap;
-
+typedef NCollection_DataMap<Standard_Integer, Handle(Adaptor2d_Curve2d)> ChFiKPart_RstMap;
+typedef NCollection_DataMap<Standard_Integer, Handle(Adaptor2d_Curve2d)>::Iterator
+  ChFiKPart_DataMapIteratorOfRstMap;
 
 #endif

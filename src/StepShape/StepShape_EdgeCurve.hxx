@@ -25,53 +25,36 @@ class StepGeom_Curve;
 class TCollection_HAsciiString;
 class StepShape_Vertex;
 
-
 class StepShape_EdgeCurve;
 DEFINE_STANDARD_HANDLE(StepShape_EdgeCurve, StepShape_Edge)
-
 
 class StepShape_EdgeCurve : public StepShape_Edge
 {
 
 public:
-
-  
   //! Returns a EdgeCurve
   Standard_EXPORT StepShape_EdgeCurve();
-  
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_Vertex)& aEdgeStart, const Handle(StepShape_Vertex)& aEdgeEnd, const Handle(StepGeom_Curve)& aEdgeGeometry, const Standard_Boolean aSameSense);
-  
-  Standard_EXPORT void SetEdgeGeometry (const Handle(StepGeom_Curve)& aEdgeGeometry);
-  
+
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+                            const Handle(StepShape_Vertex)&         aEdgeStart,
+                            const Handle(StepShape_Vertex)&         aEdgeEnd,
+                            const Handle(StepGeom_Curve)&           aEdgeGeometry,
+                            const Standard_Boolean                  aSameSense);
+
+  Standard_EXPORT void SetEdgeGeometry(const Handle(StepGeom_Curve)& aEdgeGeometry);
+
   Standard_EXPORT Handle(StepGeom_Curve) EdgeGeometry() const;
-  
-  Standard_EXPORT void SetSameSense (const Standard_Boolean aSameSense);
-  
+
+  Standard_EXPORT void SetSameSense(const Standard_Boolean aSameSense);
+
   Standard_EXPORT Standard_Boolean SameSense() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(StepShape_EdgeCurve,StepShape_Edge)
+  DEFINE_STANDARD_RTTIEXT(StepShape_EdgeCurve, StepShape_Edge)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(StepGeom_Curve) edgeGeometry;
-  Standard_Boolean sameSense;
-
-
+  Standard_Boolean       sameSense;
 };
-
-
-
-
-
-
 
 #endif // _StepShape_EdgeCurve_HeaderFile

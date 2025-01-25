@@ -17,57 +17,51 @@
 #include <StepToTopoDS_Root.hxx>
 
 //=======================================================================
-//function : IsDone
-//purpose  : 
+// function : IsDone
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean StepToTopoDS_Root::IsDone () const
+inline Standard_Boolean StepToTopoDS_Root::IsDone() const
 {
-  return done; 
+  return done;
 }
 
 //=======================================================================
-//function : Precision
-//purpose  : 
+// function : Precision
+// purpose  :
 //=======================================================================
 
 inline Standard_Real StepToTopoDS_Root::Precision() const
 {
   return myPrecision;
-  
 }
 
 //=======================================================================
-//function : SetPrecision
-//purpose  : 
+// function : SetPrecision
+// purpose  :
 //=======================================================================
 
-inline void StepToTopoDS_Root::SetPrecision(const Standard_Real preci) 
+inline void StepToTopoDS_Root::SetPrecision(const Standard_Real preci)
 {
   myPrecision = preci;
-  
 }
 
 //=======================================================================
-//function : MaxTol
-//purpose  : 
+// function : MaxTol
+// purpose  :
 //=======================================================================
 
 inline Standard_Real StepToTopoDS_Root::MaxTol() const
 {
   return myMaxTol;
-  
 }
 
-
 //=======================================================================
-//function : SetMaxTol
-//purpose  : 
+// function : SetMaxTol
+// purpose  :
 //=======================================================================
 
-inline void StepToTopoDS_Root::SetMaxTol(const Standard_Real maxpreci) 
+inline void StepToTopoDS_Root::SetMaxTol(const Standard_Real maxpreci)
 {
   myMaxTol = maxpreci;
 }
-
-

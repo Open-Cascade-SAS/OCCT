@@ -31,11 +31,14 @@ public:
   RWGltf_GltfAccessor Indices;  //!< accessor for indexes
   TopoDS_Shape        Shape;    //!< original Face or face list
   XCAFPrs_Style       Style;    //!< face style
-// clang-format off
+                                // clang-format off
   Standard_Integer    NbIndexedNodes; //!< transient variable for merging several faces into one while writing Indices
-// clang-format on
+                                // clang-format on
 
-  RWGltf_GltfFace() : NbIndexedNodes (0) {}
+  RWGltf_GltfFace()
+      : NbIndexedNodes(0)
+  {
+  }
 };
 
 typedef NCollection_Shared<NCollection_List<Handle(RWGltf_GltfFace)>> RWGltf_GltfFaceList;

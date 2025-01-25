@@ -11,30 +11,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_MassUnit.hxx>
 #include <StepBasic_SiUnitAndMassUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndMassUnit,StepBasic_SiUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndMassUnit, StepBasic_SiUnit)
 
-//=======================================================================
-//function : StepBasic_SiUnitAndLengthUnit
-//purpose  : 
-//=======================================================================
-StepBasic_SiUnitAndMassUnit::StepBasic_SiUnitAndMassUnit ()
-{
-}
+//=================================================================================================
 
+StepBasic_SiUnitAndMassUnit::StepBasic_SiUnitAndMassUnit() {}
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void StepBasic_SiUnitAndMassUnit::Init(const Standard_Boolean hasAprefix,
-                                       const StepBasic_SiPrefix aPrefix,
+void StepBasic_SiUnitAndMassUnit::Init(const Standard_Boolean     hasAprefix,
+                                       const StepBasic_SiPrefix   aPrefix,
                                        const StepBasic_SiUnitName aName)
 {
   // --- classe inherited fields ---
@@ -48,26 +39,16 @@ void StepBasic_SiUnitAndMassUnit::Init(const Standard_Boolean hasAprefix,
   StepBasic_SiUnit::Init(hasAprefix, aPrefix, aName);
 }
 
-
-//=======================================================================
-//function : SetMassUnit
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void StepBasic_SiUnitAndMassUnit::SetMassUnit(const Handle(StepBasic_MassUnit)& aMassUnit)
 {
   massUnit = aMassUnit;
 }
 
-
-//=======================================================================
-//function : MassUnit
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 Handle(StepBasic_MassUnit) StepBasic_SiUnitAndMassUnit::MassUnit() const
 {
   return massUnit;
 }
-
-

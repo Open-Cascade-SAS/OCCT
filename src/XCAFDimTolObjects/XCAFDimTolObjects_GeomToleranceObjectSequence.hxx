@@ -13,13 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef XCAFDimTolObjects_GeomToleranceObjectSequence_HeaderFile
 #define XCAFDimTolObjects_GeomToleranceObjectSequence_HeaderFile
 
 #include <NCollection_Sequence.hxx>
 
 class XCAFDimTolObjects_GeomToleranceObject;
-typedef NCollection_Sequence<Handle(XCAFDimTolObjects_GeomToleranceObject)> XCAFDimTolObjects_GeomToleranceObjectSequence;
+typedef NCollection_Sequence<Handle(XCAFDimTolObjects_GeomToleranceObject)>
+  XCAFDimTolObjects_GeomToleranceObjectSequence;
 
 #endif

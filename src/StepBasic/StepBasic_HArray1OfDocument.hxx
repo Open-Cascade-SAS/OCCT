@@ -22,5 +22,4 @@
 
 DEFINE_HARRAY1(StepBasic_HArray1OfDocument, StepBasic_Array1OfDocument)
 
-
 #endif

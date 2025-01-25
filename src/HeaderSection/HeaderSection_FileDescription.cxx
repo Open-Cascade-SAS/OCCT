@@ -11,52 +11,54 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <HeaderSection_FileDescription.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(HeaderSection_FileDescription,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(HeaderSection_FileDescription, Standard_Transient)
 
-HeaderSection_FileDescription::HeaderSection_FileDescription ()  {}
+HeaderSection_FileDescription::HeaderSection_FileDescription() {}
 
 void HeaderSection_FileDescription::Init(
-	const Handle(Interface_HArray1OfHAsciiString)& aDescription,
-	const Handle(TCollection_HAsciiString)& aImplementationLevel)
+  const Handle(Interface_HArray1OfHAsciiString)& aDescription,
+  const Handle(TCollection_HAsciiString)&        aImplementationLevel)
 {
-	// --- class own fields ---
-	description = aDescription;
-	implementationLevel = aImplementationLevel;
+  // --- class own fields ---
+  description         = aDescription;
+  implementationLevel = aImplementationLevel;
 }
 
-
-void HeaderSection_FileDescription::SetDescription(const Handle(Interface_HArray1OfHAsciiString)& aDescription)
+void HeaderSection_FileDescription::SetDescription(
+  const Handle(Interface_HArray1OfHAsciiString)& aDescription)
 {
-	description = aDescription;
+  description = aDescription;
 }
 
 Handle(Interface_HArray1OfHAsciiString) HeaderSection_FileDescription::Description() const
 {
-	return description;
+  return description;
 }
 
-Handle(TCollection_HAsciiString) HeaderSection_FileDescription::DescriptionValue(const Standard_Integer num) const
+Handle(TCollection_HAsciiString) HeaderSection_FileDescription::DescriptionValue(
+  const Standard_Integer num) const
 {
-	return description->Value(num);
+  return description->Value(num);
 }
 
-Standard_Integer HeaderSection_FileDescription::NbDescription () const
+Standard_Integer HeaderSection_FileDescription::NbDescription() const
 {
-	if (description.IsNull()) return 0;
-	return description->Length();
+  if (description.IsNull())
+    return 0;
+  return description->Length();
 }
 
-void HeaderSection_FileDescription::SetImplementationLevel(const Handle(TCollection_HAsciiString)& aImplementationLevel)
+void HeaderSection_FileDescription::SetImplementationLevel(
+  const Handle(TCollection_HAsciiString)& aImplementationLevel)
 {
-	implementationLevel = aImplementationLevel;
+  implementationLevel = aImplementationLevel;
 }
 
 Handle(TCollection_HAsciiString) HeaderSection_FileDescription::ImplementationLevel() const
 {
-	return implementationLevel;
+  return implementationLevel;
 }

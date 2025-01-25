@@ -27,42 +27,24 @@ class Interface_Check;
 class StepVisual_ColourRgb;
 class StepData_StepWriter;
 
-
 //! Read & Write Module for ColourRgb
-class RWStepVisual_RWColourRgb 
+class RWStepVisual_RWColourRgb
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_HIDDEN RWStepVisual_RWColourRgb();
-  
-  Standard_HIDDEN void ReadStep (const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(StepVisual_ColourRgb)& ent) const;
-  
-  Standard_HIDDEN void WriteStep (StepData_StepWriter& SW, const Handle(StepVisual_ColourRgb)& ent) const;
 
+  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& data,
+                                const Standard_Integer                 num,
+                                Handle(Interface_Check)&               ach,
+                                const Handle(StepVisual_ColourRgb)&    ent) const;
 
-
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                SW,
+                                 const Handle(StepVisual_ColourRgb)& ent) const;
 
 protected:
-
-
-
-
-
 private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepVisual_RWColourRgb_HeaderFile

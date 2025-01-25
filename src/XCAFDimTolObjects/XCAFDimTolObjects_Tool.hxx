@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #ifndef _XCAFDimTolObjects_Tool_HeaderFile
 #define _XCAFDimTolObjects_Tool_HeaderFile
 
@@ -31,44 +30,44 @@
 class TDocStd_Document;
 class TopoDS_Shape;
 
-
-class XCAFDimTolObjects_Tool 
+class XCAFDimTolObjects_Tool
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT XCAFDimTolObjects_Tool(const Handle(TDocStd_Document)& theDoc);
-  
+
   //! Returns a sequence of Dimensions currently stored
   //! in the GD&T table
-  Standard_EXPORT void GetDimensions (XCAFDimTolObjects_DimensionObjectSequence& theDimensionObjectSequence) const;
-  
+  Standard_EXPORT void GetDimensions(
+    XCAFDimTolObjects_DimensionObjectSequence& theDimensionObjectSequence) const;
+
   //! Returns all Dimensions defined for Shape
-  Standard_EXPORT Standard_Boolean GetRefDimensions (const TopoDS_Shape& theShape, 
-                                                     XCAFDimTolObjects_DimensionObjectSequence& theDimensions) const;
-  
+  Standard_EXPORT Standard_Boolean
+    GetRefDimensions(const TopoDS_Shape&                        theShape,
+                     XCAFDimTolObjects_DimensionObjectSequence& theDimensions) const;
+
   //! Returns a sequence of Tolerances currently stored
   //! in the GD&T table
-  Standard_EXPORT void GetGeomTolerances (XCAFDimTolObjects_GeomToleranceObjectSequence& theGeomToleranceObjectSequence, 
-                                          XCAFDimTolObjects_DatumObjectSequence& theDatumObjectSequence, 
-                                          XCAFDimTolObjects_DataMapOfToleranceDatum& theMap) const;
-  
+  Standard_EXPORT void GetGeomTolerances(
+    XCAFDimTolObjects_GeomToleranceObjectSequence& theGeomToleranceObjectSequence,
+    XCAFDimTolObjects_DatumObjectSequence&         theDatumObjectSequence,
+    XCAFDimTolObjects_DataMapOfToleranceDatum&     theMap) const;
+
   //! Returns all GeomTolerances defined for Shape
-  Standard_EXPORT Standard_Boolean GetRefGeomTolerances (const TopoDS_Shape& theShape, 
-                                                         XCAFDimTolObjects_GeomToleranceObjectSequence& theGeomToleranceObjectSequence, 
-                                                         XCAFDimTolObjects_DatumObjectSequence& theDatumObjectSequence, 
-                                                         XCAFDimTolObjects_DataMapOfToleranceDatum& theMap) const;
-  
+  Standard_EXPORT Standard_Boolean GetRefGeomTolerances(
+    const TopoDS_Shape&                            theShape,
+    XCAFDimTolObjects_GeomToleranceObjectSequence& theGeomToleranceObjectSequence,
+    XCAFDimTolObjects_DatumObjectSequence&         theDatumObjectSequence,
+    XCAFDimTolObjects_DataMapOfToleranceDatum&     theMap) const;
+
   //! Returns DatumObject defined for Shape
-  Standard_EXPORT Standard_Boolean GetRefDatum (const TopoDS_Shape& theShape, 
-                                                Handle(XCAFDimTolObjects_DatumObject)& theDatum) const;
+  Standard_EXPORT Standard_Boolean
+    GetRefDatum(const TopoDS_Shape&                    theShape,
+                Handle(XCAFDimTolObjects_DatumObject)& theDatum) const;
 
 private:
-
   Handle(XCAFDoc_DimTolTool) myDimTolTool;
-
 };
 
 #endif // _XCAFDimTolObjects_Tool_HeaderFile

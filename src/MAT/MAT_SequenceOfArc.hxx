@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<Handle(MAT_Arc)> MAT_SequenceOfArc;
 
-
 #endif

@@ -18,289 +18,346 @@
 #include <HLRBRep_BSurfaceTool.hxx>
 
 //=======================================================================
-//function : Surface
-//purpose  : 
+// function : Surface
+// purpose  :
 //=======================================================================
 
-inline BRepAdaptor_Surface & HLRBRep_Surface::Surface()
-{ return mySurf; }
+inline BRepAdaptor_Surface& HLRBRep_Surface::Surface()
+{
+  return mySurf;
+}
 
 //=======================================================================
-//function : FirstUParameter
-//purpose  : 
+// function : FirstUParameter
+// purpose  :
 //=======================================================================
 
-inline Standard_Real  HLRBRep_Surface::FirstUParameter()const 
-{ return HLRBRep_BSurfaceTool::FirstUParameter(mySurf); }
+inline Standard_Real HLRBRep_Surface::FirstUParameter() const
+{
+  return HLRBRep_BSurfaceTool::FirstUParameter(mySurf);
+}
 
 //=======================================================================
-//function : LastUParameter
-//purpose  : 
+// function : LastUParameter
+// purpose  :
 //=======================================================================
 
-inline Standard_Real  HLRBRep_Surface::LastUParameter()const 
-{ return HLRBRep_BSurfaceTool::LastUParameter(mySurf); }
+inline Standard_Real HLRBRep_Surface::LastUParameter() const
+{
+  return HLRBRep_BSurfaceTool::LastUParameter(mySurf);
+}
 
 //=======================================================================
-//function : FirstVParameter
-//purpose  : 
+// function : FirstVParameter
+// purpose  :
 //=======================================================================
 
-inline Standard_Real  HLRBRep_Surface::FirstVParameter()const 
-{ return HLRBRep_BSurfaceTool::FirstVParameter(mySurf); }
+inline Standard_Real HLRBRep_Surface::FirstVParameter() const
+{
+  return HLRBRep_BSurfaceTool::FirstVParameter(mySurf);
+}
 
 //=======================================================================
-//function : LastVParameter
-//purpose  : 
+// function : LastVParameter
+// purpose  :
 //=======================================================================
 
-inline Standard_Real  HLRBRep_Surface::LastVParameter()const 
-{ return HLRBRep_BSurfaceTool::LastVParameter(mySurf); }
+inline Standard_Real HLRBRep_Surface::LastVParameter() const
+{
+  return HLRBRep_BSurfaceTool::LastVParameter(mySurf);
+}
 
 //=======================================================================
-//function : UContinuity
-//purpose  : 
+// function : UContinuity
+// purpose  :
 //=======================================================================
 
-inline GeomAbs_Shape  HLRBRep_Surface::UContinuity()const 
-{ return HLRBRep_BSurfaceTool::UContinuity(mySurf); }
+inline GeomAbs_Shape HLRBRep_Surface::UContinuity() const
+{
+  return HLRBRep_BSurfaceTool::UContinuity(mySurf);
+}
 
 //=======================================================================
-//function : VContinuity
-//purpose  : 
+// function : VContinuity
+// purpose  :
 //=======================================================================
 
-inline GeomAbs_Shape  HLRBRep_Surface::VContinuity()const 
-{ return HLRBRep_BSurfaceTool::VContinuity(mySurf); }
+inline GeomAbs_Shape HLRBRep_Surface::VContinuity() const
+{
+  return HLRBRep_BSurfaceTool::VContinuity(mySurf);
+}
 
 //=======================================================================
-//function : NbUIntervals
-//purpose  : 
+// function : NbUIntervals
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer
-HLRBRep_Surface::NbUIntervals(const GeomAbs_Shape S)
-{ return HLRBRep_BSurfaceTool::NbUIntervals(mySurf,S); }
+inline Standard_Integer HLRBRep_Surface::NbUIntervals(const GeomAbs_Shape S)
+{
+  return HLRBRep_BSurfaceTool::NbUIntervals(mySurf, S);
+}
 
 //=======================================================================
-//function : NbVIntervals
-//purpose  : 
+// function : NbVIntervals
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer  
-HLRBRep_Surface::NbVIntervals(const GeomAbs_Shape S)
-{ return HLRBRep_BSurfaceTool::NbVIntervals(mySurf,S); }
+inline Standard_Integer HLRBRep_Surface::NbVIntervals(const GeomAbs_Shape S)
+{
+  return HLRBRep_BSurfaceTool::NbVIntervals(mySurf, S);
+}
 
 //=======================================================================
-//function : IsUClosed
-//purpose  : 
+// function : IsUClosed
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean  HLRBRep_Surface::IsUClosed()const 
-{ return HLRBRep_BSurfaceTool::IsUClosed(mySurf); }
+inline Standard_Boolean HLRBRep_Surface::IsUClosed() const
+{
+  return HLRBRep_BSurfaceTool::IsUClosed(mySurf);
+}
 
 //=======================================================================
-//function : IsVClosed
-//purpose  : 
+// function : IsVClosed
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean  HLRBRep_Surface::IsVClosed()const 
-{ return HLRBRep_BSurfaceTool::IsVClosed(mySurf); }
+inline Standard_Boolean HLRBRep_Surface::IsVClosed() const
+{
+  return HLRBRep_BSurfaceTool::IsVClosed(mySurf);
+}
 
 //=======================================================================
-//function : IsUPeriodic
-//purpose  : 
+// function : IsUPeriodic
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean  HLRBRep_Surface::IsUPeriodic()const 
-{ return HLRBRep_BSurfaceTool::IsUPeriodic(mySurf); }
+inline Standard_Boolean HLRBRep_Surface::IsUPeriodic() const
+{
+  return HLRBRep_BSurfaceTool::IsUPeriodic(mySurf);
+}
 
 //=======================================================================
-//function : UPeriod
-//purpose  : 
+// function : UPeriod
+// purpose  :
 //=======================================================================
 
-inline Standard_Real  HLRBRep_Surface::UPeriod()const 
-{ return HLRBRep_BSurfaceTool::UPeriod(mySurf); }
+inline Standard_Real HLRBRep_Surface::UPeriod() const
+{
+  return HLRBRep_BSurfaceTool::UPeriod(mySurf);
+}
 
 //=======================================================================
-//function : IsVPeriodic
-//purpose  : 
+// function : IsVPeriodic
+// purpose  :
 //=======================================================================
 
-inline Standard_Boolean  HLRBRep_Surface::IsVPeriodic()const 
-{ return HLRBRep_BSurfaceTool::IsVPeriodic(mySurf); }
+inline Standard_Boolean HLRBRep_Surface::IsVPeriodic() const
+{
+  return HLRBRep_BSurfaceTool::IsVPeriodic(mySurf);
+}
 
 //=======================================================================
-//function : VPeriod
-//purpose  : 
+// function : VPeriod
+// purpose  :
 //=======================================================================
 
-inline Standard_Real  HLRBRep_Surface::VPeriod()const 
-{ return HLRBRep_BSurfaceTool::VPeriod(mySurf); }
+inline Standard_Real HLRBRep_Surface::VPeriod() const
+{
+  return HLRBRep_BSurfaceTool::VPeriod(mySurf);
+}
 
 //=======================================================================
-//function : D0
-//purpose  : 
+// function : D0
+// purpose  :
 //=======================================================================
 
-inline void HLRBRep_Surface::D0(const Standard_Real U,
-					 const Standard_Real V,
-					 gp_Pnt& P) const
-{ HLRBRep_BSurfaceTool::D0(mySurf,U,V,P); }
+inline void HLRBRep_Surface::D0(const Standard_Real U, const Standard_Real V, gp_Pnt& P) const
+{
+  HLRBRep_BSurfaceTool::D0(mySurf, U, V, P);
+}
 
 //=======================================================================
-//function : D1
-//purpose  : 
+// function : D1
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_Surface::D1(const Standard_Real U,
-					 const Standard_Real V,
-   gp_Pnt& P,
-   gp_Vec& D1U,
-   gp_Vec& D1V) const 
-{ HLRBRep_BSurfaceTool::D1(mySurf,U,V,P,D1U,D1V); }
+                                const Standard_Real V,
+                                gp_Pnt&             P,
+                                gp_Vec&             D1U,
+                                gp_Vec&             D1V) const
+{
+  HLRBRep_BSurfaceTool::D1(mySurf, U, V, P, D1U, D1V);
+}
 
 //=======================================================================
-//function : D2
-//purpose  : 
+// function : D2
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_Surface::D2(const Standard_Real U,
-					 const Standard_Real V,
-   gp_Pnt& P,
-   gp_Vec& D1U,
-   gp_Vec& D1V,
-   gp_Vec& D2U,
-   gp_Vec& D2V,
-   gp_Vec& D2UV) const 
-{ HLRBRep_BSurfaceTool::D2(mySurf,U,V,P,D1U,D1V,D2U,D2V,D2UV); }
+                                const Standard_Real V,
+                                gp_Pnt&             P,
+                                gp_Vec&             D1U,
+                                gp_Vec&             D1V,
+                                gp_Vec&             D2U,
+                                gp_Vec&             D2V,
+                                gp_Vec&             D2UV) const
+{
+  HLRBRep_BSurfaceTool::D2(mySurf, U, V, P, D1U, D1V, D2U, D2V, D2UV);
+}
 
 //=======================================================================
-//function : D3
-//purpose  : 
+// function : D3
+// purpose  :
 //=======================================================================
 
 inline void HLRBRep_Surface::D3(const Standard_Real U,
-					 const Standard_Real V,
-   gp_Pnt& P,
-   gp_Vec& D1U,
-   gp_Vec& D1V,
-   gp_Vec& D2U,
-   gp_Vec& D2V,
-   gp_Vec& D2UV,
-   gp_Vec& D3U,
-   gp_Vec& D3V,
-   gp_Vec& D3UUV,
-   gp_Vec& D3UVV) const 
-{ HLRBRep_BSurfaceTool::D3
-    (mySurf,U,V,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV); }
+                                const Standard_Real V,
+                                gp_Pnt&             P,
+                                gp_Vec&             D1U,
+                                gp_Vec&             D1V,
+                                gp_Vec&             D2U,
+                                gp_Vec&             D2V,
+                                gp_Vec&             D2UV,
+                                gp_Vec&             D3U,
+                                gp_Vec&             D3V,
+                                gp_Vec&             D3UUV,
+                                gp_Vec&             D3UVV) const
+{
+  HLRBRep_BSurfaceTool::D3(mySurf, U, V, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+}
 
 //=======================================================================
-//function : DN
-//purpose  : 
+// function : DN
+// purpose  :
 //=======================================================================
 
-inline gp_Vec HLRBRep_Surface::DN(const Standard_Real U,
-					   const Standard_Real V,
-					   const Standard_Integer Nu,
-					   const Standard_Integer Nv) const 
-{ return HLRBRep_BSurfaceTool::DN(mySurf,U,V,Nu,Nv); }
+inline gp_Vec HLRBRep_Surface::DN(const Standard_Real    U,
+                                  const Standard_Real    V,
+                                  const Standard_Integer Nu,
+                                  const Standard_Integer Nv) const
+{
+  return HLRBRep_BSurfaceTool::DN(mySurf, U, V, Nu, Nv);
+}
 
 //=======================================================================
-//function : GetType
-//purpose  : 
+// function : GetType
+// purpose  :
 //=======================================================================
 
-inline GeomAbs_SurfaceType  HLRBRep_Surface::GetType()const 
-{ return myType; }
+inline GeomAbs_SurfaceType HLRBRep_Surface::GetType() const
+{
+  return myType;
+}
 
 //=======================================================================
-//function : Cylinder
-//purpose  : 
+// function : Cylinder
+// purpose  :
 //=======================================================================
 
-inline gp_Cylinder  HLRBRep_Surface::Cylinder()const 
-{ return HLRBRep_BSurfaceTool::Cylinder(mySurf); }
+inline gp_Cylinder HLRBRep_Surface::Cylinder() const
+{
+  return HLRBRep_BSurfaceTool::Cylinder(mySurf);
+}
 
 //=======================================================================
-//function : Cone
-//purpose  : 
+// function : Cone
+// purpose  :
 //=======================================================================
 
-inline gp_Cone  HLRBRep_Surface::Cone()const 
-{ return HLRBRep_BSurfaceTool::Cone(mySurf); }
+inline gp_Cone HLRBRep_Surface::Cone() const
+{
+  return HLRBRep_BSurfaceTool::Cone(mySurf);
+}
 
 //=======================================================================
-//function : Sphere
-//purpose  : 
+// function : Sphere
+// purpose  :
 //=======================================================================
 
-inline gp_Sphere  HLRBRep_Surface::Sphere()const 
-{ return HLRBRep_BSurfaceTool::Sphere(mySurf); }
+inline gp_Sphere HLRBRep_Surface::Sphere() const
+{
+  return HLRBRep_BSurfaceTool::Sphere(mySurf);
+}
 
 //=======================================================================
-//function : Torus
-//purpose  : 
+// function : Torus
+// purpose  :
 //=======================================================================
 
-inline gp_Torus  HLRBRep_Surface::Torus()const 
-{ return HLRBRep_BSurfaceTool::Torus(mySurf); }
+inline gp_Torus HLRBRep_Surface::Torus() const
+{
+  return HLRBRep_BSurfaceTool::Torus(mySurf);
+}
 
 //=======================================================================
-//function : UDegree
-//purpose  : 
+// function : UDegree
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer  HLRBRep_Surface::UDegree()const 
-{ return HLRBRep_BSurfaceTool::UDegree(mySurf); }
+inline Standard_Integer HLRBRep_Surface::UDegree() const
+{
+  return HLRBRep_BSurfaceTool::UDegree(mySurf);
+}
 
 //=======================================================================
-//function : NbUPoles
-//purpose  : 
+// function : NbUPoles
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer  HLRBRep_Surface::NbUPoles()const 
-{ return HLRBRep_BSurfaceTool::NbUPoles(mySurf); }
+inline Standard_Integer HLRBRep_Surface::NbUPoles() const
+{
+  return HLRBRep_BSurfaceTool::NbUPoles(mySurf);
+}
 
 //=======================================================================
-//function : VDegree
-//purpose  : 
+// function : VDegree
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer  HLRBRep_Surface::VDegree()const 
-{ return HLRBRep_BSurfaceTool::VDegree(mySurf); }
+inline Standard_Integer HLRBRep_Surface::VDegree() const
+{
+  return HLRBRep_BSurfaceTool::VDegree(mySurf);
+}
 
 //=======================================================================
-//function : NbVPoles
-//purpose  : 
+// function : NbVPoles
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer  HLRBRep_Surface::NbVPoles()const 
-{ return HLRBRep_BSurfaceTool::NbVPoles(mySurf); }
-
-
-//=======================================================================
-//function : NbUKnots
-//purpose  : 
-//=======================================================================
-
-inline Standard_Integer  HLRBRep_Surface::NbUKnots()const 
-{ return HLRBRep_BSurfaceTool::NbUKnots(mySurf); }
-
+inline Standard_Integer HLRBRep_Surface::NbVPoles() const
+{
+  return HLRBRep_BSurfaceTool::NbVPoles(mySurf);
+}
 
 //=======================================================================
-//function : NbVKnots
-//purpose  : 
+// function : NbUKnots
+// purpose  :
 //=======================================================================
 
-inline Standard_Integer  HLRBRep_Surface::NbVKnots()const 
-{ return HLRBRep_BSurfaceTool::NbVKnots(mySurf); }
+inline Standard_Integer HLRBRep_Surface::NbUKnots() const
+{
+  return HLRBRep_BSurfaceTool::NbUKnots(mySurf);
+}
 
 //=======================================================================
-//function : Axis
-//purpose  : 
+// function : NbVKnots
+// purpose  :
 //=======================================================================
 
-inline gp_Ax1  HLRBRep_Surface::Axis()const 
-{ return HLRBRep_BSurfaceTool::AxeOfRevolution(mySurf); }
+inline Standard_Integer HLRBRep_Surface::NbVKnots() const
+{
+  return HLRBRep_BSurfaceTool::NbVKnots(mySurf);
+}
+
+//=======================================================================
+// function : Axis
+// purpose  :
+//=======================================================================
+
+inline gp_Ax1 HLRBRep_Surface::Axis() const
+{
+  return HLRBRep_BSurfaceTool::AxeOfRevolution(mySurf);
+}

@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -26,102 +26,119 @@
 #include <StepRepr_RepresentationContext.hxx>
 #include <StepKinematics_KinematicTopologyStructure.hxx>
 
-//=======================================================================
-//function : RWStepKinematics_RWKinematicTopologyNetworkStructure
-//purpose  :
-//=======================================================================
-RWStepKinematics_RWKinematicTopologyNetworkStructure::RWStepKinematics_RWKinematicTopologyNetworkStructure() {}
+//=================================================================================================
 
+RWStepKinematics_RWKinematicTopologyNetworkStructure::
+  RWStepKinematics_RWKinematicTopologyNetworkStructure()
+{
+}
 
-//=======================================================================
-//function : ReadStep
-//purpose  :
-//=======================================================================
-void RWStepKinematics_RWKinematicTopologyNetworkStructure::ReadStep (const Handle(StepData_StepReaderData)& theData,
-                                                                     const Standard_Integer theNum,
-                                                                     Handle(Interface_Check)& theArch,
-                                                                     const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt) const
+//=================================================================================================
+
+void RWStepKinematics_RWKinematicTopologyNetworkStructure::ReadStep(
+  const Handle(StepData_StepReaderData)&                          theData,
+  const Standard_Integer                                          theNum,
+  Handle(Interface_Check)&                                        theArch,
+  const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt) const
 {
   // Check number of parameters
-  if ( ! theData->CheckNbParams(theNum,4,theArch,"kinematic_topology_network_structure") ) return;
+  if (!theData->CheckNbParams(theNum, 4, theArch, "kinematic_topology_network_structure"))
+    return;
 
   // Inherited fields of Representation
 
   Handle(TCollection_HAsciiString) aRepresentation_Name;
-  theData->ReadString (theNum, 1, "representation.name", theArch, aRepresentation_Name);
+  theData->ReadString(theNum, 1, "representation.name", theArch, aRepresentation_Name);
 
   Handle(StepRepr_HArray1OfRepresentationItem) aRepresentation_Items;
-  Standard_Integer sub2 = 0;
-  if ( theData->ReadSubList (theNum, 2, "representation.items", theArch, sub2) ) {
-    Standard_Integer nb0 = theData->NbParams(sub2);
-    aRepresentation_Items = new StepRepr_HArray1OfRepresentationItem (1, nb0);
+  Standard_Integer                             sub2 = 0;
+  if (theData->ReadSubList(theNum, 2, "representation.items", theArch, sub2))
+  {
+    Standard_Integer nb0  = theData->NbParams(sub2);
+    aRepresentation_Items = new StepRepr_HArray1OfRepresentationItem(1, nb0);
     Standard_Integer num2 = sub2;
-    for ( Standard_Integer i0=1; i0 <= nb0; i0++ ) {
+    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    {
       Handle(StepRepr_RepresentationItem) anIt0;
-      theData->ReadEntity (num2, i0, "representation_item", theArch, STANDARD_TYPE(StepRepr_RepresentationItem), anIt0);
+      theData->ReadEntity(num2,
+                          i0,
+                          "representation_item",
+                          theArch,
+                          STANDARD_TYPE(StepRepr_RepresentationItem),
+                          anIt0);
       aRepresentation_Items->SetValue(i0, anIt0);
     }
   }
 
   Handle(StepRepr_RepresentationContext) aRepresentation_ContextOfItems;
-  theData->ReadEntity (theNum, 3, "representation.context_of_items", theArch, STANDARD_TYPE(StepRepr_RepresentationContext), aRepresentation_ContextOfItems);
+  theData->ReadEntity(theNum,
+                      3,
+                      "representation.context_of_items",
+                      theArch,
+                      STANDARD_TYPE(StepRepr_RepresentationContext),
+                      aRepresentation_ContextOfItems);
 
   // Own fields of KinematicTopologyNetworkStructure
 
   Handle(StepKinematics_KinematicTopologyStructure) aParent;
-  theData->ReadEntity (theNum, 4, "parent", theArch, STANDARD_TYPE(StepKinematics_KinematicTopologyStructure), aParent);
+  theData->ReadEntity(theNum,
+                      4,
+                      "parent",
+                      theArch,
+                      STANDARD_TYPE(StepKinematics_KinematicTopologyStructure),
+                      aParent);
 
   // Initialize entity
   theEnt->Init(aRepresentation_Name,
-            aRepresentation_Items,
-            aRepresentation_ContextOfItems,
-            aParent);
+               aRepresentation_Items,
+               aRepresentation_ContextOfItems,
+               aParent);
 }
 
-//=======================================================================
-//function : WriteStep
-//purpose  :
-//=======================================================================
-void RWStepKinematics_RWKinematicTopologyNetworkStructure::WriteStep (StepData_StepWriter& theSW,
-                                                                      const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt) const
+//=================================================================================================
+
+void RWStepKinematics_RWKinematicTopologyNetworkStructure::WriteStep(
+  StepData_StepWriter&                                            theSW,
+  const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt) const
 {
 
   // Own fields of Representation
 
-  theSW.Send (theEnt->Name());
+  theSW.Send(theEnt->Name());
 
   theSW.OpenSub();
-  for (Standard_Integer i1=1; i1 <= theEnt->Items()->Length(); i1++ ) {
+  for (Standard_Integer i1 = 1; i1 <= theEnt->Items()->Length(); i1++)
+  {
     Handle(StepRepr_RepresentationItem) Var0 = theEnt->Items()->Value(i1);
-    theSW.Send (Var0);
+    theSW.Send(Var0);
   }
   theSW.CloseSub();
 
-  theSW.Send (theEnt->ContextOfItems());
+  theSW.Send(theEnt->ContextOfItems());
 
   // Own fields of KinematicTopologyNetworkStructure
 
-  theSW.Send (theEnt->Parent());
+  theSW.Send(theEnt->Parent());
 }
 
-//=======================================================================
-//function : Share
-//purpose  :
-//=======================================================================
-void RWStepKinematics_RWKinematicTopologyNetworkStructure::Share (const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt,
-                                                                  Interface_EntityIterator& iter) const
+//=================================================================================================
+
+void RWStepKinematics_RWKinematicTopologyNetworkStructure::Share(
+  const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt,
+  Interface_EntityIterator&                                       iter) const
 {
 
   // Inherited fields of Representation
 
-  for (Standard_Integer i1=1; i1 <= theEnt->StepRepr_Representation::Items()->Length(); i1++ ) {
+  for (Standard_Integer i1 = 1; i1 <= theEnt->StepRepr_Representation::Items()->Length(); i1++)
+  {
     Handle(StepRepr_RepresentationItem) Var0 = theEnt->StepRepr_Representation::Items()->Value(i1);
-    iter.AddItem (Var0);
+    iter.AddItem(Var0);
   }
 
-  iter.AddItem (theEnt->StepRepr_Representation::ContextOfItems());
+  iter.AddItem(theEnt->StepRepr_Representation::ContextOfItems());
 
   // Own fields of KinematicTopologyNetworkStructure
 
-  iter.AddItem (theEnt->Parent());
+  iter.AddItem(theEnt->Parent());
 }

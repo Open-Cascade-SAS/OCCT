@@ -21,7 +21,6 @@
 #include <GeomInt_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
 #include <GeomInt_ResConstraintOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
 #include <AppParCurves_MultiCurve.hxx>
- 
 
 #define MultiLine GeomInt_TheMultiLineOfWLApprox
 #define MultiLine_hxx <GeomInt_TheMultiLineOfWLApprox.hxx>
@@ -32,6 +31,6 @@
 #define ResolCons GeomInt_ResConstraintOfMyGradientOfTheComputeLineBezierOfWLApprox
 #define ResolCons_hxx <GeomInt_ResConstraintOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
 #define AppParCurves_Function GeomInt_ParFunctionOfMyGradientOfTheComputeLineBezierOfWLApprox
-#define AppParCurves_Function_hxx <GeomInt_ParFunctionOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
+#define AppParCurves_Function_hxx                                                                  \
+  <GeomInt_ParFunctionOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx>
 #include "../AppParCurves/AppParCurves_Function.gxx"
-

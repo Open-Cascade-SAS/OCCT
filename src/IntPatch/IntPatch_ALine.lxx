@@ -18,84 +18,88 @@
 #include <Precision.hxx>
 #include <IntPatch_Point.hxx>
 
-
-inline void IntPatch_ALine::Replace (const Standard_Integer Index, const IntPatch_Point& Pnt)
+inline void IntPatch_ALine::Replace(const Standard_Integer Index, const IntPatch_Point& Pnt)
 {
   svtx(Index) = Pnt;
 }
 
-inline void IntPatch_ALine::SetFirstPoint (const Standard_Integer IndFirst)
+inline void IntPatch_ALine::SetFirstPoint(const Standard_Integer IndFirst)
 {
   fipt = Standard_True;
   indf = IndFirst;
 }
 
-inline void IntPatch_ALine::SetLastPoint (const Standard_Integer IndLast)
+inline void IntPatch_ALine::SetLastPoint(const Standard_Integer IndLast)
 {
   lapt = Standard_True;
   indl = IndLast;
 }
 
-inline Standard_Real IntPatch_ALine::FirstParameter (Standard_Boolean& IsIncluded) const
+inline Standard_Real IntPatch_ALine::FirstParameter(Standard_Boolean& IsIncluded) const
 {
-  Standard_Real bid,first;
-  curv.Domain(first,bid);
+  Standard_Real bid, first;
+  curv.Domain(first, bid);
   IsIncluded = !curv.IsFirstOpen();
   return first;
 }
 
-inline Standard_Real IntPatch_ALine::LastParameter (Standard_Boolean& IsIncluded) const
+inline Standard_Real IntPatch_ALine::LastParameter(Standard_Boolean& IsIncluded) const
 {
-  Standard_Real bid,last;
-  curv.Domain(bid,last);
+  Standard_Real bid, last;
+  curv.Domain(bid, last);
   IsIncluded = !curv.IsLastOpen();
   return last;
 }
 
-inline gp_Pnt IntPatch_ALine::Value (const Standard_Real U)
+inline gp_Pnt IntPatch_ALine::Value(const Standard_Real U)
 {
-  return curv.Value(U);// Value leve l exception DomainError
+  return curv.Value(U); // Value leve l exception DomainError
 }
 
 inline Standard_Boolean IntPatch_ALine::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& Du)
 {
-  return curv.D1u(U,P,Du); // D1u leve l exception DomainError
+  return curv.D1u(U, P, Du); // D1u leve l exception DomainError
 }
 
-inline void IntPatch_ALine::FindParameter(const gp_Pnt& theP,
-                                          TColStd_ListOfReal& theParams) const
+inline void IntPatch_ALine::FindParameter(const gp_Pnt& theP, TColStd_ListOfReal& theParams) const
 {
   curv.FindParameter(theP, theParams);
 }
 
-inline Standard_Boolean IntPatch_ALine::HasFirstPoint () const
+inline Standard_Boolean IntPatch_ALine::HasFirstPoint() const
 {
   return fipt;
 }
 
-inline Standard_Boolean IntPatch_ALine::HasLastPoint () const
+inline Standard_Boolean IntPatch_ALine::HasLastPoint() const
 {
   return lapt;
 }
 
-inline const IntPatch_Point& IntPatch_ALine::FirstPoint () const
+inline const IntPatch_Point& IntPatch_ALine::FirstPoint() const
 {
-  if (!fipt) {throw Standard_DomainError();}
+  if (!fipt)
+  {
+    throw Standard_DomainError();
+  }
   return svtx(indf);
 }
 
-inline const IntPatch_Point& IntPatch_ALine::LastPoint () const
+inline const IntPatch_Point& IntPatch_ALine::LastPoint() const
 {
-  if (!lapt) {throw Standard_DomainError();}
+  if (!lapt)
+  {
+    throw Standard_DomainError();
+  }
   return svtx(indl);
 }
 
-inline Standard_Integer IntPatch_ALine::NbVertex () const
+inline Standard_Integer IntPatch_ALine::NbVertex() const
 {
   return svtx.Length();
 }
 
-inline const IntPatch_Point& IntPatch_ALine::Vertex (const Standard_Integer Index) const
+inline const IntPatch_Point& IntPatch_ALine::Vertex(const Standard_Integer Index) const
 {
   return svtx(Index);
 }

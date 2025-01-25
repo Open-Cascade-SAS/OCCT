@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(IGESDimen_GeneralNote)> IGESDimen_Array1OfGeneralNote;
 
-
 #endif

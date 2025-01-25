@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 class IFSelect_SelectionIterator;
 
-
 class IFSelect_SelectCombine;
 DEFINE_STANDARD_HANDLE(IFSelect_SelectCombine, IFSelect_Selection)
 
@@ -37,67 +36,48 @@ class IFSelect_SelectCombine : public IFSelect_Selection
 {
 
 public:
-
-  
   //! Returns the count of Input Selections
   Standard_EXPORT Standard_Integer NbInputs() const;
-  
+
   //! Returns an Input Selection, given its rank in the list
-  Standard_EXPORT Handle(IFSelect_Selection) Input (const Standard_Integer num) const;
-  
+  Standard_EXPORT Handle(IFSelect_Selection) Input(const Standard_Integer num) const;
+
   //! Returns the rank of an input Selection, 0 if not in the list.
   //! Most generally, its value is meaningless, except for testing
   //! the presence of an input Selection :
   //! - == 0  if <sel> is not an input for <me>
   //! - >  0  if <sel> is an input for <me>
-  Standard_EXPORT Standard_Integer InputRank (const Handle(IFSelect_Selection)& sel) const;
-  
+  Standard_EXPORT Standard_Integer InputRank(const Handle(IFSelect_Selection)& sel) const;
+
   //! Adds a Selection to the filling list
   //! By default, adds it to the end of the list
   //! A Positive rank less then NbInputs gives an insertion rank
   //! (InsertBefore : the new <atnum>th item of the list is <sel>)
-  Standard_EXPORT void Add (const Handle(IFSelect_Selection)& sel, const Standard_Integer atnum = 0);
-  
+  Standard_EXPORT void Add(const Handle(IFSelect_Selection)& sel, const Standard_Integer atnum = 0);
+
   //! Removes an input Selection.
   //! Returns True if Done, False, if <sel> is not an input for <me>
-  Standard_EXPORT Standard_Boolean Remove (const Handle(IFSelect_Selection)& sel);
-  
+  Standard_EXPORT Standard_Boolean Remove(const Handle(IFSelect_Selection)& sel);
+
   //! Removes an input Selection, given its rank in the list
   //! Returns True if Done, False if <num> is out of range
-  Standard_EXPORT Standard_Boolean Remove (const Standard_Integer num);
-  
+  Standard_EXPORT Standard_Boolean Remove(const Standard_Integer num);
+
   //! Puts in an Iterator the Selections from which "me" depends
   //! That is to say, the list of Input Selections
-  Standard_EXPORT void FillIterator (IFSelect_SelectionIterator& iter) const Standard_OVERRIDE;
+  Standard_EXPORT void FillIterator(IFSelect_SelectionIterator& iter) const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectCombine,IFSelect_Selection)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectCombine, IFSelect_Selection)
 
 protected:
-
-  
   //! Defines an empty SelectCombine
   Standard_EXPORT IFSelect_SelectCombine();
-  
+
   //! Returns always True, because RootResult gives a Unique list
   Standard_EXPORT virtual Standard_Boolean HasUniqueResult() const Standard_OVERRIDE;
 
-
-
 private:
-
-
   IFSelect_TSeqOfSelection thelist;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_SelectCombine_HeaderFile

@@ -1,4 +1,4 @@
-// Created on : Sat May 02 12:41:15 2020 
+// Created on : Sat May 02 12:41:15 2020
 // Created by: Irina KRYLOVA
 // Generator:	Express (EXPRESS -> CASCADE/XSTEP Translator) V3.0
 // Copyright (c) Open CASCADE 2020
@@ -27,12 +27,10 @@ DEFINE_STANDARD_HANDLE(StepKinematics_KinematicLink, StepShape_Vertex)
 //! Representation of STEP entity KinematicLink
 class StepKinematics_KinematicLink : public StepShape_Vertex
 {
-public :
-
+public:
   //! default constructor
   Standard_EXPORT StepKinematics_KinematicLink();
 
-DEFINE_STANDARD_RTTIEXT(StepKinematics_KinematicLink, StepShape_Vertex)
-
+  DEFINE_STANDARD_RTTIEXT(StepKinematics_KinematicLink, StepShape_Vertex)
 };
 #endif // _StepKinematics_KinematicLink_HeaderFile_

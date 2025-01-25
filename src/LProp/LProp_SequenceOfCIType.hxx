@@ -22,5 +22,4 @@
 
 typedef NCollection_Sequence<LProp_CIType> LProp_SequenceOfCIType;
 
-
 #endif

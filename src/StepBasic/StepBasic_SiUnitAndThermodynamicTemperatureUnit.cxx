@@ -11,36 +11,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_SiUnitAndThermodynamicTemperatureUnit.hxx>
 #include <StepBasic_ThermodynamicTemperatureUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndThermodynamicTemperatureUnit,StepBasic_SiUnit)
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndThermodynamicTemperatureUnit, StepBasic_SiUnit)
 
-//=======================================================================
-//function : StepBasic_SiUnitAndThermodynamicTemperatureUnit
-//purpose  : 
-//=======================================================================
-StepBasic_SiUnitAndThermodynamicTemperatureUnit::StepBasic_SiUnitAndThermodynamicTemperatureUnit ()
+//=================================================================================================
+
+StepBasic_SiUnitAndThermodynamicTemperatureUnit::StepBasic_SiUnitAndThermodynamicTemperatureUnit()
 {
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void StepBasic_SiUnitAndThermodynamicTemperatureUnit::Init(const Standard_Boolean hasAprefix,
-                                                           const StepBasic_SiPrefix aPrefix,
+void StepBasic_SiUnitAndThermodynamicTemperatureUnit::Init(const Standard_Boolean     hasAprefix,
+                                                           const StepBasic_SiPrefix   aPrefix,
                                                            const StepBasic_SiUnitName aName)
 {
   // --- class inherited fields ---
   // --- ANDOR component fields ---
   StepBasic_SiUnit::Init(hasAprefix, aPrefix, aName);
-    
+
   // --- ANDOR component fields ---
   thermodynamicTemperatureUnit = new StepBasic_ThermodynamicTemperatureUnit();
   Handle(StepBasic_DimensionalExponents) aDimensions;
@@ -48,26 +41,18 @@ void StepBasic_SiUnitAndThermodynamicTemperatureUnit::Init(const Standard_Boolea
   thermodynamicTemperatureUnit->Init(aDimensions);
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : SetThermodynamicTemperatureUnit
-//purpose  : 
-//=======================================================================
-
-void StepBasic_SiUnitAndThermodynamicTemperatureUnit::SetThermodynamicTemperatureUnit
-  (const Handle(StepBasic_ThermodynamicTemperatureUnit)& aThermodynamicTemperatureUnit)
+void StepBasic_SiUnitAndThermodynamicTemperatureUnit::SetThermodynamicTemperatureUnit(
+  const Handle(StepBasic_ThermodynamicTemperatureUnit)& aThermodynamicTemperatureUnit)
 {
   thermodynamicTemperatureUnit = aThermodynamicTemperatureUnit;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : SolidAngleUnit
-//purpose  : 
-//=======================================================================
-
-Handle(StepBasic_ThermodynamicTemperatureUnit) StepBasic_SiUnitAndThermodynamicTemperatureUnit::ThermodynamicTemperatureUnit() const
+Handle(StepBasic_ThermodynamicTemperatureUnit) StepBasic_SiUnitAndThermodynamicTemperatureUnit::
+  ThermodynamicTemperatureUnit() const
 {
   return thermodynamicTemperatureUnit;
 }
-

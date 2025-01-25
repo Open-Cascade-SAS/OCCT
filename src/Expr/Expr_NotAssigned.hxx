@@ -26,8 +26,9 @@ class Expr_NotAssigned;
 DEFINE_STANDARD_HANDLE(Expr_NotAssigned, Expr_ExprFailure)
 
 #if !defined No_Exception && !defined No_Expr_NotAssigned
-  #define Expr_NotAssigned_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) throw Expr_NotAssigned(MESSAGE);
+  #define Expr_NotAssigned_Raise_if(CONDITION, MESSAGE)                                            \
+    if (CONDITION)                                                                                 \
+      throw Expr_NotAssigned(MESSAGE);
 #else
   #define Expr_NotAssigned_Raise_if(CONDITION, MESSAGE)
 #endif

@@ -21,7 +21,6 @@
 #include <AppDef_ParLeastSquareOfMyGradientOfCompute.hxx>
 #include <AppDef_ResConstraintOfMyGradientOfCompute.hxx>
 #include <AppParCurves_MultiCurve.hxx>
- 
 
 #define MultiLine AppDef_MultiLine
 #define MultiLine_hxx <AppDef_MultiLine.hxx>
@@ -34,4 +33,3 @@
 #define AppParCurves_Function AppDef_ParFunctionOfMyGradientOfCompute
 #define AppParCurves_Function_hxx <AppDef_ParFunctionOfMyGradientOfCompute.hxx>
 #include "../AppParCurves/AppParCurves_Function.gxx"
-

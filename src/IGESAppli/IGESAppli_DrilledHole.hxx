@@ -23,7 +23,6 @@
 #include <Standard_Real.hxx>
 #include <IGESData_IGESEntity.hxx>
 
-
 class IGESAppli_DrilledHole;
 DEFINE_STANDARD_HANDLE(IGESAppli_DrilledHole, IGESData_IGESEntity)
 
@@ -35,10 +34,8 @@ class IGESAppli_DrilledHole : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESAppli_DrilledHole();
-  
+
   //! This method is used to set the fields of the class
   //! DrilledHole
   //! - nbPropVal    : Number of property values = 5
@@ -49,54 +46,42 @@ public:
   //! True  = is plating
   //! - aLayer       : Lower numbered layer
   //! - anotherLayer : Higher numbered layer
-  Standard_EXPORT void Init (const Standard_Integer nbPropVal, const Standard_Real aSize, const Standard_Real anotherSize, const Standard_Integer aPlating, const Standard_Integer aLayer, const Standard_Integer anotherLayer);
-  
+  Standard_EXPORT void Init(const Standard_Integer nbPropVal,
+                            const Standard_Real    aSize,
+                            const Standard_Real    anotherSize,
+                            const Standard_Integer aPlating,
+                            const Standard_Integer aLayer,
+                            const Standard_Integer anotherLayer);
+
   //! is always 5
   Standard_EXPORT Standard_Integer NbPropertyValues() const;
-  
+
   //! returns the drill diameter size
   Standard_EXPORT Standard_Real DrillDiaSize() const;
-  
+
   //! returns the finish diameter size
   Standard_EXPORT Standard_Real FinishDiaSize() const;
-  
+
   //! Returns Plating Status :
   //! False = not plating  /  True  = is plating
   Standard_EXPORT Standard_Boolean IsPlating() const;
-  
+
   //! returns the lower numbered layer
   Standard_EXPORT Standard_Integer NbLowerLayer() const;
-  
+
   //! returns the higher numbered layer
   Standard_EXPORT Standard_Integer NbHigherLayer() const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESAppli_DrilledHole,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESAppli_DrilledHole, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
   Standard_Integer theNbPropertyValues;
-  Standard_Real theDrillDiaSize;
-  Standard_Real theFinishDiaSize;
+  Standard_Real    theDrillDiaSize;
+  Standard_Real    theFinishDiaSize;
   Standard_Integer thePlatingFlag;
   Standard_Integer theNbLowerLayer;
   Standard_Integer theNbHigherLayer;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESAppli_DrilledHole_HeaderFile

@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <ElCLib.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Geometry.hxx>
@@ -28,222 +27,177 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Geom_Circle,Geom_Conic)
+IMPLEMENT_STANDARD_RTTIEXT(Geom_Circle, Geom_Conic)
 
-typedef Geom_Circle         Circle;
-typedef gp_Ax2  Ax2;
-typedef gp_Pnt  Pnt;
-typedef gp_Trsf Trsf;
-typedef gp_Vec  Vec;
-typedef gp_XYZ  XYZ;
+typedef Geom_Circle Circle;
+typedef gp_Ax2      Ax2;
+typedef gp_Pnt      Pnt;
+typedef gp_Trsf     Trsf;
+typedef gp_Vec      Vec;
+typedef gp_XYZ      XYZ;
 
+//=================================================================================================
 
-
-
-//=======================================================================
-//function : Copy
-//purpose  : 
-//=======================================================================
-
-Handle(Geom_Geometry) Geom_Circle::Copy() const {
+Handle(Geom_Geometry) Geom_Circle::Copy() const
+{
 
   Handle(Geom_Circle) C;
-  C = new Circle (pos, radius);
+  C = new Circle(pos, radius);
   return C;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Geom_Circle
-//purpose  : 
-//=======================================================================
+Geom_Circle::Geom_Circle(const gp_Circ& C)
+    : radius(C.Radius())
+{
 
-Geom_Circle::Geom_Circle (const gp_Circ& C) : radius (C.Radius()) {  
-
-  pos = C.Position(); 
+  pos = C.Position();
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Geom_Circle
-//purpose  : 
-//=======================================================================
+Geom_Circle::Geom_Circle(const Ax2& A2, const Standard_Real R)
+    : radius(R)
+{
 
-Geom_Circle::Geom_Circle (const Ax2& A2, const Standard_Real R) : radius (R) {
-
-  if (R < 0.0) throw Standard_ConstructionError();
+  if (R < 0.0)
+    throw Standard_ConstructionError();
   pos = A2;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : IsClosed
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Geom_Circle::IsClosed () const        { return Standard_True; }
-
-
-//=======================================================================
-//function : IsPeriodic
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Geom_Circle::IsPeriodic () const      { return Standard_True; }
-
-
-//=======================================================================
-//function : ReversedParameter
-//purpose  : 
-//=======================================================================
-
-Standard_Real Geom_Circle::ReversedParameter( const Standard_Real U) const 
+Standard_Boolean Geom_Circle::IsClosed() const
 {
-  return ( 2. * M_PI - U);
+  return Standard_True;
 }
 
-//=======================================================================
-//function : Eccentricity
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Standard_Real Geom_Circle::Eccentricity () const       { return 0.0; }
-
-
-//=======================================================================
-//function : FirstParameter
-//purpose  : 
-//=======================================================================
-
-Standard_Real Geom_Circle::FirstParameter () const     { return 0.0; }
-
-
-//=======================================================================
-//function : LastParameter
-//purpose  : 
-//=======================================================================
-
-Standard_Real Geom_Circle::LastParameter () const      { return 2.0 * M_PI; }
-
-
-//=======================================================================
-//function : Circ
-//purpose  : 
-//=======================================================================
-
-gp_Circ Geom_Circle::Circ () const  { return gp_Circ (pos, radius); }
-
-
-//=======================================================================
-//function : SetCirc
-//purpose  : 
-//=======================================================================
-
-void Geom_Circle::SetCirc (const gp_Circ& C) {
-
-   radius = C.Radius();
-   pos = C.Position();
+Standard_Boolean Geom_Circle::IsPeriodic() const
+{
+  return Standard_True;
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : SetRadius
-//purpose  : 
-//=======================================================================
-
-void Geom_Circle::SetRadius (const Standard_Real R) { 
-
-   if (R < 0.0)  throw Standard_ConstructionError();
-   radius = R;
+Standard_Real Geom_Circle::ReversedParameter(const Standard_Real U) const
+{
+  return (2. * M_PI - U);
 }
 
-//=======================================================================
-//function : Radius
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
+Standard_Real Geom_Circle::Eccentricity() const
+{
+  return 0.0;
+}
+
+//=================================================================================================
+
+Standard_Real Geom_Circle::FirstParameter() const
+{
+  return 0.0;
+}
+
+//=================================================================================================
+
+Standard_Real Geom_Circle::LastParameter() const
+{
+  return 2.0 * M_PI;
+}
+
+//=================================================================================================
+
+gp_Circ Geom_Circle::Circ() const
+{
+  return gp_Circ(pos, radius);
+}
+
+//=================================================================================================
+
+void Geom_Circle::SetCirc(const gp_Circ& C)
+{
+
+  radius = C.Radius();
+  pos    = C.Position();
+}
+
+//=================================================================================================
+
+void Geom_Circle::SetRadius(const Standard_Real R)
+{
+
+  if (R < 0.0)
+    throw Standard_ConstructionError();
+  radius = R;
+}
+
+//=================================================================================================
 
 Standard_Real Geom_Circle::Radius() const
 {
   return radius;
 }
 
-//=======================================================================
-//function : D0
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void Geom_Circle::D0 (const Standard_Real U, Pnt& P) const {
-
-  P = ElCLib::CircleValue (U, pos, radius);
-}
-
-
-//=======================================================================
-//function : D1
-//purpose  : 
-//=======================================================================
-
-void Geom_Circle::D1 (const Standard_Real U, Pnt& P, Vec& V1) const {
-
-  ElCLib::CircleD1 (U, pos, radius, P, V1);
-}
-
-
-//=======================================================================
-//function : D2
-//purpose  : 
-//=======================================================================
-
-void Geom_Circle::D2 (const Standard_Real U, Pnt& P, Vec& V1, Vec& V2) const {
-
-   ElCLib::CircleD2 (U, pos, radius, P, V1, V2);
-}
-
-
-//=======================================================================
-//function : D3
-//purpose  : 
-//=======================================================================
-
-void Geom_Circle::D3 (
-const Standard_Real U, Pnt& P, Vec& V1, Vec& V2, Vec& V3) const {
-
-  ElCLib::CircleD3 (U, pos, radius, P, V1, V2, V3);
-}
-
-
-//=======================================================================
-//function : DN
-//purpose  : 
-//=======================================================================
-
-Vec Geom_Circle::DN (const Standard_Real U, const Standard_Integer N) const {
-
-   Standard_RangeError_Raise_if (N < 1, " ");
-   return ElCLib::CircleDN (U, pos, radius, N);
-}
-
-
-//=======================================================================
-//function : Transform
-//purpose  : 
-//=======================================================================
-
-void Geom_Circle::Transform (const Trsf& T) {
-
-   radius = radius * Abs(T.ScaleFactor());
-   pos.Transform (T);
-}
-
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void Geom_Circle::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom_Circle::D0(const Standard_Real U, Pnt& P) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom_Conic)
+  P = ElCLib::CircleValue(U, pos, radius);
+}
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, radius)
+//=================================================================================================
+
+void Geom_Circle::D1(const Standard_Real U, Pnt& P, Vec& V1) const
+{
+
+  ElCLib::CircleD1(U, pos, radius, P, V1);
+}
+
+//=================================================================================================
+
+void Geom_Circle::D2(const Standard_Real U, Pnt& P, Vec& V1, Vec& V2) const
+{
+
+  ElCLib::CircleD2(U, pos, radius, P, V1, V2);
+}
+
+//=================================================================================================
+
+void Geom_Circle::D3(const Standard_Real U, Pnt& P, Vec& V1, Vec& V2, Vec& V3) const
+{
+
+  ElCLib::CircleD3(U, pos, radius, P, V1, V2, V3);
+}
+
+//=================================================================================================
+
+Vec Geom_Circle::DN(const Standard_Real U, const Standard_Integer N) const
+{
+
+  Standard_RangeError_Raise_if(N < 1, " ");
+  return ElCLib::CircleDN(U, pos, radius, N);
+}
+
+//=================================================================================================
+
+void Geom_Circle::Transform(const Trsf& T)
+{
+
+  radius = radius * Abs(T.ScaleFactor());
+  pos.Transform(T);
+}
+
+//=================================================================================================
+
+void Geom_Circle::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
+
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Geom_Conic)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, radius)
 }

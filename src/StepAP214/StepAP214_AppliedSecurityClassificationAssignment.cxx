@@ -11,18 +11,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepAP214_AppliedSecurityClassificationAssignment.hxx>
 #include <StepAP214_SecurityClassificationItem.hxx>
 #include <StepBasic_SecurityClassification.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedSecurityClassificationAssignment,StepBasic_SecurityClassificationAssignment)
+IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedSecurityClassificationAssignment,
+                           StepBasic_SecurityClassificationAssignment)
 
-StepAP214_AppliedSecurityClassificationAssignment::StepAP214_AppliedSecurityClassificationAssignment ()  {}
+StepAP214_AppliedSecurityClassificationAssignment::
+  StepAP214_AppliedSecurityClassificationAssignment()
+{
+}
 
 void StepAP214_AppliedSecurityClassificationAssignment::Init(
-	const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification,
-	const Handle(StepAP214_HArray1OfSecurityClassificationItem)& aItems)
+  const Handle(StepBasic_SecurityClassification)&              aAssignedSecurityClassification,
+  const Handle(StepAP214_HArray1OfSecurityClassificationItem)& aItems)
 {
   // --- classe own fields ---
   items = aItems;
@@ -30,24 +33,27 @@ void StepAP214_AppliedSecurityClassificationAssignment::Init(
   StepBasic_SecurityClassificationAssignment::Init(aAssignedSecurityClassification);
 }
 
-
-void StepAP214_AppliedSecurityClassificationAssignment::SetItems(const Handle(StepAP214_HArray1OfSecurityClassificationItem)& aItems)
+void StepAP214_AppliedSecurityClassificationAssignment::SetItems(
+  const Handle(StepAP214_HArray1OfSecurityClassificationItem)& aItems)
 {
   items = aItems;
 }
 
-Handle(StepAP214_HArray1OfSecurityClassificationItem) StepAP214_AppliedSecurityClassificationAssignment::Items() const
+Handle(StepAP214_HArray1OfSecurityClassificationItem)
+  StepAP214_AppliedSecurityClassificationAssignment::Items() const
 {
   return items;
 }
 
-const StepAP214_SecurityClassificationItem& StepAP214_AppliedSecurityClassificationAssignment::ItemsValue(const Standard_Integer num) const
+const StepAP214_SecurityClassificationItem& StepAP214_AppliedSecurityClassificationAssignment::
+  ItemsValue(const Standard_Integer num) const
 {
   return items->Value(num);
 }
 
-Standard_Integer StepAP214_AppliedSecurityClassificationAssignment::NbItems () const
+Standard_Integer StepAP214_AppliedSecurityClassificationAssignment::NbItems() const
 {
-  if (items.IsNull()) return 0;
+  if (items.IsNull())
+    return 0;
   return items->Length();
 }

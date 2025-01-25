@@ -11,24 +11,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Vrml_Instancing.hxx>
 
 Vrml_Instancing::Vrml_Instancing(const TCollection_AsciiString& aString)
 {
- TCollection_AsciiString tmpAS = aString;
- tmpAS.ChangeAll(' ', '_', Standard_True);
- myName = tmpAS;
+  TCollection_AsciiString tmpAS = aString;
+  tmpAS.ChangeAll(' ', '_', Standard_True);
+  myName = tmpAS;
 }
 
- Standard_OStream& Vrml_Instancing::DEF(Standard_OStream& anOStream) const
+Standard_OStream& Vrml_Instancing::DEF(Standard_OStream& anOStream) const
 {
- anOStream  << "DEF " << myName << "\n";
- return anOStream;
+  anOStream << "DEF " << myName << "\n";
+  return anOStream;
 }
 
- Standard_OStream& Vrml_Instancing::USE(Standard_OStream& anOStream) const
+Standard_OStream& Vrml_Instancing::USE(Standard_OStream& anOStream) const
 {
- anOStream  << "USE " << myName << "\n";
- return anOStream;
+  anOStream << "USE " << myName << "\n";
+  return anOStream;
 }

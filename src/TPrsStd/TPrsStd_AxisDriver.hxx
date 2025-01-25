@@ -24,7 +24,6 @@
 class TDF_Label;
 class AIS_InteractiveObject;
 
-
 class TPrsStd_AxisDriver;
 DEFINE_STANDARD_HANDLE(TPrsStd_AxisDriver, TPrsStd_Driver)
 
@@ -33,38 +32,21 @@ class TPrsStd_AxisDriver : public TPrsStd_Driver
 {
 
 public:
-
-  
   //! Constructs an empty axis driver.
   Standard_EXPORT TPrsStd_AxisDriver();
-  
+
   //! Build the AISObject (if null) or update it.
   //! No compute is done.
   //! Returns <True> if information was found
   //! and AISObject updated.
-  Standard_EXPORT virtual Standard_Boolean Update (const TDF_Label& aLabel, Handle(AIS_InteractiveObject)& anAISObject) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Update(const TDF_Label&               aLabel,
+                                                  Handle(AIS_InteractiveObject)& anAISObject)
+    Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(TPrsStd_AxisDriver,TPrsStd_Driver)
+  DEFINE_STANDARD_RTTIEXT(TPrsStd_AxisDriver, TPrsStd_Driver)
 
 protected:
-
-
-
-
 private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _TPrsStd_AxisDriver_HeaderFile

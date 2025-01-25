@@ -23,6 +23,6 @@
  * Container of List type, holding handles to VrmlData_Node objects
  */
 
-typedef NCollection_List<Handle(VrmlData_Node)> VrmlData_ListOfNode; 
+typedef NCollection_List<Handle(VrmlData_Node)> VrmlData_ListOfNode;
 
 #endif

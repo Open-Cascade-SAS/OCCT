@@ -17,71 +17,64 @@
 
 #include <TDataStd_TreeNode.hxx>
 
-#define ChildNodeIterator_UpToBrother \
-{ \
-    while (!myNode.IsNull() && (myNode->Depth() > myFirstLevel) && myNode->myNext == NULL) \
-      myNode = myNode->myFather; \
-	if (!myNode.IsNull() && (myNode->Depth() > myFirstLevel) && myNode->myFather != NULL) \
-	  myNode = myNode->myNext; \
-	else \
-	  myNode = NULL; \
-}
+#define ChildNodeIterator_UpToBrother                                                              \
+  {                                                                                                \
+    while (!myNode.IsNull() && (myNode->Depth() > myFirstLevel) && myNode->myNext == NULL)         \
+      myNode = myNode->myFather;                                                                   \
+    if (!myNode.IsNull() && (myNode->Depth() > myFirstLevel) && myNode->myFather != NULL)          \
+      myNode = myNode->myNext;                                                                     \
+    else                                                                                           \
+      myNode = NULL;                                                                               \
+  }
 
-//=======================================================================
-//function : TDataStd_ChildNodeIterator
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 TDataStd_ChildNodeIterator::TDataStd_ChildNodeIterator()
-     : myFirstLevel(0)
-{}
+    : myFirstLevel(0)
+{
+}
 
-//=======================================================================
-//function : TDataStd_ChildNodeIterator
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TDataStd_ChildNodeIterator::TDataStd_ChildNodeIterator (const Handle(TDataStd_TreeNode)& aTreeNode,
-							const Standard_Boolean allLevels)
-: myNode(aTreeNode->myFirst),
-  myFirstLevel(allLevels ? aTreeNode->Depth() : -1)
-{}
+TDataStd_ChildNodeIterator::TDataStd_ChildNodeIterator(const Handle(TDataStd_TreeNode)& aTreeNode,
+                                                       const Standard_Boolean           allLevels)
+    : myNode(aTreeNode->myFirst),
+      myFirstLevel(allLevels ? aTreeNode->Depth() : -1)
+{
+}
 
-//=======================================================================
-//function : Initialize
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
 void TDataStd_ChildNodeIterator::Initialize(const Handle(TDataStd_TreeNode)& aTreeNode,
-					    const Standard_Boolean allLevels)
+                                            const Standard_Boolean           allLevels)
 {
-  myNode = aTreeNode->myFirst;
+  myNode       = aTreeNode->myFirst;
   myFirstLevel = allLevels ? aTreeNode->Depth() : -1;
 }
 
-//=======================================================================
-//function : Next
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TDataStd_ChildNodeIterator::Next() 
+void TDataStd_ChildNodeIterator::Next()
 {
-  if (myFirstLevel == -1) {
+  if (myFirstLevel == -1)
+  {
     myNode = myNode->myNext;
   }
-  else {
-    if (myNode->myFirst != NULL) myNode = myNode->myFirst;
-    else ChildNodeIterator_UpToBrother;
+  else
+  {
+    if (myNode->myFirst != NULL)
+      myNode = myNode->myFirst;
+    else
+      ChildNodeIterator_UpToBrother;
   }
 }
 
-//=======================================================================
-//function : NextBrother
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-void TDataStd_ChildNodeIterator::NextBrother() 
+void TDataStd_ChildNodeIterator::NextBrother()
 {
-  if (myNode->myNext != NULL) myNode = myNode->myNext;
-  else ChildNodeIterator_UpToBrother;
+  if (myNode->myNext != NULL)
+    myNode = myNode->myNext;
+  else
+    ChildNodeIterator_UpToBrother;
 }

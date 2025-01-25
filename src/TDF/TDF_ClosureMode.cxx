@@ -15,15 +15,14 @@
 
 //      	-------------------
 // Version:	0.0
-//Version	Date		Purpose
+// Version	Date		Purpose
 //		0.0	May 26 1997	Creation
 
 #include <TDF_ClosureMode.hxx>
 
-//=======================================================================
-//function : TDF_ClosureMode
-//purpose  : 
-//=======================================================================
-TDF_ClosureMode::TDF_ClosureMode(const Standard_Boolean aMode) :
-myFlags(aMode ? ~0 : 0)
-{}
+//=================================================================================================
+
+TDF_ClosureMode::TDF_ClosureMode(const Standard_Boolean aMode)
+    : myFlags(aMode ? ~0 : 0)
+{
+}

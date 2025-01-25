@@ -20,137 +20,108 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepMeshData_PCurve, IMeshData_PCurve)
 
-//=======================================================================
-// Function: Constructor
-// Purpose : 
-//=======================================================================
-BRepMeshData_PCurve::BRepMeshData_PCurve (
-  const IMeshData::IFacePtr&               theDFace,
-  const TopAbs_Orientation                 theOrientation,
-  const Handle (NCollection_IncAllocator)& theAllocator)
-  : IMeshData_PCurve (theDFace, theOrientation),
-    myPoints2d   (NCollection_OccAllocator<gp_Pnt2d>(theAllocator)),
-    myParameters (NCollection_OccAllocator<Standard_Real>(theAllocator)),
-    myIndices    (NCollection_OccAllocator<Standard_Integer>(theAllocator))
+//=================================================================================================
+
+BRepMeshData_PCurve::BRepMeshData_PCurve(const IMeshData::IFacePtr&              theDFace,
+                                         const TopAbs_Orientation                theOrientation,
+                                         const Handle(NCollection_IncAllocator)& theAllocator)
+    : IMeshData_PCurve(theDFace, theOrientation),
+      myPoints2d(NCollection_OccAllocator<gp_Pnt2d>(theAllocator)),
+      myParameters(NCollection_OccAllocator<Standard_Real>(theAllocator)),
+      myIndices(NCollection_OccAllocator<Standard_Integer>(theAllocator))
 {
 }
 
-//=======================================================================
-// Function: Destructor
-// Purpose : 
-//=======================================================================
-BRepMeshData_PCurve::~BRepMeshData_PCurve ()
-{
-}
+//=================================================================================================
 
-//=======================================================================
-// Function: InsertPoint
-// Purpose : 
-//=======================================================================
-void BRepMeshData_PCurve::InsertPoint(
-  const Standard_Integer thePosition,
-  const gp_Pnt2d&        thePoint,
-  const Standard_Real    theParamOnPCurve)
+BRepMeshData_PCurve::~BRepMeshData_PCurve() {}
+
+//=================================================================================================
+
+void BRepMeshData_PCurve::InsertPoint(const Standard_Integer thePosition,
+                                      const gp_Pnt2d&        thePoint,
+                                      const Standard_Real    theParamOnPCurve)
 {
-  myPoints2d  .insert(myPoints2d  .begin() + thePosition, thePoint);
+  myPoints2d.insert(myPoints2d.begin() + thePosition, thePoint);
   myParameters.insert(myParameters.begin() + thePosition, theParamOnPCurve);
-  myIndices   .insert(myIndices   .begin() + thePosition, 0);
+  myIndices.insert(myIndices.begin() + thePosition, 0);
 }
 
-//=======================================================================
-// Function: AddPoint
-// Purpose : 
-//=======================================================================
-void BRepMeshData_PCurve::AddPoint (
-  const gp_Pnt2d&     thePoint,
-  const Standard_Real theParamOnPCurve)
+//=================================================================================================
+
+void BRepMeshData_PCurve::AddPoint(const gp_Pnt2d& thePoint, const Standard_Real theParamOnPCurve)
 {
-  myPoints2d  .push_back(thePoint);
+  myPoints2d.push_back(thePoint);
   myParameters.push_back(theParamOnPCurve);
-  myIndices   .push_back(0);
+  myIndices.push_back(0);
 }
 
-//=======================================================================
-// Function: GetPoint
-// Purpose : 
-//=======================================================================
-gp_Pnt2d& BRepMeshData_PCurve::GetPoint (const Standard_Integer theIndex)
+//=================================================================================================
+
+gp_Pnt2d& BRepMeshData_PCurve::GetPoint(const Standard_Integer theIndex)
 {
-  Standard_OutOfRange_Raise_if (
-    theIndex < 0 || theIndex >= static_cast<Standard_Integer>(myPoints2d.size()),
-    "BRepMeshData_PCurve::GetPoint");
+  Standard_OutOfRange_Raise_if(theIndex < 0
+                                 || theIndex >= static_cast<Standard_Integer>(myPoints2d.size()),
+                               "BRepMeshData_PCurve::GetPoint");
   return myPoints2d[theIndex];
 }
 
-//=======================================================================
-// Function: GetIndex
-// Purpose : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer& BRepMeshData_PCurve::GetIndex(const Standard_Integer theIndex)
 {
-  Standard_OutOfRange_Raise_if (
-    theIndex < 0 || theIndex >= static_cast<Standard_Integer>(myIndices.size()),
-    "BRepMeshData_PCurve::GetIndex");
+  Standard_OutOfRange_Raise_if(theIndex < 0
+                                 || theIndex >= static_cast<Standard_Integer>(myIndices.size()),
+                               "BRepMeshData_PCurve::GetIndex");
   return myIndices[theIndex];
 }
 
-//=======================================================================
-// Function: GetParameter
-// Purpose : 
-//=======================================================================
-Standard_Real& BRepMeshData_PCurve::GetParameter (const Standard_Integer theIndex)
+//=================================================================================================
+
+Standard_Real& BRepMeshData_PCurve::GetParameter(const Standard_Integer theIndex)
 {
-  Standard_OutOfRange_Raise_if (
-    theIndex < 0 || theIndex >= ParametersNb(),
-    "BRepMeshData_PCurve::GetParameter");
+  Standard_OutOfRange_Raise_if(theIndex < 0 || theIndex >= ParametersNb(),
+                               "BRepMeshData_PCurve::GetParameter");
   return myParameters[theIndex];
 }
 
-//=======================================================================
-// Function: ParameterNb
-// Purpose : 
-//=======================================================================
+//=================================================================================================
+
 Standard_Integer BRepMeshData_PCurve::ParametersNb() const
 {
   return static_cast<Standard_Integer>(myParameters.size());
 }
 
-//=======================================================================
-// Function: RemovePoint
-// Purpose : 
-//=======================================================================
-void BRepMeshData_PCurve::RemovePoint (const Standard_Integer theIndex)
+//=================================================================================================
+
+void BRepMeshData_PCurve::RemovePoint(const Standard_Integer theIndex)
 {
   myPoints2d.erase(myPoints2d.begin() + theIndex);
-  myIndices .erase(myIndices .begin() + theIndex);
-  removeParameter (theIndex);
+  myIndices.erase(myIndices.begin() + theIndex);
+  removeParameter(theIndex);
 }
 
-//=======================================================================
-// Function: removeParameter
-// Purpose : 
-//=======================================================================
-void BRepMeshData_PCurve::removeParameter (const Standard_Integer theIndex)
+//=================================================================================================
+
+void BRepMeshData_PCurve::removeParameter(const Standard_Integer theIndex)
 {
   myParameters.erase(myParameters.begin() + theIndex);
 }
 
-//=======================================================================
-// Function: Clear
-// Purpose : 
-//=======================================================================
+//=================================================================================================
+
 void BRepMeshData_PCurve::Clear(const Standard_Boolean isKeepEndPoints)
 {
   if (!isKeepEndPoints)
   {
-    myPoints2d  .clear();
+    myPoints2d.clear();
     myParameters.clear();
-    myIndices   .clear();
+    myIndices.clear();
   }
   else if (ParametersNb() > 2)
   {
-    myPoints2d  .erase(myPoints2d  .begin() + 1, myPoints2d  .begin() + (myPoints2d  .size() - 1));
+    myPoints2d.erase(myPoints2d.begin() + 1, myPoints2d.begin() + (myPoints2d.size() - 1));
     myParameters.erase(myParameters.begin() + 1, myParameters.begin() + (myParameters.size() - 1));
-    myIndices   .erase(myIndices   .begin() + 1, myIndices   .begin() + (myIndices   .size() - 1));
+    myIndices.erase(myIndices.begin() + 1, myIndices.begin() + (myIndices.size() - 1));
   }
 }

@@ -18,28 +18,25 @@
 #include <StepDimTol_GeometricToleranceTarget.hxx>
 #include <StepBasic_LengthMeasureWithUnit.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_UnequallyDisposedGeometricTolerance,StepDimTol_GeometricTolerance)
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_UnequallyDisposedGeometricTolerance,
+                           StepDimTol_GeometricTolerance)
 
-//=======================================================================
-//function : StepDimTol_UnequallyDisposedGeometricTolerance
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-StepDimTol_UnequallyDisposedGeometricTolerance::StepDimTol_UnequallyDisposedGeometricTolerance ()
+StepDimTol_UnequallyDisposedGeometricTolerance::StepDimTol_UnequallyDisposedGeometricTolerance() {}
+
+//=================================================================================================
+
+void StepDimTol_UnequallyDisposedGeometricTolerance::Init(
+  const Handle(TCollection_HAsciiString)&        theName,
+  const Handle(TCollection_HAsciiString)&        theDescription,
+  const Handle(StepBasic_MeasureWithUnit)&       theMagnitude,
+  const StepDimTol_GeometricToleranceTarget&     theTolerancedShapeAspect,
+  const Handle(StepBasic_LengthMeasureWithUnit)& theDisplacement)
 {
-}
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void StepDimTol_UnequallyDisposedGeometricTolerance::Init (const Handle(TCollection_HAsciiString) &theName,
-                                                           const Handle(TCollection_HAsciiString) &theDescription,
-                                                           const Handle(StepBasic_MeasureWithUnit) &theMagnitude,
-                                                           const StepDimTol_GeometricToleranceTarget &theTolerancedShapeAspect,
-                                                           const Handle(StepBasic_LengthMeasureWithUnit) &theDisplacement)
-{
-  StepDimTol_GeometricTolerance::Init( theName, theDescription, theMagnitude, theTolerancedShapeAspect);
+  StepDimTol_GeometricTolerance::Init(theName,
+                                      theDescription,
+                                      theMagnitude,
+                                      theTolerancedShapeAspect);
   myDisplacement = theDisplacement;
 }

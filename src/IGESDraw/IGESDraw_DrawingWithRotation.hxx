@@ -31,7 +31,6 @@ class gp_Pnt2d;
 class gp_XY;
 class gp_XYZ;
 
-
 class IGESDraw_DrawingWithRotation;
 DEFINE_STANDARD_HANDLE(IGESDraw_DrawingWithRotation, IGESData_IGESEntity)
 
@@ -44,10 +43,8 @@ class IGESDraw_DrawingWithRotation : public IGESData_IGESEntity
 {
 
 public:
-
-  
   Standard_EXPORT IGESDraw_DrawingWithRotation();
-  
+
   //! This method is used to set the fields of the class
   //! DrawingWithRotation
   //! - allViews             : Pointers to View entities
@@ -56,71 +53,58 @@ public:
   //! - allAnnotations       : Pointers to Annotation entities
   //! raises exception if Lengths of allViews, allViewOrigins and
   //! allOrientationAngles are not same.
-  Standard_EXPORT void Init (const Handle(IGESDraw_HArray1OfViewKindEntity)& allViews, const Handle(TColgp_HArray1OfXY)& allViewOrigins, const Handle(TColStd_HArray1OfReal)& allOrientationAngles, const Handle(IGESData_HArray1OfIGESEntity)& allAnnotations);
-  
+  Standard_EXPORT void Init(const Handle(IGESDraw_HArray1OfViewKindEntity)& allViews,
+                            const Handle(TColgp_HArray1OfXY)&               allViewOrigins,
+                            const Handle(TColStd_HArray1OfReal)&            allOrientationAngles,
+                            const Handle(IGESData_HArray1OfIGESEntity)&     allAnnotations);
+
   //! returns the number of view pointers in <me>
   Standard_EXPORT Standard_Integer NbViews() const;
-  
+
   //! returns the View entity indicated by Index
   //! raises an exception if Index <= 0 or Index > NbViews().
-  Standard_EXPORT Handle(IGESData_ViewKindEntity) ViewItem (const Standard_Integer Index) const;
-  
+  Standard_EXPORT Handle(IGESData_ViewKindEntity) ViewItem(const Standard_Integer Index) const;
+
   //! returns the Drawing space coordinates of the origin of the
   //! Transformed view indicated by Index
   //! raises an exception if Index <= 0 or Index > NbViews().
-  Standard_EXPORT gp_Pnt2d ViewOrigin (const Standard_Integer Index) const;
-  
+  Standard_EXPORT gp_Pnt2d ViewOrigin(const Standard_Integer Index) const;
+
   //! returns the Orientation angle for the Transformed view
   //! indicated by Index
   //! raises an exception if Index <= 0 or Index > NbViews().
-  Standard_EXPORT Standard_Real OrientationAngle (const Standard_Integer Index) const;
-  
+  Standard_EXPORT Standard_Real OrientationAngle(const Standard_Integer Index) const;
+
   //! returns the number of Annotation entities in <me>
   Standard_EXPORT Standard_Integer NbAnnotations() const;
-  
+
   //! returns the Annotation entity in this Drawing, indicated by Index
   //! raises an exception if Index <= 0 or Index > NbAnnotations().
-  Standard_EXPORT Handle(IGESData_IGESEntity) Annotation (const Standard_Integer Index) const;
-  
-  Standard_EXPORT gp_XY ViewToDrawing (const Standard_Integer NumView, const gp_XYZ& ViewCoords) const;
-  
+  Standard_EXPORT Handle(IGESData_IGESEntity) Annotation(const Standard_Integer Index) const;
+
+  Standard_EXPORT gp_XY ViewToDrawing(const Standard_Integer NumView,
+                                      const gp_XYZ&          ViewCoords) const;
+
   //! Returns the Drawing Unit Value if it is specified (by a
   //! specific property entity)
   //! If not specified, returns False, and val as zero :
   //! unit to consider is then the model unit in GlobalSection
-  Standard_EXPORT Standard_Boolean DrawingUnit (Standard_Real& value) const;
-  
+  Standard_EXPORT Standard_Boolean DrawingUnit(Standard_Real& value) const;
+
   //! Returns the Drawing Size if it is specified (by a
   //! specific property entity)
   //! If not specified, returns False, and X,Y as zero :
   //! unit to consider is then the model unit in GlobalSection
-  Standard_EXPORT Standard_Boolean DrawingSize (Standard_Real& X, Standard_Real& Y) const;
+  Standard_EXPORT Standard_Boolean DrawingSize(Standard_Real& X, Standard_Real& Y) const;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(IGESDraw_DrawingWithRotation,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDraw_DrawingWithRotation, IGESData_IGESEntity)
 
 protected:
-
-
-
-
 private:
-
-
   Handle(IGESDraw_HArray1OfViewKindEntity) theViews;
-  Handle(TColgp_HArray1OfXY) theViewOrigins;
-  Handle(TColStd_HArray1OfReal) theOrientationAngles;
-  Handle(IGESData_HArray1OfIGESEntity) theAnnotations;
-
-
+  Handle(TColgp_HArray1OfXY)               theViewOrigins;
+  Handle(TColStd_HArray1OfReal)            theOrientationAngles;
+  Handle(IGESData_HArray1OfIGESEntity)     theAnnotations;
 };
-
-
-
-
-
-
 
 #endif // _IGESDraw_DrawingWithRotation_HeaderFile

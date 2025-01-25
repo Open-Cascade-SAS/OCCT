@@ -22,41 +22,40 @@
 class Prs3d_ToolSector : public Prs3d_ToolQuadric
 {
 public:
-
   //! Generate primitives for 3D quadric surface.
   //! @param[in] theRadius    sector radius
   //! @param[in] theNbSlices  number of slices within U parameter
   //! @param[in] theNbStacks  number of stacks within V parameter
   //! @param[in] theTrsf      optional transformation to apply
   //! @return generated triangulation
-  Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) Create (const Standard_Real    theRadius,
-                                                                    const Standard_Integer theNbSlices,
-                                                                    const Standard_Integer theNbStacks,
-                                                                    const gp_Trsf&         theTrsf);
-public:
+  Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) Create(
+    const Standard_Real    theRadius,
+    const Standard_Integer theNbSlices,
+    const Standard_Integer theNbStacks,
+    const gp_Trsf&         theTrsf);
 
+public:
   //! Initializes the algorithm creating a sector (quadrant).
   //! @param[in] theRadius    sector radius
   //! @param[in] theNbSlices  number of slices within U parameter
   //! @param[in] theNbStacks  number of stacks within V parameter
-  Standard_EXPORT Prs3d_ToolSector (const Standard_Real    theRadius,
-                                    const Standard_Integer theNbSlices,
-                                    const Standard_Integer theNbStacks);
-protected:
+  Standard_EXPORT Prs3d_ToolSector(const Standard_Real    theRadius,
+                                   const Standard_Integer theNbSlices,
+                                   const Standard_Integer theNbStacks);
 
+protected:
   //! Computes vertex at given parameter location of the surface.
-  Standard_EXPORT virtual gp_Pnt Vertex (const Standard_Real theU, const Standard_Real theV) const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt Vertex(const Standard_Real theU,
+                                        const Standard_Real theV) const Standard_OVERRIDE;
 
   //! Computes normal at given parameter location of the surface.
-  virtual gp_Dir Normal (const Standard_Real , const Standard_Real ) const Standard_OVERRIDE
+  virtual gp_Dir Normal(const Standard_Real, const Standard_Real) const Standard_OVERRIDE
   {
-    return gp_Dir (0.0, 0.0, -1.0);
+    return gp_Dir(0.0, 0.0, -1.0);
   }
 
 protected:
-
   Standard_Real myRadius; //!< sector radius
-
 };
 
 #endif

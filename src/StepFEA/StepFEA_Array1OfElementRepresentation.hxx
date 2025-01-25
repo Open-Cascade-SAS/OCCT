@@ -17,7 +17,7 @@
 #include <StepFEA_ElementRepresentation.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef NCollection_Array1<Handle(StepFEA_ElementRepresentation)> StepFEA_Array1OfElementRepresentation;
-
+typedef NCollection_Array1<Handle(StepFEA_ElementRepresentation)>
+  StepFEA_Array1OfElementRepresentation;
 
 #endif

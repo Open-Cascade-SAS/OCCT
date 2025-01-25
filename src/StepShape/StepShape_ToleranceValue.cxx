@@ -11,30 +11,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepShape_ToleranceValue.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepShape_ToleranceValue,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_ToleranceValue, Standard_Transient)
 
-StepShape_ToleranceValue::StepShape_ToleranceValue  ()    {  }
+StepShape_ToleranceValue::StepShape_ToleranceValue() {}
 
-void  StepShape_ToleranceValue::Init
-  (const Handle(Standard_Transient)& lower_bound,
-   const Handle(Standard_Transient)& upper_bound)
+void StepShape_ToleranceValue::Init(const Handle(Standard_Transient)& lower_bound,
+                                    const Handle(Standard_Transient)& upper_bound)
 {
   theLowerBound = lower_bound;
   theUpperBound = upper_bound;
 }
 
-Handle(Standard_Transient)  StepShape_ToleranceValue::LowerBound () const
-{  return theLowerBound;  }
+Handle(Standard_Transient) StepShape_ToleranceValue::LowerBound() const
+{
+  return theLowerBound;
+}
 
-void  StepShape_ToleranceValue::SetLowerBound (const Handle(Standard_Transient)& lower_bound)
-{  theLowerBound = lower_bound;  }
+void StepShape_ToleranceValue::SetLowerBound(const Handle(Standard_Transient)& lower_bound)
+{
+  theLowerBound = lower_bound;
+}
 
-Handle(Standard_Transient)  StepShape_ToleranceValue::UpperBound () const
-{  return theUpperBound;  }
+Handle(Standard_Transient) StepShape_ToleranceValue::UpperBound() const
+{
+  return theUpperBound;
+}
 
-void  StepShape_ToleranceValue::SetUpperBound (const Handle(Standard_Transient)& upper_bound)
-{  theUpperBound = upper_bound;  }
+void StepShape_ToleranceValue::SetUpperBound(const Handle(Standard_Transient)& upper_bound)
+{
+  theUpperBound = upper_bound;
+}

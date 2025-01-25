@@ -14,44 +14,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <gp_Pnt.hxx>
 #include <TopoDS_Vertex.hxx>
 
-//=======================================================================
-//function : BRepBuilderAPI_MakeVertex
-//purpose  : 
-//=======================================================================
+//=================================================================================================
+
 BRepBuilderAPI_MakeVertex::BRepBuilderAPI_MakeVertex(const gp_Pnt& P)
-: myMakeVertex(P)
+    : myMakeVertex(P)
 {
-  if ( myMakeVertex.IsDone()) {
+  if (myMakeVertex.IsDone())
+  {
     Done();
     myShape = myMakeVertex.Shape();
   }
 }
 
+//=================================================================================================
 
-//=======================================================================
-//function : Vertex
-//purpose  : 
-//=======================================================================
-
-const TopoDS_Vertex&  BRepBuilderAPI_MakeVertex::Vertex()
+const TopoDS_Vertex& BRepBuilderAPI_MakeVertex::Vertex()
 {
   return myMakeVertex.Vertex();
 }
 
-
-//=======================================================================
-//function : operator
-//purpose  : 
-//=======================================================================
-
+//=================================================================================================
 
 BRepBuilderAPI_MakeVertex::operator TopoDS_Vertex()
 {
   return Vertex();
 }
-

@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <Geom_Plane.hxx>
@@ -32,65 +31,56 @@
 
 IMPLEMENT_DERIVED_ATTRIBUTE(TDataXtd_Plane, TDataStd_GenericEmpty)
 
-//=======================================================================
-//function : GetID
-//purpose  : 
-//=======================================================================
-const Standard_GUID& TDataXtd_Plane::GetID () 
+//=================================================================================================
+
+const Standard_GUID& TDataXtd_Plane::GetID()
 {
   static Standard_GUID TDataXtd_PlaneID("2a96b60c-ec8b-11d0-bee7-080009dc3333");
   return TDataXtd_PlaneID;
 }
 
- 
-//=======================================================================
-//function : Set
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-Handle(TDataXtd_Plane) TDataXtd_Plane::Set (const TDF_Label& L)
+Handle(TDataXtd_Plane) TDataXtd_Plane::Set(const TDF_Label& L)
 {
   Handle(TDataXtd_Plane) A;
-  if (!L.FindAttribute(TDataXtd_Plane::GetID(),A)) {
-    A = new TDataXtd_Plane (); 
+  if (!L.FindAttribute(TDataXtd_Plane::GetID(), A))
+  {
+    A = new TDataXtd_Plane();
     L.AddAttribute(A);
-  }  
+  }
   return A;
 }
 
+//=================================================================================================
 
-
-//=======================================================================
-//function : Set
-//purpose  : 
-//=======================================================================
-
-Handle(TDataXtd_Plane) TDataXtd_Plane::Set (const TDF_Label& L, const gp_Pln& P)
-{ 
-  Handle(TDataXtd_Plane) A = Set (L);
+Handle(TDataXtd_Plane) TDataXtd_Plane::Set(const TDF_Label& L, const gp_Pln& P)
+{
+  Handle(TDataXtd_Plane) A = Set(L);
 
   Handle(TNaming_NamedShape) aNS;
-  if(L.FindAttribute(TNaming_NamedShape::GetID(), aNS)) {
-    if(!aNS->Get().IsNull())
-       if(aNS->Get().ShapeType() == TopAbs_FACE) {
-	 TopoDS_Face aFace = TopoDS::Face(aNS->Get());
-	 Handle(Geom_Surface) aSurface = BRep_Tool::Surface(aFace);
-	 GeomLib_IsPlanarSurface aChecker(aSurface);
-	 if(aChecker.IsPlanar()) {
-	   gp_Pln aPlane = aChecker.Plan();
-	   if(aPlane.Location().X() == P.Location().X() &&
-	      aPlane.Location().Y() == P.Location().Y() &&
-	      aPlane.Location().Z() == P.Location().Z() &&
-	      aPlane.Axis().Location().X() == P.Axis().Location().X() &&
-	      aPlane.Axis().Location().Y() == P.Axis().Location().Y() &&
-	      aPlane.Axis().Location().Z() == P.Axis().Location().Z() &&
-	      aPlane.Axis().Direction().X() == P.Axis().Direction().X() &&
-	      aPlane.Axis().Direction().Y() == P.Axis().Direction().Y() &&
-	      aPlane.Axis().Direction().Z() == P.Axis().Direction().Z()
-	      )
-	     return A;
-	 }
-       }
+  if (L.FindAttribute(TNaming_NamedShape::GetID(), aNS))
+  {
+    if (!aNS->Get().IsNull())
+      if (aNS->Get().ShapeType() == TopAbs_FACE)
+      {
+        TopoDS_Face             aFace    = TopoDS::Face(aNS->Get());
+        Handle(Geom_Surface)    aSurface = BRep_Tool::Surface(aFace);
+        GeomLib_IsPlanarSurface aChecker(aSurface);
+        if (aChecker.IsPlanar())
+        {
+          gp_Pln aPlane = aChecker.Plan();
+          if (aPlane.Location().X() == P.Location().X() && aPlane.Location().Y() == P.Location().Y()
+              && aPlane.Location().Z() == P.Location().Z()
+              && aPlane.Axis().Location().X() == P.Axis().Location().X()
+              && aPlane.Axis().Location().Y() == P.Axis().Location().Y()
+              && aPlane.Axis().Location().Z() == P.Axis().Location().Z()
+              && aPlane.Axis().Direction().X() == P.Axis().Direction().X()
+              && aPlane.Axis().Direction().Y() == P.Axis().Direction().Y()
+              && aPlane.Axis().Direction().Z() == P.Axis().Direction().Z())
+            return A;
+        }
+      }
   }
 
   TNaming_Builder B(L);
@@ -98,28 +88,21 @@ Handle(TDataXtd_Plane) TDataXtd_Plane::Set (const TDF_Label& L, const gp_Pln& P)
   return A;
 }
 
-//=======================================================================
-//function : TDataXtd_Plane
-//purpose  : 
-//=======================================================================
+//=================================================================================================
 
-TDataXtd_Plane::TDataXtd_Plane () { }
+TDataXtd_Plane::TDataXtd_Plane() {}
 
+//=================================================================================================
 
-//=======================================================================
-//function : ID
-//purpose  : 
-//=======================================================================
+const Standard_GUID& TDataXtd_Plane::ID() const
+{
+  return GetID();
+}
 
-const Standard_GUID& TDataXtd_Plane::ID() const { return GetID(); }
+//=================================================================================================
 
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-
-Standard_OStream& TDataXtd_Plane::Dump (Standard_OStream& anOS) const
-{  
+Standard_OStream& TDataXtd_Plane::Dump(Standard_OStream& anOS) const
+{
   anOS << "Plane";
   return anOS;
 }
